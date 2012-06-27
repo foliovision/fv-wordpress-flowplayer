@@ -1,0 +1,108 @@
+.flowplayer_container
+{
+	background: #0D0D0D url('../images/finished_bg.png') repeat-x;
+	display: block;
+	position: relative;
+	border: solid 1px black;
+	margin: 0 auto 0 auto !important;
+	padding: 0 !important;
+	text-align: center !important;
+}
+.flowplayer_container:hover
+{
+	text-decoration: none;
+}
+/* SPLASH IMAGE */
+img.splash
+{
+	position: absolute;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	cursor: pointer;
+	background: none;
+	border: none;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+.splash_play_button
+{
+	position: relative;
+	margin: auto !important;
+	cursor: pointer;
+	background: none;
+	border: none;
+	padding: 0 !important;
+}
+/* POPUP */
+.popup_contents
+{
+	visibility: hidden;
+	position: absolute;
+	/*top: -9999em;
+	left: -9999em;*/
+}
+.flowplayer_popup
+{
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	text-align: left;
+	width: 100%;
+	height: 100%;
+	background: #000000;
+	border: solid 1px #000000;
+	color: #FFFFFF;
+	padding: 0%;
+	z-index: 999;
+}
+.wpfp_custom_popup
+{
+   margin: 0;
+   padding: 0;
+      font-family: Arial, serif;
+}
+.wpfp_custom_popup a, .wpfp_custom_popup a:hover, .wpfp_custom_popup a:visited, .wpfp_custom_popup a:active
+{
+   color: white;
+   text-decoration: none;
+}
+.flowplayer_popup a, .flowplayer_popup a img 
+{
+   margin: auto !important;
+   cursor: pointer !important;
+   background: none !important;
+   border: none;
+   padding: 0 !important;
+}
+.wpfp_custom_popup input
+{
+   width: 80%;
+   margin: 5px;
+}
+.popup_controls
+{
+   text-align: center;
+   font-size: 100%;
+}
+.link_button{
+	background: #0D0D0D url('../images/button-bg.png') repeat-x;
+	padding: 5px 20px;
+	margin-top: 15px;
+	border: 1px solid #eeeeee;
+  font-family: Arial, serif;
+  font-size:11pt;
+  z-index: 999;
+}
+.link_button a, .link_button a:visited, .link_button a:active{
+   color:#fff;
+   text-decoration: none;
+}
+.smallnote{
+   font-size: 70%;
+   color: #aaa;
+}
+.html5video{
+   text-align:center;
+}
