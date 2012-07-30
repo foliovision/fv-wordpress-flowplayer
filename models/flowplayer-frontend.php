@@ -186,7 +186,7 @@ class flowplayer_frontend extends flowplayer
 					'.(($mobileUserAgent==true)?'});':'').'
 				};
 			';//.$popup_code;
-         if($mobileUserAgent==false && $popup_cod) $ret['script'] .= $popup_code;
+         if($mobileUserAgent==false && $popup_code) $ret['script'] .= $popup_code;
 			 // set the output HTML (which will be printed into document body)
 		//	$ret['html'] .= '<a id="wpfp_'.$hash.'" style="width:'.$width.'px; height:'.$height.'px;" class="flowplayer_container">'.$splash.'</a>'.$popup_contents;
 		 $ret['html'] .= '<a id="wpfp_'.$hash.'" style="width:'.$width.'px; height:'.$height.'px;" class="flowplayer_container player plain">'.$splash.'</a>';//.$popup_contents;

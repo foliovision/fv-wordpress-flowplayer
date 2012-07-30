@@ -161,6 +161,7 @@ Playlist feature is not supported right now.
 = 1.2.17 =
 * bugfix for wp-content paths
 * fix for some warnings
+* bugfix for popups and splash image at the end
 
 = 1.2.16 =
 * Flowplayer shortcodes and placeholders removed from feed

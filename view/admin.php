@@ -91,7 +91,7 @@
 					 </td>
 				</tr>
 				<tr>
-					<td>Insert scripts only when needed (<abbr title="By default, all javascripts are being inserted into teh page all teh time. By enabling this option you will eliminate instertion of these script if video is not present on the page. If insert video outside the loop, you may need to keep this feature disabled.">?</abbr>): </td>
+					<td>Insert scripts only when needed (<abbr title="By default, all javascripts are being inserted into the page all the time. By enabling this option you will eliminate instertion of these script if video is not present on the page. If insert video outside the loop, you may need to keep this feature disabled.">?</abbr>): </td>
 					<td style="text-align:right">
 					 	<select name="optimizejs">
 						<?php echo flowplayer_bool_select($fp->conf['optimizejs']); ?>
