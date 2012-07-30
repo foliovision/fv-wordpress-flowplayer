@@ -98,7 +98,7 @@ function flowplayer_head() {
   else
     $strFPdirname = 'fv-wordpress-flowplayer';
 	if (!defined('RELATIVE_PATH')) {
-		//define('RELATIVE_PATH', get_option('siteurl').'/wp-content/plugins/'.$strFPdirname);   // following bugfix by scott@scottelkin.com
+		  //define('RELATIVE_PATH', get_option('siteurl').'/wp-content/plugins/'.$strFPdirname);   // following bugfix by scott@scottelkin.com
 			if( function_exists('plugins_url') ) {
 				define('RELATIVE_PATH', plugins_url().'/'.$strFPdirname);
 			} else {
@@ -108,7 +108,7 @@ function flowplayer_head() {
 				define('RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
       }
       $conf = get_option( 'fvwpflowplayer' );
-   	if( !isset( $conf['key'] )||(!$conf['key'])||($conf['key']=='false') )
+   	  if( !isset( $conf['key'] )||(!$conf['key'])||($conf['key']=='false') )
          define('PLAYER', RELATIVE_PATH.'/flowplayer/flowplayer.swf');
       else
          define('PLAYER', RELATIVE_PATH.'/flowplayer/commercial/flowplayer.commercial-3.1.5.swf');
