@@ -111,7 +111,7 @@ function flowplayer_head() {
    	  if( !isset( $conf['key'] )||(!$conf['key'])||($conf['key']=='false') )
          define('PLAYER', RELATIVE_PATH.'/flowplayer/flowplayer.swf');
       else
-         define('PLAYER', RELATIVE_PATH.'/flowplayer/commercial/flowplayer.commercial-3.1.5.swf');
+         define('PLAYER', RELATIVE_PATH.'/flowplayer/commercial/flowplayer.commercial-3.2.15.swf');
       define('AUDIOPLAYER', RELATIVE_PATH.'/flowplayer/flowplayer.audio-3.2.2.swf');
    	$vid = 'http://'.$_SERVER['SERVER_NAME'];
    	if (dirname($_SERVER['PHP_SELF']) != '/') 
