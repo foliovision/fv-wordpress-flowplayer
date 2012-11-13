@@ -5,8 +5,16 @@
 ?>
 <div class="wrap">
 			<form id="wpfp_options" method="post" action="">
-			<div id="icon-options-general" class="icon32"></div>
-			<h2>FV Wordpress Flowplayer</h2>
+			            
+        <div style="position: absolute; top: 10px; right: 10px;">
+            <a href="https://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
+		    </div>
+		    
+        <div>
+			     <div id="icon-options-general" class="icon32"></div>
+			     <h2>FV Wordpress Flowplayer</h2>
+        </div>
+           			
 			<?php //echo flowplayer_check_errors($fp); ?>
 			<h3>Default Flowplayer Options:</h3>
 			<table style="width: 800px;">
