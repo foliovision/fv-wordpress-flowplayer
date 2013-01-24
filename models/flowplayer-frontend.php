@@ -1,0 +1,282 @@
+<?php
+/**
+ * Extension of original flowplayer class intended for frontend.
+ */
+class flowplayer_frontend extends flowplayer
+{
+	/**
+	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
+	 * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
+	 * @param array $args Array of arguments (name => value).
+	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
+	 */
+	function build_min_player($media,$args = array()) {
+		// returned array with new player's html and javascript content
+		$ret = array('html' => '', 'script' => '');
+    
+    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
+			// strip the first / from $media
+      if($media[0]=='/') $media = substr($media, 1);
+      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
+        $media = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
+      }
+      else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
+        $media = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
+      }
+      else{ // if the videos are not in the videos directory but they are adressed relatively
+        $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
+        $media = 'http://'.$media_path;
+      }
+		}
+		
+    // unique coe for this player
+		$hash = md5($media.$this->_salt());
+		// setting argument values
+		$width =  ( isset($this->conf['width']) && (!empty($this->conf['width'])) ) ? $this->conf['width'] : 320;
+		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) ) ? $this->conf['height'] : 240;
+		$popup = '';
+		$autoplay = 'false';
+		$controlbar = 'always';
+		
+    //check user agents
+    $aUserAgents = array('iphone', 'ipod', 'iPad', 'aspen', 'incognito', 'webmate', 'android', 'android', 'dream', 'cupcake', 'froyo', 'blackberry9500', 'blackberry9520', 'blackberry9530', 'blackberry9550', 'blackberry9800', 'Palm', 'webos', 's8000', 'bada', 'Opera Mini', 'Opera Mobi', 'htc_touch_pro');
+    $mobileUserAgent = false;
+    foreach($aUserAgents as $userAgent){
+       if(stripos($_SERVER['HTTP_USER_AGENT'],$userAgent))
+          $mobileUserAgent = true;
+    }
+    
+    $redirect = '';
+		if (isset($this->conf['autoplay'])&&!empty($this->conf['autoplay'])) $autoplay = trim($this->conf['autoplay']);
+		if (isset($args['autoplay'])&&!empty($args['autoplay'])) $autoplay = trim($args['autoplay']);
+		if (isset($args['width'])&&!empty($args['width'])) $width = trim($args['width']);
+		if (isset($args['height'])&&!empty($args['height'])) $height = trim($args['height']);
+		if (isset($args['controlbar'])&&($args['controlbar']=='show')) $controlbar = 'never';
+    if (isset($args['redirect'])&&!empty($args['redirect'])) $redirect = trim($args['redirect']);
+    $scaling = "scale";
+		if (isset($this->conf['scaling'])&&($this->conf['scaling']=="true"))
+      $scaling = "fit";
+		else
+      $scaling = "scale";
+      
+    if (isset($args['splash']) && !empty($args['splash'])) {
+  		$splash_img = $args['splash'];
+  		if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
+  		  //$splash_img = VIDEO_PATH.trim($args['splash']);
+  			if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
+          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
+            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
+          }
+          else
+          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$splash_img)){ // if the videos folder is in the root
+            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
+          }
+          else {
+            //if the videos are not in the videos directory but they are adressed relatively
+            $splash_img_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$splash_img);
+            $splash_img = 'http://'.$splash_img_path;
+          }
+  		}
+      else {
+  		  $splash_img = trim($args['splash']);
+  		}  		
+  		// overriding the "autoplay" configuration - video should start immediately after click on the splash image
+  		if (!$args['html5']) {
+        $splash = '<img src="'.$splash_img.'" alt="" class="splash" /><img width="83" height="83" border="0" src="'.RELATIVE_PATH.'/images/play.png" alt="" class="splash_play_button" style="top: '.round($height/2-45).'px; border:0;" />';
+        $this->conf['autoplay'] = 'true';
+  		  $autoplay = 'true';
+      }
+		}
+      
+    if( $args['html5'] || $mobileUserAgent ) {       
+      if ($scaling == "scale") {
+        if ($width > $height) {
+          $ratio = round($height / $width, 4);   
+        }
+        else
+        if ($height > $width) {
+          $ratio = round($width / $height, 4);
+        }
+      }
+      else
+      if ($scaling == "fit") {
+        $ratio = $args['ratio'];
+        if ($width > $height) {
+          $height = round($ratio * $width);   
+        }
+        else
+        if ($height > $width) {
+          $width = round($ratio * $height);
+        }
+      }
+      if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
+        $autoplay = 'true';
+      }     
+      $ret['html'] = '<div id="' . $hash . '" class="flowplayer';
+      if ($autoplay == 'false') {
+        $ret['html'] .= ' is-splash"';
+      }
+      $ret['html'] .= ' style="width: ' . $width . 'px; height: ' . $height . 'px"';
+      $ret['html'] .= ' data-swf="'.RELATIVE_PATH.'/flowplayer.html5/flowplayer.swf"';
+      if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
+        $ret['html'] .= ' data-analytics="' . $this->conf['googleanalytics'] . '"';
+      }
+      $commercial_key = false;
+      if (isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0) {
+        $ret['html'] .= ' data-key="' . $this->conf['key'] . '"';
+        $commercial_key = true;
+      }
+      if ($commercial_key && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0) {
+        $ret['html'] .= ' data-logo="' . $this->conf['logo'] . '"';
+      }
+      $rtmp = false;
+      if (isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && strlen($this->conf['rtmp']) > 0) {
+        $ret['html'] .= ' data-rtmp="rtmp://' . $this->conf['rtmp'] . '/cfx/st/"';
+        $rtmp = true;
+      }
+      if (isset($this->conf['allowfullscreen']) && $this->conf['allowfullscreen'] == 'false') {
+        $ret['html'] .= ' data-fullscreen="false"';
+      }      
+      $ret['html'] .= ' data-ratio="' . $ratio . '"';
+      if ($scaling == "fit") {
+        $ret['html'] .= ' data-flashfit="true"';
+      }            
+      $ret['html'] .= ' data-debug="true"';
+      $ret['html'] .= '>';
+      $ret['html'] .= '<video';      
+      if (isset($splash_img) && !empty($splash_img)) {
+        $ret['html'] .= ' poster="'.$splash_img.'"';
+      } 
+      if ($autoplay == 'true') {
+        $ret['html'] .= ' autoplay';  
+      }
+      if (isset($args['loop']) && $args['loop'] == 'true') {
+        $ret['html'] .= ' loop';
+      }     
+      if (isset($this->conf['autobuffer']) && $this->conf['autobuffer'] == 'true') {
+        $ret['html'] .= ' preload';
+      }
+      else {
+        $ret['html'] .= ' preload="none"';        
+      }         
+      $ret['html'] .= '>';
+      $pathinfo = pathinfo($media);
+      $extension = $pathinfo['extension'];            
+      if (!in_array($extension, array('mp4', 'webm', 'ogv'))) {
+        $extension = 'flash';  
+      }
+      $ret['html'] .= '<source src="'.trim($media).'" type="video/'.$extension.'" />';
+      if ($rtmp) {
+        $video_url = parse_url($media);
+        $video_url = explode('/', $video_url['path']);
+        $media_file = $video_url[count($video_url)-1];
+        $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
+      }      
+      $ret['html'] .= '</video>';
+      $ret['html'] .= '</div>';
+    }
+    else {
+      // set the output JavaScript (which will be added to document head)
+		  $ret['script'] = '
+			if (document.getElementById(\'wpfp_'.$hash.'\') != null) {
+					flowplayer("wpfp_'.$hash.'", {src: "'.PLAYER.'", wmode: \'opaque\'}, {
+	      '.(isset($this->conf['key'])&&strlen($this->conf['key'])>0?'key:\''.trim($this->conf['key']).'\',':'').'
+            plugins: {
+            '.(((empty($args['controlbar']))||$args['controlbar']=='show')?'
+						  controls: {		
+                hideDelay: 500,
+								autoHide: \''.trim($controlbar).'\',
+         				buttonOverColor: \''.trim($this->conf['buttonOverColor']).'\',
+         				sliderColor: \''.trim($this->conf['sliderColor']).'\',
+         				bufferColor: \''.trim($this->conf['bufferColor']).'\',
+         				sliderGradient: \'none\',
+         				progressGradient: \'medium\',
+         				durationColor: \''.trim($this->conf['durationColor']).'\',
+         				progressColor: \''.trim($this->conf['progressColor']).'\',
+         				backgroundColor: \''.trim($this->conf['backgroundColor']).'\',
+         				timeColor: \''.trim($this->conf['timeColor']).'\',
+         				buttonColor: \''.trim($this->conf['buttonColor']).'\',
+         				backgroundGradient: \'none\',
+         				bufferGradient: \'none\',
+	   						opacity:1.0,
+     				    fullscreen: '.(isset($this->conf['allowfullscreen'])?trim($this->conf['allowfullscreen']):'true').'
+	   					}':'controls:null'
+              ).',
+                audio: {
+               	  url: \''.AUDIOPLAYER.'\'
+               	}
+						  },
+						  clip: {  
+                url: \''.trim($media).'\', 
+                autoPlay: '.trim($autoplay).',
+                scaling: \''.$scaling.'\',
+                autoBuffering: '.(isset($this->conf['autobuffer'])?trim($this->conf['autobuffer']):'false').'
+						  }, 
+						canvas: {
+							backgroundColor:\''.trim($this->conf['canvas']).'\'
+						}
+					});
+			};';
+  		// set the output HTML (which will be printed into document body)
+  		$ret['html'] .= '<a id="wpfp_'.$hash.'" style="width:'.$width.'px; height:'.$height.'px;" class="flowplayer_container player plain">'.$splash.'</a>';//.$popup_contents;
+    }       
+    
+		return $ret;
+	}
+	/**
+	 * Displays the elements that need to be added to frontend.
+	 */
+	function flowplayer_head() {
+    global $wp_query; 
+    
+    $html5 = null;
+    foreach ($wp_query->posts as $wp_post) {
+      $content = $wp_post->post_content;
+      if ( stripos( $content, '[fvplayer' ) !== false ) {
+        $html5 = true;
+        break;
+      }                   
+    }    
+    if ( is_null($html5) ) {
+      foreach ($wp_query->posts as $wp_post) {
+        if ( stripos( $content, '[flowplayer' ) !== false ) {
+          $html5 = false;
+          break;  
+        }
+      }
+    }
+    
+    if ( !is_null($html5) && $html5 ) {
+    ?>
+    <script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.min.js"></script>                                                                                                  
+    <?php
+    }                                                                                                     
+    else
+    if ( !is_null($html5) ) {
+    ?>
+    <script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.min.js"></script>    
+    <!--[if lt IE 7.]>
+    <script defer type="text/javascript" src="<?php echo RELATIVE_PATH ?>/js/pngfix.js"></script>
+    <![endif]-->
+    <script type="text/javascript">	
+    	/*<![CDATA[*/
+  		function fp_replay(hash) {
+  			var fp = document.getElementById('wpfp_'+hash);
+  			var popup = document.getElementById('wpfp_'+hash+'_popup');
+  			fp.removeChild(popup);
+  			flowplayer('wpfp_'+hash).play();
+  		}
+  		function fp_share(hash) {
+  			var cp = document.getElementById('wpfp_'+hash+'_custom_popup');
+  			cp.innerHTML = '<div style="margin-top: 10px; text-align: center;"><label for="permalink" style="color: white;">Permalink to this page:</label><input onclick="this.select();" id="permalink" name="permalink" type="text" value="http://<?php echo $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] ?>" /></div>';
+  		}
+    	/*]]>*/
+    </script>
+    <?php
+    }
+    
+    include dirname( __FILE__ ) . '/../view/frontend-head.php';
+	}
+      
+}
+?>
