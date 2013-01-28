@@ -19,7 +19,7 @@ function generate_key(domain) {
 /***** TEST: node key-gen.js *****/
 
 // no subdomains or invalid TLDs
-var domains = ["localhost", "fritzimages.com", "moot.co.uk"];
+var domains = ["localhost", "fritzimages.com", "mychicnscratch.com"];
 
 domains.forEach(function(domain) {
    console.info(domain + "\t" + generate_key(domain));

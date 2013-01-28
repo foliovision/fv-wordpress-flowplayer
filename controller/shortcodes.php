@@ -42,7 +42,6 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'splash' => '',
     'controlbar' => '',
     'redirect' => '',
-    'ratio' => '',
     'loop' => ''
   ), $atts ) );
   
@@ -52,7 +51,6 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$arguments['splash'] = preg_replace('/\,/', '', $splash);
 	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
 	$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
-  $arguments['ratio'] = preg_replace('/\,/', '', $ratio);
   $arguments['loop'] = preg_replace('/\,/', '', $loop);
   
   $arguments['html5'] = true;

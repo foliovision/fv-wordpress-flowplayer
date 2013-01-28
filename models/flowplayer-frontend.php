@@ -89,26 +89,6 @@ class flowplayer_frontend extends flowplayer
 		}
       
     if( $args['html5'] || $mobileUserAgent ) {       
-      if ($scaling == "scale") {
-        if ($width > $height) {
-          $ratio = round($height / $width, 4);   
-        }
-        else
-        if ($height > $width) {
-          $ratio = round($width / $height, 4);
-        }
-      }
-      else
-      if ($scaling == "fit") {
-        $ratio = $args['ratio'];
-        if ($width > $height) {
-          $height = round($ratio * $width);   
-        }
-        else
-        if ($height > $width) {
-          $width = round($ratio * $height);
-        }
-      }
       if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
         $autoplay = 'true';
       }     
@@ -136,7 +116,14 @@ class flowplayer_frontend extends flowplayer
       }
       if (isset($this->conf['allowfullscreen']) && $this->conf['allowfullscreen'] == 'false') {
         $ret['html'] .= ' data-fullscreen="false"';
-      }      
+      } 
+      if ($width > $height) {
+        $ratio = round($height / $width, 4);   
+      }
+      else
+      if ($height > $width) {
+        $ratio = round($width / $height, 4);
+      }     
       $ret['html'] .= ' data-ratio="' . $ratio . '"';
       if ($scaling == "fit") {
         $ret['html'] .= ' data-flashfit="true"';
@@ -161,14 +148,18 @@ class flowplayer_frontend extends flowplayer
       }         
       $ret['html'] .= '>';
       $pathinfo = pathinfo($media);
-      $extension = $pathinfo['extension'];            
+      $extension = $pathinfo['extension'];                  
       if (!in_array($extension, array('mp4', 'webm', 'ogv'))) {
         $extension = 'flash';  
       }
+      //if it is a local video
+      if (strpos($media, home_url()) !== false) {
+        $rtmp = false;
+      }
       $ret['html'] .= '<source src="'.trim($media).'" type="video/'.$extension.'" />';
-      if ($rtmp) {
+      if ($rtmp && !$mobileUserAgent) {
         $video_url = parse_url($media);
-        $video_url = explode('/', $video_url['path']);
+        $video_url = explode('/', $video_url['path'], 3);        
         $media_file = $video_url[count($video_url)-1];
         $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
       }      
@@ -248,7 +239,7 @@ class flowplayer_frontend extends flowplayer
     
     if ( !is_null($html5) && $html5 ) {
     ?>
-    <script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.min.js"></script>                                                                                                  
+    <script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.min.js"></script>                                                                                                      
     <?php
     }                                                                                                     
     else
@@ -258,20 +249,6 @@ class flowplayer_frontend extends flowplayer
     <!--[if lt IE 7.]>
     <script defer type="text/javascript" src="<?php echo RELATIVE_PATH ?>/js/pngfix.js"></script>
     <![endif]-->
-    <script type="text/javascript">	
-    	/*<![CDATA[*/
-  		function fp_replay(hash) {
-  			var fp = document.getElementById('wpfp_'+hash);
-  			var popup = document.getElementById('wpfp_'+hash+'_popup');
-  			fp.removeChild(popup);
-  			flowplayer('wpfp_'+hash).play();
-  		}
-  		function fp_share(hash) {
-  			var cp = document.getElementById('wpfp_'+hash+'_custom_popup');
-  			cp.innerHTML = '<div style="margin-top: 10px; text-align: center;"><label for="permalink" style="color: white;">Permalink to this page:</label><input onclick="this.select();" id="permalink" name="permalink" type="text" value="http://<?php echo $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] ?>" /></div>';
-  		}
-    	/*]]>*/
-    </script>
     <?php
     }
     

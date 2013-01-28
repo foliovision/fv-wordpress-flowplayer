@@ -123,19 +123,9 @@ function fillSplashInputs(){
       <tr>
 				<th scope="row" class="label"><label for="html5" class="alignright">HTML5</label></th>
 				<td colspan="2" class="field"><input type="checkbox" id="html5" name="html5" checked="checked" /></td>
-			</tr>
-      <?php
-      if ($file_width > $file_height) {
-        $ratio = round($file_height / $file_width, 4);
-      }
-      else
-      if ($file_height > $file_width) {
-        $ratio = round($file_width / $file_height, 4);
-      }
-      ?>   
+			</tr>         
 			<tr>
-				<th scope="row" class="label" style="padding-top: 10px;">
-					<input type="hidden" id="original_ratio" name="original_ratio" value="<?php echo $ratio ?>" />
+				<th scope="row" class="label" style="padding-top: 10px;">					
           <input type="button" value="Insert" name="insert" id="insert-button" class="button-primary" onclick="clickOK();" />
 				</th>
 			</tr>
@@ -252,9 +242,7 @@ function clickOK() {
 		shortcode += ' loop=true';    
 		
 	if( document.getElementById("splash").value != '' )
-		shortcode += ' splash=\'' + document.getElementById("splash").value + '\'';
-    
-  shortcode += ' ratio=' + document.getElementById("original_ratio").value;    
+		shortcode += ' splash=\'' + document.getElementById("splash").value + '\'';        
 	
 	shortcode += ']';
 	document.cookie = "selected_video='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
