@@ -59,6 +59,12 @@
           <select id="autobuffer" name="autobuffer"><?php echo flowplayer_bool_select($fp->conf['autobuffer']); ?></select>
         </td>
     	</tr>
+      <tr>
+					<td><label for="popupbox">Popup Box:</label></td>
+					<td>
+            <select id="popupbox" name="popupbox"><?php echo flowplayer_bool_select($fp->conf['popupbox']); ?></select>
+          </td>
+				</tr>
     	<tr>
     		<td><label for="allowfullscreen">Enable Full-screen Mode:</label></td>
     		<td style="text-align:right">
@@ -130,6 +136,26 @@
     		</td>
     	</tr>
   	</table>
+    <table style="width: 400px;">
+    	<tr>    		
+    		<td>
+    			<input type="button" name="convert" class="button-primary" value="Run Conversion Script" style="margin-top: 2ex;" onclick="flowplayer_conversion_script()"/>
+    		</td>
+    	</tr>
+  	</table>
+    <script type="text/javascript" >
+      function flowplayer_conversion_script() {
+      
+      	var data = {
+      		action: 'flowplayer_conversion_script',
+      		run: true
+      	};
+      
+      	jQuery.post(ajaxurl, data, function(response) {
+      		console.log(response);
+      	});
+      }
+    </script>
     <table style="width: 800px;">
     	<tr>
     		<td colspan="4" style="text-align: justify;">
@@ -158,13 +184,11 @@
       			<i>Example</i>: <code>[fvplayer src='example.mp4' splash=image.jpg]</code></li>
       			<li><code><strong>autoplay</strong></code> parameter specify wheter the video should start to play automaticaly after the page is loaded. This parameter overrides the default autoplay setting above. Its value can be either true or false.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' autoplay=true]</code></li>
-      			<!--<li><code><strong>popup</strong></code> parameter can be used to display any HTML code after the video finishes (ideal for advertisment or links to similar videos). 
+      			<li><code><strong>popup</strong></code> parameter can be used to display any HTML code after the video finishes (ideal for advertisment or links to similar videos). 
       			Content you want to display must be between simgle quotes (<code>''</code>).<br />
-      			<i>Example</i>: <code>[fvplayer src='example.mp4' popup='&lt;p&gt;some HTML content&lt;/p&gt;']</code></li>
-      			<li><code><strong>controlbar</strong></code> parameter can be used to show or hide the control bar. Value <code>show</code> will keep the controlbar visible for the whole duration of the video, and value <code>hide</code> will completely hide the control bar. If this parameter is not set, the default autohide is applied.<br />
-      			<i>Example</i>: <code>[fvplayer src='example.mp4' controlbar='show']</code></li>
+      			<i>Example</i>: <code>[fvplayer src='example.mp4' popup='&lt;p&gt;some HTML content&lt;/p&gt;']</code></li>      			
       			<li><code><strong>redirect</strong></code> parameter can be used to redirect to another page (in a new tab) after the video stops playing.<br />
-      			<i>Example</i>: <code>[fvplayer src='example.mp4' redirect='http://www.site.com']</code></li>-->
+      			<i>Example</i>: <code>[fvplayer src='example.mp4' redirect='http://www.site.com']</code></li>
       		</ul>
     		</td>
     		<td></td>

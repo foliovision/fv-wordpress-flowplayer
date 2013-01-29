@@ -31,6 +31,23 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       }
     }
     
+    //  the popup should really be a content of the shortcode, not an attribute
+    //  this part will fix the popup if there is any single quote in it.
+    if( !isset( $atts['popup'] ) ) {
+      $popup = array();
+      $is_popup = false;
+      foreach( $atts AS $key => $att ) {
+        if( !is_numeric( $key ) ) continue;
+        if( ( stripos( $att, 'popup=' ) !== FALSE || $is_popup ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE) {
+          $popup[] = $att;
+          $is_popup = true;
+          unset( $atts[$key] ); // = ''; //  let's remove it, so it won't confuse the rest of workaround
+        }
+      }
+      $popup = implode( ' ', $popup );
+      $atts['popup'] = preg_replace( '/^\s*?popup=[\'"](.*)[\'"]\s*?$/mi', '$1', $popup );
+    }
+    
   }
   /// End of addition                                  
   
@@ -40,6 +57,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'height' => '',
     'autoplay' => '',
     'splash' => '',
+    'popup' => '',
     'controlbar' => '',
     'redirect' => '',
     'loop' => ''
@@ -49,6 +67,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$arguments['height'] = preg_replace('/\,/', '', $height);
 	$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
 	$arguments['splash'] = preg_replace('/\,/', '', $splash);
+  $arguments['popup'] = $popup;
 	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
 	$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
   $arguments['loop'] = preg_replace('/\,/', '', $loop);
@@ -62,7 +81,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	if (trim($src) != '') {
 		// build new player
     $new_player = $fp->build_min_player($src,$arguments);		
-    $GLOBALS['scripts'][] = $new_player['script'];
+    if (!empty($new_player['script'])) {
+      $GLOBALS['scripts'][] = $new_player['script'];
+    }
 	}
   return $new_player['html'];
 }

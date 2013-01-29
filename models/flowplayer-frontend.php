@@ -59,6 +59,32 @@ class flowplayer_frontend extends flowplayer
 		else
       $scaling = "scale";
       
+    // if allowed by configuration file, set the popup box js code and content
+		if ( $args['html5'] && ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($args['popup']) && !empty($args['popup']) ) ) ) {
+			if (isset($args['popup']) && !empty($args['popup'])) {
+				$popup = trim($args['popup']);
+				$popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
+			}
+      else {
+				$popup = 'Would you like to replay the video or share the video with your friends?';
+			}		        
+        
+			$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup" style="display: none; position: absolute; top: 20%; z-index: 2; text-align: center; width: 100%; color: #fff;"><p>'.$popup.'</p></div>';
+      $ret['script'] .= "
+        jQuery('#wpfp_".$hash."').bind('finish', function() {
+          jQuery('#wpfp_".$hash."_custom_popup').show();
+        })    
+      ";                   
+		}
+    
+    if ( $args['html5'] && !empty($redirect) ) {
+      $ret['script'] .= "
+        jQuery('#wpfp_".$hash."').bind('finish', function() {
+          window.open('".$redirect."', '_blank');
+        })    
+      ";  
+    }
+      
     if (isset($args['splash']) && !empty($args['splash'])) {
   		$splash_img = $args['splash'];
   		if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
@@ -92,10 +118,11 @@ class flowplayer_frontend extends flowplayer
       if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
         $autoplay = 'true';
       }     
-      $ret['html'] = '<div id="' . $hash . '" class="flowplayer';
+      $ret['html'] = '<div id="wpfp_' . $hash . '" class="flowplayer';
       if ($autoplay == 'false') {
-        $ret['html'] .= ' is-splash"';
+        $ret['html'] .= ' is-splash';
       }
+      $ret['html'] .= '"';
       $ret['html'] .= ' style="width: ' . $width . 'px; height: ' . $height . 'px"';
       $ret['html'] .= ' data-swf="'.RELATIVE_PATH.'/flowplayer.html5/flowplayer.swf"';
       if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
@@ -128,7 +155,7 @@ class flowplayer_frontend extends flowplayer
       if ($scaling == "fit") {
         $ret['html'] .= ' data-flashfit="true"';
       }            
-      $ret['html'] .= ' data-debug="true"';
+      //$ret['html'] .= ' data-debug="true"';
       $ret['html'] .= '>';
       $ret['html'] .= '<video';      
       if (isset($splash_img) && !empty($splash_img)) {
@@ -149,11 +176,14 @@ class flowplayer_frontend extends flowplayer
       $ret['html'] .= '>';
       $pathinfo = pathinfo($media);
       $extension = $pathinfo['extension'];                  
-      if (!in_array($extension, array('mp4', 'webm', 'ogv'))) {
+      if (!in_array($extension, array('mp4', 'm4v', 'webm', 'ogv'))) {
         $extension = 'flash';  
       }
-      //if it is a local video
-      if (strpos($media, home_url()) !== false) {
+      else
+      if ($extension == 'm4v') {
+        $extension = 'mp4';
+      }      
+      if (strpos($media, 'amazon') === false) {
         $rtmp = false;
       }
       $ret['html'] .= '<source src="'.trim($media).'" type="video/'.$extension.'" />';
@@ -164,7 +194,8 @@ class flowplayer_frontend extends flowplayer
         $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
       }      
       $ret['html'] .= '</video>';
-      $ret['html'] .= '</div>';
+      $ret['html'] .= $popup_contents;      
+      $ret['html'] .= '</div>';      
     }
     else {
       // set the output JavaScript (which will be added to document head)
@@ -218,9 +249,10 @@ class flowplayer_frontend extends flowplayer
 	 * Displays the elements that need to be added to frontend.
 	 */
 	function flowplayer_head() {
-    global $wp_query; 
+    global $wp_query;
     
     $html5 = null;
+    //fvplayer in post content
     foreach ($wp_query->posts as $wp_post) {
       $content = $wp_post->post_content;
       if ( stripos( $content, '[fvplayer' ) !== false ) {
@@ -228,6 +260,7 @@ class flowplayer_frontend extends flowplayer
         break;
       }                   
     }    
+    //old flowplayer in post content
     if ( is_null($html5) ) {
       foreach ($wp_query->posts as $wp_post) {
         if ( stripos( $content, '[flowplayer' ) !== false ) {
@@ -235,6 +268,16 @@ class flowplayer_frontend extends flowplayer
           break;  
         }
       }
+    }
+    //fvplayer in text widget
+    if ( is_null($html5) ) {
+      $widgets = get_option('widget_text', true); 
+      foreach($widgets as $widget) {
+        if ( stripos( $widget['text'], '[fvplayer' ) !== false ) {
+          $html5 = true;
+          break;
+        }
+      }   
     }
     
     if ( !is_null($html5) && $html5 ) {

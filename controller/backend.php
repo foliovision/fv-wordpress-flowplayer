@@ -27,6 +27,8 @@ if(isset($_POST['_wp_http_referer']) && (strpos($_POST['_wp_http_referer'],'imag
 add_action('the_content', 'flowplayer_content_remove_commas');
 add_filter('admin_print_scripts', 'flowplayer_print_scripts');
 add_action('admin_print_styles', 'flowplayer_print_styles');
+//conversion script via AJAX
+add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -174,5 +176,26 @@ function flowplayer_print_scripts() {
 
 function flowplayer_print_styles() {
   wp_enqueue_style('thickbox');
+}
+
+function flowplayer_conversion_script() {
+  global $wpdb;
+  
+  $posts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts}");
+  
+  $old_shorttag = '[flowplayer';
+  $new_shorttag = '[fvplayer';
+  
+  foreach($posts as $fv_post) {
+    if ( stripos( $fv_post->post_content, $old_shorttag ) !== false ) {
+      $update_post = array();
+      $update_post['ID'] = $fv_post->ID;
+      $update_post['post_content'] = str_replace( $old_shorttag, $new_shorttag, $fv_post->post_content ); 
+      wp_update_post( $update_post );
+      //echo $fv_post->ID . " updated!\n";      
+    }    
+  }  
+  
+  die();
 } 
 ?>

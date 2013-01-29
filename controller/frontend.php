@@ -39,7 +39,7 @@ function flowplayer_content( $content ) {
   $arguments['html5'] = true;
   if ($content_matches[1][0] == 'flowplayer') {
     $arguments['html5'] = false;
-  }
+  } 
   
 	// process all found tags
 	foreach ($content_matches[0] as $tag) {
@@ -63,6 +63,15 @@ function flowplayer_content( $content ) {
  		else {
 		   $media = $matches[2];
 	  }
+    
+    unset($arguments['src']);
+    unset($arguments['width']);
+    unset($arguments['height']);
+    unset($arguments['autoplay']);
+    unset($arguments['splash']);
+    unset($arguments['popup']);
+    unset($arguments['redirect']);
+    unset($arguments['loop']);
 		
     //width and heigth
 		preg_match("/width=(\d*)/i",$ntag,$width);
@@ -71,6 +80,11 @@ function flowplayer_content( $content ) {
 			$arguments['width'] = $width[1];
 		if( $height[1] != NULL)
 			$arguments['height'] = $height[1];
+      
+    //search for redirect
+    preg_match("/redirect='([^']*?)'/i",$ntag,$tmp);
+		if ($tmp[1])
+      $arguments['redirect'] = $tmp[1];
     
     //search for autoplay
 		preg_match("/[\s]+autoplay([\s]|])+/i",$ntag,$tmp);
@@ -84,6 +98,11 @@ function flowplayer_content( $content ) {
 		  if (isset($tmp[1]))
         $arguments['autoplay'] = $tmp[1];
 		}
+    
+    //search for popup in quotes
+		preg_match("/popup='([^']*?)'/i",$ntag,$tmp);
+		if ($tmp[1])
+      $arguments['popup'] = $tmp[1];
     
     //search for loop
 		preg_match("/[\s]+loop([\s]|])+/i",$ntag,$tmp);
@@ -127,7 +146,9 @@ function flowplayer_content( $content ) {
 			$fp = new flowplayer_frontend();
       $new_player = $fp->build_min_player($media,$arguments);
 			$content = str_replace($tag, $new_player['html'],$content);
-			$GLOBALS['scripts'][] = $new_player['script'];
+			if (!empty($new_player['script'])) {
+        $GLOBALS['scripts'][] = $new_player['script'];
+      }
 		}
 	}
 	return $content;
