@@ -113,8 +113,25 @@ function fillSplashInputs(){
         if (($post_thumbnail=='true') && current_theme_supports( 'post-thumbnails') && isset($selected_attachment['id'])) 
           update_post_meta( $post_id, '_thumbnail_id', $selected_attachment['id'] ); ?>			
       <tr>
+        <th scope="row" colspan="3" style="text-align: left; padding: 10px 0;">Additional features</th>
+      </tr>
+      <tr>
+				<th valign="top" scope="row" class="label"><label for="popup" class="alignright">HTML Popup</label></th>
+				<td colspan="2"><textarea type="text" id="popup" name="popup" style="width: 100%"></textarea></td>
+			</tr>
+      <tr>
+				<th scope="row" class="label"><label for="redirect" class="alignright">Redirect to</label></th>
+				<td class="field" colspan="2"><input type="text" id="redirect" name="redirect" style="width: 100%" /></td>
+			</tr>
+      <tr>
 				<th scope="row" class="label"><label for="autoplay" class="alignright">Autoplay</label></th>
-				<td colspan="2" class="field"><input type="checkbox" id="autoplay" name="autoplay" /></td>
+				<td colspan="2" class="field">
+          <select id="autoplay" name="autoplay">
+            <option>Default</option>
+            <option>On</option>
+            <option>Off</option>
+          </select>
+        </td>
 			</tr>
       <tr>
 				<th scope="row" class="label"><label for="loop" class="alignright">Loop</label></th>
@@ -123,7 +140,10 @@ function fillSplashInputs(){
       <tr>
 				<th scope="row" class="label"><label for="html5" class="alignright">HTML5</label></th>
 				<td colspan="2" class="field"><input type="checkbox" id="html5" name="html5" checked="checked" /></td>
-			</tr>         
+			</tr>
+      <tr>
+        <th colspan="3" scope="row" class="label"><label for="splashend" class="alignleft">Show splash image at the end&nbsp;</label><input class="alignleft" type="checkbox" id="splashend" name="splashend" /></th> 
+      </tr>         
 			<tr>
 				<th scope="row" class="label" style="padding-top: 10px;">					
           <input type="button" value="Insert" name="insert" id="insert-button" class="button-primary" onclick="clickOK();" />
@@ -235,14 +255,32 @@ function clickOK() {
 	if( document.getElementById("height").value != '' )
 		shortcode += ' height=' + document.getElementById("height").value;
 	
-  if( document.getElementById("autoplay").checked )
-		shortcode += ' autoplay=true';
+  if( document.getElementById("autoplay").selectedIndex == 1 )
+	  shortcode += ' autoplay=true';
+	if( document.getElementById("autoplay").selectedIndex == 2 )
+	  shortcode += ' autoplay=false';
     
   if( document.getElementById("loop").checked )
 		shortcode += ' loop=true';    
 		
 	if( document.getElementById("splash").value != '' )
-		shortcode += ' splash=\'' + document.getElementById("splash").value + '\'';        
+		shortcode += ' splash=\'' + document.getElementById("splash").value + '\'';
+    
+  if( document.getElementById("splashend").checked )
+		shortcode += ' splashend=show';
+    
+  if( document.getElementById("redirect").value != '' )
+		shortcode += ' redirect=\'' + document.getElementById("redirect").value + '\'';        
+    
+  if( document.getElementById("popup").value != '' ) {
+		var popup = document.getElementById("popup").value;
+		popup = popup.replace(/&/g,'&amp;');
+		popup = popup.replace(/'/g,'\\\'');
+		popup = popup.replace(/"/g,'&quot;');
+		popup = popup.replace(/</g,'&lt;');
+		popup = popup.replace(/>/g,'&gt;');
+		shortcode += ' popup=\'' + popup +'\'';
+	}        
 	
 	shortcode += ']';
 	document.cookie = "selected_video='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";

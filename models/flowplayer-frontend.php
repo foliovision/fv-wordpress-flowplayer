@@ -59,32 +59,6 @@ class flowplayer_frontend extends flowplayer
 		else
       $scaling = "scale";
       
-    // if allowed by configuration file, set the popup box js code and content
-		if ( $args['html5'] && ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($args['popup']) && !empty($args['popup']) ) ) ) {
-			if (isset($args['popup']) && !empty($args['popup'])) {
-				$popup = trim($args['popup']);
-				$popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
-			}
-      else {
-				$popup = 'Would you like to replay the video or share the video with your friends?';
-			}		        
-        
-			$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup" style="display: none; position: absolute; top: 20%; z-index: 2; text-align: center; width: 100%; color: #fff;"><p>'.$popup.'</p></div>';
-      $ret['script'] .= "
-        jQuery('#wpfp_".$hash."').bind('finish', function() {
-          jQuery('#wpfp_".$hash."_custom_popup').show();
-        })    
-      ";                   
-		}
-    
-    if ( $args['html5'] && !empty($redirect) ) {
-      $ret['script'] .= "
-        jQuery('#wpfp_".$hash."').bind('finish', function() {
-          window.open('".$redirect."', '_blank');
-        })    
-      ";  
-    }
-      
     if (isset($args['splash']) && !empty($args['splash'])) {
   		$splash_img = $args['splash'];
   		if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
@@ -113,6 +87,61 @@ class flowplayer_frontend extends flowplayer
   		  $autoplay = 'true';
       }
 		}
+    
+    $show_popup = false;
+    // if allowed by configuration file, set the popup box js code and content
+		if ( $args['html5'] && ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($args['popup']) && !empty($args['popup']) ) ) ) {
+			if (isset($args['popup']) && !empty($args['popup'])) {
+				$popup = trim($args['popup']);
+				$popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
+			}
+      else {
+				$popup = 'Would you like to replay the video or share the video with your friends?';
+			}
+      $show_popup = true;
+			$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup" style="display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 90%; padding: 0 5%; color: #fff;">'.$popup.'</div>';
+      $ret['script'] .= "
+        jQuery('#wpfp_".$hash."').bind('finish', function() {          
+          jQuery('#wpfp_".$hash."_custom_popup').show();            
+        })    
+      ";                   
+		}
+    
+    $show_splashend = false;
+    if (isset($args['splashend']) && $args['splashend'] == 'show' && isset($args['splash']) && !empty($args['splash'])) {      
+      $show_splashend = true;
+      $splashend_contents = '<div id="wpfp_'.$hash.'_custom_background" class="wpfp_custom_background" style="display: none; position: absolute; background-image: url('.$splash_img.'); width: 100%; height: 100%; z-index: 1;">';
+    }	
+    
+    $ret['script'] .= "
+      jQuery('#wpfp_".$hash."').bind('finish', function() {";
+    //if redirection is set
+    if ( $args['html5'] && !empty($redirect) ) {
+      $ret['script'] .= "window.open('".$redirect."', '_blank')";
+    }
+    //if there is a popup content set background color
+    if ( $show_popup ) {
+      if ( $show_splashend ) {
+        $ret['script'] .= "
+          jQuery('#wpfp_".$hash." .fp-ui').css('background', '')";
+      }
+      else {
+        $ret['script'] .= "
+          jQuery('#wpfp_".$hash." .fp-ui').css('background-color', '#000')";
+      }
+    }
+    if ( $show_splashend ) {
+      $ret['script'] .= "
+        jQuery('#wpfp_".$hash."_custom_background').show()";
+    }
+    //remove the background color and popup    
+    $ret['script'] .= "
+      jQuery('#wpfp_".$hash."').bind('resume seek', function() {
+        jQuery('#wpfp_".$hash." .fp-ui').css('background-color', 'transparent');
+        ".($show_popup ? "jQuery('#wpfp_".$hash."_custom_popup').hide()" : "")."
+        ".($show_splashend ? "jQuery('#wpfp_".$hash."_custom_background').hide()" : "")."
+      })";
+    $ret['script'] .= "})";
       
     if( $args['html5'] || $mobileUserAgent ) {       
       if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
@@ -195,6 +224,7 @@ class flowplayer_frontend extends flowplayer
       }      
       $ret['html'] .= '</video>';
       $ret['html'] .= $popup_contents;      
+      $ret['html'] .= $splashend_contents;
       $ret['html'] .= '</div>';      
     }
     else {
@@ -240,7 +270,7 @@ class flowplayer_frontend extends flowplayer
 					});
 			};';
   		// set the output HTML (which will be printed into document body)
-  		$ret['html'] .= '<a id="wpfp_'.$hash.'" style="width:'.$width.'px; height:'.$height.'px;" class="flowplayer_container player plain">'.$splash.'</a>';//.$popup_contents;
+  		$ret['html'] .= '<a id="wpfp_'.$hash.'" style="width:'.$width.'px; height:'.$height.'px;" class="flowplayer_container player plain">'.$splash.'</a>';
     }       
     
 		return $ret;
