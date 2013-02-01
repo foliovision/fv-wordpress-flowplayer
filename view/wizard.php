@@ -63,8 +63,8 @@ function fillSplashInputs(){
 	<table class="slidetoggle describe">
 		<tbody>
 			<tr>
-				<th scope="row" class="label"><label for="src" class="alignright">Video</label></th>
-				<td colspan="2" class="field" style="width: 100%"><input type="text" class="text" id="src" name="src" style="width: 100%" value="<?php echo $uploaded_video ?>"/></td>
+				<th scope="row" class="label" style="width: 10%"><label for="src" class="alignright">Video</label></th>
+				<td colspan="2" class="field"><input type="text" class="text" id="src" name="src" style="width: 100%" value="<?php echo $uploaded_video ?>"/></td>
 			</tr>
 			<?php 
       if ($allow_uploads=="true") {
@@ -112,20 +112,24 @@ function fillSplashInputs(){
 			<?php if (!empty($uploaded_image))
         if (($post_thumbnail=='true') && current_theme_supports( 'post-thumbnails') && isset($selected_attachment['id'])) 
           update_post_meta( $post_id, '_thumbnail_id', $selected_attachment['id'] ); ?>			
+    </tbody>
+  </table>
+  <table>
+    <tbody>      
       <tr>
-        <th scope="row" colspan="3" style="text-align: left; padding: 10px 0;">Additional features</th>
+        <th scope="row" colspan="2" style="text-align: left; padding: 10px 0;">Additional features</th>
       </tr>
       <tr>
-				<th valign="top" scope="row" class="label"><label for="popup" class="alignright">HTML Popup</label></th>
-				<td colspan="2"><textarea type="text" id="popup" name="popup" style="width: 100%"></textarea></td>
+				<th valign="top" scope="row" class="label" style="width: 12%"><label for="popup" class="alignright">HTML Popup</label></th>
+				<td><textarea type="text" id="popup" name="popup" style="width: 100%"></textarea></td>
 			</tr>
       <tr>
 				<th scope="row" class="label"><label for="redirect" class="alignright">Redirect to</label></th>
-				<td class="field" colspan="2"><input type="text" id="redirect" name="redirect" style="width: 100%" /></td>
+				<td class="field"><input type="text" id="redirect" name="redirect" style="width: 100%" /></td>
 			</tr>
       <tr>
 				<th scope="row" class="label"><label for="autoplay" class="alignright">Autoplay</label></th>
-				<td colspan="2" class="field">
+				<td class="field">
           <select id="autoplay" name="autoplay">
             <option>Default</option>
             <option>On</option>
@@ -135,18 +139,23 @@ function fillSplashInputs(){
 			</tr>
       <tr>
 				<th scope="row" class="label"><label for="loop" class="alignright">Loop</label></th>
-				<td colspan="2" class="field"><input type="checkbox" id="loop" name="loop" /></td>
+				<td class="field"><input type="checkbox" id="loop" name="loop" /></td>
 			</tr>   
-      <tr>
+      <!--<tr>
 				<th scope="row" class="label"><label for="html5" class="alignright">HTML5</label></th>
-				<td colspan="2" class="field"><input type="checkbox" id="html5" name="html5" checked="checked" /></td>
-			</tr>
+				<td class="field"><input type="checkbox" id="html5" name="html5" checked="checked" /></td>
+			</tr>-->
       <tr>
-        <th colspan="3" scope="row" class="label"><label for="splashend" class="alignleft">Show splash image at the end&nbsp;</label><input class="alignleft" type="checkbox" id="splashend" name="splashend" /></th> 
+        <th scope="row" class="label">
+          <label for="splashend">Splash end</label>
+        </th>
+        <td>
+          <input type="checkbox" id="splashend" name="splashend" /> (show splash image at the end)</th>
+        </td> 
       </tr>         
 			<tr>
-				<th scope="row" class="label" style="padding-top: 10px;">					
-          <input type="button" value="Insert" name="insert" id="insert-button" class="button-primary" onclick="clickOK();" />
+				<th colspan="2" scope="row" class="label" style="padding-top: 20px;">					
+          <input type="button" value="Insert" name="insert" id="insert-button" class="button-primary alignleft" onclick="clickOK();" />
 				</th>
 			</tr>
 		</tbody>
@@ -230,9 +239,9 @@ function clickOK() {
 	var shortcode = '';
   var shorttag = 'fvplayer';
   
-  if (!document.getElementById('html5').checked) {
+  /*if (!document.getElementById('html5').checked) {
     shorttag = 'flowplayer';
-  }
+  }*/
 	
 	if(document.getElementById("src").value == '') {
 		alert('Please enter the file name of your video file.');

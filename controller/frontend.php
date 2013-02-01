@@ -69,6 +69,7 @@ function flowplayer_content( $content ) {
     unset($arguments['height']);
     unset($arguments['autoplay']);
     unset($arguments['splash']);
+    unset($arguments['splashend']);
     unset($arguments['popup']);
     unset($arguments['redirect']);
     unset($arguments['loop']);
@@ -139,6 +140,19 @@ function flowplayer_content( $content ) {
         $arguments['splash'] = $matches[2];
   	  else
         $arguments['splash'] = $matches[2];//$tmp[1];
+		}
+    
+    //search for splashend
+		preg_match("/[\s]+splashend([\s]|])+/i",$ntag,$tmp);
+		if (isset($tmp[0])){
+      $arguments['splashend'] = true;
+    }
+		else {
+      preg_match("/splashend='([A-Za-z]*)'/i",$ntag,$tmp);
+		  if ( $tmp[1] == NULL )
+		    preg_match("/splashend=([A-Za-z]*)/i",$ntag,$tmp);
+		  if (isset($tmp[1]))
+        $arguments['splashend'] = $tmp[1];
 		}
     
 		if (trim($media) != '') {

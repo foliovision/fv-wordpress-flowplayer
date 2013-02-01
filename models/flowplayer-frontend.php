@@ -110,36 +110,36 @@ class flowplayer_frontend extends flowplayer
     $show_splashend = false;
     if (isset($args['splashend']) && $args['splashend'] == 'show' && isset($args['splash']) && !empty($args['splash'])) {      
       $show_splashend = true;
-      $splashend_contents = '<div id="wpfp_'.$hash.'_custom_background" class="wpfp_custom_background" style="display: none; position: absolute; background-image: url('.$splash_img.'); width: 100%; height: 100%; z-index: 1;">';
+      $splashend_contents = '<div id="wpfp_'.$hash.'_custom_background" class="wpfp_custom_background" style="display: none; position: absolute; background: url('.$splash_img.') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
     }	
     
     $ret['script'] .= "
       jQuery('#wpfp_".$hash."').bind('finish', function() {";
     //if redirection is set
     if ( $args['html5'] && !empty($redirect) ) {
-      $ret['script'] .= "window.open('".$redirect."', '_blank')";
+      $ret['script'] .= "window.open('".$redirect."', '_blank');";
     }
     //if there is a popup content set background color
     if ( $show_popup ) {
       if ( $show_splashend ) {
         $ret['script'] .= "
-          jQuery('#wpfp_".$hash." .fp-ui').css('background', '')";
+          jQuery('#wpfp_".$hash." .fp-ui').css('background', '');";
       }
       else {
         $ret['script'] .= "
-          jQuery('#wpfp_".$hash." .fp-ui').css('background-color', '#000')";
+          jQuery('#wpfp_".$hash." .fp-ui').css('background-color', '#000');";
       }
     }
     if ( $show_splashend ) {
       $ret['script'] .= "
-        jQuery('#wpfp_".$hash."_custom_background').show()";
+        jQuery('#wpfp_".$hash."_custom_background').show();";
     }
     //remove the background color and popup    
     $ret['script'] .= "
       jQuery('#wpfp_".$hash."').bind('resume seek', function() {
         jQuery('#wpfp_".$hash." .fp-ui').css('background-color', 'transparent');
-        ".($show_popup ? "jQuery('#wpfp_".$hash."_custom_popup').hide()" : "")."
-        ".($show_splashend ? "jQuery('#wpfp_".$hash."_custom_background').hide()" : "")."
+        ".($show_popup ? "jQuery('#wpfp_".$hash."_custom_popup').hide();" : "")."
+        ".($show_splashend ? "jQuery('#wpfp_".$hash."_custom_background').hide();" : "")."
       })";
     $ret['script'] .= "})";
       
@@ -223,8 +223,8 @@ class flowplayer_frontend extends flowplayer
         $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
       }      
       $ret['html'] .= '</video>';
-      $ret['html'] .= $popup_contents;      
       $ret['html'] .= $splashend_contents;
+      $ret['html'] .= $popup_contents;            
       $ret['html'] .= '</div>';      
     }
     else {
@@ -289,7 +289,7 @@ class flowplayer_frontend extends flowplayer
         $html5 = true;
         break;
       }                   
-    }    
+    }
     //old flowplayer in post content
     if ( is_null($html5) ) {
       foreach ($wp_query->posts as $wp_post) {
@@ -305,6 +305,16 @@ class flowplayer_frontend extends flowplayer
       foreach($widgets as $widget) {
         if ( stripos( $widget['text'], '[fvplayer' ) !== false ) {
           $html5 = true;
+          break;
+        }
+      }   
+    }            
+    //fvplayer in text widget
+    if ( is_null($html5) ) {
+      $widgets = get_option('widget_text', true); 
+      foreach($widgets as $widget) {
+        if ( stripos( $widget['text'], '[flowplayer' ) !== false ) {
+          $html5 = false;
           break;
         }
       }   

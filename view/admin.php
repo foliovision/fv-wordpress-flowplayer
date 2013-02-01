@@ -136,13 +136,13 @@
     		</td>
     	</tr>
   	</table>
-    <table style="width: 400px;">
+    <!--<table style="width: 400px;">
     	<tr>    		
     		<td>
     			<input type="button" name="convert" class="button-primary" value="Run Conversion Script" style="margin-top: 2ex;" onclick="flowplayer_conversion_script()"/>
     		</td>
     	</tr>
-  	</table>
+  	</table>-->
     <script type="text/javascript" >
       function flowplayer_conversion_script() {
       
