@@ -14,15 +14,15 @@
   }
 ?>
 <style type="text/css">
-  .flowplayer .fp-controls { background-color: <?php echo trim($this->conf['backgroundColor']); ?> }
-  .flowplayer { background-color: <?php echo trim($this->conf['canvas']); ?> }
-  .flowplayer .fp-duration { color: <?php echo trim($this->conf['durationColor']); ?> }
-  .flowplayer .fp-elapsed { color: <?php echo trim($this->conf['timeColor']); ?> }
-  .flowplayer .fp-volumelevel { background-color: <?php echo trim($this->conf['progressColor']); ?> }  
-  .flowplayer .fp-volumeslider { background-color: <?php echo trim($this->conf['bufferColor']); ?> }
-  .flowplayer .fp-timeline { background-color: <?php echo trim($this->conf['timelineColor']); ?> }
-  .flowplayer .fp-progress { background-color: <?php echo trim($this->conf['progressColor']); ?> }
-  .flowplayer .fp-buffer { background-color: <?php echo trim($this->conf['bufferColor']); ?> }
+  .flowplayer .fp-controls { background-color: <?php echo trim($this->conf['backgroundColor']); ?> !important; }
+  .flowplayer { background-color: <?php echo trim($this->conf['canvas']); ?> !important; }
+  .flowplayer .fp-duration { color: <?php echo trim($this->conf['durationColor']); ?> !important; }
+  .flowplayer .fp-elapsed { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
+  .flowplayer .fp-volumelevel { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }  
+  .flowplayer .fp-volumeslider { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
+  .flowplayer .fp-timeline { background-color: <?php echo trim($this->conf['timelineColor']); ?> !important; }
+  .flowplayer .fp-progress { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }
+  .flowplayer .fp-buffer { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
 </style>
 <?php
 }
