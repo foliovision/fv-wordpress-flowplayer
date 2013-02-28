@@ -212,10 +212,16 @@ class flowplayer_frontend extends flowplayer
       if ($extension == 'm4v') {
         $extension = 'mp4';
       }      
-      if (strpos($media, 'amazon') === false) {
+      //if the cloudfront is set in the plugin settings screen but it isn't acually a streaming 
+      if (strpos($media, 'amazonaws.com') === false) {
         $rtmp = false;
       }
+      //do not use https on mobile devices
+      if (strpos($media, 'https') !== false && $mobileUserAgent) {
+        $media = str_replace('https', 'http', $media);
+      }
       $ret['html'] .= '<source src="'.trim($media).'" type="video/'.$extension.'" />';
+      //don't use RTMP for mobile devices
       if ($rtmp && !$mobileUserAgent) {
         $video_url = parse_url($media);
         $video_url = explode('/', $video_url['path'], 3);        
