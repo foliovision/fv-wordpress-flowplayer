@@ -23,7 +23,7 @@ class flowplayer_frontend extends flowplayer
     }
     if (!empty($src2)) {
       $src2 = $this->get_video_url($src2);
-    }
+    }       
 		
     // unique coe for this player
 		$hash = md5($media.$this->_salt());

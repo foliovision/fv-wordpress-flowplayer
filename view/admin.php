@@ -162,7 +162,7 @@
       		<h3>Description:</h3>
       		<ul>
       			<li>FV Wordpress Flowplayer is a completely non-commercial solution for embedding video on Wordpress websites.</li>
-      			<li>Supported video formats are <strong>FLV</strong>, <strong>H.264</strong>, and <strong>MP4</strong>. Multiple videos can be displayed in one post or page.</li>
+      			<li>Supported video formats are <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong> and <strong>FLV</strong>. Multiple videos can be displayed in one post or page.</li>
       			<li>Default options for all the embedded videos can be set in the menu above.</li>
       		</ul>
       		<h3>Usage:</h3>
@@ -172,7 +172,7 @@
       		</p>
       		<p>
       		<code>src</code> is the only compulsory parameter, specifying the video file. Its value can be either a full URL of the file, 
-      		or just a filename, if it is located in the /videos/ directory in the root of the web.
+      		or just a filename (if it is located in the /videos/ directory in the root of the web).
       		</p>
       		<p>When user uploads are allowed, uploading or selecting video from WP Media Library is available. To insert selected video, simply use the 'Insert into Post' button.</p>
       		<h4>Optional parameters:</h4>
@@ -182,8 +182,12 @@
       			<li><code><strong>splash</strong></code> parameter can be used to display a custom splash image before the video is started. Just like in case of <code>src</code> 
       			parameter, its value can be either complete URL, or filename of an image located in /videos/ folder.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' splash=image.jpg]</code></li>
+            <li><code><strong>splashend</strong></code> parameter can be used to display a custom splash image after the video ended.<br />
+      			<i>Example</i>: <code>[fvplayer src='example.mp4' splashend=show]</code></li>
       			<li><code><strong>autoplay</strong></code> parameter specify wheter the video should start to play automaticaly after the page is loaded. This parameter overrides the default autoplay setting above. Its value can be either true or false.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' autoplay=true]</code></li>
+            <li><code><strong>loop</strong></code> parameter specify wheter the video starts again from the beginning when the video ends. Its value can be either true or false.<br />
+      			<i>Example</i>: <code>[fvplayer src='example.mp4' loop=true]</code></li>
       			<li><code><strong>popup</strong></code> parameter can be used to display any HTML code after the video finishes (ideal for advertisment or links to similar videos). 
       			Content you want to display must be between simgle quotes (<code>''</code>).<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' popup='&lt;p&gt;some HTML content&lt;/p&gt;']</code></li>      			
