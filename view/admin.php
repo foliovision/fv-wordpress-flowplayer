@@ -136,15 +136,20 @@
     		</td>
     	</tr>
   	</table>
-    <!--<table style="width: 400px;">
+    <table style="width: 400px;">
     	<tr>    		
     		<td>
-    			<input type="button" name="convert" class="button-primary" value="Run Conversion Script" style="margin-top: 2ex;" onclick="flowplayer_conversion_script()"/>
+    			<input style="float: left; margin-top: 10px;" type="button" name="convert" class="button-primary" value="Run Conversion Script" onclick="flowplayer_conversion_script()"/>
+          <div id="fv-flowplayer-loader" style="background: url(<?php echo plugins_url( 'images/wpspin.gif' , dirname(__FILE__) ); ?>) no-repeat center left; width: 16px; height: 24px; float: left; margin: 10px 0 0 5px; display: none;" />
     		</td>
     	</tr>
-  	</table>-->
+      <tr>
+        <td><div id="conversion-results"></div></td>
+      </tr>
+  	</table>
     <script type="text/javascript" >
       function flowplayer_conversion_script() {
+        jQuery('#fv-flowplayer-loader').show();
       
       	var data = {
       		action: 'flowplayer_conversion_script',
@@ -152,7 +157,8 @@
       	};
       
       	jQuery.post(ajaxurl, data, function(response) {
-      		console.log(response);
+          jQuery('#fv-flowplayer-loader').hide();
+          jQuery('#conversion-results').html(response);	
       	});
       }
     </script>

@@ -194,20 +194,26 @@ function flowplayer_print_styles() {
 function flowplayer_conversion_script() {
   global $wpdb;
   
-  $posts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts}");
+  $posts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type != 'revision'");
   
   $old_shorttag = '[flowplayer';
   $new_shorttag = '[fvplayer';
+  $counter = 0;
   
   foreach($posts as $fv_post) {
+    echo '<ol>';
     if ( stripos( $fv_post->post_content, $old_shorttag ) !== false ) {
       $update_post = array();
       $update_post['ID'] = $fv_post->ID;
       $update_post['post_content'] = str_replace( $old_shorttag, $new_shorttag, $fv_post->post_content ); 
-      wp_update_post( $update_post );
-      //echo $fv_post->ID . " updated!\n";      
-    }    
-  }  
+      wp_update_post( $update_post );      
+      echo '<li><a href="' . get_permalink($fv_post->ID) . '">' . get_the_title($fv_post->ID) . '</a> updated</li>';
+      $counter++;
+    } 
+    echo '</ol>';   
+  }
+  
+  echo '<div>Conversion was succesful. Total number of converted posts: ' . $counter . '</div>';
   
   die();
 } 

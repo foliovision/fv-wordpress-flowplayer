@@ -38,8 +38,8 @@ class flowplayer_frontend extends flowplayer
     $aUserAgents = array('iphone', 'ipod', 'iPad', 'aspen', 'incognito', 'webmate', 'android', 'android', 'dream', 'cupcake', 'froyo', 'blackberry9500', 'blackberry9520', 'blackberry9530', 'blackberry9550', 'blackberry9800', 'Palm', 'webos', 's8000', 'bada', 'Opera Mini', 'Opera Mobi', 'htc_touch_pro');
     $mobileUserAgent = false;
     foreach($aUserAgents as $userAgent){
-       if(stripos($_SERVER['HTTP_USER_AGENT'],$userAgent))
-          $mobileUserAgent = true;
+      if(stripos($_SERVER['HTTP_USER_AGENT'],$userAgent))
+        $mobileUserAgent = true;
     }
     
     $redirect = '';

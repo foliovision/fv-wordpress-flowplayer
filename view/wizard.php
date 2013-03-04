@@ -1,13 +1,13 @@
 <?php                    
-if (isset($_COOKIE["selected_video"]))
-  $uploaded_video = $_COOKIE["selected_video"];
-if (isset($_COOKIE["selected_video1"]))
-  $uploaded_video1 = $_COOKIE["selected_video1"];
-if (isset($_COOKIE["selected_video2"]))
-  $uploaded_video2 = $_COOKIE["selected_video2"];  
-if (isset($_COOKIE["selected_image"]))
-  $uploaded_image = $_COOKIE["selected_image"];    
-
+  if (isset($_COOKIE["selected_video"]))
+    $uploaded_video = $_COOKIE["selected_video"];
+  if (isset($_COOKIE["selected_video1"]))
+    $uploaded_video1 = $_COOKIE["selected_video1"];
+  if (isset($_COOKIE["selected_video2"]))
+    $uploaded_video2 = $_COOKIE["selected_video2"];  
+  if (isset($_COOKIE["selected_image"]))
+    $uploaded_image = $_COOKIE["selected_image"];  
+  
   $post_id = intval($_REQUEST['post_id']);
   //load configuration file:   
   $conf = get_option( 'fvwpflowplayer' );
@@ -144,7 +144,7 @@ function fillSplashInputs(){
       <?php if (empty($uploaded_video2)) { ?>
       <tr id="add_format_wrapper">
   			<th scope="row" class="label" style="width: 10%"></th>
-				<td colspan="2" class="field"><a href="#" onclick="add_format()" style="outline: 0"><span id="add-format" style="background: url(<?php echo plugins_url( 'images/admin-bar-sprite.png' , dirname(__FILE__) ) ?>) no-repeat -3px -205px; display: block; width: 11px; height: 11px; float: left; margin-top: 2px; padding-right: 4px;"></span>Add other format of the video</a></td>
+				<td colspan="2" class="field"><a href="#" onclick="add_format()" style="outline: 0"><span id="add-format" style="background: url(<?php echo plugins_url( 'images/admin-bar-sprite.png' , dirname(__FILE__) ) ?>) no-repeat -3px -205px; display: block; width: 11px; height: 11px; float: left; margin-top: 2px; padding-right: 4px;"></span>Add other format of the same video</a></td>
 			</tr>      
       <?php }; ?>
 			
@@ -192,10 +192,6 @@ function fillSplashInputs(){
 				<th scope="row" class="label"><label for="loop" class="alignright">Loop</label></th>
 				<td class="field"><input type="checkbox" id="loop" name="loop" /></td>
 			</tr>   
-      <!--<tr>
-				<th scope="row" class="label"><label for="html5" class="alignright">HTML5</label></th>
-				<td class="field"><input type="checkbox" id="html5" name="html5" checked="checked" /></td>
-			</tr>-->
       <tr>
         <th scope="row" class="label">
           <label for="splashend">Splash end</label>
@@ -289,10 +285,6 @@ function clickOK() {
 			
 	var shortcode = '';
   var shorttag = 'fvplayer';
-  
-  /*if (!document.getElementById('html5').checked) {
-    shorttag = 'flowplayer';
-  }*/
 	
 	if(document.getElementById("src").value == '') {
 		alert('Please enter the file name of your video file.');
@@ -351,6 +343,8 @@ function clickOK() {
 	
 	shortcode += ']';
 	document.cookie = "selected_video='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
+  document.cookie = "selected_video1='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
+  document.cookie = "selected_video2='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
 	document.cookie = "selected_image='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
 	if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
 		window.parent.send_to_editor( shortcode );
@@ -367,18 +361,23 @@ function clickOK() {
 }
 
 function add_format() {
-  if ( document.getElementById("src_1_wrapper").style.display == 'table-row' ) {      
-    document.getElementById("src_2_wrapper").style.display = 'table-row';
-    if ( document.getElementById("src_2_uploader") != null ) {
-      document.getElementById("src_2_uploader").style.display = 'table-row';
+  if ( document.getElementById("src").value != '' ) {
+    if ( document.getElementById("src_1_wrapper").style.display == 'table-row' ) {      
+      document.getElementById("src_2_wrapper").style.display = 'table-row';
+      if ( document.getElementById("src_2_uploader") != null ) {
+        document.getElementById("src_2_uploader").style.display = 'table-row';
+      }
+      document.getElementById("add_format_wrapper").style.display = 'none';
     }
-    document.getElementById("add_format_wrapper").style.display = 'none';
+    else {
+      document.getElementById("src_1_wrapper").style.display = 'table-row';
+      if ( document.getElementById("src_1_uploader") ) {
+        document.getElementById("src_1_uploader").style.display = 'table-row';
+      }
+    }
   }
   else {
-    document.getElementById("src_1_wrapper").style.display = 'table-row';
-    if ( document.getElementById("src_1_uploader") ) {
-      document.getElementById("src_1_uploader").style.display = 'table-row';
-    }
+    alert('Please enter the file name of your video file.');
   }
 }
 

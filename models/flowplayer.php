@@ -21,8 +21,6 @@ class flowplayer {
 	 * Class constructor
 	 */
 	public function __construct() {
-		//set conf path
-		///$this->conf_path = realpath(dirname(__FILE__)).'/../wpfp.conf';
 		//load conf data into stack
 		$this->_get_conf();
 	}
@@ -78,7 +76,7 @@ class flowplayer {
 	  }
 	  $_POST['key'] = $save_key;
 	  update_option( 'fvwpflowplayer', $_POST );
-	  return;	
+	  return true;	
 	}
 	/**
 	 * Salt function - returns pseudorandom string hash.
@@ -105,7 +103,7 @@ function flowplayer_head() {
 		} else {
 			$siteurl = get_option('siteurl');
 			if((!empty($_SERVER['HTTPS'])) && ('off'!==$_SERVER['HTTPS']))   // this line changes by carlo@artilibere.com
-				 $siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
+        $siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
 			define('RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
     }			
     $conf = get_option( 'fvwpflowplayer' );
