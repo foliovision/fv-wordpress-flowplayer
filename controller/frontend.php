@@ -65,6 +65,8 @@ function flowplayer_content( $content ) {
 	  }
     
     unset($arguments['src']);
+    unset($arguments['src1']);
+    unset($arguments['src2']);        
     unset($arguments['width']);
     unset($arguments['height']);
     unset($arguments['autoplay']);
@@ -140,6 +142,54 @@ function flowplayer_content( $content ) {
         $arguments['splash'] = $matches[2];
   	  else
         $arguments['splash'] = $matches[2];//$tmp[1];
+		}
+    
+    //	search for src1
+		preg_match("/src1='([^']*?)'/i",$ntag,$tmp);   //quotes version
+   	if( $tmp[1] == NULL ) {
+			preg_match_all("/src1=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
+			preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
+   		if ($matches[0] == NULL)
+        $arguments['src1'] = $tmp[1][0];
+   		else if ($matches[1] == NULL) {
+        $arguments['src1'] = $matches[2];//$tmp[1][0];
+      }
+   		else {
+        $arguments['src1'] = $matches[2];
+		  }
+    }
+		else {
+      preg_match('/(.*)\/videos\/(.*)/',$tmp[1],$matches);
+      if ($matches[0] == NULL)
+        $arguments['src1'] = $tmp[1];
+      elseif ($matches[1] == NULL)
+        $arguments['src1'] = $matches[2];
+  	  else
+        $arguments['src1'] = $matches[2];//$tmp[1];
+		}
+    
+    //	search for src1
+		preg_match("/src2='([^']*?)'/i",$ntag,$tmp);   //quotes version
+   	if( $tmp[1] == NULL ) {
+			preg_match_all("/src2=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
+			preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
+   		if ($matches[0] == NULL)
+        $arguments['src2'] = $tmp[1][0];
+   		else if ($matches[1] == NULL) {
+        $arguments['src2'] = $matches[2];//$tmp[1][0];
+      }
+   		else {
+        $arguments['src2'] = $matches[2];
+		  }
+    }
+		else {
+      preg_match('/(.*)\/videos\/(.*)/',$tmp[1],$matches);
+      if ($matches[0] == NULL)
+        $arguments['src2'] = $tmp[1];
+      elseif ($matches[1] == NULL)
+        $arguments['src2'] = $matches[2];
+  	  else
+        $arguments['src2'] = $matches[2];//$tmp[1];
 		}
     
     //search for splashend

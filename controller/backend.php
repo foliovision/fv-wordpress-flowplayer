@@ -55,8 +55,19 @@ function fp_media_send_to_editor($html, $attachment_id, $attachment) {
         $selected_attachment = array('url'=>$attachment_url,'id'=>$attachment_id);
       }
       else {
-        setcookie("selected_video",$attachment_url);
-        $selected_attachment = array('url'=>$attachment_url);
+        if (strpos($_POST['_wp_http_referer'],'fvplayer1')) {
+          setcookie("selected_video1",$attachment_url);
+          $selected_attachment = array('id'=>'src1', 'url'=>$attachment_url);
+        }
+        else
+        if (strpos($_POST['_wp_http_referer'],'fvplayer2')) {
+          setcookie("selected_video2",$attachment_url);
+          $selected_attachment = array('id'=>'src2', 'url'=>$attachment_url);
+        }
+        else {
+          setcookie("selected_video",$attachment_url);
+          $selected_attachment = array('id'=>'src', 'url'=>$attachment_url);
+        }        
       }
     }
     wp_enqueue_style('media');
@@ -86,6 +97,8 @@ function fp_media_send_to_settings($html, $attachment_id, $attachment) {
 function flowplayer_wizard() {
   //do the magic here
   setcookie("selected_video",'',time()-3600);
+  setcookie("selected_video1",'',time()-3600);
+  setcookie("selected_video2",'',time()-3600);
   setcookie("selected_image",'',time()-3600);
 	wp_enqueue_style('media');
 	wp_iframe('flowplayer_wizard_function','');

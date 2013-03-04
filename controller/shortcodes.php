@@ -53,6 +53,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   
   extract( shortcode_atts( array(
     'src' => '',
+    'src1' => '',
+    'src2' => '',
     'width' => '',
     'height' => '',
     'autoplay' => '',
@@ -68,6 +70,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$arguments['height'] = preg_replace('/\,/', '', $height);
 	$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
 	$arguments['splash'] = preg_replace('/\,/', '', $splash);
+  $arguments['src1'] = preg_replace('/\,/', '', $src1);
+  $arguments['src2'] = preg_replace('/\,/', '', $src2);
   $arguments['splashend'] = preg_replace('/\,/', '', $splashend);
   $arguments['popup'] = $popup;
 	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);

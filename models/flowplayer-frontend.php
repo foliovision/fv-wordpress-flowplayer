@@ -14,20 +14,16 @@ class flowplayer_frontend extends flowplayer
 		// returned array with new player's html and javascript content
 		$ret = array('html' => '', 'script' => '');
     
-    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
-			// strip the first / from $media
-      if($media[0]=='/') $media = substr($media, 1);
-      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
-        $media = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
-      }
-      else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
-        $media = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
-      }
-      else{ // if the videos are not in the videos directory but they are adressed relatively
-        $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
-        $media = 'http://'.$media_path;
-      }
-		}
+    if (isset($args['src1'])&&!empty($args['src1'])) $src1 = trim($args['src1']);
+    if (isset($args['src2'])&&!empty($args['src2'])) $src2 = trim($args['src2']);
+    
+    $media = $this->get_video_url($media);
+    if (!empty($src1)) {
+      $src1 = $this->get_video_url($src1);
+    }
+    if (!empty($src2)) {
+      $src2 = $this->get_video_url($src2);
+    }
 		
     // unique coe for this player
 		$hash = md5($media.$this->_salt());
@@ -203,29 +199,24 @@ class flowplayer_frontend extends flowplayer
         $ret['html'] .= ' preload="none"';        
       }         
       $ret['html'] .= '>';
-      $pathinfo = pathinfo($media);
-      $extension = $pathinfo['extension'];                  
-      if (!in_array($extension, array('mp4', 'm4v', 'webm', 'ogv'))) {
-        $extension = 'flash';  
-      }
-      else
-      if ($extension == 'm4v') {
-        $extension = 'mp4';
-      }      
+           
       //if the cloudfront is set in the plugin settings screen but it isn't acually a streaming 
       if (strpos($media, 'amazonaws.com') === false) {
         $rtmp = false;
+      }      
+      $ret['html'] .= $this->get_video_src($media, $mobileUserAgent);
+      if (!empty($src1)) {
+        $ret['html'] .= $this->get_video_src($src1, $mobileUserAgent);
       }
-      //do not use https on mobile devices
-      if (strpos($media, 'https') !== false && $mobileUserAgent) {
-        $media = str_replace('https', 'http', $media);
+      if (!empty($src2)) {
+        $ret['html'] .= $this->get_video_src($src2, $mobileUserAgent);
       }
-      $ret['html'] .= '<source src="'.trim($media).'" type="video/'.$extension.'" />';
       //don't use RTMP for mobile devices
       if ($rtmp && !$mobileUserAgent) {
         $video_url = parse_url($media);
         $video_url = explode('/', $video_url['path'], 3);        
         $media_file = $video_url[count($video_url)-1];
+        $extension = get_file_extension($media);
         $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
       }      
       $ret['html'] .= '</video>';
@@ -281,6 +272,47 @@ class flowplayer_frontend extends flowplayer
     
 		return $ret;
 	}
+  
+  function get_video_url($media) {
+    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
+			// strip the first / from $media
+      if($media[0]=='/') $media = substr($media, 1);
+      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
+        $media = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
+      }
+      else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
+        $media = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
+      }
+      else{ // if the videos are not in the videos directory but they are adressed relatively
+        $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
+        $media = 'http://'.$media_path;
+      }
+		}
+    return $media;
+  }
+  
+  function get_video_src($media, $mobileUserAgent) {
+    $extension = $this->get_file_extension($media);
+    //do not use https on mobile devices
+    if (strpos($media, 'https') !== false && $mobileUserAgent) {
+      $media = str_replace('https', 'http', $media);
+    } 
+    return '<source src="'.trim($media).'" type="video/'.$extension.'" />';  
+  }
+  
+  function get_file_extension($media) {
+    $pathinfo = pathinfo($media);
+    $extension = $pathinfo['extension'];                  
+    if (!in_array($extension, array('mp4', 'm4v', 'webm', 'ogv'))) {
+      $extension = 'flash';  
+    }
+    else
+    if ($extension == 'm4v') {
+      $extension = 'mp4';
+    }
+    return $extension;  
+  }
+  
 	/**
 	 * Displays the elements that need to be added to frontend.
 	 */

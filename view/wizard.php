@@ -1,9 +1,12 @@
-<?php
+<?php                    
 if (isset($_COOKIE["selected_video"]))
   $uploaded_video = $_COOKIE["selected_video"];
+if (isset($_COOKIE["selected_video1"]))
+  $uploaded_video1 = $_COOKIE["selected_video1"];
+if (isset($_COOKIE["selected_video2"]))
+  $uploaded_video2 = $_COOKIE["selected_video2"];  
 if (isset($_COOKIE["selected_image"]))
-  $uploaded_image = $_COOKIE["selected_image"];
-  
+  $uploaded_image = $_COOKIE["selected_image"];    
 
   $post_id = intval($_REQUEST['post_id']);
   //load configuration file:   
@@ -20,8 +23,18 @@ if (isset($_COOKIE["selected_image"]))
   
   if (isset($selected_attachment['url'])) {
     $path_parts = pathinfo($selected_attachment['url']);
-    if (in_array($path_parts['extension'], $video_types))
-      $uploaded_video = $selected_attachment['url'];
+    if (in_array($path_parts['extension'], $video_types)) {
+      if ($selected_attachment['id'] == 'src1') {
+        $uploaded_video1 = $selected_attachment['url'];
+      }
+      else
+      if ($selected_attachment['id'] == 'src2') {
+        $uploaded_video2 = $selected_attachment['url'];
+      } 
+      else {
+        $uploaded_video = $selected_attachment['url'];
+      }
+    }
     if (in_array($path_parts['extension'], $splash_types))
       $uploaded_image = $selected_attachment['url'];
   }                                                 
@@ -88,7 +101,7 @@ function fillSplashInputs(){
             <?php } else echo $file_error;  ?>
           </td>
         </tr>
-      <?php }; //video has been selected ?>
+      <?php }; //video has been selected ?> 
 			<tr><th></th>
 				<th scope="row" class="label" ><label for="width" class="alignleft">Width <small>(px)</small></label><br class='clear' /></th>
 				<td class="field"><input type="text" id="width" name="width" style="width: 100%"  value="<?php echo $file_width ?>"/></td>
@@ -97,7 +110,45 @@ function fillSplashInputs(){
 				<th scope="row" class="label" style="width: 10%"><label for="height" class="alignleft">Height <small>(px)</small></label></th>
 				<td class="field"><input type="text" id="height" name="height" style="width: 100%" value="<?php echo $file_height ?>"/></td>
 			</tr>
-			<tr>
+      
+      <tr <?php if (!empty($uploaded_video) && !empty($uploaded_video1)) echo 'style="display: table-row;"'; else echo 'style="display: none;"'; ?> id="src_1_wrapper">
+				<th scope="row" class="label" style="width: 10%"><label for="src" class="alignright">Video</label></th>
+				<td colspan="2" class="field"><input type="text" class="text" id="src_1" name="src_1" style="width: 100%" value="<?php echo $uploaded_video1 ?>"/></td>
+			</tr>
+      <?php 
+      if ($allow_uploads=="true") {
+      ?> 
+			<tr <?php if (!empty($uploaded_video) && !empty($uploaded_video1)) echo 'style="display: table-row;"'; else echo 'style="display: none;"'; ?> id="src_1_uploader">
+  			<th></th>
+  			<td colspan="2" style="width: 100%" >         
+          Or <a href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=video&amp;TB_iframe=true&amp;width=640&amp;height=723fvplayer1">open media library</a> to upload new video.
+  			</td>
+			</tr>
+			<?php }; //allow uplads video ?>
+      
+      <tr <?php if (!empty($uploaded_video1) && !empty($uploaded_video2)) echo 'style="display: table-row;"'; else echo 'style="display: none;"'; ?> id="src_2_wrapper">
+				<th scope="row" class="label" style="width: 10%"><label for="src" class="alignright">Video</label></th>
+				<td colspan="2" class="field"><input type="text" class="text" id="src_2" name="src_2" style="width: 100%" value="<?php echo $uploaded_video2 ?>"/></td>
+			</tr>
+      <?php 
+      if ($allow_uploads=="true") {
+      ?> 
+			<tr <?php if (!empty($uploaded_video1) && !empty($uploaded_video2)) echo 'style="display: table-row;"'; else echo 'style="display: none;"'; ?> id="src_2_uploader">
+  			<th></th>
+  			<td colspan="2" style="width: 100%" >         
+          Or <a href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=video&amp;TB_iframe=true&amp;width=640&amp;height=723fvplayer2">open media library</a> to upload new video.
+  			</td>
+			</tr>
+			<?php }; //allow uplads video ?>
+      
+      <?php if (empty($uploaded_video2)) { ?>
+      <tr id="add_format_wrapper">
+  			<th scope="row" class="label" style="width: 10%"></th>
+				<td colspan="2" class="field"><a href="#" onclick="add_format()" style="outline: 0"><span id="add-format" style="background: url(<?php echo plugins_url( 'images/admin-bar-sprite.png' , dirname(__FILE__) ) ?>) no-repeat -3px -205px; display: block; width: 11px; height: 11px; float: left; margin-top: 2px; padding-right: 4px;"></span>Add other format of the video</a></td>
+			</tr>      
+      <?php }; ?>
+			
+      <tr>
 				<th scope="row" class="label"><label for="splash" class="alignright">Splash Image</label></th>
 				<td class="field" colspan="2"><input type="text" id="splash" name="splash" style="width: 100%"  value="<?php echo $uploaded_image ?>"/></td>
 			</tr>
@@ -249,6 +300,13 @@ function clickOK() {
 	}
 	else
 		shortcode = '[' + shorttag + ' src=\'' + document.getElementById("src").value + '\'';
+    
+  if ( document.getElementById("src_1").value != '' ) {
+    shortcode += ' src1=\'' + document.getElementById("src_1").value + '\''; 
+  }
+  if ( document.getElementById("src_2").value != '' ) {
+    shortcode += ' src2=\'' + document.getElementById("src_2").value + '\''; 
+  }
 		
 	if( document.getElementById("width").value != '' && document.getElementById("width").value % 1 != 0 ) {
 		alert('Please enter a valid width.');
@@ -306,6 +364,22 @@ function clickOK() {
 		//return true;
 		window.parent.tb_remove();
 	}
+}
+
+function add_format() {
+  if ( document.getElementById("src_1_wrapper").style.display == 'table-row' ) {      
+    document.getElementById("src_2_wrapper").style.display = 'table-row';
+    if ( document.getElementById("src_2_uploader") != null ) {
+      document.getElementById("src_2_uploader").style.display = 'table-row';
+    }
+    document.getElementById("add_format_wrapper").style.display = 'none';
+  }
+  else {
+    document.getElementById("src_1_wrapper").style.display = 'table-row';
+    if ( document.getElementById("src_1_uploader") ) {
+      document.getElementById("src_1_uploader").style.display = 'table-row';
+    }
+  }
 }
 
 </script>

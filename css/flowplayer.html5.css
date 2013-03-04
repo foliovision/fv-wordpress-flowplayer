@@ -156,3 +156,4 @@
 .flowplayer.color-alt .fp-progress{background-color:#fff}
 .flowplayer.color-alt .fp-buffer{background-color:#999}
 .flowplayer.color-alt2 .fp-progress{background-color:#900}
+.flowplayer object {width:100% !important;height:100% !important;margin:0 !important;}
