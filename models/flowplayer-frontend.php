@@ -216,7 +216,7 @@ class flowplayer_frontend extends flowplayer
         $video_url = parse_url($media);
         $video_url = explode('/', $video_url['path'], 3);        
         $media_file = $video_url[count($video_url)-1];
-        $extension = get_file_extension($media);
+        $extension = $this->get_file_extension($media);
         $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
       }      
       $ret['html'] .= '</video>';
