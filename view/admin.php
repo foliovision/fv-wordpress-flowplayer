@@ -40,14 +40,16 @@
     		  <select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fp->conf['autoplay']); ?></select> 	
     		</td>
     		<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
-          <div class="flowplayer is-splash" 
-          data-swf="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.swf"'
+          <div class="flowplayer is-splash"
+          data-swf="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.swf"
           data-ratio="0.417" 
           style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
           <?php if ($fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
-          <?php if (isset($fp->conf['key']) && $fp->conf['key'] != 'false' && strlen($fp->conf['key']) > 0) echo 'data-key="' . $fp->conf['key'] . '"'; ?>
+          <?php if (isset($fp->conf['key']) && $fp->conf['key'] != 'false' && strlen($fp->conf['key']) > 0) {echo 'data-key="' . $fp->conf['key'] . '"'; $commercial_key = true;} ?>
+          <?php if ($commercial_key && isset($fp->conf['logo']) && $fp->conf['logo'] != 'false' && strlen($fp->conf['logo']) > 0) echo ' data-logo="' . $fp->conf['logo'] . '"'; ?>
+          <?php if ($fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
           >
-            <video poster="http://foliovision.com/videos/example.jpg">
+            <video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fp->conf['autoplay']) && $fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fp->conf['autobuffer']) && $fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
               <source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
             </video>
           </div>          
