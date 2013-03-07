@@ -44,7 +44,7 @@ function fp_media_send_to_editor($html, $attachment_id, $attachment) {
   if(isset($_POST['_wp_http_referer']) && (strpos($_POST['_wp_http_referer'],'fvplayer'))) {
     preg_match('/height=([0-9]+([a-z]+))/',$_POST['_wp_http_referer'],$matchesh);
       
-    $video_types = array('flv','mov','avi','mpeg','mpg','asf','qt','wmv','mp4');
+    $video_types = array('flv','mov','avi','mpeg','mpg','asf','qt','wmv','mp4','m4v','mp3','webm','ogv');    
     $splash_types = array('jpg','jpeg','gif','png', 'bmp','jpe');
     
     if (isset($attachment_id)) {
@@ -201,7 +201,6 @@ function flowplayer_conversion_script() {
   $counter = 0;
   
   foreach($posts as $fv_post) {
-    echo '<ol>';
     if ( stripos( $fv_post->post_content, $old_shorttag ) !== false ) {
       $update_post = array();
       $update_post['ID'] = $fv_post->ID;
@@ -210,10 +209,9 @@ function flowplayer_conversion_script() {
       echo '<li><a href="' . get_permalink($fv_post->ID) . '">' . get_the_title($fv_post->ID) . '</a> updated</li>';
       $counter++;
     } 
-    echo '</ol>';   
   }
   
-  echo '<div>Conversion was succesful. Total number of converted posts: ' . $counter . '</div>';
+  echo '<strong>Conversion was succesful. Total number of converted posts: ' . $counter . '</strong>';
   
   die();
 } 

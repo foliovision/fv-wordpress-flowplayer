@@ -135,33 +135,7 @@
     			<input type="submit" name="submit" class="button-primary" value="Apply Changes" style="margin-top: 2ex;"/>
     		</td>
     	</tr>
-  	</table>
-    <table style="width: 400px;">
-    	<tr>    		
-    		<td>
-    			<input style="float: left; margin-top: 10px;" type="button" name="convert" class="button-primary" value="Run Conversion Script" onclick="flowplayer_conversion_script()"/>
-          <div id="fv-flowplayer-loader" style="background: url(<?php echo plugins_url( 'images/wpspin.gif' , dirname(__FILE__) ); ?>) no-repeat center left; width: 16px; height: 24px; float: left; margin: 10px 0 0 5px; display: none;" />
-    		</td>
-    	</tr>
-      <tr>
-        <td><div id="conversion-results"></div></td>
-      </tr>
-  	</table>
-    <script type="text/javascript" >
-      function flowplayer_conversion_script() {
-        jQuery('#fv-flowplayer-loader').show();
-      
-      	var data = {
-      		action: 'flowplayer_conversion_script',
-      		run: true
-      	};
-      
-      	jQuery.post(ajaxurl, data, function(response) {
-          jQuery('#fv-flowplayer-loader').hide();
-          jQuery('#conversion-results').html(response);	
-      	});
-      }
-    </script>
+  	</table>    
     <table style="width: 800px;">
     	<tr>
     		<td colspan="4" style="text-align: justify;">
@@ -171,7 +145,18 @@
       			<li>Supported video formats are <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong> and <strong>FLV</strong>. Multiple videos can be displayed in one post or page.</li>
       			<li>Default options for all the embedded videos can be set in the menu above.</li>
       		</ul>
-      		<h3>Usage:</h3>
+          <p>
+          The previous version of FV Wordpress Flowplayer uses flash based technology and <code>[flowplayer]</code> shortcode.
+          This version uses HTML5 (with flash fallback) technology with <code>[fvplayer]</code> shortcode.
+          I order to play all videos in HTML5, you have to manually replace the shortcodes or you can run the conversion script.
+          <strong>Before running the conversion script, do a backup of your database!</strong>
+          </p>     
+    			<input style="float: left; margin-bottom: 10px;" type="button" name="convert" class="button-primary" value="Run Conversion Script" onclick="flowplayer_conversion_script()"/>
+          <div id="fv-flowplayer-loader" style="background: url(<?php echo plugins_url( 'images/wpspin.gif' , dirname(__FILE__) ); ?>) no-repeat center left; width: 16px; height: 24px; float: left; margin-left: 5px; display: none;" /></div>
+          <div style="clear: both;"></div>
+          <div id="conversion-results"></div>
+      		<div style="clear: both;"></div>
+          <h3>Usage:</h3>
       		<p>
       		To embed video "example.mp4", simply include the following code inside any post or page: 
       		<code>[fvplayer src=example.mp4]</code>
@@ -185,19 +170,19 @@
       		<ul style="text-align: left;">
       			<li><code><strong>width</strong></code> and <code><strong>height</strong></code> specify the dimensions of played video in pixels. If they are not set, the default size is 320x240.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' width=640 height=480]</code></li>
-      			<li><code><strong>splash</strong></code> parameter can be used to display a custom splash image before the video is started. Just like in case of <code>src</code> 
+      			<li><code><strong>splash</strong></code> parameter can be used to display a custom splash image before the video starts. Just like in case of <code>src</code> 
       			parameter, its value can be either complete URL, or filename of an image located in /videos/ folder.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' splash=image.jpg]</code></li>
-            <li><code><strong>splashend</strong></code> parameter can be used to display a custom splash image after the video ended.<br />
+            <li><code><strong>splashend</strong></code> parameter can be used to display a custom splash image after the video ends.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' splashend=show]</code></li>
       			<li><code><strong>autoplay</strong></code> parameter specify wheter the video should start to play automaticaly after the page is loaded. This parameter overrides the default autoplay setting above. Its value can be either true or false.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' autoplay=true]</code></li>
             <li><code><strong>loop</strong></code> parameter specify wheter the video starts again from the beginning when the video ends. Its value can be either true or false.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' loop=true]</code></li>
       			<li><code><strong>popup</strong></code> parameter can be used to display any HTML code after the video finishes (ideal for advertisment or links to similar videos). 
-      			Content you want to display must be between simgle quotes (<code>''</code>).<br />
+      			Content you want to display must be between simple quotes (<code>''</code>).<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' popup='&lt;p&gt;some HTML content&lt;/p&gt;']</code></li>      			
-      			<li><code><strong>redirect</strong></code> parameter can be used to redirect to another page (in a new tab) after the video stops playing.<br />
+      			<li><code><strong>redirect</strong></code> parameter can be used to redirect to another page (in a new tab) after the video ends.<br />
       			<i>Example</i>: <code>[fvplayer src='example.mp4' redirect='http://www.site.com']</code></li>
       		</ul>
     		</td>
@@ -206,3 +191,18 @@
     </table>
   </form>
 </div>
+<script type="text/javascript" >
+  function flowplayer_conversion_script() {
+    jQuery('#fv-flowplayer-loader').show();
+  
+  	var data = {
+  		action: 'flowplayer_conversion_script',
+  		run: true
+  	};
+  
+  	jQuery.post(ajaxurl, data, function(response) {
+      jQuery('#fv-flowplayer-loader').hide();
+      jQuery('#conversion-results').html(response);	
+  	});
+  }
+</script>

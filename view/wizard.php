@@ -18,7 +18,7 @@
 	if (isset($conf["postthumbnail"]))
 	  $post_thumbnail = $conf["postthumbnail"];
 	  
-	$video_types = array('flv','mov','avi','mpeg','mpg','asf','qt','wmv','mp4','mp3');
+	$video_types = array('flv','mov','avi','mpeg','mpg','asf','qt','wmv','mp4','m4v','mp3','webm','ogv');
   $splash_types = array('jpg','jpeg','gif','png', 'bmp','jpe');
   
   if (isset($selected_attachment['url'])) {
@@ -144,7 +144,7 @@ function fillSplashInputs(){
       <?php if (empty($uploaded_video2)) { ?>
       <tr id="add_format_wrapper">
   			<th scope="row" class="label" style="width: 10%"></th>
-				<td colspan="2" class="field"><a href="#" onclick="add_format()" style="outline: 0"><span id="add-format" style="background: url(<?php echo plugins_url( 'images/admin-bar-sprite.png' , dirname(__FILE__) ) ?>) no-repeat -3px -205px; display: block; width: 11px; height: 11px; float: left; margin-top: 2px; padding-right: 4px;"></span>Add other format of the same video</a></td>
+				<td colspan="2" class="field"><a href="#" onclick="add_format()" style="outline: 0"><span id="add-format" style="background: url(<?php echo plugins_url( 'images/admin-bar-sprite.png' , dirname(__FILE__) ) ?>) no-repeat -3px -205px; display: block; width: 11px; height: 11px; float: left; margin-top: 2px; padding-right: 4px;"></span>Add another format</a></td>
 			</tr>      
       <?php }; ?>
 			
