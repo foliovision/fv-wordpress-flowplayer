@@ -77,11 +77,6 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
 	$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
   $arguments['loop'] = preg_replace('/\,/', '', $loop);
-  
-  $arguments['html5'] = true;
-  if ($tag == 'flowplayer') {
-    $arguments['html5'] = false;  
-  }
     
 	$src = preg_replace('/\,/', '', $src);
 	if (trim($src) != '') {

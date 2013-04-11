@@ -39,6 +39,7 @@ class flowplayer {
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
     if( !isset( $conf['autobuffer'] ) ) $conf['autobuffer'] = 'false';
     if( !isset( $conf['scaling'] ) ) $conf['scaling'] = 'true';
+    if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';    
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
     if( !isset( $conf['allowuploads'] ) ) $conf['allowuploads'] = 'true';
@@ -106,12 +107,6 @@ function flowplayer_head() {
         $siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
 			define('RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
     }			
-    $conf = get_option( 'fvwpflowplayer' );
-    if( !isset( $conf['key'] )||(!$conf['key'])||($conf['key']=='false') )
-      define('PLAYER', RELATIVE_PATH.'/flowplayer/flowplayer.swf');
-    else
-      define('PLAYER', RELATIVE_PATH.'/flowplayer/commercial/flowplayer.commercial-3.2.15.swf');
-    define('AUDIOPLAYER', RELATIVE_PATH.'/flowplayer/flowplayer.audio-3.2.10.swf');
    	$vid = 'http://'.$_SERVER['SERVER_NAME'];
    	if (dirname($_SERVER['PHP_SELF']) != '/') 
       $vid .= dirname($_SERVER['PHP_SELF']);
@@ -121,11 +116,10 @@ function flowplayer_head() {
 	// call the right function for displaying CSS and JS links
 	if (is_admin()) {		
     $fp = new flowplayer_backend();      
-    $fp->flowplayer_head();    
 	} else {
 		$fp = new flowplayer_frontend();  
-    $fp->flowplayer_head();
 	}
+  $fp->flowplayer_head();
 }
 
 function flowplayer_jquery() {

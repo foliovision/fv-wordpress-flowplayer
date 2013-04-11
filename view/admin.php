@@ -79,6 +79,12 @@
           <select id="scaling" name="scaling"><?php echo flowplayer_bool_select($fp->conf['scaling']); ?></select>
         </td>
     	</tr>
+      <tr>
+    		<td><label for="allowfullscreen">Disable embedding:</label></td>
+    		<td style="text-align:right">
+          <select id="disableembedding" name="disableembedding"><?php echo flowplayer_bool_select($fp->conf['disableembedding']); ?></select>
+        </td>
+    	</tr>
     	<tr>
     		<td><label for="allowuploads">Allow User Uploads:</label></td>
     		<td style="text-align:right">

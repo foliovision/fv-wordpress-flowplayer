@@ -3,7 +3,12 @@
  * Displays metatags for frontend.
  */
 ?>
-<?php if ( !is_null($html5) && $html5 || is_admin() ) { ?>
+<script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.min.js"></script>
+<?php if ($this->conf['disableembedding'] == 'true') { ?>
+<script type="text/javascript">                                                                     
+  flowplayer.conf.embed = false;
+</script>
+<?php } ?>
 <link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.html5.css" type="text/css" media="screen" />
 <?php
   if ( isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0 && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0 ) { ?>
@@ -24,10 +29,3 @@
   .flowplayer .fp-progress { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }
   .flowplayer .fp-buffer { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
 </style>
-<?php
-}
-else
-if ( !is_null($html5) ) {
-?>
-<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.css" type="text/css" media="screen" />
-<?php } ?>

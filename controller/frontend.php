@@ -36,11 +36,6 @@ function flowplayer_content( $content ) {
 	$content_matches = array();
 	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
   
-  $arguments['html5'] = true;
-  if ($content_matches[1][0] == 'flowplayer') {
-    $arguments['html5'] = false;
-  } 
-  
 	// process all found tags
 	foreach ($content_matches[0] as $tag) {
 		$ntag = str_replace("\'",'&#039;',$tag);
