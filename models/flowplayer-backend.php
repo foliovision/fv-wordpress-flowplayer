@@ -15,7 +15,9 @@ class flowplayer_backend extends flowplayer
 	 	/**
 	 	 * Admin specific CSS and JS
 	 	 */
-	 	include dirname( __FILE__ ) . '/../view/backend-head.php'; 
+	 	if( $_GET['page'] == 'backend.php' ) {
+	 		include dirname( __FILE__ ) . '/../view/backend-head.php'; 
+	 	}
 	}
 }
 ?>
