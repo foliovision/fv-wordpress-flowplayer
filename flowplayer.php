@@ -15,6 +15,8 @@ if( is_admin() ) {
 
 	include( dirname( __FILE__ ) . '/controller/backend.php' );
   require_once(dirname( __FILE__ ) . '/controller/shortcodes.php');
+  
+  register_activation_hook( __FILE__, 'flowplayer_activate' );
 
 } else {
 	/**

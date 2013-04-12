@@ -210,7 +210,8 @@
   
   	jQuery.post(ajaxurl, data, function(response) {
       jQuery('#fv-flowplayer-loader').hide();
-      jQuery('#conversion-results').html(response);	
+      jQuery('#conversion-results').html(response);
+      jQuery('#fvwpflowplayer_conversion_notice').hide();	
   	});
   }
 </script>

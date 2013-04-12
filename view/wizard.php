@@ -45,8 +45,13 @@
     preg_match($pattern, $uploaded_video, $matches);
     require_once(realpath(dirname(__FILE__).'/getid3/getid3.php'));
     // Initialize getID3 engine                
-    $getID3 = new getID3;      
-    $ThisFileInfo = $getID3->analyze(realpath($_SERVER['DOCUMENT_ROOT'] .$matches[1]));
+    $getID3 = new getID3;     
+    if (empty($matches)) {
+      $ThisFileInfo = $getID3->analyze(realpath($_SERVER['DOCUMENT_ROOT'] . $uploaded_video));
+    }
+    else { 
+      $ThisFileInfo = $getID3->analyze(realpath($_SERVER['DOCUMENT_ROOT'] . $matches[1]));
+    }
     if (isset($ThisFileInfo['error'])) $file_error = "Could not read video details, please fill the width and height manually.";
     //getid3_lib::CopyTagsToComments($ThisFileInfo);
     $file_time = $ThisFileInfo['playtime_string'];            // playtime in minutes:seconds, formatted string

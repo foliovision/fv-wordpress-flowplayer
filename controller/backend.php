@@ -29,6 +29,27 @@ add_filter('admin_print_scripts', 'flowplayer_print_scripts');
 add_action('admin_print_styles', 'flowplayer_print_styles');
 //conversion script via AJAX
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
+add_action('admin_notices', 'flowplayer_admin_notice');
+
+function flowplayer_activate() {
+  global $wpdb;
+  
+  $posts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type != 'revision'");
+  
+  $old_shorttag = '[flowplayer';
+  $found = false;
+  
+  foreach($posts as $fv_post) {
+    if ( stripos( $fv_post->post_content, $old_shorttag ) !== false ) {
+      $found = true;
+      //exit;
+    } 
+  }
+  
+  if ($found) {
+    update_option('fvwpflowplayer_conversion', 1);
+  }
+}
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -145,7 +166,7 @@ function flowplayer_bool_select($current) {
  */
 function flowplayer_page() {
 	//initialize the class:
-	$fp = new flowplayer();
+  $fp = new flowplayer();
 	include dirname( __FILE__ ) . '/../view/admin.php';
 }
 /**
@@ -200,6 +221,7 @@ function flowplayer_conversion_script() {
   $new_shorttag = '[fvplayer';
   $counter = 0;
   
+  echo '<ol>';
   foreach($posts as $fv_post) {
     if ( stripos( $fv_post->post_content, $old_shorttag ) !== false ) {
       $update_post = array();
@@ -210,9 +232,23 @@ function flowplayer_conversion_script() {
       $counter++;
     } 
   }
+  echo '</ol>';
   
   echo '<strong>Conversion was succesful. Total number of converted posts: ' . $counter . '</strong>';
   
+  delete_option('fvwpflowplayer_conversion');
+  
   die();
-} 
+}
+
+function flowplayer_admin_notice() {
+  $conversion = (bool)get_option('fvwpflowplayer_conversion');
+  if ($conversion) {
+    echo '<div class="updated" id="fvwpflowplayer_conversion_notice"><p>'; 
+    printf(__('FV Wordpress Flowplayer has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>'), get_admin_url() . 'options-general.php?page=backend.php');
+    echo "</p></div>";
+  }
+}
+
+ 
 ?>
