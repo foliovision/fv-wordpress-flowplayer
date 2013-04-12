@@ -142,7 +142,7 @@ class flowplayer_frontend extends flowplayer
     }
     $ret['html'] .= '"';
     $ret['html'] .= ' style="width: ' . $width . 'px; height: ' . $height . 'px"';
-    $ret['html'] .= ' data-swf="'.RELATIVE_PATH.'/flowplayer.html5/flowplayer.swf"';
+    $ret['html'] .= ' data-swf="'.RELATIVE_PATH.'/flowplayer/flowplayer.swf"';
     if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
       $ret['html'] .= ' data-analytics="' . $this->conf['googleanalytics'] . '"';
     }

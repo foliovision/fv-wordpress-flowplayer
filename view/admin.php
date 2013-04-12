@@ -41,7 +41,7 @@
     		</td>
     		<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
           <div class="flowplayer is-splash"
-          data-swf="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.swf"
+          data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
           data-ratio="0.417" 
           style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
           <?php if ($fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>

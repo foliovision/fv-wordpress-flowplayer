@@ -3,13 +3,13 @@
  * Displays metatags for frontend.
  */
 ?>
-<script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer.html5/flowplayer.min.js"></script>
+<script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.min.js"></script>
 <?php if ($this->conf['disableembedding'] == 'true') { ?>
 <script type="text/javascript">                                                                     
   flowplayer.conf.embed = false;
 </script>
 <?php } ?>
-<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.html5.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.css" type="text/css" media="screen" />
 <?php
   if ( isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0 && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0 ) { ?>
 <style type="text/css">
