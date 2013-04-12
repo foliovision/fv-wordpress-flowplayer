@@ -215,76 +215,85 @@ function fillSplashInputs(){
 </form>
 
 <script type="text/javascript">
-	//window.parent.send_to_editor( '<span id="FCKFVWPFlowplayerPlaceholder"></span>' );
-
-	var shorttag = 'fvplayer';
-  
-  var re = /\[flowplayer[^\[]*?<span>FCKFVWPFlowplayerPlaceholder<\/span>[^\[]*?\]/mi;
+  var re = /\[[^\]]*?<span>FCKFVWPFlowplayerPlaceholder<\/span>[^\]]*?\]/mi;
 	var re2 = /<span>FCKFVWPFlowplayerPlaceholder<\/span>/gi;
-	var hTinyMCE = window.parent.tinyMCE.getInstanceById('content');
-	//console.log(window.parent.tinyMCE.activeEditor.isHidden() );
+	
+  var hTinyMCE;
+  var oEditor;
+  if (window.parent.tinyMCE) {
+    hTinyMCE = window.parent.tinyMCE.getInstanceById('content');
+  }
+  else {
+    oEditor = window.parent.FCKeditorAPI.GetInstance('content');
+  }
+	
 	if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
-		//console.log( 'not in wysiwyg' );
+		//Foliopres WYSIWYG
+    oEditor.InsertHtml('<span>FCKFVWPFlowplayerPlaceholder</span>');
+    var content_original = oEditor.GetXHTML();  
+    oEditor.SetHTML( oEditor.GetXHTML().replace( re2, '' ) );
 	}
 	else {
-		hTinyMCE.selection.setContent('<span>FCKFVWPFlowplayerPlaceholder</span>');
-		
-		content_original = hTinyMCE.getContent();
-		content = content_original.replace(/\n/g,'\uffff');
-	     
-		var shortcode = content.match( re );
-		
-		
-		hTinyMCE.setContent( hTinyMCE.getContent().replace( re2,'' ) );
-		
-		if( shortcode != null ) {
-			shortcode = shortcode.join('');
-			shortcode = shortcode.replace( re2,'' );
-			
-			shortcode = shortcode.replace( /\\'/g,'&#039;' );
-			
-			//alert(shortcode);
-			srcurl = shortcode.match( /src='([^']*)'/ );
-			if( srcurl == null )
-				srcurl = shortcode.match( /src=([^,\]\s]*)/ );
-			
-			iheight = shortcode.match( /height=(\d*)/ );
-			
-			iwidth = shortcode.match( /width=(\d*)/ );
-			sautoplay = shortcode.match( /autoplay=([^\s]+)/ );
-			ssplash = shortcode.match( /splash='([^']*)'/ );
-			if( ssplash == null )
-				ssplash = shortcode.match( /splash=([^,\]\s]*)/ );
-			
-			spopup = shortcode.match( /popup='([^']*)'/ );
-	
-			//alert( srcurl[1] + '\n' + iheight[1] + '\n' + iwidth[1] + '\n' + splash[1] + '\n' + popup[1] );
-
-			if( srcurl != null && srcurl[1] != null )
-				document.getElementById("src").value = srcurl[1];
-			if( iheight != null && iheight[1] != null )
-				document.getElementById("height").value = iheight[1];
-			if( iwidth != null && iwidth[1] != null )
-				document.getElementById("width").value = iwidth[1];
-			if( sautoplay != null && sautoplay[1] != null )
-				document.getElementById("autoplay").value = sautoplay[1];
-			if( ssplash != null && ssplash[1] != null )
-				document.getElementById("splash").value = ssplash[1];
-			if( spopup != null && spopup[1] != null ) {
-				spopup = spopup[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-				spopup = spopup.replace(/&amp;/g,'&');
-				document.getElementById("popup").value = spopup;
-			}
-			
-			document.getElementById("insert-button").value = "Update";
-		}
-		//document.getElementById("src").focus();
-		window.parent.blur();
-		//window.parent.document.getElementById( 'content_ifr' ).contentWindow.document.getElementById("src").focus();
-		//alert( window.parent.document.getElementById( 'content_ifr' ).contentWindow.document.body.innerHTML );
-		//document.getElementById("src").focus();
+		//Wordpress WYSIWYG
+    hTinyMCE.selection.setContent('<span>FCKFVWPFlowplayerPlaceholder</span>');
+		var content_original = hTinyMCE.getContent();	     				
+		hTinyMCE.setContent( hTinyMCE.getContent().replace( re2, '' ) );        
 	}
-
+  
+  var content = content_original.replace(/\n/g, '\uffff');
+  
+  var shortcode = content.match( re );
+  
+  if( shortcode != null ) {
+    shortcode = shortcode.join('');
+    shortcode = shortcode.replace('[', '');
+    shortcode = shortcode.replace(']', '');
+  	shortcode = shortcode.replace( re2, '' );
+  	
+  	shortcode = shortcode.replace( /\\'/g,'&#039;' );
+  	
+  	var srcurl = shortcode.match( /src='([^']*)'/ );
+  	if( srcurl == null )
+  		srcurl = shortcode.match( /src=([^,\]\s]*)/ );			
+  	var iheight = shortcode.match( /height=(\d*)/ );			
+  	var iwidth = shortcode.match( /width=(\d*)/ );
+  	var sautoplay = shortcode.match( /autoplay=([^\s]+)/ );
+  	var ssplash = shortcode.match( /splash='([^']*)'/ );
+    var sredirect = shortcode.match( /redirect='([^']*)'/ );
+  	if( ssplash == null )
+  		ssplash = shortcode.match( /splash=([^,\]\s]*)/ );			
+  	var spopup = shortcode.match( /popup='([^']*)'/ );
+    var sloop = shortcode.match( /loop=([^\s]+)/ );
+    var ssplashend = shortcode.match( /splashend=([^\s]+)/ );
+    
+  	if( srcurl != null && srcurl[1] != null )
+  		document.getElementById("src").value = srcurl[1];
+  	if( iheight != null && iheight[1] != null )
+  		document.getElementById("height").value = iheight[1];
+  	if( iwidth != null && iwidth[1] != null )
+  		document.getElementById("width").value = iwidth[1];
+  	if( sautoplay != null && sautoplay[1] != null ) {
+  		if (sautoplay[1] == 'true') 
+        document.getElementById("autoplay").selectedIndex = 1;
+      if (sautoplay[1] == 'false') 
+        document.getElementById("autoplay").selectedIndex = 2;
+    }
+  	if( ssplash != null && ssplash[1] != null )
+  		document.getElementById("splash").value = ssplash[1];
+  	if( spopup != null && spopup[1] != null ) {
+  		spopup = spopup[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+  		spopup = spopup.replace(/&amp;/g,'&');
+  		document.getElementById("popup").value = spopup;
+  	}
+    if( sredirect != null && sredirect[1] != null )
+  		document.getElementById("redirect").value = sredirect[1];
+    if( sloop != null && sloop[1] != null && sloop[1] == 'true' )
+  		document.getElementById("loop").checked = 1;
+    if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' )
+  		document.getElementById("splashend").checked = 1;  
+  	
+  	document.getElementById("insert-button").value = "Update";	  	
+	}
 
 function clickOK() {
 			
@@ -352,17 +361,14 @@ function clickOK() {
   document.cookie = "selected_video2='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
 	document.cookie = "selected_image='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
 	if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
-		window.parent.send_to_editor( shortcode );
+		//hTinyMCE.setContent( content_original.replace( re,shortcode ) );
+    oEditor.SetHTML( content_original.replace( re,shortcode ) );
 	}
 	else {
 		if( content_original.match( re ) )
-			hTinyMCE.setContent( content_original.replace( re,shortcode ) );
-		else
-			hTinyMCE.setContent( content_original.replace( re2,shortcode ) );
-	
-		//return true;
-		window.parent.tb_remove();
+			hTinyMCE.setContent( content_original.replace( re,shortcode ) );					
 	}
+  window.parent.tb_remove();
 }
 
 function add_format() {
