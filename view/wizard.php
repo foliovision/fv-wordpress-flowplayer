@@ -224,25 +224,29 @@ function fillSplashInputs(){
     hTinyMCE = window.parent.tinyMCE.getInstanceById('content');
   }
   else {
-    oEditor = window.parent.FCKeditorAPI.GetInstance('content');
+    oEditor = window.parent.FCKeditorAPI.GetInstance('content');    
   }
-	
+  
 	if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
-		//Foliopres WYSIWYG
+		//Foliopres WYSIWYG      
     oEditor.InsertHtml('<span>FCKFVWPFlowplayerPlaceholder</span>');
-    var content_original = oEditor.GetXHTML();  
+    var content_original = oEditor.GetXHTML();
+    console.log(content_original);  
     oEditor.SetHTML( oEditor.GetXHTML().replace( re2, '' ) );
 	}
 	else {
 		//Wordpress WYSIWYG
     hTinyMCE.selection.setContent('<span>FCKFVWPFlowplayerPlaceholder</span>');
-		var content_original = hTinyMCE.getContent();	     				
+		var content_original = hTinyMCE.getContent();
+    console.log(content_original);	     				
 		hTinyMCE.setContent( hTinyMCE.getContent().replace( re2, '' ) );        
 	}
   
   var content = content_original.replace(/\n/g, '\uffff');
   
   var shortcode = content.match( re );
+  
+  console.log(shortcode);
   
   if( shortcode != null ) {
     shortcode = shortcode.join('');
@@ -352,7 +356,7 @@ function clickOK() {
 		popup = popup.replace(/"/g,'&quot;');
 		popup = popup.replace(/</g,'&lt;');
 		popup = popup.replace(/>/g,'&gt;');
-		shortcode += ' popup=\'' + popup +'\'';
+		shortcode += ' popup=\'' + popup +'\''
 	}        
 	
 	shortcode += ']';
@@ -360,14 +364,27 @@ function clickOK() {
   document.cookie = "selected_video1='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
   document.cookie = "selected_video2='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
 	document.cookie = "selected_image='';expires=Thu, 01-Jan-1970 00:00:01 GMT;";
-	if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
-		//hTinyMCE.setContent( content_original.replace( re,shortcode ) );
-    oEditor.SetHTML( content_original.replace( re,shortcode ) );
-	}
-	else {
-		if( content_original.match( re ) )
-			hTinyMCE.setContent( content_original.replace( re,shortcode ) );					
-	}
+	if( content_original.match( re ) ) {
+    if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
+      //Foliopres WYSIWYG
+      oEditor.SetHTML( content_original.replace( re, shortcode ) );
+    }
+    else {		
+			//Wordpress WYSIWYG
+      hTinyMCE.setContent( content_original.replace( re, shortcode ) );					
+    }
+  }
+  else {
+    if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
+      //Foliopres WYSIWYG
+      oEditor.SetHTML( content_original.replace( re2, shortcode ) );
+    }
+    else {		
+			//Wordpress WYSIWYG
+      hTinyMCE.setContent( content_original.replace( re2, shortcode ) );					
+    }
+  }
+  
   window.parent.tb_remove();
 }
 
