@@ -215,8 +215,8 @@ function fillSplashInputs(){
 </form>
 
 <script type="text/javascript">
-  var re = /\[[^\]]*?<span>FCKFVWPFlowplayerPlaceholder<\/span>[^\]]*?\]/mi;
-	var re2 = /<span>FCKFVWPFlowplayerPlaceholder<\/span>/gi;
+  var re = /\[[^\]]*?<span style="display: none;">FCKFVWPFlowplayerPlaceholder<\/span>[^\]]*?\]/mi;
+	var re2 = /<span style="display: none;">FCKFVWPFlowplayerPlaceholder<\/span>/gi;
 	
   var hTinyMCE;
   var oEditor;
@@ -229,24 +229,24 @@ function fillSplashInputs(){
   
 	if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
 		//Foliopres WYSIWYG      
-    oEditor.InsertHtml('<span>FCKFVWPFlowplayerPlaceholder</span>');
-    var content_original = oEditor.GetXHTML();
-    console.log(content_original);  
-    oEditor.SetHTML( oEditor.GetXHTML().replace( re2, '' ) );
+    var content_original = oEditor.GetHTML();
+    if (content_original.match( re2 ) == null) {
+      oEditor.InsertHtml('<span style="display: none;">FCKFVWPFlowplayerPlaceholder</span>');
+      content_original = oEditor.GetHTML();
+    }           
 	}
 	else {
 		//Wordpress WYSIWYG
-    hTinyMCE.selection.setContent('<span>FCKFVWPFlowplayerPlaceholder</span>');
-		var content_original = hTinyMCE.getContent();
-    console.log(content_original);	     				
-		hTinyMCE.setContent( hTinyMCE.getContent().replace( re2, '' ) );        
+    var content_original = hTinyMCE.getContent();
+    if (content_original.match( re2 ) == null) {      
+      hTinyMCE.selection.setContent('<span style="display: none;">FCKFVWPFlowplayerPlaceholder</span>');
+      content_original = hTinyMCE.getContent();
+    }		
 	}
   
-  var content = content_original.replace(/\n/g, '\uffff');
+  var content = content_original.replace(/\n/g, '\uffff');    
   
-  var shortcode = content.match( re );
-  
-  console.log(shortcode);
+  var shortcode = content.match( re );    
   
   if( shortcode != null ) {
     shortcode = shortcode.join('');
@@ -367,22 +367,23 @@ function clickOK() {
 	if( content_original.match( re ) ) {
     if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
       //Foliopres WYSIWYG
-      oEditor.SetHTML( content_original.replace( re, shortcode ) );
+      oEditor.SetHTML( content_original.replace( re, shortcode ) );      
     }
     else {		
 			//Wordpress WYSIWYG
-      hTinyMCE.setContent( content_original.replace( re, shortcode ) );					
+      hTinyMCE.setContent( content_original.replace( re, shortcode ) );
     }
   }
   else {
     if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
       //Foliopres WYSIWYG
-      oEditor.SetHTML( content_original.replace( re2, shortcode ) );
+      oEditor.SetHTML( content_original.replace( re2, shortcode ) );      
     }
     else {		
 			//Wordpress WYSIWYG
-      hTinyMCE.setContent( content_original.replace( re2, shortcode ) );					
+      hTinyMCE.setContent( content_original.replace( re2, shortcode ) );
     }
+    //window.parent.send_to_editor( shortcode );
   }
   
   window.parent.tb_remove();
