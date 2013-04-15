@@ -115,9 +115,9 @@
 .flowplayer.is-mouseover .fp-controls,.flowplayer.fixed-controls .fp-controls{height:20px}
 .flowplayer.is-mouseover .fp-fullscreen,.flowplayer.fixed-controls .fp-fullscreen,.flowplayer.is-mouseover .fp-unload,.flowplayer.fixed-controls .fp-unload,.flowplayer.is-mouseover .fp-elapsed,.flowplayer.fixed-controls .fp-elapsed,.flowplayer.is-mouseover .fp-remaining,.flowplayer.fixed-controls .fp-remaining,.flowplayer.is-mouseover .fp-duration,.flowplayer.fixed-controls .fp-duration,.flowplayer.is-mouseover .fp-embed,.flowplayer.fixed-controls .fp-embed,.flowplayer.is-mouseover .fp-logo,.flowplayer.fixed-controls .fp-logo,.flowplayer.is-mouseover .fp-volume,.flowplayer.fixed-controls .fp-volume,.flowplayer.is-mouseover .fp-play,.flowplayer.fixed-controls .fp-play{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.fixed-controls .fp-volume{display:block}
-.flowplayer.fixed-controls .fp-controls{bottom:-20px;}
+.flowplayer.fixed-controls .fp-controls{bottom:0}
 .is-fullscreen.flowplayer.fixed-controls .fp-controls{bottom:0}
-.flowplayer.fixed-controls .fp-time em{bottom:-15px;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);}
+.flowplayer.fixed-controls .fp-time em{bottom:5px;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);}
 .is-fullscreen.flowplayer.fixed-controls .fp-time em{bottom:5px}
 .flowplayer.is-disabled .fp-progress{background-color:#999}
 .flowplayer .fp-embed{position:absolute;top:5px;left:5px;display:block;width:25px;height:20px;background-position:3px -237px}

@@ -68,6 +68,7 @@ function flowplayer_content( $content ) {
     unset($arguments['splash']);
     unset($arguments['splashend']);
     unset($arguments['popup']);
+    unset($arguments['controlbar']);
     unset($arguments['redirect']);
     unset($arguments['loop']);
 		
@@ -198,6 +199,19 @@ function flowplayer_content( $content ) {
 		    preg_match("/splashend=([A-Za-z]*)/i",$ntag,$tmp);
 		  if (isset($tmp[1]))
         $arguments['splashend'] = $tmp[1];
+		}
+    
+    //search for controlbar
+		preg_match("/[\s]+controlbar([\s]|])+/i",$ntag,$tmp);
+		if (isset($tmp[0])){
+      $arguments['controlbar'] = true;
+    }
+		else {
+      preg_match("/controlbar='([A-Za-z]*)'/i",$ntag,$tmp);
+		  if ( $tmp[1] == NULL )
+		    preg_match("/controlbar=([A-Za-z]*)/i",$ntag,$tmp);
+		  if (isset($tmp[1]))
+        $arguments['controlbar'] = $tmp[1];
 		}
     
 		if (trim($media) != '') {

@@ -32,7 +32,7 @@ class flowplayer_frontend extends flowplayer
 		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) ) ? $this->conf['height'] : 240;
 		$popup = '';
 		$autoplay = 'false';
-		$controlbar = 'always';
+		$controlbar = 'hide';
 		
     //check user agents
     $aUserAgents = array('iphone', 'ipod', 'iPad', 'aspen', 'incognito', 'webmate', 'android', 'android', 'dream', 'cupcake', 'froyo', 'blackberry9500', 'blackberry9520', 'blackberry9530', 'blackberry9550', 'blackberry9800', 'Palm', 'webos', 's8000', 'bada', 'Opera Mini', 'Opera Mobi', 'htc_touch_pro');
@@ -47,7 +47,7 @@ class flowplayer_frontend extends flowplayer
 		if (isset($args['autoplay'])&&!empty($args['autoplay'])) $autoplay = trim($args['autoplay']);
 		if (isset($args['width'])&&!empty($args['width'])) $width = trim($args['width']);
 		if (isset($args['height'])&&!empty($args['height'])) $height = trim($args['height']);
-		if (isset($args['controlbar'])&&($args['controlbar']=='show')) $controlbar = 'never';
+		if (isset($args['controlbar'])&&($args['controlbar']=='show')) $controlbar = 'show';
     if (isset($args['redirect'])&&!empty($args['redirect'])) $redirect = trim($args['redirect']);
     $scaling = "scale";
 		if (isset($this->conf['scaling'])&&($this->conf['scaling']=="true"))
@@ -139,6 +139,9 @@ class flowplayer_frontend extends flowplayer
     $ret['html'] = '<div id="wpfp_' . $hash . '" class="flowplayer';
     if ($autoplay == 'false') {
       $ret['html'] .= ' is-splash';
+    }
+    if ($controlbar == 'show') {
+      $ret['html'] .= ' fixed-controls';
     }
     $ret['html'] .= '"';
     $ret['html'] .= ' style="width: ' . $width . 'px; height: ' . $height . 'px"';
