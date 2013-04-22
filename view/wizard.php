@@ -215,8 +215,8 @@ function fillSplashInputs(){
 </form>
 
 <script type="text/javascript">
-  var re = /\[[^\]]*?<span style="display: none;">FCKFVWPFlowplayerPlaceholder<\/span>[^\]]*?\]/mi;
-	var re2 = /<span style="display: none;">FCKFVWPFlowplayerPlaceholder<\/span>/gi;
+  var re = /\[[^\]]*?<span rel="FCKFVWPFlowplayerPlaceholder"><\/span>[^\]]*?\]/mi;
+	var re2 = /<span rel="FCKFVWPFlowplayerPlaceholder"><\/span>/gi;
 	
   var hTinyMCE;
   var oEditor;
@@ -231,15 +231,16 @@ function fillSplashInputs(){
 		//Foliopres WYSIWYG      
     var content_original = oEditor.GetHTML();
     if (content_original.match( re2 ) == null) {
-      oEditor.InsertHtml('<span style="display: none;">FCKFVWPFlowplayerPlaceholder</span>');
+      oEditor.InsertHtml('<span rel="FCKFVWPFlowplayerPlaceholder"></span>');
       content_original = oEditor.GetHTML();
     }           
 	}
 	else {
 		//Wordpress WYSIWYG
     var content_original = hTinyMCE.getContent();
+    hTinyMCE.settings.validate = false;
     if (content_original.match( re2 ) == null) {      
-      hTinyMCE.selection.setContent('<span style="display: none;">FCKFVWPFlowplayerPlaceholder</span>');
+      hTinyMCE.selection.setContent('<span rel="FCKFVWPFlowplayerPlaceholder"></span>');
       content_original = hTinyMCE.getContent();
     }		
 	}
@@ -374,7 +375,8 @@ function clickOK() {
       hTinyMCE.setContent( content_original.replace( re, shortcode ) );
     }
   }
-  else {
+  else
+  if ( content_original != '' ) {
     if( hTinyMCE == undefined || window.parent.tinyMCE.activeEditor.isHidden() ) {
       //Foliopres WYSIWYG
       oEditor.SetHTML( content_original.replace( re2, shortcode ) );      
@@ -384,6 +386,9 @@ function clickOK() {
       hTinyMCE.setContent( content_original.replace( re2, shortcode ) );
     }
     //window.parent.send_to_editor( shortcode );
+  }
+  else {
+    window.parent.send_to_editor( shortcode );
   }
   
   window.parent.tb_remove();
