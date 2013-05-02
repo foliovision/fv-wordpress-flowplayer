@@ -46,7 +46,7 @@ class flowplayer {
     if( !isset( $conf['postthumbnail'] ) ) $conf['postthumbnail'] = 'false';
     if( !isset( $conf['tgt'] ) ) $conf['tgt'] = 'backgroundcolor';
     if( !isset( $conf['backgroundColor'] ) ) $conf['backgroundColor'] = '#333333';
-    if( !isset( $conf['canvas'] ) ) $conf['canvas'] = '#ffffff';
+    if( !isset( $conf['canvas'] ) ) $conf['canvas'] = '#000000';
     if( !isset( $conf['sliderColor'] ) ) $conf['sliderColor'] = '#ffffff';
     if( !isset( $conf['buttonColor'] ) ) $conf['buttonColor'] = '#ffffff';
     if( !isset( $conf['buttonOverColor'] ) ) $conf['buttonOverColor'] = '#ffffff';

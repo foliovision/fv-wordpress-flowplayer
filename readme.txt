@@ -156,6 +156,9 @@ Playlist feature is not supported right now.
 
 == Changelog ==
 
+= 2.1 =
+* small interface changes
+
 = 2.0 =
 * upgrade to Flowplayer 5
 

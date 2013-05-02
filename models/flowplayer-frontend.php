@@ -89,7 +89,7 @@ class flowplayer_frontend extends flowplayer
 				$popup = 'Would you like to replay the video or share the video with your friends?';
 			}
       $show_popup = true;
-			$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup" style="display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 90%; padding: 0 5%; color: #fff;">'.$popup.'</div>';
+			$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup" style="display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff;"><div style="background: ' . trim($this->conf['backgroundColor']) . '; padding: 1% 5%; width: 65%; margin: 0 auto;">'.$popup.'</div></div>';
       $ret['script'] .= "
         jQuery('#wpfp_".$hash."').bind('finish', function() {          
           jQuery('#wpfp_".$hash."_custom_popup').show();            

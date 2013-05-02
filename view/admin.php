@@ -26,20 +26,18 @@
   <div>
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
-  </div>	
-  <?php if( !get_option( 'fvwpflowplayer_ad_disable' ) ) : ?>
+  </div>	  
+  <?php if (isset($fp->conf['key']) && $fp->conf['key'] == 'false') : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
 				<h2>FV Wordpress<strong>Flowplayer</strong></h2>
-				<span class="red-text">With your own branding</span>
+				<span class="red-text">with your own branding</span>
 					<ul>
 					<li>Put up your own logo</li>
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-					<center>
-						<a href="http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer#license" class="red-button">License starts at $80 per site</a></p>
-					</center>
+						<a href="http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer#license" class="red-button"><strong>May Day Launch Special!</strong><br />License Half Price</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer#license">
@@ -145,7 +143,7 @@
 						<td><input type="text" size="40" name="logo" id="logo" value="<?php echo trim($fp->conf['logo']); ?>" /></td>
 					</tr>
 					<tr>    		    		
-						<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=image&TB_iframe=true&width=500&height=300 ?>" class="thickbox" >open media library</a> to upload logo.</td>
+						<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=fvplayer_logo&TB_iframe=true&width=500&height=300" class="thickbox" >open media library</a> to upload logo.</td>
 					</tr>      
 					<tr>
 						<td><label for="rtmp">Amazon CloudFront domain:</label></td>
