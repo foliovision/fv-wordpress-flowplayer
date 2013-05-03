@@ -4,7 +4,7 @@ Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 1.2.17
+Stable tag: 2.1
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
 
