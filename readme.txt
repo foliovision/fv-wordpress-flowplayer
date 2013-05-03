@@ -1,7 +1,7 @@
 === FV Wordpress Flowplayer ===
 Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
-Tags: video, flash, flowplayer, player, jwplayer
+Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video
 Requires at least: 3.5
 Tested up to: 3.5.1
 Stable tag: 1.2.17
@@ -10,9 +10,25 @@ Embed videos (FLV, H.264, and MP4) into posts or pages.
 
 == Description ==
 
-FV Wordpress Flowplayer plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. 
+FV Wordpress Flowplayer plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Wordpress Flowplayer offers 98% coverage even on mobile devices.
 
-* Plugin contains unmodified opensource version of Flowplayer 5. 
+* FV Flowplayer 5 is the only completely responsive WordPress video player.
+* Custom start and end screens are built right in. You can use your own custom design before and after the video.
+* Enjoy unlimited instances in a single page.
+* No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Flowplayer all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
+* Beautiful playlists which you can skin with CSS.
+* Ultra-efficient player: just 43kB of JavaScript and 4kB of Flash code. You can extend Flowplayer using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
+* Full support for Amazon S3 and other CDN's.
+* Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
+
+To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy).
+
+Licenses are on a May Day half price launch sale for May 2013. Don't miss out.
+
+**Additional Technical information**
+
+* Plugin based on opensource version of Flowplayer 5. 
 * Supported video formats are FLV, H.264, and MP4 ([read Flowplayer article](http://flowplayer.org/docs/#video-formats)). Multiple videos can be displayed in one post or page.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with Wordpress Flowplayer plugin, there are several improvements:
