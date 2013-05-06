@@ -177,8 +177,8 @@
 							</ul>
 							<p>
 							The previous version of FV Wordpress Flowplayer uses flash based technology and <code>[flowplayer]</code> shortcode.
-							This version uses HTML5 (with flash fallback) technology with <code>[fvplayer]</code> shortcode.
-							I order to play all videos in HTML5, you have to manually replace the shortcodes or you can run the conversion script.
+							This version uses HTML5 (with flash fallback) technology with both <code>[fvplayer]</code> and <code>[flowplayer]</code> shortcode.
+							You can run the conversion script. To make sure you only use <code>[fvplayer]</code>.
 							<strong>Before running the conversion script, do a backup of your database!</strong>
 							</p>     
 							<input style="float: left; margin-bottom: 10px;" type="button" name="convert" class="button-primary" value="Run Conversion Script" onclick="flowplayer_conversion_script()"/>
