@@ -88,7 +88,7 @@ If you want to autobuffer, you can turn that on in the options (we turn it off b
 
 = My videos are hosted with Amazon S3 service. How can I fill the details into shortcode? =
 
-Currently there is no support for Amazon S3 service, this feature might be added in the future. 
+Just enter the URL of your video hosted on Amazon S3 as the video source.
 
 = The spinning circle is off centre when the video is loading. =
 
