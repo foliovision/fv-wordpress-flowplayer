@@ -4,7 +4,7 @@ Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 2.1
+Stable tag: 2.1.1
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
 
@@ -172,11 +172,16 @@ Playlist feature is not supported right now.
 
 == Changelog ==
 
+= 2.1.1 =
+* fix for browser caching
+* upgrade to latest core Flowplayer (5.4.1)
+
 = 2.1 =
 * small interface changes
 
 = 2.0 =
 * upgrade to Flowplayer 5
+* fixes in the shortcode editor
 
 = 1.2.17 =
 * bugfix for wp-content paths
