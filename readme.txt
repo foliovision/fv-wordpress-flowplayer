@@ -40,13 +40,13 @@ Licenses are on a May Day half price launch sale for May 2013. Don't miss out.
 	5. Allows to upload videos and images through WP Media Library
 	6. Does not use configuration file, but Wordpress Options
 
-**[Download now!](http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer)**
+**[Download now!](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer)**
 
 [Support](http://foliovision.com/support/fv-wordpress-flowplayer/) |
-[Change Log](http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer/changelog) |
-[Installation](http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer/installation)|
-[Usage](http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
-[FAQ](http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer/faq)
+[Change Log](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/changelog) |
+[Installation](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation)|
+[Usage](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
+[FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
 
 
 == Installation ==
