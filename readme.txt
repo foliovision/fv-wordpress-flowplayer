@@ -10,7 +10,9 @@ Embed videos (FLV, H.264, and MP4) into posts or pages.
 
 == Description ==
 
-FV Wordpress Flowplayer plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Wordpress Flowplayer offers 98% coverage even on mobile devices.
+Custom HTML 5 video on your own site with Flash fallback for legacy browsers is here.
+
+FV Wordpress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Wordpress Flowplayer offers 98% coverage even on mobile devices.
 
 * FV Flowplayer 5 is the only completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
@@ -24,7 +26,7 @@ FV Wordpress Flowplayer plugin is a free, easy-to-use, and complete solution for
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy).
 
-Licenses are on a May Day half price launch sale for May 2013. Don't miss out.
+Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
 
 **Additional Technical information**
 
@@ -60,6 +62,17 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
 
    
 == Frequently Asked Questions ==
+
+= What if the FV Flowplayer 5 doesn't work for me? =
+
+No worries.
+
+1. You can always downgrade to version the Flash version. You do lose a lot of mobile and iOS capability but you didn't have it in the first place.
+1. Contact us via [support](http://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
+
+FV Flowplayer 5 Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
+
+Thank you for being part of the HMTL 5 mobile video revolution!
 
 = I get an error message like this when activating the plugin: Parse error: parse error, unexpected T_STRING, expecting T_OLD_FUNCTION or T_FUNCTION or T_VAR or '}' in /wp-content/plugins/fv-wordpress-flowplayer/models/flowplayer.php on line 4 =
 
@@ -175,6 +188,9 @@ Playlist feature is not supported right now.
 = 2.1.1 =
 * fix for browser caching
 * upgrade to latest core Flowplayer (5.4.1)
+* additional fixes for smooth install (more compatible default settings)
+* lightening of branding
+* apologies to anyone who faced difficulties with the initial 2.1 version: FV Flowplayer 5 should work for you now
 
 = 2.1 =
 * small interface changes
