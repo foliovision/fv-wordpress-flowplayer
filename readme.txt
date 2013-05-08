@@ -103,14 +103,6 @@ If you want to autobuffer, you can turn that on in the options (we turn it off b
 
 Just enter the URL of your video hosted on Amazon S3 as the video source.
 
-= The spinning circle is off centre when the video is loading. =
-
-This happens when you set width and height of the video other than are native dimensions. We recommend to use native dimensions of the video when placing on a webpage. 
-
-= The splash image and controlbar are not working properly in widgets. =
-
-Please upgrade to version at least 1.0.6.
-
 = I would like to localize the play again button. =
 
 Currently there is no support for other languages. Some localizations for Flowplayer exists, but there is no official support from flowplayer.org.
@@ -131,18 +123,6 @@ Fill the Flowplayer shortcode part according to your needs. The apply filter nee
 
 The black border is defined in the style sheet, located in the /css/flowplayer.css at line 6
 
-= I do own a license key and I would like to use the latest version Flowplayer provided to me. =
-
-Replace the /flowplayer/commercial/flowplayer.swf with the newest Flowplayer (strip out additional version numbers from the file name). Go to admin section and enter your licence key. Don't forget to click 'Apply changes', and you're ready to use your commercial version. 
-
-= How do I change the size of the play button? =
-
-The size is defined to be 83x83px, defined in /modules/flowplayer-frontend.php line 118.
-
-= How do I change the position of the play button? =
-
-The position of the play button is defined at two places, first is the css file (.splash_play_button) and in the /modules/flowplayer-frontend.php (line 118, starting with $splash = ...). To modify the vertical position modify top=round($height/2-45) to your custom value. Try for example values like 0 or $height to move the play button up or down.
-
 = When viewing the video in fullscreen mode, it is stretched and looks deformed. =
 
 If you have version 1.2.2 or higher, than go to settings and set Fit scaling to true.
@@ -152,10 +132,6 @@ For versions below 1.2.2, this happens because the scaling is set by default to 
 scaling: \'fit\',
 
 Also don't forget comma at the end of the line where appropriate. Be aware that this scaling will affect also non-fullscreen mode, which might result into borders around your video if the dimensions are not properly set.
-
-= How can I style the popup? =
-
-Check out .flowplayer_popup and .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
 
 = How can I style the popup? =
 
