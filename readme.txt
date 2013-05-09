@@ -63,17 +63,6 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    
 == Frequently Asked Questions ==
 
-= What if the FV Flowplayer 5 doesn't work for me? =
-
-No worries.
-
-1. You can always downgrade to version the Flash version. You do lose a lot of mobile and iOS capability but you didn't have it in the first place.
-1. Contact us via [support](http://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
-
-FV Flowplayer 5 Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
-
-Thank you for being part of the HMTL 5 mobile video revolution!
-
 = My video doesn't play in some browsers. =
 
 This should be related to your video format or mime type issues.
@@ -149,6 +138,17 @@ No at the moment we do not support looping.
 = How do I insert videos in playlist? =
 
 Playlist feature is not supported right now.
+
+= What if the FV Flowplayer 5 doesn't work for me? =
+
+No worries.
+
+1. You can always downgrade to version the Flash version. You do lose a lot of mobile and iOS capability but you didn't have it in the first place.
+1. Contact us via [support](http://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
+
+FV Flowplayer 5 Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
+
+Thank you for being part of the HMTL 5 mobile video revolution!
 
 =======
 
