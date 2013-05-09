@@ -74,6 +74,22 @@ FV Flowplayer 5 Pro comes with a money back guarantee so you can even try the co
 
 Thank you for being part of the HMTL 5 mobile video revolution!
 
+= My video doesn't play in some browsers. =
+
+This should be related to your video format or mime type issues.
+
+Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
+
+Please note that MP4 is just a container, it might contain various streams for audio and video. You should check if the video stream in your MP4 is H.264 aka MPEG-4 AVC or MPEG-4 Part 10 and if audio is using AAC: http://flowplayer.org/docs/encoding.html#codecs
+
+Using MPEG-4 Visual or MPEG-4 Part 2 is not recommended as it might cause issues in Internet Explorer HTML5 mode.
+
+In general, it's recommended to use constant frame rate: http://flowplayer.org/docs/encoding.html#general-advice
+
+You should also check if your server is serving your video file with the proper mime type. Just copy full video URL and check it with this tool: http://web-sniffer.net/
+
+You need to look at "Content-Type:" in the "HTTP Response Header" section. It should not be "video/mpeg" if your video is MP4.
+
 = I get an error message like this when activating the plugin: Parse error: parse error, unexpected T_STRING, expecting T_OLD_FUNCTION or T_FUNCTION or T_VAR or '}' in /wp-content/plugins/fv-wordpress-flowplayer/models/flowplayer.php on line 4 =
 
 You need to use at least PHP 5, your site is probably still running on old PHP 5. 
