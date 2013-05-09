@@ -152,6 +152,10 @@ You need to copy the CSS from the Flowplayer CSS (default theme) and put it into
 
 The image needs to be 100x106px normal version nad 200x212px hi res version. You only have to include the RTL version if your site runs in such language.
 
+= Volume control in player looks weird =
+
+Make sure you are not using obsolete tags like &lt;center&gt; to wrap the video. Such tag is not supported in HTML5, you have to use CSS to center elements.
+
 = What if the FV Flowplayer 5 doesn't work for me? =
 
 No worries.
