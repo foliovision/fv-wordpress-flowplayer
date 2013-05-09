@@ -79,7 +79,7 @@ You should also check if your server is serving your video file with the proper 
 
 You need to look at "Content-Type:" in the "HTTP Response Header" section. It should not be "video/mpeg" if your video is MP4.
 
-It seems HTML5 is more picky about what video it can play. You can also try to downgrade to FV Wordpress Flowplayer 1.2.17 which used Flash version of Flowplayer, here's how: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/downgrading
+It seems HTML5 is more picky about what video it can play.
 
 = I get an error message like this when activating the plugin: Parse error: parse error, unexpected T_STRING, expecting T_OLD_FUNCTION or T_FUNCTION or T_VAR or '}' in /wp-content/plugins/fv-wordpress-flowplayer/models/flowplayer.php on line 4 =
 
@@ -143,7 +143,7 @@ Playlist feature is not supported right now.
 
 No worries.
 
-1. You can always downgrade to version the Flash version. You do lose a lot of mobile and iOS capability but you didn't have it in the first place.
+1. You can always downgrade to version the Flash version ([here's how](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/downgrading)). You do lose a lot of mobile and iOS capability but you didn't have it in the first place.
 1. Contact us via [support](http://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
 
 FV Flowplayer 5 Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
