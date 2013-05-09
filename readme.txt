@@ -90,17 +90,15 @@ You should also check if your server is serving your video file with the proper 
 
 You need to look at "Content-Type:" in the "HTTP Response Header" section. It should not be "video/mpeg" if your video is MP4.
 
+It seems HTML5 is more picky about what video it can play. You can also try to downgrade to FV Wordpress Flowplayer 1.2.17 which used Flash version of Flowplayer, here's how: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/downgrading
+
 = I get an error message like this when activating the plugin: Parse error: parse error, unexpected T_STRING, expecting T_OLD_FUNCTION or T_FUNCTION or T_VAR or '}' in /wp-content/plugins/fv-wordpress-flowplayer/models/flowplayer.php on line 4 =
 
-You need to use at least PHP 5, your site is probably still running on old PHP 5. 
+You need to use at least PHP 5, your site is probably still running on old PHP 4. 
 
 = I installed the plugin, inserted the video, but it's not working, only a gray box appears. =
 
 FV Flowplayer calls some javascript from the footer. That means your footer.php file must contain the &lt;?php wp_footer(); ?&gt; Wordpress hook. Almost all themes do this out of the box, but if you've customised your theme there's a chance that you might have deleted this call.
-
-= I tried to change some setting in the admin section, but without effect.  =
-
-If you used v1.0.4 or less, please make sure, that configuration file wpfp.conf is writable (666 permissions).
 
 = You player works just fine, but there are some weird display issues. =
 
@@ -135,23 +133,9 @@ echo apply_filters('the_content', '[flowplayer src=yourvideo.mp4 width=240 heigh
 
 Fill the Flowplayer shortcode part according to your needs. The apply filter needs to be called because the flowplayer shortcodes are not parsen outside posts automatically. Also, please do not forget to add the echo at the beginning.
 
-= How can I remove the black border around the video? =
-
-The black border is defined in the style sheet, located in the /css/flowplayer.css at line 6
-
-= When viewing the video in fullscreen mode, it is stretched and looks deformed. =
-
-If you have version 1.2.2 or higher, than go to settings and set Fit scaling to true.
-
-For versions below 1.2.2, this happens because the scaling is set by default to fill. If you wish the video show up with correct aspect ratio, you need to add following piece of code into flowplayer-frontend.php, around the line 155 into the clip section:
-
-scaling: \'fit\',
-
-Also don't forget comma at the end of the line where appropriate. Be aware that this scaling will affect also non-fullscreen mode, which might result into borders around your video if the dimensions are not properly set.
-
 = How can I style the popup? =
 
-Check out .flowplayer_popup and .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
+Check out .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
 
 = My videos are taking long time to load. =
 
