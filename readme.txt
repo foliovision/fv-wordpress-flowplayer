@@ -81,6 +81,10 @@ You need to look at "Content-Type:" in the "HTTP Response Header" section. It sh
 
 It seems HTML5 is more picky about what video it can play.
 
+= Does this plugin support Shoutcast? =
+
+Unfortunatelly HTML5 does not support live broadcasting. Please read about it here under "Flash. The good parts": http://flowplayer.org/docs/#flash
+
 = I get an error message like this when activating the plugin: Parse error: parse error, unexpected T_STRING, expecting T_OLD_FUNCTION or T_FUNCTION or T_VAR or '}' in /wp-content/plugins/fv-wordpress-flowplayer/models/flowplayer.php on line 4 =
 
 You need to use at least PHP 5, your site is probably still running on old PHP 4. 
