@@ -63,23 +63,27 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    
 == Frequently Asked Questions ==
 
-= My video doesn't play in some browsers. =
+= My video doesn't play in some browsers =
 
 This should be related to your video format or mime type issues.
 
 Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
 
-Please note that MP4 is just a container, it might contain various streams for audio and video. You should check if the video stream in your MP4 is H.264 aka MPEG-4 AVC or MPEG-4 Part 10 and if audio is using AAC: http://flowplayer.org/docs/encoding.html#codecs
-
-Using MPEG-4 Visual or MPEG-4 Part 2 is not recommended as it might cause issues in Internet Explorer HTML5 mode.
+Please note that MP4 is just a container, it might contain various streams for audio and video. You should check if the video stream in your MP4 is using H.264 aka MPEG-4 AVC or MPEG-4 Part 10 codec and if audio is using AAC codec: http://flowplayer.org/docs/encoding.html#codecs
 
 In general, it's recommended to use constant frame rate: http://flowplayer.org/docs/encoding.html#general-advice
 
+It seems HTML5 is more picky about what video it can play.
+
+= My video doesn't play in Internet Explorer 9 and 10 =
+
+Please first read the first question to learn more about video formats and codecs.
+
+For Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
+
 You should also check if your server is serving your video file with the proper mime type. Just copy full video URL and check it with this tool: http://web-sniffer.net/
 
-You need to look at "Content-Type:" in the "HTTP Response Header" section. It should not be "video/mpeg" if your video is MP4.
-
-It seems HTML5 is more picky about what video it can play.
+You need to look at "Content-Type:" in the "HTTP Response Header" section. For MP4 file it should be "video/mp4". Some servers use "video/mpeg" and that is causing problems in Internet Explorer.
 
 = Does this plugin support Shoutcast? =
 
