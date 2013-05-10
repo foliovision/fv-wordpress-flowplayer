@@ -21,13 +21,15 @@ global $fv_wp_flowplayer_core_ver;
   }
 ?>
 <style type="text/css">
-  .flowplayer .fp-controls { background-color: <?php echo trim($this->conf['backgroundColor']); ?> !important; }
-  .flowplayer { background-color: <?php echo trim($this->conf['canvas']); ?> !important; }
-  .flowplayer .fp-duration { color: <?php echo trim($this->conf['durationColor']); ?> !important; }
-  .flowplayer .fp-elapsed { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
-  .flowplayer .fp-volumelevel { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }  
-  .flowplayer .fp-volumeslider { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
-  .flowplayer .fp-timeline { background-color: <?php echo trim($this->conf['timelineColor']); ?> !important; }
-  .flowplayer .fp-progress { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }
-  .flowplayer .fp-buffer { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
+	.flowplayer, flowplayer * { margin: 0 auto; display: block; }
+	.flowplayer .fp-controls { background-color: <?php echo trim($this->conf['backgroundColor']); ?> !important; }
+	.flowplayer { background-color: <?php echo trim($this->conf['canvas']); ?> !important; }
+	.flowplayer .fp-duration { color: <?php echo trim($this->conf['durationColor']); ?> !important; }
+	.flowplayer .fp-elapsed { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
+	.flowplayer .fp-volume { text-align: left; }
+	.flowplayer .fp-volumelevel { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }  
+	.flowplayer .fp-volumeslider { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
+	.flowplayer .fp-timeline { background-color: <?php echo trim($this->conf['timelineColor']); ?> !important; }
+	.flowplayer .fp-progress { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }
+	.flowplayer .fp-buffer { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
 </style>

@@ -1,10 +1,10 @@
 === FV Wordpress Flowplayer ===
 Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
-Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video
+Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
 
@@ -84,6 +84,10 @@ For Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 
 You should also check if your server is serving your video file with the proper mime type. Just copy full video URL and check it with this tool: http://web-sniffer.net/
 
 You need to look at "Content-Type:" in the "HTTP Response Header" section. For MP4 file it should be "video/mp4". Some servers use "video/mpeg" and that is causing problems in Internet Explorer.
+
+*If you host videos on Amazon AWS:*
+
+They might be served with bad mime type too - "application/octet-stream". This largely depends on the tool which you use to upload your videos. Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object's "Properties" pane and fix it to "video/mp4" (without the quotes, of course different video formats need different mime type, this one is for MP4). There are also tools for this, like S3 Browser Freeware, good place for start is here: https://forums.aws.amazon.com/thread.jspa?messageID=224446
 
 = Does this plugin support Shoutcast? =
 
@@ -185,6 +189,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 4. Configuration menu for administrators.
 
 == Changelog ==
+
+= 2.1.2 =
+* fix for player alignment (center by default)
+* fix for volume bar alignment (was not working properly when using obsolete &lt;center&gt; tags)
 
 = 2.1.1 =
 * fix for browser caching
@@ -317,7 +325,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * First stable version ready to be published.
 * Removed farbtastic colour picker using jQuery from settings menu. Substituted by jscolor.
 
-== Configuration ==
+== Other Notes ==
+
+This new version uses Flowplayer 5 running on HTML5, so we recommend you read first two questions of FAQ first.
 
 Once the plugin is uploaded and activated, there will be a submenu of settings menu called FV Wordpress Flowplayer. In that submenu, you can modify following settings:
 
