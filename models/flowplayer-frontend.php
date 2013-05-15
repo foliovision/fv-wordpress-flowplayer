@@ -4,6 +4,9 @@
  */
 class flowplayer_frontend extends flowplayer
 {
+
+	var $ajax_count = 0;
+
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
 	 * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
@@ -28,8 +31,8 @@ class flowplayer_frontend extends flowplayer
     // unique coe for this player
 		$hash = md5($media.$this->_salt());
 		// setting argument values
-		$width =  ( isset($this->conf['width']) && (!empty($this->conf['width'])) ) ? $this->conf['width'] : 320;
-		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) ) ? $this->conf['height'] : 240;
+		$width =  ( isset($this->conf['width']) && (!empty($this->conf['width'])) && intval($this->conf['width']) > 0 ) ? $this->conf['width'] : 320;
+		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) && intval($this->conf['height']) > 0 ) ? $this->conf['height'] : 240;
 		$popup = '';
 		$autoplay = 'false';
 		$controlbar = 'hide';
@@ -103,6 +106,39 @@ class flowplayer_frontend extends flowplayer
       $splashend_contents = '<div id="wpfp_'.$hash.'_custom_background" class="wpfp_custom_background" style="display: none; position: absolute; background: url('.$splash_img.') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
     }	
     
+    //  change engine for IE9 and 10
+    
+    if( $this->conf['engine'] == 'default' ) {
+    	$admin_note_addition = 'Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+    	$ret['script'] .= "
+    		if( jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9 ) {
+    			jQuery('#wpfp_".$hash."').attr('data-engine','flash');
+    		}
+    		";
+    }
+    
+    if( preg_match( '~\.mp4$~', trim($media) ) && current_user_can('manage_options') && $this->ajax_count < 10 ) {
+    	$this->ajax_count++;
+      $ret['script'] .= "
+      	jQuery(document).ready( function() { 
+					var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
+					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$media."' }, function( response ) {
+						var obj = (jQuery.parseJSON( response ) );
+						if( obj[0] == 'bad mime type' ) {
+							jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice\"><p>Admin note: This MP4 video has bad mime type of '+obj[1]+', so it won\'t play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p></div>');							
+						}
+					} );             
+        } );
+      ";
+    }
+    
+    //  proper fallback on error?
+    /*$ret['script'] .= "jQuery('#wpfp_".$hash."').bind('error', function(e, api, error) {
+      if( error.code == 4 ) {
+        jQuery('#wpfp_".$hash."').attr('data-engine','flash');
+      }
+    } );";*/    
+    
     $ret['script'] .= "
       jQuery('#wpfp_".$hash."').bind('finish', function() {";
     //if redirection is set
@@ -131,7 +167,7 @@ class flowplayer_frontend extends flowplayer
         ".($show_popup ? "jQuery('#wpfp_".$hash."_custom_popup').hide();" : "")."
         ".($show_splashend ? "jQuery('#wpfp_".$hash."_custom_background').hide();" : "")."
       })";
-    $ret['script'] .= "})";
+    $ret['script'] .= "});";
       
     if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
       $autoplay = 'true';
@@ -143,7 +179,12 @@ class flowplayer_frontend extends flowplayer
     if ($controlbar == 'show') {
       $ret['html'] .= ' fixed-controls';
     }
-    $ret['html'] .= '"';
+    $ret['html'] .= '"';   
+    
+    if( $this->conf['engine'] == 'flash' || $args['engine'] == 'flash' ) {
+      $ret['html'] .= ' data-engine="flash"';
+    }
+    
     $ret['html'] .= ' style="width: ' . $width . 'px; height: ' . $height . 'px"';
     $ret['html'] .= ' data-swf="'.RELATIVE_PATH.'/flowplayer/flowplayer.swf"';
     if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
@@ -164,12 +205,11 @@ class flowplayer_frontend extends flowplayer
     }
     if (isset($this->conf['allowfullscreen']) && $this->conf['allowfullscreen'] == 'false') {
       $ret['html'] .= ' data-fullscreen="false"';
-    } 
+    }       
     if ($width > $height) {
       $ratio = round($height / $width, 4);   
     }
-    else
-    if ($height > $width) {
+    else if ($height > $width) {
       $ratio = round($width / $height, 4);
     }     
     $ret['html'] .= ' data-ratio="' . $ratio . '"';

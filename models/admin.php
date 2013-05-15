@@ -60,6 +60,7 @@
 						</td>
 						<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
 							<div class="flowplayer is-splash"
+							<?php if ($fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
 							data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
 							data-ratio="0.417" 
 							style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"

@@ -14,6 +14,9 @@ $fp = new flowplayer_backend();
 /**
  * WP Hooks
  */
+add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype'); 
+add_action('wp_ajax_nopriv_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
+ 
 add_action('admin_head', 'flowplayer_head');
 add_action('admin_menu', 'flowplayer_admin');
 add_action('media_buttons', 'flowplayer_add_media_button', 30);
@@ -57,6 +60,7 @@ add_action('admin_print_styles', 'flowplayer_print_styles');
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
 add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
+
 function flowplayer_activate() {
   global $wpdb;
   
@@ -76,6 +80,7 @@ function flowplayer_activate() {
     update_option('fvwpflowplayer_conversion', 1);
   }
 }
+
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -244,6 +249,7 @@ function fp_media_send_to_settings($html, $attachment_id, $attachment) {
   }
 }
 
+
 /**
  * Administrator environment function.
  */
@@ -259,6 +265,8 @@ function flowplayer_admin () {
 			);
 	}
 }
+
+
 /**
  * Outputs HTML code for bool options based on arg passed.
  * @param string Currently selected value ('true' or 'false').
@@ -278,6 +286,8 @@ function flowplayer_bool_select($current) {
   }
   return $html;
 }
+
+
 /**
  * Displays administrator menu with configuration.
  */
@@ -286,23 +296,17 @@ function flowplayer_page() {
   $fp = new flowplayer();
 	include dirname( __FILE__ ) . '/../view/admin.php';
 }
+
+
 /**
  * Checks for errors regarding access to configuration file. Displays errors if any occur.
  * @param object $fp Flowplayer class object.
  */
 function flowplayer_check_errors($fp) {
-	$html = '';
-	// config file checks, exists, readable, writeable
-	$conf_file = realpath(dirname(__FILE__)).'/wpfp.conf';  //Zdenka: I think here should be /../
-	if(!file_exists($conf_file)){
-		$html .= '<h3 style="font-weight: bold; color: #ff0000">'.$conf_file.' Does not exist please create it</h3>';
-	} elseif(!is_readable($conf_file)){
-		$html .= '<h3 style="font-weight: bold; color: #ff0000">'.$conf_file.' is not readable please check file permissions</h3>';
-	} elseif(!is_writable($conf_file)){
-		$html .= '<h3 style="font-weight: bold; color: #ff0000">'.$conf_file.' is not writable please check file permissions</h3>';
-	}
-//	return $html;  //Zdenka : Why is this not here?
+
 }
+
+
 function flowplayer_add_media_button() {
   if( stripos( $_SERVER['REQUEST_URI'], 'post.php' ) === FALSE && stripos( $_SERVER['REQUEST_URI'], 'post-new.php' ) === FALSE ) {
     return;
@@ -324,14 +328,17 @@ function flowplayer_add_media_button() {
 	echo '<a title="Add FV WP Flowplayer" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
 }
 
+
 function flowplayer_print_scripts() {
   wp_enqueue_script('media-upload');
   wp_enqueue_script('thickbox');
 }
 
+
 function flowplayer_print_styles() {
   wp_enqueue_style('thickbox');
 }
+
 
 function flowplayer_conversion_script() {
   global $wpdb;
@@ -362,6 +369,7 @@ function flowplayer_conversion_script() {
   die();
 }
 
+
 function fv_wp_flowplayer_admin_notice() {
   $conversion = false; //(bool)get_option('fvwpflowplayer_conversion');
   if ($conversion) {
@@ -381,8 +389,6 @@ function fv_wp_flowplayer_admin_notice() {
 }
 
 
-
-
 function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
   if( $page !== 'post.php' && $page !== 'post-new.php' ) {
     return;
@@ -396,16 +402,21 @@ function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
 
 
 /*
-Trick media uploader to show video only, while making sure we use our custom type
+Trick media uploader to show video only, while making sure we use our custom type; Also save options
 */
 function fv_wp_flowplayer_admin_init() {
   if( $_GET['type'] == 'fvplayer_video' || $_GET['type'] == 'fvplayer_video_1' || $_GET['type'] == 'fvplayer_video_2' ) {
     $_GET['post_mime_type'] = 'video';
   }
-  else
-  if( $_GET['type'] == 'fvplayer_splash' || $_GET['type'] == 'fvplayer_logo' ) {
+  else if( $_GET['type'] == 'fvplayer_splash' || $_GET['type'] == 'fvplayer_logo' ) {
     $_GET['post_mime_type'] = 'image';
   }
+  
+  if( isset($_POST['fv-wp-flowplayer-submit']) ) {
+  	global $fp;
+		$fp->_set_conf();
+    $fp = new flowplayer();
+	}
 }   
 
 
@@ -439,5 +450,26 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 		endif;
 	}
 }
+ 
+ 
+function fv_wp_flowplayer_check_mimetype() {
+  if( isset( $_POST['media'] ) && stripos( $_POST['media'], '.mp4' ) !== FALSE && strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+    $headers = get_headers( trim($_POST['media']) );
+    if( $headers ) {
+      foreach( $headers AS $line ) {
+        if( stripos( $line, 'Content-Type:' ) !== FALSE ) {
+          if( !preg_match( '~video/mp4$~', $line ) ) {
+            preg_match( '~Content-Type: (\S+)$~', $line, $match );
+            echo json_encode( array( 'bad mime type', $match[1] ) );
+            die();
+          }
+        }
+      }
+    }
+    die('1');
+  }
+  
+  die('-1');
+} 
  
 ?>

@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Needed includes
  */
 include_once(dirname( __FILE__ ) . '/../models/flowplayer.php');
 include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
+
 /**
  * WP Hooks 
  */
@@ -246,4 +248,5 @@ function flowplayer_display_scripts() {
 function flowplayer($shortcode) {
 	echo apply_filters('the_content',$shortcode);
 }
+
 ?>

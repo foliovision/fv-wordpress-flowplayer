@@ -1,5 +1,8 @@
 <?php
-class flowplayer {
+
+require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
+
+class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	private $count = 0;
 	/**
 	 * Relative URL path
@@ -23,6 +26,13 @@ class flowplayer {
 	public function __construct() {
 		//load conf data into stack
 		$this->_get_conf();
+		
+		if( is_admin() ) {
+		  $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';    
+		  if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
+	   		add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
+	   	}
+		}
 	}
 	/**
 	 * Gets configuration from cfg file.
@@ -58,6 +68,7 @@ class flowplayer {
     if( !isset( $conf['commas'] ) ) $conf['commas'] = 'true';
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
+    if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;

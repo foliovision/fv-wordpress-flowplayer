@@ -63,7 +63,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'popup' => '',
     'controlbar' => '',
     'redirect' => '',
-    'loop' => ''
+    'loop' => '',
+    'engine' => ''
   ), $atts ) );
   
 	$arguments['width'] = preg_replace('/\,/', '', $width);
@@ -77,6 +78,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
 	$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
   $arguments['loop'] = preg_replace('/\,/', '', $loop);
+  $arguments['engine'] = preg_replace('/\,/', '', $engine);
     
 	$src = preg_replace('/\,/', '', $src);
 	if (trim($src) != '') {

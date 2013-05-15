@@ -4,24 +4,9 @@
  */
 ?>
 
-<?php 
-	if(isset($_POST['submit'])) {
-		/**
-		 *  Write the configuration into file, if the form was submitted.
-		 */
-		$fp->_set_conf();
-    $fp = new flowplayer();
-    /**
-		 *  Refresh the page.
-		 */
-		?>
-		<?php
-	}
-?>
-
 <div class="wrap">
 	<div style="position: absolute; top: 10px; right: 10px;">
-		<a href="https://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
+		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>
@@ -37,10 +22,10 @@
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer#license" class="red-button"><strong>May Day Launch Special!</strong><br />License Half Price</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy" class="red-button"><strong>May Day Launch Special!</strong><br />License Half Price</a></p>
 				</div>
 				<div class="graphic-part">
-					<a href="http://foliovision.com/seo-tools/wordpress/plugins/fv-wordpress-flowplayer#license">
+					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
 					<img width="297" height="239" border="0" src="<?php echo plugins_url( 'images/fv-wp-flowplayer-led-monitor.png' , dirname(__FILE__) ) ?>"> </a>
 				</div>
 		</div>
@@ -58,6 +43,7 @@
 						</td>
 						<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
 							<div class="flowplayer is-splash"
+							<?php if ($fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
 							data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
 							data-ratio="0.417" 
 							style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
@@ -121,11 +107,20 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">Default video size [px]: 
-							<span style="float:right">
-								<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fp->conf['width']); ?>" />  
-								<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fp->conf['height']); ?>" />
-							</span>	
+						<td><label for="engine">Preferred Flowplayer engine (<abbr title="Default setting - IE9 and IE10 get Flash (due to server compatibility issues), everyone else gets HTML5 (with Flash fallback)">?</abbr>):</label></td>
+						<td style="text-align:right">
+							<select id="engine" name="engine">
+							  <!--<option value="flash"<?php if( $fp->conf['engine'] == 'flash' ) echo ' selected="selected"'; ?>>Flash (with HTML5 fallback)</option>-->
+							  <option value="default"<?php if( $fp->conf['engine'] == 'default' ) echo ' selected="selected"'; ?>>Default (mixed)</option>
+							  <option value="html5"<?php if( $fp->conf['engine'] != 'html5'  ) echo ' selected="selected"'; ?>>HTML5 (with Flash fallback)</option>
+              </select> 							
+						</td>
+					</tr>
+					<tr>
+					  <td><label for="width">Default video size [px]:</label></td>
+						<td style="text-align:right"> 					
+							<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fp->conf['width']); ?>" />  
+							<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fp->conf['height']); ?>" />							
 						</td>
 					</tr>
 				</table>
@@ -157,7 +152,7 @@
 					<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
 					<tr>    		
 						<td colspan="4">
-							<input type="submit" name="submit" class="button-primary" value="Apply Changes" style="margin-top: 2ex;"/>
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Apply Changes" style="margin-top: 2ex;"/>
 						</td>
 					</tr>
 				</table>    

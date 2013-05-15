@@ -4,7 +4,7 @@ Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
 Tested up to: 3.5.1
-Stable tag: 2.1.2
+Stable tag: trunk
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
 
@@ -35,12 +35,11 @@ Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with Wordpress Flowplayer plugin, there are several improvements:
 
-	1. Doesn't use jQuery, so there will be no future conflicts with other plugins.
-	2. Usage is simpler and forgiving, making the plugin easier to use.
-	3. Allows user to display clickable splash screen at the beginning of video (which not only looks good, but improves the performance significantly).
-	4. Allows user to display popup box after the video ends, with any HTML content (clickable links, images, styling, etc.)
-	5. Allows to upload videos and images through WP Media Library
-	6. Does not use configuration file, but Wordpress Options
+	1. Usage is simpler and forgiving, making the plugin easier to use.
+	2. Allows user to display clickable splash screen at the beginning of video (which not only looks good, but improves the performance significantly).
+	3. Allows user to display popup box after the video ends, with any HTML content (clickable links, images, styling, etc.)
+	4. Allows to upload videos and images through WP Media Library
+	5. Does not use configuration file, but Wordpress Options
 
 **[Download now!](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer)**
 
@@ -85,9 +84,13 @@ You should also check if your server is serving your video file with the proper 
 
 You need to look at "Content-Type:" in the "HTTP Response Header" section. For MP4 file it should be "video/mp4". Some servers use "video/mpeg" and that is causing problems in Internet Explorer.
 
-*If you host videos on Amazon AWS:*
+Refer to Flowplayer Documentation for fix: http://flowplayer.org/docs/index.html#mime-types
+
+**If you host videos on Amazon AWS:**
 
 They might be served with bad mime type too - "application/octet-stream". This largely depends on the tool which you use to upload your videos. Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object's "Properties" pane and fix it to "video/mp4" (without the quotes, of course different video formats need different mime type, this one is for MP4). There are also tools for this, like S3 Browser Freeware, good place for start is here: https://forums.aws.amazon.com/thread.jspa?messageID=224446
+
+Above Flowplayer Documentation contains more information.
 
 = Does this plugin support Shoutcast? =
 
@@ -155,12 +158,12 @@ Playlist feature is not supported right now.
 
 You need to copy the CSS from the Flowplayer CSS (default theme) and put it into your theme CSS. Also add some element ID in front of it to make sure it overridsed the default Flowplayer CSS:
 
-  #content .is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE}.png) center no-repeat;background-size:12%;}
-  #content .is-rtl.is-splash.flowplayer .fp-ui, #content .is-rtl.is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE-rtl}.png) center no-repeat;background-size:12%}
-  @media (-webkit-min-device-pixel-ratio: 2){
-    #content .is-splash.flowplayer .fp-ui, #content .is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE@2x}.png) center no-repeat;background-size:12%}
-    #content .is-rtl.is-splash.flowplayer .fp-ui, #content .is-rtl.is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE-rtl@2x}.png)}
-  }
+`#content .is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE}.png) center no-repeat;background-size:12%;}
+#content .is-rtl.is-splash.flowplayer .fp-ui, #content .is-rtl.is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE-rtl}.png) center no-repeat;background-size:12%}
+@media (-webkit-min-device-pixel-ratio: 2){
+  #content .is-splash.flowplayer .fp-ui, #content .is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE@2x}.png) center no-repeat;background-size:12%}
+  #content .is-rtl.is-splash.flowplayer .fp-ui, #content .is-rtl.is-paused.flowplayer .fp-ui{background:url({PATH TO YOUR IMAGE-rtl@2x}.png)}
+}`
 
 The image needs to be 100x106px normal version nad 200x212px hi res version. You only have to include the RTL version if your site runs in such language.
 
@@ -189,6 +192,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 4. Configuration menu for administrators.
 
 == Changelog ==
+
+= 2.1.3 =
+* Flowplayer now by default uses Flash (for better compatibility)
+* shortcode editor fixes
+* when using HTML5, admins get warnings about videos with bad mime type as they browse the site.
+* logged in admins see warnings above MP4 videos with bad mime type
 
 = 2.1.2 =
 * fix for player alignment (center by default)
@@ -343,3 +352,8 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
+= 2.1.3 =
+* Flowplayer now defaults to using Flash for Internet Explorer 9 and 10 (due to server compatibility issues when bad mime type is set).
+
+= 2.0 =
+* Brand new version of Flowplayer! HTML5 compatible video player. Please check your videos thoroughly.
