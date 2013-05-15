@@ -112,7 +112,7 @@
 							<select id="engine" name="engine">
 							  <!--<option value="flash"<?php if( $fp->conf['engine'] == 'flash' ) echo ' selected="selected"'; ?>>Flash (with HTML5 fallback)</option>-->
 							  <option value="default"<?php if( $fp->conf['engine'] == 'default' ) echo ' selected="selected"'; ?>>Default (mixed)</option>
-							  <option value="html5"<?php if( $fp->conf['engine'] != 'html5'  ) echo ' selected="selected"'; ?>>HTML5 (with Flash fallback)</option>
+							  <option value="html5"<?php if( $fp->conf['engine'] == 'html5'  ) echo ' selected="selected"'; ?>>HTML5 (with Flash fallback)</option>
               </select> 							
 						</td>
 					</tr>

@@ -193,27 +193,31 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.1.3 =
+= 2.1.3 - 2013/05/15 =
 * Flowplayer now by default uses Flash (for better compatibility)
 * shortcode editor fixes
 * when using HTML5, admins get warnings about videos with bad mime type as they browse the site.
 * logged in admins see warnings above MP4 videos with bad mime type
 
-= 2.1.2 =
+What's coming:
+* better detection of bad mime type for all your videos
+* suggestion for fixing of slow loading videos
+
+= 2.1.2 - 2013/05/10 =
 * fix for player alignment (center by default)
 * fix for volume bar alignment (was not working properly when using obsolete &lt;center&gt; tags)
 
-= 2.1.1 =
+= 2.1.1 - 2013/05/08 =
 * fix for browser caching
 * upgrade to latest core Flowplayer (5.4.1)
 * additional fixes for smooth install (more compatible default settings)
 * lightening of branding
 * apologies to anyone who faced difficulties with the initial 2.1 version: FV Flowplayer 5 should work for you now
 
-= 2.1 =
+= 2.1 - 2013/05/02 =
 * small interface changes
 
-= 2.0 =
+= 2.0 - 2013/05/02 =
 * upgrade to Flowplayer 5
 * fixes in the shortcode editor
 

@@ -15,7 +15,7 @@ $fp = new flowplayer_backend();
  * WP Hooks
  */
 add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype'); 
-add_action('wp_ajax_nopriv_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
+//add_action('wp_ajax_nopriv_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
  
 add_action('admin_head', 'flowplayer_head');
 add_action('admin_menu', 'flowplayer_admin');
