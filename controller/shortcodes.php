@@ -12,10 +12,14 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   $fp = new flowplayer_frontend();
   if( $fp->conf['commas'] == 'true' ) {
     
-    if( !isset( $atts['src'] ) ) {
+    if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
         if( stripos( $att, 'src=' ) !== FALSE ) {
-          $atts['src'] = preg_replace( '/^\s*?src=[\'"](.*)[\'"],\s*?$/', '$1', $att );
+          if( stripos( $att, ',' ) === FALSE ) {  //  if the broken attribute is not using ','
+            $atts['src'] = preg_replace( '/^\s*?src=[\'"](.*)[\'"].*?$/', '$1', $att );
+          } else {
+            $atts['src'] = preg_replace( '/^\s*?src=[\'"](.*)[\'"],\s*?$/', '$1', $att );
+          }
           $i = $key+1;
           unset( $atts[$key] ); // = ''; //  let's remove it, so it won't confuse the rest of workaaround
         }
@@ -80,7 +84,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   $arguments['loop'] = preg_replace('/\,/', '', $loop);
   $arguments['engine'] = preg_replace('/\,/', '', $engine);
     
-	$src = preg_replace('/\,/', '', $src);
+	$src = preg_replace('/\,/', '', $src); 
 	if (trim($src) != '') {
 		// build new player
     $new_player = $fp->build_min_player($src,$arguments);		
