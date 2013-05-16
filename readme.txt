@@ -193,6 +193,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.1.4 - 2013/05/16 =
+* quick fix for shortcode parsing when there is a newline after src parameter
+
 = 2.1.3 - 2013/05/15 =
 * Flowplayer now by default uses Flash (for better compatibility)
 * shortcode editor fixes
@@ -355,6 +358,11 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 * Colors of all the parts of flowplayer instances on page/post (controlbar, canvas, sliders, buttons, mouseover buttons, time and total time, progress and buffer sliders).
 
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
+
+== Upgrade Notice ==
+
+= 2.1.4 =
+* Flowplayer now defaults to using Flash for Internet Explorer 9 and 10 (due to server compatibility issues when bad mime type is set).
 
 = 2.1.3 =
 * Flowplayer now defaults to using Flash for Internet Explorer 9 and 10 (due to server compatibility issues when bad mime type is set).
