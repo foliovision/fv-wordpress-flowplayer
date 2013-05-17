@@ -99,7 +99,7 @@ function fv_wp_flowplayer_edit() {
 	
   
   var content = fv_wp_flowplayer_content.replace(/\n/g, '\uffff');        
-  var shortcode = content.match( fv_wp_flowplayer_re_edit );
+  var shortcode = content.match( fv_wp_flowplayer_re_edit );  
     
   if( shortcode != null ) {
     shortcode = shortcode.join('');
@@ -108,10 +108,12 @@ function fv_wp_flowplayer_edit() {
   	shortcode = shortcode.replace( fv_wp_flowplayer_re_insert, '' );
   	
   	shortcode = shortcode.replace( /\\'/g,'&#039;' );
+  	  
+	  var shortcode_parse_fix = shortcode.replace(/popup='[^']*?'/g, '');  	
   	
-  	var srcurl = shortcode.match( /src=['"]([^']*?)['"]/ );
+  	var srcurl = shortcode_parse_fix.match( /src=['"]([^']*?)['"]/ );
   	if( srcurl == null )
-  		srcurl = shortcode.match( /src=([^,\]\s]*)/ );			
+  		srcurl = shortcode_parse_fix.match( /src=([^,\]\s]*)/ );			
     
     var srcurl1 = shortcode.match( /src1=['"]([^']*?)['"]/ );
   	if( srcurl1 == null )
@@ -121,8 +123,8 @@ function fv_wp_flowplayer_edit() {
   	if( srcurl2 == null )
   		srcurl2 = shortcode.match( /src2=([^,\]\s]*)/ );
   	
-    var iheight = shortcode.match( /height="?(\d*)"?/ );			
-  	var iwidth = shortcode.match( /width="?(\d*)"?/ );
+    var iheight = shortcode_parse_fix.match( /height="?(\d*)"?/ );			
+  	var iwidth = shortcode_parse_fix.match( /width="?(\d*)"?/ );
   	var sautoplay = shortcode.match( /autoplay=([^\s]+)/ );
   	var ssplash = shortcode.match( /splash='([^']*)'/ );
     var sredirect = shortcode.match( /redirect='([^']*)'/ );

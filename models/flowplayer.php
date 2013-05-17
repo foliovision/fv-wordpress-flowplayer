@@ -42,6 +42,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	private function _get_conf() {
 	  ///  Addition  2010/07/12  mv
     $conf = get_option( 'fvwpflowplayer' );    
+        
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
@@ -69,6 +70,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
+    if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';       
+     
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -80,8 +83,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 */
 	public function _set_conf() {
 	  $save_key = $_POST['key'];
-	  foreach( $_POST AS $key => $value ) {          
-      $_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
+	  foreach( $_POST AS $key => $value ) {
+	  	if( $key != 'font-face' ) {
+      	$_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
+      } else {
+      	$_POST[$key] = stripslashes($value);
+      }
 	    if( (strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) {
 	      $_POST[$key] = '#'.strtolower($_POST[$key]);
 	    }

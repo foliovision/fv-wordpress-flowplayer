@@ -96,7 +96,7 @@ class flowplayer_frontend extends flowplayer
       $ret['script'] .= "
         jQuery('#wpfp_".$hash."').bind('finish', function() {          
           jQuery('#wpfp_".$hash."_custom_popup').show();            
-        })    
+        });    
       ";                   
 		}
     
@@ -117,15 +117,16 @@ class flowplayer_frontend extends flowplayer
     		";
     }
     
-    if( preg_match( '~\.mp4$~', trim($media) ) && current_user_can('manage_options') && $this->ajax_count < 10 ) {
+    if( preg_match( '~\.(mp4|m4v)$~', trim($media), $matches ) && current_user_can('manage_options') && $this->ajax_count < 10 ) {
     	$this->ajax_count++;
+    	$video_format = strtoupper($matches[1]);
       $ret['script'] .= "
       	jQuery(document).ready( function() { 
 					var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
 					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$media."' }, function( response ) {
 						var obj = (jQuery.parseJSON( response ) );
 						if( obj[0] == 'bad mime type' ) {
-							jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice\"><p>Admin note: This MP4 video has bad mime type of '+obj[1]+', so it won\'t play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p></div>');							
+							jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice\"><p>Admin note: This ".$video_format." video has bad mime type of '+obj[1]+', so it won\'t play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p></div>');							
 						}
 					} );             
         } );

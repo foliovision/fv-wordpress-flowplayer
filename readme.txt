@@ -14,6 +14,7 @@ Custom HTML 5 video on your own site with Flash fallback for legacy browsers is 
 
 FV Wordpress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Wordpress Flowplayer offers 98% coverage even on mobile devices.
 
+* **New:** Automated checking of video mime type for logged in admins on MP4 videos
 * FV Flowplayer 5 is the only completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
 * Enjoy unlimited instances in a single page.
@@ -76,21 +77,29 @@ It seems HTML5 is more picky about what video it can play.
 
 = My video doesn't play in Internet Explorer 9 and 10 =
 
-Please first read the first question to learn more about video formats and codecs.
+Most of the issues is caused by bad mime type on the server which serves your video files. Our plugin contains an automated checked for this - visit a post with a MP4 or M4V video as logged in administrator and you will see a warning if the mime type is wrong.
 
-For Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
+Here's how to fix the mime type:
 
-You should also check if your server is serving your video file with the proper mime type. Just copy full video URL and check it with this tool: http://web-sniffer.net/
+**If your videos are hosted on a standard server:**
 
-You need to look at "Content-Type:" in the "HTTP Response Header" section. For MP4 file it should be "video/mp4". Some servers use "video/mpeg" and that is causing problems in Internet Explorer.
+You need to put the following into your .htaccess:
 
-Refer to Flowplayer Documentation for fix: http://flowplayer.org/docs/index.html#mime-types
+`AddType video/mp4             .mp4
+AddType video/webm            .webm
+AddType video/ogg             .ogv
+AddType application/x-mpegurl .m3u8
+AddType video/x-m4v           .m4v
+# hls transport stream segments:
+AddType video/mp2t            .ts`
+
+This can be also done in the Apache configuration. If you are on Microsoft IIS, you need to use the IIS manager. 
 
 **If you host videos on Amazon AWS:**
 
 They might be served with bad mime type too - "application/octet-stream". This largely depends on the tool which you use to upload your videos. Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object's "Properties" pane and fix it to "video/mp4" (without the quotes, of course different video formats need different mime type, this one is for MP4). There are also tools for this, like S3 Browser Freeware, good place for start is here: https://forums.aws.amazon.com/thread.jspa?messageID=224446
 
-Above Flowplayer Documentation contains more information.
+Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
 
 = Does this plugin support Shoutcast? =
 
@@ -193,6 +202,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= What's coming =
+* better detection of bad mime type for all your videos
+* suggestion for fixing of slow loading videos
+* detection of theme incompatibility
+
+= 2.1.5 - 2013/05/17 =
+* player font face setting
+* improved appearance of the embed dialog
+* improved shortcode editor (does handle iframe in popup correctly)
+* various CSS fixes
+
 = 2.1.4 - 2013/05/16 =
 * quick fix for shortcode parsing when there is a newline after src parameter
 
@@ -201,10 +221,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * shortcode editor fixes
 * when using HTML5, admins get warnings about videos with bad mime type as they browse the site.
 * logged in admins see warnings above MP4 videos with bad mime type
-
-What's coming:
-* better detection of bad mime type for all your videos
-* suggestion for fixing of slow loading videos
 
 = 2.1.2 - 2013/05/10 =
 * fix for player alignment (center by default)
@@ -360,6 +376,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.5 =
+* Default player font face set to Tahoma, Geneva, sans-serif. Change 'Player font face' setting to "inherit from template" if you have your own CSS.
 
 = 2.1.4 =
 * Flowplayer now defaults to using Flash for Internet Explorer 9 and 10 (due to server compatibility issues when bad mime type is set).

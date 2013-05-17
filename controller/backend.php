@@ -453,12 +453,15 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
  
  
 function fv_wp_flowplayer_check_mimetype() {
-  if( isset( $_POST['media'] ) && stripos( $_POST['media'], '.mp4' ) !== FALSE && strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  if( isset( $_POST['media'] ) && ( stripos( $_POST['media'], '.mp4' ) !== FALSE || stripos( $_POST['media'], '.m4v' ) !== FALSE ) && strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
     $headers = get_headers( trim($_POST['media']) );
     if( $headers ) {
       foreach( $headers AS $line ) {
         if( stripos( $line, 'Content-Type:' ) !== FALSE ) {
-          if( !preg_match( '~video/mp4$~', $line ) ) {
+          if(
+          	( !preg_match( '~video/mp4$~', $line ) && stripos( $_POST['media'], '.mp4' ) !== FALSE ) ||
+          	( !preg_match( '~video/x-m4v$~', $line ) && stripos( $_POST['media'], '.m4v' ) !== FALSE )
+          ) {
             preg_match( '~Content-Type: (\S+)$~', $line, $match );
             echo json_encode( array( 'bad mime type', $match[1] ) );
             die();
