@@ -378,7 +378,7 @@ On the right side of this screen, you can see the current visual configuration o
 == Upgrade Notice ==
 
 = 2.1.5 =
-* Default player font face set to Tahoma, Geneva, sans-serif. Change 'Player font face' setting to "inherit from template" if you have your own CSS.
+* Default player font face set to Tahoma, Geneva, sans-serif. Change 'Player font face' setting to 'inherit from template' if you have your own CSS.
 
 = 2.1.4 =
 * Flowplayer now defaults to using Flash for Internet Explorer 9 and 10 (due to server compatibility issues when bad mime type is set).
