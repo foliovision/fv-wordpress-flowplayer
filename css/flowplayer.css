@@ -118,7 +118,7 @@
 .flowplayer .fp-time{text-shadow:0 0 1px #000;font-size:12px;font-weight:bold;color:#fff;width:100%;}
 .flowplayer .fp-time.is-inverted .fp-duration{display:none}
 .flowplayer .fp-time.is-inverted .fp-remaining{display:inline}
-.flowplayer .fp-time em{width:35px;height:10px;line-height:10px;text-align:center;position:absolute;bottom:5px}
+.flowplayer .fp-time em{width:37px;height:10px;line-height:10px;text-align:center;position:absolute;bottom:5px}
 .no-time.flowplayer .fp-time{display:none}
 .is-long.flowplayer .fp-time em{width:65px}
 .flowplayer .fp-elapsed{left:5px;}

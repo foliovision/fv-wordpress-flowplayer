@@ -203,9 +203,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
+* responsive design support
 * better detection of bad mime type for all your videos
 * suggestion for fixing of slow loading videos
 * detection of theme incompatibility
+
+= 2.1.6 - 2013/05/21 =
+* quick fix for player skin - time values not appearing properly for some font faces
 
 = 2.1.5 - 2013/05/17 =
 * player font face setting
