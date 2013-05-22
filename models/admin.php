@@ -63,7 +63,7 @@
 							<?php if ($fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
 							data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
 							data-ratio="0.417" 
-							style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
+							style="max-width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
 							<?php if ($fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
 							<?php if (isset($fp->conf['key']) && $fp->conf['key'] != 'false' && strlen($fp->conf['key']) > 0) {echo 'data-key="' . $fp->conf['key'] . '"'; $commercial_key = true;} ?>
 							<?php if ($commercial_key && isset($fp->conf['logo']) && $fp->conf['logo'] != 'false' && strlen($fp->conf['logo']) > 0) echo ' data-logo="' . $fp->conf['logo'] . '"'; ?>

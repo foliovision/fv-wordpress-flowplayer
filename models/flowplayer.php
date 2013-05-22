@@ -70,7 +70,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
-    if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';       
+    if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
+    if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive';             
      
 
     update_option( 'fvwpflowplayer', $conf );
@@ -140,7 +141,10 @@ function flowplayer_head() {
   $fp->flowplayer_head();
 }
 
+
 function flowplayer_jquery() {
-  wp_enqueue_script("jquery");
+  global $fv_wp_flowplayer_core_ver;
+  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js' ), 'jquery', $fv_wp_flowplayer_core_ver );
 }
+
 ?>

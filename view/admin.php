@@ -2,7 +2,14 @@
 /**
  * Displays administrator backend.
  */
+ 
+delete_option('fv_wordpress_flowplayer_deferred_notices');
 ?>
+
+<style>
+#responsive, #engine { width: 180px; }
+div.green { background-color: #e0ffe0; border-color: #88AA88; } 
+</style>
 
 <div class="wrap">
 	<div style="position: absolute; top: 10px; right: 10px;">
@@ -12,6 +19,14 @@
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
   </div>	  
+  <p id="fv_flowplayer_admin_buttons">
+  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template')" value="Check template" /> 
+  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
+  	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+  	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+  </p>
+  <div id="fv_flowplayer_admin_notices">
+  </div>
   <?php if (isset($fp->conf['key']) && $fp->conf['key'] == 'false') : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
@@ -125,6 +140,15 @@
 							<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fp->conf['height']); ?>" />							
 						</td>
 					</tr>
+					<tr>
+					  <td><label for="responsive">Video player size (<abbr title="Default setting - respects width and height setting of the video, but allows it to size down to be responsive">?</abbr>):</label></td>
+						<td style="text-align:right"> 					
+							<select id="responsive" name="responsive">
+							  <option value="responsive"<?php if( $fp->conf['engine'] == 'responsive' ) echo ' selected="selected"'; ?>>Default (responsive)</option>
+							  <option value="fixed"<?php if( $fp->conf['engine'] == 'fixed'  ) echo ' selected="selected"'; ?>>Fixed dimensions</option>
+              </select> 					
+						</td>
+					</tr>
 				</table>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
@@ -182,7 +206,7 @@
 								<li>Supported video formats are <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong> and <strong>FLV</strong>. Multiple videos can be displayed in one post or page.</li>
 								<li>Default options for all the embedded videos can be set in the menu above.</li>
 							</ul>
-							<p>
+							<!--<p>
 							The previous version of FV Wordpress Flowplayer uses flash based technology and <code>[flowplayer]</code> shortcode.
 							This version uses HTML5 (with flash fallback) technology with both <code>[fvplayer]</code> and <code>[flowplayer]</code> shortcode.
 							You can run the conversion script. To make sure you only use <code>[fvplayer]</code>.
@@ -192,7 +216,7 @@
 							<div id="fv-flowplayer-loader" style="background: url(<?php echo plugins_url( 'images/wpspin.gif' , dirname(__FILE__) ); ?>) no-repeat center left; width: 16px; height: 24px; float: left; margin-left: 5px; display: none;" /></div>
 							<div style="clear: both;"></div>
 							<div id="conversion-results"></div>
-							<div style="clear: both;"></div>
+							<div style="clear: both;"></div>-->
 						</td>
 					</tr>
 				</table>
@@ -254,5 +278,24 @@
       jQuery('#conversion-results').html(response);
       jQuery('#fvwpflowplayer_conversion_notice').hide();	
   	});
+  }
+  
+	function fv_flowplayer_ajax_check( type ) {
+		jQuery('.'+type+'-spin').show();
+		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+		jQuery.post( ajaxurl, { action: type }, function( response ) {
+			var obj = (jQuery.parseJSON( response ) );
+			var css_class = '';
+			jQuery('#fv_flowplayer_admin_notices').html('');
+			if( obj.errors ) {
+				jQuery('#fv_flowplayer_admin_notices').append( '<div class="error"><p>'+obj.errors.join('</p><p>')+'</p></div>' );
+			} else {
+				css_class = ' green';
+			}
+			if( obj.ok ) {
+				jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
+			}
+			jQuery('.'+type+'-spin').hide();
+		} );              
   }
 </script>

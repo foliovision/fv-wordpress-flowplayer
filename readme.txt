@@ -150,7 +150,7 @@ Fill the Flowplayer shortcode part according to your needs. The apply filter nee
 
 Check out .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
 
-= Is there a way to remove the share button? =
+= Is there a way to remove the share (embed) button? =
 
 Yes, there's a global option in settings to disable sharing/embed. We plan to add an individual flag on a per video basis to allow sharing when sharing is turned off globally and vice versa.
 
@@ -207,10 +207,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* responsive design support
-* better detection of bad mime type for all your videos
+* improved checking of videos
 * suggestion for fixing of slow loading videos
-* detection of theme incompatibility
+* other bugfixes
+
+= 2.1.7 - 2013/05/22 =
+* support for responsive layout enabled by default
+* automated check of template added to settings screen - checks if your template loads Flowplayer and jQuery libraries properly
+* automated check of video files added to setting screen - checks if your servers are using right mime type for videos
 
 = 2.1.6 - 2013/05/21 =
 * quick fix for player skin - time values not appearing properly for some font faces
