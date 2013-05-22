@@ -150,6 +150,10 @@ Fill the Flowplayer shortcode part according to your needs. The apply filter nee
 
 Check out .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
 
+= Is there a way to remove the share button? =
+
+Yes, there's a global option in settings to disable sharing/embed. We plan to add an individual flag on a per video basis to allow sharing when sharing is turned off globally and vice versa.
+
 = My videos are taking long time to load. =
 
 1. Check your hosting for download speed.
