@@ -4,6 +4,10 @@
  */
 ?>
 
+<style>
+#responsive, #engine { width: 180px; }
+</style>
+
 <div class="wrap">
 	<div style="position: absolute; top: 10px; right: 10px;">
 		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
@@ -12,6 +16,7 @@
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
   </div>	  
+  <a href="#" onclick="fv_flowplayer_check_template()">Check template</a>
   <?php if (isset($fp->conf['key']) && $fp->conf['key'] == 'false') : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
@@ -123,6 +128,15 @@
 						<td style="text-align:right"> 					
 							<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fp->conf['width']); ?>" />  
 							<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fp->conf['height']); ?>" />							
+						</td>
+					</tr>
+					<tr>
+					  <td><label for="responsive">Video player size (<abbr title="Default setting - respects width and height setting of the video, but allows it to size down to be responsive">?</abbr>):</label></td>
+						<td style="text-align:right"> 					
+							<select id="responsive" name="responsive">
+							  <option value="responsive"<?php if( $fp->conf['engine'] == 'responsive' ) echo ' selected="selected"'; ?>>Default (responsive)</option>
+							  <option value="fixed"<?php if( $fp->conf['engine'] == 'fixed'  ) echo ' selected="selected"'; ?>>Fixed dimensions</option>
+              </select> 					
 						</td>
 					</tr>
 				</table>
@@ -254,5 +268,13 @@
       jQuery('#conversion-results').html(response);
       jQuery('#fvwpflowplayer_conversion_notice').hide();	
   	});
+  }
+  
+	function fv_flowplayer_check_template() {
+		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+		jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_template' }, function( response ) {
+			var obj = (jQuery.parseJSON( response ) );
+			console.log(obj);
+		} );              
   }
 </script>

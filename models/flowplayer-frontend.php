@@ -173,39 +173,46 @@ class flowplayer_frontend extends flowplayer
     if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
       $autoplay = 'true';
     }     
-    $ret['html'] = '<div id="wpfp_' . $hash . '" class="flowplayer';
+    
+    $attributes = array();
+    $attributes['class'] = 'flowplayer';
     if ($autoplay == 'false') {
-      $ret['html'] .= ' is-splash';
+      $attributes['class'] .= ' is-splash';
     }
     if ($controlbar == 'show') {
-      $ret['html'] .= ' fixed-controls';
-    }
-    $ret['html'] .= '"';   
+      $attributes['class'] .= ' fixed-controls';
+    } 
     
     if( $this->conf['engine'] == 'flash' || $args['engine'] == 'flash' ) {
-      $ret['html'] .= ' data-engine="flash"';
+      $attributes['data-engine'] = 'flash';
     }
     
-    $ret['html'] .= ' style="width: ' . $width . 'px; height: ' . $height . 'px"';
-    $ret['html'] .= ' data-swf="'.RELATIVE_PATH.'/flowplayer/flowplayer.swf"';
+    if( $this->conf['responsive'] == 'fixed' ) {
+      $attributes['style'] = 'width: ' . $width . 'px; height: ' . $height . 'px';
+    } else {
+      $attributes['style'] = 'max-width: ' . $width . 'px; max-height: ' . $height . 'px';
+    }
+    
+    $attributes['data-swf'] .= RELATIVE_PATH.'/flowplayer/flowplayer.swf';
+    
     if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
-      $ret['html'] .= ' data-analytics="' . $this->conf['googleanalytics'] . '"';
+      $attributes['data-analytics'] = $this->conf['googleanalytics'];
     }
     $commercial_key = false;
     if (isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0) {
-      $ret['html'] .= ' data-key="' . $this->conf['key'] . '"';
+      $attributes['data-key'] = $this->conf['key'];
       $commercial_key = true;
     }
     if ($commercial_key && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0) {
-      $ret['html'] .= ' data-logo="' . $this->conf['logo'] . '"';
+      $attributes['data-logo'] = $this->conf['logo'];
     }
     $rtmp = false;
     if (isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && strlen($this->conf['rtmp']) > 0) {
-      $ret['html'] .= ' data-rtmp="rtmp://' . $this->conf['rtmp'] . '/cfx/st/"';
+      $attributes['data-rtmp'] = 'rtmp://' . $this->conf['rtmp'] . '/cfx/st/';
       $rtmp = true;
     }
     if (isset($this->conf['allowfullscreen']) && $this->conf['allowfullscreen'] == 'false') {
-      $ret['html'] .= ' data-fullscreen="false"';
+      $attributes['data-fullscreen'] = 'false';
     }       
     if ($width > $height) {
       $ratio = round($height / $width, 4);   
@@ -213,13 +220,20 @@ class flowplayer_frontend extends flowplayer
     else if ($height > $width) {
       $ratio = round($width / $height, 4);
     }     
-    $ret['html'] .= ' data-ratio="' . $ratio . '"';
-    if ($scaling == "fit") {
-      $ret['html'] .= ' data-flashfit="true"';
+    $attributes['data-ratio'] = $ratio;
+    if( $scaling == "fit" && $this->conf['responsive'] == 'fixed' ) {
+      $attributes['data-flashfit'] .= 'true';
     }            
-    //$ret['html'] .= ' data-debug="true"';
-    $ret['html'] .= '>';
-    $ret['html'] .= '<video';      
+    
+    $attributes_html = '';
+    $attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media );
+    foreach( $attributes AS $attr_key => $attr_value ) {
+    	$attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
+    }
+    
+    $ret['html'] .= '<div id="wpfp_' . $hash . '"'.$attributes_html.'>'."\n";
+    
+    $ret['html'] .= "\t".'<video';      
     if (isset($splash_img) && !empty($splash_img)) {
       $ret['html'] .= ' poster="'.$splash_img.'"';
     } 
@@ -236,18 +250,18 @@ class flowplayer_frontend extends flowplayer
     if ($autoplay == 'false') {
       $ret['html'] .= ' preload="none"';        
     }         
-    $ret['html'] .= '>';
+    $ret['html'] .= '>'."\n";
          
     //if the cloudfront is set in the plugin settings screen but it isn't acually a streaming 
     if (strpos($media, 'amazonaws.com') === false) {
       $rtmp = false;
     }      
-    $ret['html'] .= $this->get_video_src($media, $mobileUserAgent);
+    $ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent)."\n";
     if (!empty($src1)) {
-      $ret['html'] .= $this->get_video_src($src1, $mobileUserAgent);
+      $ret['html'] .= "\t"."\t".$this->get_video_src($src1, $mobileUserAgent)."\n";
     }
     if (!empty($src2)) {
-      $ret['html'] .= $this->get_video_src($src2, $mobileUserAgent);
+      $ret['html'] .= "\t"."\t".$this->get_video_src($src2, $mobileUserAgent)."\n";
     }
     //don't use RTMP for mobile devices
     if ($rtmp && !$mobileUserAgent) {
@@ -255,12 +269,12 @@ class flowplayer_frontend extends flowplayer
       $video_url = explode('/', $video_url['path'], 3);        
       $media_file = $video_url[count($video_url)-1];
       $extension = $this->get_file_extension($media);
-      $ret['html'] .= '<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />';
+      $ret['html'] .= "\t"."\t".'<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />'."\n";
     }      
-    $ret['html'] .= '</video>';
+    $ret['html'] .= "\t".'</video>'."\n";
     $ret['html'] .= $splashend_contents;
     $ret['html'] .= $popup_contents;            
-    $ret['html'] .= '</div>';      
+    $ret['html'] .= '</div>'."\n";      
     
 		return $ret;
 	}

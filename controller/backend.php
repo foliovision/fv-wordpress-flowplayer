@@ -16,6 +16,7 @@ $fp = new flowplayer_backend();
  */
 add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype'); 
 //add_action('wp_ajax_nopriv_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
+add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template'); 
  
 add_action('admin_head', 'flowplayer_head');
 add_action('admin_menu', 'flowplayer_admin');
@@ -470,6 +471,61 @@ function fv_wp_flowplayer_check_mimetype() {
       }
     }
     die('1');
+  }
+  
+  die('-1');
+}
+
+
+function fv_wp_flowplayer_check_template() {
+  if( strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  	$response = wp_remote_get( home_url() );
+  	if( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			$output = array( 'error' => $error_message );
+		} else {						
+			
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[^\'"]*?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
+			if( count($flowplayer_scripts[1]) > 1 ) {
+				$errors .= "It appears there are <strong>multiple</strong> Flowplayer scripts on your site, your videos might not be playing, please check.\n";
+			} else if( count($flowplayer_scripts[1]) < 1 ) {
+				$errors .= "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check.\n";			
+			}
+			
+			foreach( $flowplayer_scripts[1] AS $script ) {
+				if( strpos( $script, 'plugins/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js' ) !== FALSE ) {
+					$fv_flowplayer_pos = strpos( $response['body'], $script );
+					break;
+				}
+			}
+			
+			var_dump($fv_flowplayer_pos);
+						
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?jquery[^\'"]*?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
+			if( count($jquery_scripts[1]) > 1 ) {
+				$errors .= "It appears there are <strong>multiple</strong> jQuery libraries on your site, your videos might not be playing, please check.\n";
+			} else if( count($jquery_scripts[1]) < 1 ) {
+				$errors .= "It appears there are <strong>no</strong> jQuery library on your site, your videos might not be playing, please check.\n";			
+			}
+			
+			foreach( $jquery_scripts[1] AS $script ) {
+				if( strpos( $script, 'wp-includes/js/jquery/jquery.js' ) !== FALSE ) {
+					$jquery_pos = strpos( $response['body'], $script );
+					break;
+				}
+			}
+			
+			var_dump( $jquery_pos );
+			
+			if( $jquery_pos > $fv_flowplayer_pos ) {
+				$errors .= "It appears your Flowplayer JavaScript library is loading before jQuery. Your videos probably won't work. Please make sure your jQuery library is loading using the standard Wordpress function - wp_enqueue_scripts(), or move it above wp_head() in your header.php template.\n";
+			}
+		
+			
+			$output = array( 'errors' => $errors, 'html' => $response['body'] );
+		}
+		echo json_encode($output);
+		die();
   }
   
   die('-1');

@@ -70,7 +70,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
-    if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';       
+    if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
+    if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive';             
      
 
     update_option( 'fvwpflowplayer', $conf );
