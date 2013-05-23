@@ -209,6 +209,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = What's coming =
 * improved checking of videos
 * suggestion for fixing of slow loading videos
+* fix for popup and redirection in Flash player
 * other bugfixes
 
 = 2.1.8 - 2013/05/23 =
