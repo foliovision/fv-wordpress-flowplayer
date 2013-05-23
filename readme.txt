@@ -211,6 +211,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * suggestion for fixing of slow loading videos
 * other bugfixes
 
+= 2.1.8 - 2013/05/23 =
+* quick bugfix for Flowplayer script loading
+
 = 2.1.7 - 2013/05/22 =
 * support for responsive layout enabled by default
 * automated check of template added to settings screen - checks if your template loads Flowplayer and jQuery libraries properly
