@@ -393,6 +393,8 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
+= Quick fix for jQuery loading.
+
 = 2.1.5 =
 * Default player font face set to Tahoma, Geneva, sans-serif. Change 'Player font face' setting to 'inherit from template' if you have your own CSS.
 
