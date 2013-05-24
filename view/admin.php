@@ -28,7 +28,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   <div id="fv_flowplayer_admin_notices">
   </div>
   <?php if (isset($fp->conf['key']) && $fp->conf['key'] == 'false') : ?>
-		<div align="left" id="fv_flowplayer_ad">
+		<div id="fv_flowplayer_ad">
 			<div class="text-part">
 				<h2>FV Wordpress<strong>Flowplayer</strong></h2>
 				<span class="red-text">with your own branding</span>

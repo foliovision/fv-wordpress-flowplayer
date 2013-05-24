@@ -59,9 +59,15 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    2. Upload the fv-wordpress-flowplayer directory into wp-content/plugins/ directory of your wordpress installation.
    3. Go into Wordpress plugins setup in Wordpress administration interface and activate FV Wordpress Flowplayer plugin.
    4. Optionally, if you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there. Otherwise, you would have to type in a complete URL of video files.
+   5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
 
    
 == Frequently Asked Questions ==
+
+= I'm having issues with popup, redirection, splash end or loop functions =
+
+[](#popup)
+Currently these don't work when the Flash fallback player is used. So they only work if your browsers supports the video format natively (read more about video formats in next question). One of the next version should have this fixed.
 
 = My video doesn't play in some browsers =
 
@@ -77,7 +83,7 @@ It seems HTML5 is more picky about what video it can play.
 
 = My video doesn't play in Internet Explorer 9 and 10 =
 
-Most of the issues is caused by bad mime type on the server which serves your video files. Our plugin contains an automated checked for this - visit a post with a MP4 or M4V video as logged in administrator and you will see a warning if the mime type is wrong.
+Most of the issues is caused by bad mime type on the server which serves your video files. Our plugin contains an automated checked for this - just click the "Check Videos" button on the plugin Settings screen.
 
 Here's how to fix the mime type:
 
@@ -111,7 +117,7 @@ You need to use at least PHP 5, your site is probably still running on old PHP 4
 
 = I installed the plugin, inserted the video, but it's not working, only a gray box appears. =
 
-FV Flowplayer calls some javascript from the footer. That means your footer.php file must contain the &lt;?php wp_footer(); ?&gt; Wordpress hook. Almost all themes do this out of the box, but if you've customised your theme there's a chance that you might have deleted this call.
+Go to plugin Settings screen and hit "Check template" button. It will check if both jQuery library and Flowplayer JavaScript is loading properly.
 
 = You player works just fine, but there are some weird display issues. =
 
@@ -158,10 +164,6 @@ Yes, there's a global option in settings to disable sharing/embed. We plan to ad
 
 1. Check your hosting for download speed.
 2. Try to use different settings when encoding the videos, try to turn on the cache when encoding with [Quick Time](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png)
-
-= Is it possible to loop the video? =
-
-No at the moment we do not support looping.
 
 = How do I insert videos in playlist? =
 
