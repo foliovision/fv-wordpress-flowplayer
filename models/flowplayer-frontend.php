@@ -22,7 +22,7 @@ class flowplayer_frontend extends flowplayer
     if (isset($args['src2'])&&!empty($args['src2'])) $src2 = trim($args['src2']);
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-			if( strpos($media_item, 'amazonaws.com') !== false || stripos( $media_item, 'rtmp://' ) === 0 ) {
+			if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) === false ) || stripos( $media_item, 'rtmp://' ) === 0 ) {
 				$rtmp = $media_item;
 			} 
     }    
@@ -183,7 +183,7 @@ class flowplayer_frontend extends flowplayer
       })";
     $ret['script'] .= "});";
       
-    if ((isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true') || (isset($args['autoplay']) && $args['autoplay'] == 'true')) {
+    if( (isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $args['autoplay'] != 'false' ) || (isset($args['autoplay']) && $args['autoplay'] == 'true') ) {
       $autoplay = 'true';
     }     
     
@@ -288,7 +288,10 @@ class flowplayer_frontend extends flowplayer
       $rtmp_url = explode('/', $rtmp_url['path'], 3);        
       $rtmp_file = $rtmp_url[count($rtmp_url)-1];*/
       $extension = $this->get_file_extension($rtmp_url['path']);
-      $ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_url['path'], ' \t\n\r\0\x0B/').'" type="video/flash" />'."\n";
+      if( $extension ) {
+      	$extension .= ':';
+      }
+      $ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_url['path'], " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
     }      
     
     $ret['html'] .= "\t".'</video>'."\n";
@@ -347,7 +350,7 @@ class flowplayer_frontend extends flowplayer
     if ($extension == 'm4v') {
       $extension = 'mp4';
     }
-    return $extension.':';  
+    return $extension;  
   }
   
 	/**

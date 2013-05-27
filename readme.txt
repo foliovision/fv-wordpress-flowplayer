@@ -214,6 +214,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * fix for popup and redirection in Flash player
 * other bugfixes
 
+= 2.1.9 - 2013/05/27 =
+* improvements and bugfixes for RTMP handling
+* improved styling of insert video dialog box
+* bugfix for autoplay is off for video when autoplay is on globally
+
 = 2.1.8 - 2013/05/23 =
 * quick bugfix for Flowplayer script loading
 
@@ -396,6 +401,9 @@ On the right side of this screen, you can see the current visual configuration o
 == Upgrade Notice ==
 
 = Quick fix for jQuery loading.
+
+= 2.1.9 =
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
 
 = 2.1.5 =
 * Default player font face set to Tahoma, Geneva, sans-serif. Change 'Player font face' setting to 'inherit from template' if you have your own CSS.
