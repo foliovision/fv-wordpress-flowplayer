@@ -14,11 +14,18 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
+		
 		// returned array with new player's html and javascript content
 		$ret = array('html' => '', 'script' => '');
     
     if (isset($args['src1'])&&!empty($args['src1'])) $src1 = trim($args['src1']);
     if (isset($args['src2'])&&!empty($args['src2'])) $src2 = trim($args['src2']);
+    
+    foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+			if( strpos($media_item, 'amazonaws.com') !== false || stripos( $media_item, 'rtmp://' ) === 0 ) {
+				$rtmp = $media_item;
+			} 
+    }    
     
     $media = $this->get_video_url($media);
     if (!empty($src1)) {
@@ -26,7 +33,9 @@ class flowplayer_frontend extends flowplayer
     }
     if (!empty($src2)) {
       $src2 = $this->get_video_url($src2);
-    }       
+    }    
+    
+
 		
     // unique coe for this player
 		$hash = md5($media.$this->_salt());
@@ -109,7 +118,6 @@ class flowplayer_frontend extends flowplayer
     //  change engine for IE9 and 10
     
     if( $this->conf['engine'] == 'default' ) {
-    	$admin_note_addition = 'Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
     	$ret['script'] .= "
     		if( jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9 ) {
     			jQuery('#wpfp_".$hash."').attr('data-engine','flash');
@@ -117,16 +125,21 @@ class flowplayer_frontend extends flowplayer
     		";
     }
     
-    if( preg_match( '~\.(mp4|m4v)$~', trim($media), $matches ) && current_user_can('manage_options') && $this->ajax_count < 10 ) {
+    if( current_user_can('manage_options') && $this->ajax_count < 10 ) {
     	$this->ajax_count++;
-    	$video_format = strtoupper($matches[1]);
+    	foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+				if( $media_item ) {
+					$test_media = $media_item;
+					break;
+				} 
+			}    
       $ret['script'] .= "
       	jQuery(document).ready( function() { 
 					var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
-					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$media."' }, function( response ) {
+					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$test_media."' }, function( response ) {
 						var obj = (jQuery.parseJSON( response ) );
-						if( obj[0] == 'bad mime type' ) {
-							jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice\"><p>Admin note: This ".$video_format." video has bad mime type of '+obj[1]+', so it won\'t play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p></div>');							
+						if( obj[2] ) {
+							jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice\">'+obj[2]+'</div>');							
 						}
 					} );             
         } );
@@ -206,11 +219,18 @@ class flowplayer_frontend extends flowplayer
     if ($commercial_key && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0) {
       $attributes['data-logo'] = $this->conf['logo'];
     }
-    $rtmp = false;
-    if (isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && strlen($this->conf['rtmp']) > 0) {
-      $attributes['data-rtmp'] = 'rtmp://' . $this->conf['rtmp'] . '/cfx/st/';
-      $rtmp = true;
+
+    if( $rtmp || (isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && strlen($this->conf['rtmp']) > 0) ) {
+    	$rtmp_info = parse_url($rtmp);
+			if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
+				$attributes['data-rtmp'] = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
+    	} else if( stripos( $this->conf['rtmp'], 'rtmp://' ) === 0 ) {
+    		$attributes['data-rtmp'] = $this->conf['rtmp'];
+    	} else {
+      	$attributes['data-rtmp'] = 'rtmp://' . $this->conf['rtmp'] . '/cfx/st/';
+      }
     }
+    
     if (isset($this->conf['allowfullscreen']) && $this->conf['allowfullscreen'] == 'false') {
       $attributes['data-fullscreen'] = 'false';
     }       
@@ -251,26 +271,26 @@ class flowplayer_frontend extends flowplayer
       $ret['html'] .= ' preload="none"';        
     }         
     $ret['html'] .= '>'."\n";
-         
-    //if the cloudfront is set in the plugin settings screen but it isn't acually a streaming 
-    if (strpos($media, 'amazonaws.com') === false) {
-      $rtmp = false;
-    }      
-    $ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent)."\n";
+              
+		if (!empty($media)) {              
+   		$ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent)."\n";
+    }
     if (!empty($src1)) {
       $ret['html'] .= "\t"."\t".$this->get_video_src($src1, $mobileUserAgent)."\n";
     }
     if (!empty($src2)) {
       $ret['html'] .= "\t"."\t".$this->get_video_src($src2, $mobileUserAgent)."\n";
     }
-    //don't use RTMP for mobile devices
-    if ($rtmp && !$mobileUserAgent) {
-      $video_url = parse_url($media);
-      $video_url = explode('/', $video_url['path'], 3);        
-      $media_file = $video_url[count($video_url)-1];
-      $extension = $this->get_file_extension($media);
-      $ret['html'] .= "\t"."\t".'<source src="'.$extension.':'.trim($media_file).'" type="video/flash" />'."\n";
+
+    if ($rtmp ) {
+      $rtmp_url = parse_url($rtmp);
+      /*var_dump($rtmp_url);
+      $rtmp_url = explode('/', $rtmp_url['path'], 3);        
+      $rtmp_file = $rtmp_url[count($rtmp_url)-1];*/
+      $extension = $this->get_file_extension($rtmp_url['path']);
+      $ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_url['path'], ' \t\n\r\0\x0B/').'" type="video/flash" />'."\n";
     }      
+    
     $ret['html'] .= "\t".'</video>'."\n";
     $ret['html'] .= $splashend_contents;
     $ret['html'] .= $popup_contents;            
@@ -280,6 +300,9 @@ class flowplayer_frontend extends flowplayer
 	}
   
   function get_video_url($media) {
+  	if( strpos($media,'rtmp://') !== false ) {
+  		return null;
+  	}
     if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
 			// strip the first / from $media
       if($media[0]=='/') $media = substr($media, 1);
@@ -298,17 +321,25 @@ class flowplayer_frontend extends flowplayer
   }
   
   function get_video_src($media, $mobileUserAgent) {
-    $extension = $this->get_file_extension($media);
-    //do not use https on mobile devices
-    if (strpos($media, 'https') !== false && $mobileUserAgent) {
-      $media = str_replace('https', 'http', $media);
-    } 
-    return '<source src="'.trim($media).'" type="video/'.$extension.'" />';  
+  	if( $media ) { 
+			$extension = $this->get_file_extension($media);
+			//do not use https on mobile devices
+			if (strpos($media, 'https') !== false && $mobileUserAgent) {
+				$media = str_replace('https', 'http', $media);
+			} 
+			return '<source src="'.trim($media).'" type="video/'.$extension.'" />';  
+    }
+    return null;
   }
   
   function get_file_extension($media) {
     $pathinfo = pathinfo($media);
-    $extension = $pathinfo['extension'];                  
+    $extension = $pathinfo['extension'];       
+
+		if( !$extension ) {
+			return null;
+		}
+ 
     if (!in_array($extension, array('mp4', 'm4v', 'webm', 'ogv'))) {
       $extension = 'flash';  
     }
@@ -316,7 +347,7 @@ class flowplayer_frontend extends flowplayer
     if ($extension == 'm4v') {
       $extension = 'mp4';
     }
-    return $extension;  
+    return $extension.':';  
   }
   
 	/**

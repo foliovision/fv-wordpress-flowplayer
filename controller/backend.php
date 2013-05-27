@@ -444,19 +444,36 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
  
  
 function fv_wp_flowplayer_check_mimetype() {
-  if( isset( $_POST['media'] ) && ( stripos( $_POST['media'], '.mp4' ) !== FALSE || stripos( $_POST['media'], '.m4v' ) !== FALSE ) && strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  if( isset( $_POST['media'] ) && strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
     $headers = get_headers( trim($_POST['media']) );
     if( $headers ) {
-      foreach( $headers AS $line ) {
-        if( stripos( $line, 'Content-Type:' ) !== FALSE ) {
+      foreach( $headers AS $key => $line ) {
+        if( $key == 0 && preg_match( '!HTTP.*?404.*?!', $line ) ) {
+        	$message ="<p>Admin note: video not found, please check your video source. You can do so by clicking <a href='".trim($_POST['media'])."' target='_blank'>this link</a> and see if you get to the video file.</p>";
+            
+          echo json_encode( array( 'not found', $match[1], $message ) );
+          die();
+        
+        } else if( stripos( $line, 'Content-Type:' ) !== FALSE ) {
           if(
           	( !preg_match( '~video/mp4$~', $line ) && stripos( $_POST['media'], '.mp4' ) !== FALSE ) ||
           	( !preg_match( '~video/x-m4v$~', $line ) && stripos( $_POST['media'], '.m4v' ) !== FALSE )
           ) {
             preg_match( '~Content-Type: (\S+)$~', $line, $match );
-            echo json_encode( array( 'bad mime type', $match[1] ) );
+     
+						global $fp;
+						if( $fp->conf['engine'] == 'default' ) {
+							$admin_note_addition = 'Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+						}
+						preg_match( '!([a-zA-Z0-9-_]{2,4})$!', trim($_POST['media']), $video_format );
+						$message ="<p>Admin note: This <abbr='".trim($_POST['media'])."'>".$video_format."</abbr> video has bad mime type of ".$match[1].", so it won't play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p>";
+            
+            echo json_encode( array( 'bad mime type', $match[1], $message ) );
             die();
           }
+        } else {
+        	echo json_encode( array() );
+        	die();
         }
       }
     }
