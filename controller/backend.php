@@ -469,7 +469,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
  
  
 function fv_wp_flowplayer_check_mimetype() {
-  if( isset( $_POST['media'] ) && strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  if( isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
     $headers = get_headers( trim($_POST['media']) );
     if( $headers ) {
       foreach( $headers AS $key => $line ) {
@@ -549,7 +549,7 @@ function fv_wp_flowplayer_check_jquery_version( $url ) {
 
 
 function fv_wp_flowplayer_check_files() {
-  if( strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
   	global $wpdb;
   	define('VIDEO_DIR', '/videos/');
   	
@@ -650,7 +650,7 @@ AddType video/mp2t            .ts</code></pre></blockquote>';
 
 
 function fv_wp_flowplayer_check_template() {
-  if( strpos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
   	$response = wp_remote_get( home_url() );
   	if( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
