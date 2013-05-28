@@ -215,6 +215,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.1.11 - 2013/05/28 =
 * more improvements and bugfixes for RTMP handling
+* fix for template and videos checker
 
 = 2.1.10 - 2013/05/28 =
 * update to Flowplayer 5.4.2
