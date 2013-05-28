@@ -213,6 +213,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * suggestion for fixing of slow loading videos
 * other bugfixes
 
+= 2.1.11 - 2013/05/28 =
+* more improvements and bugfixes for RTMP handling
+
 = 2.1.10 - 2013/05/28 =
 * update to Flowplayer 5.4.2
 * more improvements and bugfixes for RTMP handling
@@ -406,6 +409,10 @@ On the right side of this screen, you can see the current visual configuration o
 == Upgrade Notice ==
 
 = Quick fix for jQuery loading.
+
+= 2.1.11 =
+* Upgrade to latest Flowplayer version - 5.4.2
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
 
 = 2.1.10 =
 * Upgrade to latest Flowplayer version - 5.4.2
