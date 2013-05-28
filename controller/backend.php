@@ -408,6 +408,31 @@ function fv_wp_flowplayer_admin_init() {
 		$fp->_set_conf();
     $fp = new flowplayer();
 	}
+
+  global $fp;
+  if( preg_match( '!^\$\d+!', $fp->conf['key'] ) ) {
+    global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
+    $version = get_option( 'fvwpflowplayer_core_ver' );
+    if( version_compare( $fv_wp_flowplayer_core_ver, $version ) == 1 ) {
+      
+      $args = array(
+      	'body' => array( 'domain' => home_url(), 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver ),
+        'timeout' => 20,
+      	'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
+      );
+      $resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
+      
+      if( $resp['body'] && $data = json_decode( $resp['body'] ) ) {
+        if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
+          $fp->conf['key'] = $data->key;
+          update_option( 'fvwpflowplayer', $fp->conf );
+        }                            
+      }            
+    }      
+  }
+  
+  update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+  
 }   
 
 
@@ -466,14 +491,11 @@ function fv_wp_flowplayer_check_mimetype() {
 							$admin_note_addition = 'Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
 						}
 						preg_match( '!([a-zA-Z0-9-_]{2,4})$!', trim($_POST['media']), $video_format );
-						$message ="<p>Admin note: This <abbr='".trim($_POST['media'])."'>".$video_format."</abbr> video has bad mime type of ".$match[1].", so it won't play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p>";
+						$message ="<p>Admin note: This <abbr='".trim($_POST['media'])."'>".$video_format[1]."</abbr> video has bad mime type of ".$match[1].", so it won't play in HTML5 in IE9 and IE10. Refer to <a href=\"http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq\">Internet Explorer 9 question in our FAQ</a> for fix. ".$admin_note_addition."</p>";
             
             echo json_encode( array( 'bad mime type', $match[1], $message ) );
             die();
           }
-        } else {
-        	echo json_encode( array() );
-        	die();
         }
       }
     }
@@ -493,8 +515,8 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 		}
 	}
 	
-	global $fv_wp_flowplayer_core_ver;
-	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js?ver='.$fv_wp_flowplayer_core_ver ) !== false ) {
+	global $fv_wp_flowplayer_ver;
+	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
 	}
 	return 0;

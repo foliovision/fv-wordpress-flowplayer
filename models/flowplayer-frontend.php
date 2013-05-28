@@ -22,7 +22,7 @@ class flowplayer_frontend extends flowplayer
     if (isset($args['src2'])&&!empty($args['src2'])) $src2 = trim($args['src2']);
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-			if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) === false ) || stripos( $media_item, 'rtmp://' ) === 0 ) {
+			if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
 				$rtmp = $media_item;
 			} 
     }    

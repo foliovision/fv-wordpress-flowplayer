@@ -1,15 +1,13 @@
 <?php
-
 /**
  * Displays metatags for frontend.
  */
- 
-global $fv_wp_flowplayer_core_ver;
 
+global $fv_wp_flowplayer_ver;
 ?>
 
 <?php if( is_admin() ) : ?>
-	<script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_core_ver; ?>"></script>
+	<script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
 <?php endif; ?>
 
 <?php if ($this->conf['disableembedding'] == 'true') { ?>
@@ -18,7 +16,7 @@ global $fv_wp_flowplayer_core_ver;
 	</script>
 <?php } ?>
 
-<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_core_ver; ?>" type="text/css" media="screen" />
+<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 
 <?php if ( isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0 && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0 ) : ?>
 		<style type="text/css">
