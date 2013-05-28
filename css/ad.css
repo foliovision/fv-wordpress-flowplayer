@@ -4,7 +4,7 @@
 	width: 690px;
 	height: 238px;
 	display: block;
-	margin: 20px 10px;
+	margin: 20px auto;
 	padding: 15px 10px 0 20px;
 	border: 1px solid #ccc;
 	background: url("../images/fabric-plaid-bg.png");
