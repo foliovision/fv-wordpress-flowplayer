@@ -353,11 +353,11 @@ function add_format() {
           <td style="text-align: left; padding: 10px 0; text-transform: uppercase;">Additional features</td>
         </tr>
         <tr>
-  				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_popup" class="alignright">HTML Popup*</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_popup" class="alignright">HTML Popup</label></th>
   				<td><textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea></td>
   			</tr>
         <tr>
-  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright">Redirect to*</label></th>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright">Redirect to</label></th>
   				<td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
   			</tr>
         <tr>
