@@ -409,8 +409,6 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
-= Quick fix for jQuery loading.
-
 = 2.1.11 =
 * Upgrade to latest Flowplayer version - 5.4.2
 * Fixes for RTMP parsing - please check your RTMP videos after upgrade.
