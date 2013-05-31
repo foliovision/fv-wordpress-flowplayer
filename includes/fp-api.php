@@ -147,7 +147,7 @@ class FV_Wordpress_Flowplayer_Plugin
             if (preg_match('~==\s*Upgrade Notice\s*==\s*=\s*[0-9.]+\s*=(.*)(=\s*[0-9.]+\s*=|$)~Uis', $data, $matches)) {
                 $changelog = (array) preg_split('~[\r\n]+~', trim($matches[1]));
 
-                echo '<div style="color: #b51212;">';
+                echo '<div style="color: #b51212;"">';
                 $ul = false;
                 
                 foreach ($changelog as $index => $line) {

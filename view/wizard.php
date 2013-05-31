@@ -303,7 +303,6 @@ function add_format() {
   
         <tr style="display: none" id="fv_wp_flowplayer_file_info">
           <th></th>
-          <th scope="row" class="label"><span class="alignleft">File info</span></th>
           <td>
             Video Duration: <span id="fv_wp_flowplayer_file_duration"></span><br />
             File size: <span id="fv_wp_flowplayer_file_size"></span>MB

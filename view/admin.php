@@ -124,7 +124,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						</td>
 					</tr>
 					<tr>
-						<td><label for="engine">Preferred Flowplayer engine (<abbr title="Default setting - IE9 and IE10 get Flash (due to server compatibility issues), everyone else gets HTML5 (with Flash fallback)">?</abbr>):</label></td>
+						<td><label for="engine">Preferred Flowplayer engine (<abbr title="Default setting - IE9 and IE10 get Flash (due to server compatibility issues), Firefox in Windows gets Flash for M4V files (due to issues with M4V in it on PC), everyone else gets HTML5 (with Flash fallback)">?</abbr>):</label></td>
 						<td style="text-align:right">
 							<select id="engine" name="engine">
 							  <!--<option value="flash"<?php if( $fp->conf['engine'] == 'flash' ) echo ' selected="selected"'; ?>>Flash (with HTML5 fallback)</option>-->

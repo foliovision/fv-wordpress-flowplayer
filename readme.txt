@@ -64,9 +64,8 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    
 == Frequently Asked Questions ==
 
-= I'm having issues with popup, redirection, splash end or loop functions =
+= I'm having issues with splash end or loop functions =
 
-[](#popup)
 Currently these don't work when the Flash fallback player is used. So they only work if your browsers supports the video format natively (read more about video formats in next question). One of the next version should have this fixed.
 
 = My video doesn't play in some browsers =
@@ -75,11 +74,21 @@ This should be related to your video format or mime type issues.
 
 Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
 
-Please note that MP4 is just a container, it might contain various streams for audio and video. You should check if the video stream in your MP4 is using H.264 aka MPEG-4 AVC or MPEG-4 Part 10 codec and if audio is using AAC codec: http://flowplayer.org/docs/encoding.html#codecs
-
 In general, it's recommended to use constant frame rate: http://flowplayer.org/docs/encoding.html#general-advice
 
 It seems HTML5 is more picky about what video it can play.
+
+Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
+
+= How to check my video properties using the built-in checker =
+
+* Login to your site as administrator
+* Come to any post which was video
+* A message in yellow highlight should appear above each video "Checking the video file...". The check takes usually 1-2 seconds.
+* Once it's finished, you can see the video type and also click for more details.
+* If there is a problem detected, the color changes to red and the plugin gives you a hint on how to fix the problem (we are improving this)
+
+Note: The checker works much better for local files (on the same server as site). For the remote files, we only grab first 2MB of the file, store it temporarily in your uploads folder, analyze it and then delete. Since we don't get the full file, some values might not be correct, but basic things like codecs should be not affected.
 
 = My video doesn't play in Internet Explorer 9 and 10 =
 
@@ -209,9 +218,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* improved checking of videos
-* suggestion for fixing of slow loading videos
+* improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
+* tools for fixing of slow loading videos (bad meta data location)
+* support for subtitles
 * other bugfixes
+
+= 2.1.12 - 2013/05/31 =
+* Front-end video checker now detects video codecs and other details (read "How to check my video properties using the built-in checker" in FAQ before we update our documentation )
+* Firefox on Windows prefers Flash for M4V files (due to issues on some PCs)
+* fullscreen background color set to black
+* fix for bad fullscreen dimensions in some browsers (Chrome)
+* template checker bugfix for false positives (jQuery plugins detected as duplicite jQuery libraries)
 
 = 2.1.11 - 2013/05/28 =
 * more improvements and bugfixes for RTMP handling

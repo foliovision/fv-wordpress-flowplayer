@@ -14,7 +14,10 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
-		
+				
+    // unique code for this player
+		$hash = md5($media.$this->_salt());    
+    
 		// returned array with new player's html and javascript content
 		$ret = array('html' => '', 'script' => '');
     
@@ -22,9 +25,18 @@ class flowplayer_frontend extends flowplayer
     if (isset($args['src2'])&&!empty($args['src2'])) $src2 = trim($args['src2']);
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-			if( stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
+			//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
+      if( stripos( $media_item, 'rtmp://' ) === 0 ) {
 				$rtmp = $media_item;
 			} 
+            
+      if( $this->conf['engine'] == 'default' && stripos( $media_item, '.m4v' ) !== false ) {
+        $ret['script'] .= "
+    		  if( jQuery.browser.mozilla && navigator.appVersion.indexOf(\"Win\")!=-1 ) {
+    		  	jQuery('#wpfp_".$hash."').attr('data-engine','flash');
+    		  }
+    		  ";
+      }
     }    
     
     $media = $this->get_video_url($media);
@@ -36,9 +48,7 @@ class flowplayer_frontend extends flowplayer
     }    
     
 
-		
-    // unique coe for this player
-		$hash = md5($media.$this->_salt());
+
 		// setting argument values
 		$width =  ( isset($this->conf['width']) && (!empty($this->conf['width'])) && intval($this->conf['width']) > 0 ) ? $this->conf['width'] : 320;
 		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) && intval($this->conf['height']) > 0 ) ? $this->conf['height'] : 240;
@@ -125,25 +135,37 @@ class flowplayer_frontend extends flowplayer
     		";
     }
     
-    if( current_user_can('manage_options') && $this->ajax_count < 10 ) {
+    if( current_user_can('manage_options') && $this->ajax_count < 10 && apply_filters( 'fv_flowplayer_do_media_test', true ) ) {
     	$this->ajax_count++;
     	foreach( array( $media, $src1, $src2 ) AS $media_item ) {
 				if( $media_item ) {
 					$test_media = $media_item;
 					break;
 				} 
-			}    
-      $ret['script'] .= "
-      	jQuery(document).ready( function() { 
-					var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
-					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$test_media."' }, function( response ) {
-						var obj = (jQuery.parseJSON( response ) );
-						if( obj[2] ) {
-							jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice\">'+obj[2]+'</div>');							
-						}
-					} );             
-        } );
-      ";
+			}   
+      
+      if( $test_media ) { 
+        $ret['script'] .= "
+        	jQuery(document).ready( function() { 
+  					var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
+            jQuery('#wpfp_".$hash."').before('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice\"><p>Checking the video file...</p></div>');
+  					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$test_media."' }, function( response ) {
+  						var obj;
+              try {
+                obj = jQuery.parseJSON( response );
+
+                var extra_class = ( obj[1] > 0 ) ? ' fv-wp-flowplayer-error' : '';
+                jQuery('#wpfp_notice_".$hash."').remove();
+                jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice'+extra_class+'\">'+obj[0]+'</div>');						 			             
+              } catch(e) {
+                jQuery('#wpfp_notice_".$hash."').html('<p>Error parsing JSON</p>');
+                return;
+              }
+
+  					} );             
+          } );
+        ";
+      }
     }
     
     //  proper fallback on error?
@@ -271,7 +293,7 @@ class flowplayer_frontend extends flowplayer
       $ret['html'] .= ' preload="none"';        
     }         
     $ret['html'] .= '>'."\n";
-              
+            
 		if (!empty($media)) {              
    		$ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent)."\n";
     }
