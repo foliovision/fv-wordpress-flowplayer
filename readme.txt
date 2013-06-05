@@ -434,6 +434,10 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
+= 2.1.13 =
+* Admin front-end video checker is not much smaller and can be disabled in options
+* Support for subtitles added
+
 = 2.1.11 =
 * Upgrade to latest Flowplayer version - 5.4.2
 * Fixes for RTMP parsing - please check your RTMP videos after upgrade.

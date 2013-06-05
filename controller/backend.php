@@ -403,7 +403,7 @@ function fv_wp_flowplayer_admin_notice() {
     echo "</p></div>";
   }
   
-  if( $_GET['page'] == 'backend.php' ) {
+  if( $_GET['page'] == 'backend.phpDISABLED' ) {
 	  $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' ) {
   		echo '<div class="updated"><p>'; 
@@ -485,7 +485,7 @@ function fv_wp_flowplayer_media_upload() {
 
 function fv_wp_flowplayer_after_plugin_row( $arg) {
 	$args = func_get_args();
-	if( $args[1]['Name'] == 'FV Wordpress Flowplayer' ) {		
+	if( $args[1]['Name'] == 'FV Wordpress FlowplayerDISABLED' ) {		
     $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' || $options['key'] == '' ) :
 		?>
@@ -575,7 +575,7 @@ AddType video/mp2t            .ts</pre>
     
     		$ThisFileInfo = $getID3->analyze( $localtempfilename );
         
-        if( !unlink($localtempfilename) ) {
+        if( !@unlink($localtempfilename) ) {
           $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
         }         
       } else {
