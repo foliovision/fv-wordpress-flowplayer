@@ -114,6 +114,8 @@ This can be also done in the Apache configuration. If you are on Microsoft IIS, 
 
 They might be served with bad mime type too - "application/octet-stream". This largely depends on the tool which you use to upload your videos. Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object's "Properties" pane and fix it to "video/mp4" (without the quotes, of course different video formats need different mime type, this one is for MP4). There are also tools for this, like S3 Browser Freeware, good place for start is here: https://forums.aws.amazon.com/thread.jspa?messageID=224446
 
+or check our support forum: http://foliovision.com/support/fv-wordpress-flowplayer/how-to/how-to-set-correct-mime-type-on-videos-hosted-by-amazon
+
 Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
 
 = Does this plugin support Shoutcast? =
