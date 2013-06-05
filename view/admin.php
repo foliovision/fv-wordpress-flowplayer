@@ -52,7 +52,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 				<h3>Default Flowplayer Options</h3>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
-						<td style="width: 330px;"><label for="autoplay">AutoPlay:</label></td>
+						<td style="width: 250px;"><label for="autoplay">AutoPlay:</label></td>
 						<td style="text-align:right;">
 							<select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fp->conf['autoplay']); ?></select> 	
 						</td>
@@ -106,12 +106,6 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						</td>
 					</tr>
 					<tr>
-						<td><label for="allowuploads">Allow User Uploads:</label></td>
-						<td style="text-align:right">
-							<select id="allowuploads" name="allowuploads"><?php echo flowplayer_bool_select($fp->conf['allowuploads']); ?></select>
-						</td>
-					</tr>
-					<tr>
 						<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
 						<td style="text-align:right">
 							<select id="postthumbnail" name="postthumbnail"><?php echo flowplayer_bool_select($fp->conf['postthumbnail']); ?></select>
@@ -149,8 +143,17 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
               </select> 					
 						</td>
 					</tr>
-				</table>
-				<table class="form-table2" style="margin: 5px; ">
+					<tr>
+					  <td><label for="videochecker">Front-end video checker</label></td>
+						<td style="text-align:right"> 					
+							<select id="videochecker" name="videochecker">
+							  <option value="enabled"<?php if( $fp->conf['videochecker'] == 'enabled' ) echo ' selected="selected"'; ?>>Enabled</option>
+							  <option value="errors"<?php if( $fp->conf['videochecker'] == 'errors'  ) echo ' selected="selected"'; ?>>Errors only</option>
+                <option value="off"<?php if( $fp->conf['videochecker'] == 'off'  ) echo ' selected="selected"'; ?>>Turn off</option>
+              </select> 					
+						</td>
+					</tr>          
+
 					<tr>
 						<td><label for="googleanalytics">Google Analytics ID:</label></td>
 						<td><input type="text" size="40" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fp->conf['googleanalytics']); ?>" /></td>
@@ -193,8 +196,83 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					</tr>
 				</table>    
     	</div>
-    </div>  	
-  	<div id="poststuff" class="ui-sortable">            
+    </div>  
+        
+    
+    <div id="poststuff" class="ui-sortable" style="float: left; width: 50%; ">            
+			<div class="postbox">    
+				<h3 id="interface">Interface options</h3>
+				<table class="form-table2" style="margin: 5px; ">
+          <tr>
+            <td colspan="2"><p>Which features should be available in shortcode editor?</p></td>
+          </tr>
+					<tr>
+						<td style="width: 520px;"><label for="allowuploads">Allow User Uploads:</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="allowuploads" value="false" />
+              <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( $fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>   
+					<tr>          
+						<td><label for="interface[popup]">Show HTML popup:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[popup]" value="false" />
+							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( $fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>    
+					<tr>          
+						<td style="width: 330px;"><label for="interface[redirect]">Show Redirect:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[redirect]" value="false" />
+							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( $fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>                        
+					<tr>          
+						<td style="width: 330px;"><label for="interface[autoplay]">Show AutoPlay:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[autoplay]" value="false" />
+							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( $fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>
+					<tr>          
+						<td style="width: 330px;"><label for="interface[loop]">Show Loop:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[loop]" value="false" />
+							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( $fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>
+					<tr>          
+						<td style="width: 330px;"><label for="interface[splashend]">Show Splash end:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[splashend]" value="false" />
+							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( $fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>     
+					<tr>          
+						<td style="width: 330px;"><label for="interface[embed]">Show Embed:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[embed]" value="false" />
+							<input type="checkbox" name="interface[embed]" id="interface[embed]" value="true" <?php if( $fp->conf['interface']['embed'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>    
+					<tr>          
+						<td style="width: 330px;"><label for="interface[embed]">Show Subtitles:</label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[subtitles]" value="false" />
+							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( $fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>                    
+					<tr>    		
+						<td colspan="4">
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Apply Changes" style="margin-top: 2ex;"/>
+						</td>
+					</tr>                                    
+				</table>
+			</div>
+		</div>
+        
+    	
+  	<div id="poststuff" class="ui-sortable" style="float: right; width: 49%; ">            
 			<div class="postbox">    
 				<h3>Description</h3>
 				<table class="form-table">
@@ -222,6 +300,9 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 				</table>
 			</div>
 		</div>
+    
+    <div style="clear: both;"></div>
+    
   	<div id="poststuff" class="ui-sortable">            
 			<div class="postbox">	
 				<h3>Usage:</h3>

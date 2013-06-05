@@ -21,7 +21,7 @@
 jQuery(document).ready(function(){ 
   if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
     jQuery(".fv-wordpress-flowplayer-button").colorbox( 
-      { width:"600px", height:"600px", href: "#fv-wordpress-flowplayer-popup", inline: true, onComplete : fv_wp_flowplayer_edit, onClosed : fv_wp_flowplayer_on_close }
+      { width:"600px", height:"620px", href: "#fv-wordpress-flowplayer-popup", inline: true, onComplete : fv_wp_flowplayer_edit, onClosed : fv_wp_flowplayer_on_close }
     );
     
     jQuery(".fv-wordpress-flowplayer-button").click( function() {
@@ -42,6 +42,7 @@ var fv_wp_flowplayer_re_edit = /\[[^\]]*?<span[^>]*?rel="FCKFVWPFlowplayerPlaceh
 var fv_wp_flowplayer_re_insert = /<span[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/span>/gi;
 var fv_wp_flowplayer_hTinyMCE;
 var fv_wp_flowplayer_oEditor;
+var fv_wp_fp_shortcode_remains;
 
 
 
@@ -85,6 +86,7 @@ function fv_wp_flowplayer_edit() {
   jQuery("#fv-wordpress-flowplayer-popup input").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
   jQuery("#fv-wordpress-flowplayer-popup textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv_wp_flowplayer_field_autoplay').prop('selectedIndex',0);
+  jQuery('#fv_wp_flowplayer_field_embed').prop('selectedIndex',0);
   jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
   
 	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
@@ -117,30 +119,54 @@ function fv_wp_flowplayer_edit() {
   	
   	shortcode = shortcode.replace( /\\'/g,'&#039;' );
   	  
-	  var shortcode_parse_fix = shortcode.replace(/popup='[^']*?'/g, '');  	
+	  var shortcode_parse_fix = shortcode.replace(/popup='[^']*?'/g, '');
+    fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );  	
   	
   	var srcurl = shortcode_parse_fix.match( /src=['"]([^']*?)['"]/ );
-  	if( srcurl == null )
-  		srcurl = shortcode_parse_fix.match( /src=([^,\]\s]*)/ );			
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src=['"]([^']*?)['"]/, '' );
+  	if( srcurl == null ) {
+  		srcurl = shortcode_parse_fix.match( /src=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src=([^,\]\s]*)/, '' );
+    }      			
     
     var srcurl1 = shortcode.match( /src1=['"]([^']*?)['"]/ );
-  	if( srcurl1 == null )
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src1=['"]([^']*?)['"]/, '' );
+  	if( srcurl1 == null ) {
   		srcurl1 = shortcode.match( /src1=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src1=([^,\]\s]*)/, '' );
+    }      
     
     var srcurl2 = shortcode.match( /src2=['"]([^']*?)['"]/ );
-  	if( srcurl2 == null )
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src2=['"]([^']*?)['"]/, '' );
+  	if( srcurl2 == null ) {
   		srcurl2 = shortcode.match( /src2=([^,\]\s]*)/ );
-  	
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src2=([^,\]\s]*)/, '' );
+    }
+  	                                                                          
     var iheight = shortcode_parse_fix.match( /height="?(\d*)"?/ );			
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /height="?(\d*)"?/, '' );
   	var iwidth = shortcode_parse_fix.match( /width="?(\d*)"?/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /width="?(\d*)"?/, '' );
   	var sautoplay = shortcode.match( /autoplay=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /autoplay=([^\s]+)/, '' );
+    var sembed = shortcode.match( /embed=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /embed=([^\s]+)/, '' );
   	var ssplash = shortcode.match( /splash='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splash='([^']*)'/, '' );
+  	var ssubtitles = shortcode.match( /subtitles='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /subtitles='([^']*)'/, '' );    
     var sredirect = shortcode.match( /redirect='([^']*)'/ );
-  	if( ssplash == null )
-  		ssplash = shortcode.match( /splash=([^,\]\s]*)/ );			
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /redirect='([^']*)'/, '' );
+  	if( ssplash == null ) {
+  		ssplash = shortcode.match( /splash=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splash=([^,\]\s]*)/, '' );
+    }			
   	var spopup = shortcode.match( /popup='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /popup='([^']*)'/, '' );
     var sloop = shortcode.match( /loop=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /loop=([^\s]+)/, '' );
     var ssplashend = shortcode.match( /splashend=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splashend=([^\s]+)/, '' );
     
   	if( srcurl != null && srcurl[1] != null )
   		document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
@@ -165,8 +191,16 @@ function fv_wp_flowplayer_edit() {
       if (sautoplay[1] == 'false') 
         document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex = 2;
     }
+  	if( sembed != null && sembed[1] != null ) {
+  		if (sembed[1] == 'true') 
+        document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex = 1;
+      if (sembed[1] == 'false') 
+        document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex = 2;
+    }    
   	if( ssplash != null && ssplash[1] != null )
   		document.getElementById("fv_wp_flowplayer_field_splash").value = ssplash[1];
+  	if( ssubtitles != null && ssubtitles[1] != null )
+  		document.getElementById("fv_wp_flowplayer_field_subtitles").value = ssubtitles[1];      
   	if( spopup != null && spopup[1] != null ) {
   		spopup = spopup[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
   		spopup = spopup.replace(/&amp;/g,'&');
@@ -179,8 +213,12 @@ function fv_wp_flowplayer_edit() {
     if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' )
   		document.getElementById("fv_wp_flowplayer_field_splashend").checked = 1;  
   	
-  	jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Update' );
-	}
+  	jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Update' );    
+	} else {
+    fv_wp_fp_shortcode_remains = '';
+  }
+  
+  jQuery('#cboxContent').css('background','white');
 }
 
 
@@ -237,11 +275,19 @@ function fv_wp_flowplayer_submit() {
 	if( document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex == 2 )
 	  shortcode += ' autoplay=false';
     
+  if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 1 )
+	  shortcode += ' embed=true';
+	if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 2 )
+	  shortcode += ' embed=false';    
+    
   if( document.getElementById("fv_wp_flowplayer_field_loop").checked )
 		shortcode += ' loop=true';    
 		
 	if( document.getElementById("fv_wp_flowplayer_field_splash").value != '' )
 		shortcode += ' splash=\'' + document.getElementById("fv_wp_flowplayer_field_splash").value + '\'';
+    
+	if( document.getElementById("fv_wp_flowplayer_field_subtitles").value != '' )
+		shortcode += ' subtitles=\'' + document.getElementById("fv_wp_flowplayer_field_subtitles").value + '\'';    
     
   if( document.getElementById("fv_wp_flowplayer_field_splashend").checked )
 		shortcode += ' splashend=show';
@@ -259,6 +305,8 @@ function fv_wp_flowplayer_submit() {
 		shortcode += ' popup=\'' + popup +'\''
 	}        
 	
+  shortcode += fv_wp_fp_shortcode_remains;
+  
 	shortcode += ']';
 	
 	jQuery(".fv-wordpress-flowplayer-button").colorbox.close();
@@ -342,24 +390,40 @@ function add_format() {
               <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_splash&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Image</a>
           	<?php }; //allow uploads splash image ?></td>
   			</tr>
+      
+        <tr<?php if( $conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright">Subtitles</label></th>
+  				<td class="field" colspan="2"><input type="text" id="fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" style="width: <?php echo $upload_field_width; ?>" value=""/>   			<?php if ($allow_uploads=='true') { ?>
+              <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_subtitles&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Subtitles</a>
+          	<?php }; //allow uploads splash image ?></td>
+  			</tr>
 
       </tbody>
     </table>
     <table width="100%">
-      <tbody>      
-        <tr>
+      <tbody> 
+        <?php
+        foreach( $conf["interface"] AS $option ) {
+          if( $option == 'true' ) {
+            $show_additonal_features = true;
+          } else {
+            $show_more_features = true;
+          }
+        }
+        ?>     
+        <tr<?php if( !$show_additonal_features ) echo ' style="display: none"';?>>
           <th scope="row" width="18%"></th>
           <td style="text-align: left; padding: 10px 0; text-transform: uppercase;">Additional features</td>
         </tr>
-        <tr>
+        <tr<?php if( $conf["interface"]["popup"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_popup" class="alignright">HTML Popup</label></th>
   				<td><textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea></td>
   			</tr>
-        <tr>
+        <tr<?php if( $conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright">Redirect to</label></th>
   				<td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
   			</tr>
-        <tr>
+        <tr<?php if( $conf["interface"]["autoplay"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_autoplay" class="alignright">Autoplay</label></th>
   				<td class="field">
             <select id="fv_wp_flowplayer_field_autoplay" name="fv_wp_flowplayer_field_autoplay">
@@ -369,24 +433,34 @@ function add_format() {
             </select>
           </td>
   			</tr>
-        <tr>
+        <tr<?php if( $conf["interface"]["loop"] !== 'true' ) { $no_finish_note = true; echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright">Loop*</label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
   			</tr>   
-        <tr>
+        <tr<?php if( $conf["interface"]["splashend"] !== 'true' ) { $no_finish_note = true; echo ' style="display: none"'; } ?>>
           <th scope="row" class="label">
             <label for="fv_wp_flowplayer_field_splashend">Splash end*</label>
           </th>
           <td>
             <input type="checkbox" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" /> (show splash image at the end)
           </td> 
-        </tr>         
+        </tr>    
+        <tr<?php if( $conf["interface"]["embed"] !== 'true' ) echo ' style="display: none"'; ?>>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_embed" class="alignright">Embeding</label></th>
+  				<td class="field">
+            <select id="fv_wp_flowplayer_field_embed" name="fv_wp_flowplayer_field_embed">
+              <option>Default</option>
+              <option>On</option>
+              <option>Off</option>
+            </select>
+          </td>
+  			</tr>             
   			<tr>
   				<th scope="row" class="label"></th>					
             	<td  style="padding-top: 20px;"><input type="button" value="Insert" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignleft" onclick="fv_wp_flowplayer_submit();" />
   				</td>
   			</tr>
-            <tr>
+            <tr<?php if( $no_finish_note ) echo ' style="display: none;" '; ?>>
             	<th></th>
                 <td>* Working now in HTML5. Coming soon in Flash.</td>
             </tr>
@@ -397,6 +471,13 @@ function add_format() {
               </td>
             </tr>            
             <?php } ?>
+            <?php if( current_user_can('manage_options') ) { ?> 
+            <tr>
+              <td colspan="2">
+              	<div class="fv-wp-flowplayer-notice">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=backend.php#interface">Settings</a></div>
+              </td>
+            </tr>            
+            <?php } ?>            
   		</tbody>
   	</table>
   </div>

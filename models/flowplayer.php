@@ -41,7 +41,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 */
 	private function _get_conf() {
 	  ///  Addition  2010/07/12  mv
-    $conf = get_option( 'fvwpflowplayer' );    
+    $conf = get_option( 'fvwpflowplayer' ); 
+    if( $conf ) {
+      $upgrade = true;
+    }   
         
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
@@ -71,8 +74,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
-    if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive';             
-     
+    if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive'; 
+    
+    if( !isset( $conf['videochecker'] ) ) $conf['videochecker'] = 'enabled';            
+    if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
+    
+    if( $upgrade ) {
+      if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';
+      if( !isset( $conf['interface']['redirect'] ) ) $conf['interface']['redirect'] = 'true';
+      if( !isset( $conf['interface']['autoplay'] ) ) $conf['interface']['autoplay'] = 'true';
+      if( !isset( $conf['interface']['loop'] ) ) $conf['interface']['loop'] = 'true';
+      if( !isset( $conf['interface']['splashend'] ) ) $conf['interface']['splashend'] = 'true';
+    }
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -94,7 +107,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	      $_POST[$key] = '#'.strtolower($_POST[$key]);
 	    }
 	  }
-	  $_POST['key'] = $save_key;
+	  $_POST['key'] = $save_key;    
 	  update_option( 'fvwpflowplayer', $_POST );
 	  return true;	
 	}

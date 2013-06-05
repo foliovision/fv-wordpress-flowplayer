@@ -15,7 +15,7 @@ class flowplayer_frontend extends flowplayer
 	 */
 	function build_min_player($media,$args = array()) {
 				
-    // unique code for this player
+    // unique coe for this player
 		$hash = md5($media.$this->_salt());    
     
 		// returned array with new player's html and javascript content
@@ -100,6 +100,30 @@ class flowplayer_frontend extends flowplayer
   		}  		  		
 		}
     
+    if (isset($args['subtitles']) && !empty($args['subtitles'])) {
+  		$subtitles = $args['subtitles'];
+  		if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
+  		  //$splash_img = VIDEO_PATH.trim($args['splash']);
+  			if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
+          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+          }
+          else
+          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
+          }
+          else {
+            //if the videos are not in the videos directory but they are adressed relatively
+            $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+            $subtitles = 'http://'.$subtitles;
+          }
+  		}
+      else {
+  		  $subtitles = trim($args['subtitles']);
+  		}  		  		
+		}  
+    
+    
     $show_popup = false;
     // if allowed by configuration file, set the popup box js code and content
 		if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($args['popup']) && !empty($args['popup']) ) ) {
@@ -135,7 +159,7 @@ class flowplayer_frontend extends flowplayer
     		";
     }
     
-    if( current_user_can('manage_options') && $this->ajax_count < 10 && apply_filters( 'fv_flowplayer_do_media_test', true ) ) {
+    if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['videochecker'] != 'off' ) {
     	$this->ajax_count++;
     	foreach( array( $media, $src1, $src2 ) AS $media_item ) {
 				if( $media_item ) {
@@ -144,17 +168,21 @@ class flowplayer_frontend extends flowplayer
 				} 
 			}   
       
+      if( $this->conf['videochecker'] == 'enabled' ) {
+        $pre_notice = "jQuery('#wpfp_".$hash."').before('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice\"><p>Admin note: Checking the video file...</p></div>');";
+      }
+      
       if( $test_media ) { 
         $ret['script'] .= "
         	jQuery(document).ready( function() { 
   					var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
-            jQuery('#wpfp_".$hash."').before('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice\"><p>Checking the video file...</p></div>');
+            $pre_notice
   					jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$test_media."' }, function( response ) {
   						var obj;
               try {
                 obj = jQuery.parseJSON( response );
-
-                var extra_class = ( obj[1] > 0 ) ? ' fv-wp-flowplayer-error' : '';
+                
+                var extra_class = ( obj[1] > 0 ) ? ' fv-wp-flowplayer-error' : ' fv-wp-flowplayer-ok';
                 jQuery('#wpfp_notice_".$hash."').remove();
                 jQuery('#wpfp_".$hash."').before('<div class=\"fv-wp-flowplayer-notice'+extra_class+'\">'+obj[0]+'</div>');						 			             
               } catch(e) {
@@ -220,6 +248,10 @@ class flowplayer_frontend extends flowplayer
     
     if( $this->conf['engine'] == 'flash' || $args['engine'] == 'flash' ) {
       $attributes['data-engine'] = 'flash';
+    }
+    
+    if( $args['embed'] == 'false' || $args['embed'] == 'true' ) {
+      $attributes['data-embed'] = $args['embed'];
     }
     
     if( $this->conf['responsive'] == 'fixed' ) {
@@ -314,7 +346,11 @@ class flowplayer_frontend extends flowplayer
       	$extension .= ':';
       }
       $ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_url['path'], " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
-    }      
+    }  
+    
+    if (isset($subtitles) && !empty($subtitles)) {
+      $ret['html'] .= "\t"."\t".'<track src="'.esc_attr($subtitles).'" />'."\n";
+    }     
     
     $ret['html'] .= "\t".'</video>'."\n";
     $ret['html'] .= $splashend_contents;
@@ -358,9 +394,9 @@ class flowplayer_frontend extends flowplayer
   }
   
   function get_file_extension($media) {
-    $pathinfo = pathinfo($media);
+    $pathinfo = pathinfo( trim($media) );
     $extension = $pathinfo['extension'];       
-
+    
 		if( !$extension ) {
 			return null;
 		}

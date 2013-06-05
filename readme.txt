@@ -222,8 +222,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = What's coming =
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
-* support for subtitles
-* other bugfixes
+* other bugfixes and improvements
+
+= 2.1.13 - 2013/06/05 =
+* Admin front-end video checker is now less obnoxious - shows smaller messages and can be disabled in options
+* Added support for subtitles - first enable "Show Subtitles" in Settings -> FV Wordpress Flowplayer -> Interface options
+* Added options for what features show up in shortcode editor - check Settings -> FV Wordpress Flowplayer -> Interface options
+* Added option to allow/disallow embeding per video
+* bugfix for shortcode parsing
 
 = 2.1.12 - 2013/05/31 =
 * Front-end video checker now detects video codecs and other details (read "How to check my video properties using the built-in checker" in FAQ before we update our documentation )
