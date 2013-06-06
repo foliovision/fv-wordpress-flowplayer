@@ -72,11 +72,9 @@ Currently these don't work when the Flash fallback player is used. So they only 
 
 This should be related to your video format or mime type issues.
 
-Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
+Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5]<http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding>.
 
-In general, it's recommended to use constant frame rate: http://flowplayer.org/docs/encoding.html#general-advice
-
-It seems HTML5 is more picky about what video it can play.
+It seems HTML5 is more picky about what video it can play than Flash.
 
 Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
 
