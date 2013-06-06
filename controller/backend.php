@@ -439,9 +439,9 @@ function fv_wp_flowplayer_admin_init() {
   
   if( isset($_POST['fv-wp-flowplayer-submit']) ) {
   	global $fp;
-		$fp->_set_conf();
-    $fp = new flowplayer();
-	}
+  	$fp = new flowplayer();
+	$fp->_set_conf();
+  }
 
   global $fp;
   if( preg_match( '!^\$\d+!', $fp->conf['key'] ) ) {
