@@ -171,7 +171,7 @@
 .flowplayer .fp-embed-code:before{content:'';width:0;height:0;position:absolute;top:2px;left:-10px;border:5px solid transparent;border-right-color:#333}
 .is-rtl.flowplayer .fp-embed-code{left:auto;right:40px;}
 .is-rtl.flowplayer .fp-embed-code:before{left:auto;right:-10px;border-right-color:transparent;border-left-color:#333}
-.flowplayer .fp-embed-code textarea{width:400px;height:160px;font-family:monaco,"courier new",verdana;font-size:10px;color:#777;white-space:nowrap;resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc}
+.flowplayer .fp-embed-code textarea{width:400px;height:160px;font-family:monaco,"courier new",verdana;font-size:10px;color:#777;white-space:pre-wrap;resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc}
 .flowplayer .fp-embed-code label{display:block;color:#999}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fp-embed-code{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.aside-time .fp-embed{left:85px;}
