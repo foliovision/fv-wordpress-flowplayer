@@ -32,7 +32,7 @@ Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
 **Additional Technical information**
 
 * Plugin based on opensource version of Flowplayer 5. 
-* Supported video formats are FLV, H.264, and MP4 ([read Flowplayer article](http://flowplayer.org/docs/#video-formats)). Multiple videos can be displayed in one post or page.
+* Supported video formats are FLV, H.264, and MP4 ([read about HTML5 video formats](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding)). Multiple videos can be displayed in one post or page.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with Wordpress Flowplayer plugin, there are several improvements:
 
@@ -72,7 +72,7 @@ Currently these don't work when the Flash fallback player is used. So they only 
 
 This should be related to your video format or mime type issues.
 
-Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5]<http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding>.
+Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding).
 
 It seems HTML5 is more picky about what video it can play than Flash.
 
@@ -112,7 +112,7 @@ This can be also done in the Apache configuration. If you are on Microsoft IIS, 
 
 They might be served with bad mime type too - "application/octet-stream". This largely depends on the tool which you use to upload your videos. Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object's "Properties" pane and fix it to "video/mp4" (without the quotes, of course different video formats need different mime type, this one is for MP4). There are also tools for this, like S3 Browser Freeware, good place for start is here: https://forums.aws.amazon.com/thread.jspa?messageID=224446
 
-or check our support forum: http://foliovision.com/support/fv-wordpress-flowplayer/how-to/how-to-set-correct-mime-type-on-videos-hosted-by-amazon
+Good example can be seen in our support forum: http://foliovision.com/support/fv-wordpress-flowplayer/how-to/how-to-set-correct-mime-type-on-videos-hosted-by-amazon
 
 Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
 
@@ -147,7 +147,7 @@ Just enter the URL of your video hosted on Amazon S3 as the video source.
 
 = I would like to localize the play again button. =
 
-Currently there is no support for other languages. Some localizations for Flowplayer exists, but there is no official support from flowplayer.org.
+Currently there is no support for other languages.
 
 = Where can I change the default directory for videos? =
 
