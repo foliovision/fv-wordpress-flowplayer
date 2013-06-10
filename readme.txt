@@ -218,6 +218,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
+* audio support
+* playlist support
+* ads support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes and improvements
