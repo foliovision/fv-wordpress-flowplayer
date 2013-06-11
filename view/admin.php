@@ -65,7 +65,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 								style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
 								<?php if ($fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
 								<?php if (isset($fp->conf['key']) && $fp->conf['key'] != 'false' && strlen($fp->conf['key']) > 0) {echo 'data-key="' . $fp->conf['key'] . '"'; $commercial_key = true;} ?>
-								<?php if ($commercial_key && isset($fp->conf['logo']) && $fp->conf['logo'] != 'false' && strlen($fp->conf['logo']) > 0) echo ' data-logo="' . $fp->conf['logo'] . '"'; ?>
+								<?php if ( isset($commercial_key) && isset($fp->conf['logo']) && $fp->conf['logo'] != 'false' && strlen($fp->conf['logo']) > 0) echo ' data-logo="' . $fp->conf['logo'] . '"'; ?>
 								<?php if ($fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
 								>
 									<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fp->conf['autoplay']) && $fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fp->conf['autobuffer']) && $fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
@@ -210,56 +210,56 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						<td style="width: 520px;"><label for="allowuploads">Allow User Uploads:</label></td>
 						<td style="text-align:right">
               <input type="hidden" name="allowuploads" value="false" />
-              <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( $fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
+              <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fp->conf['allowuploads']) && $fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   
 					<tr>          
 						<td><label for="interface[popup]">Show HTML popup:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[popup]" value="false" />
-							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( $fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fp->conf['interface']['popup']) && $fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>    
 					<tr>          
 						<td style="width: 330px;"><label for="interface[redirect]">Show Redirect:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[redirect]" value="false" />
-							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( $fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( isset($fp->conf['interface']['redirect']) && $fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>                        
 					<tr>          
 						<td style="width: 330px;"><label for="interface[autoplay]">Show AutoPlay:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[autoplay]" value="false" />
-							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( $fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fp->conf['interface']['autoplay']) && $fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          
 						<td style="width: 330px;"><label for="interface[loop]">Show Loop:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[loop]" value="false" />
-							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( $fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( isset($fp->conf['interface']['loop']) && $fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          
 						<td style="width: 330px;"><label for="interface[splashend]">Show Splash end:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[splashend]" value="false" />
-							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( $fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( isset($fp->conf['interface']['splashend']) && $fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>     
 					<tr>          
 						<td style="width: 330px;"><label for="interface[embed]">Show Embed:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[embed]" value="false" />
-							<input type="checkbox" name="interface[embed]" id="interface[embed]" value="true" <?php if( $fp->conf['interface']['embed'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[embed]" id="interface[embed]" value="true" <?php if( isset($fp->conf['interface']['embed']) && $fp->conf['interface']['embed'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>    
 					<tr>          
 						<td style="width: 330px;"><label for="interface[embed]">Show Subtitles:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[subtitles]" value="false" />
-							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( $fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( isset($fp->conf['interface']['subtitles']) && $fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>                    
 					<tr>    		
@@ -368,12 +368,13 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 			var obj = (jQuery.parseJSON( response ) );
 			var css_class = '';
 			jQuery('#fv_flowplayer_admin_notices').html('');
-			if( obj.errors ) {
+			if( obj.errors.length > 0 ) {
 				jQuery('#fv_flowplayer_admin_notices').append( '<div class="error"><p>'+obj.errors.join('</p><p>')+'</p></div>' );
 			} else {
 				css_class = ' green';
 			}
-			if( obj.ok ) {
+
+			if( obj.ok.length > 0 ) {
 				jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
 			}
 			jQuery('.'+type+'-spin').hide();

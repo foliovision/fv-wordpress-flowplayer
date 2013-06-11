@@ -72,6 +72,8 @@ Currently these don't work when the Flash fallback player is used. So they only 
 
 This should be related to your video format or mime type issues.
 
+Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
+
 Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding).
 
 It seems HTML5 is more picky about what video it can play than Flash.
@@ -223,7 +225,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * ads support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
-* other bugfixes and improvements
+* support for subtitles
+* other bugfixes
+
+= 2.1.14 - 2013/06/ =
+* Added support for audio
+* Admin front-end video checker now takes minimum of space
+* Added a function to report video not playing to Foliovision
+* Bugfixes for PHP warnings
 
 = 2.1.13 - 2013/06/05 =
 * Admin front-end video checker is now less obnoxious - shows smaller messages and can be disabled in options

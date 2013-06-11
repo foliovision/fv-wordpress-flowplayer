@@ -8,8 +8,8 @@ add_shortcode('flowplayer','flowplayer_content_handle');
 add_shortcode('fvplayer','flowplayer_content_handle');
 
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
-  /// Addition  2010/07/12  mv 
-  $fp = new flowplayer_frontend();
+	global $fp;
+	
   if( $fp->conf['commas'] == 'true' ) {
     
     if( !isset( $atts['src'] ) ) {     

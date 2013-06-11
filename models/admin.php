@@ -6,16 +6,8 @@
 
 <?php 
 	if(isset($_POST['submit'])) {
-		/**
-		 *  Write the configuration into file, if the form was submitted.
-		 */
+		global $fp;
 		$fp->_set_conf();
-    $fp = new flowplayer();
-    /**
-		 *  Refresh the page.
-		 */
-		?>
-		<?php
 	}
 ?>
 

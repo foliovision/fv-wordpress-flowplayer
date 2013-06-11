@@ -11,7 +11,8 @@ include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
  */
 //add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_head', 'flowplayer_head');
-add_action('wp_footer','flowplayer_display_scripts');
+add_action('wp_footer','flowplayer_prepare_scripts',9);
+add_action('wp_footer','flowplayer_display_scripts',100);
 //	Addition for 0.9.15                 
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
@@ -19,7 +20,6 @@ add_action('wp_enqueue_scripts', 'flowplayer_jquery');
  * END WP Hooks
  */
  
-$GLOBALS['scripts'] = array();
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -35,6 +35,8 @@ function flowplayer_content_remove_commas($content) {
  * @return string Modified content string
  */
 function flowplayer_content( $content ) {
+	global $fp;
+
 	$content_matches = array();
 	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
   
@@ -218,7 +220,6 @@ function flowplayer_content( $content ) {
     
 		if (trim($media) != '') {
 			// build new player
-			$fp = new flowplayer_frontend();
       $new_player = $fp->build_min_player($media,$arguments);
 			$content = str_replace($tag, $new_player['html'],$content);
 			if (!empty($new_player['script'])) {
@@ -230,6 +231,19 @@ function flowplayer_content( $content ) {
 }
 
 /**
+ * Figure out if we need to include MediaElement.js
+ */
+function flowplayer_prepare_scripts() {
+	global $fp;
+	global $fv_wp_flowplayer_ver;
+
+	global $wp_scripts;
+	if( $fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
+		wp_enqueue_script( 'flowplayer-mediaelement', plugins_url( '/fv-wordpress-flowplayer/mediaelement/mediaelement-and-player.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
+	}
+}
+
+/**
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
@@ -237,7 +251,46 @@ function flowplayer_display_scripts() {
 		echo "\n<script type=\"text/javascript\">\n\n\n";
 		foreach ($GLOBALS['scripts'] as $scr) {
 			echo $scr;
-		}    
+		}   
+		
+		if( current_user_can('manage_options') ) {
+			?>
+			function fv_wp_flowplayer_support_mail( hash, button ) {			
+				var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+				jQuery('#wpfp_spin_'+hash).show();
+				jQuery(button).attr("disabled", "disabled");
+				jQuery.post(
+					ajaxurl,
+					{
+						action: 'fv_wp_flowplayer_support_mail',
+						comment: jQuery('#wpfp_support_'+hash).val(),
+						notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
+						details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()						
+					},
+					function( response ) {
+						jQuery('#wpfp_spin_'+hash).hide();					
+						jQuery(button).removeAttr("disabled");
+						jQuery(button).after(' Message sent');
+					}	
+				); 
+			}
+			
+			
+			function fv_wp_flowplayer_show_notice( id, link ) {
+
+				jQuery('#fv_wp_fp_notice_'+id).toggle();
+				jQuery(link).parent().parent().toggleClass("fv-wp-flowplayer-notice");
+				
+				/*var pos = jQuery(link).position();
+				console.log(pos);
+				
+				jQuery(link).parent().parent().css('position','absolute');
+				jQuery(link).parent().parent().css('top',pos.top);
+				jQuery(link).parent().parent().css('left',pos.left);			*/	
+			}
+			<?php
+		}
+		
 		echo "\n\n\n</script>\n";
 	}
 }

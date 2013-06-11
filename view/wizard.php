@@ -14,6 +14,7 @@
 ?>
 <style>
 .fv-wp-flowplayer-notice { background-color: #FFFFE0; border-color: #E6DB55; margin: 5px 0 15px; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; } 
+.fv-wp-flowplayer-notice.fv-wp-flowplayer-note { background-color: #F8F8F8; border-color: #E0E0E0; } 
 .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; } 
 </style>
   
@@ -173,11 +174,11 @@ function fv_wp_flowplayer_edit() {
     if( srcurl1 != null && srcurl1[1] != null ) {
   		document.getElementById("fv_wp_flowplayer_field_src_1").value = srcurl1[1];
       document.getElementById("fv_wp_flowplayer_field_src_1_wrapper").style.display = 'table-row';
-      document.getElementById("fv_wp_flowplayer_field_src_1_uploader").style.display = 'table-row';
+      //document.getElementById("fv_wp_flowplayer_field_src_1_uploader").style.display = 'table-row';
       if( srcurl2 != null && srcurl2[1] != null ) {
     		document.getElementById("fv_wp_flowplayer_field_src_2").value = srcurl2[1];
         document.getElementById("fv_wp_flowplayer_field_src_2_wrapper").style.display = 'table-row';
-        document.getElementById("fv_wp_flowplayer_field_src_2_uploader").style.display = 'table-row';
+        //document.getElementById("fv_wp_flowplayer_field_src_2_uploader").style.display = 'table-row';
         document.getElementById("fv_wp_flowplayer_add_format_wrapper").style.display = 'none';        
       }            
     }    
@@ -433,7 +434,7 @@ function add_format() {
             </select>
           </td>
   			</tr>
-        <tr<?php if( $conf["interface"]["loop"] !== 'true' ) { $no_finish_note = true; echo ' style="display: none"'; } ?>>
+        <tr<?php $no_finish_note = false; if( $conf["interface"]["loop"] !== 'true' ) { $no_finish_note = true; echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright">Loop*</label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
   			</tr>   
@@ -474,7 +475,7 @@ function add_format() {
             <?php if( current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">
-              	<div class="fv-wp-flowplayer-notice">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=backend.php#interface">Settings</a></div>
+              	<div class="fv-wp-flowplayer-notice fv-wp-flowplayer-note">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=backend.php#interface">Settings</a></div>
               </td>
             </tr>            
             <?php } ?>            
