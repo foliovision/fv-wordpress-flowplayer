@@ -288,6 +288,12 @@ function flowplayer_display_scripts() {
 				jQuery(link).parent().parent().css('top',pos.top);
 				jQuery(link).parent().parent().css('left',pos.left);			*/	
 			}
+			
+			jQuery(document).ready( function () {
+				if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) ) {
+					jQuery(window).trigger('load');
+				}
+			} );			
 			<?php
 		}
 		

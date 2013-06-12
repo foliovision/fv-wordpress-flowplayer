@@ -220,7 +220,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* audio support
 * playlist support
 * ads support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
@@ -228,35 +227,38 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * support for subtitles
 * other bugfixes
 
-= 2.1.14 - 2013/06/ =
-* Added support for audio
-* Admin front-end video checker now takes minimum of space
-* Added a function to report video not playing to Foliovision
-* Bugfixes for PHP warnings
+= 2.1.14 - 2013/06/12 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Styling - added some spacing below the video player
+* Fix - Admin front-end video checker now takes minimum of space
+* Bugfix - PHP warnings
+* Bugfix - for parsing of video with no extension
+* Bugfix - Flowplayer was preventing window.onload from firing on iPad
 
 = 2.1.13 - 2013/06/05 =
-* Admin front-end video checker is now less obnoxious - shows smaller messages and can be disabled in options
-* Added support for subtitles - first enable "Show Subtitles" in Settings -> FV Wordpress Flowplayer -> Interface options
-* Added options for what features show up in shortcode editor - check Settings -> FV Wordpress Flowplayer -> Interface options
-* Added option to allow/disallow embeding per video
-* bugfix for shortcode parsing
+* Feature - Added support for subtitles - first enable "Show Subtitles" in Settings -> FV Wordpress Flowplayer -> Interface options
+* Feature - Added options for what features show up in shortcode editor - check Settings -> FV Wordpress Flowplayer -> Interface options
+* Feature - Added option to allow/disallow embeding per video
+* Fix - Admin front-end video checker is now less obnoxious - shows smaller messages and can be disabled in options
+* Bugfix - for shortcode parsing
 
 = 2.1.12 - 2013/05/31 =
-* Front-end video checker now detects video codecs and other details (read "How to check my video properties using the built-in checker" in FAQ before we update our documentation )
-* Firefox on Windows prefers Flash for M4V files (due to issues on some PCs)
-* fullscreen background color set to black
-* fix for bad fullscreen dimensions in some browsers (Chrome)
-* template checker bugfix for false positives (jQuery plugins detected as duplicite jQuery libraries)
+* Feature - Front-end video checker now detects video codecs and other details (read "How to check my video properties using the built-in checker" in FAQ before we update our documentation )
+* Fix - Firefox on Windows prefers Flash for M4V files (due to issues on some PCs)
+* Styling - Fullscreen background color set to black
+* Styling - Fix for bad fullscreen dimensions in some browsers (Chrome)
+* Bugfix - Template checker bugfix for false positives (jQuery plugins detected as duplicite jQuery libraries)
 
 = 2.1.11 - 2013/05/28 =
-* more improvements and bugfixes for RTMP handling
-* fix for template and videos checker
+* Fix - more improvements and bugfixes for RTMP handling
+* Fix - for template and videos checker
 
 = 2.1.10 - 2013/05/28 =
-* update to Flowplayer 5.4.2
-* more improvements and bugfixes for RTMP handling
-* fix for popup and redirection in Flash version of the player
-* bugfix for admin front-end check of the videos 
+* Fix - Update to Flowplayer 5.4.2
+* Bugfix - more improvements and bugfixes for RTMP handling
+* Bugfix - for popup and redirection in Flash version of the player
+* Bugfix - for admin front-end check of the videos 
 
 = 2.1.9 - 2013/05/27 =
 * improvements and bugfixes for RTMP handling
@@ -443,6 +445,11 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.14 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Styling - added some spacing below the video player
 
 = 2.1.13 =
 * Admin front-end video checker is not much smaller and can be disabled in options

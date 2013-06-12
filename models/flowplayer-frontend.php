@@ -391,7 +391,7 @@ class flowplayer_frontend extends flowplayer
     	$ret['script'] .= "jQuery('#wpfp_$hash audio').mediaelementplayer();\n";
     
     	$ret['html'] .= '<div id="wpfp_' . $hash . '" class="fvplayer fv-mediaelement">'."\n";			
-			$ret['html'] .= "\t".'<audio src="'.$media.'" type="audio/mp3" controls="controls" width="'.$width.'"'.$preload.'></audio>'."\n";  
+			$ret['html'] .= "\t".'<audio src="'.$media.'" type="audio/'.$this->get_file_extension($media).'" controls="controls" width="'.$width.'"'.$preload.'></audio>'."\n";  
     	$ret['html'] .= '</div>'."\n"; 
     }
     
@@ -433,18 +433,20 @@ class flowplayer_frontend extends flowplayer
   
   function get_file_extension($media) {
     $pathinfo = pathinfo( trim($media) );
-    $extension = $pathinfo['extension'];       
+    $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
     
 		if( !$extension ) {
-			return null;
+			return 'flash';
 		}
  
-    if (!in_array($extension, array('mp4', 'm4v', 'webm', 'ogv'))) {
+    if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav')) ) {
       $extension = 'flash';  
     }
-    else
-    if ($extension == 'm4v') {
+    else if ($extension == 'm4v') {
       $extension = 'mp4';
+    }
+    else if( $extension == 'mp3' ) {
+    	$extension = 'mpeg';
     }
     return $extension;  
   }

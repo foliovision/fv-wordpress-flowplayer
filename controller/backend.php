@@ -441,7 +441,11 @@ function fv_wp_flowplayer_admin_init() {
   
   if( isset($_POST['fv-wp-flowplayer-submit']) ) {
   	global $fp;
-		$fp->_set_conf();    
+  	if( method_exists($fp,'_set_conf') ) {
+			$fp->_set_conf();    
+		} else {
+			echo 'Error saving FV Flowplayer options.';
+		}
 	}
 
   global $fp;
@@ -514,12 +518,11 @@ function fv_wp_flowplayer_check_mimetype() {
   	$remotefilename = trim( $_POST['media'] );          
     $random = rand( 0, 10000 );
     
-    $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename) ) );
-    
-    
+    $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename) ), array( 'redirection' => 3 ) );
+
     $video_errors = array();
 
-    if( $headers['headers']['accept-ranges'] != 'bytes' ) {
+    if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
       $video_errors[] = 'Server does not support HTTP range requests!';  
     }
     
@@ -738,7 +741,7 @@ AddType video/mp2t            .ts</pre>
 			$message .= implode("\n", $message_items);
 		}
 		
-		if( $video_info ) {
+		if( isset($video_info) ) {
 			$message_items = array();
 			foreach( $video_info AS $key => $item ) {
 				$message_item = '';	

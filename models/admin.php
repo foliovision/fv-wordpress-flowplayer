@@ -7,7 +7,11 @@
 <?php 
 	if(isset($_POST['submit'])) {
 		global $fp;
-		$fp->_set_conf();
+  	if( method_exists($fp,'_set_conf') ) {
+			$fp->_set_conf();    
+		} else {
+			echo 'Error saving FV Flowplayer options.';
+		}
 	}
 ?>
 
