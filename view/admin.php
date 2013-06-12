@@ -368,13 +368,13 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 			var obj = (jQuery.parseJSON( response ) );
 			var css_class = '';
 			jQuery('#fv_flowplayer_admin_notices').html('');
-			if( obj.errors.length > 0 ) {
+			if( obj.errors && obj.errors.length > 0 ) {
 				jQuery('#fv_flowplayer_admin_notices').append( '<div class="error"><p>'+obj.errors.join('</p><p>')+'</p></div>' );
 			} else {
 				css_class = ' green';
 			}
 
-			if( obj.ok.length > 0 ) {
+			if( obj.ok && obj.ok.length > 0 ) {
 				jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
 			}
 			jQuery('.'+type+'-spin').hide();

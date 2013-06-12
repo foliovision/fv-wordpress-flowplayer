@@ -216,6 +216,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 2. Adding three players with different arguments into a post.
 3. Add new video dialog window in editing mode.
 4. Configuration menu for administrators.
+5. Front-end admin video checker
 
 == Changelog ==
 
