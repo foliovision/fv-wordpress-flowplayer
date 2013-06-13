@@ -810,7 +810,7 @@ AddType video/mp2t            .ts</pre>
 		  $message .= '</div>';
 		  $message .= '<div class="more-'.$random.' mail-content-details" style="display: none; ">'.$new_info.'</div>';
     }		
-      
+    
     if( count($video_errors ) == 0 && $fp->conf['videochecker'] == 'errors' ) {
       die();
     }
@@ -822,7 +822,14 @@ AddType video/mp2t            .ts</pre>
     $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;
     
     if( $last_error ) {
-    	$message = @iconv('UTF-8', 'ISO-8859-1//IGNORE', $message);           
+    	if( function_exists('mb_check_encoding') && function_exists('utf8_encode') ) {
+        	if(!mb_check_encoding($message, 'UTF-8')) {
+          		$message = utf8_encode($message);
+        	}
+      	} else {
+        	$message = htmlentities( $message, ENT_QUOTES, 'utf-8', FALSE);
+        	$message = ( $message ) ? $message : 'Admin: Error parsing JSON';
+      	}           
       
     	$json = json_encode( array( $message, count( $video_errors ) ) );
     	$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;

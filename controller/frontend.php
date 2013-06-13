@@ -277,26 +277,20 @@ function flowplayer_display_scripts() {
 			
 			
 			function fv_wp_flowplayer_show_notice( id, link ) {
-
 				jQuery('#fv_wp_fp_notice_'+id).toggle();
 				jQuery(link).parent().parent().toggleClass("fv-wp-flowplayer-notice");
-				
-				/*var pos = jQuery(link).position();
-				console.log(pos);
-				
-				jQuery(link).parent().parent().css('position','absolute');
-				jQuery(link).parent().parent().css('top',pos.top);
-				jQuery(link).parent().parent().css('left',pos.left);			*/	
-			}
-			
-			jQuery(document).ready( function () {
-				if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) ) {
-					jQuery(window).trigger('load');
-				}
-			} );			
+			}					
 			<?php
 		}
-		
+    
+    ?>
+    
+  	jQuery(document).ready( function() {
+  		if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) ) {
+  			jQuery(window).trigger('load');
+  		}
+  	} );	
+    <?php    		
 		echo "\n\n\n</script>\n";
 	}
 }
