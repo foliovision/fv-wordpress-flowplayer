@@ -358,7 +358,7 @@ class flowplayer_frontend extends flowplayer
 				/*var_dump($rtmp_url);
 				$rtmp_url = explode('/', $rtmp_url['path'], 3);        
 				$rtmp_file = $rtmp_url[count($rtmp_url)-1];*/
-				$extension = $this->get_file_extension($rtmp_url['path']);
+				$extension = $this->get_file_extension($rtmp_url['path'], null);
 				if( $extension ) {
 					$extension .= ':';
 				}
@@ -431,16 +431,16 @@ class flowplayer_frontend extends flowplayer
     return null;
   }
   
-  function get_file_extension($media) {
+  function get_file_extension($media, $default = 'flash' ) {
     $pathinfo = pathinfo( trim($media) );
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
     
 		if( !$extension ) {
-			return 'flash';
+			return $default;
 		}
  
     if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav')) ) {
-      $extension = 'flash';  
+      $extension = $default;  
     }
     else if ($extension == 'm4v') {
       $extension = 'mp4';
