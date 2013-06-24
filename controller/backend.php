@@ -80,7 +80,7 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 function flowplayer_activate() {
-	update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">the settings page</a> for automated checks!' );  
+	update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );  
 }
 
 
@@ -152,7 +152,9 @@ function fv_wp_flowplayer_media_send_to_editor($html, $attachment_id, $attachmen
     else if( in_array($path_parts['extension'], $subtitles_types) ) {
       $uploaded_subtitles = $selected_attachment['url'];
     }
-  }                                                 
+  }        
+  
+  $document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
   
   if (isset($uploaded_video)) {
     $serv = $_SERVER['SERVER_NAME'];
@@ -162,10 +164,10 @@ function fv_wp_flowplayer_media_send_to_editor($html, $attachment_id, $attachmen
     // Initialize getID3 engine                
     $getID3 = new getID3;     
     if (empty($matches)) {
-      $ThisFileInfo = $getID3->analyze(realpath($_SERVER['DOCUMENT_ROOT'] . $uploaded_video));
+      $ThisFileInfo = $getID3->analyze(realpath($document_root . $uploaded_video));
     }
     else { 
-      $ThisFileInfo = $getID3->analyze(realpath($_SERVER['DOCUMENT_ROOT'] . $matches[1]));
+      $ThisFileInfo = $getID3->analyze(realpath($document_root . $matches[1]));
     }
     if (isset($ThisFileInfo['error'])) $file_error = "Could not read video details, please fill the width and height manually.";
     //getid3_lib::CopyTagsToComments($ThisFileInfo);
@@ -280,7 +282,7 @@ function flowplayer_admin () {
 		  'FV Wordpress Flowplayer', 
 			'FV Wordpress Flowplayer', 
 			'manage_options', 
-			basename(__FILE__), 
+			'fvplayer', 
 			'flowplayer_page'
 			);
 	}
@@ -399,7 +401,7 @@ function fv_wp_flowplayer_admin_notice() {
   $conversion = false; //(bool)get_option('fvwpflowplayer_conversion');
   if ($conversion) {
     echo '<div class="updated" id="fvwpflowplayer_conversion_notice"><p>'; 
-    printf(__('FV Wordpress Flowplayer has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>'), get_admin_url() . 'options-general.php?page=backend.php');
+    printf(__('FV Wordpress Flowplayer has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>'), get_admin_url() . 'options-general.php?page=fvplayer');
     echo "</p></div>";
   }
   
@@ -512,19 +514,22 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
  
  
 function fv_wp_flowplayer_check_mimetype() {
+	global $fv_wp_flowplayer_ver;
+	
   if( isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
   	
     global $fp;        
-  	$remotefilename = trim( $_POST['media'] );          
+  	$remotefilename = trim( $_POST['media'] );
+		$url_parts = parse_url($remotefilename);
+		if (!empty($url_parts['path'])) {
+				$url_parts['path'] = join('/', array_map('urlencode', explode('/', $url_parts['path'])));
+		}
+		$remotefilename_encoded = http_build_url($remotefilename, $url_parts);  	
     $random = rand( 0, 10000 );
     
-    $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename) ), array( 'redirection' => 3 ) );
-
+    $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded) ), array( 'redirection' => 3 ) );
+   
     $video_errors = array();
-
-    if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
-      $video_errors[] = 'Server does not support HTTP range requests!';  
-    }
     
     if( $headers['response']['code'] == '404' ) {
       $video_errors[] = 'File not found (HTTP 404)!';  
@@ -532,13 +537,18 @@ function fv_wp_flowplayer_check_mimetype() {
     	$video_errors[] = 'Access to video forbidden (HTTP 403)!'; 
     } else if( $headers['response']['code'] != '200' ) {
       $video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!'; 
-    } else {    
+    } else {  
+    
+    	if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
+      	$video_errors[] = 'Server does not support HTTP range requests!';  
+    	}
+    
 			if(
 				( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
 				( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' )
 			) {
 				if( $fp->conf['engine'] == 'default' ) {
-					$meta_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+					$meta_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
 				}     
 				
 				$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
@@ -559,6 +569,10 @@ AddType video/mp2t            .ts</pre>
 			}
     }
     
+    if( function_exists('is_utf8') && is_utf8($remotefilename) ) {
+   		 $video_errors[] = '<p><strong>UTF-8 error</strong>: Your file name is using non-latin characters, the file might not play in browsers using Flash for the video!</p>';
+    }
+    
          	  
 		require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
 		$getID3 = new getID3;     
@@ -571,13 +585,16 @@ AddType video/mp2t            .ts</pre>
     		
   		//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
       $upload_dir = wp_upload_dir();
-  		$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.basename($remotefilename);
+  		$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.basename($remotefilename_encoded);
+  		
   		$out = fopen( $localtempfilename,'wb' );
   		if( $out ) {
     		$ch = curl_init();
-    		curl_setopt( $ch, CURLOPT_URL, $remotefilename );    		
+    		curl_setopt( $ch, CURLOPT_URL, $remotefilename_encoded );    		
     		curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
     		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+    		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+    		curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
     		
     		$data = curl_exec($ch);
     		file_put_contents( $localtempfilename, $data);
@@ -596,6 +613,7 @@ AddType video/mp2t            .ts</pre>
       }                  
     } else {
       $message = '<p>Analysis of <tt>'.$remotefilename.'</tt> (local):</p>';
+      
       $document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
       $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
 
@@ -709,7 +727,7 @@ AddType video/mp2t            .ts</pre>
 			$video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
       if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
         if( $fp->conf['engine'] == 'default' ) {
-  				$m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=backend.php">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
+  				$m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
   			} 
         $video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
       }
@@ -811,7 +829,7 @@ AddType video/mp2t            .ts</pre>
 		  $message .= '</div>';
 		  $message .= '<div class="more-'.$random.' mail-content-details" style="display: none; ">'.$new_info.'</div>';
     }		
-    
+      
     if( count($video_errors ) == 0 && $fp->conf['videochecker'] == 'errors' ) {
       die();
     }
@@ -949,8 +967,10 @@ function fv_wp_flowplayer_check_files() {
   	
   		//echo $server."\n";  		
 
-  		$headers = get_headers( trim($videos[0]['src']) );
-			if( $headers ) {
+			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
+  			$headers = get_headers( trim($videos[0]['src']) );
+  		}
+			if( isset($headers) && $headers ) {
 
 				$posts_links = '';
 				foreach( $videos AS $video ) {
@@ -960,6 +980,8 @@ function fv_wp_flowplayer_check_files() {
 				foreach( $headers AS $line ) {
 					if( stripos( $line, 'Content-Type:' ) !== FALSE ) {
 						preg_match( '~Content-Type: (\S+)$~', $line, $match );
+						$mime_matched = ( isset($match[1]) ) ? $match[1] : '';
+						
 						if(
 							( !preg_match( '~video/mp4$~', $line ) && stripos( $videos[0]['src'], '.mp4' ) !== FALSE ) ||
 							( !preg_match( '~video/x-m4v$~', $line ) && stripos( $videos[0]['src'], '.m4v' ) !== FALSE )
@@ -975,10 +997,10 @@ AddType video/x-m4v           .m4v
 # hls transport stream segments:
 AddType video/mp2t            .ts</code></pre></blockquote>';
 							}
-						
-							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$match[1].'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
+				
+							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
 						} else {
-							$ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$match[1].'</code> for MP4 and M4V videos.'; 						
+							$ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_matched.'</code> for MP4 and M4V videos.'; 						
 						}
 					}
 				}
@@ -1001,6 +1023,9 @@ AddType video/mp2t            .ts</code></pre></blockquote>';
 
 
 function fv_wp_flowplayer_check_template() {
+	$ok = array();
+	$errors = array();
+	
   if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
   	$response = wp_remote_get( home_url() );
   	if( is_wp_error( $response ) ) {
@@ -1012,6 +1037,10 @@ function fv_wp_flowplayer_check_template() {
 			foreach( $active_plugins AS $plugin ) {
 				if( stripos( $plugin, 'wp-minify' ) !== false ) {
 					$errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
+					$wp_minify_options = get_option('wp_minify');
+					if( isset($wp_minify_options['js_in_footer']) && $wp_minify_options['js_in_footer'] ) {
+						$errors[] = "Please make sure that you turn off Settings -> WP Minify -> 'Place Minified JavaScript in footer'.";
+					}
 					$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
 					echo json_encode($output);
 					die();
@@ -1137,5 +1166,119 @@ function fv_wp_flowplayer_support_mail() {
   	die('1');
   }
 }
+ 
+
+if( !function_exists('http_build_url') ) :
+    define('HTTP_URL_REPLACE', 1);          // Replace every part of the first URL when there's one of the second URL
+    define('HTTP_URL_JOIN_PATH', 2);        // Join relative paths
+    define('HTTP_URL_JOIN_QUERY', 4);       // Join query strings
+    define('HTTP_URL_STRIP_USER', 8);       // Strip any user authentication information
+    define('HTTP_URL_STRIP_PASS', 16);      // Strip any password authentication information
+    define('HTTP_URL_STRIP_AUTH', 32);      // Strip any authentication information
+    define('HTTP_URL_STRIP_PORT', 64);      // Strip explicit port numbers
+    define('HTTP_URL_STRIP_PATH', 128);     // Strip complete path
+    define('HTTP_URL_STRIP_QUERY', 256);    // Strip query string
+    define('HTTP_URL_STRIP_FRAGMENT', 512); // Strip any fragments (#identifier)
+    define('HTTP_URL_STRIP_ALL', 1024);     // Strip anything but scheme and host
+    
+    // Build an URL
+    // The parts of the second URL will be merged into the first according to the flags argument. 
+    // 
+    // @param  mixed      (Part(s) of) an URL in form of a string or associative array like parse_url() returns
+    // @param  mixed      Same as the first argument
+    // @param  int        A bitmask of binary or'ed HTTP_URL constants (Optional)HTTP_URL_REPLACE is the default
+    // @param  array      If set, it will be filled with the parts of the composed url like parse_url() would return 
+    function http_build_url($url, $parts=array(), $flags=HTTP_URL_REPLACE, &$new_url=false)
+    {
+      $keys = array('user','pass','port','path','query','fragment');
+      
+      // HTTP_URL_STRIP_ALL becomes all the HTTP_URL_STRIP_Xs
+      if ($flags & HTTP_URL_STRIP_ALL)
+      {
+        $flags |= HTTP_URL_STRIP_USER;
+        $flags |= HTTP_URL_STRIP_PASS;
+        $flags |= HTTP_URL_STRIP_PORT;
+        $flags |= HTTP_URL_STRIP_PATH;
+        $flags |= HTTP_URL_STRIP_QUERY;
+        $flags |= HTTP_URL_STRIP_FRAGMENT;
+      }
+      // HTTP_URL_STRIP_AUTH becomes HTTP_URL_STRIP_USER and HTTP_URL_STRIP_PASS
+      else if ($flags & HTTP_URL_STRIP_AUTH)
+      {
+        $flags |= HTTP_URL_STRIP_USER;
+        $flags |= HTTP_URL_STRIP_PASS;
+      }
+      
+      // Parse the original URL
+      $parse_url = parse_url($url);
+      
+      // Scheme and Host are always replaced
+      if (isset($parts['scheme']))
+        $parse_url['scheme'] = $parts['scheme'];
+      if (isset($parts['host']))
+        $parse_url['host'] = $parts['host'];
+      
+      // (If applicable) Replace the original URL with it's new parts
+      if ($flags & HTTP_URL_REPLACE)
+      {
+        foreach ($keys as $key)
+        {
+          if (isset($parts[$key]))
+            $parse_url[$key] = $parts[$key];
+        }
+      }
+      else
+      {
+        // Join the original URL path with the new path
+        if (isset($parts['path']) && ($flags & HTTP_URL_JOIN_PATH))
+        {
+          if (isset($parse_url['path']))
+            $parse_url['path'] = rtrim(str_replace(basename($parse_url['path']), '', $parse_url['path']), '/') . '/' . ltrim($parts['path'], '/');
+          else
+            $parse_url['path'] = $parts['path'];
+        }
+        
+        // Join the original query string with the new query string
+        if (isset($parts['query']) && ($flags & HTTP_URL_JOIN_QUERY))
+        {
+          if (isset($parse_url['query']))
+            $parse_url['query'] .= '&' . $parts['query'];
+          else
+            $parse_url['query'] = $parts['query'];
+        }
+      }
+        
+      // Strips all the applicable sections of the URL
+      // Note: Scheme and Host are never stripped
+      foreach ($keys as $key)
+      {
+        if ($flags & (int)constant('HTTP_URL_STRIP_' . strtoupper($key)))
+          unset($parse_url[$key]);
+      }
+      
+      
+      $new_url = $parse_url;
+      
+      return 
+         ((isset($parse_url['scheme'])) ? $parse_url['scheme'] . '://' : '')
+        .((isset($parse_url['user'])) ? $parse_url['user'] . ((isset($parse_url['pass'])) ? ':' . $parse_url['pass'] : '') .'@' : '')
+        .((isset($parse_url['host'])) ? $parse_url['host'] : '')
+        .((isset($parse_url['port'])) ? ':' . $parse_url['port'] : '')
+        .((isset($parse_url['path'])) ? $parse_url['path'] : '')
+        .((isset($parse_url['query'])) ? '?' . $parse_url['query'] : '')
+        .((isset($parse_url['fragment'])) ? '#' . $parse_url['fragment'] : '')
+      ;
+    }
+
+endif; 
+
+
+if( !function_exists('is_utf8') && function_exists('mb_strlen') ) :
+
+	function is_utf8($str) {
+		return ( (mb_strlen($str) != strlen($str) ) ? true : false );
+	}
+
+endif; 
  
 ?>

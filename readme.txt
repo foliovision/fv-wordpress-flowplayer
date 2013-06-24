@@ -216,17 +216,24 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 2. Adding three players with different arguments into a post.
 3. Add new video dialog window in editing mode.
 4. Configuration menu for administrators.
-5. Front-end admin video checker
 
 == Changelog ==
 
 = What's coming =
 * playlist support
 * ads support
+* low bandwidth (mobile) version of the video
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * support for subtitles
 * other bugfixes
+
+= 2.1.15 - 2013/06/24 =
+* Bugfix - "Check template" bugfixes and improvements for WP Minify
+* Bugfix - Fix for fix of Flowplayer preventing window.onload from firing on iPad
+* Bugfix - Fix for RTMP streams with no extension
+* Bugfix - Fix for video checker redirection and issues on some servers (which don't use DOCUMENT_ROOT)
+* Bugfix - Settings screen moved to options-general.php?page=fvplayer
 
 = 2.1.14 - 2013/06/12 =
 * Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
@@ -446,6 +453,12 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.15 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Styling - added some spacing below the video player
+* Various bug fixes, check changelog
 
 = 2.1.14 =
 * Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.

@@ -468,14 +468,14 @@ function add_format() {
             <?php if( !$allow_uploads && current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">
-              	<div class="fv-wp-flowplayer-notice">Admin note: Video uploads are currenty disabled, set 'Allow User Uploads' to true in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=backend.php">Settings</a></div>
+              	<div class="fv-wp-flowplayer-notice">Admin note: Video uploads are currenty disabled, set 'Allow User Uploads' to true in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer">Settings</a></div>
               </td>
             </tr>            
             <?php } ?>
             <?php if( current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">
-              	<div class="fv-wp-flowplayer-notice fv-wp-flowplayer-note">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=backend.php#interface">Settings</a></div>
+              	<div class="fv-wp-flowplayer-notice fv-wp-flowplayer-note">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#interface">Settings</a></div>
               </td>
             </tr>            
             <?php } ?>            
