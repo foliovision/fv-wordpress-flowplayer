@@ -596,7 +596,8 @@ AddType video/mp2t            .ts</pre>
       }                  
     } else {
       $message = '<p>Analysis of <tt>'.$remotefilename.'</tt> (local):</p>';
-      $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($_SERVER['DOCUMENT_ROOT']), $remotefilename );
+      $document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
+      $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
 
       $ThisFileInfo = $getID3->analyze( $localtempfilename );
     }
