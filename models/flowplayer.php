@@ -124,7 +124,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
  * Defines some needed constants and loads the right flowplayer_head() function.
  */
 function flowplayer_head() {
-	global $fp;
+	global $fv_fp;
 
 	// define needed constants
   preg_match('/.*wp-content\/plugins\/(.*?)\/models.*/',dirname(__FILE__),$matches);
@@ -147,8 +147,8 @@ function flowplayer_head() {
     define('VIDEO_DIR', '/videos/');
     define('VIDEO_PATH', $vid.VIDEO_DIR);	
   }
-
-  $fp->flowplayer_head();
+	
+  $fv_fp->flowplayer_head();
 }
 
 

@@ -8,9 +8,9 @@ add_shortcode('flowplayer','flowplayer_content_handle');
 add_shortcode('fvplayer','flowplayer_content_handle');
 
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
-	global $fp;
+	global $fv_fp;
 	
-  if( $fp->conf['commas'] == 'true' ) {
+  if( $fv_fp->conf['commas'] == 'true' ) {
     
     if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
@@ -91,7 +91,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$src = preg_replace('/\,/', '', $src); 
 	if (trim($src) != '') {
 		// build new player
-    $new_player = $fp->build_min_player($src,$arguments);		
+    $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {
       $GLOBALS['scripts'][] = $new_player['script'];
     }

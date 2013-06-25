@@ -1,10 +1,9 @@
 <?php
 
-/**
- * Needed includes
- */
 include_once(dirname( __FILE__ ) . '/../models/flowplayer.php');
 include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
+
+$fv_fp = new flowplayer_frontend(); 
 
 /**
  * WP Hooks 
@@ -35,7 +34,7 @@ function flowplayer_content_remove_commas($content) {
  * @return string Modified content string
  */
 function flowplayer_content( $content ) {
-	global $fp;
+	global $fv_fp;
 
 	$content_matches = array();
 	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
@@ -220,7 +219,7 @@ function flowplayer_content( $content ) {
     
 		if (trim($media) != '') {
 			// build new player
-      $new_player = $fp->build_min_player($media,$arguments);
+      $new_player = $fv_fp->build_min_player($media,$arguments);
 			$content = str_replace($tag, $new_player['html'],$content);
 			if (!empty($new_player['script'])) {
         $GLOBALS['scripts'][] = $new_player['script'];
@@ -234,11 +233,11 @@ function flowplayer_content( $content ) {
  * Figure out if we need to include MediaElement.js
  */
 function flowplayer_prepare_scripts() {
-	global $fp;
+	global $fv_fp;
 	global $fv_wp_flowplayer_ver;
 
 	global $wp_scripts;
-	if( $fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
+	if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
 		wp_enqueue_script( 'flowplayer-mediaelement', plugins_url( '/fv-wordpress-flowplayer/mediaelement/mediaelement-and-player.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
 	}
 }
@@ -256,14 +255,31 @@ function flowplayer_display_scripts() {
 		if( current_user_can('manage_options') ) {
 			?>
 			function fv_wp_flowplayer_support_mail( hash, button ) {			
+				jQuery('.fv_flowplayer_submit_error').remove();
+			
 				var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+				
+				var comment_text = jQuery('#wpfp_support_'+hash).val();
+				var comment_words = comment_text.split(' ');
+				if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
+					jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please tell us what is wrong</strong>:</p>');
+					jQuery('.fv_flowplayer_submit_error').fadeIn();
+					return false;
+				}
+
+				if( comment_words.length < 7 ) {
+					jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please give us more information (a full sentence) so we can help you better</strong>:</p>');
+					jQuery('.fv_flowplayer_submit_error').fadeIn();					
+					return false;
+				}				
+				
 				jQuery('#wpfp_spin_'+hash).show();
 				jQuery(button).attr("disabled", "disabled");
 				jQuery.post(
 					ajaxurl,
 					{
 						action: 'fv_wp_flowplayer_support_mail',
-						comment: jQuery('#wpfp_support_'+hash).val(),
+						comment: comment_text,
 						notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
 						details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()						
 					},

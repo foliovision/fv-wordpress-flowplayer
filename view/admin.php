@@ -27,7 +27,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   </p>
   <div id="fv_flowplayer_admin_notices">
   </div>
-  <?php if (isset($fp->conf['key']) && $fp->conf['key'] == 'false') : ?>
+  <?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] == 'false') : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
 				<h2>FV Wordpress<strong>Flowplayer</strong></h2>
@@ -48,27 +48,27 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   <form id="wpfp_options" method="post" action="">
   	<div id="poststuff" class="ui-sortable">            
 			<div class="postbox">
-				<?php //echo flowplayer_check_errors($fp); ?>
+				<?php //echo flowplayer_check_errors($fv_fp); ?>
 				<h3>Default Flowplayer Options</h3>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td style="width: 250px;"><label for="autoplay">AutoPlay:</label></td>
 						<td style="text-align:right;">
-							<select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fp->conf['autoplay']); ?></select> 	
+							<select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fv_fp->conf['autoplay']); ?></select> 	
 						</td>
 						<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
 							<div id="content">
 								<div class="flowplayer is-splash"
-								<?php if ($fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
+								<?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
 								data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
 								data-ratio="0.417" 
-								style="width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
-								<?php if ($fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
-								<?php if (isset($fp->conf['key']) && $fp->conf['key'] != 'false' && strlen($fp->conf['key']) > 0) {echo 'data-key="' . $fp->conf['key'] . '"'; $commercial_key = true;} ?>
-								<?php if ( isset($commercial_key) && isset($fp->conf['logo']) && $fp->conf['logo'] != 'false' && strlen($fp->conf['logo']) > 0) echo ' data-logo="' . $fp->conf['logo'] . '"'; ?>
-								<?php if ($fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
+								style="width:<?php echo $fv_fp->conf['width']; ?>px; max-height:<?php echo $fv_fp->conf['height']; ?>px;"
+								<?php if ($fv_fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
+								<?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) {echo 'data-key="' . $fv_fp->conf['key'] . '"'; $commercial_key = true;} ?>
+								<?php if ( isset($commercial_key) && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) echo ' data-logo="' . $fv_fp->conf['logo'] . '"'; ?>
+								<?php if ($fv_fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
 								>
-									<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fp->conf['autoplay']) && $fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fp->conf['autobuffer']) && $fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
+									<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fv_fp->conf['autobuffer']) && $fv_fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
 										<source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
 									</video>
 								</div>    
@@ -78,68 +78,68 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<tr>
 						<td><label for="autobuffer">Auto Buffering:</label></td>
 						<td style="text-align:right">
-							<select id="autobuffer" name="autobuffer"><?php echo flowplayer_bool_select($fp->conf['autobuffer']); ?></select>
+							<select id="autobuffer" name="autobuffer"><?php echo flowplayer_bool_select($fv_fp->conf['autobuffer']); ?></select>
 						</td>
 					</tr>
 					<tr>
 							<td><label for="popupbox">Popup Box:</label></td>
 							<td style="text-align:right">
-								<select id="popupbox" name="popupbox"><?php echo flowplayer_bool_select($fp->conf['popupbox']); ?></select>
+								<select id="popupbox" name="popupbox"><?php echo flowplayer_bool_select($fv_fp->conf['popupbox']); ?></select>
 							</td>
 						</tr>
 					<tr>
 						<td><label for="allowfullscreen">Enable Full-screen Mode:</label></td>
 						<td style="text-align:right">
-							<select id="allowfullscreen" name="allowfullscreen"><?php echo flowplayer_bool_select($fp->conf['allowfullscreen']); ?></select>
+							<select id="allowfullscreen" name="allowfullscreen"><?php echo flowplayer_bool_select($fv_fp->conf['allowfullscreen']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="scaling">Fit scaling (<abbr title="If set to true, the original aspect ratio of the video will be used to display the video in fullscreen mode as well as when embedded in the page.">?</abbr>):</label></td>
 						<td style="text-align:right">
-							<select id="scaling" name="scaling"><?php echo flowplayer_bool_select($fp->conf['scaling']); ?></select>
+							<select id="scaling" name="scaling"><?php echo flowplayer_bool_select($fv_fp->conf['scaling']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="allowfullscreen">Disable embedding:</label></td>
 						<td style="text-align:right">
-							<select id="disableembedding" name="disableembedding"><?php echo flowplayer_bool_select($fp->conf['disableembedding']); ?></select>
+							<select id="disableembedding" name="disableembedding"><?php echo flowplayer_bool_select($fv_fp->conf['disableembedding']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
 						<td style="text-align:right">
-							<select id="postthumbnail" name="postthumbnail"><?php echo flowplayer_bool_select($fp->conf['postthumbnail']); ?></select>
+							<select id="postthumbnail" name="postthumbnail"><?php echo flowplayer_bool_select($fv_fp->conf['postthumbnail']); ?></select>
 						</td>
 					</tr>    	
 					<tr>
 						<td><label for="commas">Convert old shortcodes with commas (<abbr title="Older versions of this plugin used commas to sepparate shortcode parameters. This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.">?</abbr>):</label></td>
 						<td style="text-align:right">
-							<select id="commas" name="commas"><?php echo flowplayer_bool_select($fp->conf['commas']); ?></select>
+							<select id="commas" name="commas"><?php echo flowplayer_bool_select($fv_fp->conf['commas']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="engine">Preferred Flowplayer engine (<abbr title="Default setting - IE9 and IE10 get Flash (due to server compatibility issues), Firefox in Windows gets Flash for M4V files (due to issues with M4V in it on PC), everyone else gets HTML5 (with Flash fallback)">?</abbr>):</label></td>
 						<td style="text-align:right">
 							<select id="engine" name="engine">
-							  <!--<option value="flash"<?php if( $fp->conf['engine'] == 'flash' ) echo ' selected="selected"'; ?>>Flash (with HTML5 fallback)</option>-->
-							  <option value="default"<?php if( $fp->conf['engine'] == 'default' ) echo ' selected="selected"'; ?>>Default (mixed)</option>
-							  <option value="html5"<?php if( $fp->conf['engine'] == 'html5'  ) echo ' selected="selected"'; ?>>HTML5 (with Flash fallback)</option>
+							  <!--<option value="flash"<?php if( $fv_fp->conf['engine'] == 'flash' ) echo ' selected="selected"'; ?>>Flash (with HTML5 fallback)</option>-->
+							  <option value="default"<?php if( $fv_fp->conf['engine'] == 'default' ) echo ' selected="selected"'; ?>>Default (mixed)</option>
+							  <option value="html5"<?php if( $fv_fp->conf['engine'] == 'html5'  ) echo ' selected="selected"'; ?>>HTML5 (with Flash fallback)</option>
               </select> 							
 						</td>
 					</tr>
 					<tr>
 					  <td><label for="width">Default video size [px]:</label></td>
 						<td style="text-align:right"> 					
-							<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fp->conf['width']); ?>" />  
-							<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fp->conf['height']); ?>" />							
+							<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fv_fp->conf['width']); ?>" />  
+							<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fv_fp->conf['height']); ?>" />							
 						</td>
 					</tr>
 					<tr>
 					  <td><label for="responsive">Video player size (<abbr title="Default setting - respects width and height setting of the video, but allows it to size down to be responsive">?</abbr>):</label></td>
 						<td style="text-align:right"> 					
 							<select id="responsive" name="responsive">
-							  <option value="responsive"<?php if( $fp->conf['engine'] == 'responsive' ) echo ' selected="selected"'; ?>>Default (responsive)</option>
-							  <option value="fixed"<?php if( $fp->conf['engine'] == 'fixed'  ) echo ' selected="selected"'; ?>>Fixed dimensions</option>
+							  <option value="responsive"<?php if( $fv_fp->conf['engine'] == 'responsive' ) echo ' selected="selected"'; ?>>Default (responsive)</option>
+							  <option value="fixed"<?php if( $fv_fp->conf['engine'] == 'fixed'  ) echo ' selected="selected"'; ?>>Fixed dimensions</option>
               </select> 					
 						</td>
 					</tr>
@@ -147,31 +147,31 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					  <td><label for="videochecker">Front-end video checker</label></td>
 						<td style="text-align:right"> 					
 							<select id="videochecker" name="videochecker">
-							  <option value="enabled"<?php if( $fp->conf['videochecker'] == 'enabled' ) echo ' selected="selected"'; ?>>Enabled</option>
-							  <option value="errors"<?php if( $fp->conf['videochecker'] == 'errors'  ) echo ' selected="selected"'; ?>>Errors only</option>
-                <option value="off"<?php if( $fp->conf['videochecker'] == 'off'  ) echo ' selected="selected"'; ?>>Turn off</option>
+							  <option value="enabled"<?php if( $fv_fp->conf['videochecker'] == 'enabled' ) echo ' selected="selected"'; ?>>Enabled</option>
+							  <option value="errors"<?php if( $fv_fp->conf['videochecker'] == 'errors'  ) echo ' selected="selected"'; ?>>Errors only</option>
+                <option value="off"<?php if( $fv_fp->conf['videochecker'] == 'off'  ) echo ' selected="selected"'; ?>>Turn off</option>
               </select> 					
 						</td>
 					</tr>          
 
 					<tr>
 						<td><label for="googleanalytics">Google Analytics ID:</label></td>
-						<td><input type="text" size="40" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fp->conf['googleanalytics']); ?>" /></td>
+						<td><input type="text" size="40" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
 					</tr>
 					<tr>
 						<td><label for="key">Commercial License Key:</label></td>
-						<td><input type="text" size="40" name="key" id="key" value="<?php echo trim($fp->conf['key']); ?>" /></td>
+						<td><input type="text" size="40" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
 					</tr>
 					<tr>
 						<td><label for="logo">Logo:</label></td>
-						<td><input type="text" size="40" name="logo" id="logo" value="<?php echo trim($fp->conf['logo']); ?>" /></td>
+						<td><input type="text" size="40" name="logo" id="logo" value="<?php echo trim($fv_fp->conf['logo']); ?>" /></td>
 					</tr>
 					<tr>    		    		
 						<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=fvplayer_logo&TB_iframe=true&width=500&height=300" class="thickbox" >open media library</a> to upload logo.</td>
 					</tr>      
 					<tr>
 						<td><label for="rtmp">Amazon CloudFront domain:</label></td>
-						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fp->conf['rtmp']); ?>" /></td>
+						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 					</tr>	
 				</table>
 				<table class="form-table2" style="margin: 5px; ">
@@ -183,9 +183,9 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						<td><label for="font-face">Player font face</label></td>
 						<td style="text-align:right" colspan="3">
 							<select id="font-face" name="font-face">
-							  <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
-							  <option value="Tahoma, Geneva, sans-serif"<?php if( $fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
-							  <option value="inherit"<?php if( $fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>>(inherit from template)</option>
+							  <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+							  <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
+							  <option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>>(inherit from template)</option>
               </select> 							
 						</td>
 					</tr>					
@@ -210,56 +210,56 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						<td style="width: 520px;"><label for="allowuploads">Allow User Uploads:</label></td>
 						<td style="text-align:right">
               <input type="hidden" name="allowuploads" value="false" />
-              <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fp->conf['allowuploads']) && $fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
+              <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fv_fp->conf['allowuploads']) && $fv_fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   
 					<tr>          
 						<td><label for="interface[popup]">Show HTML popup:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[popup]" value="false" />
-							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fp->conf['interface']['popup']) && $fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fv_fp->conf['interface']['popup']) && $fv_fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>    
 					<tr>          
 						<td style="width: 330px;"><label for="interface[redirect]">Show Redirect:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[redirect]" value="false" />
-							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( isset($fp->conf['interface']['redirect']) && $fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( isset($fv_fp->conf['interface']['redirect']) && $fv_fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>                        
 					<tr>          
 						<td style="width: 330px;"><label for="interface[autoplay]">Show AutoPlay:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[autoplay]" value="false" />
-							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fp->conf['interface']['autoplay']) && $fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fv_fp->conf['interface']['autoplay']) && $fv_fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          
 						<td style="width: 330px;"><label for="interface[loop]">Show Loop:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[loop]" value="false" />
-							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( isset($fp->conf['interface']['loop']) && $fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( isset($fv_fp->conf['interface']['loop']) && $fv_fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          
 						<td style="width: 330px;"><label for="interface[splashend]">Show Splash end:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[splashend]" value="false" />
-							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( isset($fp->conf['interface']['splashend']) && $fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( isset($fv_fp->conf['interface']['splashend']) && $fv_fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>     
 					<tr>          
 						<td style="width: 330px;"><label for="interface[embed]">Show Embed:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[embed]" value="false" />
-							<input type="checkbox" name="interface[embed]" id="interface[embed]" value="true" <?php if( isset($fp->conf['interface']['embed']) && $fp->conf['interface']['embed'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[embed]" id="interface[embed]" value="true" <?php if( isset($fv_fp->conf['interface']['embed']) && $fv_fp->conf['interface']['embed'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>    
 					<tr>          
 						<td style="width: 330px;"><label for="interface[embed]">Show Subtitles:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[subtitles]" value="false" />
-							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( isset($fp->conf['interface']['subtitles']) && $fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( isset($fv_fp->conf['interface']['subtitles']) && $fv_fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>                    
 					<tr>    		

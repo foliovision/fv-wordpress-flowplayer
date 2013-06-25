@@ -6,7 +6,7 @@ include_once(dirname( __FILE__ ) . '/../models/flowplayer-backend.php');
 /**
  * Create the flowplayer_backend object
  */
-$fp = new flowplayer_backend();
+$fv_fp = new flowplayer_backend();
 
 /**
  * WP Hooks
@@ -314,16 +314,16 @@ function flowplayer_bool_select($current) {
  * Displays administrator menu with configuration.
  */
 function flowplayer_page() {
-	global $fp;
+	global $fv_fp;
 	include dirname( __FILE__ ) . '/../view/admin.php';
 }
 
 
 /**
  * Checks for errors regarding access to configuration file. Displays errors if any occur.
- * @param object $fp Flowplayer class object.
+ * @param object $fv_fp Flowplayer class object.
  */
-function flowplayer_check_errors($fp) {
+function flowplayer_check_errors($fv_fp) {
 
 }
 
@@ -442,16 +442,16 @@ function fv_wp_flowplayer_admin_init() {
   }
   
   if( isset($_POST['fv-wp-flowplayer-submit']) ) {
-  	global $fp;
-  	if( method_exists($fp,'_set_conf') ) {
-			$fp->_set_conf();    
+  	global $fv_fp;
+  	if( method_exists($fv_fp,'_set_conf') ) {
+			$fv_fp->_set_conf();    
 		} else {
 			echo 'Error saving FV Flowplayer options.';
 		}
 	}
 
-  global $fp;
-  if( preg_match( '!^\$\d+!', $fp->conf['key'] ) ) {
+  global $fv_fp;
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {
     global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
     $version = get_option( 'fvwpflowplayer_core_ver' );
     if( version_compare( $fv_wp_flowplayer_core_ver, $version ) == 1 ) {
@@ -465,8 +465,8 @@ function fv_wp_flowplayer_admin_init() {
       
       if( $resp['body'] && $data = json_decode( $resp['body'] ) ) {
         if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
-          $fp->conf['key'] = $data->key;
-          update_option( 'fvwpflowplayer', $fp->conf );
+          $fv_fp->conf['key'] = $data->key;
+          update_option( 'fvwpflowplayer', $fv_fp->conf );
         }                            
       }            
     }      
@@ -518,17 +518,17 @@ function fv_wp_flowplayer_check_mimetype() {
 	
   if( isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
   	
-    global $fp;        
+    global $fv_fp;        
   	$remotefilename = trim( $_POST['media'] );
-		$url_parts = parse_url($remotefilename);
+		$url_parts = parse_url( urldecode($remotefilename) );
 		if (!empty($url_parts['path'])) {
-				$url_parts['path'] = join('/', array_map('urlencode', explode('/', $url_parts['path'])));
+				$url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts['path'])));
 		}
 		$remotefilename_encoded = http_build_url($remotefilename, $url_parts);  	
     $random = rand( 0, 10000 );
-    
+
     $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded) ), array( 'redirection' => 3 ) );
-   
+
     $video_errors = array();
     
     if( $headers['response']['code'] == '404' ) {
@@ -547,7 +547,7 @@ function fv_wp_flowplayer_check_mimetype() {
 				( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
 				( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' )
 			) {
-				if( $fp->conf['engine'] == 'default' ) {
+				if( $fv_fp->conf['engine'] == 'default' ) {
 					$meta_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
 				}     
 				
@@ -726,7 +726,7 @@ AddType video/mp2t            .ts</pre>
 		if( isset($ThisFileInfo['quicktime']['ftyp']['signature']) ) {	
 			$video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
       if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
-        if( $fp->conf['engine'] == 'default' ) {
+        if( $fv_fp->conf['engine'] == 'default' ) {
   				$m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
   			} 
         $video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
@@ -830,7 +830,7 @@ AddType video/mp2t            .ts</pre>
 		  $message .= '<div class="more-'.$random.' mail-content-details" style="display: none; ">'.$new_info.'</div>';
     }		
       
-    if( count($video_errors ) == 0 && $fp->conf['videochecker'] == 'errors' ) {
+    if( count($video_errors ) == 0 && $fv_fp->conf['videochecker'] == 'errors' ) {
       die();
     }
     
@@ -999,7 +999,7 @@ AddType video/mp2t            .ts</code></pre></blockquote>';
 							}
 				
 							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
-						} else {
+						} else if( stripos( $videos[0]['src'], '.mp4' ) !== FALSE  || stripos( $videos[0]['src'], '.m4v' ) !== FALSE ) {
 							$ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_matched.'</code> for MP4 and M4V videos.'; 						
 						}
 					}

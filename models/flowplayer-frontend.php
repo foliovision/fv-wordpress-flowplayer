@@ -460,6 +460,4 @@ class flowplayer_frontend extends flowplayer
       
 }
 
-$fp = new flowplayer_frontend(); 
-
 ?>

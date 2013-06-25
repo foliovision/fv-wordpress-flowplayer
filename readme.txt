@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
-Tested up to: 3.5.1
+Tested up to: 3.5.2
 Stable tag: trunk
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
@@ -118,6 +118,17 @@ Good example can be seen in our support forum: http://foliovision.com/support/fv
 
 Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
 
+= I'm using OptimizePress template. =
+
+First click the "Check template" button on the pluging settings screen. It will likely report an issue like:
+
+`It appears there are multiple Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.
+Flowplayer script http://site.com/wp-content/themes/OptimizePress/js/flowplayer-3.2.4.min.js is old version and won't play. You need to get rid of this script.`
+
+The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading.
+
+There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "<!-- FV Flowplayer -->" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
+
 = Does this plugin support Shoutcast? =
 
 Unfortunatelly HTML5 does not support live broadcasting. Please read about it here under "Flash. The good parts": http://flowplayer.org/docs/#flash
@@ -227,6 +238,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * support for subtitles
 * other bugfixes
+
+= 2.1.16 - 2013/06/25 =
+* Fix - video checker now requires a comment for the video issue submission
+* Bugfix - video checker styling in older templates (no #content element)
+* Bugfix - video checker URL parsing
+* Bugfix - main plugin variable renamed, avoiding weird conflicts with some plugins
 
 = 2.1.15 - 2013/06/24 =
 * Bugfix - "Check template" bugfixes and improvements for WP Minify
@@ -454,16 +471,11 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
-= 2.1.15 =
+= 2.1.16 =
 * Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
 * Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
 * Styling - added some spacing below the video player
 * Various bug fixes, check changelog
-
-= 2.1.14 =
-* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
-* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
-* Styling - added some spacing below the video player
 
 = 2.1.13 =
 * Admin front-end video checker is not much smaller and can be disabled in options

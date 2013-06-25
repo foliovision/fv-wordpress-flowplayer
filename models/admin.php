@@ -6,9 +6,9 @@
 
 <?php 
 	if(isset($_POST['submit'])) {
-		global $fp;
-  	if( method_exists($fp,'_set_conf') ) {
-			$fp->_set_conf();    
+		global $fv_fp;
+  	if( method_exists($fv_fp,'_set_conf') ) {
+			$fv_fp->_set_conf();    
 		} else {
 			echo 'Error saving FV Flowplayer options.';
 		}
@@ -46,26 +46,26 @@
   <form id="wpfp_options" method="post" action="">
   	<div id="poststuff" class="ui-sortable">            
 			<div class="postbox">
-				<?php //echo flowplayer_check_errors($fp); ?>
+				<?php //echo flowplayer_check_errors($fv_fp); ?>
 				<h3>Default Flowplayer Options</h3>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td style="width: 330px;"><label for="autoplay">AutoPlay:</label></td>
 						<td style="text-align:right;">
-							<select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fp->conf['autoplay']); ?></select> 	
+							<select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fv_fp->conf['autoplay']); ?></select> 	
 						</td>
 						<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
 							<div class="flowplayer is-splash"
-							<?php if ($fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
+							<?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
 							data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
 							data-ratio="0.417" 
-							style="max-width:<?php echo $fp->conf['width']; ?>px; max-height:<?php echo $fp->conf['height']; ?>px;"
-							<?php if ($fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
-							<?php if (isset($fp->conf['key']) && $fp->conf['key'] != 'false' && strlen($fp->conf['key']) > 0) {echo 'data-key="' . $fp->conf['key'] . '"'; $commercial_key = true;} ?>
-							<?php if ($commercial_key && isset($fp->conf['logo']) && $fp->conf['logo'] != 'false' && strlen($fp->conf['logo']) > 0) echo ' data-logo="' . $fp->conf['logo'] . '"'; ?>
-							<?php if ($fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
+							style="max-width:<?php echo $fv_fp->conf['width']; ?>px; max-height:<?php echo $fv_fp->conf['height']; ?>px;"
+							<?php if ($fv_fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
+							<?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) {echo 'data-key="' . $fv_fp->conf['key'] . '"'; $commercial_key = true;} ?>
+							<?php if ($commercial_key && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) echo ' data-logo="' . $fv_fp->conf['logo'] . '"'; ?>
+							<?php if ($fv_fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
 							>
-								<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fp->conf['autoplay']) && $fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fp->conf['autobuffer']) && $fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
+								<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fv_fp->conf['autobuffer']) && $fv_fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
 									<source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
 								</video>
 							</div>          
@@ -74,56 +74,56 @@
 					<tr>
 						<td><label for="autobuffer">Auto Buffering:</label></td>
 						<td style="text-align:right">
-							<select id="autobuffer" name="autobuffer"><?php echo flowplayer_bool_select($fp->conf['autobuffer']); ?></select>
+							<select id="autobuffer" name="autobuffer"><?php echo flowplayer_bool_select($fv_fp->conf['autobuffer']); ?></select>
 						</td>
 					</tr>
 					<tr>
 							<td><label for="popupbox">Popup Box:</label></td>
 							<td style="text-align:right">
-								<select id="popupbox" name="popupbox"><?php echo flowplayer_bool_select($fp->conf['popupbox']); ?></select>
+								<select id="popupbox" name="popupbox"><?php echo flowplayer_bool_select($fv_fp->conf['popupbox']); ?></select>
 							</td>
 						</tr>
 					<tr>
 						<td><label for="allowfullscreen">Enable Full-screen Mode:</label></td>
 						<td style="text-align:right">
-							<select id="allowfullscreen" name="allowfullscreen"><?php echo flowplayer_bool_select($fp->conf['allowfullscreen']); ?></select>
+							<select id="allowfullscreen" name="allowfullscreen"><?php echo flowplayer_bool_select($fv_fp->conf['allowfullscreen']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="scaling">Fit scaling (<abbr title="If set to true, the original aspect ratio of the video will be used to display the video in fullscreen mode as well as when embedded in the page.">?</abbr>):</label></td>
 						<td style="text-align:right">
-							<select id="scaling" name="scaling"><?php echo flowplayer_bool_select($fp->conf['scaling']); ?></select>
+							<select id="scaling" name="scaling"><?php echo flowplayer_bool_select($fv_fp->conf['scaling']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="allowfullscreen">Disable embedding:</label></td>
 						<td style="text-align:right">
-							<select id="disableembedding" name="disableembedding"><?php echo flowplayer_bool_select($fp->conf['disableembedding']); ?></select>
+							<select id="disableembedding" name="disableembedding"><?php echo flowplayer_bool_select($fv_fp->conf['disableembedding']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="allowuploads">Allow User Uploads:</label></td>
 						<td style="text-align:right">
-							<select id="allowuploads" name="allowuploads"><?php echo flowplayer_bool_select($fp->conf['allowuploads']); ?></select>
+							<select id="allowuploads" name="allowuploads"><?php echo flowplayer_bool_select($fv_fp->conf['allowuploads']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
 						<td style="text-align:right">
-							<select id="postthumbnail" name="postthumbnail"><?php echo flowplayer_bool_select($fp->conf['postthumbnail']); ?></select>
+							<select id="postthumbnail" name="postthumbnail"><?php echo flowplayer_bool_select($fv_fp->conf['postthumbnail']); ?></select>
 						</td>
 					</tr>    	
 					<tr>
 						<td><label for="commas">Convert old shortcodes with commas (<abbr title="Older versions of this plugin used commas to sepparate shortcode parameters. This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.">?</abbr>):</label></td>
 						<td style="text-align:right">
-							<select id="commas" name="commas"><?php echo flowplayer_bool_select($fp->conf['commas']); ?></select>
+							<select id="commas" name="commas"><?php echo flowplayer_bool_select($fv_fp->conf['commas']); ?></select>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">Default video size [px]: 
 							<span style="float:right">
-								<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fp->conf['width']); ?>" />  
-								<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fp->conf['height']); ?>" />
+								<label for="width">W:</label>&nbsp;<input type="text" size="4" name="width" id="width" value="<?php echo trim($fv_fp->conf['width']); ?>" />  
+								<label for="height">H:</label>&nbsp;<input type="text" size="4" name="height" id="height" value="<?php echo trim($fv_fp->conf['height']); ?>" />
 							</span>	
 						</td>
 					</tr>
@@ -131,22 +131,22 @@
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td><label for="googleanalytics">Google Analytics ID:</label></td>
-						<td><input type="text" size="40" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fp->conf['googleanalytics']); ?>" /></td>
+						<td><input type="text" size="40" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
 					</tr>
 					<tr>
 						<td><label for="key">Commercial License Key:</label></td>
-						<td><input type="text" size="40" name="key" id="key" value="<?php echo trim($fp->conf['key']); ?>" /></td>
+						<td><input type="text" size="40" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
 					</tr>
 					<tr>
 						<td><label for="logo">Logo:</label></td>
-						<td><input type="text" size="40" name="logo" id="logo" value="<?php echo trim($fp->conf['logo']); ?>" /></td>
+						<td><input type="text" size="40" name="logo" id="logo" value="<?php echo trim($fv_fp->conf['logo']); ?>" /></td>
 					</tr>
 					<tr>    		    		
 						<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=image&TB_iframe=true&width=500&height=300 ?>" class="thickbox" >open media library</a> to upload logo.</td>
 					</tr>      
 					<tr>
 						<td><label for="rtmp">Amazon CloudFront domain:</label></td>
-						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fp->conf['rtmp']); ?>" /></td>
+						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 					</tr>	
 				</table>
 				<table class="form-table2" style="margin: 5px; ">
