@@ -232,12 +232,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = What's coming =
 * playlist support
-* ads support
 * low bandwidth (mobile) version of the video
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * support for subtitles
 * other bugfixes
+
+= 2.1.17 - 2013/06/25 =
+* Feature - ads support! You can enter the global ad for your videos in plugin settings. Enable Interface options -> "Show Ads" to be able to specify ad in the video shortcode.
 
 = 2.1.16 - 2013/06/25 =
 * Fix - video checker now requires a comment for the video issue submission

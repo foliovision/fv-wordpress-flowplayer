@@ -48,6 +48,16 @@ global $fv_wp_flowplayer_ver;
 	.fvplayer .me-cannotplay span { padding: 5px; }
 	#content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($this->conf['font-face']); ?>; }
 	
+  .flowplayer .wpfp_custom_ad { display: block; }  	
+	.flowplayer.is-splash .wpfp_custom_ad { display: none; }  
+  
+	.fv_fp_close { position: absolute; right: 5px; top: 5px; z-index: 2; }
+	.fv_fp_close a { display: block; width: 10px; height: 10px; background: url(<?php echo site_url()?>/wp-includes/images/xit.gif) }
+	.wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; color: <?php echo trim($this->conf['timeColor']); ?>; }
+	.wpfp_custom_ad a { color: <?php echo trim($this->conf['durationColor']); ?> }
+	/*.wpfp_custom_ad_content { padding: 3px; }*/
+	.wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, 	.wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
+	
 	<?php if( current_user_can( 'manage_options' ) ) : ?>
 		#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2;}
 		#content .fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice { color: black; background-color: #FFFFE0; border-color: #E6DB55; margin: 5px 0 15px; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; line-height: 15px; z-index: 100; width: 500px; }

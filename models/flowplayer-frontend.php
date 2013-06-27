@@ -161,6 +161,34 @@ class flowplayer_frontend extends flowplayer
 					";                   
 				}
 			}
+	
+			$show_ad = false;
+			// if allowed by configuration file, set the popup box js code and content
+			if(
+				(
+					( isset($this->conf['ad']) ) && strlen(trim($this->conf['ad'])) ||
+					( isset($args['ad']) && !empty($args['ad']) )
+				) 
+				&&
+				!strlen($args['ad_skip'])				
+			) {
+				if (isset($args['ad']) && !empty($args['ad'])) {
+					$ad = html_entity_decode( str_replace('&#039;',"'", trim($args['ad']) ) );
+					$ad_width = ( isset($args['ad_width']) ) ? $args['ad_width'].'px' : '60%';	
+					$ad_height = ( isset($args['ad_height']) ) ? $args['ad_height'].'px' : '';					
+				}
+				else {
+					$ad = trim($this->conf['ad']);			
+					$ad_width = ( isset($this->conf['ad_width']) && $this->conf['ad_width'] ) ? $this->conf['ad_width'].'px' : '60%';	
+					$ad_height = ( isset($this->conf['ad_height']) && $this->conf['ad_height'] ) ? $this->conf['ad_height'].'px' : '';
+				}
+				
+				$ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
+				if( strlen(trim($ad)) > 0 ) {			
+					$show_ad = true;
+					$ad_contents = "\t<div id='wpfp_".$hash."_ad' class='wpfp_custom_ad'>\n\t\t<div class='wpfp_custom_ad_content' style='background: ".trim($this->conf['backgroundColor'])."; width: $ad_width; height: $ad_height; margin: 0 auto; position: relative'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$hash."_ad\").fadeOut();'></a></div>\n\t\t\t".$ad."\n\t\t</div>\n\t</div>\n";                  
+				}
+			}			
 			
 			$show_splashend = false;
 			if (isset($args['splashend']) && $args['splashend'] == 'show' && isset($args['splash']) && !empty($args['splash'])) {      
@@ -376,6 +404,9 @@ class flowplayer_frontend extends flowplayer
 			if( isset($popup_contents) ) {
 				$ret['html'] .= $popup_contents;  
 			}
+			if( isset($ad_contents) ) {
+				$ret['html'] .= $ad_contents;  
+			}			
 			$ret['html'] .= '</div>'."\n";      
     
     } else {	//	$player_type == 'video' ends

@@ -80,6 +80,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
     if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive'; 
+		if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
+		if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
+		if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
     
     if( !isset( $conf['videochecker'] ) ) $conf['videochecker'] = 'enabled';            
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
@@ -95,7 +98,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	public function _set_conf() {
 	  $save_key = $_POST['key'];
 	  foreach( $_POST AS $key => $value ) {
-	  	if( $key != 'font-face' ) {
+	  	if( $key != 'font-face' && $key != 'ad' ) {
       	$_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
       } else {
       	$_POST[$key] = stripslashes($value);

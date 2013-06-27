@@ -173,10 +173,26 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						<td><label for="rtmp">Amazon CloudFront domain:</label></td>
 						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 					</tr>	
+					<tr>
+						<td colspan="2"><p><strong>Ads</strong></p></td>
+					</tr>					
+					<tr>
+						<td colspan="2">
+							<label for="ad">Default Ad Code:</label><br />
+							<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
+						</td>
+					</tr>
+					<tr>
+					  <td><label for="width">Default ad size [px]:</label></td>
+						<td style="text-align:right"> 					
+							<label for="ad_width">W:</label>&nbsp;<input type="text" size="4" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" />  
+							<label for="ad_height">H:</label>&nbsp;<input type="text" size="4" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" />							
+						</td>
+					</tr>					
 				</table>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
-						<td colspan="4"><strong>Colors</strong></td>
+						<td colspan="4"><p><strong>Colors</strong></p></td>
 					</tr>
 					<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
 					<tr>
@@ -256,12 +272,19 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						</td>
 					</tr>    
 					<tr>          
-						<td style="width: 330px;"><label for="interface[embed]">Show Subtitles:</label></td>
+						<td style="width: 330px;"><label for="interface[subtitles]">Show Subtitles:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[subtitles]" value="false" />
 							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( isset($fv_fp->conf['interface']['subtitles']) && $fv_fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>                    
+					</tr>  
+					<tr>          
+						<td style="width: 330px;"><label for="interface[ads]">Show Ads: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[ads]" value="false" />
+							<input type="checkbox" name="interface[ads]" id="interface[ads]" value="true" <?php if( isset($fv_fp->conf['interface']['ads']) && $fv_fp->conf['interface']['ads'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>   					
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Apply Changes" style="margin-top: 2ex;"/>
