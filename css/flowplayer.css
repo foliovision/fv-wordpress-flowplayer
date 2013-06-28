@@ -250,6 +250,19 @@ a #add-format {
 	padding: 4px 2px;
 }
 
+
+.flowplayer .fp-volume { text-align: left; }
+#content .flowplayer .fp-embed-code, .flowplayer .fp-embed-code { padding: 3px 7px; }
+#content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; }
+
+.flowplayer .wpfp_custom_ad { display: block; }  	
+.flowplayer.is-splash .wpfp_custom_ad { display: none; }  
+
+.fv_fp_close { position: absolute; right: 2px; top: 2px; z-index: 2; }
+.fv_fp_close a { display: block; width: 16px; height: 16px; background: url(img/exit_btn.png) }
+
+.wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, 	.wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
+
 /*
 MediaElement.js
 */

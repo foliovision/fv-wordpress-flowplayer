@@ -25,6 +25,7 @@ add_action('admin_init', 'fv_wp_flowplayer_admin_init');
 add_action('media_upload_fvplayer_video', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_video_1', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_video_2', 'fv_wp_flowplayer_media_upload');
+add_action('media_upload_fvplayer_mobile', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_splash', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_logo', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_subtitles', 'fv_wp_flowplayer_media_upload');
@@ -43,6 +44,7 @@ if(
     strpos($_REQUEST['_wp_http_referer'],'type=fvplayer_video') || 
     strpos($_REQUEST['_wp_http_referer'],'type=fvplayer_video_1') || 
     strpos($_REQUEST['_wp_http_referer'],'type=fvplayer_video_2') || 
+    strpos($_REQUEST['_wp_http_referer'],'type=fvplayer_mobile') ||     
     strpos($_REQUEST['_wp_http_referer'],'type=fvplayer_splash') ||
     strpos($_REQUEST['_wp_http_referer'],'type=fvplayer_subtitles')
   )
@@ -64,6 +66,7 @@ if(
     $_GET['type'] == 'fvplayer_video' || 
     $_GET['type'] == 'fvplayer_video_1' || 
     $_GET['type'] == 'fvplayer_video_2' || 
+    $_GET['type'] == 'fvplayer_mobile' ||     
     $_GET['type'] == 'fvplayer_splash' || 
     $_GET['type'] == 'fvplayer_subtitles'
   )
@@ -122,6 +125,11 @@ function fv_wp_flowplayer_media_send_to_editor($html, $attachment_id, $attachmen
       $selected_attachment = array('id'=>'src2', 'url'=>$attachment_url);
     }
     else
+    if (strpos($_POST['_wp_http_referer'],'type=fvplayer_mobile')) {
+      setcookie("selected_mobile",$attachment_url);
+      $selected_attachment = array('id'=>'mobile', 'url'=>$attachment_url);
+    }    
+    else
     if (strpos($_POST['_wp_http_referer'],'type=fvplayer_subtitles')) {
       setcookie("selected_subtitles",$attachment_url);
       $selected_attachment = array('id'=>'subtitles', 'url'=>$attachment_url);
@@ -142,6 +150,10 @@ function fv_wp_flowplayer_media_send_to_editor($html, $attachment_id, $attachmen
       if ($selected_attachment['id'] == 'src2') {
         $uploaded_video2 = $selected_attachment['url'];
       } 
+      else
+      if ($selected_attachment['id'] == 'mobile') {
+        $uploaded_mobile = $selected_attachment['url'];
+      }      
       else {
         $uploaded_video = $selected_attachment['url'];
       }
@@ -226,6 +238,14 @@ window.parent.document.getElementById('fv_wp_flowplayer_field_src_2').value = "<
 </script>  
   <?php
   }
+  else
+  if (!empty($uploaded_mobile)) {
+  ?>
+<script type='text/javascript'>
+window.parent.document.getElementById('fv_wp_flowplayer_field_mobile').value = "<?php echo esc_attr($uploaded_mobile) ?>";
+</script>  
+  <?php
+  }  
   else
   if( !empty($uploaded_subtitles) ) {
   ?>
@@ -433,7 +453,7 @@ Trick media uploader to show video only, while making sure we use our custom typ
 */
 function fv_wp_flowplayer_admin_init() {
 	if( isset($_GET['type']) ) {
-		if( $_GET['type'] == 'fvplayer_video' || $_GET['type'] == 'fvplayer_video_1' || $_GET['type'] == 'fvplayer_video_2' ) {
+		if( $_GET['type'] == 'fvplayer_video' || $_GET['type'] == 'fvplayer_video_1' || $_GET['type'] == 'fvplayer_video_2' || $_GET['type'] == 'fvplayer_mobile' ) {
 			$_GET['post_mime_type'] = 'video';
 		}
 		else if( $_GET['type'] == 'fvplayer_splash' || $_GET['type'] == 'fvplayer_logo' ) {
@@ -690,6 +710,7 @@ AddType video/mp2t            .ts</pre>
 			$video_info['Audio'] = trim( $video_info['Audio'], '|' );
 		}
     
+    $video_info['Video'] = array();
 		if( isset($ThisFileInfo['video']['streams']) ) {			
 			$count_streams = count( $ThisFileInfo['video']['streams'] ); 
 			if( $count_streams == 1 ) {

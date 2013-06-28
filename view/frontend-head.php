@@ -30,15 +30,12 @@ global $fv_wp_flowplayer_ver;
 	.flowplayer { background-color: <?php echo trim($this->conf['canvas']); ?> !important; }
 	.flowplayer .fp-duration { color: <?php echo trim($this->conf['durationColor']); ?> !important; }
 	.flowplayer .fp-elapsed { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
-	.flowplayer .fp-volume { text-align: left; }
 	.flowplayer .fp-volumelevel { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }  
 	.flowplayer .fp-volumeslider { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
 	.flowplayer .fp-timeline { background-color: <?php echo trim($this->conf['timelineColor']); ?> !important; }
 	.flowplayer .fp-progress { background-color: <?php echo trim($this->conf['progressColor']); ?> !important; }
 	.flowplayer .fp-buffer { background-color: <?php echo trim($this->conf['bufferColor']); ?> !important; }
-	#content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; }
 	#content .flowplayer, .flowplayer { font-family: <?php echo trim($this->conf['font-face']); ?>; }
-	#content .flowplayer .fp-embed-code, .flowplayer .fp-embed-code { padding: 3px 7px; }
 	#content .flowplayer .fp-embed-code textarea, .flowplayer .fp-embed-code textarea { line-height: 1.4; white-space: pre-wrap; color: <?php echo trim($this->conf['durationColor']); ?> !important; height: 160px; font-size: 10px; }
 	
 	.fvplayer .mejs-container .mejs-controls { background: <?php echo trim($this->conf['backgroundColor']); ?>!important; } 
@@ -47,16 +44,9 @@ global $fv_wp_flowplayer_ver;
 	.fvplayer .mejs-horizontal-volume-current { background: <?php echo trim($this->conf['progressColor']); ?>!important; } 
 	.fvplayer .me-cannotplay span { padding: 5px; }
 	#content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($this->conf['font-face']); ?>; }
-	
-  .flowplayer .wpfp_custom_ad { display: block; }  	
-	.flowplayer.is-splash .wpfp_custom_ad { display: none; }  
-  
-	.fv_fp_close { position: absolute; right: 5px; top: 5px; z-index: 2; }
-	.fv_fp_close a { display: block; width: 10px; height: 10px; background: url(<?php echo site_url()?>/wp-includes/images/xit.gif) }
+
 	.wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; color: <?php echo trim($this->conf['timeColor']); ?>; }
 	.wpfp_custom_ad a { color: <?php echo trim($this->conf['durationColor']); ?> }
-	/*.wpfp_custom_ad_content { padding: 3px; }*/
-	.wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, 	.wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
 	
 	<?php if( current_user_can( 'manage_options' ) ) : ?>
 		#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2;}

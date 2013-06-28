@@ -246,11 +246,51 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-	if (!empty($GLOBALS['scripts'])) {         
-		echo "\n<script type=\"text/javascript\">\n\n\n";
+	if (!empty($GLOBALS['scripts'])) {
+		$mobile_switch = false;	
+		foreach ($GLOBALS['scripts'] as $scr) {
+			if( stripos($scr, 'fv_flowplayer_mobile_switch') !== false ) {
+				$mobile_switch = true;
+			}
+		}  
+		
+		echo "\n<script type=\"text/javascript\">\n";
+		
+		if( $mobile_switch ) {
+			?>
+				function fv_flowplayer_mobile_switch(id) {
+					var regex = new RegExp("[\\?&]fv_flowplayer_mobile=([^&#]*)");
+					var results = regex.exec(location.search);	
+					if(
+						(
+							(results != null && results[1] == 'yes') ||
+							(jQuery(window).width()<=320 || jQuery(window).height()<=480)
+						)
+						&&
+						(results == null || results[1] != 'no')
+					) {
+						var fv_fp_mobile = false;
+						jQuery('#'+id+' video source').each( function() {
+							if( jQuery(this).attr('id') != id+'_mobile' ) {
+								fv_fp_mobile = true
+								jQuery(this).remove();
+							}
+						} );
+						if( fv_fp_mobile ) {
+							jQuery('#'+id).after('<p>Mobile browser detected, serving low bandwidth video. <a href="'+document.URL+'?fv_flowplayer_mobile=no">Click here</a> for full quality.</p>');
+						}
+					}
+				}
+				//alert("Width: "+jQuery(window).width()+"\nHeight: "+jQuery(window).height() );
+			<?php
+		}
+		
 		foreach ($GLOBALS['scripts'] as $scr) {
 			echo $scr;
-		}   
+			if( stripos($scr, 'fv_flowplayer_mobile_switch') !== false ) {
+				$mobile_switch = true;
+			}
+		}  
 		
 		if( current_user_can('manage_options') ) {
 			?>
@@ -307,7 +347,7 @@ function flowplayer_display_scripts() {
   		}
   	} );	
     <?php    		
-		echo "\n\n\n</script>\n";
+		echo "\n</script>\n";
 	}
 }
 
