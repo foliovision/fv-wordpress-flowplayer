@@ -479,14 +479,19 @@ class flowplayer_frontend extends flowplayer
 			return $default;
 		}
  
-    if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav')) ) {
-      $extension = $default;  
-    }
-    else if ($extension == 'm4v') {
+    
+    if ($extension == 'm4v') {
       $extension = 'mp4';
-    }
-    else if( $extension == 'mp3' ) {
+    } else if( $extension == 'mp3' ) {
     	$extension = 'mpeg';
+    } else if( $extension == 'wav' ) {
+    	$extension = 'wav';
+    } else if( $extension == 'ogg' ) {
+    	$extension = 'ogg';
+    } else if( $extension == 'mov' ) {
+      $extension = 'mp4';
+    } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav')) ) {
+      $extension = $default;  
     }
     return $extension;  
   }
