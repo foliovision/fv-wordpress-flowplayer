@@ -236,6 +236,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.18 - 2013/06/29 =
+* Bugfix - fix for bad MOV parsing for HTML5 playing
+
 = 2.1.17 - 2013/06/28 =
 * Feature - Ad support! You can enter the global ad for your videos in plugin settings. Enable Interface options -> "Show Ads" to be able to specify ad in the video shortcode.
 * Feature - Mobile video support! You can specify the low-bandwidth version of the video. We are working on recommended encoding settings and better mobile detection.
