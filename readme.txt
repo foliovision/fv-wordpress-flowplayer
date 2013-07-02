@@ -174,9 +174,17 @@ echo apply_filters('the_content', '[flowplayer src=yourvideo.mp4 width=240 heigh
 
 Fill the Flowplayer shortcode part according to your needs. The apply filter needs to be called because the flowplayer shortcodes are not parsen outside posts automatically. Also, please do not forget to add the echo at the beginning.
 
-= How can I style the popup? =
+= How do I get rid of the extra blank line below the player? =
 
-Check out .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
+To get rid of the spacing, just add this into your template CSS, assuming that your theme uses the standard #content ID on the main content wrapper DIV:
+
+`#content .flowplayer { margin: 0 auto; }`
+
+Also make sure the [fvplayer] shortcode is located on it's own line in the editor and there is not text or any code on the same line. 
+
+= How can I style the popup or ad? =
+
+Check out .wpfp_custom_popup and .wpfp_custom_ad in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
 
 = Is there a way to remove the share (embed) button? =
 
