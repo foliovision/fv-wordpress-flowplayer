@@ -565,27 +565,34 @@ function fv_wp_flowplayer_check_mimetype() {
     
 			if(
 				( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
-				( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' )
+				( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' ) ||
+            ( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
 			) {
-				if( $fv_fp->conf['engine'] == 'default' ) {
-					$meta_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
-				}     
+				if( stripos( $remotefilename, '.mov' ) === FALSE ) {
+               $meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
+               if( $fv_fp->conf['engine'] == 'default' ) {
+					 $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+               }
+				} else if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
+               $meta_note_addition = ' Firefox does not like MOV files with video/quicktime mime type.';
+            }     
 				
 				$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
 					<p>If the video is hosted on Amazon S3:</p>
-					<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4 and "video/x-m4v" for M4V files.</blockquote>
+					<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files and "video/mp4" for MOV files.</blockquote>
 					<p>If the video is hosted on your server, put this into your .htaccess:</p>
 					<pre>AddType video/mp4             .mp4
 AddType video/webm            .webm
 AddType video/ogg             .ogv
 AddType application/x-mpegurl .m3u8
 AddType video/x-m4v           .m4v
+AddType video/mp4             .mov
 # hls transport stream segments:
 AddType video/mp2t            .ts</pre>
 					<p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a> for more info.</p>
 				</div>';     
 				
-				$video_errors[] = '<p><strong>Bad mime type</strong>: Video served with a bad mime type <tt>'.$headers['headers']['content-type'].'</tt>! Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10). '.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)</p>'.$fix ;        
+				$video_errors[] = '<p><strong>Bad mime type</strong>: Video served with a bad mime type <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)</p>'.$fix ;        
 			}
     }
     
@@ -604,8 +611,8 @@ AddType video/mp2t            .ts</pre>
       $message = '<p>Analysis of <tt>'.$remotefilename.'</tt> (remote):</p>';
     		
   		//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
-      $upload_dir = wp_upload_dir();
-  		$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.basename($remotefilename_encoded);
+      $upload_dir = wp_upload_dir();      
+  		$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename($remotefilename_encoded);
   		
   		$out = fopen( $localtempfilename,'wb' );
   		if( $out ) {
@@ -622,10 +629,11 @@ AddType video/mp2t            .ts</pre>
     			$message .= 'CURL Error: '.curl_error ( $ch);
     		}
     		curl_close($ch);
+         fclose($out);
     
     		$ThisFileInfo = $getID3->analyze( $localtempfilename );
         
-        if( !unlink($localtempfilename) ) {
+        if( !@unlink($localtempfilename) ) {
           $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
         }         
       } else {
