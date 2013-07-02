@@ -367,7 +367,7 @@ class flowplayer_frontend extends flowplayer
 				$ret['html'] .= ' loop';
 			}     
 			if (isset($this->conf['autobuffer']) && $this->conf['autobuffer'] == 'true') {
-				$ret['html'] .= ' preload';
+				$ret['html'] .= ' preload="auto"';
 			}
 			else
 			if ($autoplay == 'false') {

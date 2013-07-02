@@ -42,7 +42,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       $is_popup = false;
       foreach( $atts AS $key => $att ) {
         if( !is_numeric( $key ) ) continue;
-        if( ( stripos( $att, 'popup=' ) !== FALSE || $is_popup ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE) {
+        if( ( stripos( $att, 'popup=' ) !== FALSE || $is_popup ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE && stripos( $att, 'ad=' ) === FALSE) {
           $popup[] = $att;
           $is_popup = true;
           unset( $atts[$key] ); // = ''; //  let's remove it, so it won't confuse the rest of workaround
@@ -58,7 +58,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       $is_ad = false;
       foreach( $atts AS $key => $att ) {
         if( !is_numeric( $key ) ) continue;
-        if( ( stripos( $att, 'ad=' ) !== FALSE || $is_ad ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE) {
+        if( ( stripos( $att, 'ad=' ) !== FALSE || $is_ad ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE && stripos( $att, 'popup=' ) === FALSE) {
           $ad[] = $att;
           $is_ad = true;
           unset( $atts[$key] ); // = ''; //  let's remove it, so it won't confuse the rest of workaround

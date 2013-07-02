@@ -74,12 +74,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['progressColor'] ) ) $conf['progressColor'] = '#00a7c8';
     if( !isset( $conf['bufferColor'] ) ) $conf['bufferColor'] = '#eeeeee';
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
+    //if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#000000';
+    //if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
+    if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#dddddd';
+    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ffffff';    
     if( !isset( $conf['commas'] ) ) $conf['commas'] = 'true';
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
-    if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive'; 
+    if( !isset( $conf['responsive'] ) ) { $conf['responsive'] = 'responsive';/* $conf['hasBorder'] = 'true'; */}
 		if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
 		if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
 		if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     

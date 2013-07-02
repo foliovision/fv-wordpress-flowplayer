@@ -45,8 +45,8 @@ global $fv_wp_flowplayer_ver;
 	.fvplayer .me-cannotplay span { padding: 5px; }
 	#content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($this->conf['font-face']); ?>; }
 
-	.wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; color: <?php echo trim($this->conf['timeColor']); ?>; }
-	.wpfp_custom_ad a { color: <?php echo trim($this->conf['durationColor']); ?> }
+	.wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; color: <?php echo trim($this->conf['adTextColor']); ?>; }
+	.wpfp_custom_ad a { color: <?php echo trim($this->conf['adLinksColor']); ?> }
 	
 	<?php if( current_user_can( 'manage_options' ) ) : ?>
 		#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2;}

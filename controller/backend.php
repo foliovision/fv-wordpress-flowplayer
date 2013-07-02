@@ -856,7 +856,7 @@ AddType video/mp2t            .ts</pre>
 		  $message .= '<textarea id="wpfp_support_'.$_POST['hash'].'" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 100%; height: 150px">Enter your comment</textarea>';
 		  $message .= '<p><input type="button" onclick="fv_wp_flowplayer_support_mail(\''.trim($_POST['hash']).'\', this); return false" value="Send report to Foliovision" /><img id="wpfp_spin_'.$_POST['hash'].'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a></p>';
 		  $message .= '</div>';
-		  $message .= '<div class="more-'.$random.' mail-content-details" style="display: none; ">'.$new_info.'</div>';
+		  $message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
     }		
       
     if( count($video_errors ) == 0 && $fv_fp->conf['videochecker'] == 'errors' ) {

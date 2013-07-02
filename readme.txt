@@ -240,9 +240,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = What's coming =
 * playlist support
+* cue points support
+* alignment settings for the video
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.19 - 2013/07/02 =
+* Feature - added setting for ad text and link color
 
 = 2.1.18 - 2013/06/29 =
 * Bugfix - fix for bad MOV parsing for HTML5 playing

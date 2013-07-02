@@ -358,4 +358,14 @@ function flowplayer($shortcode) {
 	echo apply_filters('the_content',$shortcode);
 }
 
+
+/*
+Make sure our div won't be wrapped in any P tag.
+*/
+function fv_flowplayer_the_content( $c ) {
+	$c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?\])</p>!', "\n".'$1'."\n", $c );
+	return $c;
+}
+add_filter( 'the_content', 'fv_flowplayer_the_content', 0 );
+
 ?>
