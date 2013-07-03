@@ -211,6 +211,7 @@
 .flowplayer.color-alt .fp-buffer{background-color:#999}
 .flowplayer.color-alt2 .fp-progress{background-color:#900}
 .flowplayer.color-alt2.is-touch.is-mouseover .fp-progress:before{background-color:#900}
+
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;
     display: inline-block;
@@ -263,6 +264,9 @@ a #add-format {
 .fv_fp_close a { display: block; width: 16px; height: 16px; background: url(img/exit_btn.png) }
 
 .wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, 	.wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
+
+.flowplayer.alignleft { margin-right: 10px; margin-bottom: 10px;  }
+.flowplayer.alignright { margin-left: 10px; margin-bottom: 10px; }
 
 /*
 MediaElement.js

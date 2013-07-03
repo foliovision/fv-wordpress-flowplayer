@@ -25,6 +25,10 @@ global $fv_wp_flowplayer_ver;
 <?php endif; ?>
 
 <style type="text/css">
+	<?php if( isset($this->conf['hasBorder']) && $this->conf['hasBorder'] == "true" ) : ?>
+		.flowplayer { border: 1px solid <?php echo trim($this->conf['borderColor']); ?> !important; }
+	<?php endif; ?>
+
 	.flowplayer, flowplayer * { margin: 0 auto 28px auto; display: block; }
 	.flowplayer .fp-controls { background-color: <?php echo trim($this->conf['backgroundColor']); ?> !important; }
 	.flowplayer { background-color: <?php echo trim($this->conf['canvas']); ?> !important; }

@@ -91,7 +91,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'ad' => '',
     'ad_width' => '',
     'ad_height' => '',
-    'ad_skip' => ''
+    'ad_skip' => '',
+    'align' => ''
   ), $atts ) );
   
 	$arguments['width'] = preg_replace('/\,/', '', $width);
@@ -112,7 +113,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   $arguments['ad'] = preg_replace('/\,/', '', $ad);  
   $arguments['ad_width'] = preg_replace('/\,/', '', $ad_width);  
   $arguments['ad_height'] = preg_replace('/\,/', '', $ad_height);   
-  $arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip);     
+  $arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip); 
+  $arguments['align'] = preg_replace('/\,/', '', $align);   
     
 	$src = preg_replace('/\,/', '', $src); 
 	if (trim($src) != '') {

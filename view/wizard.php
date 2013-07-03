@@ -90,6 +90,7 @@ function fv_wp_flowplayer_edit() {
   jQuery("#fv-wordpress-flowplayer-popup textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv_wp_flowplayer_field_autoplay').prop('selectedIndex',0);
   jQuery('#fv_wp_flowplayer_field_embed').prop('selectedIndex',0);
+  jQuery('#fv_wp_flowplayer_field_align').prop('selectedIndex',0);  
   jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
   
 	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
@@ -181,6 +182,9 @@ function fv_wp_flowplayer_edit() {
     fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splashend=([^\s]+)/, '' );
   	var sad_skip = shortcode.match( /ad_skip=([^\s]+)/ );
     fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /ad_skip=([^\s]+)/, '' ); 
+  	var salign = shortcode.match( /align="([^"]+)"/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /align="([^"]+)"/, '' ); 
+    
     
   	if( srcurl != null && srcurl[1] != null )
   		document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
@@ -239,6 +243,13 @@ function fv_wp_flowplayer_edit() {
   		document.getElementById("fv_wp_flowplayer_field_loop").checked = 1;
     if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' )
   		document.getElementById("fv_wp_flowplayer_field_splashend").checked = 1;  
+
+  	if( salign != null && salign[1] != null ) {
+  		if (salign[1] == 'left') 
+        document.getElementById("fv_wp_flowplayer_field_align").selectedIndex = 1;
+      if (salign[1] == 'right') 
+        document.getElementById("fv_wp_flowplayer_field_align").selectedIndex = 2;
+    }    
   	
   	jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Update' );    
 	} else {
@@ -306,6 +317,12 @@ function fv_wp_flowplayer_submit() {
 	  shortcode += ' embed=true';
 	if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 2 )
 	  shortcode += ' embed=false';    
+    
+  if( document.getElementById("fv_wp_flowplayer_field_align").selectedIndex == 1 )
+	  shortcode += ' align="left"';
+	if( document.getElementById("fv_wp_flowplayer_field_align").selectedIndex == 2 )
+	  shortcode += ' align="right"';    
+        
     
   if( document.getElementById("fv_wp_flowplayer_field_loop").checked )
 		shortcode += ' loop=true';    
@@ -524,6 +541,16 @@ function add_format() {
   					<input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> Skip global ad in this video  					
   				</td>
   			</tr>			
+        <tr<?php if( $conf["interface"]["align"] !== 'true' ) echo ' style="display: none"'; ?>>
+  				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_align" class="alignright">Align</label></th>
+  				<td>
+            <select id="fv_wp_flowplayer_field_align" name="fv_wp_flowplayer_field_align">
+              <option>Default</option>
+              <option>Left</option>
+              <option>Right</option>
+            </select>
+  				</td>
+  			</tr>   			
   			<tr>
   				<th scope="row" class="label"></th>					
             	<td  style="padding-top: 20px;"><input type="button" value="Insert" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignleft" onclick="fv_wp_flowplayer_submit();" />

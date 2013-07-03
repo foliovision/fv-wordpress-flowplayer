@@ -293,6 +293,16 @@ class flowplayer_frontend extends flowplayer
 				$attributes['class'] .= ' fixed-controls';
 			} 
 			
+			if( isset($args['align']) ) {
+				if( $args['align'] == 'left' ) {
+					$attributes['class'] .= ' alignleft';
+				} else if( $args['align'] == 'right' ) {
+					$attributes['class'] .= ' alignright';
+				} else if( $args['align'] == 'center' ) {
+					$attributes['class'] .= ' aligncenter';
+				} 
+			}
+			
 			if( $this->conf['engine'] == 'flash' || $args['engine'] == 'flash' ) {
 				$attributes['data-engine'] = 'flash';
 			}

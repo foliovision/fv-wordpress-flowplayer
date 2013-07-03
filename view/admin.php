@@ -294,7 +294,14 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
               <input type="hidden" name="interface[mobile]" value="false" />
 							<input type="checkbox" name="interface[mobile]" id="interface[mobile]" value="true" <?php if( isset($fv_fp->conf['interface']['mobile']) && $fv_fp->conf['interface']['mobile'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>   					
+					</tr>   		
+					<tr>          
+						<td style="width: 330px;"><label for="interface[align]">Align: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td style="text-align:right;">
+              <input type="hidden" name="interface[align]" value="false" />
+							<input type="checkbox" name="interface[align]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['align']) && $fv_fp->conf['interface']['align'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr> 					
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Apply Changes" style="margin-top: 2ex;"/>

@@ -246,8 +246,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.20 - 2013/07/03 =
+* Feature - added setting for player border (on by default for upgrades from 1.x version)
+* Feature - added shortcode attribute for player alignment (enable in Interface Options)
+
 = 2.1.19 - 2013/07/02 =
 * Feature - added setting for ad text and link color
+* Bugfix - video checker fix for Windows servers
 
 = 2.1.18 - 2013/06/29 =
 * Bugfix - fix for bad MOV parsing for HTML5 playing
