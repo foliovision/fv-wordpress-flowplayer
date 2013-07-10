@@ -412,7 +412,7 @@ class flowplayer_frontend extends flowplayer
 				$ret['html'] .= "\t"."\t".$this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$hash.'_mobile')."<!--mobile-->\n";
 			}			
 	
-			if( isset($rtmp) ) {
+			if( isset($rtmp) && !empty($rtmp) ) {
 				$rtmp_url = parse_url($rtmp);
 				/*var_dump($rtmp_url);
 				$rtmp_url = explode('/', $rtmp_url['path'], 3);        

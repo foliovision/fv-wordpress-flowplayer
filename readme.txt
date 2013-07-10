@@ -256,7 +256,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.1.21 - 2013/07/ =
+= 2.1.22 - 2013/07/10 =
 * Feature - video checker now also suggests when the video should be re-encoded or an alternative format provided (simple checks)
 * Fix - you can now enter your RTMP server and RTMP video path independently for each video. Just click "Add RTMP" in the "Add FV WP Flowplayer" dialog.
 * Fix - iPad, iPhone and Android users are no longer advised to download Flash if their device doesn't support the video. The notice now says: "Unsupported video format. Please use a Flash compatible device."
