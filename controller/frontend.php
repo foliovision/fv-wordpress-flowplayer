@@ -334,6 +334,13 @@ function flowplayer_display_scripts() {
 			
 			function fv_wp_flowplayer_show_notice( id, link ) {
 				jQuery('#fv_wp_fp_notice_'+id).toggle();
+				//flowplayer.conf.keyboard = false;
+				var api = flowplayer(), currentPos;
+				if( jQuery(link).parent().parent().hasClass("fv-wp-flowplayer-notice") ) {
+					api.disable(false);
+				} else {
+					api.disable(true);
+				}
 				jQuery(link).parent().parent().toggleClass("fv-wp-flowplayer-notice");
 			}					
 			<?php
@@ -346,6 +353,16 @@ function flowplayer_display_scripts() {
   			jQuery(window).trigger('load');
   		}
   	} );	
+  	
+		if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) || (navigator.userAgent.toLowerCase().indexOf("android") != -1) ) {  	
+			flowplayer(function (api, root) { 
+				api.bind("error", function (e,api, error) {
+					if( error.code == 10 ) {
+						jQuery(e.target).find('.fp-message').html('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>');
+					}
+				});
+			});
+		}  	
     <?php    		
 		echo "\n</script>\n";
 	}

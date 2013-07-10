@@ -62,7 +62,9 @@ function fv_wp_flowplayer_init() {
   jQuery("#fv_wp_flowplayer_field_src_2_uploader").hide();
   jQuery("#fv_wp_flowplayer_field_src_1_wrapper").hide();
   jQuery("#fv_wp_flowplayer_field_src_1_uploader").hide();
-  jQuery("#fv_wp_flowplayer_add_format_wrapper").show();
+  jQuery("#add_format_wrapper").show();
+  jQuery("#add_rtmp_wrapper").show(); 
+  jQuery("#fv_wp_flowplayer_field_rtmp_wrapper").hide();
 }
 
 
@@ -132,7 +134,12 @@ function fv_wp_flowplayer_edit() {
   	if( srcurl == null ) {
   		srcurl = shortcode_parse_fix.match( /src=([^,\]\s]*)/ );
       fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src=([^,\]\s]*)/, '' );
-    }      			
+    }     
+    
+  	var srcrtmp = shortcode_parse_fix.match( /rtmp=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /rtmp=['"]([^']*?)['"]/, '' );    
+		var srcrtmp_path = shortcode_parse_fix.match( /rtmp_path=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /rtmp_path=['"]([^']*?)['"]/, '' );        
     
     var srcurl1 = shortcode.match( /src1=['"]([^']*?)['"]/ );
     fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src1=['"]([^']*?)['"]/, '' );
@@ -186,19 +193,22 @@ function fv_wp_flowplayer_edit() {
     fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /align="([^"]+)"/, '' ); 
     
     
+  	if( srcrtmp != null && srcrtmp[1] != null ) {
+  		document.getElementById("fv_wp_flowplayer_field_rtmp").value = srcrtmp[1];
+  		document.getElementById("fv_wp_flowplayer_field_rtmp_wrapper").style.display = 'table-row';
+  		document.getElementById("add_rtmp_wrapper").style.display = 'none';   
+  	}
+    if( srcrtmp_path != null && srcrtmp_path[1] != null ) {
+  		document.getElementById("fv_wp_flowplayer_field_rtmp_path").value = srcrtmp_path[1];
+      document.getElementById("fv_wp_flowplayer_field_rtmp_wrapper").style.display = 'table-row';
+      document.getElementById("add_rtmp_wrapper").style.display = 'none';           
+    }    
+    
   	if( srcurl != null && srcurl[1] != null )
   		document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
-    if( srcurl1 != null && srcurl1[1] != null ) {
-  		document.getElementById("fv_wp_flowplayer_field_src_1").value = srcurl1[1];
-      document.getElementById("fv_wp_flowplayer_field_src_1_wrapper").style.display = 'table-row';
-      //document.getElementById("fv_wp_flowplayer_field_src_1_uploader").style.display = 'table-row';
-      if( srcurl2 != null && srcurl2[1] != null ) {
-    		document.getElementById("fv_wp_flowplayer_field_src_2").value = srcurl2[1];
-        document.getElementById("fv_wp_flowplayer_field_src_2_wrapper").style.display = 'table-row';
-        //document.getElementById("fv_wp_flowplayer_field_src_2_uploader").style.display = 'table-row';
-        document.getElementById("fv_wp_flowplayer_add_format_wrapper").style.display = 'none';        
-      }            
-    }    
+  	if( srcurl != null && srcurl[1] != null )
+  		document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];  		
+    
   	if( iheight != null && iheight[1] != null )
   		document.getElementById("fv_wp_flowplayer_field_height").value = iheight[1];
   	if( iwidth != null && iwidth[1] != null )
@@ -280,19 +290,39 @@ function fv_wp_flowplayer_submit() {
 	var shortcode = '';
   var shorttag = 'fvplayer';
 	
-	if(document.getElementById("fv_wp_flowplayer_field_src").value == '') {
+	if(
+		jQuery("#fv_wp_flowplayer_field_rtmp_wrapper").is(":visible") &&
+		(
+			( jQuery("#fv_wp_flowplayer_field_rtmp").val() != '' && jQuery("#fv_wp_flowplayer_field_rtmp_path").val() == '' ) ||
+			( jQuery("#fv_wp_flowplayer_field_rtmp").val() == '' && jQuery("#fv_wp_flowplayer_field_rtmp_path").val() != '' )
+		)
+	) {
+		alert('Please enter both server and path for your RTMP video.');
+		return false;
+	} else if( document.getElementById("fv_wp_flowplayer_field_src").value == '' && jQuery("#fv_wp_flowplayer_field_rtmp").val() == '' && jQuery("#fv_wp_flowplayer_field_rtmp_path").val() == '') {
 		alert('Please enter the file name of your video file.');
 		return false;
-	}
-	else
-		shortcode = '[' + shorttag + ' src=\'' + document.getElementById("fv_wp_flowplayer_field_src").value + '\'';
-    
+	} else 
+	
+	shortcode = '[' + shorttag;	
+   
+  if ( document.getElementById("fv_wp_flowplayer_field_src").value != '' ) {
+    shortcode += ' src=\'' + document.getElementById("fv_wp_flowplayer_field_src").value + '\''; 
+  } 
+   
   if ( document.getElementById("fv_wp_flowplayer_field_src_1").value != '' ) {
     shortcode += ' src1=\'' + document.getElementById("fv_wp_flowplayer_field_src_1").value + '\''; 
   }
   if ( document.getElementById("fv_wp_flowplayer_field_src_2").value != '' ) {
     shortcode += ' src2=\'' + document.getElementById("fv_wp_flowplayer_field_src_2").value + '\''; 
   }
+  
+  if ( document.getElementById("fv_wp_flowplayer_field_rtmp").value != '' ) {
+    shortcode += ' rtmp="' + document.getElementById("fv_wp_flowplayer_field_rtmp").value + '"'; 
+  }
+  if ( document.getElementById("fv_wp_flowplayer_field_rtmp_path").value != '' ) {
+    shortcode += ' rtmp_path="' + document.getElementById("fv_wp_flowplayer_field_rtmp_path").value + '"'; 
+  }  
 		
 	if( document.getElementById("fv_wp_flowplayer_field_width").value != '' && document.getElementById("fv_wp_flowplayer_field_width").value % 1 != 0 ) {
 		alert('Please enter a valid width.');
@@ -384,7 +414,7 @@ function add_format() {
       if ( jQuery("#fv_wp_flowplayer_field_src_1").val() != '' ) {
         jQuery("#fv_wp_flowplayer_field_src_2_wrapper").show();
         jQuery("#fv_wp_flowplayer_field_src_2_uploader").show();
-        jQuery("#fv_wp_flowplayer_add_format_wrapper").hide();
+        jQuery("#add_format_wrapper").hide();
       }
       else {
         alert('Please enter the file name of your second video file.');
@@ -398,6 +428,11 @@ function add_format() {
   else {
     alert('Please enter the file name of your video file.');
   }
+}
+
+function add_rtmp() {
+	jQuery("#fv_wp_flowplayer_field_rtmp_wrapper").show();
+	jQuery("#add_rtmp_wrapper").hide();
 }
 
 </script>
@@ -441,11 +476,20 @@ function add_format() {
     			<?php }; //allow uplads video ?>
     			</td>    			
   			</tr>
-
+  			
+        <tr style="display: none;" id="fv_wp_flowplayer_field_rtmp_wrapper">
+  				<th scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright">RTMP Server</label></th>
+  				<td colspan="2" class="field">
+  					<input type="text" class="text" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" />
+    				&nbsp;<label for="fv_wp_flowplayer_field_rtmp_path"><strong>RTMP Path</strong></label>
+    				<input type="text" class="text" id="fv_wp_flowplayer_field_rtmp_path" name="fv_wp_flowplayer_field_rtmp_path" value="" style="width: 37%" />
+    			</td> 
+  			</tr>  			
         
         <tr id="fv_wp_flowplayer_add_format_wrapper">
     			<th scope="row" class="label" style="width: 18%"></th>
-  				<td colspan="2" class="field"><a href="#" class="partial-underline" onclick="add_format()" style="outline: 0"><span id="add-format">+</span>&nbsp;Add another format</a> (i.e. WebM, OGV)</td>
+  				<td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" onclick="add_format()" style="outline: 0"><span id="add-format">+</span>&nbsp;Add another format</a> (i.e. WebM, OGV)</div></td>
+  				<td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="add_rtmp()" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;Add RTMP</a></div></td>  				
   			</tr>      
   			
         <tr<?php if( $conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>

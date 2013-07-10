@@ -216,6 +216,16 @@ The image needs to be 100x106px normal version nad 200x212px hi res version. You
 
 Make sure you are not using obsolete tags like &lt;center&gt; to wrap the video. Such tag is not supported in HTML5, you have to use CSS to center elements.
 
+= How do I get rid of the 'Hit ? for help' tooltip on the player box? =
+
+You can put this into your template's functions.php file, if you know a bit of PHP. It will disable the tooltip.
+
+`add_filter( 'fv_flowplayer_attributes', 'tweak_fv_flowplayer_attributes', 10, 2 );
+function tweak_fv_flowplayer_attributes( $attrs ) {
+	$attrs['data-tooltip'] = 'false';
+	return $attrs;
+}`
+
 = What if the FV Flowplayer 5 doesn't work for me? =
 
 No worries.
@@ -245,6 +255,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.21 - 2013/07/ =
+* Feature - video checker now also suggests when the video should be re-encoded or an alternative format provided (simple checks)
+* Fix - you can now enter your RTMP server and RTMP video path independently for each video. Just click "Add RTMP" in the "Add FV WP Flowplayer" dialog.
+* Fix - iPad, iPhone and Android users are no longer advised to download Flash if their device doesn't support the video. The notice now says: "Unsupported video format. Please use a Flash compatible device."
+* Fix - Update to Flowplayer 5.4.3
+* Bugfix - video checker "Send report to Foliovision" now doesn't interfere with Flowplayer shortcuts
 
 = 2.1.20 - 2013/07/03 =
 * Feature - added setting for player border (on by default for upgrades from 1.x version)
@@ -493,6 +510,12 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.16 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
+* Upgrade to latest Flowplayer version - 5.4.3
 
 = 2.1.16 =
 * Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.

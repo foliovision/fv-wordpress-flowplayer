@@ -92,7 +92,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'ad_width' => '',
     'ad_height' => '',
     'ad_skip' => '',
-    'align' => ''
+    'align' => '',
+    'rtmp' => '',
+    'rtmp_path' => ''
   ), $atts ) );
   
 	$arguments['width'] = preg_replace('/\,/', '', $width);
@@ -115,9 +117,11 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   $arguments['ad_height'] = preg_replace('/\,/', '', $ad_height);   
   $arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip); 
   $arguments['align'] = preg_replace('/\,/', '', $align);   
-    
-	$src = preg_replace('/\,/', '', $src); 
-	if (trim($src) != '') {
+  $arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
+  $arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
+       
+	$src = trim( preg_replace('/\,/', '', $src) ); 
+	if( $src != '' || ( strlen($arguments['rtmp']) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
     $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {

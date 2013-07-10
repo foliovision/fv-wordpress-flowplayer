@@ -173,7 +173,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=fvplayer_logo&TB_iframe=true&width=500&height=300" class="thickbox" >open media library</a> to upload logo.</td>
 					</tr>      
 					<tr>
-						<td><label for="rtmp">Amazon CloudFront domain:</label></td>
+						<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain):</label></td>
 						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 					</tr>	
 					<tr>

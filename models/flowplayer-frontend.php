@@ -64,7 +64,12 @@ class flowplayer_frontend extends flowplayer
 				}
 			}    
 			
-			$media = $this->get_video_url($media);
+			if( isset($args['rtmp']) && !empty($args['rtmp']) && isset($args['rtmp_path']) && !empty($args['rtmp_path']) ) {
+				$rtmp = trim( $args['rtmp_path'] );
+			}
+			if (!empty($media)) {
+				$media = $this->get_video_url($media);
+			}
 			if (!empty($src1)) {
 				$src1 = $this->get_video_url($src1);
 			}
@@ -212,9 +217,11 @@ class flowplayer_frontend extends flowplayer
 			
 			if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['videochecker'] != 'off' ) {
 				$this->ajax_count++;
-				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+				$test_media = array();
+				$rtmp_test = ( isset($args['rtmp']) ) ? $args['rtmp'].$args['rtmp_path'] : $rtmp;
+				foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
 					if( $media_item ) {
-						$test_media = $media_item;
+						$test_media[] = $media_item;
 						break;
 					} 
 				}   
@@ -223,17 +230,20 @@ class flowplayer_frontend extends flowplayer
 					$pre_notice = "jQuery('#wpfp_".$hash."').append('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice-small\"><small>Admin note: Checking the video file...</small></div>');";
 				}
 				
-				if( isset($test_media) ) { 
+				if( isset($test_media) && count($test_media) > 0 ) { 
 					$ret['script'] .= "
 						jQuery(document).ready( function() { 
 							var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
 							$pre_notice
-							jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".$test_media."', hash: '".$hash."' }, function( response ) {
+							jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".json_encode($test_media)."', hash: '".$hash."' }, function( response ) {
 								var obj;
 								try {
 									obj = jQuery.parseJSON( response );
 									
 									var extra_class = ( obj[1] > 0 ) ? ' fv-wp-flowplayer-error' : ' fv-wp-flowplayer-ok';
+									if( obj[1] == 0 && obj[2] > 0 ) {
+										extra_class = '';
+									}
 									jQuery('#wpfp_notice_".$hash."').remove();
 									jQuery('#wpfp_".$hash."').append('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice-small'+extra_class+'\">'+obj[0]+'</div>');						 			             
 								} catch(e) {
@@ -330,8 +340,10 @@ class flowplayer_frontend extends flowplayer
 			if ($commercial_key && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0) {
 				$attributes['data-logo'] = $this->conf['logo'];
 			}
-	
-			if( isset($rtmp) ) {
+			
+			if( isset($args['rtmp']) && !empty($args['rtmp']) ) {
+				$attributes['data-rtmp'] = trim( $args['rtmp'] );
+			} else if( isset($rtmp) && !(isset($this->conf['rtmp']) && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
 				$rtmp_info = parse_url($rtmp);
 				if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
 					$attributes['data-rtmp'] = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
@@ -339,6 +351,7 @@ class flowplayer_frontend extends flowplayer
 			} else if( isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && strlen($this->conf['rtmp']) > 0 ) {				
 				if( stripos( $this->conf['rtmp'], 'rtmp://' ) === 0 ) {
 					$attributes['data-rtmp'] = $this->conf['rtmp'];
+					$rtmp = str_replace( $this->conf['rtmp'], '', $rtmp );
 				} else {
 					$attributes['data-rtmp'] = 'rtmp://' . $this->conf['rtmp'] . '/cfx/st/';
 				}
