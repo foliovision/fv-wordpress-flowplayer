@@ -226,6 +226,22 @@ function tweak_fv_flowplayer_attributes( $attrs ) {
 	return $attrs;
 }`
 
+= How can I customized the player control bar? I want to add a play/pause button. =
+
+Just put this code into the template's functions.php file. If you know a bit of PHP, it should not be a problem for you:
+
+`add_filter( 'fv_flowplayer_attributes', 'tweak_fv_flowplayer_attributes', 10, 2 );
+function tweak_fv_flowplayer_attributes( $attrs ) {
+	$attrs['class'] .= ' play-button';
+	return $attrs;
+}`
+
+It simply adds a class "play-button" to the player DIV element and then it knows to use the play button. The other options are:
+
+`no-mute
+no-time
+no-volume`
+
 = What if the FV Flowplayer 5 doesn't work for me? =
 
 No worries.
