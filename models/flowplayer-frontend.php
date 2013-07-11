@@ -227,7 +227,7 @@ class flowplayer_frontend extends flowplayer
 				}   
 				
 				if( $this->conf['videochecker'] == 'enabled' ) {
-					$pre_notice = "jQuery('#wpfp_".$hash."').append('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice-small\"><small>Admin note: Checking the video file...</small></div>');";
+					$pre_notice = "jQuery('#wpfp_".$hash."').append('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice-small\" title=\"This note is visible to logged-in admins only.\"><small>Admin note: Checking the video file...</small></div>');";
 				}
 				
 				if( isset($test_media) && count($test_media) > 0 ) { 
@@ -245,7 +245,7 @@ class flowplayer_frontend extends flowplayer
 										extra_class = '';
 									}
 									jQuery('#wpfp_notice_".$hash."').remove();
-									jQuery('#wpfp_".$hash."').append('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice-small'+extra_class+'\">'+obj[0]+'</div>');						 			             
+									jQuery('#wpfp_".$hash."').append('<div id=\"wpfp_notice_".$hash."\" class=\"fv-wp-flowplayer-notice-small'+extra_class+'\" title=\"This note is visible to logged-in admins only.\">'+obj[0]+'</div>');						 			             
 								} catch(e) {
 									jQuery('#wpfp_notice_".$hash."').html('<p>Admin: Error parsing JSON</p>');
 									return;
@@ -487,7 +487,7 @@ class flowplayer_frontend extends flowplayer
 			//do not use https on mobile devices
 			if (strpos($media, 'https') !== false && $mobileUserAgent) {
 				$media = str_replace('https', 'http', $media);
-			} 
+			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 			return '<source '.$id.'src="'.trim($media).'" type="video/'.$extension.'" />';  
     }
@@ -503,7 +503,9 @@ class flowplayer_frontend extends flowplayer
 		}
  
     
-    if ($extension == 'm4v') {
+    if ($extension == 'm3u8' || $extension == 'm3u') {
+      $extension = 'x-mpegurl';
+    } else if ($extension == 'm4v') {
       $extension = 'mp4';
     } else if( $extension == 'mp3' ) {
     	$extension = 'mpeg';
@@ -513,7 +515,7 @@ class flowplayer_frontend extends flowplayer
     	$extension = 'ogg';
     } else if( $extension == 'mov' ) {
       $extension = 'mp4';
-    } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav')) ) {
+    } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
       $extension = $default;  
     }
     return $extension;  

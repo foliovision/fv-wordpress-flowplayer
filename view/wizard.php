@@ -204,6 +204,20 @@ function fv_wp_flowplayer_edit() {
       document.getElementById("add_rtmp_wrapper").style.display = 'none';           
     }    
     
+    if( srcurl != null && srcurl[1] != null )
+  		document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
+    if( srcurl1 != null && srcurl1[1] != null ) {
+  		document.getElementById("fv_wp_flowplayer_field_src_1").value = srcurl1[1];
+      document.getElementById("fv_wp_flowplayer_field_src_1_wrapper").style.display = 'table-row';
+      //document.getElementById("fv_wp_flowplayer_field_src_1_uploader").style.display = 'table-row';
+      if( srcurl2 != null && srcurl2[1] != null ) {
+    		document.getElementById("fv_wp_flowplayer_field_src_2").value = srcurl2[1];
+        document.getElementById("fv_wp_flowplayer_field_src_2_wrapper").style.display = 'table-row';
+        //document.getElementById("fv_wp_flowplayer_field_src_2_uploader").style.display = 'table-row';
+        document.getElementById("add_format_wrapper").style.display = 'none';        
+      }            
+    }     
+    
   	if( srcurl != null && srcurl[1] != null )
   		document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
   	if( srcurl != null && srcurl[1] != null )

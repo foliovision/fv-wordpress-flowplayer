@@ -549,7 +549,7 @@ function fv_wp_flowplayer_check_mimetype() {
   			$found_rtmp = true;
   		} else {
   		
-  			if( !isset($media) ) {
+  			if( !isset($media) && !preg_match( '!\.(m3u8|m3u|avi)$!', $source) ) {
   				$media = $source;
   			}
   			
@@ -559,7 +559,11 @@ function fv_wp_flowplayer_check_mimetype() {
 					$video_warnings[]	= 'We recommend that you re-encode your MOV video into MP4 format. MOV is not be 100% compatible with HTML5 and might not play in Google Chrome. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only" target="_blank">Read our article about video encoding</a>';
 				} else if( preg_match( '!\.flv$!', $source, $match ) ) {
 					$found_flv = true;
-				} 
+				} else if( preg_match( '!\.(m3u8|m3u)$!', $source, $match ) ) {
+					$found_m3u8 = true;
+				} else if( preg_match( '!\.(avi)$!', $source, $match ) ) {
+					$found_avi = true;
+				}
   		}
   	}
   	
@@ -569,6 +573,14 @@ function fv_wp_flowplayer_check_mimetype() {
   	
   	if( isset($found_rtmp) && !isset($found_mp4) ) {
   		$video_warnings[]	= 'We recommend that you also provide your RTMP video in MP4 format. RTMP is not compatible with HTML5 and won\'t play on devices without Flash (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
+  	}
+  	
+  	if( isset($found_m3u8) && count($all_sources) == 1 ) {
+  		$video_warnings[]	= 'We recommend that you also provide your M3U8 video in MP4 or WEBM format. HTTP Live Streaming (m3u8) is only supported by Apple iOS devices (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
+  	}
+  	
+  	if( isset($found_avi) ) {
+  		$video_errors[]	= 'AVI format is not supported by neither HTML5 nor Flash. Please re-encode the video to MP4. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
   	}
   	
   	$random = rand( 0, 10000 );
@@ -918,7 +930,7 @@ function fv_wp_flowplayer_check_mimetype() {
 		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
 				
       
-    if( count($video_errors ) == 0 && $fv_fp->conf['videochecker'] == 'errors' ) {
+    if( count($video_errors) == 0 && count($video_warnings) == 0 && $fv_fp->conf['videochecker'] == 'errors' ) {
       die();
     }
     

@@ -272,6 +272,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.23 - 2013/07/11 =
+* Fix - added warning for AVI videos - not supported by neither HTML5 nor Flash
+* Fix - m3u8 parsing
+* Fix - video checker now shows a tooltip that it's visible to admins only
+* Bugfix - fix for editing of alternative video sources in "Add FV WP Flowplayer" dialog
+
 = 2.1.22 - 2013/07/10 =
 * Feature - video checker now also suggests when the video should be re-encoded or an alternative format provided (simple checks)
 * Fix - you can now enter your RTMP server and RTMP video path independently for each video. Just click "Add RTMP" in the "Add FV WP Flowplayer" dialog.
