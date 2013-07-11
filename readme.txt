@@ -230,8 +230,8 @@ function tweak_fv_flowplayer_attributes( $attrs ) {
 
 Just put this code into the template's functions.php file. If you know a bit of PHP, it should not be a problem for you:
 
-`add_filter( 'fv_flowplayer_attributes', 'tweak_fv_flowplayer_attributes', 10, 2 );
-function tweak_fv_flowplayer_attributes( $attrs ) {
+`add_filter( 'fv_flowplayer_attributes', 'tweak_controlbar_fv_flowplayer_attributes', 10, 2 );
+function tweak_controlbar_fv_flowplayer_attributes( $attrs ) {
 	$attrs['class'] .= ' play-button';
 	return $attrs;
 }`
