@@ -12,9 +12,9 @@
 .no-background.flowplayer .fp-controls{background-color:transparent !important;background-image:-moz-linear-gradient(transparent,transparent) !important;background-image:-webkit-gradient(linear,0 0,0 100%,from(transparent),to(transparent)) !important}
 .is-fullscreen.flowplayer .fp-controls{bottom:3px}
 .is-mouseover.flowplayer .fp-controls{bottom:0}
-.flowplayer .fp-waiting{display:none;margin:19% auto;text-align:center;}
+.flowplayer .fp-waiting{/*display:none;*/margin:19% auto;text-align:center;}
 .flowplayer .fp-waiting *{-webkit-box-shadow:0 0 5px #333;-moz-box-shadow:0 0 5px #333;box-shadow:0 0 5px #333}
-.flowplayer .fp-waiting em{width:1em;height:1em;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;background-color:rgba(255,255,255,0.8);display:inline-block;-webkit-animation:pulse .6s infinite;-moz-animation:pulse .6s infinite;animation:pulse .6s infinite;margin:.3em;opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);}
+.flowplayer .fp-waiting em{width:0em;height:0em;-webkit-border-radius:1em;-moz-border-radius:1em;border-radius:1em;background-color:rgba(255,255,255,0.8);display:inline-block; -webkit-animation:pulse .6s infinite;-moz-animation:pulse .6s infinite;animation:pulse .6s infinite;margin:.3em;opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);}
 .flowplayer .fp-waiting em:nth-child(1){-webkit-animation-delay:.3s;-moz-animation-delay:.3s;animation-delay:.3s}
 .flowplayer .fp-waiting em:nth-child(2){-webkit-animation-delay:.45s;-moz-animation-delay:.45s;animation-delay:.45s}
 .flowplayer .fp-waiting em:nth-child(3){-webkit-animation-delay:.6s;-moz-animation-delay:.6s;animation-delay:.6s}
@@ -142,10 +142,10 @@
 .flowplayer.is-splash,.flowplayer.is-poster{cursor:pointer;}
 .flowplayer.is-splash .fp-controls,.flowplayer.is-poster .fp-controls,.flowplayer.is-splash .fp-fullscreen,.flowplayer.is-poster .fp-fullscreen,.flowplayer.is-splash .fp-unload,.flowplayer.is-poster .fp-unload,.flowplayer.is-splash .fp-time,.flowplayer.is-poster .fp-time,.flowplayer.is-splash .fp-embed,.flowplayer.is-poster .fp-embed{display:none !important}
 .flowplayer.is-poster .fp-engine{top:-9999em}
-.flowplayer.is-loading .fp-waiting{display:block}
+.flowplayer.is-loading .fp-waiting em {width:1em;height:1em;}
 .flowplayer.is-loading .fp-controls,.flowplayer.is-loading .fp-time{display:none}
 .flowplayer.is-loading .fp-ui{background-position:-9999em}
-.flowplayer.is-seeking .fp-waiting{display:block}
+.flowplayer.is-seeking .fp-waiting em {width:1em;height:1em;}
 .flowplayer.is-fullscreen{position:fixed !important;top:0 !important;left:0 !important;border:0 !important;margin:0 !important;width:100% !important;height:100% !important;max-width:100% !important;max-height:100% !important;z-index:99999 !important;-webkit-box-shadow:0 !important;-moz-box-shadow:0 !important;box-shadow:0 !important;background-image:none !important;background-color:#000 !important;}
 .is-rtl.flowplayer.is-fullscreen{left:auto !important;right:0 !important}
 .flowplayer.is-error {border:1px solid #909090;}

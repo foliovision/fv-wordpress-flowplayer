@@ -531,6 +531,57 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 		endif;
 	}
 }
+
+
+function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
+	$video_errors = array();
+
+	if( $headers && $headers['response']['code'] == '404' ) {
+		$video_errors[] = 'File not found (HTTP 404)!';  
+	} else if( $headers && $headers['response']['code'] == '403' ) {
+		$video_errors[] = 'Access to video forbidden (HTTP 403)!'; 
+	} else if( $headers && $headers['response']['code'] != '200' && $headers['response']['code'] != '206' ) {
+		$video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!'; 
+	} else {  
+	
+		if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
+			$video_errors[] = 'Server does not support HTTP range requests!';  
+		}
+	
+		if(
+			( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
+			( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' ) ||
+					( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
+		) {
+			if( stripos( $remotefilename, '.mov' ) === FALSE ) {
+						 $meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
+						 if( $fv_fp->conf['engine'] == 'default' ) {
+				 $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+						 }
+			} else if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
+						 $meta_note_addition = ' Firefox on Windows does not like MOV files with video/quicktime mime type.';
+					}     
+			
+			$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
+				<p>If the video is hosted on Amazon S3:</p>
+				<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files and "video/mp4" for MOV files.</blockquote>
+				<p>If the video is hosted on your server, put this into your .htaccess:</p>
+				<pre>AddType video/mp4             .mp4
+	AddType video/webm            .webm
+	AddType video/ogg             .ogv
+	AddType application/x-mpegurl .m3u8
+	AddType video/x-m4v           .m4v
+	AddType video/mp4             .mov
+	# hls transport stream segments:
+	AddType video/mp2t            .ts</pre>
+				<p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a> for more info.</p>
+			</div>';     
+			
+			$video_errors[] = '<p><strong>Bad mime type</strong>: Video served with a bad mime type <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)</p>'.$fix ;        
+		}
+	}
+	return $video_errors;
+}
  
  
 function fv_wp_flowplayer_check_mimetype() {
@@ -548,8 +599,9 @@ function fv_wp_flowplayer_check_mimetype() {
   		if( preg_match( '!^rtmp://!', $source, $match ) ) {
   			$found_rtmp = true;
   		} else {
-  		
-  			if( !isset($media) && !preg_match( '!\.(m3u8|m3u|avi)$!', $source) ) {
+  			if( preg_match('!^http://(www\.)?youtube!',$source) ) {
+  				$video_errors[]	= 'Youtube video embeding not supported yet. Please download the video file and put it in as a source directly.';
+  			} else if( !isset($media) && !preg_match( '!\.(m3u8|m3u|avi)$!', $source) ) {
   				$media = $source;
   			}
   			
@@ -590,60 +642,27 @@ function fv_wp_flowplayer_check_mimetype() {
 		       
 			$remotefilename = $media;
 			$url_parts = parse_url( urldecode($remotefilename) );
-			if (!empty($url_parts['path'])) {
+			$url_parts_encoded = parse_url( $remotefilename );			
+			if( !empty($url_parts['path']) ) {
 					$url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts['path'])));
 			}
+			if( !empty($url_parts['query']) ) {
+					$url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );				
+			}
+			
 			$remotefilename_encoded = http_build_url($remotefilename, $url_parts);  	
-	
-			$headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded) ), array( 'redirection' => 3 ) );
-	
+		
+			if( $fv_fp->is_secure_amazon_s3($remotefilename_encoded) ) {	//	skip headers check for Amazon S3, as it's slow
+				$headers = false;
+			} else {
+				$headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded ) ), array( 'method' => 'GET', 'redirection' => 3 ) );
+			}
 			
 			if( is_wp_error($headers) ) {
 				$video_errors[] = 'Error checking '.$media.'!<br />'.print_r($headers,true);  
-			} else { 
-				if( $headers['response']['code'] == '404' ) {
-					$video_errors[] = 'File not found (HTTP 404)!';  
-				} else if( $headers['response']['code'] == '403' ) {
-					$video_errors[] = 'Access to video forbidden (HTTP 403)!'; 
-				} else if( $headers['response']['code'] != '200' ) {
-					$video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!'; 
-				} else {  
-				
-					if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
-						$video_errors[] = 'Server does not support HTTP range requests!';  
-					}
-				
-					if(
-						( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
-						( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' ) ||
-								( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
-					) {
-						if( stripos( $remotefilename, '.mov' ) === FALSE ) {
-									 $meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
-									 if( $fv_fp->conf['engine'] == 'default' ) {
-							 $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
-									 }
-						} else if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
-									 $meta_note_addition = ' Firefox does not like MOV files with video/quicktime mime type.';
-								}     
-						
-						$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
-							<p>If the video is hosted on Amazon S3:</p>
-							<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files and "video/mp4" for MOV files.</blockquote>
-							<p>If the video is hosted on your server, put this into your .htaccess:</p>
-							<pre>AddType video/mp4             .mp4
-		AddType video/webm            .webm
-		AddType video/ogg             .ogv
-		AddType application/x-mpegurl .m3u8
-		AddType video/x-m4v           .m4v
-		AddType video/mp4             .mov
-		# hls transport stream segments:
-		AddType video/mp2t            .ts</pre>
-							<p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a> for more info.</p>
-						</div>';     
-						
-						$video_errors[] = '<p><strong>Bad mime type</strong>: Video served with a bad mime type <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)</p>'.$fix ;        
-					}
+			} else {
+				if( $headers ) {
+					$video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
 				}
 				
 				if( function_exists('is_utf8') && is_utf8($remotefilename) ) {
@@ -658,8 +677,8 @@ function fv_wp_flowplayer_check_mimetype() {
 				preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
 								
 				if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
-					$message = '<p>Analysis of <tt>'.$remotefilename.'</tt> (remote):</p>';
-						
+					$message = '<p>Analysis of <tt>'.$remotefilename_encoded.'</tt> (remote):</p>';
+
 					//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
 					$upload_dir = wp_upload_dir();      
 					$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename($remotefilename_encoded);
@@ -671,16 +690,39 @@ function fv_wp_flowplayer_check_mimetype() {
 						curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
 						curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 						curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+						curl_setopt( $ch, CURLOPT_HEADER, true );
+						curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
 						curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
 						
 						$data = curl_exec($ch);
-						file_put_contents( $localtempfilename, $data);
+						
+						$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+						$header = substr($data, 0, $header_size);
+						$body = substr($data, $header_size);
+
+						file_put_contents( $localtempfilename, $body);
 						if($ch == false) {
 							$message .= 'CURL Error: '.curl_error ( $ch);
 						}
 						curl_close($ch);
-						 fclose($out);
-				
+						fclose($out);
+
+						if( !$headers ) {
+							$headers = WP_Http::processHeaders( $header );			
+							
+							$video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+							if( $headers['response']['code'] == '403' ) {
+								$error = new SimpleXMLElement($body);
+								
+								if( stripos( $error->Message, 'Request has expired' ) !== false ) {
+									$video_errors[] = '<p><strong>Amazon S3</strong>: Your secure link is expired, there might be problem with your Amazon S3 plugin. Please test if the above URL opens in your browser.</p>';		
+								} else {
+									$video_errors[] = '<p><strong>Amazon S3</strong>: '.$error->Message.'</p>';				
+								}
+								
+							}
+						}
+										
 						$ThisFileInfo = $getID3->analyze( $localtempfilename );
 						
 						if( !@unlink($localtempfilename) ) {
@@ -690,7 +732,7 @@ function fv_wp_flowplayer_check_mimetype() {
 						$video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
 					}                  
 				} else {
-					$message = '<p>Analysis of <tt>'.$remotefilename.'</tt> (local):</p>';
+					$message = '<p>Analysis of <tt>'.str_replace( '&amp;', '&', $remotefilename ).'</tt> (local):</p>';
 					
 					$document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
 					$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
@@ -872,8 +914,6 @@ function fv_wp_flowplayer_check_mimetype() {
 		}		
 				
 		$message = '<div class="mail-content-notice">'.$message.'</div>';		
-				
-//var_dump( $ThisFileInfo );		
 		
 		if( $ThisFileInfo ) {
 			$more_info = var_export($ThisFileInfo,true);

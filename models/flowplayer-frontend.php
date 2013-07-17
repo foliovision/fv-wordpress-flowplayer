@@ -162,7 +162,7 @@ class flowplayer_frontend extends flowplayer
 				$popup = apply_filters( 'fv_flowplayer_popup_html', $popup);
 				if( strlen(trim($popup)) > 0 ) {			
 					$show_popup = true;
-					$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup" style="display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff;"><div style="background: ' . trim($this->conf['backgroundColor']) . '; padding: 1% 5%; width: 65%; margin: 0 auto;">'.$popup.'</div></div>';
+					$popup_contents = '<div id="wpfp_'.$hash.'_custom_popup" class="wpfp_custom_popup"><div class="wpfp_custom_popup_content">'.$popup.'</div></div>';
 					$ret['script'] .= "
 						jQuery('#wpfp_".$hash."').bind('finish', function() {          
 							jQuery('#wpfp_".$hash."_custom_popup').show();            
@@ -195,7 +195,7 @@ class flowplayer_frontend extends flowplayer
 				$ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
 				if( strlen(trim($ad)) > 0 ) {			
 					$show_ad = true;
-					$ad_contents = "\t<div id='wpfp_".$hash."_ad' class='wpfp_custom_ad'>\n\t\t<div class='wpfp_custom_ad_content' style='background: ".trim($this->conf['backgroundColor'])."; max-width: $ad_width; max-height: $ad_height; margin: 0 auto; position: relative'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>\n\t</div>\n";                  
+					$ad_contents = "\t<div id='wpfp_".$hash."_ad' class='wpfp_custom_ad'>\n\t\t<div class='wpfp_custom_ad_content' style='max-width: $ad_width; max-height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>\n\t</div>\n";                  
 				}
 			}			
 			
@@ -399,17 +399,17 @@ class flowplayer_frontend extends flowplayer
 			$ret['html'] .= '>'."\n";
 							
 			if (!empty($media)) {              
-				$ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent)."\n";
+				$ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent, null, $rtmp)."\n";
 			}
 			if (!empty($src1)) {
-				$ret['html'] .= "\t"."\t".$this->get_video_src($src1, $mobileUserAgent)."\n";
+				$ret['html'] .= "\t"."\t".$this->get_video_src($src1, $mobileUserAgent, null, $rtmp)."\n";
 			}
 			if (!empty($src2)) {
-				$ret['html'] .= "\t"."\t".$this->get_video_src($src2, $mobileUserAgent)."\n";
+				$ret['html'] .= "\t"."\t".$this->get_video_src($src2, $mobileUserAgent, null, $rtmp)."\n";
 			}
 			if (!empty($mobile)) {
 				$ret['script'] .= "\nfv_flowplayer_mobile_switch('wpfp_$hash')\n";
-				$ret['html'] .= "\t"."\t".$this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$hash.'_mobile')."<!--mobile-->\n";
+				$ret['html'] .= "\t"."\t".$this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$hash.'_mobile', $rtmp)."<!--mobile-->\n";
 			}			
 	
 			if( isset($rtmp) && !empty($rtmp) ) {
@@ -481,7 +481,7 @@ class flowplayer_frontend extends flowplayer
     return $media;
   }
   
-  function get_video_src($media, $mobileUserAgent, $id = '') {
+  function get_video_src($media, $mobileUserAgent, $id = '', $rtmp = false ) {
   	if( $media ) { 
 			$extension = $this->get_file_extension($media);
 			//do not use https on mobile devices
@@ -489,14 +489,26 @@ class flowplayer_frontend extends flowplayer
 				$media = str_replace('https', 'http', $media);
 			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
-			return '<source '.$id.'src="'.trim($media).'" type="video/'.$extension.'" />';  
+			
+			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
+			if( $this->is_secure_amazon_s3($media) ) {
+					$media_fixed = str_replace('%2B', '%25252B',$media);   
+					//	only if there was a change and we don't have an RTMP for Flash
+					if( $media_fixed != $media && empty($rtmp) ) {
+						$source_flash_encoded = "\n\t\t".'<source '.$id.'src="'.trim($media_fixed).'" type="video/flash" />';				
+					}
+			}
+			
+			return '<source '.$id.'src="'.trim($media).'" type="video/'.$extension.'" />'.$source_flash_encoded;  
     }
     return null;
   }
   
   function get_file_extension($media, $default = 'flash' ) {
     $pathinfo = pathinfo( trim($media) );
+
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
+    $extension = preg_replace( '!\?.+$!', '', $extension );
     
 		if( !$extension ) {
 			return $default;

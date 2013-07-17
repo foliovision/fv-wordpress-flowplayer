@@ -126,6 +126,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
 	}
+	
+	public function is_secure_amazon_s3( $url ) {
+		return preg_match( '/^.+?s3\.amazonaws\.com.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net/.+Signature=.+?$/', $url );
+	}
 }
 /**
  * Defines some needed constants and loads the right flowplayer_head() function.

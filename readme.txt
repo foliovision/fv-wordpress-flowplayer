@@ -272,6 +272,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.24 - 2013/07/16 =
+* Fix - added warning for Youtube videos (we don't have support for their embeding yet)
+* Fix - ad and popup background color moved from inline style attribute to header, so you can use your template CSS to alter it now
+* Fix - video checker warning about bad MOV mime type fixed. It only caused the playback issues with video/quicktime on Windows Firefox
+* Bugfix - a glitch in iPad and iPhone rendering was causing our player to hide the entire post content when using certain templates (ThemesIndep, CSS .fp-waiting can't use display none there)
+* Bugfix - Amazon S3 signed URL parsing for Flash player - thanks goes out to Jeremy Madison for his contribution!
+* Bugfix - video checker now works with Amazon S3 signed URLs
+* Bugfix - parsing of video type from Amazon S3 signed URLs
+
 = 2.1.23 - 2013/07/11 =
 * Fix - added warning for AVI videos - not supported by neither HTML5 nor Flash
 * Fix - m3u8 parsing
