@@ -514,8 +514,6 @@ function fv_wp_flowplayer_media_upload() {
 function fv_wp_flowplayer_after_plugin_row( $arg) {
 	$args = func_get_args();
 	
-	return;
-	
 	if( $args[1]['Name'] == 'FV Wordpress Flowplayer' ) {		
     $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' || $options['key'] == '' ) :
@@ -523,7 +521,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			Brand new version of Flowplayer for HTML5. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">Licenses half price</a> in May.
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">All Licenses 20% off</a> in Summer.
 		</div>
 	</td>
 </tr>
