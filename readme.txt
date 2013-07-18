@@ -272,6 +272,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.25 - 2013/07/17 =
+* Bugfix - PHP warnings
+
 = 2.1.24 - 2013/07/16 =
 * Fix - added warning for Youtube videos (we don't have support for their embeding yet)
 * Fix - ad and popup background color moved from inline style attribute to header, so you can use your template CSS to alter it now

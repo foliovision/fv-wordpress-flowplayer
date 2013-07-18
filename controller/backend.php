@@ -592,6 +592,8 @@ function fv_wp_flowplayer_check_mimetype() {
   	$video_warnings = array();
   	$video_errors = array();
   	$video_info = array();
+  	$message = false;
+  	$new_info = false;
   	
   	foreach( $all_sources AS $source ) {
   		if( preg_match( '!^rtmp://!', $source, $match ) ) {
@@ -913,7 +915,7 @@ function fv_wp_flowplayer_check_mimetype() {
 				
 		$message = '<div class="mail-content-notice">'.$message.'</div>';		
 		
-		if( $ThisFileInfo ) {
+		if( isset($ThisFileInfo) && $ThisFileInfo ) {
 			$more_info = var_export($ThisFileInfo,true);
 		
 			$note = '(Note: read about remote file analysis in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq">FAQ</a>)';

@@ -18,6 +18,7 @@ class flowplayer_frontend extends flowplayer
     // unique coe for this player
 		$hash = md5($media.$this->_salt());    
 		$player_type = 'video';
+		$rtmp = false;
     
 		// returned array with new player's html and javascript content
 		$ret = array('html' => '', 'script' => '');
@@ -341,6 +342,7 @@ class flowplayer_frontend extends flowplayer
 				$attributes['data-logo'] = $this->conf['logo'];
 			}
 			
+			
 			if( isset($args['rtmp']) && !empty($args['rtmp']) ) {
 				$attributes['data-rtmp'] = trim( $args['rtmp'] );
 			} else if( isset($rtmp) && !(isset($this->conf['rtmp']) && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
@@ -491,6 +493,7 @@ class flowplayer_frontend extends flowplayer
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
+			$source_flash_encoded = false;
 			if( $this->is_secure_amazon_s3($media) ) {
 					$media_fixed = str_replace('%2B', '%25252B',$media);   
 					//	only if there was a change and we don't have an RTMP for Flash

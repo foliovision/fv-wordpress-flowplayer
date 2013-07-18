@@ -128,7 +128,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	}
 	
 	public function is_secure_amazon_s3( $url ) {
-		return preg_match( '/^.+?s3\.amazonaws\.com.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net/.+Signature=.+?$/', $url );
+		return preg_match( '/^.+?s3\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
 	}
 }
 /**
