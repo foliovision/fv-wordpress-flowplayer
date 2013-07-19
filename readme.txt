@@ -261,6 +261,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 2. Adding three players with different arguments into a post.
 3. Add new video dialog window in editing mode.
 4. Configuration menu for administrators.
+5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
 
@@ -272,10 +273,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.1.25 - 2013/07/17 =
+= 2.1.25 - 2013/07/18 =
 * Bugfix - PHP warnings
 
-= 2.1.24 - 2013/07/16 =
+= 2.1.24 - 2013/07/17 =
 * Fix - added warning for Youtube videos (we don't have support for their embeding yet)
 * Fix - ad and popup background color moved from inline style attribute to header, so you can use your template CSS to alter it now
 * Fix - video checker warning about bad MOV mime type fixed. It only caused the playback issues with video/quicktime on Windows Firefox
