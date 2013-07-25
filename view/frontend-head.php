@@ -20,6 +20,9 @@ global $fv_wp_flowplayer_ver;
 
 <?php if( current_user_can('manage_options') ) : ?>
 	<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
+	<style type="text/css">
+	.fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
+	</style>
 <?php endif; ?>
 
 <?php if ( isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0 && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0 ) : ?>

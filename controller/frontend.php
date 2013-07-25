@@ -300,7 +300,7 @@ function flowplayer_display_scripts() {
 				var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
 				
 				var comment_text = jQuery('#wpfp_support_'+hash).val();
-				var comment_words = comment_text.split(' ');
+				var comment_words = comment_text.split(/\s/);
 				if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
 					jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please tell us what is wrong</strong>:</p>');
 					jQuery('.fv_flowplayer_submit_error').fadeIn();
@@ -335,16 +335,49 @@ function flowplayer_display_scripts() {
 			
 			
 			function fv_wp_flowplayer_show_notice( id, link ) {
-				jQuery('#fv_wp_fp_notice_'+id).toggle();
-				//flowplayer.conf.keyboard = false;
-				var api = flowplayer(), currentPos;
-				if( jQuery('#fv_wp_fp_notice_'+id).parent().hasClass("fv-wp-flowplayer-notice") ) {
+				if( id == null && link == null ) {
+					var api = flowplayer(), currentPos;
 					api.disable(false);
-				} else {
-					api.disable(true);
+					jQuery('.fv-wp-flowplayer-notice .fv_wp_fp_notice_content').toggle();
+					jQuery('.fv-wp-flowplayer-notice').toggleClass("fv-wp-flowplayer-notice");
+					console.log('fv close!');					
+				} else {			
+					jQuery('#fv_wp_fp_notice_'+id).toggle();
+	
+					var api = flowplayer(), currentPos;
+					if( jQuery('#fv_wp_fp_notice_'+id).parent().hasClass("fv-wp-flowplayer-notice") ) {
+						api.disable(false);
+					} else {
+						api.disable(true);
+					}
+					
+					jQuery('#fv_wp_fp_notice_'+id).parent().toggleClass("fv-wp-flowplayer-notice");
 				}
-				jQuery('#fv_wp_fp_notice_'+id).parent().toggleClass("fv-wp-flowplayer-notice");
 			}					
+			
+			jQuery(document).keyup(function(e) {
+				if (e.keyCode == 27) {
+					fv_wp_flowplayer_show_notice();
+				}   // esc
+			});
+			
+			jQuery(document).click( function(event) {
+				console.log(jQuery(event.target).parents());
+				/*console.log( jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice') ) );
+				console.log( jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice-small') ) );				*/
+				console.log( jQuery(event.target).parents('.fv-wp-flowplayer-notice').length );
+				console.log( jQuery(event.target).parents('.fv-wp-flowplayer-notice-small').length );				
+				if(
+					/*jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice') ) == -1 &&
+					jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice-small') ) == -1*/
+					
+					jQuery(event.target).parents('.fv-wp-flowplayer-notice').length == 0 &&
+					jQuery(event.target).parents('.fv-wp-flowplayer-notice-small').length == 0				
+				) {
+					console.log('fv click!');
+					fv_wp_flowplayer_show_notice();	
+				}
+			}	);
 			<?php
 		}
     
