@@ -635,7 +635,8 @@ function fv_wp_flowplayer_check_mimetype() {
   		$video_errors[]	= 'AVI format is not supported by neither HTML5 nor Flash. Please re-encode the video to MP4. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
   	}
   	
-  	$random = rand( 0, 10000 );
+  	//$random = rand( 0, 10000 );
+  	$random = $_POST['hash'];
   	
   	
 		if( isset($media) ) {	
@@ -677,7 +678,8 @@ function fv_wp_flowplayer_check_mimetype() {
 				preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
 								
 				if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
-					$message = '<p>Analysis of <tt>'.$remotefilename_encoded.'</tt> (remote):</p>';
+					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
+					$video_info['File'] = 'Remote';
 
 					//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
 					$upload_dir = wp_upload_dir();      
@@ -732,7 +734,9 @@ function fv_wp_flowplayer_check_mimetype() {
 						$video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
 					}                  
 				} else {
-					$message = '<p>Analysis of <tt>'.str_replace( '&amp;', '&', $remotefilename ).'</tt> (local):</p>';
+					$a_link = str_replace( '&amp;', '&', $remotefilename );
+					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($a_link).'">'.$a_link.'</a></p>';
+					$video_info['File'] = 'Local';
 					
 					$document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
 					$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
@@ -760,7 +764,7 @@ function fv_wp_flowplayer_check_mimetype() {
 						if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
 							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time.';
 						} else {
-							$video_info['Meta Data (moov) position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
+							$video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
 						}
 						
 						/*if( isset($ThisFileInfo['quicktime']['moov']['subatoms']) ) {
@@ -964,8 +968,8 @@ function fv_wp_flowplayer_check_mimetype() {
 		}
 		
 		$message .= '<div class="support-'.$random.'">';
-		$message .= '<textarea id="wpfp_support_'.$_POST['hash'].'" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 100%; height: 150px">Enter your comment</textarea>';
-		$message .= '<p><input type="button" onclick="fv_wp_flowplayer_support_mail(\''.trim($_POST['hash']).'\', this); return false" value="Send report to Foliovision" /><img id="wpfp_spin_'.$_POST['hash'].'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a></p>';
+		$message .= '<textarea id="wpfp_support_'.$_POST['hash'].'" class="wpfp_message_field" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 98%; height: 150px">Enter your comment</textarea>';
+		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$_POST['hash'].'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_support_mail(\''.trim($_POST['hash']).'\', this); return false" value="Send report to Foliovision" /></p>';
 		$message .= '</div>';
 		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
 				
@@ -981,7 +985,7 @@ function fv_wp_flowplayer_check_mimetype() {
     } else {
     	$issues_text = '<span style="color: green; ">Video OK</span>';
     }
-    $message = "<small>Admin: <a href='#' onclick='fv_wp_flowplayer_show_notice($random, this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' style='display: none;'>$message</div>\n";
+    $message = "<div onclick='fv_wp_flowplayer_show_notice(\"$random\", this.parent); return false' class='fv_wp_flowplayer_notice_head'>Report Issue</div><small>Admin: <a href='#' onclick='fv_wp_flowplayer_show_notice(\"$random\", this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' style='display: none;'>$message</div>\n";
       
     $json = @json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
     $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;

@@ -311,10 +311,11 @@ function flowplayer_display_scripts() {
 					jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please give us more information (a full sentence) so we can help you better</strong>:</p>');
 					jQuery('.fv_flowplayer_submit_error').fadeIn();					
 					return false;
-				}				
+				}
 				
 				jQuery('#wpfp_spin_'+hash).show();
 				jQuery(button).attr("disabled", "disabled");
+							
 				jQuery.post(
 					ajaxurl,
 					{
@@ -327,8 +328,9 @@ function flowplayer_display_scripts() {
 						jQuery('#wpfp_spin_'+hash).hide();					
 						jQuery(button).removeAttr("disabled");
 						jQuery(button).after(' Message sent');
+						setTimeout( function() { fv_wp_flowplayer_show_notice(hash) }, 1500 );
 					}	
-				); 
+				);
 			}
 			
 			
@@ -336,12 +338,12 @@ function flowplayer_display_scripts() {
 				jQuery('#fv_wp_fp_notice_'+id).toggle();
 				//flowplayer.conf.keyboard = false;
 				var api = flowplayer(), currentPos;
-				if( jQuery(link).parent().parent().hasClass("fv-wp-flowplayer-notice") ) {
+				if( jQuery('#fv_wp_fp_notice_'+id).parent().hasClass("fv-wp-flowplayer-notice") ) {
 					api.disable(false);
 				} else {
 					api.disable(true);
 				}
-				jQuery(link).parent().parent().toggleClass("fv-wp-flowplayer-notice");
+				jQuery('#fv_wp_fp_notice_'+id).parent().toggleClass("fv-wp-flowplayer-notice");
 			}					
 			<?php
 		}
