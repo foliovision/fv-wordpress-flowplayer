@@ -979,11 +979,11 @@ function fv_wp_flowplayer_check_mimetype() {
     }
     
     if( count($video_errors) > 0 ) {
-    	$issues_text = '<span style="color: red; ">Video Issues</span>';
+    	$issues_text = '<span class="vid-issues">Video Issues</span>';
     } else if( count($video_warnings) ) {
-			$issues_text = '<span style="color: peru; ">Video Warnings</span>';    
+			$issues_text = '<span class="vid-warning">Video Warnings</span>';    
     } else {
-    	$issues_text = '<span style="color: green; ">Video OK</span>';
+    	$issues_text = '<span class="vid-ok">Video OK</span>';
     }
     $message = "<div onclick='fv_wp_flowplayer_show_notice(\"$random\", this.parent); return false' class='fv_wp_flowplayer_notice_head'>Report Issue</div><small>Admin: <a class='fv_wp_flowplayer_dialog_link' href='#' onclick='fv_wp_flowplayer_show_notice(\"$random\", this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' class='fv_wp_fp_notice_content' style='display: none;'>$message</div>\n";
       
