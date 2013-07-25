@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
-Tested up to: 3.5.1
+Tested up to: 3.5.2
 Stable tag: trunk
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
@@ -32,7 +32,7 @@ Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
 **Additional Technical information**
 
 * Plugin based on opensource version of Flowplayer 5. 
-* Supported video formats are FLV, H.264, and MP4 ([read Flowplayer article](http://flowplayer.org/docs/#video-formats)). Multiple videos can be displayed in one post or page.
+* Supported video formats are FLV, H.264, and MP4 ([read about HTML5 video formats](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding)). Multiple videos can be displayed in one post or page.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with Wordpress Flowplayer plugin, there are several improvements:
 
@@ -59,9 +59,14 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    2. Upload the fv-wordpress-flowplayer directory into wp-content/plugins/ directory of your wordpress installation.
    3. Go into Wordpress plugins setup in Wordpress administration interface and activate FV Wordpress Flowplayer plugin.
    4. Optionally, if you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there. Otherwise, you would have to type in a complete URL of video files.
+   5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
 
    
 == Frequently Asked Questions ==
+
+= I'm having issues with splash end or loop functions =
+
+Currently these don't work when the Flash fallback player is used. So they only work if your browsers supports the video format natively (read more about video formats in next question). One of the next version should have this fixed.
 
 = My video doesn't play in some browsers =
 
@@ -69,15 +74,25 @@ This should be related to your video format or mime type issues.
 
 Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
 
-Please note that MP4 is just a container, it might contain various streams for audio and video. You should check if the video stream in your MP4 is using H.264 aka MPEG-4 AVC or MPEG-4 Part 10 codec and if audio is using AAC codec: http://flowplayer.org/docs/encoding.html#codecs
+Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding).
 
-In general, it's recommended to use constant frame rate: http://flowplayer.org/docs/encoding.html#general-advice
+It seems HTML5 is more picky about what video it can play than Flash.
 
-It seems HTML5 is more picky about what video it can play.
+Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
+
+= How to check my video properties using the built-in checker =
+
+* Login to your site as administrator
+* Come to any post which was video
+* A message in yellow highlight should appear above each video "Checking the video file...". The check takes usually 1-2 seconds.
+* Once it's finished, you can see the video type and also click for more details.
+* If there is a problem detected, the color changes to red and the plugin gives you a hint on how to fix the problem (we are improving this)
+
+Note: The checker works much better for local files (on the same server as site). For the remote files, we only grab first 2MB of the file, store it temporarily in your uploads folder, analyze it and then delete. Since we don't get the full file, some values might not be correct, but basic things like codecs should be not affected.
 
 = My video doesn't play in Internet Explorer 9 and 10 =
 
-Most of the issues is caused by bad mime type on the server which serves your video files. Our plugin contains an automated checked for this - visit a post with a MP4 or M4V video as logged in administrator and you will see a warning if the mime type is wrong.
+Most of the issues is caused by bad mime type on the server which serves your video files. Our plugin contains an automated checked for this - just click the "Check Videos" button on the plugin Settings screen.
 
 Here's how to fix the mime type:
 
@@ -99,7 +114,20 @@ This can be also done in the Apache configuration. If you are on Microsoft IIS, 
 
 They might be served with bad mime type too - "application/octet-stream". This largely depends on the tool which you use to upload your videos. Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object's "Properties" pane and fix it to "video/mp4" (without the quotes, of course different video formats need different mime type, this one is for MP4). There are also tools for this, like S3 Browser Freeware, good place for start is here: https://forums.aws.amazon.com/thread.jspa?messageID=224446
 
+Good example can be seen in our support forum: http://foliovision.com/support/fv-wordpress-flowplayer/how-to/how-to-set-correct-mime-type-on-videos-hosted-by-amazon
+
 Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
+
+= I'm using OptimizePress template. =
+
+First click the "Check template" button on the pluging settings screen. It will likely report an issue like:
+
+`It appears there are multiple Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.
+Flowplayer script http://site.com/wp-content/themes/OptimizePress/js/flowplayer-3.2.4.min.js is old version and won't play. You need to get rid of this script.`
+
+The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading.
+
+There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "<!-- FV Flowplayer -->" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
 
 = Does this plugin support Shoutcast? =
 
@@ -111,7 +139,7 @@ You need to use at least PHP 5, your site is probably still running on old PHP 4
 
 = I installed the plugin, inserted the video, but it's not working, only a gray box appears. =
 
-FV Flowplayer calls some javascript from the footer. That means your footer.php file must contain the &lt;?php wp_footer(); ?&gt; Wordpress hook. Almost all themes do this out of the box, but if you've customised your theme there's a chance that you might have deleted this call.
+Go to plugin Settings screen and hit "Check template" button. It will check if both jQuery library and Flowplayer JavaScript is loading properly.
 
 = You player works just fine, but there are some weird display issues. =
 
@@ -132,7 +160,7 @@ Just enter the URL of your video hosted on Amazon S3 as the video source.
 
 = I would like to localize the play again button. =
 
-Currently there is no support for other languages. Some localizations for Flowplayer exists, but there is no official support from flowplayer.org.
+Currently there is no support for other languages.
 
 = Where can I change the default directory for videos? =
 
@@ -146,18 +174,26 @@ echo apply_filters('the_content', '[flowplayer src=yourvideo.mp4 width=240 heigh
 
 Fill the Flowplayer shortcode part according to your needs. The apply filter needs to be called because the flowplayer shortcodes are not parsen outside posts automatically. Also, please do not forget to add the echo at the beginning.
 
-= How can I style the popup? =
+= How do I get rid of the extra blank line below the player? =
 
-Check out .wpfp_custom_popup in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
+To get rid of the spacing, just add this into your template CSS, assuming that your theme uses the standard #content ID on the main content wrapper DIV:
+
+`#content .flowplayer { margin: 0 auto; }`
+
+Also make sure the [fvplayer] shortcode is located on it's own line in the editor and there is not text or any code on the same line. 
+
+= How can I style the popup or ad? =
+
+Check out .wpfp_custom_popup and .wpfp_custom_ad in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
+
+= Is there a way to remove the share (embed) button? =
+
+Yes, there's a global option in settings to disable sharing/embed. We plan to add an individual flag on a per video basis to allow sharing when sharing is turned off globally and vice versa.
 
 = My videos are taking long time to load. =
 
 1. Check your hosting for download speed.
 2. Try to use different settings when encoding the videos, try to turn on the cache when encoding with [Quick Time](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png)
-
-= Is it possible to loop the video? =
-
-No at the moment we do not support looping.
 
 = How do I insert videos in playlist? =
 
@@ -180,6 +216,32 @@ The image needs to be 100x106px normal version nad 200x212px hi res version. You
 
 Make sure you are not using obsolete tags like &lt;center&gt; to wrap the video. Such tag is not supported in HTML5, you have to use CSS to center elements.
 
+= How do I get rid of the 'Hit ? for help' tooltip on the player box? =
+
+You can put this into your template's functions.php file, if you know a bit of PHP. It will disable the tooltip.
+
+`add_filter( 'fv_flowplayer_attributes', 'tweak_fv_flowplayer_attributes', 10, 2 );
+function tweak_fv_flowplayer_attributes( $attrs ) {
+	$attrs['data-tooltip'] = 'false';
+	return $attrs;
+}`
+
+= How can I customized the player control bar? I want to add a play/pause button. =
+
+Just put this code into the template's functions.php file. If you know a bit of PHP, it should not be a problem for you:
+
+`add_filter( 'fv_flowplayer_attributes', 'tweak_controlbar_fv_flowplayer_attributes', 10, 2 );
+function tweak_controlbar_fv_flowplayer_attributes( $attrs ) {
+	$attrs['class'] .= ' play-button';
+	return $attrs;
+}`
+
+It simply adds a class "play-button" to the player DIV element and then it knows to use the play button. The other options are:
+
+`no-mute
+no-time
+no-volume`
+
 = What if the FV Flowplayer 5 doesn't work for me? =
 
 No worries.
@@ -199,14 +261,117 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 2. Adding three players with different arguments into a post.
 3. Add new video dialog window in editing mode.
 4. Configuration menu for administrators.
+5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
 
 = What's coming =
-* responsive design support
-* better detection of bad mime type for all your videos
-* suggestion for fixing of slow loading videos
-* detection of theme incompatibility
+* playlist support
+* cue points support
+* alignment settings for the video
+* improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
+* tools for fixing of slow loading videos (bad meta data location)
+* other bugfixes
+
+= 2.1.25 - 2013/07/18 =
+* Bugfix - PHP warnings
+
+= 2.1.24 - 2013/07/17 =
+* Fix - added warning for Youtube videos (we don't have support for their embeding yet)
+* Fix - ad and popup background color moved from inline style attribute to header, so you can use your template CSS to alter it now
+* Fix - video checker warning about bad MOV mime type fixed. It only caused the playback issues with video/quicktime on Windows Firefox
+* Bugfix - a glitch in iPad and iPhone rendering was causing our player to hide the entire post content when using certain templates (ThemesIndep, CSS .fp-waiting can't use display none there)
+* Bugfix - Amazon S3 signed URL parsing for Flash player - thanks goes out to Jeremy Madison for his contribution!
+* Bugfix - video checker now works with Amazon S3 signed URLs
+* Bugfix - parsing of video type from Amazon S3 signed URLs
+
+= 2.1.23 - 2013/07/11 =
+* Fix - added warning for AVI videos - not supported by neither HTML5 nor Flash
+* Fix - m3u8 parsing
+* Fix - video checker now shows a tooltip that it's visible to admins only
+* Bugfix - fix for editing of alternative video sources in "Add FV WP Flowplayer" dialog
+
+= 2.1.22 - 2013/07/10 =
+* Feature - video checker now also suggests when the video should be re-encoded or an alternative format provided (simple checks)
+* Fix - you can now enter your RTMP server and RTMP video path independently for each video. Just click "Add RTMP" in the "Add FV WP Flowplayer" dialog.
+* Fix - iPad, iPhone and Android users are no longer advised to download Flash if their device doesn't support the video. The notice now says: "Unsupported video format. Please use a Flash compatible device."
+* Fix - Update to Flowplayer 5.4.3
+* Bugfix - video checker "Send report to Foliovision" now doesn't interfere with Flowplayer shortcuts
+
+= 2.1.20 - 2013/07/03 =
+* Feature - added setting for player border (on by default for upgrades from 1.x version)
+* Feature - added shortcode attribute for player alignment (enable in Interface Options)
+
+= 2.1.19 - 2013/07/02 =
+* Feature - added setting for ad text and link color
+* Bugfix - video checker fix for Windows servers
+
+= 2.1.18 - 2013/06/29 =
+* Bugfix - fix for bad MOV parsing for HTML5 playing
+
+= 2.1.17 - 2013/06/28 =
+* Feature - Ad support! You can enter the global ad for your videos in plugin settings. Enable Interface options -> "Show Ads" to be able to specify ad in the video shortcode.
+* Feature - Mobile video support! You can specify the low-bandwidth version of the video. We are working on recommended encoding settings and better mobile detection.
+* Bugfix - fix for JetPack plugin conflict (After The Deadline)
+
+= 2.1.16 - 2013/06/25 =
+* Fix - video checker now requires a comment for the video issue submission
+* Bugfix - video checker styling in older templates (no #content element)
+* Bugfix - video checker URL parsing
+* Bugfix - main plugin variable renamed, avoiding weird conflicts with some plugins
+
+= 2.1.15 - 2013/06/24 =
+* Bugfix - "Check template" bugfixes and improvements for WP Minify
+* Bugfix - Fix for fix of Flowplayer preventing window.onload from firing on iPad
+* Bugfix - Fix for RTMP streams with no extension
+* Bugfix - Fix for video checker redirection and issues on some servers (which don't use DOCUMENT_ROOT)
+* Bugfix - Settings screen moved to options-general.php?page=fvplayer
+
+= 2.1.14 - 2013/06/12 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Styling - added some spacing below the video player
+* Fix - Admin front-end video checker now takes minimum of space
+* Bugfix - PHP warnings
+* Bugfix - for parsing of video with no extension
+* Bugfix - Flowplayer was preventing window.onload from firing on iPad
+
+= 2.1.13 - 2013/06/05 =
+* Feature - Added support for subtitles - first enable "Show Subtitles" in Settings -> FV Wordpress Flowplayer -> Interface options
+* Feature - Added options for what features show up in shortcode editor - check Settings -> FV Wordpress Flowplayer -> Interface options
+* Feature - Added option to allow/disallow embeding per video
+* Fix - Admin front-end video checker is now less obnoxious - shows smaller messages and can be disabled in options
+* Bugfix - for shortcode parsing
+
+= 2.1.12 - 2013/05/31 =
+* Feature - Front-end video checker now detects video codecs and other details (read "How to check my video properties using the built-in checker" in FAQ before we update our documentation )
+* Fix - Firefox on Windows prefers Flash for M4V files (due to issues on some PCs)
+* Styling - Fullscreen background color set to black
+* Styling - Fix for bad fullscreen dimensions in some browsers (Chrome)
+* Bugfix - Template checker bugfix for false positives (jQuery plugins detected as duplicite jQuery libraries)
+
+= 2.1.11 - 2013/05/28 =
+* Fix - more improvements and bugfixes for RTMP handling
+* Fix - for template and videos checker
+
+= 2.1.10 - 2013/05/28 =
+* Fix - Update to Flowplayer 5.4.2
+* Bugfix - more improvements and bugfixes for RTMP handling
+* Bugfix - for popup and redirection in Flash version of the player
+* Bugfix - for admin front-end check of the videos 
+
+= 2.1.9 - 2013/05/27 =
+* improvements and bugfixes for RTMP handling
+* improved styling of insert video dialog box
+* bugfix for autoplay is off for video when autoplay is on globally
+
+= 2.1.8 - 2013/05/23 =
+* quick bugfix for Flowplayer script loading
+
+= 2.1.7 - 2013/05/22 =
+* support for responsive layout enabled by default
+* automated check of template added to settings screen - checks if your template loads Flowplayer and jQuery libraries properly
+* automated check of video files added to setting screen - checks if your servers are using right mime type for videos
 
 = 2.1.6 - 2013/05/21 =
 * quick fix for player skin - time values not appearing properly for some font faces
@@ -380,6 +545,33 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.16 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
+* Upgrade to latest Flowplayer version - 5.4.3
+
+= 2.1.16 =
+* Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
+* Feature - Added a function to report video not playing to Foliovision. Thank you for letting us know what videos don't play for you in our player.
+* Styling - added some spacing below the video player
+* Various bug fixes, check changelog
+
+= 2.1.13 =
+* Admin front-end video checker is not much smaller and can be disabled in options
+* Support for subtitles added
+
+= 2.1.11 =
+* Upgrade to latest Flowplayer version - 5.4.2
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
+
+= 2.1.10 =
+* Upgrade to latest Flowplayer version - 5.4.2
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
+
+= 2.1.9 =
+* Fixes for RTMP parsing - please check your RTMP videos after upgrade.
 
 = 2.1.5 =
 * Default player font face set to Tahoma, Geneva, sans-serif. Change 'Player font face' setting to 'inherit from template' if you have your own CSS.

@@ -1,17 +1,17 @@
 <?php
 
-/**
- * Needed includes
- */
 include_once(dirname( __FILE__ ) . '/../models/flowplayer.php');
 include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
+
+$fv_fp = new flowplayer_frontend(); 
 
 /**
  * WP Hooks 
  */
 //add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_head', 'flowplayer_head');
-add_action('wp_footer','flowplayer_display_scripts');
+add_action('wp_footer','flowplayer_prepare_scripts',9);
+add_action('wp_footer','flowplayer_display_scripts',100);
 //	Addition for 0.9.15                 
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
@@ -19,7 +19,6 @@ add_action('wp_enqueue_scripts', 'flowplayer_jquery');
  * END WP Hooks
  */
  
-$GLOBALS['scripts'] = array();
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -35,6 +34,8 @@ function flowplayer_content_remove_commas($content) {
  * @return string Modified content string
  */
 function flowplayer_content( $content ) {
+	global $fv_fp;
+
 	$content_matches = array();
 	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
   
@@ -218,8 +219,7 @@ function flowplayer_content( $content ) {
     
 		if (trim($media) != '') {
 			// build new player
-			$fp = new flowplayer_frontend();
-      $new_player = $fp->build_min_player($media,$arguments);
+      $new_player = $fv_fp->build_min_player($media,$arguments);
 			$content = str_replace($tag, $new_player['html'],$content);
 			if (!empty($new_player['script'])) {
         $GLOBALS['scripts'][] = $new_player['script'];
@@ -230,15 +230,141 @@ function flowplayer_content( $content ) {
 }
 
 /**
+ * Figure out if we need to include MediaElement.js
+ */
+function flowplayer_prepare_scripts() {
+	global $fv_fp;
+	global $fv_wp_flowplayer_ver;
+
+	global $wp_scripts;
+	if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
+		wp_enqueue_script( 'flowplayer-mediaelement', plugins_url( '/fv-wordpress-flowplayer/mediaelement/mediaelement-and-player.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
+	}
+}
+
+/**
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-	if (!empty($GLOBALS['scripts'])) {         
-		echo "\n<script type=\"text/javascript\">\n\n\n";
+	if (!empty($GLOBALS['scripts'])) {
+		$mobile_switch = false;	
+		foreach ($GLOBALS['scripts'] as $scr) {
+			if( stripos($scr, 'fv_flowplayer_mobile_switch') !== false ) {
+				$mobile_switch = true;
+			}
+		}  
+		
+		echo "\n<script type=\"text/javascript\">\n";
+		
+		if( $mobile_switch ) {
+			?>
+				function fv_flowplayer_mobile_switch(id) {
+					var regex = new RegExp("[\\?&]fv_flowplayer_mobile=([^&#]*)");
+					var results = regex.exec(location.search);	
+					if(
+						(
+							(results != null && results[1] == 'yes') ||
+							(jQuery(window).width()<=320 || jQuery(window).height()<=480)
+						)
+						&&
+						(results == null || results[1] != 'no')
+					) {
+						var fv_fp_mobile = false;
+						jQuery('#'+id+' video source').each( function() {
+							if( jQuery(this).attr('id') != id+'_mobile' ) {
+								fv_fp_mobile = true
+								jQuery(this).remove();
+							}
+						} );
+						if( fv_fp_mobile ) {
+							jQuery('#'+id).after('<p>Mobile browser detected, serving low bandwidth video. <a href="'+document.URL+'?fv_flowplayer_mobile=no">Click here</a> for full quality.</p>');
+						}
+					}
+				}
+				//alert("Width: "+jQuery(window).width()+"\nHeight: "+jQuery(window).height() );
+			<?php
+		}
+		
 		foreach ($GLOBALS['scripts'] as $scr) {
 			echo $scr;
-		}    
-		echo "\n\n\n</script>\n";
+			if( stripos($scr, 'fv_flowplayer_mobile_switch') !== false ) {
+				$mobile_switch = true;
+			}
+		}  
+		
+		if( current_user_can('manage_options') ) {
+			?>
+			function fv_wp_flowplayer_support_mail( hash, button ) {			
+				jQuery('.fv_flowplayer_submit_error').remove();
+			
+				var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+				
+				var comment_text = jQuery('#wpfp_support_'+hash).val();
+				var comment_words = comment_text.split(' ');
+				if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
+					jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please tell us what is wrong</strong>:</p>');
+					jQuery('.fv_flowplayer_submit_error').fadeIn();
+					return false;
+				}
+
+				if( comment_words.length < 7 ) {
+					jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please give us more information (a full sentence) so we can help you better</strong>:</p>');
+					jQuery('.fv_flowplayer_submit_error').fadeIn();					
+					return false;
+				}				
+				
+				jQuery('#wpfp_spin_'+hash).show();
+				jQuery(button).attr("disabled", "disabled");
+				jQuery.post(
+					ajaxurl,
+					{
+						action: 'fv_wp_flowplayer_support_mail',
+						comment: comment_text,
+						notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
+						details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()						
+					},
+					function( response ) {
+						jQuery('#wpfp_spin_'+hash).hide();					
+						jQuery(button).removeAttr("disabled");
+						jQuery(button).after(' Message sent');
+					}	
+				); 
+			}
+			
+			
+			function fv_wp_flowplayer_show_notice( id, link ) {
+				jQuery('#fv_wp_fp_notice_'+id).toggle();
+				//flowplayer.conf.keyboard = false;
+				var api = flowplayer(), currentPos;
+				if( jQuery(link).parent().parent().hasClass("fv-wp-flowplayer-notice") ) {
+					api.disable(false);
+				} else {
+					api.disable(true);
+				}
+				jQuery(link).parent().parent().toggleClass("fv-wp-flowplayer-notice");
+			}					
+			<?php
+		}
+    
+    ?>
+    
+  	jQuery(document).ready( function() {
+  		if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) ) {
+  			jQuery(window).trigger('load');
+  		}
+  	} );	
+  	
+		if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) || (navigator.userAgent.toLowerCase().indexOf("android") != -1) ) {  	
+			flowplayer(function (api, root) { 
+				api.bind("error", function (e,api, error) {
+					if( error.code == 10 ) {
+						jQuery(e.target).find('.fp-message').html('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>');
+					}
+				});
+			});
+		}  	
+    <?php    		
+		echo "\n</script>\n";
 	}
 }
 
@@ -248,5 +374,15 @@ function flowplayer_display_scripts() {
 function flowplayer($shortcode) {
 	echo apply_filters('the_content',$shortcode);
 }
+
+
+/*
+Make sure our div won't be wrapped in any P tag.
+*/
+function fv_flowplayer_the_content( $c ) {
+	$c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?\])</p>!', "\n".'$1'."\n", $c );
+	return $c;
+}
+add_filter( 'the_content', 'fv_flowplayer_the_content', 0 );
 
 ?>

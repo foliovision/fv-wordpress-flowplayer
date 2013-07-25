@@ -8,9 +8,9 @@ add_shortcode('flowplayer','flowplayer_content_handle');
 add_shortcode('fvplayer','flowplayer_content_handle');
 
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
-  /// Addition  2010/07/12  mv 
-  $fp = new flowplayer_frontend();
-  if( $fp->conf['commas'] == 'true' ) {
+	global $fv_fp;
+	
+  if( $fv_fp->conf['commas'] == 'true' ) {
     
     if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
@@ -42,7 +42,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       $is_popup = false;
       foreach( $atts AS $key => $att ) {
         if( !is_numeric( $key ) ) continue;
-        if( ( stripos( $att, 'popup=' ) !== FALSE || $is_popup ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE) {
+        if( ( stripos( $att, 'popup=' ) !== FALSE || $is_popup ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE && stripos( $att, 'ad=' ) === FALSE) {
           $popup[] = $att;
           $is_popup = true;
           unset( $atts[$key] ); // = ''; //  let's remove it, so it won't confuse the rest of workaround
@@ -52,6 +52,22 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       $atts['popup'] = preg_replace( '/^\s*?popup=[\'"](.*)[\'"]\s*?$/mi', '$1', $popup );
     }
     
+    //	same for ad code
+    if( !isset( $atts['ad'] ) ) {
+      $ad = array();
+      $is_ad = false;
+      foreach( $atts AS $key => $att ) {
+        if( !is_numeric( $key ) ) continue;
+        if( ( stripos( $att, 'ad=' ) !== FALSE || $is_ad ) && stripos( $att, 'src=' ) === FALSE && stripos( $att, 'splash=' ) === FALSE && stripos( $att, 'popup=' ) === FALSE) {
+          $ad[] = $att;
+          $is_ad = true;
+          unset( $atts[$key] ); // = ''; //  let's remove it, so it won't confuse the rest of workaround
+        }
+      }
+      $ad = implode( ' ', $ad );
+      $atts['ad'] = preg_replace( '/^\s*?ad=[\'"](.*)[\'"]\s*?$/mi', '$1', $ad );
+    }    
+    
   }
   /// End of addition                                  
   
@@ -59,6 +75,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'src' => '',
     'src1' => '',
     'src2' => '',
+    'mobile' => '',
     'width' => '',
     'height' => '',
     'autoplay' => '',
@@ -68,7 +85,16 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'controlbar' => '',
     'redirect' => '',
     'loop' => '',
-    'engine' => ''
+    'engine' => '',
+    'embed' => '',
+    'subtitles' => '',
+    'ad' => '',
+    'ad_width' => '',
+    'ad_height' => '',
+    'ad_skip' => '',
+    'align' => '',
+    'rtmp' => '',
+    'rtmp_path' => ''
   ), $atts ) );
   
 	$arguments['width'] = preg_replace('/\,/', '', $width);
@@ -77,17 +103,27 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	$arguments['splash'] = preg_replace('/\,/', '', $splash);
   $arguments['src1'] = preg_replace('/\,/', '', $src1);
   $arguments['src2'] = preg_replace('/\,/', '', $src2);
+  $arguments['mobile'] = preg_replace('/\,/', '', $mobile);  
   $arguments['splashend'] = preg_replace('/\,/', '', $splashend);
   $arguments['popup'] = $popup;
 	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
 	$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
   $arguments['loop'] = preg_replace('/\,/', '', $loop);
   $arguments['engine'] = preg_replace('/\,/', '', $engine);
-    
-	$src = preg_replace('/\,/', '', $src); 
-	if (trim($src) != '') {
+  $arguments['embed'] = preg_replace('/\,/', '', $embed);
+  $arguments['subtitles'] = preg_replace('/\,/', '', $subtitles);
+  $arguments['ad'] = preg_replace('/\,/', '', $ad);  
+  $arguments['ad_width'] = preg_replace('/\,/', '', $ad_width);  
+  $arguments['ad_height'] = preg_replace('/\,/', '', $ad_height);   
+  $arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip); 
+  $arguments['align'] = preg_replace('/\,/', '', $align);   
+  $arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
+  $arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
+       
+	$src = trim( preg_replace('/\,/', '', $src) ); 
+	if( $src != '' || ( strlen($arguments['rtmp']) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
-    $new_player = $fp->build_min_player($src,$arguments);		
+    $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {
       $GLOBALS['scripts'][] = $new_player['script'];
     }

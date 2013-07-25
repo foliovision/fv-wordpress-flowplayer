@@ -21,6 +21,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 */
 	public $conf = array();
 	/**
+	 * We set this to true in shortcode parsing and then determine if we need to enqueue the JS, or if it's already included
+	 */
+	public $load_mediaelement = false;	
+	/**
+	 * Store scripts to load in footer
+	 */
+	public $scripts = array();		
+	/**
 	 * Class constructor
 	 */
 	public function __construct() {
@@ -41,7 +49,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 */
 	private function _get_conf() {
 	  ///  Addition  2010/07/12  mv
-    $conf = get_option( 'fvwpflowplayer' );    
+    $conf = get_option( 'fvwpflowplayer' );  
         
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
@@ -66,13 +74,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['progressColor'] ) ) $conf['progressColor'] = '#00a7c8';
     if( !isset( $conf['bufferColor'] ) ) $conf['bufferColor'] = '#eeeeee';
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
+    if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
+    if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
+    if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#dddddd';
+    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ffffff';    
     if( !isset( $conf['commas'] ) ) $conf['commas'] = 'true';
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
-    if( !isset( $conf['responsive'] ) ) $conf['responsive'] = 'responsive';             
-     
+    if( !isset( $conf['responsive'] ) ) { $conf['responsive'] = 'responsive'; $conf['hasBorder'] = 'true'; }
+		if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
+		if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
+		if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
+    
+    if( !isset( $conf['videochecker'] ) ) $conf['videochecker'] = 'enabled';            
+    if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -85,7 +102,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	public function _set_conf() {
 	  $save_key = $_POST['key'];
 	  foreach( $_POST AS $key => $value ) {
-	  	if( $key != 'font-face' ) {
+	  	if( $key != 'font-face' && $key != 'ad' ) {
       	$_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
       } else {
       	$_POST[$key] = stripslashes($value);
@@ -94,8 +111,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	      $_POST[$key] = '#'.strtolower($_POST[$key]);
 	    }
 	  }
-	  $_POST['key'] = $save_key;
+	  $_POST['key'] = $save_key;    
 	  update_option( 'fvwpflowplayer', $_POST );
+	  
+	  $conf = get_option( 'fvwpflowplayer' );  
+	  $this->conf = $conf;
 	  return true;	
 	}
 	/**
@@ -106,11 +126,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
 	}
+	
+	public function is_secure_amazon_s3( $url ) {
+		return preg_match( '/^.+?s3\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
+	}
 }
 /**
  * Defines some needed constants and loads the right flowplayer_head() function.
  */
 function flowplayer_head() {
+	global $fv_fp;
+
 	// define needed constants
   preg_match('/.*wp-content\/plugins\/(.*?)\/models.*/',dirname(__FILE__),$matches);
   if (isset($matches[1]))
@@ -132,16 +158,14 @@ function flowplayer_head() {
     define('VIDEO_DIR', '/videos/');
     define('VIDEO_PATH', $vid.VIDEO_DIR);	
   }
-	// call the right function for displaying CSS and JS links
-	if (is_admin()) {		
-    $fp = new flowplayer_backend();      
-	} else {
-		$fp = new flowplayer_frontend();  
-	}
-  $fp->flowplayer_head();
+	
+  $fv_fp->flowplayer_head();
 }
 
+
 function flowplayer_jquery() {
-  wp_enqueue_script("jquery");
+  global $fv_wp_flowplayer_ver;
+  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js' ), array('jquery'), $fv_wp_flowplayer_ver );
 }
+
 ?>
