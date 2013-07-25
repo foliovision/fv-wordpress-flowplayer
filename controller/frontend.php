@@ -339,8 +339,7 @@ function flowplayer_display_scripts() {
 					var api = flowplayer(), currentPos;
 					api.disable(false);
 					jQuery('.fv-wp-flowplayer-notice .fv_wp_fp_notice_content').toggle();
-					jQuery('.fv-wp-flowplayer-notice').toggleClass("fv-wp-flowplayer-notice");
-					console.log('fv close!');					
+					jQuery('.fv-wp-flowplayer-notice').toggleClass("fv-wp-flowplayer-notice");					
 				} else {			
 					jQuery('#fv_wp_fp_notice_'+id).toggle();
 	
