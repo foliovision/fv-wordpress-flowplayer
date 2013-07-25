@@ -362,19 +362,10 @@ function flowplayer_display_scripts() {
 			});
 			
 			jQuery(document).click( function(event) {
-				console.log(jQuery(event.target).parents());
-				/*console.log( jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice') ) );
-				console.log( jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice-small') ) );				*/
-				console.log( jQuery(event.target).parents('.fv-wp-flowplayer-notice').length );
-				console.log( jQuery(event.target).parents('.fv-wp-flowplayer-notice-small').length );				
-				if(
-					/*jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice') ) == -1 &&
-					jQuery(event.target).parents().index( jQuery('.fv-wp-flowplayer-notice-small') ) == -1*/
-					
+				if(					
 					jQuery(event.target).parents('.fv-wp-flowplayer-notice').length == 0 &&
 					jQuery(event.target).parents('.fv-wp-flowplayer-notice-small').length == 0				
 				) {
-					console.log('fv click!');
 					fv_wp_flowplayer_show_notice();	
 				}
 			}	);
