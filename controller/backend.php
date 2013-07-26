@@ -532,6 +532,8 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 
 
 function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
+	global $fv_fp;
+
 	$video_errors = array();
 
 	if( $headers && $headers['response']['code'] == '404' ) {
@@ -549,20 +551,23 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 		if(
 			( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
 			( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' ) ||
-					( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
+			( stripos( $remotefilename, '.webm' ) !== FALSE && $headers['headers']['content-type'] != 'video/webm' ) ||			
+			( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
 		) {
-			if( stripos( $remotefilename, '.mov' ) === FALSE ) {
-						 $meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
-						 if( $fv_fp->conf['engine'] == 'default' ) {
-				 $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
-						 }
-			} else if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
-						 $meta_note_addition = ' Firefox on Windows does not like MOV files with video/quicktime mime type.';
-					}     
+			if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
+				$meta_note_addition = ' Firefox on Windows does not like MOV files with video/quicktime mime type.';
+			} else if( stripos( $remotefilename, '.webm' ) !== FALSE ) {
+				$meta_note_addition = ' Older Firefox versions don\'t like WEBM files with mime type other than video/webm.';
+			} else {
+				$meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
+				if( $fv_fp->conf['engine'] == 'default' ) {
+					$meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+				}
+			} 
 			
 			$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
 				<p>If the video is hosted on Amazon S3:</p>
-				<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files and "video/mp4" for MOV files.</blockquote>
+				<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files, "video/mp4" for MOV files and "video/webm" for WEBM files.</blockquote>
 				<p>If the video is hosted on your server, put this into your .htaccess:</p>
 				<pre>AddType video/mp4             .mp4
 	AddType video/webm            .webm
@@ -582,7 +587,15 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 }
  
  
+//	don't include body in our wp_remote_head requests. We have to use GET instead of HEAD because of Amazon
+function fv_wp_flowplayer_http_api_curl( $handle ) {
+	curl_setopt( $handle, CURLOPT_NOBODY, true );
+}
+ 
+ 
 function fv_wp_flowplayer_check_mimetype() {
+	add_action( 'http_api_curl', 'fv_wp_flowplayer_http_api_curl' );
+
 	global $fv_wp_flowplayer_ver, $fv_fp;
 	
   if( isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
@@ -635,7 +648,8 @@ function fv_wp_flowplayer_check_mimetype() {
   		$video_errors[]	= 'AVI format is not supported by neither HTML5 nor Flash. Please re-encode the video to MP4. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
   	}
   	
-  	$random = rand( 0, 10000 );
+  	//$random = rand( 0, 10000 );
+  	$random = $_POST['hash'];
   	
   	
 		if( isset($media) ) {	
@@ -675,9 +689,12 @@ function fv_wp_flowplayer_check_mimetype() {
 				
 				preg_match( '~^\S+://([^/]+)~', $remotefilename, $remote_domain );
 				preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
-								
-				if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
-					$message = '<p>Analysis of <tt>'.$remotefilename_encoded.'</tt> (remote):</p>';
+				
+				if( !function_exists('curl_init') ) {
+					$video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
+				} else if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
+					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
+					$video_info['File'] = 'Remote';
 
 					//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
 					$upload_dir = wp_upload_dir();      
@@ -732,7 +749,9 @@ function fv_wp_flowplayer_check_mimetype() {
 						$video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
 					}                  
 				} else {
-					$message = '<p>Analysis of <tt>'.str_replace( '&amp;', '&', $remotefilename ).'</tt> (local):</p>';
+					$a_link = str_replace( '&amp;', '&', $remotefilename );
+					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($a_link).'">'.$a_link.'</a></p>';
+					$video_info['File'] = 'Local';
 					
 					$document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
 					$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
@@ -760,7 +779,7 @@ function fv_wp_flowplayer_check_mimetype() {
 						if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
 							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time.';
 						} else {
-							$video_info['Meta Data (moov) position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
+							$video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
 						}
 						
 						/*if( isset($ThisFileInfo['quicktime']['moov']['subatoms']) ) {
@@ -964,8 +983,8 @@ function fv_wp_flowplayer_check_mimetype() {
 		}
 		
 		$message .= '<div class="support-'.$random.'">';
-		$message .= '<textarea id="wpfp_support_'.$_POST['hash'].'" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 100%; height: 150px">Enter your comment</textarea>';
-		$message .= '<p><input type="button" onclick="fv_wp_flowplayer_support_mail(\''.trim($_POST['hash']).'\', this); return false" value="Send report to Foliovision" /><img id="wpfp_spin_'.$_POST['hash'].'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a></p>';
+		$message .= '<textarea id="wpfp_support_'.$_POST['hash'].'" class="wpfp_message_field" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 98%; height: 150px">Enter your comment</textarea>';
+		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$_POST['hash'].'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_support_mail(\''.trim($_POST['hash']).'\', this); return false" value="Send report to Foliovision" /></p>';
 		$message .= '</div>';
 		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
 				
@@ -975,13 +994,13 @@ function fv_wp_flowplayer_check_mimetype() {
     }
     
     if( count($video_errors) > 0 ) {
-    	$issues_text = '<span style="color: red; ">Video Issues</span>';
+    	$issues_text = '<span class="vid-issues">Video Issues</span>';
     } else if( count($video_warnings) ) {
-			$issues_text = '<span style="color: peru; ">Video Warnings</span>';    
+			$issues_text = '<span class="vid-warning">Video Warnings</span>';    
     } else {
-    	$issues_text = '<span style="color: green; ">Video OK</span>';
+    	$issues_text = '<span class="vid-ok">Video OK</span>';
     }
-    $message = "<small>Admin: <a href='#' onclick='fv_wp_flowplayer_show_notice($random, this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' style='display: none;'>$message</div>\n";
+    $message = "<div onclick='fv_wp_flowplayer_show_notice(\"$random\", this.parent); return false' class='fv_wp_flowplayer_notice_head'>Report Issue</div><small>Admin: <a class='fv_wp_flowplayer_dialog_link' href='#' onclick='fv_wp_flowplayer_show_notice(\"$random\", this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' class='fv_wp_fp_notice_content' style='display: none;'>$message</div>\n";
       
     $json = @json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
     $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;
@@ -1136,6 +1155,22 @@ function fv_wp_flowplayer_check_files() {
 								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in HTML5 mode in Internet Explorer 9 and 10.</p><blockquote><code>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4 and "video/x-m4v" for M4V files.</code></blockquote>';
 							} else {
 								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in HTML5 mode in Internet Explorer 9 and 10.</p><p>Make sure you put this into your .htaccess file, or ask your server admin to upgrade the web server mime type configuration:</p> <blockquote><pre><code>AddType video/mp4             .mp4
+AddType video/webm            .webm
+AddType video/ogg             .ogv
+AddType application/x-mpegurl .m3u8
+AddType video/x-m4v           .m4v
+# hls transport stream segments:
+AddType video/mp2t            .ts</code></pre></blockquote>';
+							}
+				
+							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
+						} else if(
+							( !preg_match( '~video/webm$~', $line ) && stripos( $videos[0]['src'], '.webm' ) !== FALSE )
+						) {
+							if( strpos( $server, 'amazonaws' ) !== false ) {
+								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in older Firefox.</p><blockquote><code>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/webm" for WEBM videos.</code></blockquote>';
+							} else {
+								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in older Firefox.</p><p>Make sure you put this into your .htaccess file, or ask your server admin to upgrade the web server mime type configuration:</p> <blockquote><pre><code>AddType video/mp4             .mp4
 AddType video/webm            .webm
 AddType video/ogg             .ogv
 AddType application/x-mpegurl .m3u8
@@ -1426,5 +1461,6 @@ if( !function_exists('is_utf8') && function_exists('mb_strlen') ) :
 	}
 
 endif; 
+
  
 ?>

@@ -90,6 +90,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( !isset( $conf['videochecker'] ) ) $conf['videochecker'] = 'enabled';            
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
+		if( !isset( $conf['amazon_bucket'] ) ) $conf['amazon_bucket'] = '';       
+		if( !isset( $conf['amazon_key'] ) ) $conf['amazon_key'] = '';   
+		if( !isset( $conf['amazon_secret'] ) ) $conf['amazon_secret'] = '';   		
+		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '15';   				
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -128,7 +132,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	}
 	
 	public function is_secure_amazon_s3( $url ) {
-		return preg_match( '/^.+?s3\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
+		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
 	}
 }
 /**

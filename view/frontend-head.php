@@ -18,6 +18,13 @@ global $fv_wp_flowplayer_ver;
 
 <link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 
+<?php if( current_user_can('manage_options') ) : ?>
+	<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
+	<style type="text/css">
+	.fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
+	</style>
+<?php endif; ?>
+
 <?php if ( isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0 && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0 ) : ?>
 		<style type="text/css">
 			.flowplayer .fp-logo { display: block; opacity: 1; }    
@@ -55,29 +62,4 @@ global $fv_wp_flowplayer_ver;
 	.wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; color: <?php echo trim($this->conf['adTextColor']); ?>; }
 	.wpfp_custom_ad a { color: <?php echo trim($this->conf['adLinksColor']); ?> }
 	.wpfp_custom_ad_content { background: <?php echo trim($this->conf['backgroundColor']) ?>; margin: 0 auto; position: relative }
-	
-	<?php if( current_user_can( 'manage_options' ) ) : ?>
-		#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2;}
-		#content .fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice { color: black; background-color: #FFFFE0; border-color: #E6DB55; margin: 5px 0 15px; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; line-height: 15px; z-index: 100; width: 500px; }
-		#content .fv-wp-flowplayer-notice strong, .fv-wp-flowplayer-notice strong { font-weight: bold; }
-		#content .fv-wp-flowplayer-notice blockquote, .fv-wp-flowplayer-notice blockquote { font-size: 12px; }
-		#content .fv-wp-flowplayer-notice p, .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; }
-		#content .fv-wp-flowplayer-notice blockquote, #content .fv-wp-flowplayer-notice pre, .fv-wp-flowplayer-notice blockquote, .fv-wp-flowplayer-notice pre { padding: 5px; margin: 0; }
-		#content .fv-wp-flowplayer-notice.fv-wp-flowplayer-error, .fv-wp-flowplayer-notice.fv-wp-flowplayer-error { background-color: #FFEBE8; border-color: #CC0000; }
-		#content .fv-wp-flowplayer-notice.fv-wp-flowplayer-ok, .fv-wp-flowplayer-notice.fv-wp-flowplayer-ok { background-color: #E0FFE0; border-color: #88AA88; }       
-		#content .fv-wp-flowplayer-notice a.techinfo, .fv-wp-flowplayer-notice a.techinfo { float: right; color: gray; }       		
-		.fv-wp-fp-hidden { display: none; }
-		.fv-wp-flowplayer-notice-parsed .row { text-align: left; border-bottom: 1px solid lightgray; border-right: 1px solid lightgray; border-left: 1px solid lightgray; padding-left: 5px; font-size: 12px; clear: both; }
-		.fv-wp-flowplayer-notice-parsed .close { height: 0px; }
-		.fv-wp-flowplayer-notice-parsed .value { border-left: 1px solid lightgray; display: inline-block; float: right; padding-left: 5px; width: 270px; /*height: 21px; overflow: hidden;*/ }	
-		.fv-wp-flowplayer-notice-parsed.indent { margin-left: 10px; }	
-		.fv-wp-flowplayer-notice-parsed.level-1 { background: #f8f8f8; }
-		.fv-wp-flowplayer-notice-parsed.level-2 { background: #f0f0f0; }	
-		.fv-wp-flowplayer-notice-parsed.level-3 { background: #e8e8e8; }	
-		.fv-wp-flowplayer-notice-parsed.level-4 { background: #e0e0e0; }	
-		.fv-wp-flowplayer-notice-parsed.level-5 { background: #d8d8d8; }	
-		.fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
-		.fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
-		.mail-content-details { height: 200px; overflow: auto; }
-	<?php endif; ?>
 </style>

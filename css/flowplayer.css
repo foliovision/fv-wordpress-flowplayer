@@ -43,8 +43,10 @@
 }@media (-webkit-min-device-pixel-ratio: 2){.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-mute,.flowplayer .fp-embed,.flowplayer .fp-close,.flowplayer .fp-play{background-image:url(img/white@x2.png)}
 .is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-mute,.is-rtl.flowplayer .fp-embed,.is-rtl.flowplayer .fp-close,.is-rtl.flowplayer .fp-play{background-image:url(img/white_rtl@x2.png)}
 }.is-splash.flowplayer .fp-ui,.is-paused.flowplayer .fp-ui{background:url(img/play_white.png) center no-repeat;background-size:12%;}
+.is-error.flowplayer .fp-ui{background:url(img/no_play_white.png) center no-repeat;background-size:12%;}
 .is-rtl.is-splash.flowplayer .fp-ui,.is-rtl.is-paused.flowplayer .fp-ui{background:url(img/play_white_rtl.png) center no-repeat;background-size:12%}
 @media (-webkit-min-device-pixel-ratio: 2){.is-splash.flowplayer .fp-ui,.is-paused.flowplayer .fp-ui{background:url(img/play_white@x2.png) center no-repeat;background-size:12%}
+.is-error.flowplayer .fp-ui {background:url(img/no_play_white@x2.png) center no-repeat;background-size:12%}
 .is-rtl.is-splash.flowplayer .fp-ui,.is-rtl.is-paused.flowplayer .fp-ui{background:url(img/play_white_rtl@x2.png) center no-repeat;background-size:12%}
 }.color-light.is-splash.flowplayer .fp-ui,.color-light.is-paused.flowplayer .fp-ui{background-image:url(img/play_black.png);}
 .is-rtl.color-light.is-splash.flowplayer .fp-ui,.is-rtl.color-light.is-paused.flowplayer .fp-ui{background-image:url(img/play_black_rtl.png)}
@@ -56,7 +58,7 @@
 .flowplayer .fp-logo img{width:100%; border-radius: 0; box-shadow: none;}
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
-.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close{position:absolute;top:5px;left:auto;right:5px;display:block;width:30px;height:23px;background-position:12px -197px;cursor:pointer;}
+.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close{position:absolute;top:5px;left:auto;right:5px;display:block;width:30px;height:21px;background-position:12px -197px;cursor:pointer;}
 .is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-close{right:auto;left:5px;background-position:18px -197px}
 .flowplayer .fp-unload,.flowplayer .fp-close{background-position:14px -175px;display:none;}
 .is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-close{background-position:14px -175px}

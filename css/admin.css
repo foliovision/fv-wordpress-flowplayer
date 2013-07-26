@@ -1,0 +1,37 @@
+#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2;}
+#content .fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice { color: black !important; background-color: #FFFFE0; border-color: #E6DB55; margin: -1%; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; line-height: 15px; z-index: 100; width: 97%; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif }
+#content .fv-wp-flowplayer-notice strong, .fv-wp-flowplayer-notice strong { font-weight: bold; }
+#content .fv-wp-flowplayer-notice blockquote, .fv-wp-flowplayer-notice blockquote { font-size: 12px; }
+#content .fv-wp-flowplayer-notice p, .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; color: #5b5b5b; }
+.fv-wp-flowplayer-notice p tt { color: #000; }
+.fv-wp-flowplayer-notice p tt.bluelink { color: #4189A7; }
+
+#content .fv-wp-flowplayer-notice blockquote, #content .fv-wp-flowplayer-notice pre, .fv-wp-flowplayer-notice blockquote, .fv-wp-flowplayer-notice pre { padding: 5px; margin: 0; }
+.fv-wp-flowplayer-notice textarea.wpfp_message_field { border: 1px solid #dedede; color: #8f8f8f; font-size: 12px; padding: 1%; }
+.fv-wp-flowplayer-notice input[type="button"] { border: 1px solid #960c0c; color: #fff; border-radius: 4px; padding: 5px 8px; box-shadow: inset 0 0 1px #de3232; background: #ad1010; font-size: 12px; line-height: 18px; float: right; margin-bottom: 8px; }
+#content .fv-wp-flowplayer-notice a.techinfo, .fv-wp-flowplayer-notice a.techinfo { background-image:url(img/techinfo.png); color: gray; background-repeat: no-repeat; background-position: left center; display: inline-block; min-height: 18px; padding-left: 24px; margin-top: 5px; }
+#content .fv-wp-flowplayer-notice.fv-wp-flowplayer-error, .fv-wp-flowplayer-notice.fv-wp-flowplayer-error { background-color: #FFEBE8; border-color: #CC0000; }
+#content .fv-wp-flowplayer-notice.fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice.fv-wp-flowplayer-notice { background-color: #EDEDED; border-color: #c0c0c0; box-shadow: 0 0 4px #ccc; }
+.fv-wp-flowplayer-notice-small .fv_wp_flowplayer_notice_head { display: none; }
+.fv-wp-flowplayer-notice.fv-wp-flowplayer-notice .fv_wp_flowplayer_notice_head { display: block; text-align: center; font-size: 14px; border-bottom: 1px solid #7a7a7a; padding: 10px; line-height: 1; margin: 0 -0.6em 1em -0.6em; background-color: #e3e3e3; background-repeat: repeat-x; background-image: -moz-linear-gradient(top, #e3e3e3, #aeaeae); 	background-image: -ms-linear-gradient(top, #e3e3e3, #aeaeae); background-image: -webkit-linear-gradient(top, #e3e3e3, #aeaeae); background-image: -o-linear-gradient(top, #e3e3e3, #aeaeae); background-image: linear-gradient(top, #e3e3e3, #aeaeae); border-radius: 3px 3px 0 0; }
+
+.fv-wp-flowplayer-notice-small .vid-issues { color: red; }
+.fv-wp-flowplayer-notice-small .vid-warning { color: orange; }
+.fv-wp-flowplayer-notice-small .vid-ok { color: green; }
+.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-issues { color: #670004; }
+.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-warning { color: #ac641e; }
+.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-ok { color: #114b00; }
+
+.fv-wp-fp-hidden { display: none; }
+.fv-wp-flowplayer-notice-parsed .row { text-align: left; border-bottom: 1px solid lightgray; border-right: 1px solid lightgray; border-left: 1px solid lightgray; padding-left: 5px; font-size: 12px; clear: both; }
+.fv-wp-flowplayer-notice-parsed .close { height: 0px; }
+.fv-wp-flowplayer-notice-parsed .value { border-left: 1px solid lightgray; display: inline-block; float: right; padding-left: 5px; width: 270px; /*height: 21px; overflow: hidden;*/ }	
+.fv-wp-flowplayer-notice-parsed.indent { margin-left: 10px; }	
+.fv-wp-flowplayer-notice-parsed.level-1 { background: #f8f8f8; }
+.fv-wp-flowplayer-notice-parsed.level-2 { background: #f0f0f0; }	
+.fv-wp-flowplayer-notice-parsed.level-3 { background: #e8e8e8; }	
+.fv-wp-flowplayer-notice-parsed.level-4 { background: #e0e0e0; }	
+.fv-wp-flowplayer-notice-parsed.level-5 { background: #d8d8d8; }	
+.fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
+.fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
+.mail-content-details { height: 200px; overflow: auto; width: 100%; }
