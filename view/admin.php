@@ -191,7 +191,28 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 							<label for="ad_width">W:</label>&nbsp;<input type="text" size="4" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" />  
 							<label for="ad_height">H:</label>&nbsp;<input type="text" size="4" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" />							
 						</td>
+					</tr>
+<?php if( isset($_GET['beta']) ) : ?>					
+					<tr>
+						<td colspan="2"><p><strong>Amazon S3</strong> (<abbr title="Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache.">?</abbr>)</p></td>
+					</tr>		
+					<tr>
+						<td><label for="amazon_bucket">Amazon Bucket (<abbr title="We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.">?</abbr>):</label></td>
+						<td><input type="text" size="40" name="amazon_bucket" id="amazon_bucket" value="<?php echo trim($fv_fp->conf['amazon_bucket']); ?>" /></td>
+					</tr>							
+					<tr>
+						<td><label for="amazon_key">Access Key ID:</label></td>
+						<td><input type="text" size="40" name="amazon_key" id="amazon_key" value="<?php echo trim($fv_fp->conf['amazon_key']); ?>" /></td>
+					</tr>	
+					<tr>
+						<td><label for="amazon_secret">Secret Access Key:</label></td>
+						<td><input type="text" size="40" name="amazon_secret" id="amazon_secret" value="<?php echo trim($fv_fp->conf['amazon_secret']); ?>" /></td>
+					</tr>
+					<tr>
+						<td><label for="amazon_expire">Expire Time [minutes] (<abbr title="Set this to the duration of your longest protected video">?</abbr>):</label></td>
+						<td><input type="text" size="40" name="amazon_expire" id="amazon_expire" value="<?php echo intval($fv_fp->conf['amazon_expire']); ?>" /></td>
 					</tr>					
+<?php endif; ?>					
 				</table>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>

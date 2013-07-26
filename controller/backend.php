@@ -532,6 +532,8 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 
 
 function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
+	global $fv_fp;
+
 	$video_errors = array();
 
 	if( $headers && $headers['response']['code'] == '404' ) {
@@ -549,20 +551,23 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 		if(
 			( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
 			( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' ) ||
-					( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
+			( stripos( $remotefilename, '.webm' ) !== FALSE && $headers['headers']['content-type'] != 'video/webm' ) ||			
+			( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
 		) {
-			if( stripos( $remotefilename, '.mov' ) === FALSE ) {
-						 $meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
-						 if( $fv_fp->conf['engine'] == 'default' ) {
-				 $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
-						 }
-			} else if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
-						 $meta_note_addition = ' Firefox on Windows does not like MOV files with video/quicktime mime type.';
-					}     
+			if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
+				$meta_note_addition = ' Firefox on Windows does not like MOV files with video/quicktime mime type.';
+			} else if( stripos( $remotefilename, '.webm' ) !== FALSE ) {
+				$meta_note_addition = ' Older Firefox versions don\'t like WEBM files with mime type other than video/webm.';
+			} else {
+				$meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
+				if( $fv_fp->conf['engine'] == 'default' ) {
+					$meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+				}
+			} 
 			
 			$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
 				<p>If the video is hosted on Amazon S3:</p>
-				<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files and "video/mp4" for MOV files.</blockquote>
+				<blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files, "video/mp4" for MOV files and "video/webm" for WEBM files.</blockquote>
 				<p>If the video is hosted on your server, put this into your .htaccess:</p>
 				<pre>AddType video/mp4             .mp4
 	AddType video/webm            .webm
@@ -582,7 +587,15 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 }
  
  
+//	don't include body in our wp_remote_head requests. We have to use GET instead of HEAD because of Amazon
+function fv_wp_flowplayer_http_api_curl( $handle ) {
+	curl_setopt( $handle, CURLOPT_NOBODY, true );
+}
+ 
+ 
 function fv_wp_flowplayer_check_mimetype() {
+	add_action( 'http_api_curl', 'fv_wp_flowplayer_http_api_curl' );
+
 	global $fv_wp_flowplayer_ver, $fv_fp;
 	
   if( isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
@@ -676,8 +689,10 @@ function fv_wp_flowplayer_check_mimetype() {
 				
 				preg_match( '~^\S+://([^/]+)~', $remotefilename, $remote_domain );
 				preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
-								
-				if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
+				
+				if( !function_exists('curl_init') ) {
+					$video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
+				} else if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
 					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
 					$video_info['File'] = 'Remote';
 
@@ -1149,6 +1164,22 @@ AddType video/mp2t            .ts</code></pre></blockquote>';
 							}
 				
 							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
+						} else if(
+							( !preg_match( '~video/webm$~', $line ) && stripos( $videos[0]['src'], '.webm' ) !== FALSE )
+						) {
+							if( strpos( $server, 'amazonaws' ) !== false ) {
+								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in older Firefox.</p><blockquote><code>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/webm" for WEBM videos.</code></blockquote>';
+							} else {
+								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in older Firefox.</p><p>Make sure you put this into your .htaccess file, or ask your server admin to upgrade the web server mime type configuration:</p> <blockquote><pre><code>AddType video/mp4             .mp4
+AddType video/webm            .webm
+AddType video/ogg             .ogv
+AddType application/x-mpegurl .m3u8
+AddType video/x-m4v           .m4v
+# hls transport stream segments:
+AddType video/mp2t            .ts</code></pre></blockquote>';
+							}
+				
+							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
 						} else if( stripos( $videos[0]['src'], '.mp4' ) !== FALSE  || stripos( $videos[0]['src'], '.m4v' ) !== FALSE ) {
 							$ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_matched.'</code> for MP4 and M4V videos.'; 						
 						}
@@ -1430,5 +1461,6 @@ if( !function_exists('is_utf8') && function_exists('mb_strlen') ) :
 	}
 
 endif; 
+
  
 ?>

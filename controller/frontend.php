@@ -337,7 +337,9 @@ function flowplayer_display_scripts() {
 			function fv_wp_flowplayer_show_notice( id, link ) {
 				if( id == null && link == null ) {
 					var api = flowplayer(), currentPos;
-					api.disable(false);
+					if( typeof api != "undefined" ) {
+						api.disable(false);
+					}
 					jQuery('.fv-wp-flowplayer-notice .fv_wp_fp_notice_content').toggle();
 					jQuery('.fv-wp-flowplayer-notice').toggleClass("fv-wp-flowplayer-notice");					
 				} else {			
@@ -388,6 +390,9 @@ function flowplayer_display_scripts() {
 				});
 			});
 		}  	
+		
+		var fv_fp_date = new Date();
+		var fv_fp_utime = fv_fp_date.getTime();		
     <?php    		
 		echo "\n</script>\n";
 	}

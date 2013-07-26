@@ -266,12 +266,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* playlist support
+* Amazon S3 secure URLs support
+* playlist support (allowing pre-roll videos)
 * cue points support
+* VAST/VPAID support
 * alignment settings for the video
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.26 - 2013/0726 =
+* Fix - improved vidoe checker appearance
+* Fix - player buttons fixed for white background
+* Fix - play icon changed to striked-over play icon on video error
+* Fix - video checker now detects bad mime type for WebM
+* Bugfix - video checker fixed for big files
 
 = 2.1.25 - 2013/07/18 =
 * Bugfix - PHP warnings
