@@ -118,6 +118,14 @@ Good example can be seen in our support forum: http://foliovision.com/support/fv
 
 Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
 
+= How do I fix the bad metadata (moov) position? =
+
+If you are using Mac, open the video in Quick Time Pro and in the Movie Properties -> Video Track -> Other Settings turn on the "Cache (hint)" - [screenshot](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png).
+
+We are working on the recommendation for Windows, this tools seems to be doing the job: http://www.datagoround.com/lab/
+
+There are also server-side tools for fixing of this written in Python and there one for PHP, but it fails on videos bigger than the PHP memory limit.
+
 = I'm using OptimizePress template. =
 
 First click the "Check template" button on the pluging settings screen. It will likely report an issue like:
