@@ -122,7 +122,7 @@ Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 
 
 If you are using Mac, open the video in Quick Time Pro and in the Movie Properties -> Video Track -> Other Settings turn on the "Cache (hint)" - [screenshot](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png).
 
-We are working on the recommendation for Windows, this tools seems to be doing the job: http://www.datagoround.com/lab/
+If you are using Windows, try this tool: http://www.datagoround.com/lab/
 
 There are also server-side tools for fixing of this written in Python and there one for PHP, but it fails on videos bigger than the PHP memory limit.
 
@@ -283,7 +283,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.1.26 - 2013/0726 =
+= 2.1.27 - 2013/07/31 =
+*	Feature - styling presets for ad - let's you edit the ad CSS on the plugin settings screen
+* Fix - auto buffering is disabled for MP4 in Google Chrome and Chromium, as therse browsers sometimes don't play MP4 and this seems to help
+* Bugfix - auto buffering was not working properly and now it's fixed. It will be disabled after you upgrade this plugin. Please test it carefully before enabling it back on, mainly check your hosting bandwidth.
+
+= 2.1.26 - 2013/07/26 =
 * Fix - improved vidoe checker appearance
 * Fix - player buttons fixed for white background
 * Fix - play icon changed to striked-over play icon on video error
@@ -562,6 +567,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.27 =
+* This new version includes a fix for autobuffering, which was not working properly. It will be disabled after you upgrade this plugin. Please test it carefully before enabling it back on, mainly check your hosting bandwidth.
 
 = 2.1.16 =
 * Feature - Added support for audio! Just put your MP3, OGG, or WAV into your shortcode.
