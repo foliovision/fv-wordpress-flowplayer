@@ -71,7 +71,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 								<?php if ( isset($commercial_key) && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) echo ' data-logo="' . $fv_fp->conf['logo'] . '"'; ?>
 								<?php if ($fv_fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
 								>
-									<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fv_fp->conf['autobuffer']) && $fv_fp->conf['autobuffer'] == 'true') echo ' preload'; ?>>
+									<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fv_fp->conf['auto_buffer']) && $fv_fp->conf['auto_buffer'] == 'true') echo ' preload'; ?>>
 										<source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
 									</video>
 								</div>    
@@ -79,9 +79,9 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						</td>
 					</tr>
 					<tr>
-						<td><label for="autobuffer">Auto Buffering:</label></td>
+						<td><label for="auto_buffer">Auto Buffering:</label></td>
 						<td style="text-align:right">
-							<select id="autobuffer" name="autobuffer"><?php echo flowplayer_bool_select($fv_fp->conf['autobuffer']); ?></select>
+							<select id="auto_buffer" name="auto_buffer"><?php echo flowplayer_bool_select($fv_fp->conf['auto_buffer']); ?></select>
 						</td>
 					</tr>
 					<tr>
@@ -175,23 +175,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<tr>
 						<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain):</label></td>
 						<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
-					</tr>	
-					<tr>
-						<td colspan="2"><p><strong>Ads</strong></p></td>
-					</tr>					
-					<tr>
-						<td colspan="2">
-							<label for="ad">Default Ad Code:</label><br />
-							<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
-						</td>
-					</tr>
-					<tr>
-					  <td><label for="width">Default ad size [px]:</label></td>
-						<td style="text-align:right"> 					
-							<label for="ad_width">W:</label>&nbsp;<input type="text" size="4" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" />  
-							<label for="ad_height">H:</label>&nbsp;<input type="text" size="4" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" />							
-						</td>
-					</tr>
+					</tr>			
 <?php if( isset($_GET['beta']) ) : ?>					
 					<tr>
 						<td colspan="2"><p><strong>Amazon S3</strong> (<abbr title="Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache.">?</abbr>)</p></td>
@@ -214,7 +198,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					</tr>					
 <?php endif; ?>					
 				</table>
-				<table class="form-table2" style="margin: 5px; ">
+				<table class="form-table2 alignleft" style="margin: 5px; width: 49%">
 					<tr>
 						<td colspan="4"><p><strong>Colors</strong></p></td>
 					</tr>
@@ -235,6 +219,48 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						</td>
 					</tr>
 				</table>    
+				<table class="form-table2 alignleft" style="margin: 5px; width: 49%">
+					<tr>
+						<td colspan="2"><p><strong>Ads</strong></p></td>
+					</tr>					
+					<tr>
+						<td colspan="2">
+							<label for="ad">Default Ad Code:</label><br />
+							<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
+						</td>
+					</tr>
+					<tr>
+					  <td><label for="width">Default ad size [px]:</label></td>
+						<td style="text-align:right"> 					
+							<label for="ad_width">W:</label>&nbsp;<input type="text" size="4" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" />  
+							<label for="ad_height">H:</label>&nbsp;<input type="text" size="4" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" />							
+						</td>
+					</tr>
+					<tr>
+					  <td colspan="2">
+					  	<label for="width">Ad CSS:</label>
+					  	<a href="#" onclick="jQuery('.ad_css_wrap').show(); jQuery(this).hide(); return false">Show styling options</a>
+					  	<div class="ad_css_wrap" style="display: none; ">
+								<select id="ad_css_select">
+									<option value="">Select your preset</option>
+									<option value="<?php echo esc_attr($fv_fp->ad_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css'])) == 0 ) echo ' selected="selected"'; ?>>Default (white, centered above the control bar)</option>
+									<option value="<?php echo esc_attr($fv_fp->ad_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css']))  == 0 ) echo ' selected="selected"'; ?>>White, centered at the bottom of the video</option>					  		
+								</select>
+								<br />
+								<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php if( isset($fv_fp->conf['ad_css']) ) echo trim($fv_fp->conf['ad_css']); ?></textarea>
+								<p class="description">(Hint: put .wpfp_custom_ad_content before your own CSS selectors)</p>
+								<script type="text/javascript">
+								jQuery('#ad_css_select').change( function() {
+									if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
+										jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
+									}									
+								} );
+								</script>
+					  	</div>
+						</td>
+					</tr>			
+				</table>
+				<div style="clear: both; "></div>
     	</div>
     </div>  
         
@@ -247,7 +273,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
             <td colspan="2"><p>Which features should be available in shortcode editor?</p></td>
           </tr>
 					<tr>
-						<td style="width: 520px;"><label for="allowuploads">Allow User Uploads:</label></td>
+						<td><label for="allowuploads">Allow User Uploads:</label></td>
 						<td style="text-align:right">
               <input type="hidden" name="allowuploads" value="false" />
               <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fv_fp->conf['allowuploads']) && $fv_fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -255,69 +281,69 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					</tr>   
 					<tr>          
 						<td><label for="interface[popup]">HTML popup:</label></td>
-						<td style="text-align:right;">
+						<td style="text-align:right">
               <input type="hidden" name="interface[popup]" value="false" />
 							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fv_fp->conf['interface']['popup']) && $fv_fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>    
 					<tr>          
-						<td style="width: 330px;"><label for="interface[redirect]">Redirect:</label></td>
+						<td><label for="interface[redirect]">Redirect:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[redirect]" value="false" />
 							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( isset($fv_fp->conf['interface']['redirect']) && $fv_fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>                        
 					<tr>          
-						<td style="width: 330px;"><label for="interface[autoplay]">AutoPlay:</label></td>
+						<td><label for="interface[autoplay]">AutoPlay:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[autoplay]" value="false" />
 							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fv_fp->conf['interface']['autoplay']) && $fv_fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          
-						<td style="width: 330px;"><label for="interface[loop]">Loop:</label></td>
+						<td><label for="interface[loop]">Loop:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[loop]" value="false" />
 							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( isset($fv_fp->conf['interface']['loop']) && $fv_fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          
-						<td style="width: 330px;"><label for="interface[splashend]">Splash end:</label></td>
+						<td><label for="interface[splashend]">Splash end:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[splashend]" value="false" />
 							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( isset($fv_fp->conf['interface']['splashend']) && $fv_fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>     
 					<tr>          
-						<td style="width: 330px;"><label for="interface[embed]">Embed:</label></td>
+						<td><label for="interface[embed]">Embed:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[embed]" value="false" />
 							<input type="checkbox" name="interface[embed]" id="interface[embed]" value="true" <?php if( isset($fv_fp->conf['interface']['embed']) && $fv_fp->conf['interface']['embed'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>    
 					<tr>          
-						<td style="width: 330px;"><label for="interface[subtitles]">Subtitles:</label></td>
+						<td><label for="interface[subtitles]">Subtitles:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[subtitles]" value="false" />
 							<input type="checkbox" name="interface[subtitles]" id="interface[subtitles]" value="true" <?php if( isset($fv_fp->conf['interface']['subtitles']) && $fv_fp->conf['interface']['subtitles'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>  
 					<tr>          
-						<td style="width: 330px;"><label for="interface[ads]">Ads: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[ads]">Ads: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[ads]" value="false" />
 							<input type="checkbox" name="interface[ads]" id="interface[ads]" value="true" <?php if( isset($fv_fp->conf['interface']['ads']) && $fv_fp->conf['interface']['ads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   	
 					<tr>          
-						<td style="width: 330px;"><label for="interface[mobile]">Mobile video: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[mobile]">Mobile video: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[mobile]" value="false" />
 							<input type="checkbox" name="interface[mobile]" id="interface[mobile]" value="true" <?php if( isset($fv_fp->conf['interface']['mobile']) && $fv_fp->conf['interface']['mobile'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   		
 					<tr>          
-						<td style="width: 330px;"><label for="interface[align]">Align: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[align]">Align: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[align]" value="false" />
 							<input type="checkbox" name="interface[align]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['align']) && $fv_fp->conf['interface']['align'] == 'true' ) echo 'checked="checked"'; ?> />

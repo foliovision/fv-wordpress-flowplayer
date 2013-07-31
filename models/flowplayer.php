@@ -28,9 +28,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 * Store scripts to load in footer
 	 */
 	public $scripts = array();		
+	
+	public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+	
+	public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";	
+	
 	/**
 	 * Class constructor
-	 */
+	 */	
 	public function __construct() {
 		//load conf data into stack
 		$this->_get_conf();
@@ -56,7 +61,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
-    if( !isset( $conf['autobuffer'] ) ) $conf['autobuffer'] = 'false';
+    if( !isset( $conf['auto_buffer'] ) ) $conf['auto_buffer'] = 'false';
     if( !isset( $conf['scaling'] ) ) $conf['scaling'] = 'true';
     if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';    
@@ -76,8 +81,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
-    if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#dddddd';
-    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ffffff';    
+    if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
+    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';    
     if( !isset( $conf['commas'] ) ) $conf['commas'] = 'true';
     if( !isset( $conf['width'] ) ) $conf['width'] = '320';
     if( !isset( $conf['height'] ) ) $conf['height'] = '240';
@@ -87,7 +92,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
 		if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
 		if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
-    
+		if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;     		
     if( !isset( $conf['videochecker'] ) ) $conf['videochecker'] = 'enabled';            
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
 		if( !isset( $conf['amazon_bucket'] ) ) $conf['amazon_bucket'] = '';       
@@ -106,7 +111,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	public function _set_conf() {
 	  $save_key = $_POST['key'];
 	  foreach( $_POST AS $key => $value ) {
-	  	if( $key != 'font-face' && $key != 'ad' ) {
+	  	if( $key != 'font-face' && $key != 'ad' && $key != 'ad_css' ) {
       	$_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
       } else {
       	$_POST[$key] = stripslashes($value);

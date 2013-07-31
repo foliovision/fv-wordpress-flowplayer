@@ -257,9 +257,10 @@ a #add-format, a #add-rtmp {
 #content .flowplayer .fp-embed-code, .flowplayer .fp-embed-code { padding: 3px 7px; }
 #content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; }
 
-.flowplayer .wpfp_custom_ad { display: block; }  	
+.flowplayer .wpfp_custom_ad { display: none; }  	
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
-.flowplayer.is-splash .wpfp_custom_ad { display: none; }  
+.flowplayer.is-playing .wpfp_custom_ad, .flowplayer.is-ready .wpfp_custom_ad { display: block; }  
+.flowplayer.is-poster .wpfp_custom_ad { display: none; }  
 
 .fv_fp_close { position: absolute; right: 2px; top: 2px; z-index: 2; }
 .fv_fp_close a { display: block; width: 16px; height: 16px; background: url(img/exit_btn.png) }

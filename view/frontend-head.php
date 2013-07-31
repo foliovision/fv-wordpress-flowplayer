@@ -59,7 +59,7 @@ global $fv_wp_flowplayer_ver;
 	.wpfp_custom_popup { display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff; }
 	.wpfp_custom_popup_content {  background: <?php echo trim($this->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
 
-	.wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; color: <?php echo trim($this->conf['adTextColor']); ?>; }
+	<?php echo trim($this->conf['ad_css']); ?>
+	.wpfp_custom_ad { color: <?php echo trim($this->conf['adTextColor']); ?>; }
 	.wpfp_custom_ad a { color: <?php echo trim($this->conf['adLinksColor']); ?> }
-	.wpfp_custom_ad_content { background: <?php echo trim($this->conf['backgroundColor']) ?>; margin: 0 auto; position: relative }
 </style>
