@@ -94,7 +94,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'ad_skip' => '',
     'align' => '',
     'rtmp' => '',
-    'rtmp_path' => ''
+    'rtmp_path' => '',
+    'playlist' => ''    
   ), $atts ) );
   
 	$arguments['width'] = preg_replace('/\,/', '', $width);
@@ -119,6 +120,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   $arguments['align'] = preg_replace('/\,/', '', $align);   
   $arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
   $arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
+  $arguments['playlist'] = $playlist;      
        
 	$src = trim( preg_replace('/\,/', '', $src) ); 
 	if( $src != '' || ( strlen($arguments['rtmp']) && strlen($arguments['rtmp_path']) ) ) {

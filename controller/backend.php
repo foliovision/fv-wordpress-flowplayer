@@ -774,10 +774,10 @@ function fv_wp_flowplayer_check_mimetype() {
 				
 				if( isset($ThisFileInfo['quicktime']) ) {			
 					if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-						$video_errors[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time.';
+						$video_errors[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
 					} else {
 						if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
-							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time.';
+							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
 						} else {
 							$video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
 						}
@@ -1338,14 +1338,35 @@ function fv_wp_flowplayer_support_mail() {
   	
   	$content .= "<p>Video analysis:</p>\n".$notice;  	  	
     
-    $headers = "Reply-To: \"$current_user->display_name\" <$current_user->user_email>\r\n";
+    global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
+    
+    //$headers = "Reply-To: \"$current_user->display_name\" <$current_user->user_email>\r\n";
+    $fv_wp_flowplayer_support_mail_from_name = $current_user->display_name;
+    $fv_wp_flowplayer_support_mail_from = $current_user->user_email;
   	
   	add_filter( 'wp_mail_content_type', create_function('', "return 'text/html';") );
   	
+  	add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
   	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content, $headers );
   	
   	die('1');
   }
+}
+
+
+function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
+	global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
+	
+	if( $fv_wp_flowplayer_support_mail_from_name ) {
+		$phpmailer->FromName = trim( $fv_filled_in_phpmailer_init_from_name );
+	}
+	if( $fv_wp_flowplayer_support_mail_from ) {
+		if( strcmp( trim($phpmailer->From), trim($fv_wp_flowplayer_support_mail_from) ) != 0 && !trim($phpmailer->Sender) ) {
+			$phpmailer->Sender = trim($phpmailer->From);	
+		}
+		$phpmailer->From = trim( $fv_wp_flowplayer_support_mail_from );
+	}	
+
 }
  
 
