@@ -413,7 +413,9 @@ function fv_wp_flowplayer_submit() {
 	if( document.getElementById("fv_wp_flowplayer_field_ad_skip").checked != '' )
 		shortcode += ' ad_skip=yes';				
 	
-  shortcode += fv_wp_fp_shortcode_remains.trim();
+	if( fv_wp_fp_shortcode_remains.length > 0 ) {
+  	shortcode += ' ' + fv_wp_fp_shortcode_remains.trim();
+  }
   
 	shortcode += ']';
 	

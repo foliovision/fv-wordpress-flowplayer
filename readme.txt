@@ -283,6 +283,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.28 - 2013/08/01 =
+* Bugfix - we set Flash as preference in Chrome < 28 on Windows and Chrome < 27 on Linux. This tweak combined with disabled auto buffering on Chrome/Chromium should minimize issues with these browsers.
+* Bugfix - loading indicator was in way of the play button - making it impossible to click in the middle of it. This was originally tweaked to avoid issues with some templates on iDevices (we registered 1 user having issues with this)
+
 = 2.1.27 - 2013/07/31 =
 *	Feature - styling presets for ad - let's you edit the ad CSS on the plugin settings screen
 * Fix - auto buffering is disabled for MP4 in Google Chrome and Chromium, as therse browsers sometimes don't play MP4 and this seems to help

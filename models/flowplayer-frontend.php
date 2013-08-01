@@ -26,6 +26,7 @@ class flowplayer_frontend extends flowplayer
     
 		// returned array with new player's html and javascript content
 		$this->ret = array('html' => '', 'script' => '');
+		$html_after = '';
 		$scripts_after = '';
       
     
@@ -68,6 +69,18 @@ class flowplayer_frontend extends flowplayer
 						}
 						";
 				}
+				
+				if( $this->conf['engine'] == 'default' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) !== false ) {
+					$this->ret['script'] .= "
+						var chrome_ver = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
+						if(
+							( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 /*&& navigator.appVersion.indexOf(\"Win\")!=-1*/ ) || 
+							( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf(\"Linux\")!=-1 )							
+						) {
+							jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
+						}
+						";
+				}				
 				
 			}    
 			
@@ -379,6 +392,33 @@ class flowplayer_frontend extends flowplayer
 				$attributes['data-flashfit'] = 'true';
 			}            
 			
+			$playlist = '';
+			if( isset($args['playlist']) ) {
+				$playlist_replace_from = array('&amp;','\;', '\,');				
+				$playlist_replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
+				$args['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $args['playlist'] );			
+				$playlist_items = explode( ';', $args['playlist'] );				
+				if( count($playlist_items) > 0 ) {
+					$playlist .= "\t<a class='fp-prev'></a> <a class='fp-next'></a>\n";
+					$playlist .= "\t<div class='fp-playlist'>\n";
+					$playlist .= "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background: url(\"".$splash_img."\") center center' " : "" )."href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
+					foreach( $playlist_items AS $playlist_item ) {
+						$playlist_item = explode( ',', $playlist_item );
+						if( count($playlist_item) == 2 ) {
+							$media_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
+							$splash_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[1] );					
+							$playlist .= "\t\t<a style='background: url(\"".$splash_item."\") center center' href='".trim($media_item)."'></a>\n";
+						} else {
+							$playlist_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
+							$playlist .= "\t\t<a href='".trim($playlist_item)."'></a>\n";
+						}
+					}
+					$playlist .= "\t</div>\n";
+					$attributes['class'] .= ' has-playlist';
+				}
+			}			
+			
+			
 			$attributes_html = '';
 			$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media );
 			foreach( $attributes AS $attr_key => $attr_value ) {
@@ -461,6 +501,7 @@ class flowplayer_frontend extends flowplayer
 			$this->ret['html'] .= "\t".'</video>'."\n";
 
 			
+			$this->ret['html'] .= $playlist;
 			
 			
 			if( isset($splashend_contents) ) {
@@ -472,7 +513,7 @@ class flowplayer_frontend extends flowplayer
 			if( isset($ad_contents) ) {
 				$this->ret['html'] .= $ad_contents;  
 			}			
-			$this->ret['html'] .= '</div>'."\n".$scripts_after;      
+			$this->ret['html'] .= '</div>'."\n".$html_after.$scripts_after;      
     
     } else {	//	$player_type == 'video' ends
     	global $fv_wp_flowplayer_ver;
@@ -515,7 +556,7 @@ class flowplayer_frontend extends flowplayer
     return $media;
   }
   
-  function get_video_src($media, $mobileUserAgent, $id = '', $rtmp = false ) {
+  function get_video_src($media, $mobileUserAgent, $id = '', $rtmp = false, $url_only = false ) {
   	if( $media ) { 
 			$extension = $this->get_file_extension($media);
 			//do not use https on mobile devices
@@ -536,7 +577,11 @@ class flowplayer_frontend extends flowplayer
 					}
 			}
 			
-			return '<source '.$id.'src="'.trim($media).'" type="video/'.$extension.'" />'.$source_flash_encoded;  
+			if( $url_only ) {
+				return trim($media);
+			} else {
+				return '<source '.$id.'src="'.trim($media).'" type="video/'.$extension.'" />'.$source_flash_encoded;  
+			}
     }
     return null;
   }
