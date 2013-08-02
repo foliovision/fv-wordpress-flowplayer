@@ -72,12 +72,15 @@ class flowplayer_frontend extends flowplayer
 				
 				if( $this->conf['engine'] == 'default' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) !== false ) {
 					$this->ret['script'] .= "
-						var chrome_ver = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
-						if(
-							( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 && navigator.appVersion.indexOf(\"Win\")!=-1 ) || 
-							( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf(\"Linux\")!=-1 )							
-						) {
-							jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
+						var match = window.navigator.appVersion.match(/Chrome\/(\d+)\./);
+						if( match != null ) {
+							var chrome_ver = parseInt(match[1], 10);
+							if(
+								( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 && navigator.appVersion.indexOf(\"Win\")!=-1 ) || 
+								( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf(\"Linux\")!=-1 )							
+							) {
+								jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
+							}
 						}
 						";
 				}				
