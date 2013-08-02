@@ -393,11 +393,11 @@ class flowplayer_frontend extends flowplayer
 			}            
 			
 			$playlist = '';
-			if( isset($args['playlist']) ) {
+			if( isset($args['playlist']) && strlen(trim($args['playlist'])) > 0 ) {
 				$playlist_replace_from = array('&amp;','\;', '\,');				
 				$playlist_replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
 				$args['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $args['playlist'] );			
-				$playlist_items = explode( ';', $args['playlist'] );				
+				$playlist_items = explode( ';', $args['playlist'] );
 				if( count($playlist_items) > 0 ) {
 					$playlist .= "\t<a class='fp-prev'></a> <a class='fp-next'></a>\n";
 					$playlist .= "\t<div class='fp-playlist'>\n";
