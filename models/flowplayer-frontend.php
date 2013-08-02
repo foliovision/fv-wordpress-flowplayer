@@ -72,12 +72,15 @@ class flowplayer_frontend extends flowplayer
 				
 				if( $this->conf['engine'] == 'default' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) !== false ) {
 					$this->ret['script'] .= "
-						var chrome_ver = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
-						if(
-							( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 && navigator.appVersion.indexOf(\"Win\")!=-1 ) || 
-							( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf(\"Linux\")!=-1 )							
-						) {
-							jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
+						var match = window.navigator.appVersion.match(/Chrome\/(\d+)\./);
+						if( match != null ) {
+							var chrome_ver = parseInt(match[1], 10);
+							if(
+								( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 && navigator.appVersion.indexOf(\"Win\")!=-1 ) || 
+								( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf(\"Linux\")!=-1 )							
+							) {
+								jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
+							}
 						}
 						";
 				}				
@@ -393,28 +396,49 @@ class flowplayer_frontend extends flowplayer
 			}            
 			
 			$playlist = '';
-			if( isset($args['playlist']) ) {
+			$is_preroll = false;
+			if( isset($args['playlist']) && strlen(trim($args['playlist'])) > 0 ) {
 				$playlist_replace_from = array('&amp;','\;', '\,');				
 				$playlist_replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
 				$args['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $args['playlist'] );			
-				$playlist_items = explode( ';', $args['playlist'] );				
+				$playlist_items = explode( ';', $args['playlist'] );
+			
+				$playlist_items_html = array();
 				if( count($playlist_items) > 0 ) {
-					$playlist .= "\t<a class='fp-prev'></a> <a class='fp-next'></a>\n";
-					$playlist .= "\t<div class='fp-playlist'>\n";
-					$playlist .= "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background: url(\"".$splash_img."\") center center' " : "" )."href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
+					
+					$playlist_items_html[] = "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background: url(\"".$splash_img."\") center center' " : "" )."href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
 					foreach( $playlist_items AS $playlist_item ) {
+					
 						$playlist_item = explode( ',', $playlist_item );
 						if( count($playlist_item) == 2 ) {
 							$media_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
-							$splash_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[1] );					
-							$playlist .= "\t\t<a style='background: url(\"".$splash_item."\") center center' href='".trim($media_item)."'></a>\n";
+							$meta_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[1] );		
+							if( $meta_item == 'preroll' ) {
+								$is_preroll = $media_item;
+							} else {
+								$playlist_items_html[] = "\t\t<a style='background: url(\"".$meta_item."\") center center' href='".trim($media_item)."'></a>\n";
+							}
 						} else {
 							$playlist_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
-							$playlist .= "\t\t<a href='".trim($playlist_item)."'></a>\n";
+							$playlist_items_html[] = "\t\t<a href='".trim($playlist_item)."'></a>\n";
 						}
+						
 					}
-					$playlist .= "\t</div>\n";
-					$attributes['class'] .= ' has-playlist';
+					
+					if( !$is_preroll || count($playlist_items) > 1 ) {	//	only show controls if the item is not preroll
+						$playlist = "\t<a class='fp-prev'></a> <a class='fp-next'></a>\n"."\t<div class='fp-playlist'>\n".implode( '', $playlist_items_html )."\t</div>\n";
+						$attributes['class'] .= ' has-playlist';
+					} else {
+						//	do stuff with $media, $src1, $src2
+						$this->ret['script'] .= "
+						jQuery('#wpfp_".$this->hash."').bind('finish', function (e,api, error) {
+							jQuery('#wpfp_".$this->hash."').flowplayer().load( [ {mp4: '$media'} ] )
+						} );
+						";
+						
+						// put ad in as the video source
+						$media = $media_item;
+					}
 				}
 			}			
 			
