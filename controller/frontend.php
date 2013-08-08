@@ -246,6 +246,7 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
+	global $fv_fp;
 	if (!empty($GLOBALS['scripts'])) {
 		$mobile_switch = false;	
 		foreach ($GLOBALS['scripts'] as $scr) {
@@ -390,6 +391,41 @@ function flowplayer_display_scripts() {
 				});
 			});
 		}  	
+
+		<?php if( $fv_fp->conf['responsive'] == 'responsive' ) : ?>
+		
+		var fv_flowplayer_safety_resize_arr = Array();
+		
+		function fv_flowplayer_safety_resize() {
+			var fv_flowplayer_safety_resize_init = false;
+		
+			jQuery('.flowplayer').each( function() {
+				if( jQuery(this).width() < 30 ) {
+					fv_flowplayer_safety_resize_init = true
+					var el = jQuery(this);
+					while( jQuery(el).width() < 30 || jQuery(el).width() == jQuery(this).width() ) {        
+						el = jQuery(el).parent();
+					}
+					
+					jQuery(this).width( jQuery(el).width() );
+					fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] = el;                  
+				}
+			} );
+			
+			if( fv_flowplayer_safety_resize_init ) {
+				jQuery(window).resize(function() {
+					jQuery('.flowplayer').each( function() {
+						if( fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] ) {
+							jQuery(this).width( fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')].width() );
+						}
+					} );  
+				} );    
+			}
+		}
+		
+		jQuery(document).ready(function() { fv_flowplayer_safety_resize(); } );		
+		
+		<?php endif; ?>
 		
 		var fv_fp_date = new Date();
 		var fv_fp_utime = fv_fp_date.getTime();		

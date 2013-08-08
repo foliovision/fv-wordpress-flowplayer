@@ -7,6 +7,8 @@ class flowplayer_frontend extends flowplayer
 
 	var $ajax_count = 0;
 	
+	var $autobuffer_count = 0;	
+	
 	var $ret = array();
 	
 	var $hash = false;
@@ -70,7 +72,7 @@ class flowplayer_frontend extends flowplayer
 						";
 				}
 				
-				if( $this->conf['engine'] == 'default' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) !== false ) {
+				if( $this->conf['engine'] == 'default' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
 					$this->ret['script'] .= "
 						var match = window.navigator.appVersion.match(/Chrome\/(\d+)\./);
 						if( match != null ) {
@@ -185,12 +187,7 @@ class flowplayer_frontend extends flowplayer
 				$popup = apply_filters( 'fv_flowplayer_popup_html', $popup);
 				if( strlen(trim($popup)) > 0 ) {			
 					$show_popup = true;
-					$popup_contents = '<div id="wpfp_'.$this->hash.'_custom_popup" class="wpfp_custom_popup"><div class="wpfp_custom_popup_content">'.$popup.'</div></div>';
-					$this->ret['script'] .= "
-						jQuery('#wpfp_".$this->hash."').bind('finish', function() {          
-							jQuery('#wpfp_".$this->hash."_custom_popup').show();            
-						});    
-					";                   
+					$popup_contents = '<div id="wpfp_'.$this->hash.'_custom_popup" class="wpfp_custom_popup"><div class="wpfp_custom_popup_content">'.$popup.'</div></div>';                
 				}
 			}
 	
@@ -225,7 +222,7 @@ class flowplayer_frontend extends flowplayer
 			$show_splashend = false;
 			if (isset($args['splashend']) && $args['splashend'] == 'show' && isset($args['splash']) && !empty($args['splash'])) {      
 				$show_splashend = true;
-				$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="display: none; position: absolute; background: url('.$splash_img.') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
+				$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url('.$splash_img.') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
 			}	
 			
 			//  change engine for IE9 and 10
@@ -280,48 +277,26 @@ class flowplayer_frontend extends flowplayer
 				}
 			}
 			
-			//  proper fallback on error?
-			/*$this->ret['script'] .= "jQuery('#wpfp_".$this->hash."').bind('error', function(e, api, error) {
-				if( error.code == 4 ) {
-					jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
-				}
-			} );";*/    
 			
-			$this->ret['script'] .= "
-				jQuery('#wpfp_".$this->hash."').bind('finish', function() {";
-			//if redirection is set
 			if ( !empty($redirect) ) {
-				$this->ret['script'] .= "window.open('".$redirect."', '_blank');";
-			}
-			//if there is a popup content set background color
-			if ( $show_popup ) {
-				if ( $show_splashend ) {
-					$this->ret['script'] .= "
-						jQuery('#wpfp_".$this->hash." .fp-ui').css('background', '');";
-				}
-				else {
-					$this->ret['script'] .= "
-						jQuery('#wpfp_".$this->hash." .fp-ui').css('background-color', '#000');";
-				}
-			}
-			if ( $show_splashend ) {
 				$this->ret['script'] .= "
-					jQuery('#wpfp_".$this->hash."_custom_background').show();";
+				jQuery('#wpfp_".$this->hash."').bind('finish', function() { window.open('".$redirect."', '_blank'); } );";
 			}
-			//remove the background color and popup    
-			$this->ret['script'] .= "
-				jQuery('#wpfp_".$this->hash."').bind('resume seek', function() {
-					jQuery('#wpfp_".$this->hash." .fp-ui').css('background-color', 'transparent');
-					".($show_popup ? "jQuery('#wpfp_".$this->hash."_custom_popup').hide();" : "")."
-					".($show_splashend ? "jQuery('#wpfp_".$this->hash."_custom_background').hide();" : "")."
-				})";
-			$this->ret['script'] .= "});";    
+
 			
 			$attributes = array();
 			$attributes['class'] = 'flowplayer';
-			if( $autoplay == 'false' && !( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' ) ) {
+			
+			if( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' ) {
+				$this->autobuffer_count++;
+			}
+			if( 
+				$this->autobuffer_count > apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ||
+				( $autoplay == 'false' && !( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' ) )				
+			) {
 				$attributes['class'] .= ' is-splash';
 			}
+			
 			if( $controlbar == 'show' ) {
 				$attributes['class'] .= ' fixed-controls';
 			} 
@@ -462,16 +437,23 @@ class flowplayer_frontend extends flowplayer
 			}
 			if (isset($args['loop']) && $args['loop'] == 'true') {
 				$this->ret['html'] .= ' loop';
+				$this->ret['script'] .= "
+					jQuery('#wpfp_".$this->hash."').bind('finish', function() {          
+						jQuery('#wpfp_".$this->hash."').flowplayer().play();       
+					});    
+				";   				
 			}     
 			if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
 				$this->ret['html'] .= ' preload="auto"';
 				$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
 				
 				$count = $mp4_position = $webm_position = 0;
+				$mp4_video = false;
 				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
 					$count++;
 					if( preg_match( '~\.(mp4|mov|m4v)~', $media_item ) ) {
 						$mp4_position = $count;
+						$mp4_video = $media_item;
 					} else if( preg_match( '~\.webm~', $media_item ) ) {
 						$webm_position = $count;
 					} 					
@@ -481,9 +463,26 @@ class flowplayer_frontend extends flowplayer
 						if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) )  {
 							document.getElementById("wpfp_'.$this->hash.'_video").setAttribute("preload", "none");
 						}
-					</script>
+						</script>					
 					';
-				}
+					}						
+						
+					$this->ret['script'] .= "
+						jQuery('#wpfp_$this->hash').bind('error', function (e,api, error) {
+							if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && error != null && ( error.code == 3 || error.code == 4 || error.code == 5 ) ) {							
+								api.unload();
+								
+								var html = jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_popup').clone()).html();
+								html += jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_ad').clone()).html();								
+								
+								jQuery('#wpfp_$this->hash').attr('id','bad_wpfp_$this->hash');					
+								jQuery('#bad_wpfp_$this->hash').after( '<div id=\"wpfp_$this->hash\" $attributes_html data-engine=\"flash\">'+html+'</div>' );
+								jQuery('#wpfp_$this->hash').flowplayer({ playlist: [ [ {mp4: \"$mp4_video\"} ] ] });
+								jQuery('#wpfp_$this->hash').bind('ready', function(e, api) { api.play(); } );
+								jQuery('#bad_wpfp_$this->hash').remove();						
+							}
+						});					
+					";
 				
 			}
 			else

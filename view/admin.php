@@ -141,8 +141,8 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					  <td><label for="responsive">Video player size (<abbr title="Default setting - respects width and height setting of the video, but allows it to size down to be responsive">?</abbr>):</label></td>
 						<td style="text-align:right"> 					
 							<select id="responsive" name="responsive">
-							  <option value="responsive"<?php if( $fv_fp->conf['engine'] == 'responsive' ) echo ' selected="selected"'; ?>>Default (responsive)</option>
-							  <option value="fixed"<?php if( $fv_fp->conf['engine'] == 'fixed'  ) echo ' selected="selected"'; ?>>Fixed dimensions</option>
+							  <option value="responsive"<?php if( $fv_fp->conf['responsive'] == 'responsive' ) echo ' selected="selected"'; ?>>Default (responsive)</option>
+							  <option value="fixed"<?php if( $fv_fp->conf['responsive'] == 'fixed'  ) echo ' selected="selected"'; ?>>Fixed dimensions</option>
               </select> 					
 						</td>
 					</tr>
