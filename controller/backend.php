@@ -194,8 +194,8 @@ function fv_wp_flowplayer_media_send_to_editor($html, $attachment_id, $attachmen
 <script type='text/javascript'>
 window.parent.document.getElementById('fv_wp_flowplayer_field_src').value = "<?php echo esc_attr($uploaded_video) ?>";
 <?php if (!empty($uploaded_video) && !isset($ThisFileInfo['error'])) { ?>
-  window.parent.document.getElementById('fv_wp_flowplayer_field_width').value = "<?php echo esc_attr($file_width) ?>";
-  window.parent.document.getElementById('fv_wp_flowplayer_field_height').value = "<?php echo esc_attr($file_height) ?>";
+  window.parent.document.getElementById('fv_wp_flowplayer_field_width').value = "<?php echo esc_attr(ceil($file_width)) ?>";
+  window.parent.document.getElementById('fv_wp_flowplayer_field_height').value = "<?php echo esc_attr(ceil($file_height)) ?>";
   window.parent.document.getElementById('fv_wp_flowplayer_file_info').style.display = "table-row";
   window.parent.document.getElementById('fv_wp_flowplayer_file_duration').innerHTML = "<?php echo esc_attr($file_time) ?>";
   window.parent.document.getElementById('fv_wp_flowplayer_file_size').innerHTML = "<?php echo esc_attr($file_size) ?>";

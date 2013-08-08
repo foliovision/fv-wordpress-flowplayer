@@ -567,11 +567,11 @@ function add_rtmp() {
             </select>
           </td>
   			</tr>
-        <tr<?php $no_finish_note = false; if( $conf["interface"]["loop"] !== 'true' ) { $no_finish_note = true; echo ' style="display: none"'; } ?>>
+        <tr<?php if( $conf["interface"]["loop"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright">Loop*</label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
   			</tr>   
-        <tr<?php if( $conf["interface"]["splashend"] !== 'true' ) { $no_finish_note = true; echo ' style="display: none"'; } ?>>
+        <tr<?php if( $conf["interface"]["splashend"] !== 'true' ) { echo ' style="display: none"'; } ?>>
           <th scope="row" class="label">
             <label for="fv_wp_flowplayer_field_splashend">Splash end*</label>
           </th>
@@ -616,10 +616,6 @@ function add_rtmp() {
             	<td  style="padding-top: 20px;"><input type="button" value="Insert" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignleft" onclick="fv_wp_flowplayer_submit();" />
   				</td>
   			</tr>
-            <tr<?php if( $no_finish_note ) echo ' style="display: none;" '; ?>>
-            	<th></th>
-                <td>* Working now in HTML5. Coming soon in Flash.</td>
-            </tr>
             <?php if( !$allow_uploads && current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">

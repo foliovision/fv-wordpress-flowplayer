@@ -279,10 +279,19 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * playlist support (allowing pre-roll videos)
 * cue points support
 * VAST/VPAID support
-* alignment settings for the video
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.30 - 2013/08/08 =
+* Fix - autobuffering now works only for first 2 videos on page ('fv_flowplayer_autobuffer_limit' filter) - to save your bandwidth.
+* Fix - better Flash fallback for Google Chrome and Chromium - MP4 files just won't play for some people, so we detect this problem and reload the player in Flash mode - better than preferring Flash for all Chrome browsers
+* Fix - player position is now calculated using JS if the player is too small - fixes issues with some of the themes, or when placing player into table with too many columns and no column width specified
+* Fix - various finish events now don't use JS but CSS - popup, splashend.
+* Bugfix - loop function in Flash player fixed
+* Bugfix - player dimensions dropdown on settings screen
+* Bugfix - splashend function in Flash player fixed* Bugfix - splashend function in Flash player fixed
+* Bugfix - fix for rare occurrences of decimal numbers when fetching the video size in insert video dialog
 
 = 2.1.29 - 2013/08/02 = 
 * Bugfix - two boxes below each video removed - result of alpha version of playlist feature in our plugin. Sorry about the inconvenience.
