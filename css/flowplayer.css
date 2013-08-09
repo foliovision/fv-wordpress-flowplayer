@@ -273,7 +273,7 @@ a #add-format, a #add-rtmp {
 #content .flowplayer .fp-embed-code, .flowplayer .fp-embed-code { padding: 3px 7px; }
 #content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; }
 
-.flowplayer .wpfp_custom_ad { display: none; }  	
+.flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }  	
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
 .flowplayer.is-playing .wpfp_custom_ad, .flowplayer.is-ready .wpfp_custom_ad { display: block; }  
 .flowplayer.is-poster .wpfp_custom_ad { display: none; }  

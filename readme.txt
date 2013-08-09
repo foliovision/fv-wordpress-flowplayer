@@ -283,6 +283,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.31 - 2013/08/09 =
+* Fix - fixed dimension ads are now responsive - only part which first into the video player is shown
+* Bugix - better Flash fallback for Google Chrome and Chromium - was not working without autobuffering ong
+
 = 2.1.30 - 2013/08/08 =
 * Fix - autobuffering now works only for first 2 videos on page ('fv_flowplayer_autobuffer_limit' filter) - to save your bandwidth.
 * Fix - better Flash fallback for Google Chrome and Chromium - MP4 files just won't play for some people, so we detect this problem and reload the player in Flash mode - better than preferring Flash for all Chrome browsers
