@@ -80,13 +80,14 @@ It seems HTML5 is more picky about what video it can play than Flash.
 
 Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
 
-= How to check my video properties using the built-in checker =
+= How to check my video properties using the built-in checker and how to report video not playing =
 
-* Login to your site as administrator
+* Login to your site as administrator (please use the browser in which the video is not playing for you)
+* Double check Settings -> FV Wordpress Flowplayer -> "Front-end video checker" is set to "Enabled"
 * Come to any post which was video
-* A message in yellow highlight should appear above each video "Checking the video file...". The check takes usually 1-2 seconds.
-* Once it's finished, you can see the video type and also click for more details.
-* If there is a problem detected, the color changes to red and the plugin gives you a hint on how to fix the problem (we are improving this)
+* A message in top left corner of the video should appear saying: "Checking the video file...". The check takes usually 1-2 seconds.
+* Once it's finished, it changes color based on what problem is detected and you can click it to get video details.
+* The dialog also includes our tips on how to resolve the issues found. There is also a button labeled "Send to Foliovision" which sends your video with details straight to our private support tickets.
 
 Note: The checker works much better for local files (on the same server as site). For the remote files, we only grab first 2MB of the file, store it temporarily in your uploads folder, analyze it and then delete. Since we don't get the full file, some values might not be correct, but basic things like codecs should be not affected.
 
@@ -281,6 +282,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.31 - 2013/08/09 =
+* Fix - fixed dimension ads are now responsive - only part which first into the video player is shown
+* Bugix - better Flash fallback for Google Chrome and Chromium - was not working without autobuffering ong
 
 = 2.1.30 - 2013/08/08 =
 * Fix - autobuffering now works only for first 2 videos on page ('fv_flowplayer_autobuffer_limit' filter) - to save your bandwidth.

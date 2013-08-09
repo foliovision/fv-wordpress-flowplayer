@@ -446,49 +446,54 @@ class flowplayer_frontend extends flowplayer
 			if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
 				$this->ret['html'] .= ' preload="auto"';
 				$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
+			}	else if ($autoplay == 'false') {
+				$this->ret['html'] .= ' preload="none"';        
+			}        
 				
-				$count = $mp4_position = $webm_position = 0;
-				$mp4_video = false;
-				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-					$count++;
-					if( preg_match( '~\.(mp4|mov|m4v)~', $media_item ) ) {
-						$mp4_position = $count;
-						$mp4_video = $media_item;
-					} else if( preg_match( '~\.webm~', $media_item ) ) {
-						$webm_position = $count;
-					} 					
-				}					
-				if( $mp4_position > $webm_position ) {
+			$count = $mp4_position = $webm_position = 0;
+			$mp4_video = false;
+			foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+				$count++;
+				if( preg_match( '~\.(mp4|mov|m4v)~', $media_item ) ) {
+					$mp4_position = $count;
+					$mp4_video = $media_item;
+				} else if( preg_match( '~\.webm~', $media_item ) ) {
+					$webm_position = $count;
+				} 					
+			}			
+			
+			if( $mp4_position > $webm_position ) {
+				if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
 					$scripts_after .= '<script type="text/javascript">
 						if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) )  {
 							document.getElementById("wpfp_'.$this->hash.'_video").setAttribute("preload", "none");
 						}
 						</script>					
 					';
-					}						
-						
-					$this->ret['script'] .= "
-						jQuery('#wpfp_$this->hash').bind('error', function (e,api, error) {
-							if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && error != null && ( error.code == 3 || error.code == 4 || error.code == 5 ) ) {							
-								api.unload();
-								
-								var html = jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_popup').clone()).html();
-								html += jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_ad').clone()).html();								
-								
-								jQuery('#wpfp_$this->hash').attr('id','bad_wpfp_$this->hash');					
-								jQuery('#bad_wpfp_$this->hash').after( '<div id=\"wpfp_$this->hash\" $attributes_html data-engine=\"flash\">'+html+'</div>' );
-								jQuery('#wpfp_$this->hash').flowplayer({ playlist: [ [ {mp4: \"$mp4_video\"} ] ] });
-								jQuery('#wpfp_$this->hash').bind('ready', function(e, api) { api.play(); } );
-								jQuery('#bad_wpfp_$this->hash').remove();						
-							}
-						});					
-					";
-				
+				}						
+					
+				$this->ret['script'] .= "
+					jQuery('#wpfp_$this->hash').bind('error', function (e,api, error) {
+						if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && error != null && ( error.code == 3 || error.code == 4 || error.code == 5 ) ) {							
+							api.unload();
+							var html = jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_popup').clone()).html();
+							html += jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_ad').clone()).html();								
+							
+							jQuery('#wpfp_$this->hash').attr('id','bad_wpfp_$this->hash');					
+							jQuery('#bad_wpfp_$this->hash').after( '<div id=\"wpfp_$this->hash\" $attributes_html data-engine=\"flash\">'+html+'</div>' );
+							jQuery('#wpfp_$this->hash').flowplayer({ playlist: [ [ {mp4: \"$mp4_video\"} ] ] });
+				";				
+				if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
+					$this->ret['script'] .= "jQuery('#wpfp_$this->hash').bind('ready', function(e, api) { api.play(); } ); ";
+				} else {
+					$this->ret['script'] .= "jQuery('#wpfp_$this->hash').flowplayer().play(0); ";
+				}
+				$this->ret['script'] .= "jQuery('#bad_wpfp_$this->hash').remove();						
+						}
+					});					
+				";				
 			}
-			else
-			if ($autoplay == 'false') {
-				$this->ret['html'] .= ' preload="none"';        
-			}         
+			 
 			$this->ret['html'] .= '>'."\n";
 							
 			if (!empty($media)) {              

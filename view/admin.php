@@ -79,7 +79,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 						</td>
 					</tr>
 					<tr>
-						<td><label for="auto_buffer">Auto Buffering:</label></td>
+						<td><label for="auto_buffer">Auto Buffering (<abbr title="Works for first 2 videos on the page only, to preserve your bandwidth.">?</abbr>):</label></td>
 						<td style="text-align:right">
 							<select id="auto_buffer" name="auto_buffer"><?php echo flowplayer_bool_select($fv_fp->conf['auto_buffer']); ?></select>
 						</td>
