@@ -9,6 +9,8 @@ class flowplayer_frontend extends flowplayer
 	
 	var $autobuffer_count = 0;	
 	
+	var $autoplay_count = 0;
+	
 	var $ret = array();
 	
 	var $hash = false;
@@ -432,8 +434,9 @@ class flowplayer_frontend extends flowplayer
 			if (isset($splash_img) && !empty($splash_img)) {
 				$this->ret['html'] .= ' poster="'.$splash_img.'"';
 			} 
-			if ($autoplay == 'true') {
+			if( $autoplay == 'true' && $this->autoplay_count < apply_filters( 'fv_flowplayer_autoplay_limit', 1 ) ) {
 				$this->ret['html'] .= ' autoplay';  
+				$this->autoplay_count++;
 			}
 			if (isset($args['loop']) && $args['loop'] == 'true') {
 				$this->ret['html'] .= ' loop';
@@ -443,7 +446,7 @@ class flowplayer_frontend extends flowplayer
 					});    
 				";   				
 			}     
-			if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
+			if( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 				$this->ret['html'] .= ' preload="auto"';
 				$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
 			}	else if ($autoplay == 'false') {

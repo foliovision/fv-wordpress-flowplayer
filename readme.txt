@@ -283,6 +283,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.32 - 2013/08/ =
+* Bugfix - autobuffering now works only for first 2 videos also in HTML5
+* Bugfix - autoplay now works only for the first video on the page (use fv_flowplayer_autoplay_limit filter)
+
 = 2.1.31 - 2013/08/09 =
 * Fix - fixed dimension ads are now responsive - only part which first into the video player is shown
 * Bugix - better Flash fallback for Google Chrome and Chromium - was not working without autobuffering ong
