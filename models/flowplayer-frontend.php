@@ -11,9 +11,7 @@ class flowplayer_frontend extends flowplayer
 	
 	var $autoplay_count = 0;
 	
-	var $ret = array();
-	
-	var $hash = false;
+	var $expire_time = 0;
 
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
@@ -22,6 +20,7 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
+		global $post;
 				
     // unique coe for this player
 		$this->hash = md5($media.$this->_salt());    
@@ -55,8 +54,13 @@ class flowplayer_frontend extends flowplayer
 				$player_type = 'audio';
 				break;
 			} 
+			
+	    global $post;
+	    $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
+    	if( $fv_flowplayer_meta && isset($fv_flowplayer_meta[sanitize_title($media_item)]['time']) ) {
+    		$this->expire_time = $fv_flowplayer_meta[sanitize_title($media_item)]['time'];
+    	}
     }
-    
     
     if( $player_type == 'video' ) {
     
@@ -243,7 +247,7 @@ class flowplayer_frontend extends flowplayer
 				$rtmp_test = ( isset($args['rtmp']) ) ? $args['rtmp'].$args['rtmp_path'] : $rtmp;
 				foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
 					if( $media_item ) {
-						$test_media[] = $this->get_amazon_secure( $media_item );
+						$test_media[] = $this->get_amazon_secure( $media_item, &$this );
 						break;
 					} 
 				}   
@@ -475,6 +479,10 @@ class flowplayer_frontend extends flowplayer
 					';
 				}						
 					
+				//	tricky way of moving over the error handler
+				$tmp = $this;
+				$mp4_video = $this->get_amazon_secure( $mp4_video, &$tmp );	
+		
 				$this->ret['script'] .= "
 					jQuery('#wpfp_$this->hash').bind('error', function (e,api, error) {
 						if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && error != null && ( error.code == 3 || error.code == 4 || error.code == 5 ) ) {							
@@ -485,6 +493,7 @@ class flowplayer_frontend extends flowplayer
 							jQuery('#wpfp_$this->hash').attr('id','bad_wpfp_$this->hash');					
 							jQuery('#bad_wpfp_$this->hash').after( '<div id=\"wpfp_$this->hash\" $attributes_html data-engine=\"flash\">'+html+'</div>' );
 							jQuery('#wpfp_$this->hash').flowplayer({ playlist: [ [ {mp4: \"$mp4_video\"} ] ] });
+							".$tmp->ret['script']."
 				";				
 				if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
 					$this->ret['script'] .= "jQuery('#wpfp_$this->hash').bind('ready', function(e, api) { api.play(); } ); ";
@@ -596,7 +605,7 @@ class flowplayer_frontend extends flowplayer
 			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 	
-			$media = $this->get_amazon_secure( $media );	
+			$media = $this->get_amazon_secure( $media, &$this );	
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
 			$source_flash_encoded = false;	
@@ -615,49 +624,6 @@ class flowplayer_frontend extends flowplayer
 			}
     }
     return null;
-  }
-  
-  
-  function get_amazon_secure( $media, $id = false ) {
-    	
-  	if( !empty($this->conf['amazon_key']) && !empty($this->conf['amazon_secret']) && !empty($this->conf['amazon_bucket']) && stripos( $media, trim($this->conf['amazon_bucket']) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
-  	
-			$resource = trim( $media );
-			$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($this->conf['amazon_expire']) );
-			$expires = time() + $time;
-		 
-			$url_components = parse_url($resource);
-			$url_components['path'] = rawurlencode($url_components['path']); 
-			$url_components['path'] = str_replace('%2F', '/', $url_components['path']);
-			
-			$stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";
-		
-			$signature = utf8_encode($stringToSign);
-			$signature = hash_hmac('sha1', $signature, $this->conf['amazon_secret'], true);
-			$signature = base64_encode($signature);
-			
-			$signature = urlencode($signature);
-		
-			$url = $resource;
-			$url .= '?AWSAccessKeyId='.$this->conf['amazon_key']
-						 .'&Expires='.$expires
-						 .'&Signature='.$signature;
-						 
-			$media = $url;
-						
-			$this->ret['script'] .= "
-			jQuery('#wpfp_".$this->hash."').bind('error', function (e,api, error) {
-					fv_fp_date = new Date();			
-					if( error.code == 4 && fv_fp_date.getTime() > (fv_fp_utime + $time) ) {
-						jQuery(e.target).find('.fp-message').delay(500).queue( function(n) {
-							jQuery(this).html('<h2>Video file expired.<br />Please reload the page and play it again.</h2>'); n();
-						} );
-					}
-			} );
-			";
-  	}
-  	
-  	return $media;
   }
   
   
