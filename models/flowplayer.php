@@ -143,7 +143,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	}
   
   
-  function get_amazon_secure( $media, $fv_fp ) {
+  function get_amazon_secure( $media, &$fv_fp ) {
 
   	if( !empty($fv_fp->conf['amazon_key']) && !empty($fv_fp->conf['amazon_secret']) && !empty($fv_fp->conf['amazon_bucket']) ) {
   		foreach( $fv_fp->conf['amazon_bucket'] AS $key => $item ) {

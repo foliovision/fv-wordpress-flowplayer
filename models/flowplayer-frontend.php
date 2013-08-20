@@ -247,7 +247,7 @@ class flowplayer_frontend extends flowplayer
 				$rtmp_test = ( isset($args['rtmp']) ) ? $args['rtmp'].$args['rtmp_path'] : $rtmp;
 				foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
 					if( $media_item ) {
-						$test_media[] = $this->get_amazon_secure( $media_item, &$this );
+						$test_media[] = $this->get_amazon_secure( $media_item, $this );
 						break;
 					} 
 				}   
@@ -481,7 +481,7 @@ class flowplayer_frontend extends flowplayer
 					
 				//	tricky way of moving over the error handler
 				$tmp = $this;
-				$mp4_video = $this->get_amazon_secure( $mp4_video, &$tmp );	
+				$mp4_video = $this->get_amazon_secure( $mp4_video, $tmp );	
 		
 				$this->ret['script'] .= "
 					jQuery('#wpfp_$this->hash').bind('error', function (e,api, error) {
@@ -605,7 +605,7 @@ class flowplayer_frontend extends flowplayer
 			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 	
-			$media = $this->get_amazon_secure( $media, &$this );	
+			$media = $this->get_amazon_secure( $media, $this );	
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
 			$source_flash_encoded = false;	

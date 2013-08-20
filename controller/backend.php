@@ -1437,7 +1437,7 @@ function fv_wp_flowplayer_save_post( $id ) {
     		}
     	}
     	
-  		$video_secured = $fv_fp->get_amazon_secure($video, &$fv_fp);
+  		$video_secured = $fv_fp->get_amazon_secure($video, $fv_fp);
   		fv_wp_flowplayer_check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) );
   	}
   }
