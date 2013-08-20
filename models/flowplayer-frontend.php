@@ -70,7 +70,7 @@ class flowplayer_frontend extends flowplayer
 					$rtmp = $media_item;
 				} 
 							
-				if( $this->conf['engine'] == 'default' && stripos( $media_item, '.m4v' ) !== false ) {
+				if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
 					$this->ret['script'] .= "
 						if( jQuery.browser.mozilla && navigator.appVersion.indexOf(\"Win\")!=-1 ) {
 							jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
@@ -78,7 +78,7 @@ class flowplayer_frontend extends flowplayer
 						";
 				}
 				
-				if( $this->conf['engine'] == 'default' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
+				if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
 					$this->ret['script'] .= "
 						var match = window.navigator.appVersion.match(/Chrome\/(\d+)\./);
 						if( match != null ) {
@@ -233,7 +233,7 @@ class flowplayer_frontend extends flowplayer
 			
 			//  change engine for IE9 and 10
 			
-			if( $this->conf['engine'] == 'default' ) {
+			if( $this->conf['engine'] == 'false' ) {
 				$this->ret['script'] .= "
 					if( jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9 ) {
 						jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
@@ -241,7 +241,7 @@ class flowplayer_frontend extends flowplayer
 					";
 			}
 			
-			if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['videochecker'] != 'off' ) {
+			if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['disable_videochecker'] != 'true' ) {
 				$this->ajax_count++;
 				$test_media = array();
 				$rtmp_test = ( isset($args['rtmp']) ) ? $args['rtmp'].$args['rtmp_path'] : $rtmp;
@@ -252,7 +252,7 @@ class flowplayer_frontend extends flowplayer
 					} 
 				}   
 				
-				if( $this->conf['videochecker'] == 'enabled' ) {
+				if( $this->conf['disable_videochecker'] == 'false' ) {
 					$pre_notice = "jQuery('#wpfp_".$this->hash."').append('<div id=\"wpfp_notice_".$this->hash."\" class=\"fv-wp-flowplayer-notice-small\" title=\"This note is visible to logged-in admins only.\"><small>Admin note: Checking the video file...</small></div>');";
 				}
 				
@@ -317,7 +317,7 @@ class flowplayer_frontend extends flowplayer
 				} 
 			}
 			
-			if( $this->conf['engine'] == 'flash' || $args['engine'] == 'flash' ) {
+			if( $this->conf['engine'] == 'true' || $args['engine'] == 'flash' ) {
 				$attributes['data-engine'] = 'flash';
 			}
 			
@@ -325,7 +325,7 @@ class flowplayer_frontend extends flowplayer
 				$attributes['data-embed'] = $args['embed'];
 			}
 			
-			if( $this->conf['responsive'] == 'fixed' ) {
+			if( $this->conf['fixed_size'] == 'true' ) {
 				$attributes['style'] = 'width: ' . $width . 'px; height: ' . $height . 'px';
 			} else {
 				$attributes['style'] = 'max-width: ' . $width . 'px; max-height: ' . $height . 'px';
@@ -372,7 +372,7 @@ class flowplayer_frontend extends flowplayer
 				$ratio = round($width / $height, 4);
 			}     
 			$attributes['data-ratio'] = $ratio;
-			if( $scaling == "fit" && $this->conf['responsive'] == 'fixed' ) {
+			if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 				$attributes['data-flashfit'] = 'true';
 			}            
 			

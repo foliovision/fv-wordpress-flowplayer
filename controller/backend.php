@@ -571,9 +571,9 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 				$meta_note_addition = ' Older Firefox versions don\'t like WEBM files with mime type other than video/webm.';
 			} else {
 				$meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
-				if( $fv_fp->conf['engine'] == 'default' ) {
+				/*if( $fv_fp->conf['engine'] == 'default' ) {
 					$meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
-				}
+				}*/
 			} 
 			
 			$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
@@ -773,7 +773,18 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 					$video_info['File'] = 'Local';
 					
 					$document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
-					$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
+					
+					global $blog_id;
+					if( isset($blog_id) && $blog_id > 1 ) {
+						$upload_dir = wp_upload_dir();
+						if( stripos($remotefilename, $upload_dir['baseurl']) !== false ) { 
+							$localtempfilename = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $remotefilename );						
+						} else {
+							$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), preg_replace( '~(\.[a-z]{1,4})/files/~', '$1/wp-content/blogs.dir/'.$blog_id.'/files/', $remotefilename ) );							
+						}
+					} else {
+						$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
+					}
 		
 					$ThisFileInfo = $getID3->analyze( $localtempfilename );
 				}
@@ -885,9 +896,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 				if( isset($ThisFileInfo['quicktime']['ftyp']['signature']) ) {	
 					$video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
 					if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
-						if( $fv_fp->conf['engine'] == 'default' ) {
+						$m4v_note_addition = false;
+						/*if( $fv_fp->conf['engine'] == 'default' ) {
 							$m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
-						} 
+						} */
 						$video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
 					}
 				}
@@ -1007,11 +1019,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 		$message .= '</div>';
 		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
 				
-      
-    if( !isset($meta_action) && count($video_errors) == 0 && count($video_warnings) == 0 && $fv_fp->conf['videochecker'] == 'errors' ) {
-      die();
-    }
-    
+          
     if( count($video_errors) > 0 ) {
     	$issues_text = '<span class="vid-issues">Video Issues</span>';
     } else if( count($video_warnings) ) {
@@ -1446,7 +1454,7 @@ function fv_wp_flowplayer_save_post( $id ) {
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
     if ( false === $closed )
-        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads' );
+        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_skin' );
 
     return $closed;
 }

@@ -392,7 +392,7 @@ function flowplayer_display_scripts() {
 			});
 		}  	
 
-		<?php if( $fv_fp->conf['responsive'] == 'responsive' ) : ?>
+		<?php if( $fv_fp->conf['fixed_size'] == 'false' ) : ?>
 		
 		var fv_flowplayer_safety_resize_arr = Array();
 		

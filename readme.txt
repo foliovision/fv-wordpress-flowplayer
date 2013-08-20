@@ -286,9 +286,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 2.1.32 - 2013/08/ =
 * Feature - support for Amazon S3 secured URLs!
 * Fix - new structure of the Settings screen 
+* Fix - option revised - engine preference, fixed player size and video checker preference changed to simple checkboxes
 * Bugfix - autobuffering now works only for first 2 videos also in HTML5
 * Bugfix - autoplay now works only for the first video on the page (use fv_flowplayer_autoplay_limit filter)
 * Bugfix - comma parsing turned off by default - it was causing issue with googlevideo.com URLs
+* Bugfix - video checker on Wordpress Multisite media files
 
 = 2.1.31 - 2013/08/09 =
 * Fix - fixed dimension ads are now responsive - only part which first into the video player is shown
