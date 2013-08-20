@@ -12,7 +12,7 @@ function fv_flowplayer_admin_default_options() {
 						<tr>
 							<td style="width: 250px;"><label for="autoplay">AutoPlay:</label></td>
 							<td style="text-align:right;">
-								<select id="autoplay" name="autoplay"><?php echo flowplayer_bool_select($fv_fp->conf['autoplay']); ?></select> 	
+								<?php fv_flowplayer_admin_checkbox('autoplay'); ?>
 							</td>
 							<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
 								<div id="content">
@@ -36,43 +36,43 @@ function fv_flowplayer_admin_default_options() {
 						<tr>
 							<td><label for="auto_buffer">Auto Buffering (<abbr title="Works for first 2 videos on the page only, to preserve your bandwidth.">?</abbr>):</label></td>
 							<td style="text-align:right">
-								<select id="auto_buffer" name="auto_buffer"><?php echo flowplayer_bool_select($fv_fp->conf['auto_buffer']); ?></select>
+								<?php fv_flowplayer_admin_checkbox('auto_buffer'); ?>
 							</td>
 						</tr>
 						<tr>
-								<td><label for="popupbox">Popup Box:</label></td>
-								<td style="text-align:right">
-									<select id="popupbox" name="popupbox"><?php echo flowplayer_bool_select($fv_fp->conf['popupbox']); ?></select>
-								</td>
-							</tr>
+							<td><label for="popupbox">Popup Box:</label></td>
+							<td style="text-align:right">
+								<?php fv_flowplayer_admin_checkbox('popupbox'); ?>
+							</td>
+						</tr>
 						<tr>
 							<td><label for="allowfullscreen">Enable Full-screen Mode:</label></td>
 							<td style="text-align:right">
-								<select id="allowfullscreen" name="allowfullscreen"><?php echo flowplayer_bool_select($fv_fp->conf['allowfullscreen']); ?></select>
+								<?php fv_flowplayer_admin_checkbox('allowfullscreen'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="scaling">Fit scaling (<abbr title="If set to true, the original aspect ratio of the video will be used to display the video in fullscreen mode as well as when embedded in the page.">?</abbr>):</label></td>
 							<td style="text-align:right">
-								<select id="scaling" name="scaling"><?php echo flowplayer_bool_select($fv_fp->conf['scaling']); ?></select>
+								<?php fv_flowplayer_admin_checkbox('scaling'); ?>
 							</td>
 						</tr>
 						<tr>
-							<td><label for="allowfullscreen">Disable embedding:</label></td>
+							<td><label for="disableembedding">Disable embedding:</label></td>
 							<td style="text-align:right">
-								<select id="disableembedding" name="disableembedding"><?php echo flowplayer_bool_select($fv_fp->conf['disableembedding']); ?></select>
+								<?php fv_flowplayer_admin_checkbox('disableembedding'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
 							<td style="text-align:right">
-								<select id="postthumbnail" name="postthumbnail"><?php echo flowplayer_bool_select($fv_fp->conf['postthumbnail']); ?></select>
+								<?php fv_flowplayer_admin_checkbox('postthumbnail'); ?>
 							</td>
 						</tr>    	
 						<tr>
 							<td><label for="parse_commas">Convert old shortcodes with commas (<abbr title="Older versions of this plugin used commas to sepparate shortcode parameters. This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.">?</abbr>):</label></td>
 							<td style="text-align:right">
-								<select id="parse_commas" name="parse_commas"><?php echo flowplayer_bool_select($fv_fp->conf['parse_commas']); ?></select>
+								<?php fv_flowplayer_admin_checkbox('parse_commas'); ?>
 							</td>
 						</tr>
 						<tr>
@@ -153,47 +153,6 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 					</table>    
-					<table class="form-table2 alignleft" style="margin: 5px; width: 49%">
-						<tr>
-							<td colspan="2"><p><strong>Ads</strong></p></td>
-						</tr>					
-						<tr>
-							<td colspan="2">
-								<label for="ad">Default Ad Code:</label><br />
-								<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
-							</td>
-						</tr>
-						<tr>
-							<td><label for="width">Default ad size [px]:</label></td>
-							<td style="text-align:right"> 					
-								<label for="ad_width">W:</label>&nbsp;<input type="text" size="4" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" />  
-								<label for="ad_height">H:</label>&nbsp;<input type="text" size="4" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" />							
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
-								<label for="width">Ad CSS:</label>
-								<a href="#" onclick="jQuery('.ad_css_wrap').show(); jQuery(this).hide(); return false">Show styling options</a>
-								<div class="ad_css_wrap" style="display: none; ">
-									<select id="ad_css_select">
-										<option value="">Select your preset</option>
-										<option value="<?php echo esc_attr($fv_fp->ad_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css'])) == 0 ) echo ' selected="selected"'; ?>>Default (white, centered above the control bar)</option>
-										<option value="<?php echo esc_attr($fv_fp->ad_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css']))  == 0 ) echo ' selected="selected"'; ?>>White, centered at the bottom of the video</option>					  		
-									</select>
-									<br />
-									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php if( isset($fv_fp->conf['ad_css']) ) echo trim($fv_fp->conf['ad_css']); ?></textarea>
-									<p class="description">(Hint: put .wpfp_custom_ad_content before your own CSS selectors)</p>
-									<script type="text/javascript">
-									jQuery('#ad_css_select').change( function() {
-										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
-											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
-										}									
-									} );
-									</script>
-								</div>
-							</td>
-						</tr>			
-					</table>
 					<div style="clear: both"></div>
 <?php
 }
@@ -296,6 +255,9 @@ function fv_flowplayer_admin_interface_options() {
 function fv_flowplayer_admin_amazon_options() {
 	global $fv_fp;
 ?>
+				<style>
+				#fv_flowplayer_amazon_options label { float: right }
+				</style>
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td colspan="2">
@@ -303,7 +265,7 @@ function fv_flowplayer_admin_amazon_options() {
 						</td>
 					</tr>
 					<tr>
-						<td><label for="amazon_expire">Default Expire Time [minutes] (<abbr title="Each video duration is stored on post save and then used as the expire time.">?</abbr>):</label></td>
+						<td style="width: 200px"><label for="amazon_expire">Default Expire Time [minutes] (<abbr title="Each video duration is stored on post save and then used as the expire time.">?</abbr>):</label></td>
 						<td><input type="text" size="40" name="amazon_expire" id="amazon_expire" value="<?php echo intval($fv_fp->conf['amazon_expire']); ?>" style="width: 100%" /></td>
 					</tr>		
 <?php
@@ -359,6 +321,51 @@ function fv_flowplayer_admin_description() {
 						</td>
 					</tr>
 				</table>
+<?php
+}
+
+
+function fv_flowplayer_admin_ads() {
+	global $fv_fp;
+?>
+					<table class="form-table2" style="width: 100%">	
+						<tr>
+							<td colspan="2">
+								<label for="ad">Default Ad Code:</label><br />
+								<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
+							</td>
+						</tr>
+						<tr>
+							<td><label for="width">Default ad size [px]:</label></td>
+							<td style="text-align:right"> 					
+								<label for="ad_width">W:</label>&nbsp;<input type="text" size="4" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" />  
+								<label for="ad_height">H:</label>&nbsp;<input type="text" size="4" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" />							
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<label for="width">Ad CSS:</label>
+								<a href="#" onclick="jQuery('.ad_css_wrap').show(); jQuery(this).hide(); return false">Show styling options</a>
+								<div class="ad_css_wrap" style="display: none; ">
+									<select id="ad_css_select">
+										<option value="">Select your preset</option>
+										<option value="<?php echo esc_attr($fv_fp->ad_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css'])) == 0 ) echo ' selected="selected"'; ?>>Default (white, centered above the control bar)</option>
+										<option value="<?php echo esc_attr($fv_fp->ad_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css']))  == 0 ) echo ' selected="selected"'; ?>>White, centered at the bottom of the video</option>					  		
+									</select>
+									<br />
+									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php if( isset($fv_fp->conf['ad_css']) ) echo trim($fv_fp->conf['ad_css']); ?></textarea>
+									<p class="description">(Hint: put .wpfp_custom_ad_content before your own CSS selectors)</p>
+									<script type="text/javascript">
+									jQuery('#ad_css_select').change( function() {
+										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
+											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
+										}									
+									} );
+									</script>
+								</div>
+							</td>
+						</tr>			
+					</table>
 <?php
 }
 
@@ -431,10 +438,20 @@ function fv_flowplayer_admin_usage() {
 }
 
 
+function fv_flowplayer_admin_checkbox( $name ) {
+	global $fv_fp;
+?>
+	<input type="hidden" name="<?php echo $name; ?>" value="false" />
+  <input type="checkbox" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="true" <?php if( isset($fv_fp->conf[$name]) && $fv_fp->conf[$name] == 'true' ) echo 'checked="checked"'; ?> />
+<?php
+}
+
+
 add_meta_box( 'fv_flowplayer_description', 'Description', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_interface_options', 'Interface Options', 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_default_options', 'Default Flowplayer Options', 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_interface_options', 'Post Interface Options', 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_default_options', 'Sitewide Flowplayer Defaults', 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal' );
 
 ?>

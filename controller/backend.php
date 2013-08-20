@@ -1446,7 +1446,7 @@ function fv_wp_flowplayer_save_post( $id ) {
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
     if ( false === $closed )
-        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options' );
+        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads' );
 
     return $closed;
 }

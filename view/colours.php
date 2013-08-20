@@ -40,8 +40,8 @@
 			<td style="text-align:right"><input class="color" type="text" size="6" name="durationColor" id="durationColor" value="<?php echo $fv_fp->conf['durationColor']; ?>" /></td>
 		</tr>
 		<tr>
-			<td><label for="buttonOverColor">border</label></td>
-			<td style="text-align:right"><input type="checkbox" name="hasBorder" id="hasBorder" value="true" <?php if( isset($fv_fp->conf['hasBorder']) && $fv_fp->conf['hasBorder'] == 'true' ) echo 'checked="checked"'; ?> /></td>
+			<td><label for="hasBorder">border</label></td>
+			<td style="text-align:right"><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
 			<td style="padding-left:20px;"><label for="durationColor">border color</label></td>
 			<td style="text-align:right"><input class="color" type="text" size="6" name="borderColor" id="borderColor" value="<?php echo $fv_fp->conf['borderColor']; ?>" /></td>
 		</tr>
