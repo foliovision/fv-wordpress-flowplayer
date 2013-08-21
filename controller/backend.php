@@ -36,6 +36,10 @@ add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' 
 
 add_action( 'after_plugin_row', 'fv_wp_flowplayer_after_plugin_row', 10, 3 );
 
+add_action( 'save_post', 'fv_wp_flowplayer_save_post', 9999 );
+
+add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
+
 
 //loading a video and splash image
 if(
@@ -495,6 +499,13 @@ function fv_wp_flowplayer_admin_init() {
   global $fv_wp_flowplayer_core_ver;
   update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
   
+  if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
+  	wp_enqueue_script('common');
+		wp_enqueue_script('wp-lists');
+		wp_enqueue_script('postbox');
+	}
+  
+  
 }   
 
 
@@ -560,9 +571,9 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 				$meta_note_addition = ' Older Firefox versions don\'t like WEBM files with mime type other than video/webm.';
 			} else {
 				$meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
-				if( $fv_fp->conf['engine'] == 'default' ) {
+				/*if( $fv_fp->conf['engine'] == 'default' ) {
 					$meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
-				}
+				}*/
 			} 
 			
 			$fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
@@ -593,21 +604,29 @@ function fv_wp_flowplayer_http_api_curl( $handle ) {
 }
  
  
-function fv_wp_flowplayer_check_mimetype() {
+function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 	add_action( 'http_api_curl', 'fv_wp_flowplayer_http_api_curl' );
 
 	global $fv_wp_flowplayer_ver, $fv_fp;
 	
-  if( isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+	if( !empty($meta) ) {
+		extract( $meta, EXTR_SKIP );
+	}
+	
+  if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  	$URLs = json_decode( stripslashes( trim($_POST['media']) ));
+  }
   
-  	$all_sources = json_decode( stripslashes( trim($_POST['media']) ));	
+  if( isset($URLs) ) {
+  
+  	$all_sources = $URLs;
   	
   	$video_warnings = array();
   	$video_errors = array();
   	$video_info = array();
   	$message = false;
   	$new_info = false;
-  	
+
   	foreach( $all_sources AS $source ) {
   		if( preg_match( '!^rtmp://!', $source, $match ) ) {
   			$found_rtmp = true;
@@ -649,7 +668,7 @@ function fv_wp_flowplayer_check_mimetype() {
   	}
   	
   	//$random = rand( 0, 10000 );
-  	$random = $_POST['hash'];
+  	$random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
   	
   	
 		if( isset($media) ) {	
@@ -698,7 +717,7 @@ function fv_wp_flowplayer_check_mimetype() {
 
 					//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
 					$upload_dir = wp_upload_dir();      
-					$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename($remotefilename_encoded);
+					$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
 					
 					$out = fopen( $localtempfilename,'wb' );
 					if( $out ) {
@@ -754,7 +773,18 @@ function fv_wp_flowplayer_check_mimetype() {
 					$video_info['File'] = 'Local';
 					
 					$document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
-					$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
+					
+					global $blog_id;
+					if( isset($blog_id) && $blog_id > 1 ) {
+						$upload_dir = wp_upload_dir();
+						if( stripos($remotefilename, $upload_dir['baseurl']) !== false ) { 
+							$localtempfilename = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $remotefilename );						
+						} else {
+							$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), preg_replace( '~(\.[a-z]{1,4})/files/~', '$1/wp-content/blogs.dir/'.$blog_id.'/files/', $remotefilename ) );							
+						}
+					} else {
+						$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
+					}
 		
 					$ThisFileInfo = $getID3->analyze( $localtempfilename );
 				}
@@ -774,10 +804,10 @@ function fv_wp_flowplayer_check_mimetype() {
 				
 				if( isset($ThisFileInfo['quicktime']) ) {			
 					if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-						$video_errors[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+						$video_errors[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
 					} else {
 						if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
-							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
 						} else {
 							$video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
 						}
@@ -866,9 +896,10 @@ function fv_wp_flowplayer_check_mimetype() {
 				if( isset($ThisFileInfo['quicktime']['ftyp']['signature']) ) {	
 					$video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
 					if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
-						if( $fv_fp->conf['engine'] == 'default' ) {
+						$m4v_note_addition = false;
+						/*if( $fv_fp->conf['engine'] == 'default' ) {
 							$m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
-						} 
+						} */
 						$video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
 					}
 				}
@@ -983,16 +1014,12 @@ function fv_wp_flowplayer_check_mimetype() {
 		}
 		
 		$message .= '<div class="support-'.$random.'">';
-		$message .= '<textarea id="wpfp_support_'.$_POST['hash'].'" class="wpfp_message_field" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 98%; height: 150px">Enter your comment</textarea>';
-		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$_POST['hash'].'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_support_mail(\''.trim($_POST['hash']).'\', this); return false" value="Send report to Foliovision" /></p>';
+		$message .= '<textarea id="wpfp_support_'.$random.'" class="wpfp_message_field" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 98%; height: 150px">Enter your comment</textarea>';
+		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$random.'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_support_mail(\''.$random.'\', this); return false" value="Send report to Foliovision" /></p>';
 		$message .= '</div>';
 		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
 				
-      
-    if( count($video_errors) == 0 && count($video_warnings) == 0 && $fv_fp->conf['videochecker'] == 'errors' ) {
-      die();
-    }
-    
+          
     if( count($video_errors) > 0 ) {
     	$issues_text = '<span class="vid-issues">Video Issues</span>';
     } else if( count($video_warnings) ) {
@@ -1005,30 +1032,43 @@ function fv_wp_flowplayer_check_mimetype() {
     $json = @json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
     $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;
     
-    if( $last_error ) {
-    	if( function_exists('mb_check_encoding') && function_exists('utf8_encode') ) {
-        	if(!mb_check_encoding($message, 'UTF-8')) {
-          		$message = utf8_encode($message);
-        	}
-      	} else {
-        	$message = htmlentities( $message, ENT_QUOTES, 'utf-8', FALSE);
-        	$message = ( $message ) ? $message : 'Admin: Error parsing JSON';
-      	}           
-      
-    	$json = json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
-    	$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;
-    	if( $last_error ) {
-    		echo json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) );    
-    	} else {
+    if( isset($meta_action) && $meta_action == 'check_time' ) {
+    
+    	if( isset($ThisFileInfo['playtime_seconds']) ) {
+    		$time = $ThisFileInfo['playtime_seconds'];    	
+    	}
+    	global $post;
+    	$fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
+    	$fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
+    	$fv_flowplayer_meta[sanitize_title($meta_original)] = array('time' => $time);
+    	update_post_meta( $post->ID, '_fv_flowplayer', $fv_flowplayer_meta );
+    	
+    } else {    
+			if( $last_error ) {
+				if( function_exists('mb_check_encoding') && function_exists('utf8_encode') ) {
+						if(!mb_check_encoding($message, 'UTF-8')) {
+								$message = utf8_encode($message);
+						}
+					} else {
+						$message = htmlentities( $message, ENT_QUOTES, 'utf-8', FALSE);
+						$message = ( $message ) ? $message : 'Admin: Error parsing JSON';
+					}           
+				
+				$json = json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
+				$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;
+				if( $last_error ) {
+					echo json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) );    
+				} else {
+					echo $json;
+				}
+			} else {
 				echo $json;
 			}
-    } else {
-    	echo $json;
-    }
-		die();
+			die();
+		}
+  } else {  
+  	die('-1');
   }
-  
-  die('-1');
 }
 
 
@@ -1367,6 +1407,56 @@ function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
 		$phpmailer->From = trim( $fv_wp_flowplayer_support_mail_from );
 	}	
 
+}
+
+
+function fv_wp_flowplayer_save_post( $id ) {
+	if( wp_is_post_revision($id) ) {
+  	return true;
+  }
+  
+  global $fv_fp;
+  if( !isset($fv_fp->conf['amazon_bucket']) ) {
+  	return;
+  }
+  
+  $videos = array();
+  $saved_post = get_post($id);
+  preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $saved_post->post_content, $matches );
+  if( isset($matches[0]) && count($matches[0]) ) {
+  	foreach( $matches[0] AS $shortcode ) {
+  		$process = false;
+  		foreach( $fv_fp->conf['amazon_bucket'] AS $bucket ) {
+  			if( preg_match( '~[\'"](\S+?'.$bucket.'\S+?)[\'"]~', $shortcode, $process) ) {
+  				$videos[] = $process[1];
+  				break;
+  			}
+  		}
+  	}
+  }
+  
+  if( count($videos) > 0 ) {
+  	$videos = array_unique($videos);
+  	foreach( $videos AS $video ) {
+    	global $post;
+    	if( $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true ) )  {
+    		if( isset($fv_flowplayer_meta[sanitize_title($video)]) ) {
+    			continue;
+    		}
+    	}
+    	
+  		$video_secured = $fv_fp->get_amazon_secure($video, $fv_fp);
+  		fv_wp_flowplayer_check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) );
+  	}
+  }
+}
+
+
+function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
+    if ( false === $closed )
+        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_skin' );
+
+    return $closed;
 }
  
 

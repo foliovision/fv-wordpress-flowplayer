@@ -10,7 +10,7 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
 	
-  if( $fv_fp->conf['commas'] == 'true' ) {
+  if( $fv_fp->conf['parse_commas'] == 'true' ) {
     
     if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
@@ -98,36 +98,66 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'playlist' => ''    
   ), $atts ) );
   
-	$arguments['width'] = preg_replace('/\,/', '', $width);
-	$arguments['height'] = preg_replace('/\,/', '', $height);
-	$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
-	$arguments['splash'] = preg_replace('/\,/', '', $splash);
-  $arguments['src1'] = preg_replace('/\,/', '', $src1);
-  $arguments['src2'] = preg_replace('/\,/', '', $src2);
-  $arguments['mobile'] = preg_replace('/\,/', '', $mobile);  
-  $arguments['splashend'] = preg_replace('/\,/', '', $splashend);
-  $arguments['popup'] = $popup;
-	$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
-	$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
-  $arguments['loop'] = preg_replace('/\,/', '', $loop);
-  $arguments['engine'] = preg_replace('/\,/', '', $engine);
-  $arguments['embed'] = preg_replace('/\,/', '', $embed);
-  $arguments['subtitles'] = preg_replace('/\,/', '', $subtitles);
-  $arguments['ad'] = preg_replace('/\,/', '', $ad);  
-  $arguments['ad_width'] = preg_replace('/\,/', '', $ad_width);  
-  $arguments['ad_height'] = preg_replace('/\,/', '', $ad_height);   
-  $arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip); 
-  $arguments['align'] = preg_replace('/\,/', '', $align);   
-  $arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
-  $arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
-  $arguments['playlist'] = $playlist;      
-       
-	$src = trim( preg_replace('/\,/', '', $src) ); 
+  if( $fv_fp->conf['parse_commas'] == 'true' ) {  
+		$arguments['width'] = preg_replace('/\,/', '', $width);
+		$arguments['height'] = preg_replace('/\,/', '', $height);
+		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
+		$arguments['splash'] = preg_replace('/\,/', '', $splash);
+		$arguments['src1'] = preg_replace('/\,/', '', $src1);
+		$arguments['src2'] = preg_replace('/\,/', '', $src2);
+		$arguments['mobile'] = preg_replace('/\,/', '', $mobile);  
+		$arguments['splashend'] = preg_replace('/\,/', '', $splashend);
+		$arguments['popup'] = $popup;
+		$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
+		$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
+		$arguments['loop'] = preg_replace('/\,/', '', $loop);
+		$arguments['engine'] = preg_replace('/\,/', '', $engine);
+		$arguments['embed'] = preg_replace('/\,/', '', $embed);
+		$arguments['subtitles'] = preg_replace('/\,/', '', $subtitles);
+		$arguments['ad'] = preg_replace('/\,/', '', $ad);  
+		$arguments['ad_width'] = preg_replace('/\,/', '', $ad_width);  
+		$arguments['ad_height'] = preg_replace('/\,/', '', $ad_height);   
+		$arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip); 
+		$arguments['align'] = preg_replace('/\,/', '', $align);   
+		$arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
+		$arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
+		$arguments['playlist'] = $playlist;          
+		$src = trim( preg_replace('/\,/', '', $src) ); 
+	} else {
+		$arguments = shortcode_atts( array(
+			'src' => '',
+			'src1' => '',
+			'src2' => '',
+			'mobile' => '',
+			'width' => '',
+			'height' => '',
+			'autoplay' => '',
+			'splash' => '',
+			'splashend' => '',
+			'popup' => '',
+			'controlbar' => '',
+			'redirect' => '',
+			'loop' => '',
+			'engine' => '',
+			'embed' => '',
+			'subtitles' => '',
+			'ad' => '',
+			'ad_width' => '',
+			'ad_height' => '',
+			'ad_skip' => '',
+			'align' => '',
+			'rtmp' => '',
+			'rtmp_path' => '',
+			'playlist' => ''    
+		), $atts );
+	}
+	
+	
 	if( $src != '' || ( strlen($arguments['rtmp']) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
     $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {
-      $GLOBALS['scripts'][] = $new_player['script'];
+      $GLOBALS['fv_fp_scripts'][] = $new_player['script'];
     }
 	}
   return $new_player['html'];

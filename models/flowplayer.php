@@ -29,6 +29,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 */
 	public $scripts = array();		
 	
+	var $ret = array('html' => false, 'script' => false);
+	
+	var $hash = false;	
+	
 	public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
 	
 	public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";	
@@ -83,22 +87,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';    
-    if( !isset( $conf['commas'] ) ) $conf['commas'] = 'true';
-    if( !isset( $conf['width'] ) ) $conf['width'] = '320';
-    if( !isset( $conf['height'] ) ) $conf['height'] = '240';
-    if( !isset( $conf['engine'] ) ) $conf['engine'] = 'default';
+    if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
+    if( !isset( $conf['width'] ) ) $conf['width'] = '600';
+    if( !isset( $conf['height'] ) ) $conf['height'] = '400';
+    if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
-    if( !isset( $conf['responsive'] ) ) { $conf['responsive'] = 'responsive'; $conf['hasBorder'] = 'true'; }
 		if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
 		if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
 		if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
 		if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;     		
-    if( !isset( $conf['videochecker'] ) ) $conf['videochecker'] = 'enabled';            
+		if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';            
+    if( isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }         
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
-		if( !isset( $conf['amazon_bucket'] ) ) $conf['amazon_bucket'] = '';       
-		if( !isset( $conf['amazon_key'] ) ) $conf['amazon_key'] = '';   
-		if( !isset( $conf['amazon_secret'] ) ) $conf['amazon_secret'] = '';   		
-		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '15';   				
+		if( !isset( $conf['amazon_bucket'] ) ) $conf['amazon_bucket'] = array('');       
+		if( !isset( $conf['amazon_key'] ) ) $conf['amazon_key'] = array('');   
+		if( !isset( $conf['amazon_secret'] ) ) $conf['amazon_secret'] = array('');  		
+		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';   
+		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = false;   		
+		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); } 
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -111,8 +117,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	public function _set_conf() {
 	  $save_key = $_POST['key'];
 	  foreach( $_POST AS $key => $value ) {
-	  	if( $key != 'font-face' && $key != 'ad' && $key != 'ad_css' ) {
+	  	if( !in_array( $key, array('amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
       	$_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
+      } else if( is_array($value) ) {
+      	$_POST[$key] = $value;
       } else {
       	$_POST[$key] = stripslashes($value);
       }
@@ -135,6 +143,66 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
 	}
+  
+  
+  function get_amazon_secure( $media, &$fv_fp ) {
+
+  	if( !empty($fv_fp->conf['amazon_key']) && !empty($fv_fp->conf['amazon_secret']) && !empty($fv_fp->conf['amazon_bucket']) ) {
+  		foreach( $fv_fp->conf['amazon_bucket'] AS $key => $item ) {
+  			if( stripos($media,$item.'/') != false  || stripos($media,$item.'.') != false ) {
+  				break;
+  			}
+  		}
+  	}
+    	
+  	if( !empty($fv_fp->conf['amazon_key'][$key]) && !empty($fv_fp->conf['amazon_secret'][$key]) && !empty($fv_fp->conf['amazon_bucket'][$key]) && stripos( $media, trim($fv_fp->conf['amazon_bucket'][$key]) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
+  	
+			$resource = trim( $media );
+			
+			if( !isset($fv_fp->expire_time) ) {
+				$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($fv_fp->conf['amazon_expire'][$key]), $media );
+			} else {
+				$time = apply_filters( 'fv_flowplayer_amazon_expires', intval(ceil($fv_fp->expire_time)), $media );
+			}			
+			if( $time < 900 ) {
+				$time = 900;
+			}
+			$expires = time() + $time;
+		 
+			$url_components = parse_url($resource);
+			$url_components['path'] = rawurlencode($url_components['path']); 
+			$url_components['path'] = str_replace('%2F', '/', $url_components['path']);
+			
+			$stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";
+		
+			$signature = utf8_encode($stringToSign);
+			$signature = hash_hmac('sha1', $signature, $fv_fp->conf['amazon_secret'][$key], true);
+			$signature = base64_encode($signature);
+			
+			$signature = urlencode($signature);
+		
+			$url = $resource;
+			$url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$key]
+						 .'&Expires='.$expires
+						 .'&Signature='.$signature;
+						 
+			$media = $url;
+						
+			$fv_fp->ret['script'] .= "
+			jQuery('#wpfp_".$fv_fp->hash."').bind('error', function (e,api, error) {
+					fv_fp_date = new Date();			
+					if( error.code == 4 && fv_fp_date.getTime() > (fv_fp_utime + $time) ) {
+						jQuery(e.target).find('.fp-message').delay(500).queue( function(n) {
+							jQuery(this).html('<h2>Video file expired.<br />Please reload the page and play it again.</h2>'); n();
+						} );
+					}
+			} );
+			";
+  	}
+  	
+  	return $media;
+  }
+  
 	
 	public function is_secure_amazon_s3( $url ) {
 		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
