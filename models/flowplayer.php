@@ -160,9 +160,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			$resource = trim( $media );
 			
 			if( !isset($fv_fp->expire_time) ) {
-				$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($fv_fp->conf['amazon_expire'][$key]) );
+				$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($fv_fp->conf['amazon_expire'][$key]), $media );
 			} else {
-				$time = apply_filters( 'fv_flowplayer_amazon_expires', intval(ceil($fv_fp->expire_time)) );
+				$time = apply_filters( 'fv_flowplayer_amazon_expires', intval(ceil($fv_fp->expire_time)), $media );
 			}			
 			if( $time < 900 ) {
 				$time = 900;

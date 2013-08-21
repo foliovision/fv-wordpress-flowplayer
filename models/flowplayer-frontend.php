@@ -572,6 +572,7 @@ class flowplayer_frontend extends flowplayer
     	$this->ret['html'] .= '</div>'."\n".$scripts_after; 
     }
     
+    $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts', $this->ret['script'], 'wpfp_' . $this->hash, $media );
 		return $this->ret;
 	}
   

@@ -29,7 +29,7 @@ function flowplayer_content_remove_commas($content) {
 }
 
 /**
- * Replaces the flowplayer tags in post content by players and fills the $GLOBALS['scripts'] array.
+ * Replaces the flowplayer tags in post content by players and fills the $GLOBALS['fv_fp_scripts'] array.
  * @param string Content to be parsed
  * @return string Modified content string
  */
@@ -222,7 +222,7 @@ function flowplayer_content( $content ) {
       $new_player = $fv_fp->build_min_player($media,$arguments);
 			$content = str_replace($tag, $new_player['html'],$content);
 			if (!empty($new_player['script'])) {
-        $GLOBALS['scripts'][] = $new_player['script'];
+        $GLOBALS['fv_fp_scripts'][] = $new_player['script'];
       }
 		}
 	}
@@ -247,9 +247,9 @@ function flowplayer_prepare_scripts() {
  */
 function flowplayer_display_scripts() {
 	global $fv_fp;
-	if (!empty($GLOBALS['scripts'])) {
+	if (!empty($GLOBALS['fv_fp_scripts'])) {
 		$mobile_switch = false;	
-		foreach ($GLOBALS['scripts'] as $scr) {
+		foreach ($GLOBALS['fv_fp_scripts'] as $scr) {
 			if( stripos($scr, 'fv_flowplayer_mobile_switch') !== false ) {
 				$mobile_switch = true;
 			}
@@ -286,7 +286,7 @@ function flowplayer_display_scripts() {
 			<?php
 		}
 		
-		foreach ($GLOBALS['scripts'] as $scr) {
+		foreach ($GLOBALS['fv_fp_scripts'] as $scr) {
 			echo $scr;
 			if( stripos($scr, 'fv_flowplayer_mobile_switch') !== false ) {
 				$mobile_switch = true;
@@ -430,6 +430,7 @@ function flowplayer_display_scripts() {
 		var fv_fp_date = new Date();
 		var fv_fp_utime = fv_fp_date.getTime();		
     <?php    		
+    echo apply_filters( 'fv_flowplayer_scripts_global', '' );
 		echo "\n</script>\n";
 	}
 }

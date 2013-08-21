@@ -283,13 +283,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.1.32 - 2013/08/ =
+= 2.1.32 - 2013/08/21 =
+* Feature - better use of Wordpress filters - for programmers. Read the guide here: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/api-programming
 * Feature - support for Amazon S3 secured URLs!
+* Fix - controlbar hides after 2 seconds of no mouse movement, it was 5 seconds before
 * Fix - new structure of the Settings screen 
-* Fix - option revised - engine preference, fixed player size and video checker preference changed to simple checkboxes
+* Fix - options and settings screen layout revised - engine preference, fixed player size and video checker preference changed to simple checkboxes
 * Bugfix - autobuffering now works only for first 2 videos also in HTML5
 * Bugfix - autoplay now works only for the first video on the page (use fv_flowplayer_autoplay_limit filter)
 * Bugfix - comma parsing turned off by default - it was causing issue with googlevideo.com URLs
+* Bugfix - global variable name $scripts changed to $fv_fp_scripts
 * Bugfix - video checker on Wordpress Multisite media files
 
 = 2.1.31 - 2013/08/09 =
@@ -598,6 +601,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.1.32 =
+* New settings screen - engine preference, fixed player size and video checker preference changed to simple checkboxes.
 
 = 2.1.27 =
 * This new version includes a fix for autobuffering, which was not working properly. It will be disabled after you upgrade this plugin. Please test it carefully before enabling it back on, mainly check your hosting bandwidth.
