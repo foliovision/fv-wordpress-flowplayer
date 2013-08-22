@@ -283,6 +283,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.33 - 2013/08/22 =
+* Bugfix - fix for parsing of splash images (space characters)
+
 = 2.1.32 - 2013/08/21 =
 * Feature - better use of Wordpress filters - for programmers. Read the guide here: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/api-programming
 * Feature - support for Amazon S3 secured URLs!
@@ -603,7 +606,7 @@ On the right side of this screen, you can see the current visual configuration o
 == Upgrade Notice ==
 
 = 2.1.32 =
-* New settings screen - engine preference, fixed player size and video checker preference changed to simple checkboxes. If you use old shortcodes with commas, please double check these as we turned off parsing of these shortcodes by default - to avoid compatibility issues.
+* New settings screen - engine preference, fixed player size and video checker preference changed to simple checkboxes.
 
 = 2.1.27 =
 * This new version includes a fix for autobuffering, which was not working properly. It will be disabled after you upgrade this plugin. Please test it carefully before enabling it back on, mainly check your hosting bandwidth.

@@ -228,7 +228,7 @@ class flowplayer_frontend extends flowplayer
 			$show_splashend = false;
 			if (isset($args['splashend']) && $args['splashend'] == 'show' && isset($args['splash']) && !empty($args['splash'])) {      
 				$show_splashend = true;
-				$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url('.$splash_img.') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
+				$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
 			}	
 			
 			//  change engine for IE9 and 10
@@ -436,7 +436,7 @@ class flowplayer_frontend extends flowplayer
 			
 			$this->ret['html'] .= "\t".'<video';      
 			if (isset($splash_img) && !empty($splash_img)) {
-				$this->ret['html'] .= ' poster="'.$splash_img.'"';
+				$this->ret['html'] .= ' poster="'.str_replace(' ','%20',$splash_img).'"';
 			} 
 			if( $autoplay == 'true' && $this->autoplay_count < apply_filters( 'fv_flowplayer_autoplay_limit', 1 ) ) {
 				$this->ret['html'] .= ' autoplay';  
