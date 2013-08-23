@@ -99,9 +99,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';            
     if( isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }         
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
-		if( !isset( $conf['amazon_bucket'] ) ) $conf['amazon_bucket'] = array('');       
-		if( !isset( $conf['amazon_key'] ) ) $conf['amazon_key'] = array('');   
-		if( !isset( $conf['amazon_secret'] ) ) $conf['amazon_secret'] = array('');  		
+		if( !isset( $conf['amazon_bucket'] ) || !is_array($conf['amazon_bucket']) ) $conf['amazon_bucket'] = array('');       
+		if( !isset( $conf['amazon_key'] ) || !is_array($conf['amazon_key']) ) $conf['amazon_key'] = array('');   
+		if( !isset( $conf['amazon_secret'] ) || !is_array($conf['amazon_secret']) ) $conf['amazon_secret'] = array('');  		
 		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';   
 		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = false;   		
 		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); } 

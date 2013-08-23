@@ -28,7 +28,7 @@ class flowplayer_frontend extends flowplayer
 		$rtmp = false;
     
 		// returned array with new player's html and javascript content
-		$this->ret = array('html' => '', 'script' => '');
+		$this->ret = array('html' => '', 'script' => ' ');	//	note: we need the white space here, it fails to add into the string on some hosts without it (???)
 		$html_after = '';
 		$scripts_after = '';
       

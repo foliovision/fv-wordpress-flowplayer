@@ -400,7 +400,7 @@ function flowplayer_display_scripts() {
 			var fv_flowplayer_safety_resize_init = false;
 		
 			jQuery('.flowplayer').each( function() {
-				if( jQuery(this).width() < 30 ) {
+				if( jQuery(this).width() < 30 || jQuery(this).height() < 20 ) {
 					fv_flowplayer_safety_resize_init = true
 					var el = jQuery(this);
 					while( jQuery(el).width() < 30 || jQuery(el).width() == jQuery(this).width() ) {        
@@ -408,6 +408,7 @@ function flowplayer_display_scripts() {
 					}
 					
 					jQuery(this).width( jQuery(el).width() );
+					jQuery(this).height( parseInt(jQuery(this).width() * jQuery(this).attr('data-ratio')) );					
 					fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] = el;                  
 				}
 			} );
@@ -417,6 +418,7 @@ function flowplayer_display_scripts() {
 					jQuery('.flowplayer').each( function() {
 						if( fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] ) {
 							jQuery(this).width( fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')].width() );
+							jQuery(this).height( parseInt(jQuery(this).width() * jQuery(this).attr('data-ratio')) );	
 						}
 					} );  
 				} );    
@@ -432,6 +434,10 @@ function flowplayer_display_scripts() {
     <?php    		
     echo apply_filters( 'fv_flowplayer_scripts_global', '' );
 		echo "\n</script>\n";
+	}
+	
+	if( is_user_logged_in() || isset($_GET['fv_wp_flowplayer_check_template']) ) {
+		echo "\n<!--fv-flowplayer-footer-->\n\n";
 	}
 }
 

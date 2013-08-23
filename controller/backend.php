@@ -1248,7 +1248,7 @@ function fv_wp_flowplayer_check_template() {
 	$errors = array();
 	
   if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-  	$response = wp_remote_get( home_url() );
+  	$response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
   	if( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
 			$output = array( 'error' => $error_message );
@@ -1272,6 +1272,12 @@ function fv_wp_flowplayer_check_template() {
 				if( $minify->_config->get_boolean('minify.js.enable') ) {
 					$errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
 				}
+			}
+
+			if( stripos($response['body'],'<!--fv-flowplayer-footer-->') === false ) {
+				$errors[] = "It appears that your template is not using the wp_footer() hook. Advanced FV Flowplayer functions may not work properly.";
+			} else {
+				$ok[] = "wp_footer found in your template!";
 			}
 			
 			$response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments

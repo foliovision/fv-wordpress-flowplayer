@@ -283,6 +283,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.34 - 2013/08/23 =
+* Feature - template checker now also checks for working wp_footer hook in template
+* Bugfix - Amazon S3 settings interface
+* Bubfix - video player sizing in weird templates
+
 = 2.1.33 - 2013/08/22 =
 * Bugfix - fix for parsing of splash images (space characters)
 
