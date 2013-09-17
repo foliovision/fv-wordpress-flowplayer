@@ -38,7 +38,7 @@ class flowplayer_frontend extends flowplayer
 		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) && intval($this->conf['height']) > 0 ) ? $this->conf['height'] : 240;
 		if (isset($args['width'])&&!empty($args['width'])) $width = trim($args['width']);
 		if (isset($args['height'])&&!empty($args['height'])) $height = trim($args['height']);		
-        
+		        
     $src1 = ( isset($args['src1']) && !empty($args['src1']) ) ? trim($args['src1']) : false;
     $src2 = ( isset($args['src2']) && !empty($args['src2']) ) ? trim($args['src2']) : false;  
     $mobile = ( isset($args['mobile']) && !empty($args['mobile']) ) ? trim($args['mobile']) : false;  
@@ -331,7 +331,7 @@ class flowplayer_frontend extends flowplayer
 				$attributes['style'] = 'max-width: ' . $width . 'px; max-height: ' . $height . 'px';
 			}
 			
-			$attributes['data-swf'] = RELATIVE_PATH.'/flowplayer/flowplayer.swf';
+			$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf';
 			
 			if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
 				$attributes['data-analytics'] = $this->conf['googleanalytics'];
@@ -365,12 +365,9 @@ class flowplayer_frontend extends flowplayer
 			if (isset($this->conf['allowfullscreen']) && $this->conf['allowfullscreen'] == 'false') {
 				$attributes['data-fullscreen'] = 'false';
 			}       
-			if ($width > $height) {
-				$ratio = round($height / $width, 4);   
-			}
-			else if ($height > $width) {
-				$ratio = round($width / $height, 4);
-			}     
+
+			$ratio = round($height / $width, 4);   
+
 			$attributes['data-ratio'] = $ratio;
 			if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 				$attributes['data-flashfit'] = 'true';

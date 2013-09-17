@@ -7,7 +7,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	/**
 	 * Relative URL path
 	 */
-	const RELATIVE_PATH = '';
+	const FV_FP_RELATIVE_PATH = '';
 	/**
 	 * Where videos should be stored
 	 */
@@ -220,14 +220,14 @@ function flowplayer_head() {
     $strFPdirname = $matches[1];
   else
     $strFPdirname = 'fv-wordpress-flowplayer';
-	if (!defined('RELATIVE_PATH')) {
+	if (!defined('FV_FP_RELATIVE_PATH')) {
     if( function_exists('plugins_url') ) {
-			define('RELATIVE_PATH', plugins_url().'/'.$strFPdirname);
+			define('FV_FP_RELATIVE_PATH', plugins_url().'/'.$strFPdirname);
 		} else {
 			$siteurl = get_option('siteurl');
 			if((!empty($_SERVER['HTTPS'])) && ('off'!==$_SERVER['HTTPS']))   // this line changes by carlo@artilibere.com
         $siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
-			define('RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
+			define('FV_FP_RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
     }			
    	$vid = 'http://'.$_SERVER['SERVER_NAME'];
    	if (dirname($_SERVER['PHP_SELF']) != '/') 

@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
-Tested up to: 3.6
+Tested up to: 3.6.1
 Stable tag: trunk
 
 Embed videos (FLV, H.264, and MP4) into posts or pages.
@@ -282,6 +282,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.35 - 2013/09/17 =
+* Fix - added class fv-flowplayer-mobile-switch to the mobile switch message P element
+* Fix - adjusted text of the template checker
+* Bugfix - changed name of the RELATIVE_PATH constant for better compatibility
+* Bugfix - video aspect ratio calculation for vertically oriented videos
+* Bugfix - "Send to Foliovision" function of video checker - switched to use same From address as the Wordpress site
 
 = 2.1.34 - 2013/08/23 =
 * Feature - template checker now also checks for working wp_footer hook in template

@@ -366,7 +366,7 @@ function flowplayer_add_media_button() {
 	}
 	$button_tip = 'Insert a Flash Video Player';
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
-	$button_src = RELATIVE_PATH.'/images/icon.png';    
+	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
 	if(!$found) {
     $img = '<img src="' . $button_src . '" alt="' . $button_tip . '" />';
   }	
@@ -1298,7 +1298,7 @@ function fv_wp_flowplayer_check_template() {
 					}
 				}
 			} else if( count($flowplayer_scripts[1]) < 1 ) {
-				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check.";			
+				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your header.php file if it contains wp_head() function call!";			
 			}
 			
 
@@ -1392,8 +1392,8 @@ function fv_wp_flowplayer_support_mail() {
   	
   	add_filter( 'wp_mail_content_type', create_function('', "return 'text/html';") );
   	
-  	add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
-  	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content, $headers );
+  	//add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
+  	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content );
   	
   	die('1');
   }

@@ -7,7 +7,7 @@ global $fv_wp_flowplayer_ver;
 ?>
 
 <?php if( is_admin() ) : ?>
-	<script type="text/javascript" src="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
+	<script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
 <?php endif; ?>
 
 <?php if ($this->conf['disableembedding'] == 'true') { ?>
@@ -16,10 +16,10 @@ global $fv_wp_flowplayer_ver;
 	</script>
 <?php } ?>
 
-<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
+<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 
 <?php if( current_user_can('manage_options') ) : ?>
-	<link rel="stylesheet" href="<?php echo RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
+	<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 	<style type="text/css">
 	.fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
 	</style>

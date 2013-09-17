@@ -16,7 +16,7 @@
 								<div id="content">
 									<div class="flowplayer is-splash"
 									<?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
-									data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
+									data-swf="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
 									data-ratio="0.417" 
 									style="width:<?php echo $fv_fp->conf['width']; ?>px; max-height:<?php echo $fv_fp->conf['height']; ?>px;"
 									<?php if ($fv_fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>

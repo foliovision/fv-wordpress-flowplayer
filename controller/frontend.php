@@ -278,7 +278,7 @@ function flowplayer_display_scripts() {
 							}
 						} );
 						if( fv_fp_mobile ) {
-							jQuery('#'+id).after('<p>Mobile browser detected, serving low bandwidth video. <a href="'+document.URL+'?fv_flowplayer_mobile=no">Click here</a> for full quality.</p>');
+							jQuery('#'+id).after('<p class="fv-flowplayer-mobile-switch">Mobile browser detected, serving low bandwidth video. <a href="'+document.URL+'?fv_flowplayer_mobile=no">Click here</a> for full quality.</p>');
 						}
 					}
 				}
