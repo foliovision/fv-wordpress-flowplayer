@@ -283,6 +283,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.36 - 2013/09/23 =
+* Bugfix - Amazon S3 secure link generator was suddenly failing for links without the bucket name in path part of URL 
+* Bugfix - typo in OGV video parsing resulting in bad video type
+* Bugfix - shortcode parsing when using oggtheora
+
 = 2.1.35 - 2013/09/17 =
 * Fix - added class fv-flowplayer-mobile-switch to the mobile switch message P element
 * Fix - adjusted text of the template checker
@@ -293,7 +298,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 2.1.34 - 2013/08/23 =
 * Feature - template checker now also checks for working wp_footer hook in template
 * Bugfix - Amazon S3 settings interface
-* Bubfix - video player sizing in weird templates
+* Bugfix - video player sizing in weird templates
 
 = 2.1.33 - 2013/08/22 =
 * Bugfix - fix for parsing of splash images (space characters)

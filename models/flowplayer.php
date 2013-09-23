@@ -147,20 +147,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function get_amazon_secure( $media, &$fv_fp ) {
 
+		$amazon_key = -1;
   	if( !empty($fv_fp->conf['amazon_key']) && !empty($fv_fp->conf['amazon_secret']) && !empty($fv_fp->conf['amazon_bucket']) ) {
   		foreach( $fv_fp->conf['amazon_bucket'] AS $key => $item ) {
   			if( stripos($media,$item.'/') != false  || stripos($media,$item.'.') != false ) {
+  				$amazon_key = $key;
   				break;
   			}
   		}
   	}
-    	
-  	if( !empty($fv_fp->conf['amazon_key'][$key]) && !empty($fv_fp->conf['amazon_secret'][$key]) && !empty($fv_fp->conf['amazon_bucket'][$key]) && stripos( $media, trim($fv_fp->conf['amazon_bucket'][$key]) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
+  	
+  	if( $amazon_key != -1 && !empty($fv_fp->conf['amazon_key'][$amazon_key]) && !empty($fv_fp->conf['amazon_secret'][$amazon_key]) && !empty($fv_fp->conf['amazon_bucket'][$amazon_key]) && stripos( $media, trim($fv_fp->conf['amazon_bucket'][$amazon_key]) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
   	
 			$resource = trim( $media );
 			
 			if( !isset($fv_fp->expire_time) ) {
-				$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($fv_fp->conf['amazon_expire'][$key]), $media );
+				$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($fv_fp->conf['amazon_expire'][$amazon_key]), $media );
 			} else {
 				$time = apply_filters( 'fv_flowplayer_amazon_expires', intval(ceil($fv_fp->expire_time)), $media );
 			}			
@@ -172,17 +174,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			$url_components = parse_url($resource);
 			$url_components['path'] = rawurlencode($url_components['path']); 
 			$url_components['path'] = str_replace('%2F', '/', $url_components['path']);
-			
+			if( strpos( $url_components['path'], $fv_fp->conf['amazon_bucket'][$amazon_key] ) === false ) {
+				$url_components['path'] = '/'.$fv_fp->conf['amazon_bucket'][$amazon_key].$url_components['path'];
+			}
 			$stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";
 		
 			$signature = utf8_encode($stringToSign);
-			$signature = hash_hmac('sha1', $signature, $fv_fp->conf['amazon_secret'][$key], true);
+			$signature = hash_hmac('sha1', $signature, $fv_fp->conf['amazon_secret'][$amazon_key], true);
 			$signature = base64_encode($signature);
 			
 			$signature = urlencode($signature);
 		
 			$url = $resource;
-			$url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$key]
+			$url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key]
 						 .'&Expires='.$expires
 						 .'&Signature='.$signature;
 						 

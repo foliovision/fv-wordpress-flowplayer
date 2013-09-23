@@ -532,7 +532,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> in Summer.
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Back to School Pricing!
 		</div>
 	</td>
 </tr>
@@ -827,7 +827,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 							if( isset($stts[0]['time_to_sample_table'][0]['sample_count']) ) {
 								$video_info['Seek points'] = $stts[0]['time_to_sample_table'][0]['sample_count'].' (stts sample count)';
 							} else { 
-								$video_errors[] = 'One one seeking point found, it might be slow to seek in the video.';
+								$video_errors[] = 'Only one seeking point found, it might be slow to seek in the video.';
 							}
 						}               
 						 

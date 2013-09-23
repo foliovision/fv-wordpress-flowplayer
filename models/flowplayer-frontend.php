@@ -50,7 +50,7 @@ class flowplayer_frontend extends flowplayer
     
     //	decide which player to use
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-    	if( preg_match( '~\.(mp3|wav|ogg)~', $media_item ) ) {
+    	if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
 				$player_type = 'audio';
 				break;
 			} 
@@ -629,7 +629,7 @@ class flowplayer_frontend extends flowplayer
     $pathinfo = pathinfo( trim($media) );
 
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
-    $extension = preg_replace( '~\?.+$~', '', $extension );
+    $extension = preg_replace( '~[?#].+$~', '', $extension );
     
 		if( !$extension ) {
 			return $default;
@@ -646,7 +646,9 @@ class flowplayer_frontend extends flowplayer
     	$extension = 'wav';
     } else if( $extension == 'ogg' ) {
     	$extension = 'ogg';
-    } else if( $extension == 'mov' ) {
+    } else if( $extension == 'ogv' ) {
+    	$extension = 'ogg';
+    }else if( $extension == 'mov' ) {
       $extension = 'mp4';
     } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
       $extension = $default;  

@@ -472,7 +472,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Summer Special!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
