@@ -788,6 +788,24 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 		
 					$ThisFileInfo = $getID3->analyze( $localtempfilename );
 				}
+				
+				
+				/*
+				Only check file length
+				*/
+				if( isset($meta_action) && $meta_action == 'check_time' ) {
+				
+					if( isset($ThisFileInfo['playtime_seconds']) ) {
+						$time = $ThisFileInfo['playtime_seconds'];    	
+					}
+					global $post;
+					$fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
+					$fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
+					$fv_flowplayer_meta[sanitize_title($meta_original)] = array('time' => $time);
+					update_post_meta( $post->ID, '_fv_flowplayer', $fv_flowplayer_meta );
+					return;
+				} 				
+				
 																						
 				if( isset($ThisFileInfo['error']) ) {
 					fv_wp_flowplayer_array_search_by_item( 'not correctly handled', $ThisFileInfo['error'], $check, true );
@@ -1031,41 +1049,29 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
       
     $json = @json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
     $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;
-    
-    if( isset($meta_action) && $meta_action == 'check_time' ) {
-    
-    	if( isset($ThisFileInfo['playtime_seconds']) ) {
-    		$time = $ThisFileInfo['playtime_seconds'];    	
-    	}
-    	global $post;
-    	$fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
-    	$fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
-    	$fv_flowplayer_meta[sanitize_title($meta_original)] = array('time' => $time);
-    	update_post_meta( $post->ID, '_fv_flowplayer', $fv_flowplayer_meta );
-    	
-    } else {    
-			if( $last_error ) {
-				if( function_exists('mb_check_encoding') && function_exists('utf8_encode') ) {
-						if(!mb_check_encoding($message, 'UTF-8')) {
-								$message = utf8_encode($message);
-						}
-					} else {
-						$message = htmlentities( $message, ENT_QUOTES, 'utf-8', FALSE);
-						$message = ( $message ) ? $message : 'Admin: Error parsing JSON';
-					}           
-				
-				$json = json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
-				$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;
-				if( $last_error ) {
-					echo json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) );    
+       
+		if( $last_error ) {
+			if( function_exists('mb_check_encoding') && function_exists('utf8_encode') ) {
+					if(!mb_check_encoding($message, 'UTF-8')) {
+							$message = utf8_encode($message);
+					}
 				} else {
-					echo $json;
-				}
+					$message = htmlentities( $message, ENT_QUOTES, 'utf-8', FALSE);
+					$message = ( $message ) ? $message : 'Admin: Error parsing JSON';
+				}           
+			
+			$json = json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
+			$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;
+			if( $last_error ) {
+				echo json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) );    
 			} else {
 				echo $json;
 			}
-			die();
+		} else {
+			echo $json;
 		}
+		die();
+
   } else {  
   	die('-1');
   }
@@ -1433,7 +1439,7 @@ function fv_wp_flowplayer_save_post( $id ) {
   	foreach( $matches[0] AS $shortcode ) {
   		$process = false;
   		foreach( $fv_fp->conf['amazon_bucket'] AS $bucket ) {
-  			if( preg_match( '~[\'"](\S+?'.$bucket.'\S+?)[\'"]~', $shortcode, $process) ) {
+  			if( strlen(trim($bucket)) > 0 && preg_match( '~[\'"](\S+?'.$bucket.'\S+?)[\'"]~', $shortcode, $process) ) {
   				$videos[] = $process[1];
   				break;
   			}

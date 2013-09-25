@@ -283,6 +283,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.37 - 2013/09/25 =
+* Bugfix - Amazon S3 protected video length checking was interfering with some of the post saves in some cases
+
 = 2.1.36 - 2013/09/23 =
 * Bugfix - Amazon S3 secure link generator was suddenly failing for links without the bucket name in path part of URL 
 * Bugfix - typo in OGV video parsing resulting in bad video type
