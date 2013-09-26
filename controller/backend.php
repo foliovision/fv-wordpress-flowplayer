@@ -647,6 +647,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 					$found_m3u8 = true;
 				} else if( preg_match( '!\.(avi)$!', $source, $match ) ) {
 					$found_avi = true;
+				} else if( preg_match( '!\.(3gp)$!', $source, $match ) ) {
+					$found_3gp = true;
+				} else if( preg_match( '!\.(webm)$!', $source, $match ) ) {
+					$found_webm = true;
 				}
   		}
   	}
@@ -658,6 +662,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
   	if( isset($found_rtmp) && !isset($found_mp4) ) {
   		$video_warnings[]	= 'We recommend that you also provide your RTMP video in MP4 format. RTMP is not compatible with HTML5 and won\'t play on devices without Flash (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
   	}
+  	
+  	if( isset($found_3gp) && !isset($found_mp4) ) {
+  		$video_warnings[]	= 'We recommend that you re-encode your 3GP video into a MP4 format. 3GP is not compatible with all HTML5 players so it won\'t play on these devices if they don\'t have Flash. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
+  	}  	
   	
   	if( isset($found_m3u8) && count($all_sources) == 1 ) {
   		$video_warnings[]	= 'We recommend that you also provide your M3U8 video in MP4 or WEBM format. HTTP Live Streaming (m3u8) is only supported by Apple iOS devices (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';

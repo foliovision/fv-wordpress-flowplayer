@@ -248,10 +248,10 @@ class flowplayer_frontend extends flowplayer
 				foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
 					if( $media_item ) {
 						$test_media[] = $this->get_amazon_secure( $media_item, $this );
-						break;
+						//break;
 					} 
 				}   
-				
+			
 				if( $this->conf['disable_videochecker'] == 'false' ) {
 					$pre_notice = "jQuery('#wpfp_".$this->hash."').append('<div id=\"wpfp_notice_".$this->hash."\" class=\"fv-wp-flowplayer-notice-small\" title=\"This note is visible to logged-in admins only.\"><small>Admin note: Checking the video file...</small></div>');";
 				}
@@ -648,8 +648,10 @@ class flowplayer_frontend extends flowplayer
     	$extension = 'ogg';
     } else if( $extension == 'ogv' ) {
     	$extension = 'ogg';
-    }else if( $extension == 'mov' ) {
+    } else if( $extension == 'mov' ) {
       $extension = 'mp4';
+    } else if( $extension == '3gp' ) {
+      $extension = 'mp4';      
     } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
       $extension = $default;  
     }

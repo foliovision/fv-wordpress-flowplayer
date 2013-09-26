@@ -283,6 +283,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.38 - 2013/09/26 =
+* Bugfix - 3GP file parsing
+* Bugfix - 3GP video checker messages - shows warnings to provide a HTML5 version of the video
+
 = 2.1.37 - 2013/09/25 =
 * Bugfix - Amazon S3 protected video length checking was interfering with some of the post saves in some cases
 
