@@ -467,7 +467,7 @@ class flowplayer_frontend extends flowplayer
 			}			
 			
 			if( $mp4_position > $webm_position ) {
-				if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
+				if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 					$scripts_after .= '<script type="text/javascript">
 						if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) )  {
 							document.getElementById("wpfp_'.$this->hash.'_video").setAttribute("preload", "none");
@@ -613,6 +613,20 @@ class flowplayer_frontend extends flowplayer
 					if( $media_fixed != $media && empty($rtmp) ) {
 						$source_flash_encoded = "\n\t\t".'<source '.$id.'src="'.trim($media_fixed).'" type="video/flash" />';				
 					}
+			}
+			
+			$url_parts = parse_url( ($source_flash_encoded) ? $source_flash_encoded : $media );					
+			if( stripos( $url_parts['path'], '+' ) !== false ) {
+
+				if( !empty($url_parts['path']) ) {
+						$url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts['path'])));
+				}
+				if( !empty($url_parts['query']) ) {
+						$url_parts['query'] = str_replace( '&amp;', '&', $url_parts['query'] );				
+				}
+				
+				$media_fixed = http_build_url( ($source_flash_encoded) ? $source_flash_encoded : $media, $url_parts);
+				$source_flash_encoded = "\n\t\t".'<source '.$id.'src="'.trim($media_fixed).'" type="video/flash" />';
 			}
 			
 			if( $url_only ) {

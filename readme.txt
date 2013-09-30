@@ -283,6 +283,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.39 - 2013/09/30
+* Bugfix - Google Chrome preload disabler fix 
+* Bugfix - Amazon S3 signed URLs - fix for + symbols in the URL
+
 = 2.1.38 - 2013/09/26 =
 * Bugfix - 3GP file parsing
 * Bugfix - 3GP video checker messages - shows warnings to provide a HTML5 version of the video
