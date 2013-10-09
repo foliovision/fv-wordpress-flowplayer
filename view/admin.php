@@ -249,7 +249,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>   
 					<tr>          
-						<td><label for="interface[playlist]">Playlist:</label></td>
+						<td><label for="interface[playlist]">Playlist: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
 						<td style="text-align:right">
               <input type="hidden" name="interface[playlist]" value="false" />
 							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
