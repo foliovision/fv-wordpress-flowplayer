@@ -18,6 +18,7 @@
 .fv-wp-flowplayer-notice { background-color: #FFFFE0; border-color: #E6DB55; margin: 5px 0 15px; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; } 
 .fv-wp-flowplayer-notice.fv-wp-flowplayer-note { background-color: #F8F8F8; border-color: #E0E0E0; } 
 .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; } 
+.fv_wp_flowplayer_playlist_remove { display: none; }
 </style>
   
 <script type='text/javascript'>
@@ -84,6 +85,38 @@ function fv_wp_flowplayer_insert( shortcode ) {
 } 
 
 
+function fv_wp_flowplayer_playlist_remove(link) {
+	jQuery(link).parent().parent().remove();	
+	return false;
+}
+
+
+function fv_wp_flowplayer_playlist_item( aItem ) {
+	var html = '';
+	var aPlaylistItem = aItem.split(',');
+	if( aPlaylistItem[1] == 'preroll' && !aPlaylistItem[2] ) {
+		aPlaylistItem[1] = '';
+		aPlaylistItem[2] = 'preroll';
+	}
+	var sItemSelectHTML = '<option value="">Normall</option><option value="preroll" '+( (aPlaylistItem[2] == 'preroll') ? 'selected' : '' )+'>Preroll</option>'
+	
+	html += '<tr><th width="18%" title="Drag to order playlist items" class="fv_wp_flowplayer_playlist_head"><a class="fv_wp_flowplayer_playlist_remove" href="#" onclick="return fv_wp_flowplayer_playlist_remove(this)">remove</a> Video<br />Splash Image</th>';
+	html += '<td><input type="text" name="playlist[][video]" value="'+( (aPlaylistItem[0]) ? aPlaylistItem[0] : '' )+'" style="width: 100%" /><br />';
+	html += '<input type="text" name="playlist[][splash]" value="'+( (aPlaylistItem[1]) ? aPlaylistItem[1] : '' )+'" style="width: 100%" /></td>';				
+	//sItemHTML += '<td><select name="playlist[][meta]">'+sItemSelectHTML+'</select></td>';
+	html += '</tr>';
+	return html;
+}
+
+
+function fv_flowplayer_playlist_add() {
+	jQuery('#fv_wp_flowplayer_field_playlist table tbody').append( fv_wp_flowplayer_playlist_item(',') );
+  jQuery('.fv_wp_flowplayer_playlist_head').hover(
+  	function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } ); 
+  return false;
+}
+
+
 function fv_wp_flowplayer_edit() {	
   
   fv_wp_flowplayer_init();
@@ -94,6 +127,7 @@ function fv_wp_flowplayer_edit() {
   jQuery('#fv_wp_flowplayer_field_embed').prop('selectedIndex',0);
   jQuery('#fv_wp_flowplayer_field_align').prop('selectedIndex',0);  
   jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
+  jQuery('#fv_wp_flowplayer_field_playlist').html('<table><tbody></tbody></table>');  
   
 	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
@@ -192,6 +226,8 @@ function fv_wp_flowplayer_edit() {
   	var salign = shortcode.match( /align="([^"]+)"/ );
     fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /align="([^"]+)"/, '' ); 
     
+  	var sPlaylist = shortcode_parse_fix.match( /playlist=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /playlist=['"]([^']*?)['"]/, '' );        
     
   	if( srcrtmp != null && srcrtmp[1] != null ) {
   		document.getElementById("fv_wp_flowplayer_field_rtmp").value = srcrtmp[1];
@@ -274,11 +310,27 @@ function fv_wp_flowplayer_edit() {
       if (salign[1] == 'right') 
         document.getElementById("fv_wp_flowplayer_field_align").selectedIndex = 2;
     }    
+    
+    var sPlaylistHTML = '';
+    if( sPlaylist ) {    	
+			aPlaylist = sPlaylist[1].split(';');
+			for( sPlI in aPlaylist ) {			
+				sPlaylistHTML += fv_wp_flowplayer_playlist_item( aPlaylist[sPlI] );
+			}
+    } else if( jQuery('#fv_wp_flowplayer_field_playlist table tbody tr').length == 0 )  {
+    	sPlaylistHTML = fv_wp_flowplayer_playlist_item(',');   	
+    }
+    
+		jQuery('#fv_wp_flowplayer_field_playlist table tbody').html( sPlaylistHTML );
+		jQuery('#fv_wp_flowplayer_field_playlist table tbody').sortable();    
   	
   	jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Update' );    
 	} else {
     fv_wp_fp_shortcode_remains = '';
   }
+  
+  jQuery('.fv_wp_flowplayer_playlist_head').hover(
+  	function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } );  
   
   jQuery('#cboxContent').css('background','white');
 }
@@ -411,7 +463,23 @@ function fv_wp_flowplayer_submit() {
 	if( document.getElementById("fv_wp_flowplayer_field_ad_height").value != '' )
 		shortcode += ' ad_height=' + document.getElementById("fv_wp_flowplayer_field_ad_height").value;		
 	if( document.getElementById("fv_wp_flowplayer_field_ad_skip").checked != '' )
-		shortcode += ' ad_skip=yes';				
+		shortcode += ' ad_skip=yes';			
+		
+	if( jQuery('#fv_wp_flowplayer_field_playlist table tr td').length > 0 ) {
+		shortcode += ' playlist="';	
+		var aPlaylistItems = new Array();
+		jQuery('#fv_wp_flowplayer_field_playlist table tr td').each(function() {
+				var aPlaylistItem = new Array();
+				jQuery(this).find('input').each( function() {
+					if( jQuery(this).attr('value').length > 0 ) { 
+						aPlaylistItem.push(jQuery(this).attr('value'));
+					}
+				} );			
+				aPlaylistItems.push(aPlaylistItem.join(','));
+			}
+		);
+		shortcode += aPlaylistItems.join(';')+'"';
+	}
 	
 	if( fv_wp_fp_shortcode_remains.length > 0 ) {
   	shortcode += ' ' + fv_wp_fp_shortcode_remains.trim();
@@ -523,6 +591,15 @@ function add_rtmp() {
               <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_splash&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Image</a>
           	<?php }; //allow uploads splash image ?></td>
   			</tr>
+  			
+        <tr<?php if( $conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?>>
+  				<th scope="row" class="label"></th>
+  				<td style="text-align: left; padding-top: 10px; text-transform: uppercase;">Playlist</td>
+  				<td><a style="outline: 0" onclick="return fv_flowplayer_playlist_add()" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;Add Item</a></td>
+  			</tr>  			
+        <tr<?php if( $conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?>>
+  				<td class="field" colspan="3" id="fv_wp_flowplayer_field_playlist"></td>
+  			</tr>  			  			
       
         <tr<?php if( $conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright">Subtitles</label></th>

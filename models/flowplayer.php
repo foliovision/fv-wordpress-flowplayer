@@ -98,6 +98,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;     		
 		if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';            
     if( isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }         
+    if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'ads' => false, 'mobile' => false, 'align' => false );        
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';    
 		if( !isset( $conf['amazon_bucket'] ) || !is_array($conf['amazon_bucket']) ) $conf['amazon_bucket'] = array('');       
 		if( !isset( $conf['amazon_key'] ) || !is_array($conf['amazon_key']) ) $conf['amazon_key'] = array('');   
@@ -178,7 +179,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			if( strpos( $url_components['path'], $fv_fp->conf['amazon_bucket'][$amazon_key] ) === false ) {
 				$url_components['path'] = '/'.$fv_fp->conf['amazon_bucket'][$amazon_key].$url_components['path'];
 			}
-			$stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";
+		
+			$stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";	
 		
 			$signature = utf8_encode($stringToSign);
 
@@ -209,10 +211,55 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   	return $media;
   }
   
+  
+  function get_cloudfront_secure( $resource, $timeout = 900 ) {
+		//This comes from key pair you generated for cloudfront
+		$keyPairId = "YOUR_CLOUDFRONT_KEY_PAIR_ID";
+		
+		$expires = time() + $timeout; //Time out in seconds
+		$json = '{"Statement":[{"Resource":"'.$resource.'","Condition":{"DateLessThan":{"AWS:EpochTime":'.$expires.'}}}]}';		
+		
+		//Read Cloudfront Private Key Pair
+		$fp=fopen("private_key.pem","r"); 
+		$priv_key=fread($fp,8192); 
+		fclose($fp); 
+		
+		//Create the private key
+		$key = openssl_get_privatekey($priv_key);
+		if(!$key)
+		{
+			echo "<p>Failed to load private key!</p>";
+			die();
+			return;
+		}
+		
+		//Sign the policy with the private key
+		if(!openssl_sign($json, $signed_policy, $key, OPENSSL_ALGO_SHA1))
+		{
+			echo '<p>Failed to sign policy: '.openssl_error_string().'</p>';
+			die();
+			return;
+		}
+		
+		//Create url safe signed policy
+		$base64_signed_policy = base64_encode($signed_policy);
+		$signature = str_replace(array('+','=','/'), array('-','_','~'), $base64_signed_policy);
+		
+		//Construct the URL
+		$url = $resource.'?Expires='.$expires.'&Signature='.$signature.'&Key-Pair-Id='.$keyPairId;
+		
+		return $url;  
+  }
+  
 	
 	public function is_secure_amazon_s3( $url ) {
 		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
 	}
+	
+
+	public function is_secure_cloudfront( $url ) {
+		return preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
+	}	
 }
 /**
  * Defines some needed constants and loads the right flowplayer_head() function.

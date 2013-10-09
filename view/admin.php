@@ -65,7 +65,7 @@ function fv_flowplayer_admin_amazon_options() {
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td colspan="2">
-							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="#" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
+							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -248,6 +248,13 @@ function fv_flowplayer_admin_interface_options() {
               <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fv_fp->conf['allowuploads']) && $fv_fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   
+					<tr>          
+						<td><label for="interface[playlist]">Playlist:</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="interface[playlist]" value="false" />
+							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>    					
 					<tr>          
 						<td><label for="interface[popup]">HTML popup:</label></td>
 						<td style="text-align:right">

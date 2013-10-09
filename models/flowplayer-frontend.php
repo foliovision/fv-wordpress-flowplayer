@@ -521,14 +521,13 @@ class flowplayer_frontend extends flowplayer
 	
 			if( isset($rtmp) && !empty($rtmp) ) {
 				$rtmp_url = parse_url($rtmp);
-				/*var_dump($rtmp_url);
-				$rtmp_url = explode('/', $rtmp_url['path'], 3);        
-				$rtmp_file = $rtmp_url[count($rtmp_url)-1];*/
+				$rtmp_file = $rtmp_url['path'] . ( ( strlen($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
+
 				$extension = $this->get_file_extension($rtmp_url['path'], null);
 				if( $extension ) {
 					$extension .= ':';
 				}
-				$this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_url['path'], " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
+				$this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
 			}  
 			
 			if (isset($subtitles) && !empty($subtitles)) {

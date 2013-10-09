@@ -275,13 +275,19 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* Amazon S3 secure URLs support
-* playlist support (allowing pre-roll videos)
+* better JS and CSS optimization
 * cue points support
 * VAST/VPAID support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.40 - 2013/10/09
+* Feature - playlist support - initial version, please let us know about any issues
+* Fix - not using wp_get_headers() in video checker anymore - it was causing issues on some servers
+* Fix - changed mime type and seeking points warnings in video checker to yellow warnings instead of errors
+* Fix - added MPEG-1 warning to video checker
+* Bugfix - RTMP parsing
 
 = 2.1.39 - 2013/09/30
 * Bugfix - Google Chrome preload disabler fix 

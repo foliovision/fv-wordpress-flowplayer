@@ -693,7 +693,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 			
 			$remotefilename_encoded = http_build_url($remotefilename, $url_parts);  	
 		
-			if( $fv_fp->is_secure_amazon_s3($remotefilename_encoded) ) {	//	skip headers check for Amazon S3, as it's slow
+			if( $fv_fp->is_secure_amazon_s3($remotefilename_encoded) || 1>0 ) {	//	skip headers check for Amazon S3, as it's slow
 				$headers = false;
 			} else {
 				$headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded ) ), array( 'method' => 'GET', 'redirection' => 3 ) );
@@ -830,10 +830,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 				
 				if( isset($ThisFileInfo['quicktime']) ) {			
 					if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-						$video_errors[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+						$video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
 					} else {
 						if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
-							$video_errors[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+							$video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
 						} else {
 							$video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
 						}
@@ -853,7 +853,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 							if( isset($stts[0]['time_to_sample_table'][0]['sample_count']) ) {
 								$video_info['Seek points'] = $stts[0]['time_to_sample_table'][0]['sample_count'].' (stts sample count)';
 							} else { 
-								$video_errors[] = 'Only one seeking point found, it might be slow to seek in the video.';
+								$video_warnings[] = 'Only one seeking point found, it might be slow to seek in the video.';
 							}
 						}               
 						 
@@ -930,6 +930,11 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 					}
 				}
 				
+				if( isset($ThisFileInfo['video']['codec']) && $ThisFileInfo['video']['codec'] == 'MPEG-1' ) {
+					$video_info['Video'] = 'MPEG-1 Codec';
+					$video_errors[] = 'MPEG-1 is not a valid HTML5 video format. You need to re-encode the video into MP4.';
+				}  				
+				
 				if( isset($video_info['Video']) && is_array($video_info['Video']) ) {
 					$video_info['Video'] = implode( ', ', $video_info['Video'] );
 				
@@ -938,6 +943,8 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 						$video_info['Video'] = str_replace( $key, $key.' ('.$item.')', $video_info['Video'] );
 					}
 				}      
+		
+
 				
 			}	//	end is_wp_error check			
 			
