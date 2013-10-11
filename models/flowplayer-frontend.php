@@ -398,7 +398,7 @@ class flowplayer_frontend extends flowplayer
 							}
 						} else {
 							$playlist_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
-							$playlist_items_html[] = "\t\t<a href='".trim($playlist_item)."'></a>\n";
+							$playlist_items_html[] = "\t\t<a href='".$this->get_video_src( trim($playlist_item), $mobileUserAgent, null, null, true )."'></a>\n";
 						}
 						
 					}

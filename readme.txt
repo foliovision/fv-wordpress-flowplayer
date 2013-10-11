@@ -282,6 +282,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.41 - 2013/10/11 =
+* Bugfix - bbPress compatibility fix - issues with some templates
+* Bugfix - playlist (beta) - fixed support for secure Amazon URLs
+
 = 2.1.40 - 2013/10/09 =
 * Feature - playlist support - initial version, please let us know about any issues
 * Fix - not using wp_get_headers() in video checker anymore - it was causing issues on some servers

@@ -50,6 +50,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	   		add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
 	   	}
 		}
+		
+
+		// define needed constants
+		preg_match('/.*wp-content\/plugins\/(.*?)\/models.*/',dirname(__FILE__),$matches);
+		if (isset($matches[1]))
+			$strFPdirname = $matches[1];
+		else
+			$strFPdirname = 'fv-wordpress-flowplayer';
+		if (!defined('FV_FP_RELATIVE_PATH')) {
+			if( function_exists('plugins_url') ) {
+				define('FV_FP_RELATIVE_PATH', plugins_url().'/'.$strFPdirname);
+			} else {
+				$siteurl = get_option('siteurl');
+				if((!empty($_SERVER['HTTPS'])) && ('off'!==$_SERVER['HTTPS']))   // this line changes by carlo@artilibere.com
+					$siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
+				define('FV_FP_RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
+			}			
+			$vid = 'http://'.$_SERVER['SERVER_NAME'];
+			if (dirname($_SERVER['PHP_SELF']) != '/') 
+				$vid .= dirname($_SERVER['PHP_SELF']);
+			define('VIDEO_DIR', '/videos/');
+			define('VIDEO_PATH', $vid.VIDEO_DIR);	
+		}		
 	}
 	/**
 	 * Gets configuration from cfg file.
@@ -265,30 +288,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
  * Defines some needed constants and loads the right flowplayer_head() function.
  */
 function flowplayer_head() {
-	global $fv_fp;
-
-	// define needed constants
-  preg_match('/.*wp-content\/plugins\/(.*?)\/models.*/',dirname(__FILE__),$matches);
-  if (isset($matches[1]))
-    $strFPdirname = $matches[1];
-  else
-    $strFPdirname = 'fv-wordpress-flowplayer';
-	if (!defined('FV_FP_RELATIVE_PATH')) {
-    if( function_exists('plugins_url') ) {
-			define('FV_FP_RELATIVE_PATH', plugins_url().'/'.$strFPdirname);
-		} else {
-			$siteurl = get_option('siteurl');
-			if((!empty($_SERVER['HTTPS'])) && ('off'!==$_SERVER['HTTPS']))   // this line changes by carlo@artilibere.com
-        $siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
-			define('FV_FP_RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
-    }			
-   	$vid = 'http://'.$_SERVER['SERVER_NAME'];
-   	if (dirname($_SERVER['PHP_SELF']) != '/') 
-      $vid .= dirname($_SERVER['PHP_SELF']);
-    define('VIDEO_DIR', '/videos/');
-    define('VIDEO_PATH', $vid.VIDEO_DIR);	
-  }
-	
+	global $fv_fp;	
   $fv_fp->flowplayer_head();
 }
 
