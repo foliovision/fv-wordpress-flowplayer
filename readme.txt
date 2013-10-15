@@ -136,7 +136,7 @@ Flowplayer script http://site.com/wp-content/themes/OptimizePress/js/flowplayer-
 
 The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading.
 
-There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "<!-- FV Flowplayer -->" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
+There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "&lt;!-- FV Flowplayer --&gt;>" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
 
 = Does this plugin support Shoutcast? =
 
