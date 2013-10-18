@@ -228,7 +228,15 @@
 .flowplayer.has-playlist .fp-playlist a:hover, #content .flowplayer.has-playlist .fp-playlist a:hover { border-color:#ccc }
 .flowplayer.has-playlist .fp-playlist a.is-active, #content .flowplayer.has-playlist .fp-playlist a.is-active { border-color:#52b9e4; }
 .is-paused.flowplayer.has-playlist .fp-playlist a.is-active { border-color:#1c87b4 }
-.flowplayer.has-playlist, #content .flowplayer.has-playlist { margin-bottom: 160px; } 
+.flowplayer.has-playlist, #content .flowplayer.has-playlist { margin-bottom: 160px; }
+
+.flowplayer.playlist-items-8 .fp-playlist { bottom:-270px; }
+.flowplayer.playlist-items-8, #content .flowplayer.playlist-items-8 { margin-bottom: 295px; }
+.flowplayer.playlist-items-12 .fp-playlist { bottom:-405px; }
+.flowplayer.playlist-items-12, #content .flowplayer.playlist-items-12 { margin-bottom: 430px; }
+.flowplayer.playlist-items-16 .fp-playlist { bottom:-540px; }
+.flowplayer.playlist-items-16, #content .flowplayer.playlist-items-16 { margin-bottom: 565px; }
+
 
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;

@@ -214,8 +214,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		
 			$url = $resource;
 			$url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key]
-						 .'&Expires='.$expires
-						 .'&Signature='.$signature;
+						 .'&amp;Expires='.$expires
+						 .'&amp;Signature='.$signature;
 						 
 			$media = $url;
 						

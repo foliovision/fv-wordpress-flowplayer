@@ -127,6 +127,10 @@ If you are using Windows, try this tool: http://www.datagoround.com/lab/
 
 There are also server-side tools for fixing of this written in Python and there one for PHP, but it fails on videos bigger than the PHP memory limit.
 
+= Are there any known compatibility issues? =
+
+We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
+
 = I'm using OptimizePress template. =
 
 First click the "Check template" button on the pluging settings screen. It will likely report an issue like:
@@ -134,7 +138,7 @@ First click the "Check template" button on the pluging settings screen. It will 
 `It appears there are multiple Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.
 Flowplayer script http://site.com/wp-content/themes/OptimizePress/js/flowplayer-3.2.4.min.js is old version and won't play. You need to get rid of this script.`
 
-The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading.
+The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading. Typically it will be in any of the header.php files - including header-myheader.php, header-singleheader.php or similar files.
 
 There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "&lt;!-- FV Flowplayer --&gt;" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
 
@@ -281,6 +285,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.42 - 2013/10/18 =
+* Bugfix - playlist (beta) - fixed CSS when more than 4 items in playlist
+* Bugfix - playlist (beta) - fixed support for secure Amazon URLs - once more
 
 = 2.1.41 - 2013/10/11 =
 * Bugfix - bbPress compatibility fix - issues with some templates
