@@ -71,26 +71,11 @@ class flowplayer_frontend extends flowplayer
 				} 
 							
 				if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
-					$this->ret['script'] .= "
-						if( jQuery.browser.mozilla && navigator.appVersion.indexOf(\"Win\")!=-1 ) {
-							jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
-						}
-						";
+					$this->ret['script'] .= "fv_flowplayer_browser_ff_m4v('".$this->hash."')\n";
 				}
 				
 				if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
-					$this->ret['script'] .= "
-						var match = window.navigator.appVersion.match(/Chrome\/(\d+)\./);
-						if( match != null ) {
-							var chrome_ver = parseInt(match[1], 10);
-							if(
-								( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 && navigator.appVersion.indexOf(\"Win\")!=-1 ) || 
-								( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf(\"Linux\")!=-1 )							
-							) {
-								jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
-							}
-						}
-						";
+					$this->ret['script'] .= "fv_flowplayer_browser_chrome_mp4('".$this->hash."');\n";
 				}				
 				
 			}    
@@ -234,11 +219,7 @@ class flowplayer_frontend extends flowplayer
 			//  change engine for IE9 and 10
 			
 			if( $this->conf['engine'] == 'false' ) {
-				$this->ret['script'] .= "
-					if( jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9 ) {
-						jQuery('#wpfp_".$this->hash."').attr('data-engine','flash');
-					}
-					";
+				$this->ret['script'] .= "fv_flowplayer_browser_ie( '".$this->hash."' );\n";
 			}
 			
 			if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['disable_videochecker'] != 'true' ) {
@@ -251,42 +232,15 @@ class flowplayer_frontend extends flowplayer
 						//break;
 					} 
 				}   
-			
-				if( $this->conf['disable_videochecker'] == 'false' ) {
-					$pre_notice = "jQuery('#wpfp_".$this->hash."').append('<div id=\"wpfp_notice_".$this->hash."\" class=\"fv-wp-flowplayer-notice-small\" title=\"This note is visible to logged-in admins only.\"><small>Admin note: Checking the video file...</small></div>');";
-				}
 				
 				if( isset($test_media) && count($test_media) > 0 ) { 
-					$this->ret['script'] .= "
-						jQuery(document).ready( function() { 
-							var ajaxurl = '".site_url()."/wp-admin/admin-ajax.php';
-							$pre_notice
-							jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_check_mimetype', media: '".json_encode($test_media)."', hash: '".$this->hash."' }, function( response ) {
-								var obj;
-								try {
-									obj = jQuery.parseJSON( response );
-									
-									var extra_class = ( obj[1] > 0 ) ? ' fv-wp-flowplayer-error' : ' fv-wp-flowplayer-ok';
-									if( obj[1] == 0 && obj[2] > 0 ) {
-										extra_class = '';
-									}
-									jQuery('#wpfp_notice_".$this->hash."').remove();
-									jQuery('#wpfp_".$this->hash."').append('<div id=\"wpfp_notice_".$this->hash."\" class=\"fv-wp-flowplayer-notice-small'+extra_class+'\" title=\"This note is visible to logged-in admins only.\">'+obj[0]+'</div>');						 			             
-								} catch(e) {
-									jQuery('#wpfp_notice_".$this->hash."').html('<p>Admin: Error parsing JSON</p>');
-									return;
-								}
-	
-							} );             
-						} );
-					";
+					$this->ret['script'] .= "fv_flowplayer_admin_test_media( '".$this->hash."', '".json_encode($test_media)."' );\n";
 				}
 			}
 			
 			
 			if ( !empty($redirect) ) {
-				$this->ret['script'] .= "
-				jQuery('#wpfp_".$this->hash."').bind('finish', function() { window.open('".$redirect."', '_blank'); } );";
+				$this->ret['script'] .= "fv_flowplayer_redirect( '".$this->hash."', '".$redirect."')\n";
 			}
 
 			
@@ -408,11 +362,7 @@ class flowplayer_frontend extends flowplayer
 						$attributes['class'] .= ' has-playlist playlist-items-'.(4 * ceil(count($playlist_items_html)/4) );
 					} else {
 						//	do stuff with $media, $src1, $src2
-						$this->ret['script'] .= "
-						jQuery('#wpfp_".$this->hash."').bind('finish', function (e,api, error) {
-							jQuery('#wpfp_".$this->hash."').flowplayer().load( [ {mp4: '$media'} ] )
-						} );
-						";
+						$this->ret['script'] .= "fv_flowplayer_preroll_post( '".$this->hash."', '".$media."' );\n";
 						
 						// put ad in as the video source
 						$media = $media_item;
@@ -441,11 +391,7 @@ class flowplayer_frontend extends flowplayer
 			}
 			if (isset($args['loop']) && $args['loop'] == 'true') {
 				$this->ret['html'] .= ' loop';
-				$this->ret['script'] .= "
-					jQuery('#wpfp_".$this->hash."').bind('finish', function() {          
-						jQuery('#wpfp_".$this->hash."').flowplayer().play();       
-					});    
-				";   				
+				$this->ret['script'] .= "fv_flowplayer_loop( '".$this->hash."' );\n";		
 			}     
 			if( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 				$this->ret['html'] .= ' preload="auto"';
@@ -480,27 +426,7 @@ class flowplayer_frontend extends flowplayer
 				$tmp = $this;
 				$mp4_video = $this->get_amazon_secure( $mp4_video, $tmp );	
 		
-				$this->ret['script'] .= "
-					jQuery('#wpfp_$this->hash').bind('error', function (e,api, error) {
-						if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && error != null && ( error.code == 3 || error.code == 4 || error.code == 5 ) ) {							
-							api.unload();
-							var html = jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_popup').clone()).html();
-							html += jQuery('<div />').append(jQuery('#wpfp_$this->hash .wpfp_custom_ad').clone()).html();								
-							
-							jQuery('#wpfp_$this->hash').attr('id','bad_wpfp_$this->hash');					
-							jQuery('#bad_wpfp_$this->hash').after( '<div id=\"wpfp_$this->hash\" $attributes_html data-engine=\"flash\">'+html+'</div>' );
-							jQuery('#wpfp_$this->hash').flowplayer({ playlist: [ [ {mp4: \"$mp4_video\"} ] ] });
-							".$tmp->ret['script']."
-				";				
-				if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') {
-					$this->ret['script'] .= "jQuery('#wpfp_$this->hash').bind('ready', function(e, api) { api.play(); } ); ";
-				} else {
-					$this->ret['script'] .= "jQuery('#wpfp_$this->hash').flowplayer().play(0); ";
-				}
-				$this->ret['script'] .= "jQuery('#bad_wpfp_$this->hash').remove();						
-						}
-					});					
-				";				
+				$this->ret['script'] .= "fv_flowplayer_browser_chrome_fail( '".$this->hash."', '".addslashes( str_replace("\n"," ",$tmp->ret['script']) )."', '".$attributes_html."', '".$mp4_video."', '".( (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') ? "true" : "false" )."');\n";
 			}
 			 
 			$this->ret['html'] .= '>'."\n";
@@ -568,7 +494,7 @@ class flowplayer_frontend extends flowplayer
     	$this->ret['html'] .= '</div>'."\n".$scripts_after; 
     }
     
-    $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts', $this->ret['script'], 'wpfp_' . $this->hash, $media );
+    $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts', $this->ret['script']."\n", 'wpfp_' . $this->hash, $media );
 		return $this->ret;
 	}
   

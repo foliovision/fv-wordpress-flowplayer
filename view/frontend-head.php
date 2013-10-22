@@ -7,7 +7,7 @@ global $fv_wp_flowplayer_ver;
 ?>
 
 <?php if( is_admin() ) : ?>
-	<script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
+	<script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/fv-flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
 <?php endif; ?>
 
 <?php if ($this->conf['disableembedding'] == 'true') { ?>

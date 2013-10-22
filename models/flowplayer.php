@@ -186,13 +186,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			$resource = trim( $media );
 			
 			if( !isset($fv_fp->expire_time) ) {
-				$time = apply_filters( 'fv_flowplayer_amazon_expires', 60 * intval($fv_fp->conf['amazon_expire'][$amazon_key]), $media );
+				$time = 60 * intval($fv_fp->conf['amazon_expire'][$amazon_key]);
 			} else {
-				$time = apply_filters( 'fv_flowplayer_amazon_expires', intval(ceil($fv_fp->expire_time)), $media );
+				$time = intval(ceil($fv_fp->expire_time));
 			}			
 			if( $time < 900 ) {
 				$time = 900;
 			}
+			$time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
 			$expires = time() + $time;
 		 
 			$url_components = parse_url($resource);
@@ -219,16 +220,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 						 
 			$media = $url;
 						
-			$fv_fp->ret['script'] .= "
-			jQuery('#wpfp_".$fv_fp->hash."').bind('error', function (e,api, error) {
-					fv_fp_date = new Date();			
-					if( error.code == 4 && fv_fp_date.getTime() > (fv_fp_utime + $time) ) {
-						jQuery(e.target).find('.fp-message').delay(500).queue( function(n) {
-							jQuery(this).html('<h2>Video file expired.<br />Please reload the page and play it again.</h2>'); n();
-						} );
-					}
-			} );
-			";
+			if( stripos( $fv_fp->ret['script'], "fv_flowplayer_amazon_s3('".$this->hash ) === false ) {
+				$fv_fp->ret['script'] .= "fv_flowplayer_amazon_s3('".$this->hash."', ".$time.")\n";
+			}
   	}
   	
   	return $media;
@@ -295,7 +289,7 @@ function flowplayer_head() {
 
 function flowplayer_jquery() {
   global $fv_wp_flowplayer_ver;
-  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js' ), array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js' ), array('jquery'), $fv_wp_flowplayer_ver );
 }
 
 ?>

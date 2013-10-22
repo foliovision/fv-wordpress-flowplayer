@@ -279,12 +279,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* better JS and CSS optimization
+* better CSS optimization
 * cue points support
 * VAST/VPAID support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.43 - 2013/10/22 =
+* Fix - improved JavaScript - much less code in your site footer for each player
 
 = 2.1.42 - 2013/10/18 =
 * Bugfix - playlist (beta) - fixed CSS when more than 4 items in playlist

@@ -1048,7 +1048,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 		
 		$message .= '<div class="support-'.$random.'">';
 		$message .= '<textarea id="wpfp_support_'.$random.'" class="wpfp_message_field" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 98%; height: 150px">Enter your comment</textarea>';
-		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$random.'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_support_mail(\''.$random.'\', this); return false" value="Send report to Foliovision" /></p>';
+		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$random.'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_admin_support_mail(\''.$random.'\', this); return false" value="Send report to Foliovision" /></p>';
 		$message .= '</div>';
 		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
 				
@@ -1060,7 +1060,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
     } else {
     	$issues_text = '<span class="vid-ok">Video OK</span>';
     }
-    $message = "<div onclick='fv_wp_flowplayer_show_notice(\"$random\", this.parent); return false' class='fv_wp_flowplayer_notice_head'>Report Issue</div><small>Admin: <a class='fv_wp_flowplayer_dialog_link' href='#' onclick='fv_wp_flowplayer_show_notice(\"$random\", this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' class='fv_wp_fp_notice_content' style='display: none;'>$message</div>\n";
+    $message = "<div onclick='fv_wp_flowplayer_admin_show_notice(\"$random\", this.parent); return false' class='fv_wp_flowplayer_notice_head'>Report Issue</div><small>Admin: <a class='fv_wp_flowplayer_dialog_link' href='#' onclick='fv_wp_flowplayer_admin_show_notice(\"$random\", this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' class='fv_wp_fp_notice_content' style='display: none;'>$message</div>\n";
       
     $json = @json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
     $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;
@@ -1103,7 +1103,7 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	}
 	
 	global $fv_wp_flowplayer_ver;
-	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
+	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
 	}
 	return 0;
