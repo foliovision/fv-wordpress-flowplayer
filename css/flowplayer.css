@@ -224,7 +224,7 @@
 .flowplayer .fp-next:hover{background-position:0 -500px}
 
 .flowplayer.has-playlist .fp-playlist { position:absolute;bottom:-135px;left:0;width:100%;text-align:center; }
-.flowplayer.has-playlist .fp-playlist a, #content .flowplayer.has-playlist .fp-playlist a { display:inline-block;width:100px;height:100px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px; }
+.flowplayer.has-playlist .fp-playlist a, #content .flowplayer.has-playlist .fp-playlist a { display:inline-block;width:100px;height:100px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;background-size:auto 100px;}
 .flowplayer.has-playlist .fp-playlist a:hover, #content .flowplayer.has-playlist .fp-playlist a:hover { border-color:#ccc }
 .flowplayer.has-playlist .fp-playlist a.is-active, #content .flowplayer.has-playlist .fp-playlist a.is-active { border-color:#52b9e4; }
 .is-paused.flowplayer.has-playlist .fp-playlist a.is-active { border-color:#1c87b4 }

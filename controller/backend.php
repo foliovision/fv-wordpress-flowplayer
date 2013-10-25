@@ -447,6 +447,9 @@ function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
   wp_register_script('fvwpflowplayer-domwindow', plugins_url().'/fv-wordpress-flowplayer/js/jquery.colorbox-min.js',array('jquery') );  
   wp_enqueue_script('fvwpflowplayer-domwindow');
   
+  wp_register_script('fvwpflowplayer-shortcode-editor', plugins_url().'/fv-wordpress-flowplayer/js/shortcode-editor.js',array('jquery') );  
+  wp_enqueue_script('fvwpflowplayer-shortcode-editor');  
+   
   wp_register_style('fvwpflowplayer-domwindow-css', plugins_url().'/fv-wordpress-flowplayer/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');    
 }
@@ -755,7 +758,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 							$headers = WP_Http::processHeaders( $header );			
 							
 							$video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
-							if( $headers['response']['code'] == '403' ) {
+							if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
 								$error = new SimpleXMLElement($body);
 								
 								if( stripos( $error->Message, 'Request has expired' ) !== false ) {

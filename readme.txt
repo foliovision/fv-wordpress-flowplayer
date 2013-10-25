@@ -158,6 +158,10 @@ Go to plugin Settings screen and hit "Check template" button. It will check if b
 
 Please check if these issues also appear when using the default Wordpress template. There seems to be some sort of conflict between the Flowplayer CSS and your theme CSS.
 
+= Fullscreen is not working properly for me =
+
+Are you using some old lightbox plugin like http://www.4mj.it/slimbox-wordpress-plugin/ ? Or are you putting the video into Iframe? Also, the video should not be placed in an HTML element with lowered z-index.
+
 = How to make this plugin WPMU compatible? =
 
 Just copy the plugin into wp-content/plugins and then activate it on each blog where you want to use it.
@@ -285,6 +289,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.44 - 2013/10/22 =
+* Bugfix - playlist (beta) - fix for splash image sizing
+* Bugfix - playlist (beta) - shortcode editor was inserting empty playlist="" attributes when no playlist entered.
 
 = 2.1.43 - 2013/10/22 =
 * Fix - improved JavaScript - much less code in your site footer for each player

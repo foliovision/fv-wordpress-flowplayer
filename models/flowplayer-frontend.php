@@ -338,7 +338,7 @@ class flowplayer_frontend extends flowplayer
 				$playlist_items_html = array();
 				if( count($playlist_items) > 0 ) {
 					
-					$playlist_items_html[] = "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background: url(\"".$splash_img."\") center center' " : "" )."onclick='return false'  href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
+					$playlist_items_html[] = "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'  href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
 					foreach( $playlist_items AS $playlist_item ) {
 					
 						$playlist_item = explode( ',', $playlist_item );
@@ -348,7 +348,7 @@ class flowplayer_frontend extends flowplayer
 							if( $meta_item == 'preroll' ) {
 								$is_preroll = $media_item;
 							} else {
-								$playlist_items_html[] = "\t\t<a style='background: url(\"".$meta_item."\") center center' onclick='return false' href='".$this->get_video_src( trim($media_item), $mobileUserAgent, null, null, true )."'></a>\n";
+								$playlist_items_html[] = "\t\t<a style='background-image: url(\"".$meta_item."\")' onclick='return false' href='".$this->get_video_src( trim($media_item), $mobileUserAgent, null, null, true )."'></a>\n";
 							}
 						} else {
 							$playlist_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
