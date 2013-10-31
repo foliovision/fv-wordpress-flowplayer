@@ -290,6 +290,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.45 - 2013/10/31 =
+
+* Feature - Vimeo support - for now just a basic iframe embed - enter your Vimeo URL or ID as the video source 
+* Feature - Youtube support - for now just a basic iframe embed - enter your Youtube URL or ID as the video source 
+
 = 2.1.44 - 2013/10/22 =
 * Bugfix - playlist (beta) - fix for splash image sizing
 * Bugfix - playlist (beta) - shortcode editor was inserting empty playlist="" attributes when no playlist entered.

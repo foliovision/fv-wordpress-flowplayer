@@ -26,6 +26,8 @@ class flowplayer_frontend extends flowplayer
 		$this->hash = md5($media.$this->_salt());    
 		$player_type = 'video';
 		$rtmp = false;
+		$youtube = false;
+		$vimeo = false;		
     
 		// returned array with new player's html and javascript content
 		$this->ret = array('html' => '', 'script' => ' ');	//	note: we need the white space here, it fails to add into the string on some hosts without it (???)
@@ -43,10 +45,17 @@ class flowplayer_frontend extends flowplayer
     $src2 = ( isset($args['src2']) && !empty($args['src2']) ) ? trim($args['src2']) : false;  
     $mobile = ( isset($args['mobile']) && !empty($args['mobile']) ) ? trim($args['mobile']) : false;  
     
-    $autoplay = 'false';
-   	if( (isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $args['autoplay'] != 'false' ) || (isset($args['autoplay']) && $args['autoplay'] == 'true') ) {
-			$autoplay = 'true';
+    $autoplay = false;
+   	if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $args['autoplay'] != 'false'  ) {
+   		$this->autobuffer_count++;
+   		if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
+				$autoplay = true;
+			}
 		}  
+		if( isset($args['autoplay']) && $args['autoplay'] == 'true') {
+			$this->autobuffer_count++;
+			$autoplay = true;
+		}
     
     //	decide which player to use
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -61,6 +70,30 @@ class flowplayer_frontend extends flowplayer
     		$this->expire_time = $fv_flowplayer_meta[sanitize_title($media_item)]['time'];
     	}
     }
+    
+    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    	if( isset($aYoutube[5]) ) {
+    		$youtube = $aYoutube[5];
+    		$player_type = 'youtube';
+    	}
+    } else if( preg_match( "~^[a-zA-Z0-9-_]{11}$~", $media, $aYoutube ) ) {
+    	if( isset($aYoutube[0]) ) {
+    		$youtube = $aYoutube[0];
+    		$player_type = 'youtube';
+    	}
+    }
+
+    if( preg_match( "~vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)?(\d+)~i", $media, $aVimeo ) ) {
+    	if( isset($aVimeo[1]) ) {
+    		$vimeo = $aVimeo[1];
+    		$player_type = 'vimeo';
+    	}
+    } else if( preg_match( "~^[0-9]{8}$~", $media, $aVimeo ) ) {
+    	if( isset($aVimeo[0]) ) {
+    		$vimeo = $aVimeo[0];
+    		$player_type = 'vimeo';
+    	}
+    }    
     
     if( $player_type == 'video' ) {
     
@@ -247,13 +280,7 @@ class flowplayer_frontend extends flowplayer
 			$attributes = array();
 			$attributes['class'] = 'flowplayer';
 			
-			if( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' ) {
-				$this->autobuffer_count++;
-			}
-			if( 
-				$this->autobuffer_count > apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ||
-				( $autoplay == 'false' && !( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' ) )				
-			) {
+			if( $autoplay == false ) {
 				$attributes['class'] .= ' is-splash';
 			}
 			
@@ -385,9 +412,8 @@ class flowplayer_frontend extends flowplayer
 			if (isset($splash_img) && !empty($splash_img)) {
 				$this->ret['html'] .= ' poster="'.str_replace(' ','%20',$splash_img).'"';
 			} 
-			if( $autoplay == 'true' && $this->autoplay_count < apply_filters( 'fv_flowplayer_autoplay_limit', 1 ) ) {
+			if( $autoplay == true ) {
 				$this->ret['html'] .= ' autoplay';  
-				$this->autoplay_count++;
 			}
 			if (isset($args['loop']) && $args['loop'] == 'true') {
 				$this->ret['html'] .= ' loop';
@@ -396,7 +422,7 @@ class flowplayer_frontend extends flowplayer
 			if( isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 				$this->ret['html'] .= ' preload="auto"';
 				$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
-			}	else if ($autoplay == 'false') {
+			}	else if ($autoplay == false) {
 				$this->ret['html'] .= ' preload="none"';        
 			}        
 				
@@ -477,6 +503,17 @@ class flowplayer_frontend extends flowplayer
 			}			
 			$this->ret['html'] .= '</div>'."\n".$html_after.$scripts_after;      
     
+    } else if( $player_type == 'youtube' ) {
+        	
+    	$sAutoplay = ($autoplay) ? 'autoplay=1&amp;' : '';
+    	$this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
+  src='http://www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0'></iframe>\n";
+    	
+    } else if( $player_type == 'vimeo' ) {
+    
+    	$sAutoplay = ($autoplay) ? " autoplay='1'" : "";
+    	$this->ret['html'] .= "<iframe id='fv_vimeo_{$this->hash}' src='//player.vimeo.com/video/{$vimeo}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen{$sAutoplay}></iframe>\n";
+    	
     } else {	//	$player_type == 'video' ends
     	global $fv_wp_flowplayer_ver;
     	
@@ -485,7 +522,7 @@ class flowplayer_frontend extends flowplayer
     	
     	$this->load_mediaelement = true;
     	
-    	$preload = ($autoplay == 'true') ? '' : ' preload="none"'; 
+    	$preload = ($autoplay == true) ? '' : ' preload="none"'; 
     	    	
     	$this->ret['script'] .= "jQuery('#wpfp_{$this->hash} audio').mediaelementplayer();\n";
     
