@@ -363,9 +363,10 @@ class flowplayer_frontend extends flowplayer
 				$playlist_items = explode( ';', $args['playlist'] );
 			
 				$playlist_items_html = array();
+				$playlist_items_external_html = array();
 				if( count($playlist_items) > 0 ) {
-					
-					$playlist_items_html[] = "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'  href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
+					$playlist_items_html[] = "\t\t<a href='".$this->get_video_src( $media, $mobileUserAgent, null, $rtmp, true )."'></a>\n";
+					$playlist_items_external_html[] = "\t\t<a ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'></a>\n";
 					foreach( $playlist_items AS $playlist_item ) {
 					
 						$playlist_item = explode( ',', $playlist_item );
@@ -375,11 +376,13 @@ class flowplayer_frontend extends flowplayer
 							if( $meta_item == 'preroll' ) {
 								$is_preroll = $media_item;
 							} else {
-								$playlist_items_html[] = "\t\t<a style='background-image: url(\"".$meta_item."\")' onclick='return false' href='".$this->get_video_src( trim($media_item), $mobileUserAgent, null, null, true )."'></a>\n";
+								$playlist_items_html[] = "\t\t<a href='".$this->get_video_src( trim($media_item), $mobileUserAgent, null, null, true )."'></a>\n";
+								$playlist_items_external_html[] = "\t\t<a style='background-image: url(\"".$meta_item."\")' onclick='return false'></a>\n";
 							}
 						} else {
 							$playlist_item = str_replace( $playlist_replace_to, $playlist_replace_from, $playlist_item[0] );
-							$playlist_items_html[] = "\t\t<a onclick='return false' href='".$this->get_video_src( trim($playlist_item), $mobileUserAgent, null, null, true )."'></a>\n";
+							$playlist_items_html[] = "\t\t<a href='".$this->get_video_src( trim($playlist_item), $mobileUserAgent, null, null, true )."'></a>\n";
+							$playlist_items_external_html[] = "\t\t<a onclick='return false'></a>\n";
 						}
 						
 					}
@@ -387,6 +390,7 @@ class flowplayer_frontend extends flowplayer
 					if( !$is_preroll || count($playlist_items) > 1 ) {	//	only show controls if the item is not preroll
 						$playlist = "\t<a class='fp-prev'></a> <a class='fp-next'></a>\n"."\t<div class='fp-playlist'>\n".implode( '', $playlist_items_html )."\t</div>\n";
 						$attributes['class'] .= ' has-playlist playlist-items-'.(4 * ceil(count($playlist_items_html)/4) );
+						$html_after = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
 					} else {
 						//	do stuff with $media, $src1, $src2
 						$this->ret['script'] .= "fv_flowplayer_preroll_post( '".$this->hash."', '".$media."' );\n";

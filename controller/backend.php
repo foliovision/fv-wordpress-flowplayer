@@ -559,7 +559,7 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 	} else {  
 	
 		if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
-			$video_errors[] = 'Server does not support HTTP range requests!';  
+			$video_errors[] = 'Server does not support HTTP range requests! Please check "I\'m getting error about \'HTTP range requests\'" in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq">our FAQ</a>.';  
 		}
 	
 		if(

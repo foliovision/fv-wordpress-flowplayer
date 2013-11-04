@@ -223,20 +223,10 @@
 .flowplayer .fp-next{right:-20px;background-position:0 -400px;}
 .flowplayer .fp-next:hover{background-position:0 -500px}
 
-.flowplayer.has-playlist .fp-playlist { position:absolute;bottom:-135px;left:0;width:100%;text-align:center; }
-.flowplayer.has-playlist .fp-playlist a, #content .flowplayer.has-playlist .fp-playlist a { display:inline-block;width:100px;height:100px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;background-size:auto 100px;}
-.flowplayer.has-playlist .fp-playlist a:hover, #content .flowplayer.has-playlist .fp-playlist a:hover { border-color:#ccc }
-.flowplayer.has-playlist .fp-playlist a.is-active, #content .flowplayer.has-playlist .fp-playlist a.is-active { border-color:#52b9e4; }
-.is-paused.flowplayer.has-playlist .fp-playlist a.is-active { border-color:#1c87b4 }
-.flowplayer.has-playlist, #content .flowplayer.has-playlist { margin-bottom: 160px; }
-
-.flowplayer.playlist-items-8 .fp-playlist { bottom:-270px; }
-.flowplayer.playlist-items-8, #content .flowplayer.playlist-items-8 { margin-bottom: 295px; }
-.flowplayer.playlist-items-12 .fp-playlist { bottom:-405px; }
-.flowplayer.playlist-items-12, #content .flowplayer.playlist-items-12 { margin-bottom: 430px; }
-.flowplayer.playlist-items-16 .fp-playlist { bottom:-540px; }
-.flowplayer.playlist-items-16, #content .flowplayer.playlist-items-16 { margin-bottom: 565px; }
-
+.fp-playlist-external { text-align:center; }
+.fp-playlist-external a { display:inline-block;width:100px;height:100px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;background-size:auto 100px;background-position:center;}
+.fp-playlist-external a:hover { border-color:#ccc }
+.fp-playlist-external a.is-active { border-color:#52b9e4; }
 
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;

@@ -101,7 +101,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
   			
         <tr<?php if( $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th scope="row" class="label"></th>
-  				<td style="text-align: left; padding-top: 10px; text-transform: uppercase;">Playlist</td>
+  				<td style="text-align: left; padding-top: 10px; text-transform: uppercase;">Playlist <abbr title="Main video will be used as the first item. All other items must be available in the same formats as the main video. Filenames need to stay the same for all the different versions, only extension needs to change.">(?)</abbr></td>
   				<td><a style="outline: 0" onclick="return fv_flowplayer_playlist_add()" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;Add Item</a></td>
   			</tr>  			
         <tr<?php if( $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?>>

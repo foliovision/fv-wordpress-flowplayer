@@ -127,6 +127,12 @@ If you are using Windows, try this tool: http://www.datagoround.com/lab/
 
 There are also server-side tools for fixing of this written in Python and there one for PHP, but it fails on videos bigger than the PHP memory limit.
 
+= I'm getting error about 'HTTP range requests' =
+
+Please check with your technical support if your web server supports HTTP range requests. Most of the modern web servers support this feature (Apache, Nginx, Lighttpd, Litespeed...). It's important for fast seeking in HTML5 video playback.
+
+Other possible cause is that you are using some membership plugin to protect downloading of your videos (Premise and others). While this might seem like a good solution, we don't recommend it as it increases the load of your server and it won't allow seeking in the videos. You can use <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide">Amazon S3 with privacy settings</a>, just hit the link to read our illustrated guide.
+
 = Are there any known compatibility issues? =
 
 We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
@@ -289,6 +295,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.1.46 - 2013/11/04 =
+
+* Bugfix - playlist (beta) - improved HTML structure - fixes any playlist thumbnails display issues and responsiveness
 
 = 2.1.45 - 2013/10/31 =
 
