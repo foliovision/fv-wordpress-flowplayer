@@ -302,8 +302,8 @@ class flowplayer_frontend extends flowplayer
 				$attributes['data-engine'] = 'flash';
 			}
 			
-			if( $args['embed'] == 'false' || $args['embed'] == 'true' ) {
-				$attributes['data-embed'] = $args['embed'];
+			if( $args['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $args['embed'] != 'true' ) ) {
+				$attributes['data-embed'] = 'false';
 			}
 			
 			if( $this->conf['fixed_size'] == 'true' ) {

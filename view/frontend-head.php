@@ -4,17 +4,16 @@
  */
 
 global $fv_wp_flowplayer_ver;
-?>
 
-<?php if( is_admin() ) : ?>
-	<script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/fv-flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
+
+$sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
+
+if( is_admin() ) : ?>
+<script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/fv-flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
 <?php endif; ?>
-
-<?php if ($this->conf['disableembedding'] == 'true') { ?>
-	<script type="text/javascript">                                                                     
-		flowplayer.conf.embed = false;
-	</script>
-<?php } ?>
+<script type="text/javascript">     
+	flowplayer.conf = {embed: {library: "<?php echo $sPluginUrl ?>/flowplayer/fv-flowplayer.min.js", script: "<?php echo $sPluginUrl ?>/flowplayer/embed.min.js", skin: "<?php echo $sPluginUrl ?>/css/flowplayer.css", swf: "<?php echo $sPluginUrl ?>/flowplayer/flowplayer.swf"}};
+</script>
 
 <link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 

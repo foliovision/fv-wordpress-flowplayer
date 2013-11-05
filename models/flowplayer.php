@@ -45,10 +45,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		$this->_get_conf();
 		
 		if( is_admin() ) {
+			//	update notices
 		  $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';    
 		  if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
 	   		add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
 	   	}
+	   	
+	   	//	pointer boxes
+	   	parent::__construct();
 		}
 		
 

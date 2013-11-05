@@ -296,6 +296,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.47 - 2013/11/05 =
+
+* Fix - licensing changes requested by Wordpress.org (notifications, local hosted embed codes)
+
 = 2.1.46 - 2013/11/04 =
 
 * Bugfix - playlist (beta) - improved HTML structure - fixes any playlist thumbnails display issues and responsiveness

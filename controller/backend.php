@@ -22,6 +22,7 @@ add_action('media_buttons', 'flowplayer_add_media_button', 30);
 
 
 add_action('admin_init', 'fv_wp_flowplayer_admin_init');
+add_action( 'wp_ajax_fv_foliopress_ajax_pointers', 'fv_wp_flowplayer_pointers_ajax' );
 add_action('media_upload_fvplayer_video', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_video_1', 'fv_wp_flowplayer_media_upload');
 add_action('media_upload_fvplayer_video_2', 'fv_wp_flowplayer_media_upload');
@@ -478,29 +479,33 @@ function fv_wp_flowplayer_admin_init() {
 	}
 
   global $fv_fp;
-  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {
-    global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
+  global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && $fv_fp->conf['key_automatic'] == 'true' ) {
+    
     $version = get_option( 'fvwpflowplayer_core_ver' );
     if( version_compare( $fv_wp_flowplayer_core_ver, $version ) == 1 ) {
-      
-      $args = array(
-      	'body' => array( 'domain' => home_url(), 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver ),
-        'timeout' => 20,
-      	'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
-      );
-      $resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
-      
-      if( $resp['body'] && $data = json_decode( $resp['body'] ) ) {
-        if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
-          $fv_fp->conf['key'] = $data->key;
-          update_option( 'fvwpflowplayer', $fv_fp->conf );
-        }                            
-      }            
+      fv_wp_flowplayer_admin_key_update();   
     }      
   }
-  
-  global $fv_wp_flowplayer_core_ver;
-  update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+
+	if(
+		preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && ( !isset($fv_fp->conf['key_automatic']) || $fv_fp->conf['key_automatic'] != 'true' )
+	) {
+		global $fv_fp;
+		$fv_fp->pointer_boxes = array(
+			'fv_flowplayer_key_automatic' => array(
+				'id' => '#wpadminbar',
+				'heading' => __('FV Flowplayer License Update', 'fv_flowplayer'),
+				'content' => __('New version of FV Flowplayer core has been installed for your licensed website. Please accept the automatic license key updating (connects to Foliovision servers) or update the key manually by loggin into your Foliovision account.', 'fv_flowplayer'),
+				'position' => array( 'edge' => 'top', 'align' => 'center' ),
+				'button1' => __('Always auto-update', 'fv_flowplayer'),
+				'button2' => __('I\'ll update it manually', 'fv_flowplayer')
+			)
+		);
+	} else if( version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) == 0 ) {
+  	update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+  }
+    
   
   if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
   	wp_enqueue_script('common');
@@ -510,6 +515,29 @@ function fv_wp_flowplayer_admin_init() {
   
   
 }   
+
+
+function fv_wp_flowplayer_admin_key_update() {
+	global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $fv_fp;
+	
+	$args = array(
+		'body' => array( 'domain' => home_url(), 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver ),
+		'timeout' => 20,
+		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
+	);
+	$resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
+	
+	if( $resp['body'] && $data = json_decode( $resp['body'] ) ) {
+		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
+			$fv_fp->conf['key'] = $data->key;
+			update_option( 'fvwpflowplayer', $fv_fp->conf );
+			update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+			return true;
+		}                            
+	} else {
+		return false;
+	}
+}
 
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
@@ -1487,6 +1515,26 @@ function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
         $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_skin' );
 
     return $closed;
+}
+
+
+function fv_wp_flowplayer_pointers_ajax() {
+	if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_key_automatic' && isset($_POST['value']) ) {
+		check_ajax_referer('fv_flowplayer_key_automatic');
+		$conf = get_option( 'fvwpflowplayer' );
+		if( $conf ) {
+			$conf['key_automatic'] = ( $_POST['value'] == 'true' ) ? 'true' : 'false';
+			if( $conf['key_automatic'] == 'true' ) {
+				fv_wp_flowplayer_admin_key_update();
+				$conf = get_option( 'fvwpflowplayer' );
+			} else {
+				global $fv_wp_flowplayer_core_ver;
+				update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver );
+			}
+			update_option( 'fvwpflowplayer', $conf );
+		}
+		die();
+	}
 }
   
 ?>
