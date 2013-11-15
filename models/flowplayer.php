@@ -159,24 +159,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 * Writes configuration into file.
 	 */
 	public function _set_conf() {
-	  $save_key = $_POST['key'];
-	  foreach( $_POST AS $key => $value ) {
-	  	if( !in_array( $key, array('amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
-      	$_POST[$key] = preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value);
-      } else if( is_array($value) ) {
-      	$_POST[$key] = $value;
+	  $aNewOptions = $_POST;
+	  $sKey = $aNewOptions['key'];	  
+
+	  foreach( $aNewOptions AS $key => $value ) {
+	  	if( is_array($value) ) {
+      	$aNewOptions[$key] = $value;
+      } else if( !in_array( $key, array('amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
+      	$aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
-      	$_POST[$key] = stripslashes($value);
+      	$aNewOptions[$key] = stripslashes($value);
       }
 	    if( (strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) {
-	      $_POST[$key] = '#'.strtolower($_POST[$key]);
+	      $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
 	    }
 	  }
-	  $_POST['key'] = $save_key;    
-	  update_option( 'fvwpflowplayer', $_POST );
-	  
-	  $conf = get_option( 'fvwpflowplayer' );  
-	  $this->conf = $conf;
+	  $aNewOptions['key'] = trim($sKey);   
+	  update_option( 'fvwpflowplayer', $aNewOptions );
+	  $this->conf = $aNewOptions;
 	  return true;	
 	}
 	/**

@@ -317,9 +317,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.48 - 2013/11/14 =
+
+* Fix - playlist editor lets you specify all the required formats for the playlist items
+* Fix - playlist thumbnails are 3:2 aspect ratio by default
+* Fix - upgrade to latest core Flowplayer (5.4.4) fixing a lot of bugs (iOS7, RTMP ghost connections, ...)
+* Bugfix - Post Interface Options saving
+
 = 2.1.47 - 2013/11/05 =
 
-* Fix - licensing changes requested by Wordpress.org (notifications, local hosted embed codes)
+* Fix - licensed users are required to agree on the automatic license key updates (required by Wordpress.org policy)
+* Fix - embed code libraries linked from the site hosting the plugin (required by Wordpress.org policy)
 
 = 2.1.46 - 2013/11/04 =
 

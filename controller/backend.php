@@ -603,7 +603,10 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 		$video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!'; 
 	} else {  
 	
-		if( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) {
+		if(
+		  ( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) &&
+		  !isset($headers['headers']['content-range'])
+		) {
 			$video_errors[] = 'Server does not support HTTP range requests! Please check "I\'m getting error about \'HTTP range requests\'" in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq">our FAQ</a>.';  
 		}
 	

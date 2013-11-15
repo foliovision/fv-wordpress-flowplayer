@@ -74,11 +74,13 @@
 .flowplayer.is-fullscreen .fp-unload,.flowplayer.is-fullscreen .fp-close{display:none !important}
 .flowplayer .fp-timeline{height:3px;position:relative;overflow:hidden;top:5px;height:10px;margin:0 150px 0 45px;}
 .no-volume.flowplayer .fp-timeline{margin-right:60px}
-.no-mute.flowplayer .fp-timeline{margin-right:45px}
+.no-mute.flowplayer .fp-timeline{margin-right:140px}
+.no-mute.no-volume.flowplayer .fp-timeline{margin-right:45px}
 .play-button.flowplayer .fp-timeline{margin-left:67px}
 .is-rtl.flowplayer .fp-timeline{margin:0 45px 0 150px;}
 .no-volume.is-rtl.flowplayer .fp-timeline{margin-left:60px}
-.no-mute.is-rtl.flowplayer .fp-timeline{margin-left:45px}
+.no-mute.is-rtl.flowplayer .fp-timeline{margin-left:140px}
+.no-mute.no-volume.is-rtl.flowplayer .fp-timeline{margin-left:45px}
 .play-button.is-rtl.flowplayer .fp-timeline{margin-right:67px}
 .is-long.flowplayer .fp-timeline{margin:0 180px 0 75px;}
 .no-volume.is-long.flowplayer .fp-timeline{margin-right:90px}
@@ -129,10 +131,12 @@
 .play-button.is-rtl.flowplayer .fp-elapsed{right:27px}
 .flowplayer .fp-remaining,.flowplayer .fp-duration{right:110px;color:#eee;}
 .no-volume.flowplayer .fp-remaining,.no-volume.flowplayer .fp-duration{right:20px}
-.no-mute.flowplayer .fp-remaining,.no-mute.flowplayer .fp-duration{right:5px}
+.no-mute.flowplayer .fp-remaining,.no-mute.flowplayer .fp-duration{right:100px}
+.no-mute.no-volume.flowplayer .fp-remaining,.no-mute.no-volume.flowplayer .fp-duration{right:5px}
 .is-rtl.flowplayer .fp-remaining,.is-rtl.flowplayer .fp-duration{right:auto;left:110px;}
 .no-volume.is-rtl.flowplayer .fp-remaining,.no-volume.is-rtl.flowplayer .fp-duration{left:20px}
-.no-mute.is-rtl.flowplayer .fp-remaining,.no-mute.is-rtl.flowplayer .fp-duration{left:5px}
+.no-mute.is-rtl.flowplayer .fp-remaining,.no-mute.is-rtl.flowplayer .fp-duration{left:100px}
+.no-mute.no-volume.is-rtl.flowplayer .fp-remaining,.no-mute.no-volume.is-rtl.flowplayer .fp-duration{left:5px}
 .flowplayer .fp-remaining{display:none}
 .flowplayer.color-light .fp-time{color:#222;text-shadow:0 0 1px #fff}
 .flowplayer.color-light .fp-remaining,.flowplayer.color-light .fp-duration{color:#666}
@@ -187,7 +191,14 @@
 .is-rtl.flowplayer.is-long.aside-time .fp-embed{left:auto;right:130px}
 .flowplayer.no-time .fp-embed{left:5px !important;}
 .is-rtl.flowplayer.no-time .fp-embed{left:auto;right:5px !important}
-@-moz-keyframes pulse{0%{opacity:0}
+.flowplayer.is-live .fp-timeline,.flowplayer.is-live .fp-duration,.flowplayer.is-live .fp-remaining{display:none}
+.flowplayer .fp-context-menu{position:absolute;display:none;z-index:1001;background-color:#fff;padding:10px;border:1px solid #aaa;-webkit-box-shadow:0 0 4px #888;-moz-box-shadow:0 0 4px #888;box-shadow:0 0 4px #888;width:170px;}
+.flowplayer .fp-context-menu li{text-align:center;padding:10px;color:#444;margin:0 -10px 0 -10px;}
+.flowplayer .fp-context-menu li a{color:#00a7c8;font-size:110%}
+.flowplayer .fp-context-menu li:hover:not(.copyright){background-color:#eee}
+.flowplayer .fp-context-menu li.copyright{margin:0;padding-left:110px;background-image:url("img/flowplayer.png");background-repeat:no-repeat;background-size:100px 20px;background-position:5px 5px;border-bottom:1px solid #bbb;}
+@media (-webkit-min-device-pixel-ratio: 2){.flowplayer .fp-context-menu li.copyright{background-image:url("img/flowplayer@2x.png")}
+}@-moz-keyframes pulse{0%{opacity:0}
 100%{opacity:1}
 }@-webkit-keyframes pulse{0%{opacity:0}
 100%{opacity:1}
@@ -224,7 +235,7 @@
 .flowplayer .fp-next:hover{background-position:0 -500px}
 
 .fp-playlist-external { text-align:center; }
-.fp-playlist-external a { display:inline-block;width:100px;height:100px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;background-size:auto 100px;background-position:center;}
+.fp-playlist-external a { display:inline-block;width:120px;height:80px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;background-size:auto 100px;background-position:center;}
 .fp-playlist-external a:hover { border-color:#ccc }
 .fp-playlist-external a.is-active { border-color:#52b9e4; }
 
