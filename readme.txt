@@ -317,6 +317,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.49 - 2013/11/?? =
+
+* Fix - Flash engine set to respect the video aspect ratio when using a different player size
+* Fix - Flowplayer configuration JS moved into footer
+* Bugfix - Playlist - RTMP parsing issues
+
 = 2.1.48 - 2013/11/14 =
 
 * Fix - playlist editor lets you specify all the required formats for the playlist items

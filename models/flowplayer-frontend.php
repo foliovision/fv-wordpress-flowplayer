@@ -330,6 +330,7 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf';
+				$attributes['data-flashfit'] = "true";
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
@@ -374,9 +375,9 @@ class flowplayer_frontend extends flowplayer
 					if( count($playlist_items) > 0 ) {					
 						$aPlaylistItem = array();
 						$playlist_items_external_html = array();
-						foreach( array( $media, $src1, $src2, $rtmp ) AS $media_item ) {
+						foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
 							if( !$media_item ) continue;
-							$aPlaylistItem[] = array( $this->get_file_extension($media_item) => $this->get_video_src( $media_item, false, false, false, true ) );
+							$aPlaylistItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );
 											
 						}							
 						$aPlaylistItems[] = $aPlaylistItem;
@@ -385,14 +386,13 @@ class flowplayer_frontend extends flowplayer
 						foreach( $playlist_items AS $iKey => $sPlaylist_item ) {
 							$aPlaylist_item = explode( ',', $sPlaylist_item );
 							$aPlaylistItem = array();
-							$sSplashImage = false;
+							$sSplashImage = false;						
 							foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
 								if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
 									$sSplashImage = $aPlaylist_item_i;
 									continue;
 								}
-								$aPlaylist_item_i = preg_replace( '~^rtmp:~', '', $aPlaylist_item_i );						
-								$aPlaylistItem[] = array( $this->get_file_extension($aPlaylist_item_i) => $aPlaylist_item_i ); 
+								$aPlaylistItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ) ); 
 							}
 							$aPlaylistItems[] = $aPlaylistItem;
 							if( $sSplashImage ) {
@@ -401,7 +401,7 @@ class flowplayer_frontend extends flowplayer
 								$playlist_items_external_html[] = "\t\t<a onclick='return false'></a>\n";
 							}
 						}
-	
+
 						$jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
 						$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
 		

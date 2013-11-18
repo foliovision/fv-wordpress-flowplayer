@@ -263,7 +263,18 @@ function flowplayer_prepare_scripts() {
  */
 function flowplayer_display_scripts() {
 	global $fv_fp;
-	if (!empty($GLOBALS['fv_fp_scripts'])) : ?>		
+	$sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
+
+	$sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
+	$sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
+	?>
+<script type="text/javascript">     
+<?php
+echo "flowplayer.conf = {embed: {library: '$sPluginUrl/flowplayer/fv-flowplayer.min.js', script: '$sPluginUrl/flowplayer/embed.min.js', skin: '$sPluginUrl/css/flowplayer.css', swf: '$sPluginUrl/flowplayer/flowplayer.swf'}}\n";
+if( $sCommercialKey ) echo "flowplayer.conf.key = '$sCommercialKey';";
+if( $sLogo ) echo " flowplayer.conf.logo = '$sLogo';\n";
+?></script>	
+	<?php if (!empty($GLOBALS['fv_fp_scripts'])) : ?>		
 <script type="text/javascript">
 var fv_fp_ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
 <?php foreach($GLOBALS['fv_fp_scripts'] as $scr) { echo $scr; } ?>

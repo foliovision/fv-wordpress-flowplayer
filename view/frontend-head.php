@@ -16,27 +16,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-/**
- * Displays metatags for frontend.
- */
-
 global $fv_wp_flowplayer_ver;
-
-
-$sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
-
-$sCommercialKey = (isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0) ? $this->conf['key'] : '';
-$sLogo = ($sCommercialKey && isset($this->conf['logo']) && $this->conf['logo'] != 'false' && strlen($this->conf['logo']) > 0) ? $this->conf['logo'] : '';
 
 if( is_admin() ) : ?>
 <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/fv-flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
 <?php endif; ?>
-<script type="text/javascript">     
-<?php
-echo "flowplayer.conf = {embed: {library: '$sPluginUrl/flowplayer/fv-flowplayer.min.js', script: '$sPluginUrl/flowplayer/embed.min.js', skin: '$sPluginUrl/css/flowplayer.css', swf: '$sPluginUrl/flowplayer/flowplayer.swf'}}\n";
-if( $sCommercialKey ) echo "flowplayer.conf.key = '$sCommercialKey';";
-if( $sLogo ) echo " flowplayer.conf.logo = '$sLogo';\n";
-?></script>
 
 <link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 
