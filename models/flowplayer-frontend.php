@@ -403,7 +403,7 @@ class flowplayer_frontend extends flowplayer
 						}
 
 						$jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
-						$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
+						//$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
 		
 						$html_after .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
 						$scripts_after .= "<script>jQuery('#wpfp_{$this->hash}').flowplayer( {\n\tplaylist: \n\t\t{$jsonPlaylistItems}";
