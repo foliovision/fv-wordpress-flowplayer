@@ -51,7 +51,7 @@
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
 #fv-flowplayer-playlist table:first-child .button { display: inline-block; }
-#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }
+/*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
 </style>
   
 <script>
