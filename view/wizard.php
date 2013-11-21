@@ -121,7 +121,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
           </tr>      
           
           <tr<?php if( $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>
-            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright">Mobile Video</label></th>
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright">Mobile Video*</label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value=""/>
               <?php if ($allow_uploads=='true') { ?>
                 <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_mobile&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Video</a>
@@ -249,7 +249,10 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
               	<div class="fv-wp-flowplayer-notice fv-wp-flowplayer-note">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#interface">Settings</a></div>
               </td>
             </tr>            
-            <?php } ?>            
+            <?php } ?>
+			<tr<?php if( $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>
+			  <td colspan="2">* - currently not working with playlist</td>
+			</tr>
   		</tbody>
   	</table>
   </div>
