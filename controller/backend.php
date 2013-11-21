@@ -761,7 +761,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 				}
 				
         if( @ini_get('safe_mode') ) {
-          $video_warnings[]	= 'Detailed video check if not available with PHP Safe Mode activated. Please contact your webhost support.';
+          $video_warnings[]	= 'Detailed video check is not available with PHP Safe Mode On. Please contact your webhost support.';
         } else {
 								  
           require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
