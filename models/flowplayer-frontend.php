@@ -110,7 +110,9 @@ class flowplayer_frontend extends flowplayer
 				$vimeo = $aVimeo[0];
 				$player_type = 'vimeo';
 			}
-		}    
+		}
+    
+    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, array( $media, $src1, $src2 ), $args );
     
 		if( $player_type == 'video' ) {
 		
@@ -119,11 +121,11 @@ class flowplayer_frontend extends flowplayer
 					if( stripos( $media_item, 'rtmp://' ) === 0 ) {
 						$rtmp = $media_item;
 					} 
-								
+					
 					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
 						$this->ret['script'] .= "fv_flowplayer_browser_ff_m4v('".$this->hash."')\n";
 					}
-					
+          
 					if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
 						$this->ret['script'] .= "fv_flowplayer_browser_chrome_mp4('".$this->hash."');\n";
 					}				
@@ -225,7 +227,7 @@ class flowplayer_frontend extends flowplayer
 						$popup = 'Would you like to replay the video?';
 					}
 					
-					$popup = apply_filters( 'fv_flowplayer_popup_html', $popup);
+					$popup = apply_filters( 'fv_flowplayer_popup_html', $popup );
 					if( strlen(trim($popup)) > 0 ) {			
 						$show_popup = true;
 						$popup_contents = '<div id="wpfp_'.$this->hash.'_custom_popup" class="wpfp_custom_popup"><div class="wpfp_custom_popup_content">'.$popup.'</div></div>';                

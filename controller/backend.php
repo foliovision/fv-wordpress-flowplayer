@@ -728,8 +728,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
   	//$random = rand( 0, 10000 );
   	$random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
   	
-  	
-		if( isset($media) ) {	     
+    if( isset($media) ) {	     
 			$remotefilename = $media;
 			$url_parts = parse_url( $remotefilename );
 			$url_parts_encoded = parse_url( $remotefilename );			
@@ -761,242 +760,246 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 					 $video_errors[] = '<p><strong>UTF-8 error</strong>: Your file name is using non-latin characters, the file might not play in browsers using Flash for the video!</p>';
 				}
 				
-								
-				require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
-				$getID3 = new getID3;     
-				
-				preg_match( '~^\S+://([^/]+)~', $remotefilename, $remote_domain );
-				preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
-				
-				if( !function_exists('curl_init') ) {
-					$video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
-				} else if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
-					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
-					$video_info['File'] = 'Remote';
-
-					//	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
-					$upload_dir = wp_upload_dir();      
-					$localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
-			
-					$out = fopen( $localtempfilename,'wb' );
-					if( $out ) {
-						$ch = curl_init();
-						curl_setopt( $ch, CURLOPT_URL, $remotefilename_encoded );    		
-						curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
-						curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-						curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-						curl_setopt( $ch, CURLOPT_HEADER, true );
-						curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
-						curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
-						
-						$data = curl_exec($ch);
-						
-						$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-						$header = substr($data, 0, $header_size);
-						$body = substr($data, $header_size);
-
-						file_put_contents( $localtempfilename, $body);
-						if($ch == false) {
-							$message .= 'CURL Error: '.curl_error ( $ch);
-						}
-						curl_close($ch);
-						fclose($out);
-
-						if( !$headers ) {
-							$headers = WP_Http::processHeaders( $header );			
-							
-							$video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
-							if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
-								$error = new SimpleXMLElement($body);
-								
-								if( stripos( $error->Message, 'Request has expired' ) !== false ) {
-									$video_errors[] = '<p><strong>Amazon S3</strong>: Your secure link is expired, there might be problem with your Amazon S3 plugin. Please test if the above URL opens in your browser.</p>';		
-								} else {
-									$video_errors[] = '<p><strong>Amazon S3</strong>: '.$error->Message.'</p>';				
-								}
-								
-							}
-						}
-										
-						$ThisFileInfo = $getID3->analyze( $localtempfilename );
-						
-						if( !@unlink($localtempfilename) ) {
-							$video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
-						}         
-					} else {
-						$video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
-					}                  
-				} else {
-					$a_link = str_replace( '&amp;', '&', $remotefilename );
-					$message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($a_link).'">'.$a_link.'</a></p>';
-					$video_info['File'] = 'Local';
-					
-					$document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
-					
-					global $blog_id;
-					if( isset($blog_id) && $blog_id > 1 ) {
-						$upload_dir = wp_upload_dir();
-						if( stripos($remotefilename, $upload_dir['baseurl']) !== false ) { 
-							$localtempfilename = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $remotefilename );						
-						} else {
-							$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), preg_replace( '~(\.[a-z]{1,4})/files/~', '$1/wp-content/blogs.dir/'.$blog_id.'/files/', $remotefilename ) );							
-						}
-					} else {
-						$localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
-					}
+        if( @ini_get('safe_mode') ) {
+          $video_warnings[]	= 'Detailed video check if not available with PHP Safe Mode activated. Please contact your webhost support.';
+        } else {
+								  
+          require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
+          $getID3 = new getID3;     
+          
+          preg_match( '~^\S+://([^/]+)~', $remotefilename, $remote_domain );
+          preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
+          
+          if( !function_exists('curl_init') ) {
+            $video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
+          } else if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
+            $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
+            $video_info['File'] = 'Remote';
+  
+            //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
+            $upload_dir = wp_upload_dir();      
+            $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
+        
+            $out = fopen( $localtempfilename,'wb' );
+            if( $out ) {
+              
+              $ch = curl_init();
+              curl_setopt( $ch, CURLOPT_URL, $remotefilename_encoded );    		
+              curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
+              curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+              curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+              curl_setopt( $ch, CURLOPT_HEADER, true );
+              curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
+              curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
+              
+              $data = curl_exec($ch);
+              
+              $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+              $header = substr($data, 0, $header_size);
+              $body = substr($data, $header_size);
+  
+              file_put_contents( $localtempfilename, $body);
+              if($ch == false) {
+                $message .= 'CURL Error: '.curl_error ( $ch);
+              }
+              curl_close($ch);
+              fclose($out);
+  
+              if( !$headers ) {
+                $headers = WP_Http::processHeaders( $header );			
+                
+                $video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+                if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
+                  $error = new SimpleXMLElement($body);
+                  
+                  if( stripos( $error->Message, 'Request has expired' ) !== false ) {
+                    $video_errors[] = '<p><strong>Amazon S3</strong>: Your secure link is expired, there might be problem with your Amazon S3 plugin. Please test if the above URL opens in your browser.</p>';		
+                  } else {
+                    $video_errors[] = '<p><strong>Amazon S3</strong>: '.$error->Message.'</p>';				
+                  }
+                  
+                }
+              }
+                      
+              $ThisFileInfo = $getID3->analyze( $localtempfilename );
+              
+              if( !@unlink($localtempfilename) ) {
+                $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
+              }         
+            } else {
+              $video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
+            }                  
+          } else {
+            $a_link = str_replace( '&amp;', '&', $remotefilename );
+            $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($a_link).'">'.$a_link.'</a></p>';
+            $video_info['File'] = 'Local';
+            
+            $document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
+            
+            global $blog_id;
+            if( isset($blog_id) && $blog_id > 1 ) {
+              $upload_dir = wp_upload_dir();
+              if( stripos($remotefilename, $upload_dir['baseurl']) !== false ) { 
+                $localtempfilename = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $remotefilename );						
+              } else {
+                $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), preg_replace( '~(\.[a-z]{1,4})/files/~', '$1/wp-content/blogs.dir/'.$blog_id.'/files/', $remotefilename ) );							
+              }
+            } else {
+              $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
+            }
+      
+            $ThisFileInfo = $getID3->analyze( $localtempfilename );
+          }
+          
+          
+          /*
+          Only check file length
+          */
+          if( isset($meta_action) && $meta_action == 'check_time' ) {
+          
+            if( isset($ThisFileInfo['playtime_seconds']) ) {
+              $time = $ThisFileInfo['playtime_seconds'];    	
+            }
+            global $post;
+            $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
+            $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
+            $fv_flowplayer_meta[sanitize_title($meta_original)] = array('time' => $time);
+            update_post_meta( $post->ID, '_fv_flowplayer', $fv_flowplayer_meta );
+            return;
+          } 				
+          
+                                              
+          if( isset($ThisFileInfo['error']) ) {
+            fv_wp_flowplayer_array_search_by_item( 'not correctly handled', $ThisFileInfo['error'], $check, true );
+            if( $check ) {
+              $video_info['Warning'] = 'Video checker doesn\'t support this format.'; 
+            } else { 
+              $video_errors[] = implode( '<br />', $ThisFileInfo['error'] );
+            }
+          }
+          
+          if( isset($ThisFileInfo['fileformat']) ) {
+            $video_info['Format']  = $ThisFileInfo['fileformat'];
+          }		
+          
+          if( isset($ThisFileInfo['quicktime']) ) {			
+            if( !isset($ThisFileInfo['quicktime']['moov']) ) {
+              $video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+            } else {
+              if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
+                $video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+              } else {
+                $video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
+              }
+              
+              /*if( isset($ThisFileInfo['quicktime']['moov']['subatoms']) ) {
+                foreach( $ThisFileInfo['quicktime']['moov']['subatoms'] AS $subatom ) {
+                  if( $subatom['hierarchy'] == 'trak' ) {
+                  
+                  }
+                }
+              }*/
+              
+              fv_wp_flowplayer_array_search_by_item( 'stts', $ThisFileInfo, $stts );
+              if( isset($stts[0]) && $stts[0]['number_entries'] > 1 ) {
+                $video_info['Seek points'] = $stts[0]['number_entries'].' (stts)';
+              } else {
+                if( isset($stts[0]['time_to_sample_table'][0]['sample_count']) ) {
+                  $video_info['Seek points'] = $stts[0]['time_to_sample_table'][0]['sample_count'].' (stts sample count)';
+                } else { 
+                  $video_warnings[] = 'Only one seeking point found, it might be slow to seek in the video.';
+                }
+              }               
+               
+            }
+          }
+          
+          if( isset($ThisFileInfo['audio']['streams']) ) {			
+            $count_streams = count( $ThisFileInfo['audio']['streams'] ); 
+            if( $count_streams == 1 ) {
+              $video_info['Audio'] = $count_streams.' stream, ';
+            } else {
+              $video_info['Audio'] = $count_streams.' streams, ';
+            }
+            foreach( $ThisFileInfo['audio']['streams'] AS $stream ) {
+              foreach( array( 'dataformat', 'codec', 'sample_rate', 'channels', 'bits_per_sample', 'channelmode' ) AS $item ) {
+                if( isset( $stream[$item] ) ) {
+                  $add = $stream[$item];
+                  switch( $item ) {
+                    case 'codec' : $add = '('.$add.')'; break;
+                    case 'sample_rate' : $add .= 'Hz, '; break;
+                    case 'bits_per_sample' : $add .= 'bit, '; break;
+                    case 'channels' : $add .= ' channels, '; break;					
+                  }
+                  $video_info['Audio'] .= $add.' ';
+                }
+              }
+              $video_info['Audio'] .= '|';
+            }
+            $video_info['Audio'] = trim( $video_info['Audio'], '|' );
+          }
+          
+          $video_info['Video'] = array();
+          if( isset($ThisFileInfo['video']['streams']) ) {			
+            $count_streams = count( $ThisFileInfo['video']['streams'] ); 
+            if( $count_streams == 1 ) {
+              $video_info['Video'] = $count_streams.' stream, ';
+            } else {
+              $video_info['Video'] = $count_streams.' streams, ';
+            }
+            foreach( $ThisFileInfo['video']['streams'] AS $stream ) {
+              foreach( array( 'dataformat', 'resolution_x', 'resolution_y', 'frame_rate' ) AS $item ) {
+                if( isset( $stream[$item] ) ) {
+                  $add = $stream[$item];
+                  switch( $item ) {
+                    case 'resolution_x' : $add .= ' x'; break;
+                    case 'resolution_y' : $add .= ', '; break;
+                    case 'frame_rate' : $add .= ' fps '; break;		
+                  }
+                  $video_info['Video'] .= $add.' ';
+                }
+              }
+              $video_info['Video'] .= '|';
+            }
+            $video_info['Video'] = trim( $video_info['Video'], '|' );
+            
+            if( isset($ThisFileInfo['video']['bitrate']) ) {
+              $video_info['Video'] .= number_format( ceil($ThisFileInfo['video']['bitrate']/1024) ).'Kbps ';
+            }
+          }  
+          
+          if( isset($ThisFileInfo['video']['fourcc']) ) {			
+            if( !isset($video_info['Video']) ) $video_info['Video'] = array();
+            $video_info['Video'][] .= $ThisFileInfo['video']['fourcc'].' codec';
+          }
+      
+          if( isset($ThisFileInfo['quicktime']['ftyp']['signature']) ) {	
+            $video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
+            if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
+              $m4v_note_addition = false;
+              /*if( $fv_fp->conf['engine'] == 'default' ) {
+                $m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
+              } */
+              $video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
+            }
+          }
+          
+          if( isset($ThisFileInfo['video']['codec']) && $ThisFileInfo['video']['codec'] == 'MPEG-1' ) {
+            $video_info['Video'] = 'MPEG-1 Codec';
+            $video_errors[] = 'MPEG-1 is not a valid HTML5 video format. You need to re-encode the video into MP4.';
+          }  				
+          
+          if( isset($video_info['Video']) && is_array($video_info['Video']) ) {
+            $video_info['Video'] = implode( ', ', $video_info['Video'] );
+          
+            $video_format_info = array( 'avc1' => 'H.264 Encoder', 'mp42' => 'MS-MPEG4 v2 Decoder' );
+            foreach( $video_format_info AS $key => $item ) {
+              $video_info['Video'] = str_replace( $key, $key.' ('.$item.')', $video_info['Video'] );
+            }
+          }      
 		
-					$ThisFileInfo = $getID3->analyze( $localtempfilename );
-				}
-				
-				
-				/*
-				Only check file length
-				*/
-				if( isset($meta_action) && $meta_action == 'check_time' ) {
-				
-					if( isset($ThisFileInfo['playtime_seconds']) ) {
-						$time = $ThisFileInfo['playtime_seconds'];    	
-					}
-					global $post;
-					$fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
-					$fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
-					$fv_flowplayer_meta[sanitize_title($meta_original)] = array('time' => $time);
-					update_post_meta( $post->ID, '_fv_flowplayer', $fv_flowplayer_meta );
-					return;
-				} 				
-				
-																						
-				if( isset($ThisFileInfo['error']) ) {
-					fv_wp_flowplayer_array_search_by_item( 'not correctly handled', $ThisFileInfo['error'], $check, true );
-					if( $check ) {
-						$video_info['Warning'] = 'Video checker doesn\'t support this format.'; 
-					} else { 
-						$video_errors[] = implode( '<br />', $ThisFileInfo['error'] );
-					}
-				}
-				
-				if( isset($ThisFileInfo['fileformat']) ) {
-					$video_info['Format']  = $ThisFileInfo['fileformat'];
-				}		
-				
-				if( isset($ThisFileInfo['quicktime']) ) {			
-					if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-						$video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
-					} else {
-						if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
-							$video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
-						} else {
-							$video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
-						}
-						
-						/*if( isset($ThisFileInfo['quicktime']['moov']['subatoms']) ) {
-							foreach( $ThisFileInfo['quicktime']['moov']['subatoms'] AS $subatom ) {
-								if( $subatom['hierarchy'] == 'trak' ) {
-								
-								}
-							}
-						}*/
-						
-						fv_wp_flowplayer_array_search_by_item( 'stts', $ThisFileInfo, $stts );
-						if( isset($stts[0]) && $stts[0]['number_entries'] > 1 ) {
-							$video_info['Seek points'] = $stts[0]['number_entries'].' (stts)';
-						} else {
-							if( isset($stts[0]['time_to_sample_table'][0]['sample_count']) ) {
-								$video_info['Seek points'] = $stts[0]['time_to_sample_table'][0]['sample_count'].' (stts sample count)';
-							} else { 
-								$video_warnings[] = 'Only one seeking point found, it might be slow to seek in the video.';
-							}
-						}               
-						 
-					}
-				}
-				
-				if( isset($ThisFileInfo['audio']['streams']) ) {			
-					$count_streams = count( $ThisFileInfo['audio']['streams'] ); 
-					if( $count_streams == 1 ) {
-						$video_info['Audio'] = $count_streams.' stream, ';
-					} else {
-						$video_info['Audio'] = $count_streams.' streams, ';
-					}
-					foreach( $ThisFileInfo['audio']['streams'] AS $stream ) {
-						foreach( array( 'dataformat', 'codec', 'sample_rate', 'channels', 'bits_per_sample', 'channelmode' ) AS $item ) {
-							if( isset( $stream[$item] ) ) {
-								$add = $stream[$item];
-								switch( $item ) {
-									case 'codec' : $add = '('.$add.')'; break;
-									case 'sample_rate' : $add .= 'Hz, '; break;
-									case 'bits_per_sample' : $add .= 'bit, '; break;
-									case 'channels' : $add .= ' channels, '; break;					
-								}
-								$video_info['Audio'] .= $add.' ';
-							}
-						}
-						$video_info['Audio'] .= '|';
-					}
-					$video_info['Audio'] = trim( $video_info['Audio'], '|' );
-				}
-				
-				$video_info['Video'] = array();
-				if( isset($ThisFileInfo['video']['streams']) ) {			
-					$count_streams = count( $ThisFileInfo['video']['streams'] ); 
-					if( $count_streams == 1 ) {
-						$video_info['Video'] = $count_streams.' stream, ';
-					} else {
-						$video_info['Video'] = $count_streams.' streams, ';
-					}
-					foreach( $ThisFileInfo['video']['streams'] AS $stream ) {
-						foreach( array( 'dataformat', 'resolution_x', 'resolution_y', 'frame_rate' ) AS $item ) {
-							if( isset( $stream[$item] ) ) {
-								$add = $stream[$item];
-								switch( $item ) {
-									case 'resolution_x' : $add .= ' x'; break;
-									case 'resolution_y' : $add .= ', '; break;
-									case 'frame_rate' : $add .= ' fps '; break;		
-								}
-								$video_info['Video'] .= $add.' ';
-							}
-						}
-						$video_info['Video'] .= '|';
-					}
-					$video_info['Video'] = trim( $video_info['Video'], '|' );
-					
-					if( isset($ThisFileInfo['video']['bitrate']) ) {
-						$video_info['Video'] .= number_format( ceil($ThisFileInfo['video']['bitrate']/1024) ).'Kbps ';
-					}
-				}  
-				
-				if( isset($ThisFileInfo['video']['fourcc']) ) {			
-					if( !isset($video_info['Video']) ) $video_info['Video'] = array();
-					$video_info['Video'][] .= $ThisFileInfo['video']['fourcc'].' codec';
-				}
-		
-				if( isset($ThisFileInfo['quicktime']['ftyp']['signature']) ) {	
-					$video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
-					if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
-						$m4v_note_addition = false;
-						/*if( $fv_fp->conf['engine'] == 'default' ) {
-							$m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
-						} */
-						$video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
-					}
-				}
-				
-				if( isset($ThisFileInfo['video']['codec']) && $ThisFileInfo['video']['codec'] == 'MPEG-1' ) {
-					$video_info['Video'] = 'MPEG-1 Codec';
-					$video_errors[] = 'MPEG-1 is not a valid HTML5 video format. You need to re-encode the video into MP4.';
-				}  				
-				
-				if( isset($video_info['Video']) && is_array($video_info['Video']) ) {
-					$video_info['Video'] = implode( ', ', $video_info['Video'] );
-				
-					$video_format_info = array( 'avc1' => 'H.264 Encoder', 'mp42' => 'MS-MPEG4 v2 Decoder' );
-					foreach( $video_format_info AS $key => $item ) {
-						$video_info['Video'] = str_replace( $key, $key.' ('.$item.')', $video_info['Video'] );
-					}
-				}      
-		
 
-				
+        }
 			}	//	end is_wp_error check			
 			
 		}	//	end isset($media) 
