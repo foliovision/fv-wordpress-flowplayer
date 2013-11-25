@@ -174,7 +174,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 		// build new player
     $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {
-      $GLOBALS['fv_fp_scripts'][] = $new_player['script'];
+      $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
 	}
   return $new_player['html'];

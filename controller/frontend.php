@@ -238,7 +238,7 @@ function flowplayer_content( $content ) {
       $new_player = $fv_fp->build_min_player($media,$arguments);
 			$content = str_replace($tag, $new_player['html'],$content);
 			if (!empty($new_player['script'])) {
-        $GLOBALS['fv_fp_scripts'][] = $new_player['script'];
+        $GLOBALS['fv_fp_scripts'] = $new_player['script'];
       }
 		}
 	}
@@ -249,13 +249,33 @@ function flowplayer_content( $content ) {
  * Figure out if we need to include MediaElement.js
  */
 function flowplayer_prepare_scripts() {
-	global $fv_fp;
-	global $fv_wp_flowplayer_ver;
+	global $fv_fp, $fv_wp_flowplayer_ver;
+  $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
 
-	global $wp_scripts;
+	$sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
+	$sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
+  
 	if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
 		wp_enqueue_script( 'flowplayer-mediaelement', plugins_url( '/fv-wordpress-flowplayer/mediaelement/mediaelement-and-player.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
 	}
+  wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
+  wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
+  
+  $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf' ) );
+  if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
+  if( $sLogo ) $aConf['logo'] = $sLogo;
+  wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
+  if( $fv_fp->conf['fixed_size'] == 'false' ) {
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_safety_resize_do', true );
+  }
+  if( current_user_can('manage_options') ) {
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', true );
+  }
+  if( isset($GLOBALS['fv_fp_scripts']) ) {
+    foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
+      wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+    }
+  }
 }
 
 /**
@@ -263,35 +283,7 @@ function flowplayer_prepare_scripts() {
  */
 function flowplayer_display_scripts() {
 	global $fv_fp;
-	$sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
 
-	$sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
-	$sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
-	?>
-<script type="text/javascript">     
-<?php
-echo "flowplayer.conf = {embed: {library: '$sPluginUrl/flowplayer/fv-flowplayer.min.js', script: '$sPluginUrl/flowplayer/embed.min.js', skin: '$sPluginUrl/css/flowplayer.css', swf: '$sPluginUrl/flowplayer/flowplayer.swf'}}\n";
-if( $sCommercialKey ) echo "flowplayer.conf.key = '$sCommercialKey';";
-if( $sLogo ) echo " flowplayer.conf.logo = '$sLogo';\n";
-?></script>	
-	<?php if (!empty($GLOBALS['fv_fp_scripts'])) : ?>		
-<script type="text/javascript">
-var fv_fp_ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
-<?php foreach($GLOBALS['fv_fp_scripts'] as $scr) { echo $scr; } ?>
-<?php	if( current_user_can('manage_options') ) : ?>	
-fv_flowplayer_admin_input();
-<?php endif; ?>    
-fv_flowplayer_browser_ipad_load();
-fv_flowplayer_browser_ipad_flash();
-<?php if( $fv_fp->conf['fixed_size'] == 'false' ) : ?>
-jQuery(document).ready(function() { fv_flowplayer_safety_resize(); } );				
-<?php endif; ?>		
-var fv_fp_date = new Date();
-var fv_fp_utime = fv_fp_date.getTime();		
-<?php echo apply_filters( 'fv_flowplayer_scripts_global', '' ); ?>
-</script>
-	<?php endif;
-	
 	if( is_user_logged_in() || isset($_GET['fv_wp_flowplayer_check_template']) ) {
 		echo "\n<!--fv-flowplayer-footer-->\n\n";
 	}

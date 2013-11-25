@@ -29,6 +29,8 @@ class flowplayer_frontend extends flowplayer
 	var $autoplay_count = 0;
 	
 	var $expire_time = 0;
+  
+  var $aPlaylists = array();
 
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
@@ -47,7 +49,7 @@ class flowplayer_frontend extends flowplayer
 		$vimeo = false;		
     
 		// returned array with new player's html and javascript content
-		$this->ret = array('html' => '', 'script' => ' ');	//	note: we need the white space here, it fails to add into the string on some hosts without it (???)
+		$this->ret = array('html' => '', 'script' => $GLOBALS['fv_fp_scripts'] );	//	note: we need the white space here, it fails to add into the string on some hosts without it (???)
 		$html_after = '';
 		$scripts_after = '';
       
@@ -165,11 +167,11 @@ class flowplayer_frontend extends flowplayer
 					} 
 					
 					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
-						$this->ret['script'] .= "fv_flowplayer_browser_ff_m4v('".$this->hash."')\n";
+						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
 					}
           
 					if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
-						$this->ret['script'] .= "fv_flowplayer_browser_chrome_mp4('".$this->hash."');\n";
+						$this->ret['script']['fv_flowplayer_browser_chrome_mp4'][$this->hash] = true;
 					}				
 					
 				}    
@@ -313,7 +315,7 @@ class flowplayer_frontend extends flowplayer
 				//  change engine for IE9 and 10
 				
 				if( $this->conf['engine'] == 'false' ) {
-					$this->ret['script'] .= "fv_flowplayer_browser_ie( '".$this->hash."' );\n";
+					$this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
 				}
 				
 				if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['disable_videochecker'] != 'true' ) {
@@ -328,13 +330,13 @@ class flowplayer_frontend extends flowplayer
 					}   
 					
 					if( isset($test_media) && count($test_media) > 0 ) { 
-						$this->ret['script'] .= "fv_flowplayer_admin_test_media( '".$this->hash."', '".json_encode($test_media)."' );\n";
+						$this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = json_encode($test_media);;
 					}
 				}
 				
 				
 				if ( !empty($redirect) ) {
-					$this->ret['script'] .= "fv_flowplayer_redirect( '".$this->hash."', '".$redirect."')\n";
+					$this->ret['script']['fv_flowplayer_redirect'][$this->hash] = $redirect;
 				}
 	
 				
@@ -405,25 +407,19 @@ class flowplayer_frontend extends flowplayer
 				$attributes['data-ratio'] = $ratio;
 				if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 					$attributes['data-flashfit'] = 'true';
-				}            
-				
+				}
+        
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
           $html_after .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
-          $scripts_after .= "<script>jQuery('#wpfp_{$this->hash}').flowplayer( {\n\tplaylist: \n\t\t{$jsonPlaylistItems}";  /// pro
-          /*if( isset($attributes['data-rtmp']) ) {
-            $scripts_after .= ",\n\trtmp: '{$attributes['data-rtmp']}'";
-          }*/
-          //$scripts_after .= ",\n\tautoplay: 'autoplay'";
-          $scripts_after .= "} );</script>\n";   ///  pro
+          $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
 
           $attributes['style'] .= "background-image: url({$splash_img});";
           if( $autoplay ) {
-            $this->ret['script'] .= "fv_flowplayer_autoplay( '".$this->hash."' );\n";			//  todo: any better way?
+            $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
           }
-				}			
-				
+				}	        
 				
 				$attributes_html = '';
 				$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media );
@@ -434,7 +430,7 @@ class flowplayer_frontend extends flowplayer
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 				
 				if (isset($args['loop']) && $args['loop'] == 'true') {
-					$this->ret['script'] .= "fv_flowplayer_loop( '".$this->hash."' );\n";			
+					$this->ret['script']['fv_flowplayer_loop'][$this->hash] = true;
 				}
 				
 				if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
@@ -482,7 +478,7 @@ class flowplayer_frontend extends flowplayer
 						$tmp = $this;
 						$mp4_video = $this->get_amazon_secure( $mp4_video, $tmp );	
 				
-						$this->ret['script'] .= "fv_flowplayer_browser_chrome_fail( '".$this->hash."', '".addslashes( str_replace("\n"," ",$tmp->ret['script']) )."', '".$attributes_html."', '".$mp4_video."', '".( (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') ? "true" : "false" )."');\n";
+						$this->ret['script']['fv_flowplayer_browser_chrome_fail'][$this->hash] = array( 'attrs' => $attributes_html, 'mp4' => $mp4_video, 'auto_buffer' => ( (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') ? "true" : "false" ) );
 					}
 					 
 					$this->ret['html'] .= '>'."\n";
@@ -497,7 +493,7 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= "\t"."\t".$this->get_video_src($src2, $mobileUserAgent, null, $rtmp)."\n";
 					}
 					if (!empty($mobile)) {
-						$this->ret['script'] .= "\nfv_flowplayer_mobile_switch('wpfp_{$this->hash}')\n";
+						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
 						$this->ret['html'] .= "\t"."\t".$this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$this->hash.'_mobile', $rtmp)."<!--mobile-->\n";
 					}			
 			
@@ -557,14 +553,14 @@ class flowplayer_frontend extends flowplayer
 			
 			$preload = ($autoplay == true) ? '' : ' preload="none"'; 
 					
-			$this->ret['script'] .= "jQuery('#wpfp_{$this->hash} audio').mediaelementplayer();\n";
+			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
 			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
 				$this->ret['html'] .= "\t".'<audio src="'.$media.'" type="audio/'.$this->get_file_extension($media).'" controls="controls" width="'.$width.'"'.$preload.'></audio>'."\n";  
 			$this->ret['html'] .= '</div>'."\n";
 			$this->ret['html'] .= $scripts_after; 
 		}
 		
-		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts', $this->ret['script']."\n", 'wpfp_' . $this->hash, $media );
+		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
 		return $this->ret;
 	}
   

@@ -308,8 +308,8 @@ function flowplayer_head() {
 
 
 function flowplayer_jquery() {
-  global $fv_wp_flowplayer_ver;
-  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js' ), array('jquery'), $fv_wp_flowplayer_ver );
+  global $fv_wp_flowplayer_ver, $fv_fp;
+  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
 }
 
 ?>
