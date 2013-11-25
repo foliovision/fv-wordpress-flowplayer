@@ -76,6 +76,40 @@ class flowplayer_frontend extends flowplayer
 			$autoplay = true;
 		}
     
+    if (isset($args['splash']) && !empty($args['splash'])) {
+      $splash_img = $args['splash'];
+      if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
+        //$splash_img = VIDEO_PATH.trim($args['splash']);
+        if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
+          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
+            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
+          }
+          else
+          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$splash_img)){ // if the videos folder is in the root
+            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
+          }
+          else {
+            //if the videos are not in the videos directory but they are adressed relatively
+            $splash_img_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$splash_img);
+            $splash_img = 'http://'.$splash_img_path;
+          }
+      }
+      else {
+        $splash_img = trim($args['splash']);
+      }  		  		
+    }
+    
+    foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+      //if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
+      if( stripos( $media_item, 'rtmp://' ) === 0 ) {
+        $rtmp = $media_item;
+      }
+    }
+    
+    if( isset($args['rtmp']) && !empty($args['rtmp']) && isset($args['rtmp_path']) && !empty($args['rtmp_path']) ) {
+      $rtmp = trim( $args['rtmp_path'] );
+    }    
+    
 		//	decide which player to use
 		foreach( array( $media, $src1, $src2 ) AS $media_item ) {
 			if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
@@ -126,8 +160,7 @@ class flowplayer_frontend extends flowplayer
         $playlist_items_external_html = array();
         foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
           if( !$media_item ) continue;
-          $aPlaylistItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );
-                  
+          $aPlaylistItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );                  
         }							
         $aPlaylistItems[] = $aPlaylistItem;
         $playlist_items_external_html[] = "\t\t<a class='is-active' ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'></a>\n";
@@ -162,9 +195,6 @@ class flowplayer_frontend extends flowplayer
 		
 				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
 					//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-					if( stripos( $media_item, 'rtmp://' ) === 0 ) {
-						$rtmp = $media_item;
-					} 
 					
 					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
 						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
@@ -176,9 +206,6 @@ class flowplayer_frontend extends flowplayer
 					
 				}    
 				
-				if( isset($args['rtmp']) && !empty($args['rtmp']) && isset($args['rtmp_path']) && !empty($args['rtmp_path']) ) {
-					$rtmp = trim( $args['rtmp_path'] );
-				}
 				if (!empty($media)) {
 					$media = $this->get_video_url($media);
 				}
@@ -212,29 +239,6 @@ class flowplayer_frontend extends flowplayer
 					$scaling = "fit";
 				else
 					$scaling = "scale";
-					
-				if (isset($args['splash']) && !empty($args['splash'])) {
-					$splash_img = $args['splash'];
-					if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
-						//$splash_img = VIDEO_PATH.trim($args['splash']);
-						if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
-							if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
-								$splash_img = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
-							}
-							else
-							if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$splash_img)){ // if the videos folder is in the root
-								$splash_img = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
-							}
-							else {
-								//if the videos are not in the videos directory but they are adressed relatively
-								$splash_img_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$splash_img);
-								$splash_img = 'http://'.$splash_img_path;
-							}
-					}
-					else {
-						$splash_img = trim($args['splash']);
-					}  		  		
-				}
 				
 				if (isset($args['subtitles']) && !empty($args['subtitles'])) {
 					$subtitles = $args['subtitles'];
