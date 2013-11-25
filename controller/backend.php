@@ -759,11 +759,11 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 				if( function_exists('is_utf8') && is_utf8($remotefilename) ) {
 					 $video_errors[] = '<p><strong>UTF-8 error</strong>: Your file name is using non-latin characters, the file might not play in browsers using Flash for the video!</p>';
 				}
-
+				
         if( @ini_get('safe_mode') ) {
           $video_warnings[]	= 'Detailed video check is not available with PHP Safe Mode On. Please contact your webhost support.';
         } else {
-						  
+								  
           require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
           $getID3 = new getID3;     
           
@@ -787,9 +787,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
               curl_setopt( $ch, CURLOPT_URL, $remotefilename_encoded );    		
               curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
               curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-              if( !@ini_get('open_basedir') ) {
-                @curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-              }
+              curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
               curl_setopt( $ch, CURLOPT_HEADER, true );
               curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
               curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);

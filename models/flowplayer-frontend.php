@@ -112,7 +112,49 @@ class flowplayer_frontend extends flowplayer
 			}
 		}
     
-    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, array( $media, $src1, $src2 ), $args );
+    if( isset($args['playlist']) && strlen(trim($args['playlist'])) > 0 ) {
+      $playlist_replace_from = array('&amp;','\;', '\,');				
+      $playlist_replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
+      $args['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $args['playlist'] );			
+      $playlist_items = explode( ';', $args['playlist'] );
+    
+      $aPlaylistItems = array();
+      if( count($playlist_items) > 0 ) {					
+        $aPlaylistItem = array();
+        $playlist_items_external_html = array();
+        foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
+          if( !$media_item ) continue;
+          $aPlaylistItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );
+                  
+        }							
+        $aPlaylistItems[] = $aPlaylistItem;
+        $playlist_items_external_html[] = "\t\t<a class='is-active' ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'></a>\n";
+        
+        foreach( $playlist_items AS $iKey => $sPlaylist_item ) {
+          $aPlaylist_item = explode( ',', $sPlaylist_item );
+          $aPlaylistItem = array();
+          $sSplashImage = false;						
+          foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
+            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
+              $sSplashImage = $aPlaylist_item_i;
+              continue;
+            }
+            $aPlaylistItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ) ); 
+          }
+          $aPlaylistItems[] = $aPlaylistItem;
+          if( $sSplashImage ) {
+            $playlist_items_external_html[] = "\t\t<a style='background-image: url(\"".$sSplashImage."\")' onclick='return false'></a>\n";
+          } else {
+            $playlist_items_external_html[] = "\t\t<a onclick='return false'></a>\n";
+          }
+        }
+
+        $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
+        //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
+      }
+    }
+    
+    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $args );
     
 		if( $player_type == 'video' ) {
 		
@@ -367,61 +409,19 @@ class flowplayer_frontend extends flowplayer
 				
 				$playlist = '';
 				$is_preroll = false;
-				if( isset($args['playlist']) && strlen(trim($args['playlist'])) > 0 ) {
-					$playlist_replace_from = array('&amp;','\;', '\,');				
-					$playlist_replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
-					$args['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $args['playlist'] );			
-					$playlist_items = explode( ';', $args['playlist'] );
-				
-					$aPlaylistItems = array();
-					if( count($playlist_items) > 0 ) {					
-						$aPlaylistItem = array();
-						$playlist_items_external_html = array();
-						foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
-							if( !$media_item ) continue;
-							$aPlaylistItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );
-											
-						}							
-						$aPlaylistItems[] = $aPlaylistItem;
-						$playlist_items_external_html[] = "\t\t<a class='is-active' ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'></a>\n";
-						
-						foreach( $playlist_items AS $iKey => $sPlaylist_item ) {
-							$aPlaylist_item = explode( ',', $sPlaylist_item );
-							$aPlaylistItem = array();
-							$sSplashImage = false;						
-							foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
-								if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
-									$sSplashImage = $aPlaylist_item_i;
-									continue;
-								}
-								$aPlaylistItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ) ); 
-							}
-							$aPlaylistItems[] = $aPlaylistItem;
-							if( $sSplashImage ) {
-								$playlist_items_external_html[] = "\t\t<a style='background-image: url(\"".$sSplashImage."\")' onclick='return false'></a>\n";
-							} else {
-								$playlist_items_external_html[] = "\t\t<a onclick='return false'></a>\n";
-							}
-						}
+				if( isset($playlist_items_external_html) ) {
+          $html_after .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
+          $scripts_after .= "<script>jQuery('#wpfp_{$this->hash}').flowplayer( {\n\tplaylist: \n\t\t{$jsonPlaylistItems}";  /// pro
+          /*if( isset($attributes['data-rtmp']) ) {
+            $scripts_after .= ",\n\trtmp: '{$attributes['data-rtmp']}'";
+          }*/
+          //$scripts_after .= ",\n\tautoplay: 'autoplay'";
+          $scripts_after .= "} );</script>\n";   ///  pro
 
-						$jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
-						//$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
-		
-						$html_after .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
-						$scripts_after .= "<script>jQuery('#wpfp_{$this->hash}').flowplayer( {\n\tplaylist: \n\t\t{$jsonPlaylistItems}";
-						/*if( isset($attributes['data-rtmp']) ) {
-							$scripts_after .= ",\n\trtmp: '{$attributes['data-rtmp']}'";
-						}*/
-						//$scripts_after .= ",\n\tautoplay: 'autoplay'";
-						$scripts_after .= "} );</script>\n";
-						if( $autoplay ) {
-						
-						}
-						$attributes['style'] .= "background-image: url({$splash_img});";
-					    if( $autoplay ) {
-						    $this->ret['script'] .= "fv_flowplayer_autoplay( '".$this->hash."' );\n";			
-						}
-					}
+          $attributes['style'] .= "background-image: url({$splash_img});";
+          if( $autoplay ) {
+            $this->ret['script'] .= "fv_flowplayer_autoplay( '".$this->hash."' );\n";			//  todo: any better way?
+          }
 				}			
 				
 				
