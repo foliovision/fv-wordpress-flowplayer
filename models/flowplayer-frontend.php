@@ -380,7 +380,7 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf';
-				$attributes['data-flashfit'] = "true";
+				//$attributes['data-flashfit'] = "true";
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
