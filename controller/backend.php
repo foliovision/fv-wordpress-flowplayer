@@ -787,7 +787,9 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
               curl_setopt( $ch, CURLOPT_URL, $remotefilename_encoded );    		
               curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
               curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-              curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+              if( !@ini_get('open_basedir') ) {
+                @curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+              }
               curl_setopt( $ch, CURLOPT_HEADER, true );
               curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
               curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
