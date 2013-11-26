@@ -323,7 +323,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.1.49 - 2013/11/21 =
 
-* Fix - Flash engine set to respect the video aspect ratio when using a different player size
 * Fix - Flowplayer configuration JS moved into footer
 * Bugfix - Playlist - RTMP parsing issues
 * Bugfix - Video Checker - disabled for PHP with Safe Mode On
