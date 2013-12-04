@@ -266,10 +266,10 @@ function flowplayer_prepare_scripts() {
   if( $sLogo ) $aConf['logo'] = $sLogo;
   wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
   if( $fv_fp->conf['fixed_size'] == 'false' ) {
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_safety_resize_do', true );
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_safety_resize_do', array(true) );
   }
   if( current_user_can('manage_options') ) {
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', true );
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
   }
   if( isset($GLOBALS['fv_fp_scripts']) ) {
     foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
