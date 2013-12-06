@@ -321,6 +321,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.50 - 2013/12/06 =
+
+* Bugfix - Amazon S3 bug after the JS optimization
+* Bugfix - fix for PHP warnings
+* Bugfix - Flashfit needs to be off by default to allow responsiveness
+
 = 2.1.49 - 2013/11/21 =
 
 * Fix - Flowplayer configuration JS moved into footer

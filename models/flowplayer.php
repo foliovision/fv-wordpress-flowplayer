@@ -241,7 +241,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			$media = $url;
 						
 			if( stripos( $fv_fp->ret['script'], "fv_flowplayer_amazon_s3('".$this->hash ) === false ) {
-				$fv_fp->ret['script'] .= "fv_flowplayer_amazon_s3('".$this->hash."', ".$time.")\n";
+				$this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
 			}
   	}
   	

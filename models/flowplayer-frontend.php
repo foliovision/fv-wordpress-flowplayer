@@ -31,6 +31,10 @@ class flowplayer_frontend extends flowplayer
 	var $expire_time = 0;
   
   var $aPlaylists = array();
+  
+  var $aCurArgs = false;
+  
+  var $sHTMLAfter = false;
 
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
@@ -41,45 +45,50 @@ class flowplayer_frontend extends flowplayer
 	function build_min_player($media,$args = array()) {
 		global $post;
 				
-		// unique coe for this player
-		$this->hash = md5($media.$this->_salt());    
+		// unique code for this player
+		$this->hash = md5($media.$this->_salt());
+    $this->aCurArgs = $args;
+    $this->sHTMLAfter = false;
 		$player_type = 'video';
 		$rtmp = false;
 		$youtube = false;
 		$vimeo = false;		
     
 		// returned array with new player's html and javascript content
+    if( !isset($GLOBALS['fv_fp_scripts']) ) {
+      $GLOBALS['fv_fp_scripts'] = array();
+    }
 		$this->ret = array('html' => '', 'script' => $GLOBALS['fv_fp_scripts'] );	//	note: we need the white space here, it fails to add into the string on some hosts without it (???)
-		$html_after = '';
 		$scripts_after = '';
       
     
 		// set common variables
 		$width = ( isset($this->conf['width']) && (!empty($this->conf['width'])) && intval($this->conf['width']) > 0 ) ? $this->conf['width'] : 320;
 		$height = ( isset($this->conf['height']) && (!empty($this->conf['height'])) && intval($this->conf['height']) > 0 ) ? $this->conf['height'] : 240;
-		if (isset($args['width'])&&!empty($args['width'])) $width = trim($args['width']);
-		if (isset($args['height'])&&!empty($args['height'])) $height = trim($args['height']);		
+		if (isset($this->aCurArgs['width'])&&!empty($this->aCurArgs['width'])) $width = trim($this->aCurArgs['width']);
+		if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);		
 		        
-		$src1 = ( isset($args['src1']) && !empty($args['src1']) ) ? trim($args['src1']) : false;
-		$src2 = ( isset($args['src2']) && !empty($args['src2']) ) ? trim($args['src2']) : false;  
-		$mobile = ( isset($args['mobile']) && !empty($args['mobile']) ) ? trim($args['mobile']) : false;  
+		$src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
+		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
+		
     
 		$autoplay = false;
-		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $args['autoplay'] != 'false'  ) {
+		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
 			$this->autobuffer_count++;
 			if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
 				$autoplay = true;
 			}
 		}  
-		if( isset($args['autoplay']) && $args['autoplay'] == 'true') {
+		if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
 			$this->autobuffer_count++;
 			$autoplay = true;
 		}
     
-    if (isset($args['splash']) && !empty($args['splash'])) {
-      $splash_img = $args['splash'];
+    $splash_img = false;
+    if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
+      $splash_img = $this->aCurArgs['splash'];
       if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
-        //$splash_img = VIDEO_PATH.trim($args['splash']);
+        //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
         if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
           if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
             $splash_img = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
@@ -95,7 +104,7 @@ class flowplayer_frontend extends flowplayer
           }
       }
       else {
-        $splash_img = trim($args['splash']);
+        $splash_img = trim($this->aCurArgs['splash']);
       }  		  		
     }
     
@@ -106,8 +115,8 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    if( isset($args['rtmp']) && !empty($args['rtmp']) && isset($args['rtmp_path']) && !empty($args['rtmp_path']) ) {
-      $rtmp = trim( $args['rtmp_path'] );
+    if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) && isset($this->aCurArgs['rtmp_path']) && !empty($this->aCurArgs['rtmp_path']) ) {
+      $rtmp = trim( $this->aCurArgs['rtmp_path'] );
     }    
     
 		//	decide which player to use
@@ -148,13 +157,14 @@ class flowplayer_frontend extends flowplayer
 			}
 		}
     
-    if( isset($args['playlist']) && strlen(trim($args['playlist'])) > 0 ) {
+    $aPlaylistItems = array();
+    
+    if( isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {
       $playlist_replace_from = array('&amp;','\;', '\,');				
       $playlist_replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
-      $args['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $args['playlist'] );			
-      $playlist_items = explode( ';', $args['playlist'] );
+      $this->aCurArgs['playlist'] = str_replace( $playlist_replace_from, $playlist_replace_to, $this->aCurArgs['playlist'] );			
+      $playlist_items = explode( ';', $this->aCurArgs['playlist'] );
     
-      $aPlaylistItems = array();
       if( count($playlist_items) > 0 ) {					
         $aPlaylistItem = array();
         $playlist_items_external_html = array();
@@ -189,7 +199,7 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $args );
+    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
 		if( $player_type == 'video' ) {
 		
@@ -214,7 +224,8 @@ class flowplayer_frontend extends flowplayer
 				}
 				if (!empty($src2)) {
 					$src2 = $this->get_video_url($src2);
-				} 
+				}
+        $mobile = ( isset($this->aCurArgs['mobile']) && !empty($this->aCurArgs['mobile']) ) ? trim($this->aCurArgs['mobile']) : false;  
 				if (!empty($mobile)) {
 					$mobile = $this->get_video_url($mobile);
 				}			
@@ -232,18 +243,18 @@ class flowplayer_frontend extends flowplayer
 				
 				$redirect = '';			
 	
-				if (isset($args['controlbar'])&&($args['controlbar']=='show')) $controlbar = 'show';
-				if (isset($args['redirect'])&&!empty($args['redirect'])) $redirect = trim($args['redirect']);
+				if (isset($this->aCurArgs['controlbar'])&&($this->aCurArgs['controlbar']=='show')) $controlbar = 'show';
+				if (isset($this->aCurArgs['redirect'])&&!empty($this->aCurArgs['redirect'])) $redirect = trim($this->aCurArgs['redirect']);
 				$scaling = "scale";
 				if (isset($this->conf['scaling'])&&($this->conf['scaling']=="true"))
 					$scaling = "fit";
 				else
 					$scaling = "scale";
 				
-				if (isset($args['subtitles']) && !empty($args['subtitles'])) {
-					$subtitles = $args['subtitles'];
+				if (isset($this->aCurArgs['subtitles']) && !empty($this->aCurArgs['subtitles'])) {
+					$subtitles = $this->aCurArgs['subtitles'];
 					if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-						//$splash_img = VIDEO_PATH.trim($args['splash']);
+						//$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
 						if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
 							if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
 								$subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
@@ -259,16 +270,16 @@ class flowplayer_frontend extends flowplayer
 							}
 					}
 					else {
-						$subtitles = trim($args['subtitles']);
+						$subtitles = trim($this->aCurArgs['subtitles']);
 					}  		  		
 				}  
 				
 				
 				$show_popup = false;
 				// if allowed by configuration file, set the popup box js code and content
-				if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($args['popup']) && !empty($args['popup']) ) ) {
-					if (isset($args['popup']) && !empty($args['popup'])) {
-						$popup = trim($args['popup']);
+				if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup']) ) ) {
+					if (isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup'])) {
+						$popup = trim($this->aCurArgs['popup']);
 						$popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
 					}
 					else {
@@ -287,15 +298,15 @@ class flowplayer_frontend extends flowplayer
 				if(
 					(
 						( isset($this->conf['ad']) ) && strlen(trim($this->conf['ad'])) ||
-						( isset($args['ad']) && !empty($args['ad']) )
+						( isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad']) )
 					) 
 					&&
-					!strlen($args['ad_skip'])				
+					!strlen($this->aCurArgs['ad_skip'])				
 				) {
-					if (isset($args['ad']) && !empty($args['ad'])) {
-						$ad = html_entity_decode( str_replace('&#039;',"'", trim($args['ad']) ) );
-						$ad_width = ( isset($args['ad_width']) ) ? $args['ad_width'].'px' : '60%';	
-						$ad_height = ( isset($args['ad_height']) ) ? $args['ad_height'].'px' : '';					
+					if (isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad'])) {
+						$ad = html_entity_decode( str_replace('&#039;',"'", trim($this->aCurArgs['ad']) ) );
+						$ad_width = ( isset($this->aCurArgs['ad_width']) ) ? $this->aCurArgs['ad_width'].'px' : '60%';	
+						$ad_height = ( isset($this->aCurArgs['ad_height']) ) ? $this->aCurArgs['ad_height'].'px' : '';					
 					}
 					else {
 						$ad = trim($this->conf['ad']);			
@@ -311,7 +322,7 @@ class flowplayer_frontend extends flowplayer
 				}			
 				
 				$show_splashend = false;
-				if (isset($args['splashend']) && $args['splashend'] == 'show' && isset($args['splash']) && !empty($args['splash'])) {      
+				if (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {      
 					$show_splashend = true;
 					$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
 				}	
@@ -325,7 +336,7 @@ class flowplayer_frontend extends flowplayer
 				if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['disable_videochecker'] != 'true' ) {
 					$this->ajax_count++;
 					$test_media = array();
-					$rtmp_test = ( isset($args['rtmp']) ) ? $args['rtmp'].$args['rtmp_path'] : $rtmp;
+					$rtmp_test = ( isset($this->aCurArgs['rtmp']) ) ? $this->aCurArgs['rtmp'].$this->aCurArgs['rtmp_path'] : $rtmp;
 					foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
 						if( $media_item ) {
 							$test_media[] = $this->get_amazon_secure( $media_item, $this );
@@ -355,21 +366,21 @@ class flowplayer_frontend extends flowplayer
 					$attributes['class'] .= ' fixed-controls';
 				} 
 				
-				if( isset($args['align']) ) {
-					if( $args['align'] == 'left' ) {
+				if( isset($this->aCurArgs['align']) ) {
+					if( $this->aCurArgs['align'] == 'left' ) {
 						$attributes['class'] .= ' alignleft';
-					} else if( $args['align'] == 'right' ) {
+					} else if( $this->aCurArgs['align'] == 'right' ) {
 						$attributes['class'] .= ' alignright';
-					} else if( $args['align'] == 'center' ) {
+					} else if( $this->aCurArgs['align'] == 'center' ) {
 						$attributes['class'] .= ' aligncenter';
 					} 
 				}
 				
-				if( $this->conf['engine'] == 'true' || $args['engine'] == 'flash' ) {
+				if( $this->conf['engine'] == 'true' || $this->aCurArgs['engine'] == 'flash' ) {
 					$attributes['data-engine'] = 'flash';
 				}
 				
-				if( $args['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $args['embed'] != 'true' ) ) {
+				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
 					$attributes['data-embed'] = 'false';
 				}
 				
@@ -386,8 +397,8 @@ class flowplayer_frontend extends flowplayer
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
 				}			
 				
-				if( isset($args['rtmp']) && !empty($args['rtmp']) ) {
-					$attributes['data-rtmp'] = trim( $args['rtmp'] );
+				if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {
+					$attributes['data-rtmp'] = trim( $this->aCurArgs['rtmp'] );
 				} else if( isset($rtmp) && !(isset($this->conf['rtmp']) && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
 					$rtmp_info = parse_url($rtmp);
 					if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
@@ -416,7 +427,7 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
-          $html_after .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
+          $this->sHTMLAfter .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
 
           $attributes['style'] .= "background-image: url({$splash_img});";
@@ -433,7 +444,7 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 				
-				if (isset($args['loop']) && $args['loop'] == 'true') {
+				if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
 					$this->ret['script']['fv_flowplayer_loop'][$this->hash] = true;
 				}
 				
@@ -445,7 +456,7 @@ class flowplayer_frontend extends flowplayer
 					if( $autoplay == true ) {
 						$this->ret['html'] .= ' autoplay';  
 					}
-					if (isset($args['loop']) && $args['loop'] == 'true') {
+					if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
 						$this->ret['html'] .= ' loop';
 								
 					}     
@@ -458,6 +469,7 @@ class flowplayer_frontend extends flowplayer
 						
 					$count = $mp4_position = $webm_position = 0;
 					$mp4_video = false;
+        
 					foreach( array( $media, $src1, $src2 ) AS $media_item ) {
 						$count++;
 						if( preg_match( '~\.(mp4|mov|m4v)~', $media_item ) ) {
@@ -534,7 +546,7 @@ class flowplayer_frontend extends flowplayer
 				}			
 				$this->ret['html'] .= '</div>'."\n";
 	
-				$this->ret['html'] .= $html_after.$scripts_after;      
+				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;      
 		
 		} else if( $player_type == 'youtube' ) {
 				
@@ -586,6 +598,9 @@ class flowplayer_frontend extends flowplayer
         $media = 'http://'.$media_path;
       }
 		}
+    
+    $media = apply_filters( 'fv_flowplayer_media', $media, $this );
+    
     return $media;
   }
   
@@ -641,30 +656,32 @@ class flowplayer_frontend extends flowplayer
     $extension = preg_replace( '~[?#].+$~', '', $extension );
     
 		if( !$extension ) {
-			return $default;
-		}
- 
-    
-    if ($extension == 'm3u8' || $extension == 'm3u') {
-      $extension = 'x-mpegurl';
-    } else if ($extension == 'm4v') {
-      $extension = 'mp4';
-    } else if( $extension == 'mp3' ) {
-    	$extension = 'mpeg';
-    } else if( $extension == 'wav' ) {
-    	$extension = 'wav';
-    } else if( $extension == 'ogg' ) {
-    	$extension = 'ogg';
-    } else if( $extension == 'ogv' ) {
-    	$extension = 'ogg';
-    } else if( $extension == 'mov' ) {
-      $extension = 'mp4';
-    } else if( $extension == '3gp' ) {
-      $extension = 'mp4';      
-    } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
-      $extension = $default;  
+			$output = $default;
+		} else {
+      if ($extension == 'm3u8' || $extension == 'm3u') {
+        $output = 'x-mpegurl';
+      } else if ($extension == 'm4v') {
+        $output = 'mp4';
+      } else if( $extension == 'mp3' ) {
+        $output = 'mpeg';
+      } else if( $extension == 'wav' ) {
+        $output = 'wav';
+      } else if( $extension == 'ogg' ) {
+        $output = 'ogg';
+      } else if( $extension == 'ogv' ) {
+        $output = 'ogg';
+      } else if( $extension == 'mov' ) {
+        $output = 'mp4';
+      } else if( $extension == '3gp' ) {
+        $output = 'mp4';      
+      } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
+        $output = $default;  
+      } else {
+        $output = $extension;
+      }
     }
-    return $extension;  
+
+    return apply_filters( 'fv_flowplayer_get_file_extension', $output, $media );  
   }
   
 	/**
