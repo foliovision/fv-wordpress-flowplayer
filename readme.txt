@@ -326,6 +326,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - Amazon S3 bug after the JS optimization
 * Bugfix - fix for PHP warnings
 * Bugfix - Flashfit needs to be off by default to allow responsiveness
+* Bugfix - HLS type in video source tag
 
 = 2.1.49 - 2013/11/21 =
 

@@ -117,7 +117,12 @@ class flowplayer_frontend extends flowplayer
     
     if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) && isset($this->aCurArgs['rtmp_path']) && !empty($this->aCurArgs['rtmp_path']) ) {
       $rtmp = trim( $this->aCurArgs['rtmp_path'] );
-    }    
+    }
+    
+    $media_pre = apply_filters( 'fv_flowplayer_media_pre', array( $media, $src1, $src2 ), $this );
+    $media = $media_pre[0];
+    $src1 = $media_pre[1];
+    $src2 = $media_pre[2];
     
 		//	decide which player to use
 		foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -642,7 +647,8 @@ class flowplayer_frontend extends flowplayer
 			if( $url_only ) {
 				return trim($media);
 			} else {
-				return '<source '.$id.'src="'.trim($media).'" type="video/'.$extension.'" />'.$source_flash_encoded;  
+        $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
+				return '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />'.$source_flash_encoded;  
 			}
     }
     return null;
