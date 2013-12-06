@@ -257,7 +257,7 @@ class FV_Wordpress_Flowplayer_Plugin
   
   function pointers_enqueue() {
   	global $wp_version;
-		if( ! current_user_can( 'manage_options' ) || count( $this->pointer_boxes ) == 0 || version_compare( $wp_version, '3.4', '<' ) ) {
+		if( ! current_user_can( 'manage_options' ) || ( isset($this->pointer_boxes) && count( $this->pointer_boxes ) == 0 ) || version_compare( $wp_version, '3.4', '<' ) ) {
 			return;
 		}
 
