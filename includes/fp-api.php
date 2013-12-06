@@ -282,7 +282,7 @@ class FV_Wordpress_Flowplayer_Plugin
   
   
   function pointers_init_scripts() {
-  	if( !$this->pointer_boxes ) {
+  	if( !isset($this->pointer_boxes) || !$this->pointer_boxes ) {
   		return;
   	}
   	
