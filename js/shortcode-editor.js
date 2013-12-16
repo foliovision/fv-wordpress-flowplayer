@@ -2,14 +2,14 @@ var FVFP_iStoreWidth = 0;
 var FVFP_iStoreHeight = 0;  
 var FVFP_sStoreRTMP = 0;   
 
-jQuery(document).ready(function(){ 
-  if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
+jQuery(document).ready(function() {
+  if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {
     jQuery(".fv-wordpress-flowplayer-button").colorbox( 
       { width:"600px", height:"600px", href: "#fv-wordpress-flowplayer-popup", inline: true, onComplete : fv_wp_flowplayer_edit, onClosed : fv_wp_flowplayer_on_close }
     );
     
     jQuery(".fv-wordpress-flowplayer-button").click( function() {
-      if( jQuery('#wp-content-wrap').hasClass('html-active') ) {
+      if( jQuery('#wp-content-wrap').hasClass('html-active') && typeof(FCKeditorAPI) != "object" ) {
         jQuery(".fv-wordpress-flowplayer-button").after( ' <strong class="fv-wordpress-flowplayer-error">Please use the Visual editor</strong>' );
 		    jQuery(".fv-wordpress-flowplayer-error").delay(2000).fadeOut( 500,function() { jQuery(this).remove(); } );
         return false;
@@ -113,7 +113,6 @@ function fv_flowplayer_playlist_add( sInput ) {
 
 
 function fv_wp_flowplayer_edit() {	
-  
   fv_wp_flowplayer_init();
   
   jQuery("#fv-wordpress-flowplayer-popup input").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
