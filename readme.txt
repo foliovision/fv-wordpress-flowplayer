@@ -321,6 +321,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.51 - 2014/01/09 =
+
+* Fix - upgrade to latest core Flowplayer
+* Fix - removed unnucessary warnings from video checker
+* Bugfix - Foliopress WYSIWYG compatibility
+
 = 2.1.50 - 2013/12/06 =
 
 * Bugfix - Amazon S3 bug after the JS optimization

@@ -471,7 +471,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 </style>
 
 <div class="wrap">
-	<div style="position: absolute; top: 10px; right: 10px;">
+	<div style="position: absolute; margin-top: 10px; right: 10px;">
 		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
 	</div>
   <div>
@@ -496,7 +496,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">

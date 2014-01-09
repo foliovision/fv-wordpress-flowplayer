@@ -261,7 +261,7 @@ function flowplayer_prepare_scripts() {
   wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
   wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
   
-  $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf' ) );
+  $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
   if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
   if( $sLogo ) $aConf['logo'] = $sLogo;
   wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );

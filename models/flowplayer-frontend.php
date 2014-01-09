@@ -182,6 +182,17 @@ class flowplayer_frontend extends flowplayer
         
         foreach( $playlist_items AS $iKey => $sPlaylist_item ) {
           $aPlaylist_item = explode( ',', $sPlaylist_item );
+          
+          foreach( $aPlaylist_item AS $key => $item ) {
+            if( $key > 0 && ( stripos($key,'http') !== 0 || stripos($key,'/') ) ) {
+              $aPlaylist_item[$key-1] .= ','.$item;              
+              $aPlaylist_item[$key] = $aPlaylist_item[$key-1];
+              unset($aPlaylist_item[$key-1]);
+            }
+            $aPlaylist_item[$key] = str_replace( $playlist_replace_to, $playlist_replace_from, $aPlaylist_item[$key] );	                        
+          }
+          
+         
           $aPlaylistItem = array();
           $sSplashImage = false;						
           foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
@@ -395,7 +406,8 @@ class flowplayer_frontend extends flowplayer
 					$attributes['style'] = 'max-width: ' . $width . 'px; max-height: ' . $height . 'px; ';
 				}
 				
-				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf';
+        global $fv_wp_flowplayer_ver;
+				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;
 				//$attributes['data-flashfit'] = "true";
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {

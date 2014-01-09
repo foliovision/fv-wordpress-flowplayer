@@ -909,7 +909,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
                 if( isset($stts[0]['time_to_sample_table'][0]['sample_count']) ) {
                   $video_info['Seek points'] = $stts[0]['time_to_sample_table'][0]['sample_count'].' (stts sample count)';
                 } else { 
-                  $video_warnings[] = 'Only one seeking point found, it might be slow to seek in the video.';
+                  //$video_warnings[] = 'Only one seeking point found, it might be slow to seek in the video.'; //  not so useful
                 }
               }               
                
