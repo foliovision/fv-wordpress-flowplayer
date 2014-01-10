@@ -321,6 +321,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.1.52 - 2014/01/10 =
+
+* Bugfix - critical bugfix for playlist parsing
+
 = 2.1.51 - 2014/01/09 =
 
 * Fix - upgrade to latest core Flowplayer

@@ -180,19 +180,19 @@ class flowplayer_frontend extends flowplayer
         $aPlaylistItems[] = $aPlaylistItem;
         $playlist_items_external_html[] = "\t\t<a class='is-active' ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'></a>\n";
         
+            
         foreach( $playlist_items AS $iKey => $sPlaylist_item ) {
           $aPlaylist_item = explode( ',', $sPlaylist_item );
-          
+        
           foreach( $aPlaylist_item AS $key => $item ) {
-            if( $key > 0 && ( stripos($key,'http') !== 0 || stripos($key,'/') ) ) {
+            if( $key > 0 && ( stripos($item,'http:') !== 0 && stripos($item,'https:') !== 0 && stripos($item,'rtmp:') !== 0 && stripos($item,'/') !== 0 ) ) {
               $aPlaylist_item[$key-1] .= ','.$item;              
               $aPlaylist_item[$key] = $aPlaylist_item[$key-1];
               unset($aPlaylist_item[$key-1]);
             }
             $aPlaylist_item[$key] = str_replace( $playlist_replace_to, $playlist_replace_from, $aPlaylist_item[$key] );	                        
           }
-          
-         
+ 
           $aPlaylistItem = array();
           $sSplashImage = false;						
           foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
