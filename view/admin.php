@@ -528,7 +528,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   
   <form id="wpfp_options" method="post" action="">  
 		<div id="dashboard-widgets" class="metabox-holder columns-1">
-			<div id='postbox-container-1' class='postbox-container'>    
+			<div id='postbox-container-1' class='postbox-container' style="width: 100%;">    
 				<?php
 				do_meta_boxes('fv_flowplayer_settings', 'normal', false );
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
