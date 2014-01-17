@@ -355,20 +355,7 @@ function fv_flowplayer_admin_interface_options() {
 function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
-					<table class="form-table2 flowplayer-settings" style="width: 45%;">	
-						<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
-						<tr>
-							<td><label for="font-face">Player font face</label></td>
-							<td style="text-align:right" colspan="3">
-								<select id="font-face" name="font-face">
-									<option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
-									<option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
-									<option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>>(inherit from template)</option>
-								</select> 							
-							</td>
-						</tr>
-						<tr>
-							<div class="flowplayer-wrapper">
+<div class="flowplayer-wrapper">
 									<div class="flowplayer is-splash"
 									<?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
 									data-swf="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
@@ -384,7 +371,18 @@ function fv_flowplayer_admin_skin() {
 										</video>
 									</div>
 									</div>
-						</td>					
+					<table class="form-table2 flowplayer-settings" style="width: 45%;">	
+						<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
+						<tr>
+							<td><label for="font-face">Player font face</label></td>
+							<td style="text-align:right" colspan="3">
+								<select id="font-face" name="font-face">
+									<option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+									<option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
+									<option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>>(inherit from template)</option>
+								</select> 							
+							</td>
+						</tr>					
 						<tr>    		
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
