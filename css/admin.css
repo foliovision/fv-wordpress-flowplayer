@@ -35,3 +35,8 @@
 .fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
 .fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
+
+
+
+.flowplayer-wrapper { min-width: 55%; display: inline-block; float: right;}
+@media only screen and (max-width: 940px) {.flowplayer-wrapper { width: 100%; float: none;} .form-table2.flowplayer-settings {width: 100% !important;}}

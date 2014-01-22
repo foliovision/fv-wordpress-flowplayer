@@ -1,4 +1,21 @@
 <?php
+/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+    Copyright (C) 2013  Foliovision
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/ 
+
 /**
  * Displays administrator backend.
  */
@@ -65,7 +82,7 @@ function fv_flowplayer_admin_amazon_options() {
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td colspan="2">
-							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="#" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
+							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -209,7 +226,7 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=fvplayer_logo&TB_iframe=true&width=500&height=300" class="thickbox" >open media library</a> to upload logo.</td>
 						</tr>      
 						<tr>
-							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain):</label></td>
+							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
 							<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 						</tr>				
 						<tr>    		
@@ -248,6 +265,13 @@ function fv_flowplayer_admin_interface_options() {
               <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fv_fp->conf['allowuploads']) && $fv_fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   
+					<tr>          
+						<td><label for="interface[playlist]">Playlist: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="interface[playlist]" value="false" />
+							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>    					
 					<tr>          
 						<td><label for="interface[popup]">HTML popup:</label></td>
 						<td style="text-align:right">
@@ -331,7 +355,23 @@ function fv_flowplayer_admin_interface_options() {
 function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
-					<table class="form-table2" style="width: 100%">	
+<div class="flowplayer-wrapper">
+									<div class="flowplayer is-splash"
+									<?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
+									data-swf="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
+									data-ratio="0.417" 
+									style="max-width:<?php echo $fv_fp->conf['width']; ?>px; max-height:<?php echo $fv_fp->conf['height']; ?>px;"
+									<?php if ($fv_fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
+									<?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) {echo 'data-key="' . $fv_fp->conf['key'] . '"'; $commercial_key = true;} ?>
+									<?php if ( isset($commercial_key) && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) echo ' data-logo="' . $fv_fp->conf['logo'] . '"'; ?>
+									<?php if ($fv_fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
+									>
+										<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fv_fp->conf['auto_buffer']) && $fv_fp->conf['auto_buffer'] == 'true') echo ' preload'; ?>>
+											<source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
+										</video>
+									</div>
+									</div>
+					<table class="form-table2 flowplayer-settings" style="width: 45%;">	
 						<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
 						<tr>
 							<td><label for="font-face">Player font face</label></td>
@@ -348,7 +388,7 @@ function fv_flowplayer_admin_skin() {
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
 							</td>
 						</tr>					
-					</table>						
+					</table>    					
 <?php
 }
 
@@ -447,15 +487,16 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 </style>
 
 <div class="wrap">
-	<div style="position: absolute; top: 10px; right: 10px;">
+	<div style="position: absolute; margin-top: 10px; right: 10px;">
 		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
-  </div>	  
+  </div>
+  <div id="fv-flowplayer-check-template" class="updated" style="display: none; ">Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.</div>
   <p id="fv_flowplayer_admin_buttons">
-  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template')" value="Check template" /> 
+  	<input type="button" class="button" onclick="jQuery('#fv-flowplayer-check-template').show(); return false" value="Check template" /> 
   	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
   	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
   	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
@@ -472,11 +513,11 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Summer Special!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
-					<img width="297" height="239" border="0" src="<?php echo plugins_url( 'images/fv-wp-flowplayer-led-monitor.png' , dirname(__FILE__) ) ?>"> </a>
+					<img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
 				</div>
 		</div>
   <?php endif; ?>	
@@ -486,7 +527,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   
   <form id="wpfp_options" method="post" action="">  
 		<div id="dashboard-widgets" class="metabox-holder columns-1">
-			<div id='postbox-container-1' class='postbox-container'>    
+			<div id='postbox-container-1' class='postbox-container' style="width: 100%;">    
 				<?php
 				do_meta_boxes('fv_flowplayer_settings', 'normal', false );
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );

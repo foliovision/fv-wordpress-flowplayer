@@ -1,4 +1,21 @@
 <?php
+/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+    Copyright (C) 2013  Foliovision
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/ 
+
 /**
  * Displays input elements for color settings form.
  */
@@ -12,24 +29,6 @@
 			<td style="text-align:right"><input class="color" type="text"  size="6" name="backgroundColor" id="backgroundColor" value="<?php echo $fv_fp->conf['backgroundColor']; ?>" /></td>
 			<td style="padding-left:20px;"><label for="timeline">timeline</label></td>
 			<td style="text-align:right"><input class="color" type="text" size="6" name="timelineColor" id="timelineColor" value="<?php echo $fv_fp->conf['timelineColor']; ?>" /></td>      
-							<td colspan="2" rowspan="10"  style="padding-left: 30px; vertical-align: top;">
-								<div id="content">
-									<div class="flowplayer is-splash"
-									<?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
-									data-swf="<?php echo RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
-									data-ratio="0.417" 
-									style="width:<?php echo $fv_fp->conf['width']; ?>px; max-height:<?php echo $fv_fp->conf['height']; ?>px;"
-									<?php if ($fv_fp->conf['allowfullscreen'] == 'false') echo 'data-fullscreen="false"'; ?>
-									<?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) {echo 'data-key="' . $fv_fp->conf['key'] . '"'; $commercial_key = true;} ?>
-									<?php if ( isset($commercial_key) && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) echo ' data-logo="' . $fv_fp->conf['logo'] . '"'; ?>
-									<?php if ($fv_fp->conf['scaling'] == "fit") echo 'data-flashfit="true"';; ?>
-									>
-										<video poster="http://foliovision.com/videos/example.jpg"<?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') echo ' autoplay'; ?><?php if (isset($fv_fp->conf['auto_buffer']) && $fv_fp->conf['auto_buffer'] == 'true') echo ' preload'; ?>>
-											<source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
-										</video>
-									</div>    
-								</div>
-							</td>			
 		</tr>		
 		<tr>
 			<td><label for="canvas">canvas</label></td>
