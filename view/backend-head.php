@@ -24,6 +24,4 @@ global $fv_wp_flowplayer_ver;
 ?>
 
 <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
-<?php 
- // <link rel="stylesheet" type="text/css" href="<?php echo plugins_url( 'css/ad.css', dirname(__FILE__) ); ?ver=<?php echo $fv_wp_flowplayer_ver;" />
-?>
+<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />

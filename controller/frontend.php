@@ -21,19 +21,13 @@ include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
 
 $fv_fp = new flowplayer_frontend(); 
 
-/**
- * WP Hooks 
- */
 //add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_head', 'flowplayer_head');
 add_action('wp_footer','flowplayer_prepare_scripts',9);
-add_action('wp_footer','flowplayer_display_scripts',100);
-//	Addition for 0.9.15                 
+add_action('wp_footer','flowplayer_display_scripts',100);          
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
-/**
- * END WP Hooks
- */
+
  
 
 function flowplayer_content_remove_commas($content) {
@@ -250,28 +244,33 @@ function flowplayer_content( $content ) {
  */
 function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
-  $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
 
-	$sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
-	$sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
+  if( isset($GLOBALS['fv_fp_scripts']) ) {    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );  
+
+    $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
-	if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
-		wp_enqueue_script( 'flowplayer-mediaelement', plugins_url( '/fv-wordpress-flowplayer/mediaelement/mediaelement-and-player.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
-	}
-  wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
-  wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
-  
-  $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
-  if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
-  if( $sLogo ) $aConf['logo'] = $sLogo;
-  wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
-  if( $fv_fp->conf['fixed_size'] == 'false' ) {
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_safety_resize_do', array(true) );
-  }
-  if( current_user_can('manage_options') ) {
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
-  }
-  if( isset($GLOBALS['fv_fp_scripts']) ) {
+    $sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
+    $sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
+    
+    if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
+      wp_enqueue_script( 'flowplayer-mediaelement', flowplayer::get_plugin_url().'/mediaelement/mediaelement-and-player.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
+    }
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
+    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
+    
+    $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
+    if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
+    if( $sLogo ) $aConf['logo'] = $sLogo;
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
+    if( !isset($fv_fp->conf['fixed_size']) || $fv_fp->conf['fixed_size'] == 'false' ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_safety_resize_do', array(true) );
+    }
+    if( current_user_can('manage_options') ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
+    }
+
     foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
       wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
     }

@@ -79,14 +79,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		else
 			$strFPdirname = 'fv-wordpress-flowplayer';
 		if (!defined('FV_FP_RELATIVE_PATH')) {
-			if( function_exists('plugins_url') ) {
-				define('FV_FP_RELATIVE_PATH', plugins_url().'/'.$strFPdirname);
-			} else {
-				$siteurl = get_option('siteurl');
-				if((!empty($_SERVER['HTTPS'])) && ('off'!==$_SERVER['HTTPS']))   // this line changes by carlo@artilibere.com
-					$siteurl = preg_replace('/^http:(.*)$/', "https:$1", $siteurl);
-				define('FV_FP_RELATIVE_PATH', $siteurl.'/wp-content/plugins/'.$strFPdirname);
-			}			
+			define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
+      
 			$vid = 'http://'.$_SERVER['SERVER_NAME'];
 			if (dirname($_SERVER['PHP_SELF']) != '/') 
 				$vid .= dirname($_SERVER['PHP_SELF']);
@@ -147,7 +141,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['amazon_key'] ) || !is_array($conf['amazon_key']) ) $conf['amazon_key'] = array('');   
 		if( !isset( $conf['amazon_secret'] ) || !is_array($conf['amazon_secret']) ) $conf['amazon_secret'] = array('');  		
 		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';   
-		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = false;   		
+		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';   		
 		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); } 
 
     update_option( 'fvwpflowplayer', $conf );
@@ -160,7 +154,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	 */
 	public function _set_conf() {
 	  $aNewOptions = $_POST;
-	  $sKey = $aNewOptions['key'];	  
+	  $sKey = $aNewOptions['key'];
 
 	  foreach( $aNewOptions AS $key => $value ) {
 	  	if( is_array($value) ) {
@@ -176,7 +170,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	  }
 	  $aNewOptions['key'] = trim($sKey);   
 	  update_option( 'fvwpflowplayer', $aNewOptions );
-	  $this->conf = $aNewOptions;
+    $this->conf = $aNewOptions;    
+    
+    $this->css_writeout();
+	     
 	  return true;	
 	}
 	/**
@@ -187,6 +184,142 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
 	}
+  
+  
+  function css_generate( $style_tag = true ) {
+    global $fv_fp;
+    if( $style_tag ) : ?>
+      <style type="text/css">
+    <?php endif;
+    
+    if ( isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0 && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0 ) : ?>		
+      .flowplayer .fp-logo { display: block; opacity: 1; }                                              
+    <?php endif;
+  
+    if( isset($fv_fp->conf['hasBorder']) && $fv_fp->conf['hasBorder'] == "true" ) : ?>
+      .flowplayer { border: 1px solid <?php echo trim($fv_fp->conf['borderColor']); ?> !important; }
+    <?php endif; ?>
+  
+    .flowplayer, flowplayer * { margin: 0 auto 28px auto; display: block; }
+    .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
+    .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
+    .flowplayer .fp-duration { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }
+    .flowplayer .fp-elapsed { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
+    .flowplayer .fp-volumelevel { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }  
+    .flowplayer .fp-volumeslider { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
+    .flowplayer .fp-timeline { background-color: <?php echo trim($fv_fp->conf['timelineColor']); ?> !important; }
+    .flowplayer .fp-progress { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
+    .flowplayer .fp-buffer { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
+    #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
+    #content .flowplayer .fp-embed-code textarea, .flowplayer .fp-embed-code textarea { line-height: 1.4; white-space: pre-wrap; color: <?php echo trim($this->conf['durationColor']); ?> !important; height: 160px; font-size: 10px; }
+    
+    .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo trim($fv_fp->conf['bufferColor']); ?>!important; } 
+    .fvplayer .mejs-horizontal-volume-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
+    .fvplayer .me-cannotplay span { padding: 5px; }
+    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
+  
+    .wpfp_custom_background { display: none; }	
+    .wpfp_custom_popup { display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff; }
+    .is-finished .wpfp_custom_popup, .is-finished .wpfp_custom_background { display: block; }	
+    .wpfp_custom_popup_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
+  
+    <?php echo trim($this->conf['ad_css']); ?>
+    .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; }
+    .wpfp_custom_ad a { color: <?php echo trim($fv_fp->conf['adLinksColor']); ?> }
+  
+    <?php if( $style_tag ) : ?>
+      </style>  
+    <?php endif;
+  }
+  
+  
+  function css_get() {
+    global $fv_wp_flowplayer_ver;
+    $bInline = true;
+    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css?ver='.$fv_wp_flowplayer_ver;    
+    
+    if( is_multisite() ) {
+      global $blog_id;
+      $site_id = $blog_id;
+    } else {
+      $site_id = 1;
+    }
+
+    if( isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
+      $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
+      if( @file_exists($filename) ) {
+        $sURL = trailingslashit(WP_CONTENT_URL).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
+        $bInline = false;
+      }
+    }
+    
+    echo '<link rel="stylesheet" href="'.$sURL.'" type="text/css" media="screen" />'."\n";
+    if( $bInline ) {
+      $this->css_generate();
+    }
+    return ;
+  }
+  
+  
+  function css_option() {
+    return 'css_writeout-'.sanitize_title(WP_CONTENT_URL);
+  }
+  
+  
+  function css_writeout() {
+    $aOptions = get_option( 'fvwpflowplayer' );
+    $aOptions[$this->css_option()] = false;
+    update_option( 'fvwpflowplayer', $aOptions );
+    
+    /*$url = wp_nonce_url('options-general.php?page=fvplayer','otto-theme-options');
+    if( false === ($creds = request_filesystem_credentials($url, $method, false, false, $_POST) ) ) { //  todo: no annoying notices here      
+      return false; // stop the normal page form from displaying
+    }   */ 
+    
+    if ( ! WP_Filesystem(true) ) {
+      return false;
+    }
+
+    global $wp_filesystem;
+    if( is_multisite() ) {
+      global $blog_id;
+      $site_id = $blog_id;
+    } else {
+      $site_id = 1;
+    }
+    $filename = $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/style-'.$site_id.'.css';
+     
+    // by this point, the $wp_filesystem global should be working, so let's use it to create a file
+    
+    $bDirExists = false;
+    if( !$wp_filesystem->exists($wp_filesystem->wp_content_dir().'fv-flowplayer-custom/') ) {
+      if( $wp_filesystem->mkdir($wp_filesystem->wp_content_dir().'fv-flowplayer-custom/') ) {
+        $bDirExists = true;
+      }
+    } else {
+      $bDirExists = true;
+    }
+    
+    if( !$bDirExists ) {
+      return false;
+    }
+    
+    ob_start();
+    $this->css_generate(false);
+    $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
+    $sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' );    
+    $sCSSCurrent = preg_replace( '~url\((")?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+
+    if( !$wp_filesystem->put_contents( $filename, $sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
+      return false;
+    } else {
+      $aOptions[$this->css_option()] = date('U');
+      update_option( 'fvwpflowplayer', $aOptions );
+      $this->conf = $aOptions;
+    }
+  }
   
   
   function get_amazon_secure( $media, &$fv_fp ) {
@@ -286,6 +419,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		return $url;  
   }
   
+  
+  function get_plugin_url() {
+    if( stripos( __FILE__, '/themes/' ) ) {
+      return get_template_directory_uri().'/fv-wordpress-flowplayer';
+    } else {
+      return plugins_url( '', str_replace( '/models', '', __FILE__ ) );
+    }
+  }
+  
 	
 	public function is_secure_amazon_s3( $url ) {
 		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
@@ -302,12 +444,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 function flowplayer_head() {
 	global $fv_fp;	
   $fv_fp->flowplayer_head();
+  
+  if( !is_admin() && current_user_can('manage_options') ) {
+    update_option( 'fv_flowplayer_js_alive', 2 );
+  }
 }
 
 
 function flowplayer_jquery() {
   global $fv_wp_flowplayer_ver, $fv_fp;
-  wp_enqueue_script( 'flowplayer', plugins_url( '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js' ), array('jquery'), $fv_wp_flowplayer_ver, true );
+  
 }
 
 ?>

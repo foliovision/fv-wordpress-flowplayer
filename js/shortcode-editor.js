@@ -353,6 +353,7 @@ function fv_wp_flowplayer_submit() {
   var shorttag = 'fvplayer';
 	
 	if(
+    jQuery(".fv_wp_flowplayer_field_rtmp").attr('placeholder') == '' &&
 		jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").is(":visible") &&
 		(
 			( jQuery(".fv_wp_flowplayer_field_rtmp").val() != '' && jQuery(".fv_wp_flowplayer_field_rtmp_path").val() == '' ) ||

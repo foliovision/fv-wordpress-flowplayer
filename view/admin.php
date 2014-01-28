@@ -226,7 +226,7 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="2" style="text-align: right">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=fvplayer_logo&TB_iframe=true&width=500&height=300" class="thickbox" >open media library</a> to upload logo.</td>
 						</tr>      
 						<tr>
-							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain):</label></td>
+							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
 							<td><input type="text" size="40" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 						</tr>				
 						<tr>    		
@@ -493,9 +493,10 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   <div>
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
-  </div>	  
+  </div>
+  <div id="fv-flowplayer-check-template" class="updated" style="display: none; ">Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.</div>
   <p id="fv_flowplayer_admin_buttons">
-  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template')" value="Check template" /> 
+  	<input type="button" class="button" onclick="jQuery('#fv-flowplayer-check-template').show(); return false" value="Check template" /> 
   	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
   	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
   	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
@@ -516,7 +517,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
-					<img width="297" height="239" border="0" src="<?php echo plugins_url( 'images/fv-wp-flowplayer-led-monitor.png' , dirname(__FILE__) ) ?>"> </a>
+					<img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
 				</div>
 		</div>
   <?php endif; ?>	

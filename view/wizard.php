@@ -106,9 +106,9 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_rtmp_wrapper">
-            <th scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright">RTMP Server</label></th>
+            <th scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright">RTMP Server</label> <?php if( !empty($fv_flowplayer_conf["rtmp"]) ) : ?>(<abbr title="Leave empty to use Flash streaming server from plugin settings">?</abbr>)<?php endif; ?></th>
             <td colspan="2" class="field">
-              <input type="text" class="text fv_wp_flowplayer_field_rtmp" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" />
+              <input type="text" class="text fv_wp_flowplayer_field_rtmp" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" placeholder="<?php if( !empty($fv_flowplayer_conf["rtmp"]) ) echo $fv_flowplayer_conf["rtmp"]; ?>" />
               &nbsp;<label for="fv_wp_flowplayer_field_rtmp_path"><strong>RTMP Path</strong></label>
               <input type="text" class="text fv_wp_flowplayer_field_rtmp_path" id="fv_wp_flowplayer_field_rtmp_path" name="fv_wp_flowplayer_field_rtmp_path" value="" style="width: 37%" />
             </td> 

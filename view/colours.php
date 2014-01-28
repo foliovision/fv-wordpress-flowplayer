@@ -28,7 +28,7 @@
 			<td><label for="backgroundColor">controlbar</label></td>
 			<td style="text-align:right"><input class="color" type="text"  size="6" name="backgroundColor" id="backgroundColor" value="<?php echo $fv_fp->conf['backgroundColor']; ?>" /></td>
 			<td style="padding-left:20px;"><label for="timeline">timeline</label></td>
-			<td style="text-align:right"><input class="color" type="text" size="6" name="timelineColor" id="timelineColor" value="<?php echo $fv_fp->conf['timelineColor']; ?>" /></td>      		
+			<td style="text-align:right"><input class="color" type="text" size="6" name="timelineColor" id="timelineColor" value="<?php echo $fv_fp->conf['timelineColor']; ?>" /></td>      
 		</tr>		
 		<tr>
 			<td><label for="canvas">canvas</label></td>

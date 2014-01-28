@@ -29,8 +29,8 @@ $fv_fp = new flowplayer_backend();
  * WP Hooks
  */
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');  
+add_action('wp_ajax_fv_wp_flowplayer_js_alive', 'fv_wp_flowplayer_js_alive');
 add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype'); 
-add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template'); 
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
  
 add_action('admin_head', 'flowplayer_head');
@@ -462,13 +462,13 @@ function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
   if( $page !== 'post.php' && $page !== 'post-new.php' ) {
     return;
   }
-  wp_register_script('fvwpflowplayer-domwindow', plugins_url().'/fv-wordpress-flowplayer/js/jquery.colorbox-min.js',array('jquery') );  
+  wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery') );  
   wp_enqueue_script('fvwpflowplayer-domwindow');
   
-  wp_register_script('fvwpflowplayer-shortcode-editor', plugins_url().'/fv-wordpress-flowplayer/js/shortcode-editor.js',array('jquery') );  
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery') );  
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');  
    
-  wp_register_style('fvwpflowplayer-domwindow-css', plugins_url().'/fv-wordpress-flowplayer/css/colorbox.css','','1.0','screen');
+  wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');    
 }
 
@@ -508,7 +508,6 @@ function fv_wp_flowplayer_admin_init() {
 	if(
 		preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && ( !isset($fv_fp->conf['key_automatic']) || $fv_fp->conf['key_automatic'] != 'true' )
 	) {
-		global $fv_fp;
 		$fv_fp->pointer_boxes = array(
 			'fv_flowplayer_key_automatic' => array(
 				'id' => '#wpadminbar',
@@ -522,7 +521,13 @@ function fv_wp_flowplayer_admin_init() {
 	} else if( version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) == 0 ) {
   	update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
   }
-    
+   
+  $aOptions = get_option( 'fvwpflowplayer' );
+  if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
+    $aOptions['version'] = $fv_wp_flowplayer_ver;
+    update_option( 'fvwpflowplayer', $aOptions );
+    $fv_fp->css_writeout();
+  }
   
   if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
   	wp_enqueue_script('common');
@@ -530,6 +535,13 @@ function fv_wp_flowplayer_admin_init() {
 		wp_enqueue_script('postbox');
 	}
   
+  if( $iCheck = get_option('fv_flowplayer_js_alive') ) {
+    if( $iCheck == 2 ) {
+      //echo 'Something it fokt up!';
+    }
+  } else {
+    update_option( 'fv_flowplayer_js_alive', 1 );
+  }
   
 }   
 
@@ -653,6 +665,11 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 function fv_wp_flowplayer_http_api_curl( $handle ) {
 	curl_setopt( $handle, CURLOPT_NOBODY, true );
 }
+
+
+function fv_wp_flowplayer_js_alive() {
+  update_option('fv_flowplayer_js_alive', 1);
+}
  
  
 function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
@@ -772,7 +789,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           
           if( !function_exists('curl_init') ) {
             $video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
-          } else if( strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
+          } else if( isset($remote_domain[1]) && strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
             $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
             $video_info['File'] = 'Remote';
   
@@ -1319,104 +1336,6 @@ AddType video/mp2t            .ts</code></pre></blockquote>';
   die('-1');
 }
 
-
-function fv_wp_flowplayer_check_template() {
-	$ok = array();
-	$errors = array();
-	
-  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-  	$response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
-  	if( is_wp_error( $response ) ) {
-			$error_message = $response->get_error_message();
-			$output = array( 'error' => $error_message );
-		} else {		
-			
-			$active_plugins = get_option( 'active_plugins' );
-			foreach( $active_plugins AS $plugin ) {
-				if( stripos( $plugin, 'wp-minify' ) !== false ) {
-					$errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
-					$wp_minify_options = get_option('wp_minify');
-					if( isset($wp_minify_options['js_in_footer']) && $wp_minify_options['js_in_footer'] ) {
-						$errors[] = "Please make sure that you turn off Settings -> WP Minify -> 'Place Minified JavaScript in footer'.";
-					}
-					$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-					echo json_encode($output);
-					die();
-				}
-			}
-			
-			if( function_exists( 'w3_instance' ) && $minify = w3_instance('W3_Plugin_Minify') ) {			
-				if( $minify->_config->get_boolean('minify.js.enable') ) {
-					$errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
-				}
-			}
-
-			if( stripos($response['body'],'<!--fv-flowplayer-footer-->') === false ) {
-				$errors[] = "It appears that your template is not using the wp_footer() hook. Advanced FV Flowplayer functions may not work properly.";
-			} else {
-				$ok[] = "wp_footer found in your template!";
-			}
-			
-			$response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
-			
-			//	check Flowplayer scripts
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[^\'"]*?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
-			if( count($flowplayer_scripts[1]) > 0 ) {
-				if( count($flowplayer_scripts[1]) > 1 ) {
-					$errors[] = "It appears there are <strong>multiple</strong> Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.";
-				}
-				foreach( $flowplayer_scripts[1] AS $flowplayer_script ) {
-					$check = fv_wp_flowplayer_check_script_version( $flowplayer_script );
-					if( $check == - 1 ) {
-						$errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
-					} else if( $check == 1 ) {
-						$ok[] = "FV Flowplayer script found: <code>$flowplayer_script</code>!";
-						$fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
-					}
-				}
-			} else if( count($flowplayer_scripts[1]) < 1 ) {
-				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your header.php file if it contains wp_head() function call!";			
-			}
-			
-
-			//	check jQuery scripts						
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?jquery[^\'"]*?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
-			if( count($jquery_scripts[1]) > 0 ) {				
-				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
-					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
-					if( $check == - 1 ) {
-						$errors[] = "jQuery library <code>$jquery_script</code> is old version and might not be compatible with Flowplayer.";
-					} else if( $check == 1 ) {
-						$ok[] = "jQuery library 1.7.1+ found: <code>$jquery_script</code>!";
-						$jquery_pos = strpos( $response['body'], $jquery_script );
-					} else if( $check == 2 ) {
-						//	nothing
-					}	else {
-						$errors[] = "jQuery library <code>$jquery_script</code> found, but unable to check version, please make sure it's at least 1.7.1.";
-					}
-				}
-				if( count($jquery_scripts[1]) > 1 ) {
-					$errors[] = "It appears there are <strong>multiple</strong> jQuery libraries on your site, your videos might not be playing, please check.\n";
-				}
-			} else if( count($jquery_scripts[1]) < 1 ) {
-				$errors[] = "It appears there are <strong>no</strong> jQuery library on your site, your videos might not be playing, please check.\n";			
-			}
-			
-						
-			if( $fv_flowplayer_pos > 0 && $jquery_pos > 0 && $jquery_pos > $fv_flowplayer_pos ) {
-				$errors[] = "It appears your Flowplayer JavaScript library is loading before jQuery. Your videos probably won't work. Please make sure your jQuery library is loading using the standard Wordpress function - wp_enqueue_scripts(), or move it above wp_head() in your header.php template.";
-			}
-		
-			
-			$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-		}
-		echo json_encode($output);
-		die();
-  }
-  
-  die('-1');
-} 
- 
  
 function fv_wp_flowplayer_array_search_by_item( $find, $in_array, &$found, $like = false ) {
     global $fv_wp_flowplayer_array_search_by_item_depth;

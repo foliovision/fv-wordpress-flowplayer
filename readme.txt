@@ -314,12 +314,19 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Changelog ==
 
 = What's coming =
-* better CSS optimization
 * cue points support
 * VAST/VPAID support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.2 - 2014/01/28 =
+
+* Feature - plugin skin CSS gets written into the main plugin CSS file to clean up your site header of any unnecessary style tags
+* Fix - audio - support for Amazon S3 protected links 
+* Fix - JavaScript only loads if the player is in use on the page
+* Fix - "Flash streaming server" settings acts as default RTMP server if there is none in the shortcode
+* Bugfix - bug in options initialization causing safety resize script missing on fresh install until save of the settings
 
 = 2.1.52 - 2014/01/10 =
 
@@ -736,6 +743,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.2 =
+* Big CSS optimization. If you notice any display issues, please go into plugin settings and re-save the options.
 
 = 2.1.40 =
 * Added support for playlists - beta
