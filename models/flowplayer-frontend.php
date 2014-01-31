@@ -97,7 +97,7 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    if( ( !empty($this->aCurArgs['rtmp']) || !empty($this->conf['rtmp']) ) && !empty($this->aCurArgs['rtmp_path']) ) {
+    if( ( !empty($this->aCurArgs['rtmp']) || ( !empty($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' ) ) && !empty($this->aCurArgs['rtmp_path']) ) {
       $rtmp = trim( $this->aCurArgs['rtmp_path'] );
     }
 
@@ -272,12 +272,12 @@ class flowplayer_frontend extends flowplayer
 				
 				if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {
 					$attributes['data-rtmp'] = trim( $this->aCurArgs['rtmp'] );
-				} else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && !(isset($this->conf['rtmp']) && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
+				} else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && !(isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
 					$rtmp_info = parse_url($rtmp);
 					if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
 						$attributes['data-rtmp'] = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
 					}
-				} else if( !empty($this->conf['rtmp']) ) {
+				} else if( !empty($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' ) {
           if( stripos( $this->conf['rtmp'], 'rtmp://' ) === 0 ) {
             $attributes['data-rtmp'] = $this->conf['rtmp'];
             $rtmp = str_replace( $this->conf['rtmp'], '', $rtmp );
@@ -299,6 +299,10 @@ class flowplayer_frontend extends flowplayer
 				$attributes['data-ratio'] = $ratio;
 				if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 					$attributes['data-flashfit'] = 'true';
+				}
+        
+        if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
+					$attributes['data-live'] = 'true';
 				}
         
 				$playlist = '';

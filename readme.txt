@@ -320,9 +320,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2 - 2014/01/28 =
+= 2.2 - 2014/01/23? =
 
+* Feature - attachment pages now work with FV Flowplayer
 * Feature - plugin skin CSS gets written into the main plugin CSS file to clean up your site header of any unnecessary style tags
+* Feature - support for live streaming
 * Fix - audio - support for Amazon S3 protected links 
 * Fix - JavaScript only loads if the player is in use on the page
 * Fix - "Flash streaming server" settings acts as default RTMP server if there is none in the shortcode

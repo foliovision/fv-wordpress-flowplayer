@@ -305,4 +305,28 @@ function fv_flowplayer_the_content( $c ) {
 }
 add_filter( 'the_content', 'fv_flowplayer_the_content', 0 );
 
+
+/*
+Handle attachment pages which contain videos
+*/
+function fv_flowplayer_attachment_page_video( $c ) {
+	global $post;
+  if( stripos($post->post_mime_type, 'video/') !== 0 && stripos($post->post_mime_type, 'audio/') !== 0 ) {
+    return $c;
+  }
+  
+  if( !$src = wp_get_attachment_url($post->ID) ) {
+    return $c;
+  }
+  
+  $meta = get_post_meta( $post->ID, '_wp_attachment_metadata', true );
+  $size = (isset($meta['width']) && isset($meta['height']) && intval($meta['width'])>0 && intval($meta['height'])>0 ) ? ' width="'.intval($meta['width']).'" height="'.intval($meta['height']).'"' : false;
+  
+  $shortcode = '[fvplayer src="'.$src.'"'.$size.']';
+  
+  $c = preg_replace( '~<p class=.attachment.[\s\S]*?</p>~', $shortcode, $c );
+	return $c;
+}
+add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
+
 ?>
