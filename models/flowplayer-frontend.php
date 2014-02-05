@@ -760,6 +760,7 @@ class flowplayer_frontend extends flowplayer
 
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
     $extension = preg_replace( '~[?#].+$~', '', $extension );
+    $extension = strtolower($extension);
     
 		if( !$extension ) {
 			$output = $default;
