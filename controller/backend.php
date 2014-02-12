@@ -1480,5 +1480,18 @@ function fv_wp_flowplayer_pointers_ajax() {
 		die();
 	}
 }
-  
-?>
+
+
+//  allow .vtt subtitle files
+add_filter( 'wp_check_filetype_and_ext', 'fv_flowplayer_subtitles_filetype', 10, 4 );
+
+function fv_flowplayer_subtitles_filetype( $aFile ) {
+  $aArgs = func_get_args();
+  if( isset($aArgs[2]) && preg_match( '~\.vtt$~', $aArgs[2] ) ) {
+    $aFile['type'] = 'vtt';
+    $aFile['ext'] = 'vtt';
+    $aFile['proper_filename'] = $aArgs[2];    
+  }
+  return $aFile;
+}
+
