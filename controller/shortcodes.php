@@ -113,8 +113,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'rtmp' => '',
     'rtmp_path' => '',
     'playlist' => '',
-    'admin_warning' => '',
-    'live' => ''
+    'playlist_hide' => '',
+    'admin_warning' => ''    
   ), $atts ) );
   
   if( $fv_fp->conf['parse_commas'] == 'true' ) {  
@@ -141,8 +141,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 		$arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
 		$arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
 		$arguments['playlist'] = $playlist;
-    $arguments['admin_warning'] = $admin_warning;
-    $arguments['live'] = $live; 
+    $arguments['playlist_hide'] = preg_replace('/\,/', '', $playlist_hide);    
+    $arguments['admin_warning'] = $admin_warning;         
 		$src = trim( preg_replace('/\,/', '', $src) ); 
 	} else {
 		$arguments = shortcode_atts( array(
@@ -170,8 +170,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 			'rtmp' => '',
 			'rtmp_path' => '',
 			'playlist' => '',
-      'admin_warning' => '',
-      'live' => ''
+      'playlist_hide' => '',
+      'admin_warning' => ''
 		), $atts );
 	}
 	

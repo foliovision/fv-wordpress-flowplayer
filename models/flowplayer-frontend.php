@@ -233,6 +233,10 @@ class flowplayer_frontend extends flowplayer
 				if( $autoplay == false ) {
 					$attributes['class'] .= ' is-splash';
 				}
+        
+        if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
+					$attributes['class'] .= ' playlist-hidden';
+				}
 				
 				if( $controlbar == 'show' ) {
 					$attributes['class'] .= ' fixed-controls';
@@ -301,14 +305,12 @@ class flowplayer_frontend extends flowplayer
 					$attributes['data-flashfit'] = 'true';
 				}
         
-        if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
-					$attributes['data-live'] = 'true';
-				}
-        
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
-          $this->sHTMLAfter .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
+          if( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) {
+            $this->sHTMLAfter .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
+          }
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
 
           $attributes['style'] .= "background-image: url({$splash_img});";
