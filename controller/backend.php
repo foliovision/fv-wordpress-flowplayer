@@ -789,9 +789,8 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           
           if( !function_exists('curl_init') ) {
             $video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
-          } else if( isset($remote_domain[1]) && strlen($remote_domain[1]) > 0 && strlen($site_domain[1]) > 0 && $remote_domain[1] != $site_domain[1] ) {
+          } else {
             $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
-            $video_info['File'] = 'Remote';
   
             //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
             $upload_dir = wp_upload_dir();      
@@ -848,26 +847,6 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
             } else {
               $video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
             }                  
-          } else {
-            $a_link = str_replace( '&amp;', '&', $remotefilename );
-            $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($a_link).'">'.$a_link.'</a></p>';
-            $video_info['File'] = 'Local';
-            
-            $document_root = ( isset($_SERVER['SUBDOMAIN_DOCUMENT_ROOT']) && strlen(trim($_SERVER['SUBDOMAIN_DOCUMENT_ROOT'])) > 0 ) ? $_SERVER['SUBDOMAIN_DOCUMENT_ROOT'] : $_SERVER['DOCUMENT_ROOT'];
-            
-            global $blog_id;
-            if( isset($blog_id) && $blog_id > 1 ) {
-              $upload_dir = wp_upload_dir();
-              if( stripos($remotefilename, $upload_dir['baseurl']) !== false ) { 
-                $localtempfilename = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $remotefilename );						
-              } else {
-                $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), preg_replace( '~(\.[a-z]{1,4})/files/~', '$1/wp-content/blogs.dir/'.$blog_id.'/files/', $remotefilename ) );							
-              }
-            } else {
-              $localtempfilename = preg_replace( '~^\S+://[^/]+~', trailingslashit($document_root), $remotefilename );
-            }
-      
-            $ThisFileInfo = $getID3->analyze( $localtempfilename );
           }
           
           
@@ -903,7 +882,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           
           if( isset($ThisFileInfo['quicktime']) ) {			
             if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-              $video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+              $video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! The video might be <strong>slow to start or not play at all in some browsers</strong>! Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
             } else {
               if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
                 $video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
