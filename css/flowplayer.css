@@ -307,5 +307,4 @@ MediaElement.js
 .fvfp_admin_error a { color: #fff; text-decoration: underline; }
 #content .fvfp_admin_error a { color: #fff; text-decoration: underline; }
 .fvfp_admin_error_content {  background: #dd0000; padding: 1% 5%; width: 65%; margin: 0 auto; -webkit-box-shadow: 3px 3px 30px 0px rgba(50, 50, 50, 0.96); -moz-box-shadow: 3px 3px 30px 0px rgba(50, 50, 50, 0.96); box-shadow: 3px 3px 30px 0px rgba(50, 50, 50, 0.96);}
-.is-fullscreen.flowplayer .fp-subtitle, .is-fullscreen.flowplayer .fp-subtitle p {font-size: 140%;}
   

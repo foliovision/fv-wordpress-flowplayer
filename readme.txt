@@ -125,9 +125,11 @@ Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 
 
 = How do I fix the bad metadata (moov) position? =
 
-If you are using Mac, open the video in Quick Time Pro and in the Movie Properties -> Video Track -> Other Settings turn on the "Cache (hint)" - [screenshot](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png).
+If you are using Mac, try Lillipot (just remember to rename the file back to .mp4 extension): http://www.qtbridge.com/lillipot/lillipot.html
 
-If you are using Windows, try this tool: http://www.datagoround.com/lab/
+If you have Quick Time Pro, just open the video and in the Movie Properties -> Video Track -> Other Settings turn on the "Cache (hint)" - [screenshot](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png).
+
+If you are using Windows, try MP4 FastStart: http://www.datagoround.com/lab/
 
 There are also server-side tools for fixing of this written in Python and there one for PHP, but it fails on videos bigger than the PHP memory limit.
 
@@ -320,12 +322,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2 - 2014/01/23? =
+= 2.2 - 2014/02/20 =
 
 * Feature - attachment pages now work with FV Flowplayer
+* Feature - OptimizePress2 integration - FV Flowplayer handles the videos inserted in OptimizePress Live Edit
 * Feature - plugin skin CSS gets written into the main plugin CSS file to clean up your site header of any unnecessary style tags
-* Feature - support for live streaming
-* Fix - audio - support for Amazon S3 protected links 
+* Feature - support for live streaming (add live="true" in shortcode)
+* Fix - audio - support for Amazon S3 protected links
+* Fix - "Check template" now looks for html5.js compatibility script and users see warnings on front-end if there are issues with JavaScript on the site
 * Fix - JavaScript only loads if the player is in use on the page
 * Fix - "Flash streaming server" settings acts as default RTMP server if there is none in the shortcode
 * Bugfix - bug in options initialization causing safety resize script missing on fresh install until save of the settings

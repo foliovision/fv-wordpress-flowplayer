@@ -30,7 +30,8 @@ $fv_fp = new flowplayer_backend();
  */
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');  
 add_action('wp_ajax_fv_wp_flowplayer_js_alive', 'fv_wp_flowplayer_js_alive');
-add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype'); 
+add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
+add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
  
 add_action('admin_head', 'flowplayer_head');
@@ -1162,12 +1163,7 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 }
 
 
-function fv_wp_flowplayer_check_jquery_version( $url, &$array, $key ) {
-	if( preg_match( '!/jquery(\.[a-zA-Z]{2,}|-[a-zA-Z]{3,})[^/]*?\.js!', $url ) ) {	//	jquery.ui.core.min.js, jquery-outline-1.1.js
-		unset( $array[$key] );
-		return 2;
-	}
-	
+function fv_wp_flowplayer_check_jquery_version( $url, &$array, $key ) {	
 	$url_mod = preg_replace( '!\?.+!', '', $url );
 	if( preg_match( '!(\d+.[\d\.]+)!', $url_mod, $version ) && $version[1] ) {
 		if( version_compare($version[1], '1.7.1') == -1 ) {
@@ -1314,6 +1310,102 @@ AddType video/mp2t            .ts</code></pre></blockquote>';
   }
   die('-1');
 }
+
+
+function fv_wp_flowplayer_check_template() {
+	$ok = array();
+	$errors = array();
+	
+  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+  	$response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
+  	if( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			$output = array( 'error' => $error_message );
+		} else {
+      
+      $active_plugins = get_option( 'active_plugins' );
+			foreach( $active_plugins AS $plugin ) {
+				if( stripos( $plugin, 'wp-minify' ) !== false ) {
+					$errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
+					$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
+					echo json_encode($output);
+					die();
+				}
+			}
+			
+			if( function_exists( 'w3_instance' ) && $minify = w3_instance('W3_Plugin_Minify') ) {			
+				if( $minify->_config->get_boolean('minify.js.enable') ) {
+					$errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
+          $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
+					echo json_encode($output);
+				}
+			}
+      
+			if( stripos( $response['body'], '/html5.js') === FALSE && stripos( $response['body'], '/html5shiv.js') === FALSE ) {
+        $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Get it <a href="https://code.google.com/p/html5shim/">here</a> and put it into your template.';
+			}      
+			
+      $ok[] = 'Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.';       
+      
+			$response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
+			
+			//	check Flowplayer scripts
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
+			if( count($flowplayer_scripts[1]) > 0 ) {
+				if( count($flowplayer_scripts[1]) > 1 ) {
+					$errors[] = "It appears there are <strong>multiple</strong> Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.";
+				}
+				foreach( $flowplayer_scripts[1] AS $flowplayer_script ) {
+					$check = fv_wp_flowplayer_check_script_version( $flowplayer_script );
+					if( $check == - 1 ) {
+						$errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
+					} else if( $check == 1 ) {
+						$ok[] = "FV Flowplayer script found: <code>$flowplayer_script</code>!";
+						$fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
+					}
+				}
+			} else if( count($flowplayer_scripts[1]) < 1 ) {
+				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your header.php file if it contains wp_head() function call!";			
+			}
+			
+
+			//	check jQuery scripts						
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
+			if( count($jquery_scripts[1]) > 0 ) {   
+				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
+					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
+					if( $check == - 1 ) {
+						$errors[] = "jQuery library <code>$jquery_script</code> is old version and might not be compatible with Flowplayer.";
+					} else if( $check == 1 ) {
+						$ok[] = "jQuery library 1.7.1+ found: <code>$jquery_script</code>!";
+						$jquery_pos = strpos( $response['body'], $jquery_script );
+					} else if( $check == 2 ) {
+						//	nothing
+					}	else {
+						$errors[] = "jQuery library <code>$jquery_script</code> found, but unable to check version, please make sure it's at least 1.7.1.";
+					}
+				}
+      
+				if( count($jquery_scripts[1]) > 1 ) {
+					$errors[] = "It appears there are <strong>multiple</strong> jQuery libraries on your site, your videos might not be playing or may play with defects, please check.\n";
+				}
+			} else if( count($jquery_scripts[1]) < 1 ) {
+				$errors[] = "It appears there are <strong>no</strong> jQuery library on your site, your videos might not be playing, please check.\n";			
+			}
+			
+						
+			if( $fv_flowplayer_pos > 0 && $jquery_pos > 0 && $jquery_pos > $fv_flowplayer_pos && count($jquery_scripts[1]) < 1 ) {
+				$errors[] = "It appears your Flowplayer JavaScript library is loading before jQuery. Your videos probably won't work. Please make sure your jQuery library is loading using the standard Wordpress function - wp_enqueue_scripts(), or move it above wp_head() in your header.php template.";
+			}
+      
+			$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
+		}
+		echo json_encode($output);
+		die();
+  }
+  
+  die('-1');
+} 
 
  
 function fv_wp_flowplayer_array_search_by_item( $find, $in_array, &$found, $like = false ) {
@@ -1462,14 +1554,16 @@ function fv_wp_flowplayer_pointers_ajax() {
 
 
 //  allow .vtt subtitle files
-add_filter( 'wp_check_filetype_and_ext', 'fv_flowplayer_subtitles_filetype', 10, 4 );
+add_filter( 'wp_check_filetype_and_ext', 'fv_flowplayer_filetypes', 10, 4 );
 
-function fv_flowplayer_subtitles_filetype( $aFile ) {
+function fv_flowplayer_filetypes( $aFile ) {
   $aArgs = func_get_args();
-  if( isset($aArgs[2]) && preg_match( '~\.vtt$~', $aArgs[2] ) ) {
-    $aFile['type'] = 'vtt';
-    $aFile['ext'] = 'vtt';
-    $aFile['proper_filename'] = $aArgs[2];    
+  foreach( array( 'vtt', 'webm', 'ogg') AS $item ) {
+    if( isset($aArgs[2]) && preg_match( '~\.'.$item.'~', $aArgs[2] ) ) {
+      $aFile['type'] = $item;
+      $aFile['ext'] = $item;
+      $aFile['proper_filename'] = $aArgs[2];    
+    }
   }
   return $aFile;
 }

@@ -124,7 +124,7 @@ function fv_flowplayer_admin_amazon_options() {
 					<tr class="amazon-s3-last"><td colspan="2"></td></tr>	
 					<tr>    		
 						<td colspan="4">
-							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
 							<input type="button" id="amazon-s3-add" class="button" value="Add more Amazon S3 secure buckets" />
 						</td>
 					</tr>   					                                 
@@ -248,6 +248,41 @@ function fv_flowplayer_admin_description() {
 							<p>FV WordPress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong>, <strong>MOV</strong> and <strong>FLV</strong>. videos into your posts or pages. With MP4 videos, FV WordPress Flowplayer offers 98% coverage even on mobile devices.</p>
 						</td>
 					</tr>
+				</table>
+<?php
+}
+
+
+function fv_flowplayer_admin_integrations() {
+	global $fv_fp;
+?>
+				<table class="form-table2" style="margin: 5px; ">
+          <tr>
+						<td style="width: 350px"><label for="js-everywhere">Load FV Flowplayer JS everywhere (<abbr title="If you use some special JavaScript integration, you might prefer this option, otherwise it loads only if the shortcode is found.">?</abbr>):</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="js-everywhere" value="false" />
+              <input type="checkbox" name="js-everywhere" id="js-everywhere" value="true" <?php if( isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>
+					<!--<tr>
+						<td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="integrations[optimizepress2]" value="false" />
+              <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( isset($fv_fp->conf['integrations']['optimizepress2']) && $fv_fp->conf['integrations']['optimizepress2'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>
+					<tr>
+						<td><label for="wp_core_video">Handle Wordpress <code><small>[video]</small></code> shortcodes:</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="integrations[wp_core_video]" value="false" />
+              <input type="checkbox" name="integrations[wp_core_video]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>-->             
+					<tr>    		
+						<td colspan="4">
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
+						</td>
+					</tr>                               
 				</table>
 <?php
 }
@@ -407,7 +442,8 @@ function fv_flowplayer_admin_usage() {
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide#license">License key and custom logo</a>
 									</li>					
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads">Using ads</a></li>				
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams">RTMP streams</a></li>				
+									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams">RTMP streams</a></li>
+                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles">Subtitles</a></li>		
 								</ul>
 							</div>
 							<div style="float: left; width: 49%">
@@ -476,6 +512,7 @@ add_meta_box( 'fv_flowplayer_interface_options', 'Post Interface Options', 'fv_f
 add_meta_box( 'fv_flowplayer_default_options', 'Sitewide Flowplayer Defaults', 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_integrations', 'Integrations', 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal' );
 
 ?>
@@ -494,9 +531,8 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
   </div>
-  <div id="fv-flowplayer-check-template" class="updated" style="display: none; ">Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.</div>
   <p id="fv_flowplayer_admin_buttons">
-  	<input type="button" class="button" onclick="jQuery('#fv-flowplayer-check-template').show(); return false" value="Check template" /> 
+  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
   	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
   	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
   	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 

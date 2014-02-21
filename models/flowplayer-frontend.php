@@ -305,6 +305,10 @@ class flowplayer_frontend extends flowplayer
 					$attributes['data-flashfit'] = 'true';
 				}
         
+        if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
+					$attributes['data-live'] = 'true';
+				}
+        
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
@@ -402,8 +406,8 @@ class flowplayer_frontend extends flowplayer
 				if( $ad_contents = $this->get_ad_code() ) {
 					$this->ret['html'] .= $ad_contents;  
 				}
-        if( current_user_can('manage_options') && 1 ) {
-					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4>I\'m sorry, your JavaScript appears to be broken. Please <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</div></div>';       
+        if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
+					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</div></div>';       
         }
 				$this->ret['html'] .= '</div>'."\n";
 	
