@@ -421,6 +421,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  function get_encoded_url( $sURL ) {
+    if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
+      $url_parts = parse_url( $sURL );
+      $url_parts_encoded = parse_url( $sURL );			
+      if( !empty($url_parts['path']) ) {
+          $url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts_encoded['path'])));
+      }
+      if( !empty($url_parts['query']) ) {
+          $url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );				
+      }
+      
+      $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
+      return http_build_url($sURL, $url_parts);
+    } else {
+      return $sURL;
+    }    
+  }
+  
+  
   function get_plugin_url() {
     if( stripos( __FILE__, '/themes/' ) ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
@@ -445,10 +464,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 function flowplayer_head() {
 	global $fv_fp;	
   $fv_fp->flowplayer_head();
-  
-  if( !is_admin() && current_user_can('manage_options') ) {
-    update_option( 'fv_flowplayer_js_alive', 2 );
-  }
 }
 
 

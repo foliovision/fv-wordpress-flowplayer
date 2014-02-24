@@ -322,7 +322,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2 - 2014/02/20 =
+= 2.2 - 2014/02/24 =
 
 * Feature - attachment pages now work with FV Flowplayer
 * Feature - OptimizePress2 integration - FV Flowplayer handles the videos inserted in OptimizePress Live Edit
@@ -330,9 +330,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - support for live streaming (add live="true" in shortcode)
 * Fix - audio - support for Amazon S3 protected links
 * Fix - "Check template" now looks for html5.js compatibility script and users see warnings on front-end if there are issues with JavaScript on the site
-* Fix - JavaScript only loads if the player is in use on the page
+* Fix - "Check videos" button now uses the same code as admin video checker and is more resilient
 * Fix - "Flash streaming server" settings acts as default RTMP server if there is none in the shortcode
+* Fix - JavaScript only loads if the player is in use on the page
 * Bugfix - bug in options initialization causing safety resize script missing on fresh install until save of the settings
+* Bugfix - splash image URL encoding
 
 = 2.1.52 - 2014/01/10 =
 

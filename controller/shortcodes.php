@@ -116,7 +116,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'admin_warning' => '',
     'live' => ''
   ), $atts ) );
-  
+
   if( $fv_fp->conf['parse_commas'] == 'true' ) {  
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
@@ -174,7 +174,6 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'live' => ''
 		), $atts );
 	}
-	
 	
 	if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player

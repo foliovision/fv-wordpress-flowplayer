@@ -29,7 +29,6 @@ $fv_fp = new flowplayer_backend();
  * WP Hooks
  */
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');  
-add_action('wp_ajax_fv_wp_flowplayer_js_alive', 'fv_wp_flowplayer_js_alive');
 add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
 add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
@@ -535,15 +534,7 @@ function fv_wp_flowplayer_admin_init() {
 		wp_enqueue_script('wp-lists');
 		wp_enqueue_script('postbox');
 	}
-  
-  if( $iCheck = get_option('fv_flowplayer_js_alive') ) {
-    if( $iCheck == 2 ) {
-      //echo 'Something it fokt up!';
-    }
-  } else {
-    update_option( 'fv_flowplayer_js_alive', 1 );
-  }
-  
+    
 }   
 
 
@@ -603,17 +594,23 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 }
 
 
-function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
+function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random, $args = false ) {
 	global $fv_fp;
+  
+  $args = wp_parse_args( $args, array( 'talk_bad_mime' => 'Video served with a bad mime type' , 'wrap'=>'p' ) );
 
-	$video_errors = array();
+	$sOutput = '';
 
+  $bFatal = false;
 	if( $headers && $headers['response']['code'] == '404' ) {
-		$video_errors[] = 'File not found (HTTP 404)!';  
+		$video_errors[] = 'File not found (HTTP 404)!';
+    $bFatal = true;
 	} else if( $headers && $headers['response']['code'] == '403' ) {
-		$video_errors[] = 'Access to video forbidden (HTTP 403)!'; 
+		$video_errors[] = 'Access to video forbidden (HTTP 403)!';
+    $bFatal = true;
 	} else if( $headers && $headers['response']['code'] != '200' && $headers['response']['code'] != '206' ) {
-		$video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!'; 
+		$video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!';
+    $bFatal = true;
 	} else {  
 	
 		if(
@@ -655,10 +652,13 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random ) {
 				<p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a> for more info.</p>
 			</div>';     
 			
-			$video_errors[] = '<p><strong>Bad mime type</strong>: Video served with a bad mime type <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)</p>'.$fix ;        
+      $sOutput = ( $args['wrap'] ) ? '<'.$args['wrap'].'>' : '';
+			$sOutput .= '<strong>Bad mime type</strong>: '.$args['talk_bad_mime'].' <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)';
+      $sOutput .= ( $args['wrap'] ) ? '</'.$args['wrap'].'>' : '';
+      $sOutput .= $fix;
 		}
 	}
-	return $video_errors;
+	return array( $sOutput, $headers['headers']['content-type'], $bFatal );
 }
  
  
@@ -668,8 +668,39 @@ function fv_wp_flowplayer_http_api_curl( $handle ) {
 }
 
 
-function fv_wp_flowplayer_js_alive() {
-  update_option('fv_flowplayer_js_alive', 1);
+function fv_wp_flowplayer_http( $sURL, $args ) {
+  global $fv_wp_flowplayer_ver;
+  
+  $args = wp_parse_args( $args, array( 'file' => false, 'size' => 2097152 ) );
+  extract($args);
+  
+  $ch = curl_init();
+  curl_setopt( $ch, CURLOPT_URL, $sURL );    		
+  curl_setopt( $ch, CURLOPT_RANGE, '0-'.$size );
+  curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+  if( !@ini_get('open_basedir') ) {
+    @curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+  }
+  curl_setopt( $ch, CURLOPT_HEADER, true );
+  curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
+  curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5 );
+  curl_setopt( $ch, CURLOPT_TIMEOUT, 5 );
+  curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
+  
+  $data = curl_exec($ch);
+  
+  $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+  $header = substr($data, 0, $header_size);
+  $body = substr($data, $header_size);
+
+  if( $file ) {
+    file_put_contents( $file, $body);
+  }
+  $message = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : '';
+
+  curl_close($ch);
+   
+  return array( $header, $message );
 }
  
  
@@ -748,19 +779,8 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
   	
     if( isset($media) ) {	     
 			$remotefilename = $media;
-			$url_parts = parse_url( $remotefilename );
-			$url_parts_encoded = parse_url( $remotefilename );			
-			if( !empty($url_parts['path']) ) {
-					$url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts_encoded['path'])));
-			}
-			if( !empty($url_parts['query']) ) {
-					$url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );				
-			}
-			
-			$url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );				
-			
-			$remotefilename_encoded = http_build_url($remotefilename, $url_parts);  	
-		
+      $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
+
 			if( $fv_fp->is_secure_amazon_s3($remotefilename_encoded) || 1>0 ) {	//	skip headers check for Amazon S3, as it's slow
 				$headers = false;
 			} else {
@@ -771,7 +791,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 				$video_errors[] = 'Error checking '.$media.'!<br />'.print_r($headers,true);  
 			} else {
 				if( $headers ) {
-					$video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+          list( $sVideoErrors ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+          if( $sVideoErrors ) {
+          	$video_errors[] = $sVideoErrors;
+          }
 				}
 				
 				if( function_exists('is_utf8') && is_utf8($remotefilename) ) {
@@ -785,9 +808,6 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
           $getID3 = new getID3;     
           
-          preg_match( '~^\S+://([^/]+)~', $remotefilename, $remote_domain );
-          preg_match( '~^\S+://([^/]+)~', home_url(), $site_domain ); 
-          
           if( !function_exists('curl_init') ) {
             $video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
           } else {
@@ -799,35 +819,19 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
         
             $out = fopen( $localtempfilename,'wb' );
             if( $out ) {
+              list( $header, $message_out ) = fv_wp_flowplayer_http( $remotefilename_encoded, array( 'file' => $localtempfilename ) );
+
+              $message .= $message_out;
               
-              $ch = curl_init();
-              curl_setopt( $ch, CURLOPT_URL, $remotefilename_encoded );    		
-              curl_setopt( $ch, CURLOPT_RANGE, '0-2097152' );
-              curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-              if( !@ini_get('open_basedir') ) {
-                @curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-              }
-              curl_setopt( $ch, CURLOPT_HEADER, true );
-              curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
-              curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
-              
-              $data = curl_exec($ch);
-              
-              $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-              $header = substr($data, 0, $header_size);
-              $body = substr($data, $header_size);
-  
-              file_put_contents( $localtempfilename, $body);
-              if($ch == false) {
-                $message .= 'CURL Error: '.curl_error ( $ch);
-              }
-              curl_close($ch);
               fclose($out);
   
               if( !$headers ) {
                 $headers = WP_Http::processHeaders( $header );			
                 
-                $video_errors += fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+                list( $sVideoErrors ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+                if( $sVideoErrors ) {
+                  $video_errors[] = $sVideoErrors;
+                }
                 if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
                   $error = new SimpleXMLElement($body);
                   
@@ -840,8 +844,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
                 }
               }
                       
-              $ThisFileInfo = $getID3->analyze( $localtempfilename );
-              
+              $ThisFileInfo = $getID3->analyze( $localtempfilename );             
               if( !@unlink($localtempfilename) ) {
                 $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
               }         
@@ -1058,11 +1061,25 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 			$more_info = str_replace( array('Unknown QuickTime atom type', 'Atom at offset'), array($note.' Unknown QuickTime atom type', $note.' Atom at offset'), $more_info );
 		
 			$lines = explode( "\n", $more_info );
-			
+      
 			$depth = 0;
 			$new_info = '<p>'.$note.'</p><div class="fv-wp-flowplayer-notice-parsed level-0">';
+      $iCount = 0;
 			foreach( $lines AS $line ) {
+        /*if( $iCount > 1000 ) {
+          $new_info .= "Output trimmed";
+          break;
+        }*/
+        
 				$class = ( $depth > 0 ) ? ' indent' : '';
+        
+				if( $depth > 6 ) {
+					$style = ' fv-wp-fp-hidden';
+          continue;
+				} else {
+          $iCount++;
+					$style = '';
+				}        
 			
 				if( strcmp( trim($line), 'array (' ) == 0 ) {
 					if( $depth == 0 ) {			
@@ -1079,21 +1096,14 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 					continue;
 				}
 				
-				
-				if( $depth > 7 ) {
-					$style = ' fv-wp-fp-hidden';
-				} else {
-					$style = '';
-				}
-				
 				$line_i = explode( " => ", trim($line), 2 );
 				if( !$line_i ) {
 					continue;
 				}
 								
 				$line_html = '<div class="row'.$class.$style.'"><span>'.ucfirst( str_replace( "' =>", '', trim($line_i[0],"' ")) ).'</span><span class="value">'.( (isset($line_i[1])) ? trim(rtrim($line_i[1],", "),"' ") : '' ).'</span><div style="clear:both;"></div></div>';
-				
-				$new_info .= $line_html."\n";
+        $new_info .= $line_html."\n";
+
 			}
 			$new_info .= '</div>';
 		
@@ -1131,12 +1141,12 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 			$json = json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
 			$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;
 			if( $last_error ) {
-				echo json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) );    
+				echo '<FVFLOWPLAYER>'.json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) ).'</FVFLOWPLAYER>';    
 			} else {
-				echo $json;
+				echo '<FVFLOWPLAYER>'.$json.'</FVFLOWPLAYER>';
 			}
 		} else {
-			echo $json;
+			echo '<FVFLOWPLAYER>'.$json.'</FVFLOWPLAYER>';
 		}
 		die();
 
@@ -1192,12 +1202,16 @@ function fv_wp_flowplayer_check_files() {
   if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
   	global $wpdb;
   	define('VIDEO_DIR', '/videos/');
+    
+    $bNotDone = false;
+    $tStart = microtime(true);
+    $tMax = ( @ini_get('max_execution_time') ) ? @ini_get('max_execution_time') - 5 : 25;
   	
-  	$videos1 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_content LIKE '%[flowplayer %'" );
-  	$videos2 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_content LIKE '%[fvplayer %'" );  
+  	$videos1 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_status != 'trash' AND post_content LIKE '%[flowplayer %'" );
+  	$videos2 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_status != 'trash' AND post_content LIKE '%[fvplayer %'" );  
   	
   	$videos = array_merge( $videos1, $videos2 );
-  	  	
+  		
   	$source_servers = array();
   	
   	$shortcodes_count = 0;
@@ -1235,74 +1249,46 @@ function fv_wp_flowplayer_check_files() {
   	
   	$ok = array();
   	$errors = array();
-  	
+
   	$count = 0;
   	foreach( $source_servers AS $server => $videos ) {
-  	
-  		//echo $server."\n";  		
-
+      
+      $tCurrent = microtime(true);
+      if( $tCurrent - $tStart > $tMax ) {
+        $bNotDone = true;
+        break;
+      }
+      
+      if( stripos( $videos[0]['src'], '.mp4' ) === FALSE /*&& stripos( $videos[0]['src'], '.m4v' ) === FALSE*/ ) {
+        continue;
+      }
+ 
 			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
-  			$headers = get_headers( trim($videos[0]['src']) );
-  		}
-			if( isset($headers) && $headers ) {
-
-				$posts_links = '';
-				foreach( $videos AS $video ) {
-					$posts_links .= '<a href="'.home_url().'?p='.$video['post_id'].'">'.$video['post_id'].'</a> ';	
-				}
-
-				foreach( $headers AS $line ) {
-					if( stripos( $line, 'Content-Type:' ) !== FALSE ) {
-						preg_match( '~Content-Type: (\S+)$~', $line, $match );
-						$mime_matched = ( isset($match[1]) ) ? $match[1] : '';
-						
-						if(
-							( !preg_match( '~video/mp4$~', $line ) && stripos( $videos[0]['src'], '.mp4' ) !== FALSE ) ||
-							( !preg_match( '~video/x-m4v$~', $line ) && stripos( $videos[0]['src'], '.m4v' ) !== FALSE )
-						) {
-							if( strpos( $server, 'amazonaws' ) !== false ) {
-								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in HTML5 mode in Internet Explorer 9 and 10.</p><blockquote><code>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4 and "video/x-m4v" for M4V files.</code></blockquote>';
-							} else {
-								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in HTML5 mode in Internet Explorer 9 and 10.</p><p>Make sure you put this into your .htaccess file, or ask your server admin to upgrade the web server mime type configuration:</p> <blockquote><pre><code>AddType video/mp4             .mp4
-AddType video/webm            .webm
-AddType video/ogg             .ogv
-AddType application/x-mpegurl .m3u8
-AddType video/x-m4v           .m4v
-# hls transport stream segments:
-AddType video/mp2t            .ts</code></pre></blockquote>';
-							}
-				
-							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
-						} else if(
-							( !preg_match( '~video/webm$~', $line ) && stripos( $videos[0]['src'], '.webm' ) !== FALSE )
-						) {
-							if( strpos( $server, 'amazonaws' ) !== false ) {
-								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in older Firefox.</p><blockquote><code>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/webm" for WEBM videos.</code></blockquote>';
-							} else {
-								$fix = '<p>It\'s important to set this correctly, otherwise the videos will not play in older Firefox.</p><p>Make sure you put this into your .htaccess file, or ask your server admin to upgrade the web server mime type configuration:</p> <blockquote><pre><code>AddType video/mp4             .mp4
-AddType video/webm            .webm
-AddType video/ogg             .ogv
-AddType application/x-mpegurl .m3u8
-AddType video/x-m4v           .m4v
-# hls transport stream segments:
-AddType video/mp2t            .ts</code></pre></blockquote>';
-							}
-				
-							$errors[] = 'Server <code>'.$server.'</code> uses bad mime type <code>'.$mime_matched.'</code> for MP4 or M4V videos! (<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) (<a href="#" onclick="jQuery(\'#fv-flowplayer-info-'.$count.'\').toggle(); return false">show fix</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$posts_links.'</div> <div id="fv-flowplayer-info-'.$count.'" style="display: none; ">'.$fix.'</div>'; 
-						} else if( stripos( $videos[0]['src'], '.mp4' ) !== FALSE  || stripos( $videos[0]['src'], '.m4v' ) !== FALSE ) {
-							$ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_matched.'</code> for MP4 and M4V videos.'; 						
-						}
-					}
-				}
-				
-				$count++;
-			}
-			
-			if( $server == 'http://lifeinamovie.com' ) {
-  			//break;
-  		}
-			
+        list( $header, $message_out ) = fv_wp_flowplayer_http( trim($videos[0]['src']), array( 'size' => 65536 ) );
+        if( $header ) {        
+          $headers = WP_Http::processHeaders( $header );          
+          list( $new_errors, $mime_type, $fatal ) = fv_wp_flowplayer_check_headers( $headers, trim($videos[0]['src']), rand(100), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
+          if( $fatal ) {            
+            continue;
+          }
+          if( $new_errors ) {
+            $sPostsLinks = false;
+            foreach( $videos AS $video ) {
+              $sPostsLinks .= '<a href="'.home_url().'?p='.$video['post_id'].'">'.$video['post_id'].'</a> ';	
+            }
+            $errors[] = $new_errors.'(<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$sPostsLinks.'</div>';
+            $count++;
+            continue;           
+          } else {
+            $ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_type.'</code> for MP4 videos.';
+          }
+        }
+  		}    						
   	}
+    
+    if( $bNotDone ) {
+      $ok[] = '<strong>Not all the servers were checked as you use a lot of them, increase your PHP execution time or check your other videos by hand.</strong>';
+    }
   	
   	$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
 		echo json_encode($output);
