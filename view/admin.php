@@ -594,6 +594,8 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 		jQuery('.'+type+'-spin').show();
 		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
 		jQuery.post( ajaxurl, { action: type }, function( response ) {
+      response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
+      response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
 			var obj = (jQuery.parseJSON( response ) );
 			var css_class = '';
 			jQuery('#fv_flowplayer_admin_notices').html('');

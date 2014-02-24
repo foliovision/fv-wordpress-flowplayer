@@ -1267,7 +1267,7 @@ function fv_wp_flowplayer_check_files() {
         list( $header, $message_out ) = fv_wp_flowplayer_http( trim($videos[0]['src']), array( 'size' => 65536 ) );
         if( $header ) {        
           $headers = WP_Http::processHeaders( $header );          
-          list( $new_errors, $mime_type, $fatal ) = fv_wp_flowplayer_check_headers( $headers, trim($videos[0]['src']), rand(100), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
+          list( $new_errors, $mime_type, $fatal ) = fv_wp_flowplayer_check_headers( $headers, trim($videos[0]['src']), rand(0,999), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
           if( $fatal ) {            
             continue;
           }
@@ -1291,7 +1291,7 @@ function fv_wp_flowplayer_check_files() {
     }
   	
   	$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-		echo json_encode($output);
+		echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
 		die();
   }
   die('-1');
@@ -1314,7 +1314,7 @@ function fv_wp_flowplayer_check_template() {
 				if( stripos( $plugin, 'wp-minify' ) !== false ) {
 					$errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
 					$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-					echo json_encode($output);
+					echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
 					die();
 				}
 			}
@@ -1323,7 +1323,7 @@ function fv_wp_flowplayer_check_template() {
 				if( $minify->_config->get_boolean('minify.js.enable') ) {
 					$errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
           $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-					echo json_encode($output);
+					echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
 				}
 			}
       
@@ -1386,7 +1386,7 @@ function fv_wp_flowplayer_check_template() {
       
 			$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
 		}
-		echo json_encode($output);
+		echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
 		die();
   }
   
