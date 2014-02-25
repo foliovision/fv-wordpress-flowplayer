@@ -275,8 +275,10 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
 
-    foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
-      wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+    if( count($GLOBALS['fv_fp_scripts']) > 0 ) {
+      foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
+        wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+      }
     }
   }
 }
