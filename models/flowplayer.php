@@ -143,7 +143,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';   
 		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';   		
 		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }
-    if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';   		
+    if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
+    if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';   		
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -189,6 +190,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function css_generate( $style_tag = true ) {
     global $fv_fp;
+    
+    $iMarginBottom = (isset($fv_fp->conf['marginBottom']) && intval($fv_fp->conf['marginBottom']) > -1 ) ? intval($fv_fp->conf['marginBottom']) : '28';
+    
     if( $style_tag ) : ?>
       <style type="text/css">
     <?php endif;
@@ -201,7 +205,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       .flowplayer { border: 1px solid <?php echo trim($fv_fp->conf['borderColor']); ?> !important; }
     <?php endif; ?>
   
-    .flowplayer, flowplayer * { margin: 0 auto 28px auto; display: block; }
+    .flowplayer, flowplayer * { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
     .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
     .flowplayer .fp-duration { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }

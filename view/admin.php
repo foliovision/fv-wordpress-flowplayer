@@ -406,18 +406,20 @@ function fv_flowplayer_admin_skin() {
 										</video>
 									</div>
 									</div>
-					<table class="form-table2 flowplayer-settings" style="width: 45%;">	
+					<table class="form-table2 flowplayer-settings" style="width: 46%;">	
 						<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
 						<tr>
-							<td><label for="font-face">Player font face</label></td>
-							<td style="text-align:right" colspan="3">
+              <td><label for="marginBottom">bottom margin</label></td>
+              <td style="text-align:right"><input type="text" size="6" name="marginBottom" id="marginBottom" value="<?php echo $fv_fp->conf['marginBottom']; ?>" title="Enter value in pixels" /></td>              
+							<td style="padding-left:20px;"><label for="font-face">font face</label></td>
+							<td style="text-align:right">
 								<select id="font-face" name="font-face">
 									<option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
 									<option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
 									<option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>>(inherit from template)</option>
 								</select> 							
 							</td>
-						</tr>					
+						</tr>      
 						<tr>    		
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>

@@ -245,7 +245,11 @@ function flowplayer_content( $content ) {
 function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
 
-  if( isset($GLOBALS['fv_fp_scripts']) || (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ) {    
+  if(
+     isset($GLOBALS['fv_fp_scripts']) ||
+     (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
+     isset($_GET['fv_wp_flowplayer_check_template'])
+  ) {    
     wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );

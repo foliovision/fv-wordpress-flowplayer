@@ -4,7 +4,7 @@ Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
 Tested up to: 3.8
-Stable tag: trunk
+Stable tag: 2.2.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -213,14 +213,6 @@ echo apply_filters('the_content', '[flowplayer src=yourvideo.mp4 width=240 heigh
 
 Fill the Flowplayer shortcode part according to your needs. The apply filter needs to be called because the flowplayer shortcodes are not parsen outside posts automatically. Also, please do not forget to add the echo at the beginning.
 
-= How do I get rid of the extra blank line below the player? =
-
-To get rid of the spacing, just add this into your template CSS, assuming that your theme uses the standard #content ID on the main content wrapper DIV:
-
-`#content .flowplayer { margin: 0 auto; }`
-
-Also make sure the [fvplayer] shortcode is located on it's own line in the editor and there is not text or any code on the same line. 
-
 = How can I style the popup or ad? =
 
 Check out .wpfp_custom_popup and .wpfp_custom_ad in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
@@ -321,6 +313,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.2.1 - 2014/02/25 =
+
+* Feature - added setting for bottom player margin - default to 28px
+* Bugfix - CSS optimization - fix it the original CSS file fails to be opened
+* Bugfix - "no Flowplayer scripts on your site" when there were no videos on homepage
 
 = 2.2 - 2014/02/24 =
 
