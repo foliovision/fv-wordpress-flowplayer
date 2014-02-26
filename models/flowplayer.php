@@ -427,7 +427,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_encoded_url( $sURL ) {
+  public static function get_encoded_url( $sURL ) {
     if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
       $url_parts = parse_url( $sURL );
       $url_parts_encoded = parse_url( $sURL );			
@@ -446,7 +446,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_plugin_url() {
+  public static function get_plugin_url() {
     if( stripos( __FILE__, '/themes/' ) ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {

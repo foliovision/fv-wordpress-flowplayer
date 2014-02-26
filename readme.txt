@@ -314,6 +314,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.2 - 2014/02/?? =
+
+* Bugfix - redirection finally works in Safari - if the popup fails, it opens the link in current window. Users can still use the browser back button.
+
 = 2.2.1 - 2014/02/25 =
 
 * Feature - added setting for bottom player margin - default to 28px
