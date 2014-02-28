@@ -255,7 +255,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
       $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
       if( @file_exists($filename) ) {
-        $sURL = trailingslashit(WP_CONTENT_URL).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
+        $sURL = trailingslashit(site_url( 'wp-content')).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
         $bInline = false;
       }
     }
