@@ -65,6 +65,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
     <div id="fv-flowplayer-playlist">
   	  <table class="slidetoggle describe fv-flowplayer-playlist-item" width="100%">
         <tbody>
+          <?php do_action( 'fv_flowplayer_shortcode_editor_before' ); ?>
           <tr>
             <th scope="row" class="label" style="width: 18%">
               <a class="alignleft fv_wp_flowplayer_playlist_remove" href="#" onclick="return fv_wp_flowplayer_playlist_remove(this)">(remove)</a>
@@ -230,7 +231,8 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
               <option>Right</option>
             </select>
   				</td>
-  			</tr>   			
+  			</tr>
+        <?php do_action( 'fv_flowplayer_shortcode_editor_after' ); ?>        
   			<tr>
   				<th scope="row" class="label"></th>					
             	<td  style="padding-top: 20px;"><input type="button" value="Insert" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignleft" onclick="fv_wp_flowplayer_submit();" />

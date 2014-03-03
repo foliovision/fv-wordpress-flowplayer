@@ -265,7 +265,7 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
-    if( !isset($fv_fp->conf['fixed_size']) || $fv_fp->conf['fixed_size'] == 'false' ) {
+    if( !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
       $aConf['safety_resize'] = true;
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;

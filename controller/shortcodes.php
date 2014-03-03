@@ -174,6 +174,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'live' => ''
 		), $atts );
 	}
+  
+  $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
 	
 	if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player

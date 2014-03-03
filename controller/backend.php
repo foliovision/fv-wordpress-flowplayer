@@ -658,7 +658,7 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random, $ar
       $sOutput .= $fix;
 		}
 	}
-	return array( $sOutput, $headers['headers']['content-type'], $bFatal );
+	return array( $sOutput, (isset($headers['headers']['content-type'])) ? $headers['headers']['content-type'] : '', $bFatal );
 }
  
  
@@ -683,12 +683,12 @@ function fv_wp_flowplayer_http( $sURL, $args ) {
   }
   curl_setopt( $ch, CURLOPT_HEADER, true );
   curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
-  curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 5 );
-  curl_setopt( $ch, CURLOPT_TIMEOUT, 5 );
+  curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+  curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
   curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
   
   $data = curl_exec($ch);
-  
+    
   $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
   $header = substr($data, 0, $header_size);
   $body = substr($data, $header_size);
@@ -699,7 +699,7 @@ function fv_wp_flowplayer_http( $sURL, $args ) {
   $message = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : '';
 
   curl_close($ch);
-   
+
   return array( $header, $message );
 }
  
@@ -827,7 +827,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
   
               if( !$headers ) {
                 $headers = WP_Http::processHeaders( $header );			
-                
+               
                 list( $sVideoErrors ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
                 if( $sVideoErrors ) {
                   $video_errors[] = $sVideoErrors;

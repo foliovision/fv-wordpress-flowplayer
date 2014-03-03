@@ -73,11 +73,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		
 
 		// define needed constants
-		preg_match('/.*wp-content\/plugins\/(.*?)\/models.*/',dirname(__FILE__),$matches);
-		if (isset($matches[1]))
-			$strFPdirname = $matches[1];
-		else
-			$strFPdirname = 'fv-wordpress-flowplayer';
 		if (!defined('FV_FP_RELATIVE_PATH')) {
 			define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
       
@@ -255,7 +250,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
       $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
       if( @file_exists($filename) ) {
-        $sURL = trailingslashit(site_url( 'wp-content')).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
+        $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
         $bInline = false;
       }
     }
@@ -447,10 +442,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function get_plugin_url() {
-    if( stripos( __FILE__, '/themes/' ) ) {
+    if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {
-      return plugins_url( '', str_replace( '/models', '', __FILE__ ) );
+      return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
     }
   }
   

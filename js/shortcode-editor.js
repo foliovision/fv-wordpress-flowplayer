@@ -39,6 +39,7 @@ var fv_wp_flowplayer_hTinyMCE;
 var fv_wp_flowplayer_oEditor;
 var fv_wp_fp_shortcode_remains;
 var fv_wp_fp_playlist_item_template;
+var fv_wp_fp_shortcode;
 
 
 
@@ -310,6 +311,8 @@ function fv_wp_flowplayer_edit() {
 				fv_flowplayer_playlist_add( aPlaylist[i] );
 			}
     }
+    
+    jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, fv_wp_fp_shortcode_remains ] );
   	
   	jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Update' );    
 	} else {
@@ -349,7 +352,7 @@ function fv_wp_flowplayer_set_html( html ) {
 
 
 function fv_wp_flowplayer_submit() {
-	var shortcode = '';
+  fv_wp_fp_shortcode = '';
   var shorttag = 'fvplayer';
 	
 	if(
@@ -367,24 +370,24 @@ function fv_wp_flowplayer_submit() {
 		return false;
 	} else 
 	
-	shortcode = '[' + shorttag;	
+	fv_wp_fp_shortcode = '[' + shorttag;	
    
   if ( document.getElementById("fv_wp_flowplayer_field_src").value != '' ) {
-    shortcode += ' src=\'' + document.getElementById("fv_wp_flowplayer_field_src").value + '\''; 
+    fv_wp_fp_shortcode += ' src=\'' + document.getElementById("fv_wp_flowplayer_field_src").value + '\''; 
   } 
    
   if ( document.getElementById("fv_wp_flowplayer_field_src_1").value != '' ) {
-    shortcode += ' src1=\'' + document.getElementById("fv_wp_flowplayer_field_src_1").value + '\''; 
+    fv_wp_fp_shortcode += ' src1=\'' + document.getElementById("fv_wp_flowplayer_field_src_1").value + '\''; 
   }
   if ( document.getElementById("fv_wp_flowplayer_field_src_2").value != '' ) {
-    shortcode += ' src2=\'' + document.getElementById("fv_wp_flowplayer_field_src_2").value + '\''; 
+    fv_wp_fp_shortcode += ' src2=\'' + document.getElementById("fv_wp_flowplayer_field_src_2").value + '\''; 
   }
   
   if ( jQuery(".fv_wp_flowplayer_field_rtmp").val() != '' ) {
-    shortcode += ' rtmp="' + jQuery(".fv_wp_flowplayer_field_rtmp").val() + '"'; 
+    fv_wp_fp_shortcode += ' rtmp="' + jQuery(".fv_wp_flowplayer_field_rtmp").val() + '"'; 
   }
   if ( jQuery(".fv_wp_flowplayer_field_rtmp_path").val() != '' ) {
-    shortcode += ' rtmp_path="' + jQuery(".fv_wp_flowplayer_field_rtmp_path").val() + '"'; 
+    fv_wp_fp_shortcode += ' rtmp_path="' + jQuery(".fv_wp_flowplayer_field_rtmp_path").val() + '"'; 
   }  
 		
 	if( jQuery(".fv_wp_flowplayer_field_width").val() != '' && jQuery(".fv_wp_flowplayer_field_width").val() % 1 != 0 ) {
@@ -392,48 +395,48 @@ function fv_wp_flowplayer_submit() {
 		return false;
 	}
 	if( jQuery(".fv_wp_flowplayer_field_width").val() != '' )
-		shortcode += ' width=' + jQuery(".fv_wp_flowplayer_field_width").val();
+		fv_wp_fp_shortcode += ' width=' + jQuery(".fv_wp_flowplayer_field_width").val();
 		
 	if( jQuery(".fv_wp_flowplayer_field_height").val() != '' && jQuery(".fv_wp_flowplayer_field_height").val() % 1 != 0 ) {
 		alert('Please enter a valid height.');
 		return false;
 	}
 	if( jQuery(".fv_wp_flowplayer_field_height").val() != '' )
-		shortcode += ' height=' + jQuery(".fv_wp_flowplayer_field_height").val();
+		fv_wp_fp_shortcode += ' height=' + jQuery(".fv_wp_flowplayer_field_height").val();
 	
   if( document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex == 1 )
-	  shortcode += ' autoplay=true';
+	  fv_wp_fp_shortcode += ' autoplay=true';
 	if( document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex == 2 )
-	  shortcode += ' autoplay=false';
+	  fv_wp_fp_shortcode += ' autoplay=false';
     
   if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 1 )
-	  shortcode += ' embed=true';
+	  fv_wp_fp_shortcode += ' embed=true';
 	if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 2 )
-	  shortcode += ' embed=false';    
+	  fv_wp_fp_shortcode += ' embed=false';    
     
   if( document.getElementById("fv_wp_flowplayer_field_align").selectedIndex == 1 )
-	  shortcode += ' align="left"';
+	  fv_wp_fp_shortcode += ' align="left"';
 	if( document.getElementById("fv_wp_flowplayer_field_align").selectedIndex == 2 )
-	  shortcode += ' align="right"';    
+	  fv_wp_fp_shortcode += ' align="right"';    
         
     
   if( document.getElementById("fv_wp_flowplayer_field_loop").checked )
-		shortcode += ' loop=true';    
+		fv_wp_fp_shortcode += ' loop=true';    
 		
 	if( document.getElementById("fv_wp_flowplayer_field_mobile").value != '' )
-		shortcode += ' mobile=\'' + document.getElementById("fv_wp_flowplayer_field_mobile").value + '\'';    		
+		fv_wp_fp_shortcode += ' mobile=\'' + document.getElementById("fv_wp_flowplayer_field_mobile").value + '\'';    		
 		
 	if( document.getElementById("fv_wp_flowplayer_field_splash").value != '' )
-		shortcode += ' splash=\'' + document.getElementById("fv_wp_flowplayer_field_splash").value + '\'';
+		fv_wp_fp_shortcode += ' splash=\'' + document.getElementById("fv_wp_flowplayer_field_splash").value + '\'';
     
 	if( document.getElementById("fv_wp_flowplayer_field_subtitles").value != '' )
-		shortcode += ' subtitles=\'' + document.getElementById("fv_wp_flowplayer_field_subtitles").value + '\'';    
+		fv_wp_fp_shortcode += ' subtitles=\'' + document.getElementById("fv_wp_flowplayer_field_subtitles").value + '\'';    
     
   if( document.getElementById("fv_wp_flowplayer_field_splashend").checked )
-		shortcode += ' splashend=show';
+		fv_wp_fp_shortcode += ' splashend=show';
     
   if( document.getElementById("fv_wp_flowplayer_field_redirect").value != '' )
-		shortcode += ' redirect=\'' + document.getElementById("fv_wp_flowplayer_field_redirect").value + '\'';        
+		fv_wp_fp_shortcode += ' redirect=\'' + document.getElementById("fv_wp_flowplayer_field_redirect").value + '\'';        
     
   if( document.getElementById("fv_wp_flowplayer_field_popup").value != '' ) {
 		var popup = document.getElementById("fv_wp_flowplayer_field_popup").value;
@@ -442,7 +445,7 @@ function fv_wp_flowplayer_submit() {
 		popup = popup.replace(/"/g,'&quot;');
 		popup = popup.replace(/</g,'&lt;');
 		popup = popup.replace(/>/g,'&gt;');
-		shortcode += ' popup=\'' + popup +'\''
+		fv_wp_fp_shortcode += ' popup=\'' + popup +'\''
 	}        
 	
   if( document.getElementById("fv_wp_flowplayer_field_ad").value != '' ) {
@@ -452,15 +455,15 @@ function fv_wp_flowplayer_submit() {
 		ad = ad.replace(/"/g,'&quot;');
 		ad = ad.replace(/</g,'&lt;');
 		ad = ad.replace(/>/g,'&gt;');
-		shortcode += ' ad=\'' + ad +'\''
+		fv_wp_fp_shortcode += ' ad=\'' + ad +'\''
 	}     	
 	
 	if( document.getElementById("fv_wp_flowplayer_field_ad_width").value != '' )
-		shortcode += ' ad_width=' + document.getElementById("fv_wp_flowplayer_field_ad_width").value;
+		fv_wp_fp_shortcode += ' ad_width=' + document.getElementById("fv_wp_flowplayer_field_ad_width").value;
 	if( document.getElementById("fv_wp_flowplayer_field_ad_height").value != '' )
-		shortcode += ' ad_height=' + document.getElementById("fv_wp_flowplayer_field_ad_height").value;		
+		fv_wp_fp_shortcode += ' ad_height=' + document.getElementById("fv_wp_flowplayer_field_ad_height").value;		
 	if( document.getElementById("fv_wp_flowplayer_field_ad_skip").checked != '' )
-		shortcode += ' ad_skip=yes';			
+		fv_wp_fp_shortcode += ' ad_skip=yes';			
 		
 	if( jQuery('#fv-flowplayer-playlist table').length > 0 ) {
 		var aPlaylistItems = new Array();
@@ -482,19 +485,21 @@ function fv_wp_flowplayer_submit() {
 		);
 		var sPlaylistItems = aPlaylistItems.join(';');
 		if( sPlaylistItems.length > 0 ) {
-			shortcode += ' playlist="'+sPlaylistItems+'"';
+			fv_wp_fp_shortcode += ' playlist="'+sPlaylistItems+'"';
 		}
 	}
+  
+  jQuery(document).trigger('fv_flowplayer_shortcode_create');
 	
 	if( fv_wp_fp_shortcode_remains.trim().length > 0 ) {
-  	shortcode += ' ' + fv_wp_fp_shortcode_remains.trim();
+  	fv_wp_fp_shortcode += ' ' + fv_wp_fp_shortcode_remains.trim();
   }
   
-	shortcode += ']';
+	fv_wp_fp_shortcode += ']';
 		
 	jQuery(".fv-wordpress-flowplayer-button").colorbox.close();
   
-	fv_wp_flowplayer_insert( shortcode );  
+	fv_wp_flowplayer_insert( fv_wp_fp_shortcode );  
 }
 
 function fv_wp_flowplayer_add_format() {

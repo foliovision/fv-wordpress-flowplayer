@@ -446,7 +446,7 @@ class flowplayer_frontend extends flowplayer
 			$this->build_audio_player( $media, $width, $autoplay );
 		}
     
-		
+		$this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
 		return $this->ret;
 	}
