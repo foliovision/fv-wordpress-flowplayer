@@ -314,8 +314,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.2 - 2014/02/?? =
+= 2.2.2 - 2014/03/?? =
 
+* Bugfix - OptimizePress 2 integration "admin note" now showing only for admins
 * Bugfix - redirection finally works in Safari - if the popup fails, it opens the link in current window. Users can still use the browser back button.
 
 = 2.2.1 - 2014/02/25 =

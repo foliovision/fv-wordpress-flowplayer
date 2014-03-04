@@ -260,13 +260,15 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   $shortcode .= ' height="'.$vars['height'].'"';
   $shortcode .= ' align="'.$vars['align'].'"';
 
-  if(
-    ( isset($vars['margin-top']) && $vars['margin-top'] > 0 ) ||
-    ( isset($vars['margin-bottom']) && $vars['margin-bottom'] > 0 && $vars['margin-bottom'] != 20 ) ||
-    ( isset($vars['hide_controls']) && $vars['hide_controls'] == 'Y' ) ||
-    ( isset($vars['auto_buffer']) && $vars['auto_buffer'] == 'Y' ) ||
-    ( isset($vars['border_size']) && $vars['border_size'] > 0 ) ||
-    isset($vars['border_color'])
+  if( current_user_can('manage_options') &&
+    (
+      ( isset($vars['margin-top']) && $vars['margin-top'] > 0 ) ||
+      ( isset($vars['margin-bottom']) && $vars['margin-bottom'] > 0 && $vars['margin-bottom'] != 20 ) ||
+      ( isset($vars['hide_controls']) && $vars['hide_controls'] == 'Y' ) ||
+      ( isset($vars['auto_buffer']) && $vars['auto_buffer'] == 'Y' ) ||
+      ( isset($vars['border_size']) && $vars['border_size'] > 0 ) ||
+      isset($vars['border_color'])
+    )
   ) {
     $shortcode .= ' admin_warning="Admin note: Some of the OptimizePress styling parameters are not supported by FV Flowplayer. Please visit the <a href=\''.admin_url('options-general.php?page=fvplayer').'\'>settings</a> and set your global appearance preferences there."';
   }
