@@ -13,6 +13,7 @@ jQuery(document).ready(function(){
       onClosed : fv_wp_flowplayer_on_close,
       onOpen: function(){
         jQuery("#colorbox").addClass("fv-flowplayer-shortcode-editor");
+        jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
       }
     } );
     
