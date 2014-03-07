@@ -4,9 +4,17 @@ var FVFP_sStoreRTMP = 0;
 
 jQuery(document).ready(function(){ 
   if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
-    jQuery(".fv-wordpress-flowplayer-button").colorbox( 
-      { width:"600px", height:"600px", href: "#fv-wordpress-flowplayer-popup", inline: true, onComplete : fv_wp_flowplayer_edit, onClosed : fv_wp_flowplayer_on_close }
-    );
+    jQuery(".fv-wordpress-flowplayer-button").colorbox( {
+      width:"600px",
+      height:"600px",
+      href: "#fv-wordpress-flowplayer-popup",
+      inline: true,
+      onComplete : fv_wp_flowplayer_edit,
+      onClosed : fv_wp_flowplayer_on_close,
+      onOpen: function(){
+        jQuery("#colorbox").addClass("fv-flowplayer-shortcode-editor");
+      }
+    } );
     
     jQuery(".fv-wordpress-flowplayer-button").click( function() {
       if( jQuery('#wp-content-wrap').hasClass('html-active') && typeof(FCKeditorAPI) != "object" ) {

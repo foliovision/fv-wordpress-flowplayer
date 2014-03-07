@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
-Tested up to: 3.8
+Tested up to: 3.8.1
 Stable tag: 2.2.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -112,6 +112,19 @@ AddType application/x-mpegurl .m3u8
 AddType video/x-m4v           .m4v
 # hls transport stream segments:
 AddType video/mp2t            .ts`
+
+If you use Microsoft IIS, add following into web.config (one should be in your root website folder) into configuration/system.webServer/staticContent section:
+
+`<remove fileExtension=".mp4" />  
+<mimeMap fileExtension=".mp4" mimeType="video/mp4" />
+<remove fileExtension=".webm" />  
+<mimeMap fileExtension=".webm" mimeType="video/webm" />
+<remove fileExtension=".ogg" />  
+<mimeMap fileExtension=".ogg" mimeType="video/ogg" />
+<remove fileExtension=".m4v" />  
+<mimeMap fileExtension=".m4v" mimeType="video/x-m4v" />
+<remove fileExtension=".ts" />  
+<mimeMap fileExtension=".ts" mimeType="video/mp2t" />`
 
 This can be also done in the Apache configuration. If you are on Microsoft IIS, you need to use the IIS manager. 
 
