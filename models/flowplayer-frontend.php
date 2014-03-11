@@ -328,7 +328,7 @@ class flowplayer_frontend extends flowplayer
         }
 				
 				$attributes_html = '';
-				$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media );
+				$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
 				foreach( $attributes AS $attr_key => $attr_value ) {
 					$attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
 				}

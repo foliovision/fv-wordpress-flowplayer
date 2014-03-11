@@ -385,9 +385,7 @@ function flowplayer_add_media_button() {
 	$button_tip = 'Insert a Flash Video Player';
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
 	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
-	if(!$found) {
-    $img = '<img src="' . $button_src . '" alt="' . $button_tip . '" />';
-  }	
+	$img = (!$found) ? '<img src="' . $button_src . '" alt="' . $button_tip . '" />' : '';
 	echo '<a title="Add FV WP Flowplayer" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
 }
 
