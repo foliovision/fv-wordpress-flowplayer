@@ -251,6 +251,7 @@ class flowplayer_frontend extends flowplayer
 						$attributes['class'] .= ' aligncenter';
 					} 
 				}
+        $attributes['class'] .= $this->get_align();
 				
 				if( $this->conf['engine'] == 'true' || $this->aCurArgs['engine'] == 'flash' ) {
 					$attributes['data-engine'] = 'flash';
@@ -548,6 +549,21 @@ class flowplayer_frontend extends flowplayer
     }
     
     return $ad_contents;
+  }
+  
+  
+  function get_align() {
+    $sClass = false;
+    if( isset($this->aCurArgs['align']) ) {
+      if( $this->aCurArgs['align'] == 'left' ) {
+        $sClass .= ' alignleft';
+      } else if( $this->aCurArgs['align'] == 'right' ) {
+        $sClass .= ' alignright';
+      } else if( $this->aCurArgs['align'] == 'center' ) {
+        $sClass .= ' aligncenter';
+      } 
+    }
+    return $sClass;
   }
   
   
