@@ -4,7 +4,7 @@ Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
 Requires at least: 3.5
 Tested up to: 3.8.1
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -327,7 +327,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.2 - 2014/03/?? =
+= 2.2.2 - 2014/03/13 =
 
 * Bugfix - OptimizePress 2 integration "admin note" now showing only for admins
 * Bugfix - redirection finally works in Safari - if the popup fails, it opens the link in current window. Users can still use the browser back button.

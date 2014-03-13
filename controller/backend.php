@@ -1349,7 +1349,7 @@ function fv_wp_flowplayer_check_template() {
 					}
 				}
 			} else if( count($flowplayer_scripts[1]) < 1 ) {
-				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your header.php file if it contains wp_head() function call!";			
+				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your template's header.php file if it contains wp_head() function call and footer.php should contain wp_footer()!";			
 			}
 			
 
