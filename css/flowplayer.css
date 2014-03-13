@@ -1,4 +1,4 @@
-.flowplayer{position:relative;width:100%;background-size:contain;background-repeat:no-repeat;background-position:center center;display:inline-block;}
+.flowplayer{position:relative;width:100%;background-size:contain;background-repeat:no-repeat;background-position:center center;display:inline-block; }
 .flowplayer *{font-weight:inherit;font-family:inherit;font-style:inherit;text-decoration:inherit;font-size:100%;padding:0;border:0;margin:0;list-style-type:none}
 .flowplayer a:focus{outline:0}
 .flowplayer video{width:100%}
@@ -278,6 +278,8 @@ a #add-format, a #add-rtmp {
 }
 
 
+.flowplayer.video1, .flowplayer.video2, .flowplayer.video3, .flowplayer.video4, .flowplayer.video5, .flowplayer.video6, .flowplayer.video7, .flowplayer.video8, .flowplayer.video9, .flowplayer.video10, .flowplayer.video11, .flowplayer.video12, .flowplayer.video13, .flowplayer.video14, .flowplayer.video15, .flowplayer.video16 { background-image: none !important; }
+
 .flowplayer .fp-volume { text-align: left; }
 #content .flowplayer .fp-embed-code, .flowplayer .fp-embed-code { padding: 3px 7px; }
 #content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; }
@@ -307,4 +309,4 @@ MediaElement.js
 .fvfp_admin_error a { color: #fff; text-decoration: underline; }
 #content .fvfp_admin_error a { color: #fff; text-decoration: underline; }
 .fvfp_admin_error_content {  background: #dd0000; padding: 1% 5%; width: 65%; margin: 0 auto; -webkit-box-shadow: 3px 3px 30px 0px rgba(50, 50, 50, 0.96); -moz-box-shadow: 3px 3px 30px 0px rgba(50, 50, 50, 0.96); box-shadow: 3px 3px 30px 0px rgba(50, 50, 50, 0.96);}
-.flowplayer video { background-color: transparent !important; }
+  
