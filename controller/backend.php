@@ -615,7 +615,7 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random, $ar
 		  ( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) &&
 		  !isset($headers['headers']['content-range'])
 		) {
-			$video_errors[] = 'Server does not support HTTP range requests! Please check "I\'m getting error about \'HTTP range requests\'" in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq">our FAQ</a>.';  
+			$video_errors[] = 'Server does not support HTTP range requests! Please check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#getting-error-about-range-requests">our FAQ</a>.';  
 		}
 	
 		if(
@@ -647,7 +647,7 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random, $ar
 	AddType video/mp4             .mov
 	# hls transport stream segments:
 	AddType video/mp2t            .ts</pre>
-				<p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a> for more info.</p>
+				<p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#video-doesnt-play-internet-explorer" target="_blank">FAQ</a> for more info.</p>
 			</div>';     
 			
       $sOutput = ( $args['wrap'] ) ? '<'.$args['wrap'].'>' : '';
@@ -884,10 +884,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           
           if( isset($ThisFileInfo['quicktime']) ) {			
             if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-              $video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! The video might be <strong>slow to start or not play at all in some browsers</strong>! Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+              $video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! The video might be <strong>slow to start or not play at all in some browsers</strong>! Plese check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#the-bad-metadata-moov-position" target="_blank">FAQ</a>.';
             } else {
               if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
-                $video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check the "How do I fix the bad metadata (moov) position?" question in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq" target="_blank">FAQ</a>.';
+                $video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#the-bad-metadata-moov-position" target="_blank">FAQ</a>.';
               } else {
                 $video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
               }
@@ -1055,7 +1055,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 		if( isset($ThisFileInfo) && $ThisFileInfo ) {
 			$more_info = var_export($ThisFileInfo,true);
 		
-			$note = '(Note: read about remote file analysis in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq">FAQ</a>)';
+			$note = '(Note: read about remote file analysis in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#properties-built-checker-report-playing">FAQ</a>)';
 			$more_info = str_replace( array('Unknown QuickTime atom type', 'Atom at offset'), array($note.' Unknown QuickTime atom type', $note.' Atom at offset'), $more_info );
 		
 			$lines = explode( "\n", $more_info );
