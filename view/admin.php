@@ -445,7 +445,8 @@ function fv_flowplayer_admin_usage() {
 									</li>					
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads">Using ads</a></li>				
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams">RTMP streams</a></li>
-                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles">Subtitles</a></li>		
+                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles">Subtitles</a></li>
+                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide">Amazon S3 secure content guide</a></li>
 								</ul>
 							</div>
 							<div style="float: left; width: 49%">

@@ -68,10 +68,6 @@ Visit [out site](http://wordpress.org/plugins/fv-wordpress-flowplayer/installati
    
 == Frequently Asked Questions ==
 
-= I'm having issues with splash end or loop functions =
-
-Currently these don't work when the Flash fallback player is used. So they only work if your browsers supports the video format natively (read more about video formats in next question). One of the next version should have this fixed.
-
 = My video doesn't play in some browsers =
 
 This should be related to your video format or mime type issues.
@@ -156,7 +152,7 @@ Other possible cause is that you are using some membership plugin to protect dow
 
 We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
 
-= I'm using OptimizePress template. =
+= I'm using OptimizePress version 1 template. =
 
 First click the "Check template" button on the pluging settings screen. It will likely report an issue like:
 
@@ -166,6 +162,10 @@ Flowplayer script http://site.com/wp-content/themes/OptimizePress/js/flowplayer-
 The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading. Typically it will be in any of the header.php files - including header-myheader.php, header-singleheader.php or similar files.
 
 There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "&lt;!-- FV Flowplayer --&gt;" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
+
+= I'm using OptimizePress version 2 template. =
+
+FV Flowplayer will handle all the videos inserted by the Live Edit. 
 
 = Does this plugin support Shoutcast? =
 
@@ -238,10 +238,6 @@ Yes, there's a global option in settings to disable sharing/embed. We plan to ad
 
 1. Check your hosting for download speed.
 2. Try to use different settings when encoding the videos, try to turn on the cache when encoding with [Quick Time](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png)
-
-= How do I insert videos in playlist? =
-
-Playlist feature is not supported right now.
 
 = How can I change the play icon? =
 
