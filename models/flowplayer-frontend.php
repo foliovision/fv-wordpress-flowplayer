@@ -146,7 +146,7 @@ class flowplayer_frontend extends flowplayer
         
     $aPlaylistItems = array();    
     if( isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {                 
-      list( $playlist_items_external_html, $aPlaylistItems ) = $this->build_playlist( $this->aCurArgs['playlist'], $media, $src1, $src2, $rtmp, $splash_img );
+      list( $playlist_items_external_html, $aPlaylistItems ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }    
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
@@ -259,6 +259,10 @@ class flowplayer_frontend extends flowplayer
 				
 				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
 					$attributes['data-embed'] = 'false';
+				}
+
+        if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
+					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
 				}
 				
 				if( $this->conf['fixed_size'] == 'true' ) {
@@ -409,8 +413,10 @@ class flowplayer_frontend extends flowplayer
 				}
         if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</div></div>';       
-        }
-				$this->ret['html'] .= '</div>'."\n";
+        } 
+        
+				$this->ret['html'] .= '</div>'."\n";        
+
 	
 				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
         
@@ -465,12 +471,20 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function build_playlist( $sShortcode, $media, $src1, $src2, $rtmp, $splash_img ) {
+  function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img ) {
+    
+      $sShortcode = $aArgs['playlist'];
+      $sCaption = $aArgs['caption'];
   
       $replace_from = array('&amp;','\;', '\,');				
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
       $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );			
       $sItems = explode( ';', $sShortcode );
+      
+      if( $sCaption ) {
+        $sCaption = str_replace( '\;', '<!--semicolon-->', $sCaption );
+        $aCaption = explode( ';', $sCaption );        
+      }
         
       if( count($sItems) > 0 ) {					
         $aItem = array();
@@ -480,7 +494,9 @@ class flowplayer_frontend extends flowplayer
           $aItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );                  
         }							
         $aPlaylistItems[] = $aItem;
-        $sHTML[] = "\t\t<a class='is-active' ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."onclick='return false'></a>\n";
+        
+        $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
+        $sHTML[] = "\t\t<a class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
         
             
         foreach( $sItems AS $iKey => $sItem ) {
@@ -505,10 +521,11 @@ class flowplayer_frontend extends flowplayer
             $aItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ) ); 
           }
           $aPlaylistItems[] = $aItem;
+          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
           if( $sSplashImage ) {
-            $sHTML[] = "\t\t<a style='background-image: url(\"".$sSplashImage."\")' onclick='return false'></a>\n";
+            $sHTML[] = "\t\t<a onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
           } else {
-            $sHTML[] = "\t\t<a onclick='return false'></a>\n";
+            $sHTML[] = "\t\t<a onclick='return false'><span></span>$sItemCaption</a>\n";
           }
         }
   

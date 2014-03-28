@@ -144,6 +144,11 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
                 <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_subtitles&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Subtitles</a>
               <?php }; //allow uploads splash image ?></td>
           </tr>
+          
+          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" style="display: none">
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright">Caption</label></th>
+            <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
+          </tr>          
   
         </tbody>
       </table>
@@ -152,7 +157,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
       <tr id="fv_wp_flowplayer_add_format_wrapper">
         <th scope="row" class="label" style="width: 18%"></th>
         <td class="field" style="width: 50%"></td>
-        <td class="field"><div id="add_rtmp_wrapper"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add()" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;Add Playlist Item</a></div></td>  				
+        <td class="field"><div id="add_rtmp_wrapper"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;Add Playlist Item</a></div></td>  				
       </tr>
     </table>  					      
     <table width="100%">

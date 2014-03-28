@@ -301,12 +301,19 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>   
 					<tr>          
-						<td><label for="interface[playlist]">Playlist: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[playlist]">Playlist:</label></td>
 						<td style="text-align:right">
               <input type="hidden" name="interface[playlist]" value="false" />
 							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>    					
+					</tr>
+					<tr>          
+						<td><label for="interface[playlist]">Playlist captions: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="interface[playlist_captions]" value="false" />
+							<input type="checkbox" name="interface[playlist_captions]" id="interface[playlist_captions]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_captions']) && $fv_fp->conf['interface']['playlist_captions'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>    		          
 					<tr>          
 						<td><label for="interface[popup]">HTML popup:</label></td>
 						<td style="text-align:right">
@@ -357,21 +364,21 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>  
 					<tr>          
-						<td><label for="interface[ads]">Ads: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[ads]">Ads:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[ads]" value="false" />
 							<input type="checkbox" name="interface[ads]" id="interface[ads]" value="true" <?php if( isset($fv_fp->conf['interface']['ads']) && $fv_fp->conf['interface']['ads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   	
 					<tr>          
-						<td><label for="interface[mobile]">Mobile video: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[mobile]">Mobile video:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[mobile]" value="false" />
 							<input type="checkbox" name="interface[mobile]" id="interface[mobile]" value="true" <?php if( isset($fv_fp->conf['interface']['mobile']) && $fv_fp->conf['interface']['mobile'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   		
 					<tr>          
-						<td><label for="interface[align]">Align: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[align]">Align:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[align]" value="false" />
 							<input type="checkbox" name="interface[align]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['align']) && $fv_fp->conf['interface']['align'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -542,7 +549,30 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   </p>
   <div id="fv_flowplayer_admin_notices">
   </div>
-  <?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] == 'false') : ?>
+  <?php 
+  /*
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {
+    if ( false === ( $aCheck = get_transient( 'fv_flowplayer_license' ) ) ) {
+      $aCheck = fv_wp_flowplayer_license_check( array('action' => 'check') );  
+      if( $aCheck ) {
+        set_transient( 'fv_flowplayer_license', $aCheck, 60*60*24 );
+      } else {
+        set_transient( 'fv_flowplayer_license', $aCheck, 60*2 );
+      }
+    }
+  }
+  */
+  if( 1<0 && isset($aCheck->valid) && $aCheck->valid ) : ?>
+    <p>
+      Thank you and purchasing FV Flowplayer license!
+      <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
+        <a class='fv-flowplayer-admin-addon-install' href='#'>Pro features enabled</a>
+      <?php else : ?>
+        <a class='fv-flowplayer-admin-addon-install' href='#' data-plugin='pro_plugin'>Get the FV Flowplayer PRO now!</a>
+        <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+      <?php endif; ?>
+    </p>
+  <?php else : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
 				<h2>FV Wordpress<strong>Flowplayer</strong></h2>
@@ -552,7 +582,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
@@ -637,6 +667,33 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
+    
+    jQuery('.fv-flowplayer-admin-addon-install').click( function() {  //  todo: block multiple clicks
+      var button = jQuery(this);
+      jQuery(button).siblings('img').show();
+      
+      var button = this;
+      jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_install_pro', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_install_pro' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
+        jQuery(button).siblings('img').hide();
+        
+        var obj;
+        try {
+          response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
+          response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
+          obj = jQuery.parseJSON( response );
+
+          jQuery(button).attr('class','');
+          jQuery(button).html(obj.message);
+        } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
+          jQuery(button).after('<p>Error parsing JSON</p>');
+          return;
+        }
+    
+      } ).error(function() {
+        jQuery(button).siblings('img').hide();
+        jQuery(button).after('<p>Error!</p>');
+      });  
+    } );
 	});
 	//]]>
 </script>

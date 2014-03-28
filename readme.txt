@@ -323,6 +323,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.3 - 2014/03/28 =
+
+* Feature - option to change video watermark logo per video - use logo="http://your.logo/url.png" in shortcode. The sitewide logo has to be set for this to work though.
+* Feature - playlist captions added (turn on in Settings -> FV Wordpress Flowplayer -> Post Interface Options)
+* Fix - admin front-end JavaScript checker now uses less aggressive color
+
 = 2.2.2 - 2014/03/13 =
 
 * Bugfix - OptimizePress 2 integration "admin note" now showing only for admins

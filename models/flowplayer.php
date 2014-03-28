@@ -228,6 +228,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php echo trim($this->conf['ad_css']); ?>
     .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; }
     .wpfp_custom_ad a { color: <?php echo trim($fv_fp->conf['adLinksColor']); ?> }
+    
+    .fvfp_admin_error { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
+    .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
+    #content .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
+    .fvfp_admin_error_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
   
     <?php if( $style_tag ) : ?>
       </style>  

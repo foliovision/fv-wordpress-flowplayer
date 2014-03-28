@@ -28,7 +28,8 @@ $fv_fp = new flowplayer_backend();
 /**
  * WP Hooks
  */
-add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');  
+add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
+add_action('wp_ajax_fv_wp_flowplayer_install_pro', 'fv_wp_flowplayer_install_pro');  
 add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
 add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
@@ -537,16 +538,11 @@ function fv_wp_flowplayer_admin_init() {
 
 
 function fv_wp_flowplayer_admin_key_update() {
-	global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $fv_fp;
+	global $fv_fp;
 	
-	$args = array(
-		'body' => array( 'domain' => home_url(), 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver ),
-		'timeout' => 20,
-		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
-	);
-	$resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
+	$data = fv_wp_flowplayer_license_check( array('action' => 'key_update') );
 	
-	if( $resp['body'] && $data = json_decode( $resp['body'] ) ) {
+	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
 			update_option( 'fvwpflowplayer', $fv_fp->conf );
@@ -556,6 +552,24 @@ function fv_wp_flowplayer_admin_key_update() {
 	} else {
 		return false;
 	}
+}
+
+
+function fv_wp_flowplayer_license_check( $aArgs ) {
+	global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;  
+  
+	$args = array(
+		'body' => array( 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver, 'type' => home_url(), 'action' => $aArgs['action'] ),
+		'timeout' => 20,
+		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
+	);
+	$resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
+
+  if( isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
+    return $data;
+  } else {
+    return false;  
+  }
 }
 
 
@@ -582,7 +596,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Christmas sale!
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Easter sale!
 		</div>
 	</td>
 </tr>
@@ -1550,5 +1564,63 @@ function fv_flowplayer_filetypes( $aFile ) {
     }
   }
   return $aFile;
+}
+
+
+function fv_wp_flowplayer_install_pro() {  
+  check_ajax_referer( 'fv_wp_flowplayer_install_pro', 'nonce' );
+  
+  if( !isset( $_POST['plugin'] ) ) {
+    die();
+  }
+  
+  global $hook_suffix;
+  $plugin_type = $_POST['plugin'];
+  $plugin_package = str_replace('_plugin', '_package', $plugin_type);
+  
+  $aPluginInfo = get_transient( 'fv_flowplayer_license' );
+  $plugin_basename = $aPluginInfo->{$plugin_type};  
+  $download_url = $aPluginInfo->{$plugin_package};
+  
+  
+  $url = site_url('wp-admin');
+
+  set_current_screen();
+  
+  ob_start();
+  if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, null ) ) ) {
+    $form = ob_get_clean();
+    echo "<FVFLOWPLAYER>".json_encode( array( 'form' => $form ) )."</FVFLOWPLAYER>";  //  todo: test
+    die;
+  }	
+
+  if ( ! WP_Filesystem( $creds ) ) {
+    ob_start();
+    request_filesystem_credentials( $url, $method, true, false, null );
+    $form = ob_get_clean();
+    echo "<FVFLOWPLAYER>".json_encode( array( 'form' => $form ) )."</FVFLOWPLAYER>";  //  todo: test
+    die;
+  }
+
+  require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+  
+  if( !is_plugin_active($plugin_basename) ) {
+    $objInstaller = new Plugin_Upgrader();
+    $objInstaller->install( $download_url );
+  
+    wp_cache_flush();
+    if ( $objInstaller->plugin_info() ) {
+      $plugin_basename = $objInstaller->plugin_info();
+    }
+  }
+  
+  $activate = activate_plugin( $plugin_basename );
+  if ( is_wp_error( $activate ) ) {
+    echo "<FVFLOWPLAYER>".json_encode( array( 'message' => $activate->get_error_message(), 'error' => $activate->get_error_message() ) )."</FVFLOWPLAYER>";
+    die;
+  }    
+  echo "<FVFLOWPLAYER>".json_encode( array( 'message' => 'Success!', 'plugin' => $plugin_basename ) )."</FVFLOWPLAYER>";
+  die;
+
 }
 
