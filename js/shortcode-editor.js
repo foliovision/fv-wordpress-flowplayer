@@ -323,6 +323,7 @@ function fv_wp_flowplayer_edit() {
         document.getElementById("fv_wp_flowplayer_field_align").selectedIndex = 2;
     }    
     
+    var aCaptions = false;
     if( sCaptions ) {
       sCaptions[1] = sCaptions[1].replace(/\\;/gi, '<!--FV Flowplayer Caption Separator-->');
       aCaptions = sCaptions[1].split(';');
