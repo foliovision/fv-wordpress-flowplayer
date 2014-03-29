@@ -562,16 +562,8 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
     }
   }
   */
-  if( 1<0 && isset($aCheck->valid) && $aCheck->valid ) : ?>
-    <p>
-      Thank you and purchasing FV Flowplayer license!
-      <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
-        <a class='fv-flowplayer-admin-addon-install' href='#'>Pro features enabled</a>
-      <?php else : ?>
-        <a class='fv-flowplayer-admin-addon-install' href='#' data-plugin='pro_plugin'>Get the FV Flowplayer PRO now!</a>
-        <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
-      <?php endif; ?>
-    </p>
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>
+
   <?php else : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
