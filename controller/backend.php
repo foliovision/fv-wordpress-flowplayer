@@ -668,9 +668,11 @@ function fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random, $ar
 			$sOutput .= '<strong>Bad mime type</strong>: '.$args['talk_bad_mime'].' <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)';
       $sOutput .= ( $args['wrap'] ) ? '</'.$args['wrap'].'>' : '';
       $sOutput .= $fix;
+      $video_errors[] = $sOutput;
 		}
 	}
-	return array( $sOutput, (isset($headers['headers']['content-type'])) ? $headers['headers']['content-type'] : '', $bFatal );
+
+	return array( $video_errors, (isset($headers['headers']['content-type'])) ? $headers['headers']['content-type'] : '', $bFatal );
 }
  
  
@@ -683,8 +685,10 @@ function fv_wp_flowplayer_http_api_curl( $handle ) {
 function fv_wp_flowplayer_http( $sURL, $args ) {
   global $fv_wp_flowplayer_ver;
   
-  $args = wp_parse_args( $args, array( 'file' => false, 'size' => 2097152 ) );
+  $args = wp_parse_args( $args, array( 'file' => false, 'size' => 2097152, 'quick_check' => false ) );
   extract($args);
+  
+  $iTimeout = ($quick_check) ? 10 : 20;
   
   $ch = curl_init();
   curl_setopt( $ch, CURLOPT_URL, $sURL );    		
@@ -695,8 +699,8 @@ function fv_wp_flowplayer_http( $sURL, $args ) {
   }
   curl_setopt( $ch, CURLOPT_HEADER, true );
   curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
-  curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
-  curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
+  curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $iTimeout );
+  curl_setopt( $ch, CURLOPT_TIMEOUT, $iTimeout );
   curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
   
   $data = curl_exec($ch);
@@ -708,11 +712,18 @@ function fv_wp_flowplayer_http( $sURL, $args ) {
   if( $file ) {
     file_put_contents( $file, $body);
   }
-  $message = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : '';
-
+  $sError = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : false;
+  if( curl_errno($ch) == 28 ) {
+    $sError .= "Connection timeout, can't check the video.";
+  } else if(!curl_errno($ch) ) {
+    $aInfo = curl_getinfo($ch);
+    if( $aInfo['total_time'] > $iTimeout*0.9 ) {
+      $sError .= "Connection timeout, can't check the video.";
+    }
+  }
   curl_close($ch);
 
-  return array( $header, $message );
+  return array( $header, $sError );
 }
  
  
@@ -799,13 +810,17 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
 				$headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded ) ), array( 'method' => 'GET', 'redirection' => 3 ) );
 			}
 			
+      $bValidFile = true;
 			if( is_wp_error($headers) ) {
 				$video_errors[] = 'Error checking '.$media.'!<br />'.print_r($headers,true);  
 			} else {
 				if( $headers ) {
-          list( $sVideoErrors ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
-          if( $sVideoErrors ) {
-          	$video_errors[] = $sVideoErrors;
+          list( $aVideoErrors, $sContentType, $bFatal ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+          if( $bFatal ) {
+            $bValidFile = false;
+          }
+          if( $aVideoErrors ) {
+          	$video_errors = array_merge( $video_errors, $aVideoErrors );
           }
 				}
 				
@@ -831,19 +846,27 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
         
             $out = fopen( $localtempfilename,'wb' );
             if( $out ) {
-              list( $header, $message_out ) = fv_wp_flowplayer_http( $remotefilename_encoded, array( 'file' => $localtempfilename ) );
+              list( $header, $sHTTPError ) = fv_wp_flowplayer_http( $remotefilename_encoded, array( 'file' => $localtempfilename ) );
 
-              $message .= $message_out;
               
+              if( $sHTTPError ) {
+                $video_errors[] = $sHTTPError;
+                $bValidFile = false;
+              }
               fclose($out);
   
               if( !$headers ) {
                 $headers = WP_Http::processHeaders( $header );			
-               
-                list( $sVideoErrors ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
-                if( $sVideoErrors ) {
-                  $video_errors[] = $sVideoErrors;
+
+                list( $aVideoErrors, $sContentType, $bFatal ) = fv_wp_flowplayer_check_headers( $headers, $remotefilename, $random );
+                if( $bFatal ) {
+                  $bValidFile = false;
                 }
+
+                if( $aVideoErrors ) {
+                  $video_errors = array_merge( $video_errors, $aVideoErrors );
+                }
+          
                 if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
                   $error = new SimpleXMLElement($body);
                   
@@ -855,8 +878,10 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
                   
                 }
               }
-                      
-              $ThisFileInfo = $getID3->analyze( $localtempfilename );             
+              
+              if( $bValidFile ) {
+                $ThisFileInfo = $getID3->analyze( $localtempfilename );
+              }
               if( !@unlink($localtempfilename) ) {
                 $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
               }         
@@ -864,7 +889,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
               $video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
             }                  
           }
-          
+
           
           /*
           Only check file length
@@ -1276,7 +1301,7 @@ function fv_wp_flowplayer_check_files() {
       }
  
 			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
-        list( $header, $message_out ) = fv_wp_flowplayer_http( trim($videos[0]['src']), array( 'size' => 65536 ) );
+        list( $header, $message_out ) = fv_wp_flowplayer_http( trim($videos[0]['src']), array( 'quick_check' => 'true', 'size' => 65536 ) );
         if( $header ) {        
           $headers = WP_Http::processHeaders( $header );          
           list( $new_errors, $mime_type, $fatal ) = fv_wp_flowplayer_check_headers( $headers, trim($videos[0]['src']), rand(0,999), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );

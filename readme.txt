@@ -323,6 +323,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.4 - TBA =
+
+* Bugfix - video checker now properly reports time out
+
 = 2.2.3 - 2014/03/28 =
 
 * Feature - option to change video watermark logo per video - use logo="http://your.logo/url.png" in shortcode. The sitewide logo has to be set for this to work though.
