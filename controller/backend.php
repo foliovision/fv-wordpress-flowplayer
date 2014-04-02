@@ -534,6 +534,17 @@ function fv_wp_flowplayer_admin_init() {
 		wp_enqueue_script('postbox');
 	}
     
+
+  if( flowplayer::is_licensed() ) {    
+    if ( false === ( $aCheck = get_transient( 'fv_flowplayer_license' ) ) ) {
+      $aCheck = fv_wp_flowplayer_license_check( array('action' => 'check') );  
+      if( $aCheck ) {
+        set_transient( 'fv_flowplayer_license', $aCheck, 60*60*24 );
+      } else {
+        set_transient( 'fv_flowplayer_license', $aCheck, 60*60 );
+      }
+    }
+  }
 }   
 
 

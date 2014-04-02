@@ -550,30 +550,24 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   <div id="fv_flowplayer_admin_notices">
   </div>
   <?php 
-  /*
-  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {
-    if ( false === ( $aCheck = get_transient( 'fv_flowplayer_license' ) ) ) {
-      $aCheck = fv_wp_flowplayer_license_check( array('action' => 'check') );  
-      if( $aCheck ) {
-        set_transient( 'fv_flowplayer_license', $aCheck, 60*60*24 );
-      } else {
-        set_transient( 'fv_flowplayer_license', $aCheck, 60*2 );
-      }
-    }
-  }
-  */
-  /*if( 1<0 && isset($aCheck->valid) && $aCheck->valid ) :
   
-    <p>
-      Thank you and purchasing FV Flowplayer license!
-      <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
-        <a class='fv-flowplayer-admin-addon-install' href='#'>Pro features enabled</a>
-      <?php else : ?>
-        <a class='fv-flowplayer-admin-addon-install' href='#' data-plugin='pro_plugin'>Get the FV Flowplayer PRO now!</a>
-        <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
-      <?php endif; ?>
-    </p>*/
-  ?>
+  if( flowplayer::is_licensed() ) {
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+  }
+  
+  if( isset($aCheck->valid) && $aCheck->valid  && 1<0 ) : ?>
+    <div id="fv_flowplayer_addon_pro">
+      <p>
+        Thank you and purchasing FV Flowplayer license!
+        <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
+          <input type="button" class='button' value="Pro features enabled" />
+        <?php else : ?>
+          <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='pro_plugin' value="Get the FV Flowplayer PRO now!" />
+          <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+        <?php endif; ?>
+      </p>
+    </div>
+  <?php endif; ?>
   <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>    
   <?php else : ?>
 		<div id="fv_flowplayer_ad">
@@ -685,8 +679,8 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
           response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
           obj = jQuery.parseJSON( response );
 
-          jQuery(button).attr('class','');
-          jQuery(button).html(obj.message);
+          jQuery(button).attr('class','button');
+          jQuery(button).attr('value',obj.message);
         } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
           jQuery(button).after('<p>Error parsing JSON</p>');
           return;

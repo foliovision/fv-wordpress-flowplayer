@@ -170,6 +170,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $this->conf = $aNewOptions;    
     
     $this->css_writeout();
+    
+    delete_transient( 'fv_flowplayer_license' );
 	     
 	  return true;	
 	}
@@ -453,6 +455,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
     }
   }
+  
+  
+  public function is_licensed() {
+    global $fv_fp;
+		return preg_match( '!^\$\d+!', $fv_fp->conf['key'] );
+	}
   
 	
 	public function is_secure_amazon_s3( $url ) {
