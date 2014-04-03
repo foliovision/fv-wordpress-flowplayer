@@ -394,6 +394,89 @@ function fv_flowplayer_admin_interface_options() {
 }
 
 
+function fv_flowplayer_admin_pro() {
+  global $fv_fp;
+  
+  if( flowplayer::is_licensed() ) {
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+  }
+  
+  if( isset($aCheck->valid) && $aCheck->valid ) : ?>  
+    <p>Valid license found, click the button at the top of the screen to install FV Flowplayer Pro!</p>
+  <?php else : ?>
+    <p><a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">Purchase FV Flowplayer license</a> to enable Pro features!</p>
+  <?php endif; ?>
+  <table class="form-table2" style="margin: 5px; ">
+    <tr>
+      <td style="width: 250px"><label>Autoplay just once:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" disabled="true" />
+          Makes sure each video autoplays only once for each visitor.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Enable video lightbox:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Enables Lightbox video gallery to show videos in a lightbox popup!
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Use video lightbox for images as well:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" disabled="true" />
+          Will group images as well as videos into the same lightbox gallery.
+        </p>
+      </td>
+    </tr>       
+  </table>
+  <p>Upcoming pro features:</p>
+  <table class="form-table2" style="margin: 5px; ">
+    <tr>
+      <td style="width: 250px"><label>Advanced Vimeo embeding:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Use Vimeo as your video host and use all of FV Flowplayer features.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Advanced Youtube embeding:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Use Youtube as your video host and use all of FV Flowplayer features.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Enable PayWall:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Monetize the video content on your membership site.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Amazon CloudFront protected content:</label></td>
+      <td>
+        <p class="description">
+          Open <a href="#" onclick="return false">media library</a> to upload your CloudFront access key.
+        </p>
+      </td>
+    </tr>      
+  </table>  
+  <?php
+}
+
+
 function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
@@ -523,7 +606,10 @@ add_meta_box( 'fv_flowplayer_default_options', 'Sitewide Flowplayer Defaults', '
 add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', 'Integrations', 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal' );
+if( !class_exists('FV_Flowplayer_Pro') ) {
+  add_meta_box( 'fv_flowplayer_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
+}
+add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
 
 ?>
 
@@ -555,14 +641,14 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
     $aCheck = get_transient( 'fv_flowplayer_license' );
   }
   
-  if( isset($aCheck->valid) && $aCheck->valid  && 1<0 ) : ?>
+  if( isset($aCheck->valid) && $aCheck->valid ) : ?>
     <div id="fv_flowplayer_addon_pro">
       <p>
-        Thank you and purchasing FV Flowplayer license!
+        Thank you for purchasing FV Flowplayer license!
         <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
-          <input type="button" class='button' value="Pro features enabled" />
+          <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_flowplayer_pro' value="Pro features enabled" />
         <?php else : ?>
-          <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='pro_plugin' value="Get the FV Flowplayer PRO now!" />
+          <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_flowplayer_pro' value="Get the FV Flowplayer PRO now!" />
           <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
         <?php endif; ?>
       </p>
@@ -681,6 +767,12 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 
           jQuery(button).attr('class','button');
           jQuery(button).attr('value',obj.message);
+          
+          if( typeof(obj.error) == "undefined" ) {
+            //window.location.hash = '#'+jQuery(button).attr("data-plugin");
+            //window.location.reload(true);
+            window.location.href = window.location.href+'&'+jQuery(button).attr("data-plugin")+'#'+jQuery(button).attr("data-plugin");
+          }
         } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
           jQuery(button).after('<p>Error parsing JSON</p>');
           return;
@@ -691,6 +783,12 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
         jQuery(button).after('<p>Error!</p>');
       });  
     } );
+    
+    jQuery('.fv-flowplayer-admin-addon-installed').click( function() {
+      jQuery('html, body').animate({
+          scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
+      }, 1000);
+    } );    
 	});
 	//]]>
 </script>

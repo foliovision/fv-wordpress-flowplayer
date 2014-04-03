@@ -150,7 +150,8 @@ Other possible cause is that you are using some membership plugin to protect dow
 
 = Are there any known compatibility issues? =
 
-We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
+1. We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
+1. If you use plugin called Photo Gallery (version 1.1.8) by webdorado, then you may encounter issues with fullscreen function. The video goes into fullscreen without any issues, but then it's not possible to exit the fullscreen view and user has to reload the page.
 
 = I'm using OptimizePress version 1 template. =
 

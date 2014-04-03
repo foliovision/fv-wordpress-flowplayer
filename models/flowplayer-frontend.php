@@ -47,7 +47,7 @@ class flowplayer_frontend extends flowplayer
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
-    $this->aCurArgs = $args;
+    $this->aCurArgs = apply_filters( 'fv_flowplayer_args',$args );
     $this->sHTMLAfter = false;
 		$player_type = 'video';
 		$rtmp = false;

@@ -457,7 +457,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  public function is_licensed() {
+  public static function is_licensed() {
     global $fv_fp;
 		return preg_match( '!^\$\d+!', $fv_fp->conf['key'] );
 	}
