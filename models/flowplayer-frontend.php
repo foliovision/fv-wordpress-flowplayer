@@ -304,7 +304,8 @@ class flowplayer_frontend extends flowplayer
 				}       
 	
 				$ratio = round($height / $width, 4);   
-	
+        $this->fRatio = $ratio;
+  
 				$attributes['data-ratio'] = $ratio;
 				if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 					$attributes['data-flashfit'] = 'true';
@@ -318,7 +319,7 @@ class flowplayer_frontend extends flowplayer
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
           if( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) {
-            $this->sHTMLAfter .= "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $playlist_items_external_html )."\t</div>\n";
+            $this->sHTMLAfter .= $playlist_items_external_html;
           }
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
 
@@ -486,14 +487,18 @@ class flowplayer_frontend extends flowplayer
         $aCaption = explode( ';', $sCaption );        
       }
         
-      if( count($sItems) > 0 ) {					
-        $aItem = array();
+      				
+      $aItem = array();
+      
+      foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
+        if( !$media_item ) continue;
+        $aItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );                  
+      }							
+      $aPlaylistItems[] = $aItem;
+
+      if( $sShortcode && count($sItems) > 0 ) {
+        
         $sHTML = array();
-        foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
-          if( !$media_item ) continue;
-          $aItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );                  
-        }							
-        $aPlaylistItems[] = $aItem;
         
         $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
         $sHTML[] = "\t\t<a class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
@@ -522,12 +527,16 @@ class flowplayer_frontend extends flowplayer
           }
           $aPlaylistItems[] = $aItem;
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
+
           if( $sSplashImage ) {
             $sHTML[] = "\t\t<a onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
           } else {
             $sHTML[] = "\t\t<a onclick='return false'><span></span>$sItemCaption</a>\n";
           }
+          
         }
+  
+        $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
   
         $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
         //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
