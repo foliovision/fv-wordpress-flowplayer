@@ -637,24 +637,28 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   </div>
   <?php 
   
-  /*if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
-  }*/
+  if( isset($_GET['pro_beta']) ) :
+    if( flowplayer::is_licensed() ) {
+      $aCheck = get_transient( 'fv_flowplayer_license' );
+    }
+    
+    if( isset($aCheck->valid) && $aCheck->valid ) : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>
+          Thank you for purchasing FV Flowplayer license!
+          <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
+            <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_flowplayer_pro' value="Pro features enabled" />
+          <?php else : ?>
+            <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_flowplayer_pro' value="Get the FV Flowplayer PRO now!" />
+            <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+          <?php endif; ?>
+        </p>
+      </div>
+    <?php
+    endif;
+  endif;
   
-  if( 1<0 && isset($aCheck->valid) && $aCheck->valid ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>
-        Thank you for purchasing FV Flowplayer license!
-        <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
-          <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_flowplayer_pro' value="Pro features enabled" />
-        <?php else : ?>
-          <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_flowplayer_pro' value="Get the FV Flowplayer PRO now!" />
-          <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
-        <?php endif; ?>
-      </p>
-    </div>
-  <?php endif; ?>
-  <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>    
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>    
   <?php else : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">

@@ -385,6 +385,9 @@ class flowplayer_frontend extends flowplayer
 					}			
 			
 					if( isset($rtmp) && !empty($rtmp) ) {
+            
+            $rtmp = apply_filters( 'fv_flowplayer_video_src', $rtmp, $this );
+ 
 						$rtmp_url = parse_url($rtmp);
 						$rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
 		
@@ -414,7 +417,9 @@ class flowplayer_frontend extends flowplayer
 				}
         if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</div></div>';       
-        } 
+        }
+        
+        $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
         
 				$this->ret['html'] .= '</div>'."\n";
         
@@ -813,7 +818,9 @@ class flowplayer_frontend extends flowplayer
 			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 	
-			$media = $this->get_amazon_secure( $media, $this, $url_only );	
+			$media = $this->get_amazon_secure( $media, $this, $url_only );
+      
+      $media = apply_filters( 'fv_flowplayer_video_src', $media, $this );
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
 			$source_flash_encoded = false;	
