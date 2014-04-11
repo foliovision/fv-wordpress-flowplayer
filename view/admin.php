@@ -638,10 +638,10 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   <?php 
   
   if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
+    //$aCheck = get_transient( 'fv_flowplayer_license' );
   }
   
-  if( isset($aCheck->valid) && $aCheck->valid ) : ?>
+  if( 1<0 && isset($aCheck->valid) && $aCheck->valid ) : ?>
     <div id="fv_flowplayer_addon_pro">
       <p>
         Thank you for purchasing FV Flowplayer license!

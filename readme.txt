@@ -49,9 +49,6 @@ To remove our branding and add your own branding and get access to additional pr
 [User Guide](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
 [Detailed FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
 
-**Let's hope Tags Might Show up**
-
-Why are no tags showing up?
 
 == Installation ==
 
