@@ -324,7 +324,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.4 - TBA =
+= 2.2.4 - 2014/04/11 =
 
 * Bugfix - Amazon S3 protected URLs failure in edge cases on Flash devices
 * Bugfix - Amazon S3 protected URLs in playlists
