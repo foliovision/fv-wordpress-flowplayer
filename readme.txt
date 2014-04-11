@@ -29,6 +29,8 @@ FV Wordpress Flowplayer WordPress plugin is a free, easy-to-use, and complete so
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy).
 
+Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
+
 **Additional Technical information**
 
 * Plugin based on opensource version of Flowplayer 5. 
@@ -45,6 +47,7 @@ To remove our branding and add your own branding and get access to additional pr
 **Additional Documentation at Foliovision.com**
 
 [Support](http://foliovision.com/support/fv-wordpress-flowplayer/) |
+[Change Log](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/changelog) |
 [Installation](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation)|
 [User Guide](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
 [Detailed FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
@@ -323,6 +326,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.2.4 - TBA =
 
+* Bugfix - Amazon S3 protected URLs failure in edge cases on Flash devices
+* Bugfix - Amazon S3 protected URLs in playlists
+* Bugfix - fix for cursor icon on playlist items
 * Bugfix - video checker now properly reports time out
 
 = 2.2.3 - 2014/03/28 =
@@ -771,6 +777,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.2.4 =
+* Amazon S3 protected content playlist fixes. Please check you playlist after the upgrade.
 
 = 2.2 =
 * Big CSS optimization. If you notice any display issues, please go into plugin settings and re-save the options.

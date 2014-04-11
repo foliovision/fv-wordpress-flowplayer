@@ -331,7 +331,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_amazon_secure( $media, &$fv_fp ) {
+  function get_amazon_secure( $media, &$fv_fp, $url_only= false ) {
 
 		$amazon_key = -1;
   	if( !empty($fv_fp->conf['amazon_key']) && !empty($fv_fp->conf['amazon_secret']) && !empty($fv_fp->conf['amazon_bucket']) ) {
@@ -376,9 +376,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			$signature = urlencode($signature);
 		
 			$url = $resource;
-			$url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key]
-						 .'&amp;Expires='.$expires
-						 .'&amp;Signature='.$signature;
+      
+      if( $url_only ) {
+        $url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].'&Expires='.$expires.'&Signature='.$signature;
+      } else {
+        $url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].'&amp;Expires='.$expires.'&amp;Signature='.$signature;
+      }    
+			
 						 
 			$media = $url;
 						

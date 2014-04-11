@@ -416,9 +416,8 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</div></div>';       
         } 
         
-				$this->ret['html'] .= '</div>'."\n";        
-
-	
+				$this->ret['html'] .= '</div>'."\n";
+        
 				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
         
 		} //  end Video player
@@ -488,12 +487,35 @@ class flowplayer_frontend extends flowplayer
       }
         
       				
-      $aItem = array();
-      
+      $aItem = array();      
+      $flash_media = false;
       foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
         if( !$media_item ) continue;
-        $aItem[] = array( ( $key < 3 ) ? $this->get_file_extension($media_item) : 'flash' => $this->get_video_src( $media_item, false, false, false, true ) );                  
-      }							
+        $media_url = $this->get_video_src( $media_item, false, false, false, true );
+        if( is_array($media_url) ) {
+          $actual_media_url = $media_url['media'];
+          if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+            $flash_media = $media_url['flash'];
+          }
+        } else {
+          $actual_media_url = $media_url;
+        }
+        $aItem[] = array( ( $key < 3 ) ? $this->get_file_extension($actual_media_url) : 'flash' => $actual_media_url );
+      }
+      
+      if( $flash_media ) {
+        $bHaveFlash = false;
+        foreach( $aItem AS $key => $aItemFile ) {
+          if( in_array( 'flash', array_keys($aItemFile) ) ) {
+            $bHaveFlash = true;
+          }
+        }
+        
+        if( !$bHaveFlash ) {
+          $aItem[] = array( 'flash' => $flash_media );
+        }      
+      }
+      
       $aPlaylistItems[] = $aItem;
 
       if( $sShortcode && count($sItems) > 0 ) {
@@ -501,7 +523,7 @@ class flowplayer_frontend extends flowplayer
         $sHTML = array();
         
         $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
-        $sHTML[] = "\t\t<a class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
+        $sHTML[] = "\t\t<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
         
             
         foreach( $sItems AS $iKey => $sItem ) {
@@ -517,27 +539,52 @@ class flowplayer_frontend extends flowplayer
           }
   
           $aItem = array();
-          $sSplashImage = false;						
+          $sSplashImage = false;
+          $flash_media = false;
           foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
             if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
               $sSplashImage = $aPlaylist_item_i;
               continue;
             }
-            $aItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ) ); 
+            
+            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), false, false, false, true );
+            if( is_array($media_url) ) {
+              $actual_media_url = $media_url['media'];
+              if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+                $flash_media = $media_url['flash'];
+              }
+            } else {
+              $actual_media_url = $media_url;
+            }            
+            $aItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
           }
+          
+          if( $flash_media ) {
+            $bHaveFlash = false;
+            foreach( $aItem AS $key => $aItemFile ) {
+              if( in_array( 'flash', array_keys($aItemFile) ) ) {
+                $bHaveFlash = true;
+              }
+            }
+            
+            if( !$bHaveFlash ) {
+              $aItem[] = array( 'flash' => $flash_media );
+            }      
+          }
+      
           $aPlaylistItems[] = $aItem;
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
 
           if( $sSplashImage ) {
-            $sHTML[] = "\t\t<a onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+            $sHTML[] = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
           } else {
-            $sHTML[] = "\t\t<a onclick='return false'><span></span>$sItemCaption</a>\n";
+            $sHTML[] = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
           }
           
         }
   
         $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
-  
+
         $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
         //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
@@ -766,7 +813,7 @@ class flowplayer_frontend extends flowplayer
 			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 	
-			$media = $this->get_amazon_secure( $media, $this );	
+			$media = $this->get_amazon_secure( $media, $this, $url_only );	
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
 			$source_flash_encoded = false;	
@@ -774,7 +821,7 @@ class flowplayer_frontend extends flowplayer
 					$media_fixed = str_replace('%2B', '%25252B',$media);   
 					//	only if there was a change and we don't have an RTMP for Flash
 					if( $media_fixed != $media && empty($rtmp) ) {
-						$source_flash_encoded = "\n\t\t".'<source '.$id.'src="'.trim($media_fixed).'" type="video/flash" />';				
+            $source_flash_encoded = $media_fixed;
 					}
 			}
 			
@@ -788,15 +835,23 @@ class flowplayer_frontend extends flowplayer
 						//$url_parts['query'] = str_replace( '&amp;', '&', $url_parts['query'] );				
 				}
 				
-				$media_fixed = http_build_url( ($source_flash_encoded) ? $source_flash_encoded : $media, $url_parts);
-				$source_flash_encoded = "\n\t\t".'<source '.$id.'src="'.trim($media_fixed).'" type="video/flash" />';
+				$source_flash_encoded = http_build_url( ($source_flash_encoded) ? $source_flash_encoded : $media, $url_parts);
 			}
 			
 			if( $url_only ) {
-				return trim($media);
+        if( $source_flash_encoded ) {
+          return array( 'media' => $media, 'flash' => $source_flash_encoded );
+        } else {
+        	return trim($media);
+        }
 			} else {
         $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
-				return '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />'.$source_flash_encoded;  
+				$sReturn = '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />';
+        
+        if( $source_flash_encoded ) {
+          $sReturn .= "\n\t\t".'<source '.$id.'src="'.trim($source_flash_encoded).'" type="video/flash" />';
+        }
+        return $sReturn;
 			}
     }
     return null;

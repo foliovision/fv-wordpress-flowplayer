@@ -607,7 +607,7 @@ add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv
 add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', 'Integrations', 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 if( !class_exists('FV_Flowplayer_Pro') ) {
-  add_meta_box( 'fv_flowplayer_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
+  //add_meta_box( 'fv_flowplayer_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
 add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
 
@@ -637,9 +637,9 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   </div>
   <?php 
   
-  if( flowplayer::is_licensed() ) {
-    //$aCheck = get_transient( 'fv_flowplayer_license' );
-  }
+  /*if( flowplayer::is_licensed() ) {
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+  }*/
   
   if( 1<0 && isset($aCheck->valid) && $aCheck->valid ) : ?>
     <div id="fv_flowplayer_addon_pro">
