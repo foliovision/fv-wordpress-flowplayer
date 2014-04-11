@@ -1,14 +1,14 @@
 === FV Wordpress Flowplayer ===
 Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
-Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
+Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, video sidebar widget, WP flash Video Player, embed video
 Requires at least: 3.5
 Tested up to: 3.8.1
-Stable tag: trunk
+Stable tag: 2.2.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Embed videos (FLV, H.264, and MP4) into posts or pages.
+Wordpress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, analytics, Vimeo, YouTube.
 
 == Description ==
 
@@ -29,8 +29,6 @@ FV Wordpress Flowplayer WordPress plugin is a free, easy-to-use, and complete so
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy).
 
-Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
-
 **Additional Technical information**
 
 * Plugin based on opensource version of Flowplayer 5. 
@@ -44,14 +42,16 @@ Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
 	4. Allows to upload videos and images through WP Media Library
 	5. Does not use configuration file, but Wordpress Options
 
-**[Download now!](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer)**
+**Additional Documentation at Foliovision.com**
 
 [Support](http://foliovision.com/support/fv-wordpress-flowplayer/) |
-[Change Log](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/changelog) |
 [Installation](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation)|
-[Usage](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
-[FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
+[User Guide](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
+[Detailed FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
 
+**Let's hope Tags Might Show up**
+
+Why are no tags showing up?
 
 == Installation ==
 
