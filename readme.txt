@@ -1,14 +1,14 @@
 === FV Wordpress Flowplayer ===
 Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
-Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5
+Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, video sidebar widget, WP flash Video Player, embed video
 Requires at least: 3.5
-Tested up to: 3.8
+Tested up to: 3.8.3
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Embed videos (FLV, H.264, and MP4) into posts or pages.
+Wordpress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, stats, Vimeo, YouTube.
 
 == Description ==
 
@@ -44,13 +44,13 @@ Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
 	4. Allows to upload videos and images through WP Media Library
 	5. Does not use configuration file, but Wordpress Options
 
-**[Download now!](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer)**
+**Additional Documentation at Foliovision.com**
 
 [Support](http://foliovision.com/support/fv-wordpress-flowplayer/) |
 [Change Log](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/changelog) |
 [Installation](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation)|
-[Usage](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
-[FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
+[User Guide](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide) | 
+[Detailed FAQ](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq)
 
 
 == Installation ==
@@ -67,10 +67,6 @@ Visit [out site](http://wordpress.org/plugins/fv-wordpress-flowplayer/installati
 
    
 == Frequently Asked Questions ==
-
-= I'm having issues with splash end or loop functions =
-
-Currently these don't work when the Flash fallback player is used. So they only work if your browsers supports the video format natively (read more about video formats in next question). One of the next version should have this fixed.
 
 = My video doesn't play in some browsers =
 
@@ -113,6 +109,19 @@ AddType video/x-m4v           .m4v
 # hls transport stream segments:
 AddType video/mp2t            .ts`
 
+If you use Microsoft IIS, add following into web.config (one should be in your root website folder) into configuration/system.webServer/staticContent section:
+
+`<remove fileExtension=".mp4" />  
+<mimeMap fileExtension=".mp4" mimeType="video/mp4" />
+<remove fileExtension=".webm" />  
+<mimeMap fileExtension=".webm" mimeType="video/webm" />
+<remove fileExtension=".ogg" />  
+<mimeMap fileExtension=".ogg" mimeType="video/ogg" />
+<remove fileExtension=".m4v" />  
+<mimeMap fileExtension=".m4v" mimeType="video/x-m4v" />
+<remove fileExtension=".ts" />  
+<mimeMap fileExtension=".ts" mimeType="video/mp2t" />`
+
 This can be also done in the Apache configuration. If you are on Microsoft IIS, you need to use the IIS manager. 
 
 **If you host videos on Amazon AWS:**
@@ -125,9 +134,11 @@ Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 
 
 = How do I fix the bad metadata (moov) position? =
 
-If you are using Mac, open the video in Quick Time Pro and in the Movie Properties -> Video Track -> Other Settings turn on the "Cache (hint)" - [screenshot](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png).
+If you are using Mac, try Lillipot (just remember to rename the file back to .mp4 extension): http://www.qtbridge.com/lillipot/lillipot.html
 
-If you are using Windows, try this tool: http://www.datagoround.com/lab/
+If you have Quick Time Pro, just open the video and in the Movie Properties -> Video Track -> Other Settings turn on the "Cache (hint)" - [screenshot](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png).
+
+If you are using Windows, try MP4 FastStart: http://www.datagoround.com/lab/
 
 There are also server-side tools for fixing of this written in Python and there one for PHP, but it fails on videos bigger than the PHP memory limit.
 
@@ -139,9 +150,10 @@ Other possible cause is that you are using some membership plugin to protect dow
 
 = Are there any known compatibility issues? =
 
-We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
+1. We heard about problems when using some fancy pro templates like OptimizePress (read below for fixing instructions) or Gantry framework. These templates often break the Wordpress conventions (probably as they often try to add too many non-template functions, like video support built-in into the template). We can debug the issues for you, just head over to our website and order the pro support.
+1. If you use plugin called Photo Gallery (version 1.1.8) by webdorado, then you may encounter issues with fullscreen function. The video goes into fullscreen without any issues, but then it's not possible to exit the fullscreen view and user has to reload the page.
 
-= I'm using OptimizePress template. =
+= I'm using OptimizePress version 1 template. =
 
 First click the "Check template" button on the pluging settings screen. It will likely report an issue like:
 
@@ -151,6 +163,10 @@ Flowplayer script http://site.com/wp-content/themes/OptimizePress/js/flowplayer-
 The problem with this template is that it includes that old Flowplayer library without using the proper Wordpress function to add a new script (wp_enqueue_script). You need to go through the template and make sure the script is not loading. Typically it will be in any of the header.php files - including header-myheader.php, header-singleheader.php or similar files.
 
 There is also a workaround - on each page what is using one of the OptimizePress custom templates, check Launch Page & Sales Letter Options --> Video Options --> "Activate Video" and enter "&lt;!-- FV Flowplayer --&gt;" into Launch Page & Sales Letter Options --> Video Options --> "External Player Code" field. That way the template thinks the video is external and will not try to put in the Flowplayer library and the video will play.
+
+= I'm using OptimizePress version 2 template. =
+
+FV Flowplayer will handle all the videos inserted by the Live Edit. 
 
 = Does this plugin support Shoutcast? =
 
@@ -211,14 +227,6 @@ echo apply_filters('the_content', '[flowplayer src=yourvideo.mp4 width=240 heigh
 
 Fill the Flowplayer shortcode part according to your needs. The apply filter needs to be called because the flowplayer shortcodes are not parsen outside posts automatically. Also, please do not forget to add the echo at the beginning.
 
-= How do I get rid of the extra blank line below the player? =
-
-To get rid of the spacing, just add this into your template CSS, assuming that your theme uses the standard #content ID on the main content wrapper DIV:
-
-`#content .flowplayer { margin: 0 auto; }`
-
-Also make sure the [fvplayer] shortcode is located on it's own line in the editor and there is not text or any code on the same line. 
-
 = How can I style the popup or ad? =
 
 Check out .wpfp_custom_popup and .wpfp_custom_ad in /fv-wordpress-flowplayer/css/flowplayer.css. You might want to move your changes to your template CSS - make sure you use ID of container element, so your declarations will work even when the flowplayer.css is loaded later in the head section of your webpage.
@@ -231,10 +239,6 @@ Yes, there's a global option in settings to disable sharing/embed. We plan to ad
 
 1. Check your hosting for download speed.
 2. Try to use different settings when encoding the videos, try to turn on the cache when encoding with [Quick Time](http://drop.foliovision.com/webwork/it/quick-time-pro-cache-hint.png)
-
-= How do I insert videos in playlist? =
-
-Playlist feature is not supported right now.
 
 = How can I change the play icon? =
 
@@ -320,13 +324,47 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2 - 2014/01/23? =
+= 2.2.5 - TBA =
 
+* Bugfix - Amazon S3 protected URLs for Flash only browsers (edge case)
+
+= 2.2.4 - 2014/04/11 =
+
+* Bugfix - Amazon S3 protected URLs failure in edge cases on Flash devices
+* Bugfix - Amazon S3 protected URLs in playlists
+* Bugfix - fix for cursor icon on playlist items
+* Bugfix - video checker now properly reports time out
+
+= 2.2.3 - 2014/03/28 =
+
+* Feature - option to change video watermark logo per video - use logo="http://your.logo/url.png" in shortcode. The sitewide logo has to be set for this to work though.
+* Feature - playlist captions added (turn on in Settings -> FV Wordpress Flowplayer -> Post Interface Options)
+* Fix - admin front-end JavaScript checker now uses less aggressive color
+
+= 2.2.2 - 2014/03/13 =
+
+* Bugfix - OptimizePress 2 integration "admin note" now showing only for admins
+* Bugfix - redirection finally works in Safari - if the popup fails, it opens the link in current window. Users can still use the browser back button.
+
+= 2.2.1 - 2014/02/25 =
+
+* Feature - added setting for bottom player margin - default to 28px
+* Bugfix - CSS optimization - fix it the original CSS file fails to be opened
+* Bugfix - "no Flowplayer scripts on your site" when there were no videos on homepage
+
+= 2.2 - 2014/02/24 =
+
+* Feature - attachment pages now work with FV Flowplayer
+* Feature - OptimizePress2 integration - FV Flowplayer handles the videos inserted in OptimizePress Live Edit
 * Feature - plugin skin CSS gets written into the main plugin CSS file to clean up your site header of any unnecessary style tags
-* Fix - audio - support for Amazon S3 protected links 
-* Fix - JavaScript only loads if the player is in use on the page
+* Feature - support for live streaming (add live="true" in shortcode)
+* Fix - audio - support for Amazon S3 protected links
+* Fix - "Check template" now looks for html5.js compatibility script and users see warnings on front-end if there are issues with JavaScript on the site
+* Fix - "Check videos" button now uses the same code as admin video checker and is more resilient
 * Fix - "Flash streaming server" settings acts as default RTMP server if there is none in the shortcode
+* Fix - JavaScript only loads if the player is in use on the page
 * Bugfix - bug in options initialization causing safety resize script missing on fresh install until save of the settings
+* Bugfix - splash image URL encoding
 
 = 2.1.52 - 2014/01/10 =
 
@@ -743,6 +781,12 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.2.4 =
+* Amazon S3 protected content playlist fixes. Please check you playlist after the upgrade.
+
+= 2.2 =
+* Big CSS optimization. If you notice any display issues, please go into plugin settings and re-save the options.
 
 = 2.1.40 =
 * Added support for playlists - beta

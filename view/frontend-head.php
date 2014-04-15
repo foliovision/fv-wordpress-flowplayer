@@ -18,21 +18,15 @@
 
 global $fv_wp_flowplayer_ver;
 
-$iCSSVersion = ( isset($this->conf['css_writeout']) && $this->conf['css_writeout'] ) ? $this->conf['css_writeout'] : $fv_wp_flowplayer_ver;
-
 if( is_admin() ) : ?>
 <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/fv-flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
 <?php endif; ?>
 
-<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/flowplayer.css?ver=<?php echo $iCSSVersion; ?>" type="text/css" media="screen" />
+<?php echo $this->css_get(); ?>
 
 <?php if( current_user_can('manage_options') ) : ?>
 	<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 	<style type="text/css">
 	.fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
 	</style>
-<?php endif; ?>
-
-<?php if( !isset($this->conf['css_writeout']) || !$this->conf['css_writeout'] ) {
-  $this->css_generate();
-}
+<?php endif;

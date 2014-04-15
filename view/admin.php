@@ -75,6 +75,26 @@ function fv_flowplayer_admin_ads() {
 
 function fv_flowplayer_admin_amazon_options() {
 	global $fv_fp;
+  
+  //$config = w3_instance('W3_Config');
+  //var_dump($config->get_boolean('pgcache.reject.logged') );
+  
+  /*if( function_exists('w3_instance') && class_exists('W3_Config') ) {
+    $config = w3_instance('W3_Config');
+  }
+  
+  $message = '';
+  if( is_plugin_active('w3-total-cache/w3-total-cache.php')  && ( $config instanceof W3_Config ) && !$config->get_boolean('pgcache.reject.logged') ) {
+    $message = 'W3 Total Cache appears to be enabled, please turn on <code> Performance -> Page Cache -> "Don\'t cache pages for logged in users"</code>. ';
+  } else if( is_plugin_active('w3-total-cache/w3-total-cache.php') ) {
+    $message = 'W3 Total Cache appears to be enabled, please make sure that <code> Performance -> Page Cache -> "Don\'t cache pages for logged in users" </code> is on.';
+  } else if( is_plugin_active('wp-super-cache/wp-cache.php') ) {
+    $message = 'WP Super Cache';
+  }
+  
+  $message .= ' Otherwise Amazon S3 protected content might be not loading for your members.';
+  
+  var_dump($message);*/
 ?>
 				<style>
 				#fv_flowplayer_amazon_options label { float: right }
@@ -82,7 +102,7 @@ function fv_flowplayer_admin_amazon_options() {
 				<table class="form-table2" style="margin: 5px; ">
 					<tr>
 						<td colspan="2">
-							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
+							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -124,7 +144,7 @@ function fv_flowplayer_admin_amazon_options() {
 					<tr class="amazon-s3-last"><td colspan="2"></td></tr>	
 					<tr>    		
 						<td colspan="4">
-							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
 							<input type="button" id="amazon-s3-add" class="button" value="Add more Amazon S3 secure buckets" />
 						</td>
 					</tr>   					                                 
@@ -253,6 +273,41 @@ function fv_flowplayer_admin_description() {
 }
 
 
+function fv_flowplayer_admin_integrations() {
+	global $fv_fp;
+?>
+				<table class="form-table2" style="margin: 5px; ">
+          <tr>
+						<td style="width: 350px"><label for="js-everywhere">Load FV Flowplayer JS everywhere (<abbr title="If you use some special JavaScript integration, you might prefer this option, otherwise it loads only if the shortcode is found.">?</abbr>):</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="js-everywhere" value="false" />
+              <input type="checkbox" name="js-everywhere" id="js-everywhere" value="true" <?php if( isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>
+					<!--<tr>
+						<td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="integrations[optimizepress2]" value="false" />
+              <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( isset($fv_fp->conf['integrations']['optimizepress2']) && $fv_fp->conf['integrations']['optimizepress2'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>
+					<tr>
+						<td><label for="wp_core_video">Handle Wordpress <code><small>[video]</small></code> shortcodes:</label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="integrations[wp_core_video]" value="false" />
+              <input type="checkbox" name="integrations[wp_core_video]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>-->             
+					<tr>    		
+						<td colspan="4">
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
+						</td>
+					</tr>                               
+				</table>
+<?php
+}
+
+
 function fv_flowplayer_admin_interface_options() {
 	global $fv_fp;
 ?>
@@ -266,12 +321,19 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>   
 					<tr>          
-						<td><label for="interface[playlist]">Playlist: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[playlist]">Playlist:</label></td>
 						<td style="text-align:right">
               <input type="hidden" name="interface[playlist]" value="false" />
 							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>    					
+					</tr>
+					<tr>          
+						<td><label for="interface[playlist]">Playlist captions: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td style="text-align:right">
+              <input type="hidden" name="interface[playlist_captions]" value="false" />
+							<input type="checkbox" name="interface[playlist_captions]" id="interface[playlist_captions]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_captions']) && $fv_fp->conf['interface']['playlist_captions'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>    		          
 					<tr>          
 						<td><label for="interface[popup]">HTML popup:</label></td>
 						<td style="text-align:right">
@@ -322,21 +384,21 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>  
 					<tr>          
-						<td><label for="interface[ads]">Ads: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[ads]">Ads:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[ads]" value="false" />
 							<input type="checkbox" name="interface[ads]" id="interface[ads]" value="true" <?php if( isset($fv_fp->conf['interface']['ads']) && $fv_fp->conf['interface']['ads'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   	
 					<tr>          
-						<td><label for="interface[mobile]">Mobile video: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[mobile]">Mobile video:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[mobile]" value="false" />
 							<input type="checkbox" name="interface[mobile]" id="interface[mobile]" value="true" <?php if( isset($fv_fp->conf['interface']['mobile']) && $fv_fp->conf['interface']['mobile'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>   		
 					<tr>          
-						<td><label for="interface[align]">Align: <span style="color: #e00; font-weight: bold">NEW</span></label></td>
+						<td><label for="interface[align]">Align:</label></td>
 						<td style="text-align:right;">
               <input type="hidden" name="interface[align]" value="false" />
 							<input type="checkbox" name="interface[align]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['align']) && $fv_fp->conf['interface']['align'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -349,6 +411,89 @@ function fv_flowplayer_admin_interface_options() {
 					</tr>                                    
 				</table>
 <?php
+}
+
+
+function fv_flowplayer_admin_pro() {
+  global $fv_fp;
+  
+  if( flowplayer::is_licensed() ) {
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+  }
+  
+  if( isset($aCheck->valid) && $aCheck->valid ) : ?>  
+    <p>Valid license found, click the button at the top of the screen to install FV Flowplayer Pro!</p>
+  <?php else : ?>
+    <p><a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">Purchase FV Flowplayer license</a> to enable Pro features!</p>
+  <?php endif; ?>
+  <table class="form-table2" style="margin: 5px; ">
+    <tr>
+      <td style="width: 250px"><label>Autoplay just once:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" disabled="true" />
+          Makes sure each video autoplays only once for each visitor.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Enable video lightbox:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Enables Lightbox video gallery to show videos in a lightbox popup!
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Use video lightbox for images as well:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" disabled="true" />
+          Will group images as well as videos into the same lightbox gallery.
+        </p>
+      </td>
+    </tr>       
+  </table>
+  <p>Upcoming pro features:</p>
+  <table class="form-table2" style="margin: 5px; ">
+    <tr>
+      <td style="width: 250px"><label>Advanced Vimeo embeding:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Use Vimeo as your video host and use all of FV Flowplayer features.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Advanced Youtube embeding:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Use Youtube as your video host and use all of FV Flowplayer features.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Enable PayWall:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Monetize the video content on your membership site.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Amazon CloudFront protected content:</label></td>
+      <td>
+        <p class="description">
+          Open <a href="#" onclick="return false">media library</a> to upload your CloudFront access key.
+        </p>
+      </td>
+    </tr>      
+  </table>  
+  <?php
 }
 
 
@@ -371,18 +516,20 @@ function fv_flowplayer_admin_skin() {
 										</video>
 									</div>
 									</div>
-					<table class="form-table2 flowplayer-settings" style="width: 45%;">	
+					<table class="form-table2 flowplayer-settings" style="width: 46%;">	
 						<?php include dirname( __FILE__ ) . '/../view/colours.php'; ?>
 						<tr>
-							<td><label for="font-face">Player font face</label></td>
-							<td style="text-align:right" colspan="3">
+              <td><label for="marginBottom">bottom margin</label></td>
+              <td style="text-align:right"><input type="text" size="6" name="marginBottom" id="marginBottom" value="<?php echo $fv_fp->conf['marginBottom']; ?>" title="Enter value in pixels" /></td>              
+							<td style="padding-left:20px;"><label for="font-face">font face</label></td>
+							<td style="text-align:right">
 								<select id="font-face" name="font-face">
 									<option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
 									<option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
 									<option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>>(inherit from template)</option>
 								</select> 							
 							</td>
-						</tr>					
+						</tr>      
 						<tr>    		
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" style="margin-top: 2ex;"/>
@@ -407,7 +554,9 @@ function fv_flowplayer_admin_usage() {
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide#license">License key and custom logo</a>
 									</li>					
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads">Using ads</a></li>				
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams">RTMP streams</a></li>				
+									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams">RTMP streams</a></li>
+                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles">Subtitles</a></li>
+                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide">Amazon S3 secure content guide</a></li>
 								</ul>
 							</div>
 							<div style="float: left; width: 49%">
@@ -476,7 +625,11 @@ add_meta_box( 'fv_flowplayer_interface_options', 'Post Interface Options', 'fv_f
 add_meta_box( 'fv_flowplayer_default_options', 'Sitewide Flowplayer Defaults', 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_integrations', 'Integrations', 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
+if( !class_exists('FV_Flowplayer_Pro') ) {
+  //add_meta_box( 'fv_flowplayer_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
+}
+add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
 
 ?>
 
@@ -494,16 +647,39 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
   </div>
-  <div id="fv-flowplayer-check-template" class="updated" style="display: none; ">Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.</div>
   <p id="fv_flowplayer_admin_buttons">
-  	<input type="button" class="button" onclick="jQuery('#fv-flowplayer-check-template').show(); return false" value="Check template" /> 
+  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
   	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
   	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
   	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
   </p>
   <div id="fv_flowplayer_admin_notices">
   </div>
-  <?php if (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] == 'false') : ?>
+  <?php 
+  
+  if( isset($_GET['pro_beta']) ) :
+    if( flowplayer::is_licensed() ) {
+      $aCheck = get_transient( 'fv_flowplayer_license' );
+    }
+    
+    if( isset($aCheck->valid) && $aCheck->valid ) : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>
+          Thank you for purchasing FV Flowplayer license!
+          <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
+            <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_flowplayer_pro' value="Pro features enabled" />
+          <?php else : ?>
+            <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_flowplayer_pro' value="Get the FV Flowplayer PRO now!" />
+            <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+          <?php endif; ?>
+        </p>
+      </div>
+    <?php
+    endif;
+  endif;
+  
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>    
+  <?php else : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
 				<h2>FV Wordpress<strong>Flowplayer</strong></h2>
@@ -513,7 +689,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
@@ -558,6 +734,8 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 		jQuery('.'+type+'-spin').show();
 		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
 		jQuery.post( ajaxurl, { action: type }, function( response ) {
+      response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
+      response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
 			var obj = (jQuery.parseJSON( response ) );
 			var css_class = '';
 			jQuery('#fv_flowplayer_admin_notices').html('');
@@ -596,6 +774,45 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
+    
+    jQuery('.fv-flowplayer-admin-addon-install').click( function() {  //  todo: block multiple clicks
+      var button = jQuery(this);
+      jQuery(button).siblings('img').show();
+      
+      var button = this;
+      jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_install_pro', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_install_pro' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
+        jQuery(button).siblings('img').hide();
+        
+        var obj;
+        try {
+          response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
+          response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
+          obj = jQuery.parseJSON( response );
+
+          jQuery(button).attr('class','button');
+          jQuery(button).attr('value',obj.message);
+          
+          if( typeof(obj.error) == "undefined" ) {
+            //window.location.hash = '#'+jQuery(button).attr("data-plugin");
+            //window.location.reload(true);
+            window.location.href = window.location.href+'&'+jQuery(button).attr("data-plugin")+'#'+jQuery(button).attr("data-plugin");
+          }
+        } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
+          jQuery(button).after('<p>Error parsing JSON</p>');
+          return;
+        }
+    
+      } ).error(function() {
+        jQuery(button).siblings('img').hide();
+        jQuery(button).after('<p>Error!</p>');
+      });  
+    } );
+    
+    jQuery('.fv-flowplayer-admin-addon-installed').click( function() {
+      jQuery('html, body').animate({
+          scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
+      }, 1000);
+    } );    
 	});
 	//]]>
 </script>

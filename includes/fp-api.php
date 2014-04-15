@@ -370,6 +370,8 @@ class FV_Wordpress_Flowplayer_Plugin
   function is_min_wp( $version ) {
     return version_compare( $GLOBALS['wp_version'], $version. 'alpha', '>=' );
   }
+  
+    
 
 }
 

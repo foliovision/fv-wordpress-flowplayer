@@ -245,8 +245,12 @@ function flowplayer_content( $content ) {
 function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
 
-  if( isset($GLOBALS['fv_fp_scripts']) ) {    
-    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );  
+  if(
+     isset($GLOBALS['fv_fp_scripts']) ||
+     (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
+     isset($_GET['fv_wp_flowplayer_check_template'])
+  ) {    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
@@ -261,18 +265,20 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
+    if( !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
+      $aConf['safety_resize'] = true;
+    }
     if( $sLogo ) $aConf['logo'] = $sLogo;
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
-    if( !isset($fv_fp->conf['fixed_size']) || $fv_fp->conf['fixed_size'] == 'false' ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_safety_resize_do', array(true) );
-    }
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
 
-    foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
-      wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+    if( count($GLOBALS['fv_fp_scripts']) > 0 ) {
+      foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
+        wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+      }
     }
   }
 }
@@ -305,4 +311,26 @@ function fv_flowplayer_the_content( $c ) {
 }
 add_filter( 'the_content', 'fv_flowplayer_the_content', 0 );
 
-?>
+
+/*
+Handle attachment pages which contain videos
+*/
+function fv_flowplayer_attachment_page_video( $c ) {
+	global $post;
+  if( stripos($post->post_mime_type, 'video/') !== 0 && stripos($post->post_mime_type, 'audio/') !== 0 ) {
+    return $c;
+  }
+  
+  if( !$src = wp_get_attachment_url($post->ID) ) {
+    return $c;
+  }
+  
+  $meta = get_post_meta( $post->ID, '_wp_attachment_metadata', true );
+  $size = (isset($meta['width']) && isset($meta['height']) && intval($meta['width'])>0 && intval($meta['height'])>0 ) ? ' width="'.intval($meta['width']).'" height="'.intval($meta['height']).'"' : false;
+  
+  $shortcode = '[fvplayer src="'.$src.'"'.$size.']';
+  
+  $c = preg_replace( '~<p class=.attachment.[\s\S]*?</p>~', $shortcode, $c );
+	return $c;
+}
+add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );

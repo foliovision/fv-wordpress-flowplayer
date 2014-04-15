@@ -73,11 +73,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		
 
 		// define needed constants
-		preg_match('/.*wp-content\/plugins\/(.*?)\/models.*/',dirname(__FILE__),$matches);
-		if (isset($matches[1]))
-			$strFPdirname = $matches[1];
-		else
-			$strFPdirname = 'fv-wordpress-flowplayer';
 		if (!defined('FV_FP_RELATIVE_PATH')) {
 			define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
       
@@ -142,7 +137,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['amazon_secret'] ) || !is_array($conf['amazon_secret']) ) $conf['amazon_secret'] = array('');  		
 		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';   
 		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';   		
-		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); } 
+		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }
+    if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
+    if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';   		
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -173,7 +170,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $this->conf = $aNewOptions;    
     
     $this->css_writeout();
-	     
+    	     
 	  return true;	
 	}
 	/**
@@ -188,6 +185,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function css_generate( $style_tag = true ) {
     global $fv_fp;
+    
+    $iMarginBottom = (isset($fv_fp->conf['marginBottom']) && intval($fv_fp->conf['marginBottom']) > -1 ) ? intval($fv_fp->conf['marginBottom']) : '28';
+    
     if( $style_tag ) : ?>
       <style type="text/css">
     <?php endif;
@@ -200,7 +200,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       .flowplayer { border: 1px solid <?php echo trim($fv_fp->conf['borderColor']); ?> !important; }
     <?php endif; ?>
   
-    .flowplayer, flowplayer * { margin: 0 auto 28px auto; display: block; }
+    .flowplayer, flowplayer * { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
     .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
     .flowplayer .fp-duration { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }
@@ -228,6 +228,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php echo trim($this->conf['ad_css']); ?>
     .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; }
     .wpfp_custom_ad a { color: <?php echo trim($fv_fp->conf['adLinksColor']); ?> }
+    
+    .fvfp_admin_error { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
+    .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
+    #content .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
+    .fvfp_admin_error_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
   
     <?php if( $style_tag ) : ?>
       </style>  
@@ -235,27 +240,96 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function css_writeout() {
+  function css_get() {
+    global $fv_wp_flowplayer_ver;
+    $bInline = true;
+    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css?ver='.$fv_wp_flowplayer_ver;    
+    
     if( is_multisite() ) {
-      return;
+      global $blog_id;
+      $site_id = $blog_id;
+    } else {
+      $site_id = 1;
+    }
+
+    if( isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
+      $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
+      if( @file_exists($filename) ) {
+        $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
+        $bInline = false;
+      }
     }
     
-	  $aOptions = get_option( 'fvwpflowplayer' );
+    echo '<link rel="stylesheet" href="'.$sURL.'" type="text/css" media="screen" />'."\n";
+    if( $bInline ) {
+      $this->css_generate();
+    }
+    return ;
+  }
+  
+  
+  function css_option() {
+    return 'css_writeout-'.sanitize_title(WP_CONTENT_URL);
+  }
+  
+  
+  function css_writeout() {
+    $aOptions = get_option( 'fvwpflowplayer' );
+    $aOptions[$this->css_option()] = false;
+    update_option( 'fvwpflowplayer', $aOptions );
+    
+    /*$url = wp_nonce_url('options-general.php?page=fvplayer','otto-theme-options');
+    if( false === ($creds = request_filesystem_credentials($url, $method, false, false, $_POST) ) ) { //  todo: no annoying notices here      
+      return false; // stop the normal page form from displaying
+    }   */ 
+    
+    if ( ! WP_Filesystem(true) ) {
+      return false;
+    }
+
+    global $wp_filesystem;
+    if( is_multisite() ) {
+      global $blog_id;
+      $site_id = $blog_id;
+    } else {
+      $site_id = 1;
+    }
+    $filename = $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/style-'.$site_id.'.css';
+     
+    // by this point, the $wp_filesystem global should be working, so let's use it to create a file
+    
+    $bDirExists = false;
+    if( !$wp_filesystem->exists($wp_filesystem->wp_content_dir().'fv-flowplayer-custom/') ) {
+      if( $wp_filesystem->mkdir($wp_filesystem->wp_content_dir().'fv-flowplayer-custom/') ) {
+        $bDirExists = true;
+      }
+    } else {
+      $bDirExists = true;
+    }
+    
+    if( !$bDirExists ) {
+      return false;
+    }
     
     ob_start();
     $this->css_generate(false);
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
-    if( file_exists(dirname(__FILE__).'/../css/flowplayer.css') && $sCSSCurrent = file_get_contents(dirname(__FILE__).'/../css/flowplayer.css') ) {
-      $sCSSCurrent = preg_replace( '~\s?/\*CSS writeout.*?\*/[\s\S]*$~m', '', $sCSSCurrent );
-      if( file_put_contents(dirname(__FILE__).'/../css/flowplayer.css', $sCSSCurrent.$sCSS ) ) {      
-        $aOptions['css_writeout'] = date('U');
-        update_option( 'fvwpflowplayer', $aOptions );
-      }
-    }                
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
+      return false;
+    }
+    $sCSSCurrent = preg_replace( '~url\((")?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+
+    if( !$wp_filesystem->put_contents( $filename, $sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
+      return false;
+    } else {
+      $aOptions[$this->css_option()] = date('U');
+      update_option( 'fvwpflowplayer', $aOptions );
+      $this->conf = $aOptions;
+    }
   }
   
   
-  function get_amazon_secure( $media, &$fv_fp ) {
+  function get_amazon_secure( $media, &$fv_fp, $url_only= false ) {
 
 		$amazon_key = -1;
   	if( !empty($fv_fp->conf['amazon_key']) && !empty($fv_fp->conf['amazon_secret']) && !empty($fv_fp->conf['amazon_bucket']) ) {
@@ -300,9 +374,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			$signature = urlencode($signature);
 		
 			$url = $resource;
-			$url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key]
-						 .'&amp;Expires='.$expires
-						 .'&amp;Signature='.$signature;
+      
+      if( $url_only ) {
+        $url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].'&Expires='.$expires.'&Signature='.$signature;
+      } else {
+        $url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].'&amp;Expires='.$expires.'&amp;Signature='.$signature;
+      }    
+			
 						 
 			$media = $url;
 						
@@ -353,13 +431,38 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_plugin_url() {
-    if( stripos( __FILE__, '/themes/' ) ) {
+  public static function get_encoded_url( $sURL ) {
+    if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
+      $url_parts = parse_url( $sURL );
+      $url_parts_encoded = parse_url( $sURL );			
+      if( !empty($url_parts['path']) ) {
+          $url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts_encoded['path'])));
+      }
+      if( !empty($url_parts['query']) ) {
+          $url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );				
+      }
+      
+      $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
+      return http_build_url($sURL, $url_parts);
+    } else {
+      return $sURL;
+    }    
+  }
+  
+  
+  public static function get_plugin_url() {
+    if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {
-      return plugins_url( '', str_replace( '/models', '', __FILE__ ) );
+      return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
     }
   }
+  
+  
+  public static function is_licensed() {
+    global $fv_fp;
+		return preg_match( '!^\$\d+!', $fv_fp->conf['key'] );
+	}
   
 	
 	public function is_secure_amazon_s3( $url ) {
@@ -377,10 +480,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 function flowplayer_head() {
 	global $fv_fp;	
   $fv_fp->flowplayer_head();
-  
-  if( !is_admin() && current_user_can('manage_options') ) {
-    update_option( 'fv_flowplayer_js_alive', 2 );
-  }
 }
 
 

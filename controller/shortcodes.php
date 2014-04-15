@@ -87,7 +87,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     
   }
   /// End of addition                                  
-  
+
   extract( shortcode_atts( array(
     'src' => '',
     'src1' => '',
@@ -113,9 +113,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'rtmp' => '',
     'rtmp_path' => '',
     'playlist' => '',
-    'admin_warning' => ''    
+    'admin_warning' => '',
+    'live' => '',
+    'caption' => '',
+    'logo' => ''
   ), $atts ) );
-  
+
   if( $fv_fp->conf['parse_commas'] == 'true' ) {  
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
@@ -140,7 +143,10 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 		$arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
 		$arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
 		$arguments['playlist'] = $playlist;
-    $arguments['admin_warning'] = $admin_warning;         
+    $arguments['admin_warning'] = $admin_warning;
+    $arguments['live'] = $live;
+    $arguments['caption'] = $caption;
+    $arguments['logo'] = $logo; 
 		$src = trim( preg_replace('/\,/', '', $src) ); 
 	} else {
 		$arguments = shortcode_atts( array(
@@ -168,12 +174,16 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 			'rtmp' => '',
 			'rtmp_path' => '',
 			'playlist' => '',
-      'admin_warning' => ''
+      'admin_warning' => '',
+      'live' => '',
+      'caption' => '',
+      'logo' => ''
 		), $atts );
 	}
+  
+  $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
 	
-	
-	if( $src != '' || ( (strlen($fv_fp->conf['rtmp']) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
+	if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
     $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {
@@ -256,13 +266,15 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   $shortcode .= ' height="'.$vars['height'].'"';
   $shortcode .= ' align="'.$vars['align'].'"';
 
-  if(
-    ( isset($vars['margin-top']) && $vars['margin-top'] > 0 ) ||
-    ( isset($vars['margin-bottom']) && $vars['margin-bottom'] > 0 && $vars['margin-bottom'] != 20 ) ||
-    ( isset($vars['hide_controls']) && $vars['hide_controls'] == 'Y' ) ||
-    ( isset($vars['auto_buffer']) && $vars['auto_buffer'] == 'Y' ) ||
-    ( isset($vars['border_size']) && $vars['border_size'] > 0 ) ||
-    isset($vars['border_color'])
+  if( current_user_can('manage_options') &&
+    (
+      ( isset($vars['margin-top']) && $vars['margin-top'] > 0 ) ||
+      ( isset($vars['margin-bottom']) && $vars['margin-bottom'] > 0 && $vars['margin-bottom'] != 20 ) ||
+      ( isset($vars['hide_controls']) && $vars['hide_controls'] == 'Y' ) ||
+      ( isset($vars['auto_buffer']) && $vars['auto_buffer'] == 'Y' ) ||
+      ( isset($vars['border_size']) && $vars['border_size'] > 0 ) ||
+      isset($vars['border_color'])
+    )
   ) {
     $shortcode .= ' admin_warning="Admin note: Some of the OptimizePress styling parameters are not supported by FV Flowplayer. Please visit the <a href=\''.admin_url('options-general.php?page=fvplayer').'\'>settings</a> and set your global appearance preferences there."';
   }
