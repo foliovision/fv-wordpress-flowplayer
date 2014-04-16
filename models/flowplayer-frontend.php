@@ -523,6 +523,7 @@ class flowplayer_frontend extends flowplayer
       
       $aPlaylistItems[] = $aItem;
 
+      $sHTML = '';
       if( $sShortcode && count($sItems) > 0 ) {
         
         $sHTML = array();
@@ -855,7 +856,7 @@ class flowplayer_frontend extends flowplayer
         $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
 				$sReturn = '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />';
         
-        if( $source_flash_encoded ) {
+        if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
           $sReturn .= "\n\t\t".'<source '.$id.'src="'.trim($source_flash_encoded).'" type="video/flash" />';
         }
         return $sReturn;

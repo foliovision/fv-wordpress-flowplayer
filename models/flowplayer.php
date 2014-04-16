@@ -170,9 +170,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $this->conf = $aNewOptions;    
     
     $this->css_writeout();
-    
-    delete_transient( 'fv_flowplayer_license' );
-	     
+    	     
 	  return true;	
 	}
 	/**

@@ -106,7 +106,14 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 function flowplayer_activate() {
-	update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );  
+	
+}
+
+
+function flowplayer_deactivate() {
+  if( flowplayer::is_licensed() ) {  
+    delete_transient( 'fv_flowplayer_license' );
+  }
 }
 
 
@@ -518,11 +525,14 @@ function fv_wp_flowplayer_admin_init() {
 			)
 		);
 	} else if( version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) == 0 ) {
+    
   	update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
   }
    
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
+    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
+    
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
     $fv_fp->css_writeout();
