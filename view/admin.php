@@ -422,20 +422,20 @@ function fv_flowplayer_admin_pro() {
   }
   
   if( isset($aCheck->valid) && $aCheck->valid ) : ?>  
-    <p>Valid license found, click the button at the top of the screen to install FV Flowplayer Pro!</p>
+    <p>Valid license found, click the button at the top of the screen to install FV Player Pro!</p>
   <?php else : ?>
     <p><a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">Purchase FV Flowplayer license</a> to enable Pro features!</p>
   <?php endif; ?>
   <table class="form-table2" style="margin: 5px; ">
     <tr>
-      <td style="width: 250px"><label>Autoplay just once:</label></td>
+      <td style="width: 250px"><label>Advanced Vimeo embeding:</label></td>
       <td>
         <p class="description">
-          <input type="checkbox" disabled="true" />
-          Makes sure each video autoplays only once for each visitor.
+          <input type="checkbox" checked="checked" disabled="true" />
+          Use Vimeo as your video host and use all of FV Flowplayer features.
         </p>
       </td>
-    </tr>
+    </tr>    
     <tr>
       <td style="width: 250px"><label>Enable video lightbox:</label></td>
       <td>
@@ -453,19 +453,19 @@ function fv_flowplayer_admin_pro() {
           Will group images as well as videos into the same lightbox gallery.
         </p>
       </td>
-    </tr>       
+    </tr>
+    <tr>
+      <td style="width: 250px"><label>Autoplay just once:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" disabled="true" />
+          Makes sure each video autoplays only once for each visitor.
+        </p>
+      </td>
+    </tr>    
   </table>
   <p>Upcoming pro features:</p>
   <table class="form-table2" style="margin: 5px; ">
-    <tr>
-      <td style="width: 250px"><label>Advanced Vimeo embeding:</label></td>
-      <td>
-        <p class="description">
-          <input type="checkbox" checked="checked" disabled="true" />
-          Use Vimeo as your video host and use all of FV Flowplayer features.
-        </p>
-      </td>
-    </tr>
     <tr>
       <td style="width: 250px"><label>Advanced Youtube embeding:</label></td>
       <td>
@@ -626,8 +626,8 @@ add_meta_box( 'fv_flowplayer_default_options', 'Sitewide Flowplayer Defaults', '
 add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', 'Integrations', 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
-if( !class_exists('FV_Flowplayer_Pro') ) {
-  //add_meta_box( 'fv_flowplayer_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
+if( !class_exists('FV_Player_Pro') ) {
+  //add_meta_box( 'fv_player_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
 add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
 
@@ -666,10 +666,10 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
       <div id="fv_flowplayer_addon_pro">
         <p>
           Thank you for purchasing FV Flowplayer license!
-          <?php if( class_exists('FV_Flowplayer_Pro') ) : // todo, add the box with Pro features! ?>
-            <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_flowplayer_pro' value="Pro features enabled" />
+          <?php if( class_exists('FV_Player_Pro') ) : // todo, add the box with Pro features! ?>
+            <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_player_pro' value="Pro features enabled" />
           <?php else : ?>
-            <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_flowplayer_pro' value="Get the FV Flowplayer PRO now!" />
+            <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_player_pro' value="Get the FV Player PRO now!" />
             <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
           <?php endif; ?>
         </p>
