@@ -28,6 +28,12 @@ add_action('wp_footer','flowplayer_display_scripts',100);
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
 
+
+function fv_flowplayer_remove_bad_scripts() {
+  wp_deregister_script( 'flowplayer' );
+}
+add_action( 'wp_print_scripts', 'fv_flowplayer_remove_bad_scripts', 100 );
+
  
 
 function flowplayer_content_remove_commas($content) {
