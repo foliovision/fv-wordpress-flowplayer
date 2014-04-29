@@ -523,6 +523,7 @@ class flowplayer_frontend extends flowplayer
       
       $aPlaylistItems[] = $aItem;
 
+      $sHTML = '';
       if( $sShortcode && count($sItems) > 0 ) {
         
         $sHTML = array();
@@ -818,9 +819,11 @@ class flowplayer_frontend extends flowplayer
 			}
 			$id = ($id) ? 'id="'.$id.'" ' : '';
 	
+      $media = apply_filters( 'fv_flowplayer_video_src', $media, $this );
+  
 			$media = $this->get_amazon_secure( $media, $this, $url_only );
       
-      $media = apply_filters( 'fv_flowplayer_video_src', $media, $this );
+      $media = apply_filters( 'fv_flowplayer_video_src_after', $media, $this );
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
 			$source_flash_encoded = false;	

@@ -1,9 +1,9 @@
 === FV Wordpress Flowplayer ===
 Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
-Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, video sidebar widget, WP flash Video Player, embed video
+Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, WP flash Video Player, embed video
 Requires at least: 3.5
-Tested up to: 3.8.3
+Tested up to: 3.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -324,7 +324,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.5 - TBA =
+= 2.2.6 - 2014/04/17 =
+
+* Fix - compatibility with Wordpress 3.9 (it contains new TinyMCE editor version)
+
+= 2.2.5 - 2014/04/16 =
 
 * Bugfix - Amazon S3 protected URLs for Flash only browsers (edge case)
 

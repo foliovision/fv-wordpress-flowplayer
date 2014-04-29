@@ -53,10 +53,11 @@ var fv_wp_fp_shortcode;
 
 
 function fv_wp_flowplayer_init() {
-  if( typeof tinyMCE !== 'undefined' ) {
+  if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
+    fv_wp_flowplayer_hTinyMCE = tinymce.activeEditor;
+  } else if( typeof tinyMCE !== 'undefined' ) {
     fv_wp_flowplayer_hTinyMCE = tinyMCE.getInstanceById('content');
-  }
-  else {
+  } else {
     fv_wp_flowplayer_oEditor = FCKeditorAPI.GetInstance('content');    
   }
   jQuery('#fv_wp_flowplayer_file_info').hide();
