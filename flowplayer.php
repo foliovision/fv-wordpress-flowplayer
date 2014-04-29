@@ -46,5 +46,5 @@ if( is_admin() ) {
 }
 
 
-$fv_wp_flowplayer_ver = '2.2.6';
+$fv_wp_flowplayer_ver = '2.2.6.1';
 $fv_wp_flowplayer_core_ver = '5.4.6';
