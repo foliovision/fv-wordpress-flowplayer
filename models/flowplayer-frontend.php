@@ -421,6 +421,8 @@ class flowplayer_frontend extends flowplayer
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
         
+        $this->ret['html'] .= $this->get_video_checker_html()."\n";
+        
 				$this->ret['html'] .= '</div>'."\n";
         
 				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
@@ -778,7 +780,7 @@ class flowplayer_frontend extends flowplayer
       }    
 
       if( isset($aTest_media) && count($aTest_media) > 0 ) { 
-        $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = json_encode($aTest_media);;
+        $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
       }
     }            
 
@@ -807,6 +809,28 @@ class flowplayer_frontend extends flowplayer
     $media = apply_filters( 'fv_flowplayer_media', $media, $this );
     
     return $media;
+  }
+  
+  
+  function get_video_checker_html() {
+    $sSpinURL = site_url('wp-includes/images/wpspin.gif');
+
+    $sHTML = <<< HTML
+<div title="This note is visible to logged-in admins only." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}">
+  <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Report Issue</div>
+  <small>Admin: <!--<a onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this); return false" href="#" class="fv_wp_flowplayer_dialog_link">--><span class="video-checker-result">Checking the video file...</span><!--</a>--></small>
+  <div style="display: none;" class="fv_wp_fp_notice_content" id="fv_wp_fp_notice_{$this->hash}">
+    <div class="mail-content-notice">
+    </div>
+    <div class="support-{$this->hash}">
+      <textarea style="width: 98%; height: 150px" onclick="if( this.value == 'Enter your comment' ) this.value = ''" class="wpfp_message_field" id="wpfp_support_{$this->hash}">Enter your comment</textarea>
+      <p><img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p>
+    </div>
+  </div>
+</div>
+HTML;
+
+    return $sHTML;
   }
   
   
