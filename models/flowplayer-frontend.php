@@ -813,10 +813,11 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_video_checker_html() {
+    global $fv_wp_flowplayer_ver;
     $sSpinURL = site_url('wp-includes/images/wpspin.gif');
 
     $sHTML = <<< HTML
-<div title="This note is visible to logged-in admins only." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}">
+<div title="This note is visible to logged-in admins only." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
   <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Report Issue</div>
   <small>Admin: <!--<a onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this); return false" href="#" class="fv_wp_flowplayer_dialog_link">--><span class="video-checker-result">Checking the video file...</span><!--</a>--></small>
   <div style="display: none;" class="fv_wp_fp_notice_content" id="fv_wp_fp_notice_{$this->hash}">
@@ -824,7 +825,11 @@ class flowplayer_frontend extends flowplayer
     </div>
     <div class="support-{$this->hash}">
       <textarea style="width: 98%; height: 150px" onclick="if( this.value == 'Enter your comment' ) this.value = ''" class="wpfp_message_field" id="wpfp_support_{$this->hash}">Enter your comment</textarea>
-      <p><img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p>
+      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p>
+    </div>
+    <div class="more-{$this->hash} mail-content-details" style="display: none; ">
+      <p>Plugin version: {$fv_wp_flowplayer_ver}</p>
+      <div class="fv-wp-flowplayer-notice-parsed level-0"></div>
     </div>
   </div>
 </div>

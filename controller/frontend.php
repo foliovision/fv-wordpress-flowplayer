@@ -274,6 +274,9 @@ function flowplayer_prepare_scripts() {
     if( !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
       $aConf['safety_resize'] = true;
     }
+    if( current_user_can('manage_options') && $fv_fp->conf['disable_videochecker'] != 'true' ) {
+      $aConf['video_checker_site'] = home_url();
+    }
     if( $sLogo ) $aConf['logo'] = $sLogo;
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
