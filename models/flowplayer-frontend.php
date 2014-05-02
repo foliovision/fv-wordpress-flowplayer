@@ -762,7 +762,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_video_checker_media($attributes, $media, $src1, $src2, $rtmp) {
     
-    if( current_user_can('manage_options') && $this->ajax_count < 10 && $this->conf['disable_videochecker'] != 'true' ) {
+    if( current_user_can('manage_options') && $this->ajax_count < 100 && $this->conf['disable_videochecker'] != 'true' ) {
       $this->ajax_count++;
       
       $rtmp_test = false;
@@ -819,7 +819,7 @@ class flowplayer_frontend extends flowplayer
     $sHTML = <<< HTML
 <div title="This note is visible to logged-in admins only." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
   <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Report Issue</div>
-  <small>Admin: <!--<a onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this); return false" href="#" class="fv_wp_flowplayer_dialog_link">--><span class="video-checker-result">Checking the video file...</span><!--</a>--></small>
+  <small>Admin: <span class="video-checker-result">Checking the video file...</span></small>
   <div style="display: none;" class="fv_wp_fp_notice_content" id="fv_wp_fp_notice_{$this->hash}">
     <div class="mail-content-notice">
     </div>
