@@ -299,6 +299,9 @@ class FV_Wordpress_Flowplayer_Plugin
 			$position = ( isset($aPopup['position']) ) ? $aPopup['position'] : array( 'edge' => 'top', 'align' => 'center' );
 			
 			$opt_arr = array(	'content'  => $content, 'position' => $position );
+      
+      if( isset($aPopup['pointerClass']) ) $opt_arr['pointerClass'] = $aPopup['pointerClass'];
+      if( isset($aPopup['pointerWidth']) ) $opt_arr['pointerWidth'] = $aPopup['pointerWidth'];
 				
 			$function2 = $this->class_name.'_store_answer("'.$sKey.'", "false","' . $sNonce . '")';
 			$function1 = $this->class_name.'_store_answer("'.$sKey.'", "true","' . $sNonce . '")';
@@ -314,7 +317,7 @@ class FV_Wordpress_Flowplayer_Plugin
 				_ajax_nonce   : nonce
 			}
 			jQuery.post(ajaxurl, post_data, function () {
-				jQuery('#wp-pointer-0').remove();	//	todo: does this really work?
+				jQuery('.'+key).remove();	
 			});
 		}
 	//]]>
@@ -347,11 +350,16 @@ class FV_Wordpress_Flowplayer_Plugin
 				});
 
 				<?php echo $id; ?>_setup = function () {
-					$('<?php echo $selector; ?>').pointer(<?php echo $id; ?>_pointer_options).pointer('open');
+          var sSelector = '<?php echo $selector; ?>';
+          if( $(sSelector).length == 0 ){
+            sSelector = '#wpadminbar';
+          }
+          $(sSelector).append('<div class="<?php echo $id; ?>"></div>');
+					$(sSelector+' .<?php echo $id; ?>').pointer(<?php echo $id; ?>_pointer_options).pointer('open');
 					<?php if ( $button2 ) { ?>
-					jQuery('#pointer-close').after('<a id="pointer-primary" class="button-primary">' + '<?php echo addslashes($button2); ?>' + '</a>');
-					jQuery('#pointer-primary').click(function () { <?php echo $button1_function; ?> });
-					jQuery('#pointer-close').click(function () { <?php echo $button2_function; ?>	});
+					jQuery('.<?php echo $id; ?> #pointer-close').after('<a id="pointer-primary" class="button-primary">' + '<?php echo addslashes($button2); ?>' + '</a>');
+					jQuery('.<?php echo $id; ?> #pointer-primary').click(function () { <?php echo $button1_function; ?> });
+					jQuery('.<?php echo $id; ?> #pointer-close').click(function () { <?php echo $button2_function; ?>	});
 					<?php } ?>
 				};
 

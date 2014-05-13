@@ -156,6 +156,9 @@ function fv_flowplayer_admin_amazon_options() {
 function fv_flowplayer_admin_default_options() {
 	global $fv_fp;
 ?>
+          <input type="hidden" name="key_automatic" value="<?php echo isset($fv_fp->conf['key_automatic']) ? trim($fv_fp->conf['key_automatic']) : 'false'; ?>" />
+          <input type="hidden" name="version" value="<?php echo isset($fv_fp->conf['version']) ? trim($fv_fp->conf['version']) : 'false'; ?>" />
+          <input type="hidden" name="video_checker_agreement" value="<?php echo isset($fv_fp->conf['video_checker_agreement']) ? trim($fv_fp->conf['video_checker_agreement']) : 'false'; ?>" />
 					<table class="form-table2" style="margin: 5px; ">
 						<tr>
 							<td style="width: 250px;"><label for="autoplay">AutoPlay:</label></td>

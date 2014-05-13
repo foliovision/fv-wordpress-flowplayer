@@ -762,7 +762,10 @@ class flowplayer_frontend extends flowplayer
   
   function get_video_checker_media($attributes, $media, $src1, $src2, $rtmp) {
     
-    if( current_user_can('manage_options') && $this->ajax_count < 100 && $this->conf['disable_videochecker'] != 'true' ) {
+    if(
+      current_user_can('manage_options') && $this->ajax_count < 100 && $this->conf['disable_videochecker'] != 'true' &&
+      ( $this->conf['video_checker_agreement'] == 'true' || $this->conf['key_automatic'] == 'true' )
+    ) {
       $this->ajax_count++;
       
       $rtmp_test = false;
