@@ -29,8 +29,7 @@ $fv_fp = new flowplayer_backend();
  * WP Hooks
  */
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
-add_action('wp_ajax_fv_wp_flowplayer_install_pro', 'fv_wp_flowplayer_install_pro');  
-add_action('wp_ajax_fv_wp_flowplayer_check_mimetype', 'fv_wp_flowplayer_check_mimetype');
+add_action('wp_ajax_fv_wp_flowplayer_activate_extension', 'fv_wp_flowplayer_activate_extension');
 add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
  
@@ -114,6 +113,7 @@ function flowplayer_deactivate() {
   if( flowplayer::is_licensed() ) {  
     delete_transient( 'fv_flowplayer_license' );
   }
+  delete_option( 'fv_flowplayer_extension_install' );
 }
 
 
@@ -202,8 +202,11 @@ function fv_wp_flowplayer_media_send_to_editor($html, $attachment_id, $attachmen
     $serv = $_SERVER['SERVER_NAME'];
     $pattern = '/'.$serv.'(.*)/';
     preg_match($pattern, $uploaded_video, $matches);
-    require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
-    // Initialize getID3 engine                
+    
+    // Initialize getID3 engine
+    if ( ! class_exists( 'getID3' ) ) {
+      require( ABSPATH . WPINC . '/ID3/getid3.php' );
+    }        
     $getID3 = new getID3;     
     if (empty($matches)) {
       $ThisFileInfo = $getID3->analyze(realpath($document_root . $uploaded_video));
@@ -441,9 +444,10 @@ function flowplayer_conversion_script() {
 
 function fv_wp_flowplayer_admin_notice() {
 	if( $notices = get_option('fv_wordpress_flowplayer_deferred_notices') ) {
-  	echo '<div class="updated">
+  	echo '<div class="updated inline">
        			<p>'.$notices.'</p>
-    			</div>';    	
+    			</div>';
+    delete_option('fv_wordpress_flowplayer_deferred_notices');
   }
 
   $conversion = false; //(bool)get_option('fvwpflowplayer_conversion');
@@ -503,32 +507,55 @@ function fv_wp_flowplayer_admin_init() {
 
   global $fv_fp;
   global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
-  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && isset($fv_fp->conf['key_automatic']) && $fv_fp->conf['key_automatic'] == 'true' ) {
+  if(
+    preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) &&
+    (
+      ( isset($fv_fp->conf['key_automatic']) && $fv_fp->conf['key_automatic'] == 'true' ) ||
+      ( isset($fv_fp->conf['video_checker_agreement']) && $fv_fp->conf['video_checker_agreement'] == 'true' )
+    )
+  ) {
     
     $version = get_option( 'fvwpflowplayer_core_ver' );
     if( version_compare( $fv_wp_flowplayer_core_ver, $version ) == 1 ) {
       fv_wp_flowplayer_admin_key_update();   
     }      
   }
-
+  
 	if(
-		preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && ( !isset($fv_fp->conf['key_automatic']) || $fv_fp->conf['key_automatic'] != 'true' )
+		isset($fv_fp->conf['disable_videochecker']) && $fv_fp->conf['disable_videochecker'] == 'false' &&
+    ( !isset($fv_fp->conf['video_checker_agreement']) || $fv_fp->conf['video_checker_agreement'] != 'true' ) &&
+    ( !isset($fv_fp->conf['key_automatic']) || $fv_fp->conf['key_automatic'] != 'true' )
 	) {
-		$fv_fp->pointer_boxes = array(
-			'fv_flowplayer_key_automatic' => array(
-				'id' => '#wpadminbar',
-				'heading' => __('FV Flowplayer License Update', 'fv_flowplayer'),
-				'content' => __('New version of FV Flowplayer core has been installed for your licensed website. Please accept the automatic license key updating (connects to Foliovision servers) or update the key manually by loggin into your Foliovision account.', 'fv_flowplayer'),
-				'position' => array( 'edge' => 'top', 'align' => 'center' ),
-				'button1' => __('Always auto-update', 'fv_flowplayer'),
-				'button2' => __('I\'ll update it manually', 'fv_flowplayer')
-			)
-		);
-	} else if( version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) == 0 ) {
-    
-  	update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+		$fv_fp->pointer_boxes['fv_flowplayer_video_checker_service'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_flowplayer_video_checker_service',
+      'heading' => __('FV Player Video Checker', 'fv_flowplayer'),
+      'content' => __("<p>FV Player includes a free video checker which will check your videos for any encoding errors and helps ensure smooth playback of all your videos. To work its magic, our video checker must contact our server.</p><p>Would you like to enable the video encoding checker?</p>", 'fv_flowplayer'),
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1' => __('Allow', 'fv_flowplayer'),
+      'button2' => __('Disable the video checker', 'fv_flowplayer')
+    );
+	} else {  
+    if(
+      preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 &&
+      ( !isset($fv_fp->conf['key_automatic']) || $fv_fp->conf['key_automatic'] != 'true' ) &&
+      ( !isset($fv_fp->conf['video_checker_agreement']) || $fv_fp->conf['video_checker_agreement'] != 'true' )
+    ) {  
+      $fv_fp->pointer_boxes['fv_flowplayer_key_automatic'] = array(
+        'id' => '#wp-admin-bar-new-content',
+        'pointerClass' => 'fv_flowplayer_key_automatic',
+        'pointerWidth' => 340,
+        'heading' => __('FV Flowplayer License Update', 'fv_flowplayer'),
+        'content' => __('New version of FV Flowplayer core has been installed for your licensed website. Please accept the automatic license key updating (connects to Foliovision servers) or update the key manually by loggin into your Foliovision account.', 'fv_flowplayer'),
+        'position' => array( 'edge' => 'top', 'align' => 'center' ),
+        'button1' => __('Always auto-update', 'fv_flowplayer'),
+        'button2' => __("I'll update it manually", 'fv_flowplayer')
+      );		
+    } else if( version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 && preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) == 0 ) {
+      update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+    }
   }
-   
+  
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
     update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
@@ -545,24 +572,36 @@ function fv_wp_flowplayer_admin_init() {
 	}
     
 
-  if( flowplayer::is_licensed() ) {    
+  if( flowplayer::is_licensed() ) {
     if ( false === ( $aCheck = get_transient( 'fv_flowplayer_license' ) ) ) {
       $aCheck = fv_wp_flowplayer_license_check( array('action' => 'check') );  
       if( $aCheck ) {
         set_transient( 'fv_flowplayer_license', $aCheck, 60*60*24 );
       } else {
-        set_transient( 'fv_flowplayer_license', $aCheck, 60*60 );
+        set_transient( 'fv_flowplayer_license', json_decode(json_encode( array('error' => 'Error checking license') ), FALSE), 60*60*24 );
       }
     }
-  }
+
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+    $aInstalled = get_option('fv_flowplayer_extension_install');
+    if(
+      isset($aCheck->valid) && $aCheck->valid &&
+      (
+        !isset($aInstalled['fv_player_pro']) ||
+        ( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( $_REQUEST['nonce_fv_player_pro_install'], 'fv_player_pro_install') )
+      )
+    ) {
+      fv_wp_flowplayer_install_extension('fv_player_pro');
+    }    
+    
+  }  
 }   
 
 
 function fv_wp_flowplayer_admin_key_update() {
-	global $fv_fp;
+	global $fv_fp, $fv_wp_flowplayer_core_ver;
 	
 	$data = fv_wp_flowplayer_license_check( array('action' => 'key_update') );
-	
 	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
@@ -571,6 +610,8 @@ function fv_wp_flowplayer_admin_key_update() {
 			return true;
 		}                            
 	} else {
+    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer License upgrade failed - please check if you are running the plugin on your licensed domain.' );
+    update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
 		return false;
 	}
 }
@@ -710,7 +751,7 @@ function fv_wp_flowplayer_http( $sURL, $args ) {
   extract($args);
   
   $iTimeout = ($quick_check) ? 10 : 20;
-  
+
   $ch = curl_init();
   curl_setopt( $ch, CURLOPT_URL, $sURL );    		
   curl_setopt( $ch, CURLOPT_RANGE, '0-'.$size );
@@ -763,61 +804,15 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
   
   if( isset($URLs) ) {
   	$all_sources = $URLs;
-  	
-  	$video_warnings = array();
-  	$video_errors = array();
-  	$video_info = array();
-  	$message = false;
-  	$new_info = false;
-
+    
   	foreach( $all_sources AS $source ) {
   		if( preg_match( '!^rtmp://!', $source, $match ) ) {
   			$found_rtmp = true;
-  		} else {
-  			if( preg_match('!^http://(www\.)?youtube!',$source) ) {
-  				$video_errors[]	= 'Youtube video embeding not supported yet. Please download the video file and put it in as a source directly.';
-  			} else if( !isset($media) && !preg_match( '!\.(m3u8|m3u|avi)$!', $source) ) {
-  				$media = $source;
-  			}
-  			
-				if( preg_match( '!\.(mp4|m4v)$!', $source, $match ) ) {
-					$found_mp4 = true;
-				} else if( preg_match( '!\.mov$!', $source, $match ) ) {
-					$video_warnings[]	= 'We recommend that you re-encode your MOV video into MP4 format. MOV is not be 100% compatible with HTML5 and might not play in Google Chrome. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only" target="_blank">Read our article about video encoding</a>';
-				} else if( preg_match( '!\.flv$!', $source, $match ) ) {
-					$found_flv = true;
-				} else if( preg_match( '!\.(m3u8|m3u)$!', $source, $match ) ) {
-					$found_m3u8 = true;
-				} else if( preg_match( '!\.(avi)$!', $source, $match ) ) {
-					$found_avi = true;
-				} else if( preg_match( '!\.(3gp)$!', $source, $match ) ) {
-					$found_3gp = true;
-				} else if( preg_match( '!\.(webm)$!', $source, $match ) ) {
-					$found_webm = true;
-				}
+  		} else if( !isset($media) && !preg_match( '!\.(m3u8|m3u|avi)$!', $source) ) {
+  			$media = $source;
   		}
-  	}
-  	
-  	if( isset($found_flv) && !isset($found_mp4) ) {
-  		$video_warnings[]	= 'We recommend that you re-encode your FLV video into MP4 format or also provide the video in MP4 format. FLV is not compatible with HTML5 and won\'t play on devices without Flash (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
-  	}
-  	
-  	if( isset($found_rtmp) && !isset($found_mp4) ) {
-  		$video_warnings[]	= 'We recommend that you also provide your RTMP video in MP4 format. RTMP is not compatible with HTML5 and won\'t play on devices without Flash (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
-  	}
-  	
-  	if( isset($found_3gp) && !isset($found_mp4) ) {
-  		$video_warnings[]	= 'We recommend that you re-encode your 3GP video into a MP4 format. 3GP is not compatible with all HTML5 players so it won\'t play on these devices if they don\'t have Flash. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
-  	}  	
-  	
-  	if( isset($found_m3u8) && count($all_sources) == 1 ) {
-  		$video_warnings[]	= 'We recommend that you also provide your M3U8 video in MP4 or WEBM format. HTTP Live Streaming (m3u8) is only supported by Apple iOS devices (iPhone, iPad...). <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
-  	}
-  	
-  	if( isset($found_avi) ) {
-  		$video_errors[]	= 'AVI format is not supported by neither HTML5 nor Flash. Please re-encode the video to MP4. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only">Read our article about video encoding</a>';
-  	}
-  	
+  	}    
+  	  	  	
   	//$random = rand( 0, 10000 );
   	$random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
   	
@@ -853,7 +848,9 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           $video_warnings[]	= 'Detailed video check is not available with PHP Safe Mode On. Please contact your webhost support.';
         } else {
 								  
-          require_once( plugin_dir_path(__FILE__).'../includes/getid3/getid3.php');
+          if ( ! class_exists( 'getID3' ) ) {
+            require( ABSPATH . WPINC . '/ID3/getid3.php' );
+          }    
           $getID3 = new getID3;     
           
           if( !function_exists('curl_init') ) {
@@ -864,7 +861,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
             //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
             $upload_dir = wp_upload_dir();      
             $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
-        
+
             $out = fopen( $localtempfilename,'wb' );
             if( $out ) {
               list( $header, $sHTTPError ) = fv_wp_flowplayer_http( $remotefilename_encoded, array( 'file' => $localtempfilename ) );
@@ -905,7 +902,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
               }
               if( !@unlink($localtempfilename) ) {
                 $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
-              }         
+              }      
             } else {
               $video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
             }                  
@@ -916,7 +913,7 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
           Only check file length
           */
           if( isset($meta_action) && $meta_action == 'check_time' ) {
-          
+
             if( isset($ThisFileInfo['playtime_seconds']) ) {
               $time = $ThisFileInfo['playtime_seconds'];    	
             }
@@ -927,289 +924,11 @@ function fv_wp_flowplayer_check_mimetype( $URLs = false, $meta = false ) {
             update_post_meta( $post->ID, '_fv_flowplayer', $fv_flowplayer_meta );
             return;
           } 				
-          
-                                              
-          if( isset($ThisFileInfo['error']) ) {
-            fv_wp_flowplayer_array_search_by_item( 'not correctly handled', $ThisFileInfo['error'], $check, true );
-            if( $check ) {
-              $video_info['Warning'] = 'Video checker doesn\'t support this format.'; 
-            } else { 
-              $video_errors[] = implode( '<br />', $ThisFileInfo['error'] );
-            }
-          }
-          
-          if( isset($ThisFileInfo['fileformat']) ) {
-            $video_info['Format']  = $ThisFileInfo['fileformat'];
-          }		
-          
-          if( isset($ThisFileInfo['quicktime']) ) {			
-            if( !isset($ThisFileInfo['quicktime']['moov']) ) {
-              $video_warnings[] = 'Video meta data (moov-atom) not found at the start of the file! The video might be <strong>slow to start or not play at all in some browsers</strong>! Plese check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#the-bad-metadata-moov-position" target="_blank">FAQ</a>.';
-            } else {
-              if( $ThisFileInfo['quicktime']['moov']['offset'] > 1024 ) {
-                $video_warnings[]  = 'Meta Data (moov) not found at the start of the file (found at '. number_format( $ThisFileInfo['quicktime']['moov']['offset'] ).' byte)! Please move the meta data to the start of video, otherwise it might have a slow start up time. Plese check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#the-bad-metadata-moov-position" target="_blank">FAQ</a>.';
-              } else {
-                $video_info['Moov position']  = $ThisFileInfo['quicktime']['moov']['offset'];		
-              }
-              
-              /*if( isset($ThisFileInfo['quicktime']['moov']['subatoms']) ) {
-                foreach( $ThisFileInfo['quicktime']['moov']['subatoms'] AS $subatom ) {
-                  if( $subatom['hierarchy'] == 'trak' ) {
-                  
-                  }
-                }
-              }*/
-              
-              fv_wp_flowplayer_array_search_by_item( 'stts', $ThisFileInfo, $stts );
-              if( isset($stts[0]) && $stts[0]['number_entries'] > 1 ) {
-                $video_info['Seek points'] = $stts[0]['number_entries'].' (stts)';
-              } else {
-                if( isset($stts[0]['time_to_sample_table'][0]['sample_count']) ) {
-                  $video_info['Seek points'] = $stts[0]['time_to_sample_table'][0]['sample_count'].' (stts sample count)';
-                } else { 
-                  //$video_warnings[] = 'Only one seeking point found, it might be slow to seek in the video.'; //  not so useful
-                }
-              }               
-               
-            }
-          }
-          
-          if( isset($ThisFileInfo['audio']['streams']) ) {			
-            $count_streams = count( $ThisFileInfo['audio']['streams'] ); 
-            if( $count_streams == 1 ) {
-              $video_info['Audio'] = $count_streams.' stream, ';
-            } else {
-              $video_info['Audio'] = $count_streams.' streams, ';
-            }
-            foreach( $ThisFileInfo['audio']['streams'] AS $stream ) {
-              foreach( array( 'dataformat', 'codec', 'sample_rate', 'channels', 'bits_per_sample', 'channelmode' ) AS $item ) {
-                if( isset( $stream[$item] ) ) {
-                  $add = $stream[$item];
-                  switch( $item ) {
-                    case 'codec' : $add = '('.$add.')'; break;
-                    case 'sample_rate' : $add .= 'Hz, '; break;
-                    case 'bits_per_sample' : $add .= 'bit, '; break;
-                    case 'channels' : $add .= ' channels, '; break;					
-                  }
-                  $video_info['Audio'] .= $add.' ';
-                }
-              }
-              $video_info['Audio'] .= '|';
-            }
-            $video_info['Audio'] = trim( $video_info['Audio'], '|' );
-          }
-          
-          $video_info['Video'] = array();
-          if( isset($ThisFileInfo['video']['streams']) ) {			
-            $count_streams = count( $ThisFileInfo['video']['streams'] ); 
-            if( $count_streams == 1 ) {
-              $video_info['Video'] = $count_streams.' stream, ';
-            } else {
-              $video_info['Video'] = $count_streams.' streams, ';
-            }
-            foreach( $ThisFileInfo['video']['streams'] AS $stream ) {
-              foreach( array( 'dataformat', 'resolution_x', 'resolution_y', 'frame_rate' ) AS $item ) {
-                if( isset( $stream[$item] ) ) {
-                  $add = $stream[$item];
-                  switch( $item ) {
-                    case 'resolution_x' : $add .= ' x'; break;
-                    case 'resolution_y' : $add .= ', '; break;
-                    case 'frame_rate' : $add .= ' fps '; break;		
-                  }
-                  $video_info['Video'] .= $add.' ';
-                }
-              }
-              $video_info['Video'] .= '|';
-            }
-            $video_info['Video'] = trim( $video_info['Video'], '|' );
             
-            if( isset($ThisFileInfo['video']['bitrate']) ) {
-              $video_info['Video'] .= number_format( ceil($ThisFileInfo['video']['bitrate']/1024) ).'Kbps ';
-            }
-          }  
-          
-          if( isset($ThisFileInfo['video']['fourcc']) ) {			
-            if( !isset($video_info['Video']) ) $video_info['Video'] = array();
-            $video_info['Video'][] .= $ThisFileInfo['video']['fourcc'].' codec';
-          }
-      
-          if( isset($ThisFileInfo['quicktime']['ftyp']['signature']) ) {	
-            $video_info['Video'][] .= $ThisFileInfo['quicktime']['ftyp']['signature'].' file type ';
-            if( strcasecmp( trim($ThisFileInfo['quicktime']['ftyp']['signature']), 'M4V' ) === 0 && preg_match( '~.m4v$~', $remotefilename ) ) {      
-              $m4v_note_addition = false;
-              /*if( $fv_fp->conf['engine'] == 'default' ) {
-                $m4v_note_addition = ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so Firefox on Windows will always use Flash for M4V and will play fine.';
-              } */
-              $video_errors[] = 'We recommend that you change file extension of M4V videos to MP4, to avoid issues with Firefox on PC. '.$m4v_note_addition;
-            }
-          }
-          
-          if( isset($ThisFileInfo['video']['codec']) && $ThisFileInfo['video']['codec'] == 'MPEG-1' ) {
-            $video_info['Video'] = 'MPEG-1 Codec';
-            $video_errors[] = 'MPEG-1 is not a valid HTML5 video format. You need to re-encode the video into MP4.';
-          }  				
-          
-          if( isset($video_info['Video']) && is_array($video_info['Video']) ) {
-            $video_info['Video'] = implode( ', ', $video_info['Video'] );
-          
-            $video_format_info = array( 'avc1' => 'H.264 Encoder', 'mp42' => 'MS-MPEG4 v2 Decoder' );
-            foreach( $video_format_info AS $key => $item ) {
-              $video_info['Video'] = str_replace( $key, $key.' ('.$item.')', $video_info['Video'] );
-            }
-          }      
-		
-
         }
 			}	//	end is_wp_error check			
 			
 		}	//	end isset($media) 
-		
-		
-		if( $video_errors ) {
-			foreach( $video_errors AS $key => $item ) {			
-				if( preg_match( '!Atom at offset \d+ claims to go beyond end-of-file!', $item ) ) {
-					unset( $video_errors[$key] );	//	we are not interested in this particular warning, as we don't download the full file
-				}
-			}
-		}
-		
-			
-		if( $video_errors ) {			
-			$message_items = array();
-			foreach( $video_errors AS $key => $item ) {					        
-				if( $item && stripos( $item, '</p>' ) === false ) {
-					$item = '<p><strong>Error</strong>: '.$item.'</p>';
-				}
-				$message_items[] = $item;
-			}
-			$message .= implode("\n", $message_items);
-		}
-		
-		if( $video_warnings ) {				
-			$message_items = array();
-			foreach( $video_warnings AS $key => $item ) {					        
-				if( $item && stripos( $item, '</p>' ) === false ) {
-					$item = '<p><strong>Warning</strong>: '.$item.'</p>';
-				}
-				$message_items[] = $item;
-			}
-			$message .= implode("\n", $message_items);
-		}		
-		
-		
-		if( isset($video_info) ) {
-			$message_items = array();
-			foreach( $video_info AS $key => $item ) {
-				$message_item = '';	
-				if( !is_int($key) ) {
-					$message_item .= $key.': ';
-				}
-				$message_item .= '<tt>'.$item.'</tt>';
-				$message_items[] = $message_item;
-			}
-			$message .= '<p>'.implode("<br />\n", $message_items).'</p>';
-		}		
-				
-		$message = '<div class="mail-content-notice">'.$message.'</div>';		
-		
-		if( isset($ThisFileInfo) && $ThisFileInfo ) {
-			$more_info = var_export($ThisFileInfo,true);
-		
-			$note = '(Note: read about remote file analysis in <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#properties-built-checker-report-playing">FAQ</a>)';
-			$more_info = str_replace( array('Unknown QuickTime atom type', 'Atom at offset'), array($note.' Unknown QuickTime atom type', $note.' Atom at offset'), $more_info );
-		
-			$lines = explode( "\n", $more_info );
-      
-			$depth = 0;
-			$new_info = '<p>'.$note.'</p><div class="fv-wp-flowplayer-notice-parsed level-0">';
-      $iCount = 0;
-			foreach( $lines AS $line ) {
-        /*if( $iCount > 1000 ) {
-          $new_info .= "Output trimmed";
-          break;
-        }*/
-        
-				$class = ( $depth > 0 ) ? ' indent' : '';
-        
-				if( $depth > 6 ) {
-					$style = ' fv-wp-fp-hidden';
-          continue;
-				} else {
-          $iCount++;
-					$style = '';
-				}        
-			
-				if( strcmp( trim($line), 'array (' ) == 0 ) {
-					if( $depth == 0 ) {			
-						$new_info .= '<div class="fv-wp-flowplayer-notice-parsed level-0 row close"></div>';
-					}    		
-					$depth++;
-					$new_info .= '<div class="fv-wp-flowplayer-notice-parsed level-'.$depth.''.$class.'">';
-					continue;
-				}
-				if( strcmp( trim($line), '),' ) == 0 ) {
-					$depth--;
-					$new_info .= '</div><!-- .level-'.$depth.' -->';
-					$new_info .= '<div class="fv-wp-flowplayer-notice-parsed level-'.$depth.' row close"></div>';
-					continue;
-				}
-				
-				$line_i = explode( " => ", trim($line), 2 );
-				if( !$line_i ) {
-					continue;
-				}
-								
-				$line_html = '<div class="row'.$class.$style.'"><span>'.ucfirst( str_replace( "' =>", '', trim($line_i[0],"' ")) ).'</span><span class="value">'.( (isset($line_i[1])) ? trim(rtrim($line_i[1],", "),"' ") : '' ).'</span><div style="clear:both;"></div></div>';
-        $new_info .= $line_html."\n";
-
-			}
-			$new_info .= '</div>';
-		
-		}
-		
-		$message .= '<div class="support-'.$random.'">';
-		$message .= '<textarea id="wpfp_support_'.$random.'" class="wpfp_message_field" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" style="width: 98%; height: 150px">Enter your comment</textarea>';
-		$message .= '<p><a class="techinfo" href="#" onclick="jQuery(\'.more-'.$random.'\').toggle(); return false">Technical info</a> <img id="wpfp_spin_'.$random.'" src="'.site_url().'/wp-includes/images/wpspin.gif" style="display: none; " /> <input type="button" onclick="fv_wp_flowplayer_admin_support_mail(\''.$random.'\', this); return false" value="Send report to Foliovision" /></p>';
-		$message .= '</div>';
-		$message .= '<div class="more-'.$random.' mail-content-details" style="display: none; "><p>Plugin version: '.$fv_wp_flowplayer_ver.'</p>'.$new_info.'</div>';
-				
-          
-    if( count($video_errors) > 0 ) {
-    	$issues_text = '<span class="vid-issues">Video Issues</span>';
-    } else if( count($video_warnings) ) {
-			$issues_text = '<span class="vid-warning">Video Warnings</span>';    
-    } else {
-    	$issues_text = '<span class="vid-ok">Video OK</span>';
-    }
-    $message = "<div onclick='fv_wp_flowplayer_admin_show_notice(\"$random\", this.parent); return false' class='fv_wp_flowplayer_notice_head'>Report Issue</div><small>Admin: <a class='fv_wp_flowplayer_dialog_link' href='#' onclick='fv_wp_flowplayer_admin_show_notice(\"$random\", this); return false'>$issues_text</a></small><div id='fv_wp_fp_notice_$random' class='fv_wp_fp_notice_content' style='display: none;'>$message</div>\n";
-      
-    $json = @json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
-    $last_error = ( function_exists('json_last_error') ) ? json_last_error() : true;
-       
-		if( $last_error ) {
-			if( function_exists('mb_check_encoding') && function_exists('utf8_encode') ) {
-					if(!mb_check_encoding($message, 'UTF-8')) {
-							$message = utf8_encode($message);
-					}
-				} else {
-					$message = htmlentities( $message, ENT_QUOTES, 'utf-8', FALSE);
-					$message = ( $message ) ? $message : 'Admin: Error parsing JSON';
-				}           
-			
-			$json = json_encode( array( $message, count( $video_errors ), count( $video_warnings ) ) );
-			$last_error = ( function_exists('json_last_error') ) ? json_last_error() : false;
-			if( $last_error ) {
-				echo '<FVFLOWPLAYER>'.json_encode( array( 'Admin: JSON error: '.$last_error, count( $video_errors ), count( $video_warnings ) ) ).'</FVFLOWPLAYER>';    
-			} else {
-				echo '<FVFLOWPLAYER>'.$json.'</FVFLOWPLAYER>';
-			}
-		} else {
-			echo '<FVFLOWPLAYER>'.$json.'</FVFLOWPLAYER>';
-		}
-		die();
-
-  } else {  
-  	die('-1');
   }
 }
 
@@ -1594,6 +1313,21 @@ function fv_wp_flowplayer_pointers_ajax() {
 		}
 		die();
 	}
+  
+	if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_video_checker_service' && isset($_POST['value']) ) {
+		check_ajax_referer('fv_flowplayer_video_checker_service');
+		$conf = get_option( 'fvwpflowplayer' );
+		if( $conf ) {
+			if( $_POST['value'] == 'true' ) {
+				$conf['disable_videochecker'] = 'false';
+        $conf['video_checker_agreement'] = 'true';
+			} else {
+				$conf['disable_videochecker'] = 'true';
+			}
+			update_option( 'fvwpflowplayer', $conf );
+		}
+		die();
+	}  
 }
 
 
@@ -1613,58 +1347,103 @@ function fv_flowplayer_filetypes( $aFile ) {
 }
 
 
-function fv_wp_flowplayer_install_pro() {  
-  check_ajax_referer( 'fv_wp_flowplayer_install_pro', 'nonce' );
-  
-  if( !isset( $_POST['plugin'] ) ) {
-    die();
-  }
-  
+/*
+ *  Check the extension info from plugin license transient and activate the plugin
+ */
+function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' ) {
   global $hook_suffix;
-  $plugin_package = $_POST['plugin'];
+
+  $aInstalled = ( get_option('fv_flowplayer_extension_install' ) ) ? get_option('fv_flowplayer_extension_install' ) : array();
+  $aInstalled = array_merge( $aInstalled, array( $plugin_package => false ) );
+  update_option('fv_flowplayer_extension_install', $aInstalled );
   
   $aPluginInfo = get_transient( 'fv_flowplayer_license' );
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug; 
   $download_url = $aPluginInfo->{$plugin_package}->url;
 
-  $url = site_url('wp-admin');
+  $url = wp_nonce_url( site_url().'/wp-admin/options-general.php?page=fvplayer', 'fv_player_pro_install', 'nonce_fv_player_pro_install' );
 
   set_current_screen();
   
   ob_start();
-  if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, null ) ) ) {
+  if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
     $form = ob_get_clean();
-    echo "<FVFLOWPLAYER>".json_encode( array( 'form' => $form ) )."</FVFLOWPLAYER>";  //  todo: test
+    include( ABSPATH . 'wp-admin/admin-header.php' );
+    echo fv_wp_flowplayer_install_extension_talk($form);
+    include( ABSPATH . 'wp-admin/admin-footer.php' );
     die;
   }	
 
   if ( ! WP_Filesystem( $creds ) ) {
     ob_start();
-    request_filesystem_credentials( $url, $method, true, false, null );
+    request_filesystem_credentials( $url, $method, true, false, false );
     $form = ob_get_clean();
-    echo "<FVFLOWPLAYER>".json_encode( array( 'form' => $form ) )."</FVFLOWPLAYER>";  //  todo: test
+    include( ABSPATH . 'wp-admin/admin-header.php' );
+    echo fv_wp_flowplayer_install_extension_talk($form);
+    include( ABSPATH . 'wp-admin/admin-footer.php' );
     die;
   }
 
   require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-  
-  if( !is_plugin_active($plugin_basename) ) {
+     
+  if( !is_plugin_active($plugin_basename) || is_wp_error(validate_plugin($plugin_basename)) ) {
+    echo '<div style="display: none;">';
     $objInstaller = new Plugin_Upgrader();
     $objInstaller->install( $download_url );
-  
+    echo '</div>';
     wp_cache_flush();
-    if ( $objInstaller->plugin_info() ) {
-      $plugin_basename = $objInstaller->plugin_info();
+    
+    if ( is_wp_error( $objInstaller->skin->result ) ) {
+      update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension install failed - '.$objInstaller->skin->result->get_error_message() );
+      $bResult = false;
+    } else {    
+      if ( $objInstaller->plugin_info() ) {
+        $plugin_basename = $objInstaller->plugin_info();
+        
+      }
+      
+      $activate = activate_plugin( $plugin_basename );
+      if ( is_wp_error( $activate ) ) {
+        update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension install failed - '.$activate->get_error_message() );
+        $bResult = false;
+      }
     }
   }
 
-  $activate = activate_plugin( $plugin_basename );
-  if ( is_wp_error( $activate ) ) {
-    echo "<FVFLOWPLAYER>".json_encode( array( 'message' => $activate->get_error_message(), 'error' => $activate->get_error_message() ) )."</FVFLOWPLAYER>";
-    die;
-  }    
-  echo "<FVFLOWPLAYER>".json_encode( array( 'message' => 'Success!', 'plugin' => $plugin_basename ) )."</FVFLOWPLAYER>";
-  die;
+  if( !isset($bResult) ) {
+    if( !isset($_GET['page']) || strcmp($_GET['page'],'fvplayer') != 0 ) {
+      update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension installed - check the new <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">Pro features!</a>!' );
+    }
+    $bResult = true;
+  }
+  
+  $aInstalled = ( get_option('fv_flowplayer_extension_install' ) ) ? get_option('fv_flowplayer_extension_install' ) : array();
+  $aInstalled = array_merge( $aInstalled, array( $plugin_package => $bResult ) );
+  update_option('fv_flowplayer_extension_install', $aInstalled );
 
+  return $bResult;
 }
 
+
+function fv_wp_flowplayer_install_extension_talk( $content ) {
+  $content = preg_replace( '~<h3.*?</h3>~', '<h3>FV Player Pro auto-installation</h3><p>As a FV Flowplayer license holder, we would like to automatically install our Pro extension for you.</p>', $content );
+  $content = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer'.'">Skip the Pro addon install</a>', $content );
+  return $content;
+}
+
+
+function fv_wp_flowplayer_activate_extension() {
+  check_ajax_referer( 'fv_wp_flowplayer_activate_extension', 'nonce' );
+  if( !isset( $_POST['plugin'] ) ) {
+    die();
+  }
+  
+  $activate = activate_plugin( $_POST['plugin'] );
+  if ( is_wp_error( $activate ) ) {
+    echo "<FVFLOWPLAYER>".json_encode( array( 'message' => $activate->get_error_message(), 'error' => $activate->get_error_message() ) )."</FVFLOWPLAYER>";
+    die();
+  }    
+
+  echo "<FVFLOWPLAYER>".json_encode( array( 'message' => 'Success!', 'plugin' => $_POST['plugin'] ) )."</FVFLOWPLAYER>";
+  die();
+}

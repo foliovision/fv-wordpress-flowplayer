@@ -15,12 +15,14 @@
 .fv-wp-flowplayer-notice-small .fv_wp_flowplayer_notice_head { display: none; }
 .fv-wp-flowplayer-notice.fv-wp-flowplayer-notice .fv_wp_flowplayer_notice_head { display: block; text-align: center; font-size: 14px; border-bottom: 1px solid #7a7a7a; padding: 10px; line-height: 1; margin: 0 -0.6em 1em -0.6em; background-color: #e3e3e3; background-repeat: repeat-x; background-image: -moz-linear-gradient(top, #e3e3e3, #aeaeae); 	background-image: -ms-linear-gradient(top, #e3e3e3, #aeaeae); background-image: -webkit-linear-gradient(top, #e3e3e3, #aeaeae); background-image: -o-linear-gradient(top, #e3e3e3, #aeaeae); background-image: linear-gradient(top, #e3e3e3, #aeaeae); border-radius: 3px 3px 0 0; }
 
-.fv-wp-flowplayer-notice-small .vid-issues { color: red; }
-.fv-wp-flowplayer-notice-small .vid-warning { color: orange; }
 .fv-wp-flowplayer-notice-small .vid-ok { color: green; }
-.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-issues { color: #670004; }
-.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-warning { color: #ac641e; }
+.fv-wp-flowplayer-notice-small .vid-warning { color: orange; }
+.fv-wp-flowplayer-notice-small .vid-issues { color: red; }
+
+
 .fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-ok { color: #114b00; }
+.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-warning { color: #ac641e; }
+.fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice .vid-issues { color: #670004; }
 
 .fv-wp-fp-hidden { display: none; }
 .fv-wp-flowplayer-notice-parsed .row { text-align: left; border-bottom: 1px solid lightgray; border-right: 1px solid lightgray; border-left: 1px solid lightgray; padding-left: 5px; font-size: 12px; clear: both; }

@@ -28,6 +28,12 @@ add_action('wp_footer','flowplayer_display_scripts',100);
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
 
+
+function fv_flowplayer_remove_bad_scripts() {
+  wp_deregister_script( 'flowplayer' );
+}
+add_action( 'wp_print_scripts', 'fv_flowplayer_remove_bad_scripts', 100 );
+
  
 
 function flowplayer_content_remove_commas($content) {
@@ -267,6 +273,9 @@ function flowplayer_prepare_scripts() {
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
     if( !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
       $aConf['safety_resize'] = true;
+    }
+    if( current_user_can('manage_options') && $fv_fp->conf['disable_videochecker'] != 'true' ) {
+      $aConf['video_checker_site'] = home_url();
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );

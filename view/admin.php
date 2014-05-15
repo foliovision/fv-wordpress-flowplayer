@@ -488,7 +488,8 @@ function fv_flowplayer_admin_pro() {
       <td style="width: 250px"><label>Amazon CloudFront protected content:</label></td>
       <td>
         <p class="description">
-          Open <a href="#" onclick="return false">media library</a> to upload your CloudFront access key.
+          <input type="checkbox" checked="checked" disabled="true" />
+          Protect your Amazon CDN hosted videos.
         </p>
       </td>
     </tr>      
@@ -627,7 +628,7 @@ add_meta_box( 'fv_flowplayer_amazon_options', 'Amazon S3 Protected Content', 'fv
 add_meta_box( 'fv_flowplayer_ads', 'Ads', 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', 'Integrations', 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 if( !class_exists('FV_Player_Pro') ) {
-  //add_meta_box( 'fv_player_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
+  add_meta_box( 'fv_player_pro', 'Pro Features', 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
 add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
 
@@ -657,26 +658,26 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   </div>
   <?php 
   
-  if( isset($_GET['pro_beta']) ) :
-    if( flowplayer::is_licensed() ) {
-      $aCheck = get_transient( 'fv_flowplayer_license' );
-    }
-    
-    if( isset($aCheck->valid) && $aCheck->valid ) : ?>
-      <div id="fv_flowplayer_addon_pro">
-        <p>
-          Thank you for purchasing FV Flowplayer license!
-          <?php if( class_exists('FV_Player_Pro') ) : // todo, add the box with Pro features! ?>
-            <input type="button" class='button fv-flowplayer-admin-addon-installed' data-plugin='fv_player_pro' value="Pro features enabled" />
-          <?php else : ?>
-            <input type="button" class='button fv-flowplayer-admin-addon-install' data-plugin='fv_player_pro' value="Get the FV Player PRO now!" />
-            <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
-          <?php endif; ?>
-        </p>
-      </div>
-    <?php
-    endif;
+  if( flowplayer::is_licensed() ) {
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+    $aInstalled = get_option('fv_flowplayer_extension_install');
+  }
+  
+  if( isset($aCheck->valid) && $aCheck->valid && is_plugin_inactive('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
+    <div id="fv_flowplayer_addon_pro">
+      <p>Thank you for purchasing FV Player license! <input type="button" class='button fv_wp_flowplayer_activate_extension' data-plugin='fv-player-pro/fv-player-pro.php' value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /></p>
+    </div>
+  <?php elseif( isset($aCheck->valid) && $aCheck->valid && is_plugin_active('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
+    <div id="fv_flowplayer_addon_pro">
+      <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="location.hash = '#fv_player_pro'" value="Pro pack installed" /></p>
+    </div>
+  <?php elseif( isset($aCheck->valid) && $aCheck->valid ) : ?>
+    <div id="fv_flowplayer_addon_pro">
+      <p>Thank you for purchasing FV Player license! <form method="post"><input type="submit" class="button" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?></form></p>
+    </div>
+  <?php
   endif;
+
   
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>    
   <?php else : ?>
@@ -767,6 +768,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
   }
 </script>
 
+
 <script type="text/javascript">
 	//<![CDATA[
 	jQuery(document).ready( function($) {
@@ -775,12 +777,12 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
-    jQuery('.fv-flowplayer-admin-addon-install').click( function() {  //  todo: block multiple clicks
+    jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       jQuery(button).siblings('img').show();
       
       var button = this;
-      jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_install_pro', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_install_pro' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
+      jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_activate_extension' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
         jQuery(button).siblings('img').hide();
         
         var obj;
@@ -795,7 +797,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
           if( typeof(obj.error) == "undefined" ) {
             //window.location.hash = '#'+jQuery(button).attr("data-plugin");
             //window.location.reload(true);
-            window.location.href = window.location.href+'&'+jQuery(button).attr("data-plugin")+'#'+jQuery(button).attr("data-plugin");
+            window.location.href = window.location.href;
           }
         } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
           jQuery(button).after('<p>Error parsing JSON</p>');
@@ -816,3 +818,4 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 	});
 	//]]>
 </script>
+

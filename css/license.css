@@ -12,7 +12,7 @@
 	color: #353535;
 }
 #fv_flowplayer_addon_pro {
-	width: 690px;
+	float: left;
 	display: block;
 	margin: 10px;
 	padding: 0 10px;

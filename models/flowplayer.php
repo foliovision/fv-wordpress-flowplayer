@@ -165,8 +165,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	      $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
 	    }
 	  }
-	  $aNewOptions['key'] = trim($sKey);   
-	  update_option( 'fvwpflowplayer', $aNewOptions );
+	  $aNewOptions['key'] = trim($sKey);
+    $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
+	  update_option( 'fvwpflowplayer', array_merge($aOldOptions,$aNewOptions) );
     $this->conf = $aNewOptions;    
     
     $this->css_writeout();
@@ -432,7 +433,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function get_encoded_url( $sURL ) {
-    if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
+    //if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
       $url_parts = parse_url( $sURL );
       $url_parts_encoded = parse_url( $sURL );			
       if( !empty($url_parts['path']) ) {
@@ -444,9 +445,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       return http_build_url($sURL, $url_parts);
-    } else {
+    /*} else {
       return $sURL;
-    }    
+    }*/    
   }
   
   

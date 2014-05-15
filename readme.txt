@@ -324,6 +324,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.7 - 2014/05/15 =
+
+* Feature - licensed users automatically get FV Player Pro extension (video lightbox, Vimeo)
+* Feature - video checker now also check RTMP!
+* Fix - playlist style fix - alignment of more than 4 items
+* Bugfix - basic Youtube embed fullscreen function
+
 = 2.2.6 - 2014/04/17 =
 
 * Fix - compatibility with Wordpress 3.9 (it contains new TinyMCE editor version)
