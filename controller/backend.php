@@ -1352,7 +1352,7 @@ function fv_flowplayer_filetypes( $aFile ) {
  */
 function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' ) {
   global $hook_suffix;
-  
+
   $aInstalled = ( get_option('fv_flowplayer_extension_install' ) ) ? get_option('fv_flowplayer_extension_install' ) : array();
   $aInstalled = array_merge( $aInstalled, array( $plugin_package => false ) );
   update_option('fv_flowplayer_extension_install', $aInstalled );
@@ -1385,8 +1385,8 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   }
 
   require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-  
-  if( !is_plugin_active($plugin_basename) ) {
+     
+  if( !is_plugin_active($plugin_basename) || is_wp_error(validate_plugin($plugin_basename)) ) {
     echo '<div style="display: none;">';
     $objInstaller = new Plugin_Upgrader();
     $objInstaller->install( $download_url );
