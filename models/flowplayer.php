@@ -165,8 +165,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	      $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
 	    }
 	  }
-	  $aNewOptions['key'] = trim($sKey);   
-	  update_option( 'fvwpflowplayer', $aNewOptions );
+	  $aNewOptions['key'] = trim($sKey);
+    $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
+	  update_option( 'fvwpflowplayer', array_merge($aOldOptions,$aNewOptions) );
     $this->conf = $aNewOptions;    
     
     $this->css_writeout();
