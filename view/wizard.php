@@ -67,7 +67,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
         <tbody>
           <?php do_action( 'fv_flowplayer_shortcode_editor_before' ); ?>
           <tr>
-            <th scope="row" class="label" style="width: 18%">
+            <th scope="row" class="label" style="width: 19%">
               <a class="alignleft fv_wp_flowplayer_playlist_remove" href="#" onclick="return fv_wp_flowplayer_playlist_remove(this)">(remove)</a>
               <label for="fv_wp_flowplayer_field_src" class="alignright">Video</label>
             </th>
@@ -85,11 +85,11 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
             </td>
           </tr>
           <tr class="video-size"><th></th>
-            <td class="field"><label for="fv_wp_flowplayer_field_width">Width <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 18%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height">Height <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 18%" value=""/></td>
+            <td class="field"><label for="fv_wp_flowplayer_field_width">Width <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height">Height <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value=""/></td>
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_src_1_wrapper">
-            <th scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_src_1" class="alignright">Video <small>(another format)</small></label></th>
+            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_1" class="alignright">Video <small>(another format)</small></label></th>
             <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src_1" name="fv_wp_flowplayer_field_src_1" value=""/>
             <?php if ($allow_uploads=="true") { ?> 
               <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_video_1&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Video</a>
@@ -98,7 +98,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_src_2_wrapper">
-            <th scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_src_2" class="alignright">Video <small>(another format)</small></label></th>
+            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_2" class="alignright">Video <small>(another format)</small></label></th>
             <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src_2" name="fv_wp_flowplayer_field_src_2" value=""/>
             <?php if ($allow_uploads=="true") {	?>  
               <a class="thickbox button add_media" href="media-upload.php?post_id=<?php echo $post_id; ?>&amp;type=fvplayer_video_2&amp;TB_iframe=true&amp;width=500&amp;height=300"><span class="wp-media-buttons-icon"></span> Add Video</a>
@@ -107,7 +107,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_rtmp_wrapper">
-            <th scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright">RTMP Server</label> <?php if( !empty($fv_flowplayer_conf["rtmp"]) ) : ?>(<abbr title="Leave empty to use Flash streaming server from plugin settings">?</abbr>)<?php endif; ?></th>
+            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright">RTMP Server</label> <?php if( !empty($fv_flowplayer_conf["rtmp"]) ) : ?>(<abbr title="Leave empty to use Flash streaming server from plugin settings">?</abbr>)<?php endif; ?></th>
             <td colspan="2" class="field">
               <input type="text" class="text fv_wp_flowplayer_field_rtmp" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" placeholder="<?php if( !empty($fv_flowplayer_conf["rtmp"]) ) echo $fv_flowplayer_conf["rtmp"]; ?>" />
               &nbsp;<label for="fv_wp_flowplayer_field_rtmp_path"><strong>RTMP Path</strong></label>
@@ -116,7 +116,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
           </tr>  			
           
           <tr id="fv_wp_flowplayer_add_format_wrapper">
-            <th scope="row" class="label" style="width: 18%"></th>
+            <th scope="row" class="label" style="width: 19%"></th>
             <td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_format()" style="outline: 0"><span id="add-format">+</span>&nbsp;Add another format</a> (i.e. WebM, OGV)</div></td>
             <td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_rtmp()" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;Add RTMP</a></div></td>  				
           </tr>      
@@ -155,7 +155,7 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
     </div><!-- #fv-flowplayer-playlist-->
     <table<?php if( $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?>>
       <tr id="fv_wp_flowplayer_add_format_wrapper">
-        <th scope="row" class="label" style="width: 18%"></th>
+        <th scope="row" class="label" style="width: 19%"></th>
         <td class="field" style="width: 50%"></td>
         <td class="field"><div id="add_rtmp_wrapper"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;Add Playlist Item</a></div></td>  				
       </tr>
@@ -172,11 +172,11 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
         }
         ?>     
         <tr<?php if( !$show_additonal_features ) echo ' style="display: none"';?>>
-          <th scope="row" width="18%"></th>
+          <th scope="row" width="19%"></th>
           <td style="text-align: left; padding: 10px 0; text-transform: uppercase;">Additional features</td>
         </tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["popup"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_popup" class="alignright">HTML Popup</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup" class="alignright">HTML Popup</label></th>
   				<td><textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea></td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
@@ -216,19 +216,19 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
           </td>
   			</tr>           
         <tr<?php if( $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_ad" class="alignright">Ad code</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_ad" class="alignright">Ad code</label></th>
   				<td>
   					<textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
   				</td>
   			</tr> 
   			<tr<?php if( $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' style="display: none"'; ?>><th></th>
   				<td class="field">
-  					<label for="fv_wp_flowplayer_field_ad_width">Width <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 18%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_ad_height">Height <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 18%" value=""/><br />
+  					<label for="fv_wp_flowplayer_field_ad_width">Width <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_ad_height">Height <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%" value=""/><br />
   					<input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> Skip global ad in this video  					
   				</td>
   			</tr>			
         <tr<?php if( $fv_flowplayer_conf["interface"]["align"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 18%"><label for="fv_wp_flowplayer_field_align" class="alignright">Align</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_align" class="alignright">Align</label></th>
   				<td>
             <select id="fv_wp_flowplayer_field_align" name="fv_wp_flowplayer_field_align">
               <option>Default</option>
