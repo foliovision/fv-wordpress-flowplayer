@@ -239,6 +239,7 @@
 	float: left;
 	display: inline-block;
 	margin: 0 5px;
+  padding: 0;
 }
 
 .fp-embed-code .fvp-sharing a {
