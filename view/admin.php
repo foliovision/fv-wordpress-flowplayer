@@ -194,6 +194,12 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 						<tr>
+							<td><label for="disableembedding">Disable sharing:</label></td>
+							<td style="text-align:left">
+								<?php fv_flowplayer_admin_checkbox('disablesharing'); ?>
+							</td>
+						</tr>            
+						<tr>
 							<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
 							<td style="text-align:left">
 								<?php fv_flowplayer_admin_checkbox('postthumbnail'); ?>

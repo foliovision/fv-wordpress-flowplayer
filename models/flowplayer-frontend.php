@@ -258,8 +258,12 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
-					$attributes['data-embed'] = 'false';
+					$attributes['data-fvembed'] = 'false';
 				}
+        
+				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
+					$attributes['data-fvshare'] = 'false';
+				}        
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
 					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];

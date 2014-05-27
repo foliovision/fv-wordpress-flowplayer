@@ -1,4 +1,6 @@
-#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2;}
+#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?>; position: absolute; top: 1%; left: 1%; z-index: 2; }
+#content .flowplayer.is-mouseout .fv-wp-flowplayer-notice-small, .flowplayer.is-mouseout .fv-wp-flowplayer-notice-small { top: 1%; -webkit-transition:top .15s .3s;-moz-transition:top .15s .3s;transition:top .15s .3s }
+#content .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small, .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small { top: 32px }
 #content .fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice { color: black !important; background-color: #FFFFE0; border-color: #E6DB55; margin: -1%; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; line-height: 15px; z-index: 100; width: 97%; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif }
 #content .fv-wp-flowplayer-notice strong, .fv-wp-flowplayer-notice strong { font-weight: bold; }
 #content .fv-wp-flowplayer-notice blockquote, .fv-wp-flowplayer-notice blockquote { font-size: 12px; }
