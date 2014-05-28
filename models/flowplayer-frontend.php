@@ -258,12 +258,8 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
-					$attributes['data-fvembed'] = 'false';
-				}
-        
-				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
-					$attributes['data-fvshare'] = 'false';
-				}        
+					$attributes['data-embed'] = 'false';
+				}           
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
 					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
@@ -424,6 +420,8 @@ class flowplayer_frontend extends flowplayer
         }
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
+              
+        $this->ret['html'] .= $this->get_sharing_html()."\n";
         
         $this->ret['html'] .= $this->get_video_checker_html()."\n";
         
@@ -816,6 +814,46 @@ class flowplayer_frontend extends flowplayer
     $media = apply_filters( 'fv_flowplayer_media', $media, $this );
     
     return $media;
+  }
+  
+  
+  function get_sharing_html() {
+  
+    $sPermalink = urlencode(get_permalink());
+    $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+    $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
+   
+    $sHTMLSharing = <<< HTML
+  <label>Share the video</label>
+  <ul class="fvp-sharing">
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=$sPermalink" target="_blank">Facebook</a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/home?status=$sTitle$sPermalink" target="_blank">Twitter</a></li>
+    <li><a class="sharing-google" href="https://plus.google.com/share?url=$sPermalink" target="_blank">Google+</a></li>
+    <li><a class="sharing-email" href="mailto:?body=$sMail" target="_blank">Email</a></li>
+  </ul>
+HTML;
+
+    $sHTMLEmbed = <<< HTML
+  <label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label>
+  <div class="embed-code">
+    <label>Copy and paste this HTML code into your webpage to embed.</label>
+    <textarea></textarea>
+  </div>  
+HTML;
+
+    if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
+      $sHTMLEmbed = '';
+    }
+    
+    if( $this->aCurArgs['sharing'] == 'false' || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
+      $sHTMLSharing = '';
+    }    
+
+    if( $sHTMLSharing || $sHTMLEmbed ) {
+      $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLEmbed</div>";
+    }
+
+    return $sHTML;
   }
   
   

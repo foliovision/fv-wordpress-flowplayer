@@ -194,7 +194,7 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 						<tr>
-							<td><label for="disableembedding">Disable sharing:</label></td>
+							<td><label for="disablesharing">Disable sharing:</label></td>
 							<td style="text-align:left">
 								<?php fv_flowplayer_admin_checkbox('disablesharing'); ?>
 							</td>
