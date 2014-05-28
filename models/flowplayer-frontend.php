@@ -47,7 +47,7 @@ class flowplayer_frontend extends flowplayer
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
-    $this->aCurArgs = apply_filters( 'fv_flowplayer_args',$args );
+    $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
     $this->sHTMLAfter = false;
 		$player_type = 'video';
 		$rtmp = false;
@@ -148,6 +148,8 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {                 
       list( $playlist_items_external_html, $aPlaylistItems ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }    
+    
+    $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
