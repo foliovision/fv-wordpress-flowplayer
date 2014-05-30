@@ -365,14 +365,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 				$url_components['path'] = '/'.$fv_fp->conf['amazon_bucket'][$amazon_key].$url_components['path'];
 			}
 		
-			$stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";	
-		
-			$signature = utf8_encode($stringToSign);
-
-			$signature = hash_hmac('sha1', $signature, $fv_fp->conf['amazon_secret'][$amazon_key], true);
-			$signature = base64_encode($signature);
-			
-			$signature = urlencode($signature);
+      do {
+        $expires++;
+        $stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";	
+      
+        $signature = utf8_encode($stringToSign);
+  
+        $signature = hash_hmac('sha1', $signature, $fv_fp->conf['amazon_secret'][$amazon_key], true);
+        $signature = base64_encode($signature);
+        
+        $signature = urlencode($signature);        
+      } while( stripos($signature,'%2B') !== false );
 		
 			$url = $resource;
       

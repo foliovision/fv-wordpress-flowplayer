@@ -322,7 +322,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * VAST/VPAID support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
-* other bugfixes
+
+= 2.2.8 - 2014/05/30 =
+
+* Fix - compatibility issues with "NextGen Gallery" plugin fixed
+* Fix - compatibility issues with "SI CAPTCHA Anti-Spam" plugin fixed
+* Pro - improved Vimeo error messages
+* Pro - video lightbox now autoplays the video
+
 
 = 2.2.7 - 2014/05/15 =
 
@@ -330,6 +337,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - video checker now also check RTMP!
 * Fix - playlist style fix - alignment of more than 4 items
 * Bugfix - basic Youtube embed fullscreen function
+* Pro - Pro extension released! Adds support for video lightbox and advanced Vimeo embedding!
 
 = 2.2.6 - 2014/04/17 =
 
