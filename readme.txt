@@ -327,6 +327,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Fix - compatibility issues with "NextGen Gallery" plugin fixed
 * Fix - compatibility issues with "SI CAPTCHA Anti-Spam" plugin fixed
+* Fix - Amazon S3 secure URLs in playlists were sometimes failing in Flash
 * Pro - improved Vimeo error messages
 * Pro - video lightbox now autoplays the video
 

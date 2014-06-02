@@ -502,7 +502,7 @@ class flowplayer_frontend extends flowplayer
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
           if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
-            $flash_media = $media_url['flashDISABLED'];
+            $flash_media = $media_url['flash'];
           }
         } else {
           $actual_media_url = $media_url;
@@ -519,7 +519,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         if( !$bHaveFlash ) {
-          $aItem[] = array( 'flashDISABLED' => $flash_media );
+          $aItem[] = array( 'flash' => $flash_media );
         }      
       }
       
@@ -559,7 +559,7 @@ class flowplayer_frontend extends flowplayer
             if( is_array($media_url) ) {
               $actual_media_url = $media_url['media'];
               if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
-                $flash_media = $media_url['flashDISABLED'];
+                $flash_media = $media_url['flash'];
               }
             } else {
               $actual_media_url = $media_url;
@@ -576,7 +576,7 @@ class flowplayer_frontend extends flowplayer
             }
             
             if( !$bHaveFlash ) {
-              $aItem[] = array( 'flashDISABLED' => $flash_media );
+              $aItem[] = array( 'flash' => $flash_media );
             }      
           }
       
