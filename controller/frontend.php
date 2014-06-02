@@ -23,12 +23,10 @@ $fv_fp = new flowplayer_frontend();
 
 //add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_head', 'flowplayer_head');
-add_action('wp_print_footer_scripts','flowplayer_prepare_scripts',0);
+add_action('wp_footer','flowplayer_prepare_scripts',9);
 add_action('wp_footer','flowplayer_display_scripts',100);          
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
-
-add_filter( 'run_ngg_resource_manager', '__return_false' );
 
 
 function fv_flowplayer_remove_bad_scripts() {
@@ -252,7 +250,7 @@ function flowplayer_content( $content ) {
  */
 function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
-//die('flowplayer_prepare_scripts');
+
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
      (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
