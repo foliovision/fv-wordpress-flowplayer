@@ -5,7 +5,7 @@ var FVFP_sStoreRTMP = 0;
 jQuery(document).ready(function(){ 
   if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
     jQuery(".fv-wordpress-flowplayer-button").colorbox( {
-      width:"620px",
+      width:"600px",
       height:"600px",
       href: "#fv-wordpress-flowplayer-popup",
       inline: true,
@@ -364,7 +364,7 @@ function fv_wp_flowplayer_edit() {
 function fv_wp_flowplayer_dialog_resize() {
   var iContentHeight = parseInt( jQuery('#fv-wordpress-flowplayer-popup').css('height') );
   if( iContentHeight < 150 ) iContentHeight = 150;
-  jQuery('#fv-wordpress-flowplayer-popup').colorbox.resize({width:620, height:(iContentHeight+100)})
+  jQuery('#fv-wordpress-flowplayer-popup').colorbox.resize({width:600, height:(iContentHeight+100)})
 }
 
 

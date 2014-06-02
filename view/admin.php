@@ -194,12 +194,6 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 						<tr>
-							<td><label for="disablesharing">Disable sharing:</label></td>
-							<td style="text-align:left">
-								<?php fv_flowplayer_admin_checkbox('disablesharing'); ?>
-							</td>
-						</tr>            
-						<tr>
 							<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
 							<td style="text-align:left">
 								<?php fv_flowplayer_admin_checkbox('postthumbnail'); ?>
@@ -675,7 +669,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
     </div>
   <?php elseif( isset($aCheck->valid) && $aCheck->valid && is_plugin_active('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
     <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" /></p>
+      <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="location.hash = '#fv_player_pro'" value="Pro pack installed" /></p>
     </div>
   <?php elseif( isset($aCheck->valid) && $aCheck->valid ) : ?>
     <div id="fv_flowplayer_addon_pro">
