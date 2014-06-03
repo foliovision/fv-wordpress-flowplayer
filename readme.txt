@@ -324,6 +324,20 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+
+= 2.2.9 - 2014/06/03 =
+
+* Bugfix - shortcode editor fixes for captions
+* Pro - quality switching now happens live!
+
+= 2.2.8 - 2014/05/30 =
+
+* Fix - compatibility issues with "NextGen Gallery" plugin fixed
+* Fix - compatibility issues with "SI CAPTCHA Anti-Spam" plugin fixed
+* Fix - Amazon S3 secure URLs in playlists were sometimes failing in Flash
+* Pro - improved Vimeo error messages
+* Pro - video lightbox now autoplays the video
+
 = 2.2.7 - 2014/05/15 =
 
 * Feature - licensed users automatically get FV Player Pro extension (video lightbox, Vimeo)

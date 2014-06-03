@@ -487,10 +487,15 @@ class flowplayer_frontend extends flowplayer
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
       $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );			
       $sItems = explode( ';', $sShortcode );
-      
+
       if( $sCaption ) {
-        $sCaption = str_replace( '\;', '<!--semicolon-->', $sCaption );
+        $replace_from = array('&amp;quot;','&amp;','\;','&quot;');				
+        $replace_to = array('"','<!--amp-->','<!--semicolon-->','"');				
+        $sCaption = str_replace( $replace_from, $replace_to, $sCaption );
         $aCaption = explode( ';', $sCaption );        
+      }
+      foreach( $aCaption AS $key => $item ) {
+        $aCaption[$key] = str_replace('<!--amp-->','&',$item);
       }
         
       				

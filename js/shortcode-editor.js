@@ -241,9 +241,9 @@ function fv_wp_flowplayer_edit() {
   	var sPlaylist = shortcode_parse_fix.match( /playlist=['"]([^']*?)['"]/ );
     fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /playlist=['"]([^']*?)['"]/, '' );
     
-  	var sCaptions = shortcode_parse_fix.match( /caption=['"]([^']*?)['"]/ );
-    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /caption=['"]([^']*?)['"]/, '' );          
-    
+  	var sCaptions = shortcode_parse_fix.match( /caption="(.*?[^\\])"/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /caption="(.*?[^\\])"/, '' );          
+
   	if( srcrtmp != null && srcrtmp[1] != null ) {
   		jQuery(".fv_wp_flowplayer_field_rtmp").val( srcrtmp[1] );
   		jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").css( 'display', 'table-row' );
@@ -326,9 +326,11 @@ function fv_wp_flowplayer_edit() {
     
     var aCaptions = false;
     if( sCaptions ) {
-      sCaptions[1] = sCaptions[1].replace(/\\;/gi, '<!--FV Flowplayer Caption Separator-->');
+      sCaptions[1] = sCaptions[1].replace(/\\;/gi, '<!--FV Flowplayer Caption Separator-->').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
       aCaptions = sCaptions[1].split(';');
       for( var i in aCaptions ){
+        aCaptions[i] = aCaptions[i].replace(/\\"/gi, '"');
+        aCaptions[i] = aCaptions[i].replace(/\\<!--FV Flowplayer Caption Separator-->/gi, ';');
         aCaptions[i] = aCaptions[i].replace(/<!--FV Flowplayer Caption Separator-->/gi, ';');
       }
       jQuery('[name=fv_wp_flowplayer_field_caption]',jQuery('.fv-flowplayer-playlist-item').eq(0)).val( aCaptions.shift() );
@@ -502,7 +504,8 @@ function fv_wp_flowplayer_submit() {
 		var aPlaylistItems = new Array();
     var aPlaylistCaptions = new Array();
 		jQuery('#fv-flowplayer-playlist table').each(function(i,e) {      
-      aPlaylistCaptions.push(jQuery('[name=fv_wp_flowplayer_field_caption]',this).attr('value').trim().replace(/\;/gi,'\\;') );
+      aPlaylistCaptions.push(jQuery('[name=fv_wp_flowplayer_field_caption]',this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
+      console.log(aPlaylistCaptions);
       
 		  if( i == 0 ) return;  
       var aPlaylistItem = new Array();      
