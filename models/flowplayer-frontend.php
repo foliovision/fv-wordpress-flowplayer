@@ -372,7 +372,7 @@ class flowplayer_frontend extends flowplayer
 					 
 					$this->ret['html'] .= ">\n";
 									          
-          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2) ) AS $media_item ) {    
+          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
             $this->ret['html'] .= $this->get_video_src($media_item, $mobileUserAgent, null, $rtmp);
           }
 					if (!empty($mobile)) {
@@ -382,7 +382,7 @@ class flowplayer_frontend extends flowplayer
 			
 					if( isset($rtmp) && !empty($rtmp) ) {
             
-            foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp) ) AS $rtmp_item ) {            
+            foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
               $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
    
               $rtmp_url = parse_url($rtmp_item);
@@ -506,7 +506,7 @@ class flowplayer_frontend extends flowplayer
         $rtmp = 'rtmp:'.$rtmp;  
       }
       
-      foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp) ) AS $key => $media_item ) {
+      foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
         if( !$media_item ) continue;
         $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), false, false, false, true );
         if( is_array($media_url) ) {
@@ -561,7 +561,7 @@ class flowplayer_frontend extends flowplayer
           $aItem = array();
           $sSplashImage = false;
           $flash_media = array();
-          foreach( apply_filters( 'fv_player_media', $aPlaylist_item ) AS $aPlaylist_item_i ) {
+          foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
             if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
               $sSplashImage = $aPlaylist_item_i;
               continue;
