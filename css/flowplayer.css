@@ -149,6 +149,7 @@
 .flowplayer.is-splash,.flowplayer.is-poster{cursor:pointer;}
 .flowplayer.is-splash .fp-controls,.flowplayer.is-poster .fp-controls,.flowplayer.is-splash .fp-fullscreen,.flowplayer.is-poster .fp-fullscreen,.flowplayer.is-splash .fp-unload,.flowplayer.is-poster .fp-unload,.flowplayer.is-splash .fp-time,.flowplayer.is-poster .fp-time,.flowplayer.is-splash .fp-embed,.flowplayer.is-poster .fp-embed{display:none !important}
 .flowplayer.is-poster .fp-engine{top:-9999em}
+.flowplayer.is-loading video.fp-engine{position:absolute;top:-9999em}
 .flowplayer.is-loading .fp-waiting {height: 1em;}
 .flowplayer.is-loading .fp-waiting em {width:1em;height:1em;}
 .flowplayer.is-loading .fp-controls,.flowplayer.is-loading .fp-time{display:none}
