@@ -420,8 +420,10 @@ class flowplayer_frontend extends flowplayer
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
               
         $this->ret['html'] .= $this->get_sharing_html()."\n";
-        
-        $this->ret['html'] .= $this->get_video_checker_html()."\n";
+
+        if( current_user_can('manage_options') && $this->conf['disable_videochecker'] != 'true' ) {
+          $this->ret['html'] .= $this->get_video_checker_html()."\n";
+        }
         
 				$this->ret['html'] .= '</div>'."\n";
         

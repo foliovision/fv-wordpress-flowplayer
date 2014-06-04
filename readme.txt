@@ -325,8 +325,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * other bugfixes
 
 
-= 2.2.9 - 2014/06/03 =
+= 2.2.9 - 2014/06/04 =
 
+* Feature - share bar added!
+* Bugfix - "Convert old shortcodes with commas" option changed to work with old [flowplayer] shortcodes only
 * Bugfix - shortcode editor fixes for captions
 * Pro - quality switching now happens live!
 
