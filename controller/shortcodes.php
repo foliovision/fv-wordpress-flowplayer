@@ -27,7 +27,7 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
 	
-  if( $fv_fp->conf['parse_commas'] == 'true' ) {
+  if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {
     
     if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
@@ -119,7 +119,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'logo' => ''
   ), $atts ) );
 
-  if( $fv_fp->conf['parse_commas'] == 'true' ) {  
+  if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
 		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
@@ -147,7 +147,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['live'] = $live;
     $arguments['caption'] = $caption;
     $arguments['logo'] = $logo; 
-		$src = trim( preg_replace('/\,/', '', $src) ); 
+		$src = trim( preg_replace('/\,/', '', $src) );
+    $arguments['src'] = $src;
 	} else {
 		$arguments = shortcode_atts( array(
 			'src' => '',

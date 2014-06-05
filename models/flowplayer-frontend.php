@@ -47,7 +47,7 @@ class flowplayer_frontend extends flowplayer
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
-    $this->aCurArgs = apply_filters( 'fv_flowplayer_args',$args );
+    $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
     $this->sHTMLAfter = false;
 		$player_type = 'video';
 		$rtmp = false;
@@ -148,6 +148,8 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {                 
       list( $playlist_items_external_html, $aPlaylistItems ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }    
+    
+    $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
@@ -259,7 +261,7 @@ class flowplayer_frontend extends flowplayer
 				
 				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
 					$attributes['data-embed'] = 'false';
-				}
+				}           
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
 					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
@@ -368,34 +370,30 @@ class flowplayer_frontend extends flowplayer
           $scripts_after .= $this->get_chrome_fail_code( $media, $src1, $src2, $attributes_html );
           
 					 
-					$this->ret['html'] .= '>'."\n";
-									
-					if (!empty($media)) {              
-						$this->ret['html'] .= "\t"."\t".$this->get_video_src($media, $mobileUserAgent, null, $rtmp)."\n";
-					}
-					if (!empty($src1)) {
-						$this->ret['html'] .= "\t"."\t".$this->get_video_src($src1, $mobileUserAgent, null, $rtmp)."\n";
-					}
-					if (!empty($src2)) {
-						$this->ret['html'] .= "\t"."\t".$this->get_video_src($src2, $mobileUserAgent, null, $rtmp)."\n";
-					}
+					$this->ret['html'] .= ">\n";
+									          
+          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
+            $this->ret['html'] .= $this->get_video_src($media_item, $mobileUserAgent, null, $rtmp);
+          }
 					if (!empty($mobile)) {
 						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-						$this->ret['html'] .= "\t"."\t".$this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$this->hash.'_mobile', $rtmp)."<!--mobile-->\n";
+						$this->ret['html'] .= $this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$this->hash.'_mobile', $rtmp);
 					}			
 			
 					if( isset($rtmp) && !empty($rtmp) ) {
             
-            $rtmp = apply_filters( 'fv_flowplayer_video_src', $rtmp, $this );
- 
-						$rtmp_url = parse_url($rtmp);
-						$rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-		
-						$extension = $this->get_file_extension($rtmp_url['path'], null);
-						if( $extension ) {
-							$extension .= ':';
-						}
-						$this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
+            foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
+              $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
+   
+              $rtmp_url = parse_url($rtmp_item);
+              $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
+      
+              $extension = $this->get_file_extension($rtmp_url['path'], null);
+              if( $extension ) {
+                $extension .= ':';
+              }
+              $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
+            }
 					}  
 					
 					if (isset($subtitles) && !empty($subtitles)) {
@@ -420,8 +418,12 @@ class flowplayer_frontend extends flowplayer
         }
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
-        
-        $this->ret['html'] .= $this->get_video_checker_html()."\n";
+              
+        $this->ret['html'] .= $this->get_sharing_html()."\n";
+
+        if( current_user_can('manage_options') && $this->conf['disable_videochecker'] != 'true' ) {
+          $this->ret['html'] .= $this->get_video_checker_html()."\n";
+        }
         
 				$this->ret['html'] .= '</div>'."\n";
         
@@ -487,39 +489,51 @@ class flowplayer_frontend extends flowplayer
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
       $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );			
       $sItems = explode( ';', $sShortcode );
-      
+
       if( $sCaption ) {
-        $sCaption = str_replace( '\;', '<!--semicolon-->', $sCaption );
+        $replace_from = array('&amp;quot;','&amp;','\;','&quot;');				
+        $replace_to = array('"','<!--amp-->','<!--semicolon-->','"');				
+        $sCaption = str_replace( $replace_from, $replace_to, $sCaption );
         $aCaption = explode( ';', $sCaption );        
+      }
+      foreach( $aCaption AS $key => $item ) {
+        $aCaption[$key] = str_replace('<!--amp-->','&',$item);
       }
         
       				
       $aItem = array();      
-      $flash_media = false;
-      foreach( array( $media, $src1, $src2, $rtmp ) AS $key => $media_item ) {
+      $flash_media = array();
+      
+      if( $rtmp ) {
+        $rtmp = 'rtmp:'.$rtmp;  
+      }
+      
+      foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
         if( !$media_item ) continue;
-        $media_url = $this->get_video_src( $media_item, false, false, false, true );
+        $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), false, false, false, true );
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
           if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
-            $flash_media = $media_url['flash'];
+            $flash_media[] = $media_url['flash'];
           }
         } else {
           $actual_media_url = $media_url;
         }
-        $aItem[] = array( ( $key < 3 ) ? $this->get_file_extension($actual_media_url) : 'flash' => $actual_media_url );
+        $aItem[] = array( ( stripos( $media_item, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($actual_media_url) => $actual_media_url ); //  hmm how to add Flash items?
       }
       
-      if( $flash_media ) {
+      if( count($flash_media) ) {
         $bHaveFlash = false;
-        foreach( $aItem AS $key => $aItemFile ) {
+        foreach( $aItem AS $key => $aItemFile ) { //  how to avoid duplicates?
           if( in_array( 'flash', array_keys($aItemFile) ) ) {
             $bHaveFlash = true;
           }
         }
         
         if( !$bHaveFlash ) {
-          $aItem[] = array( 'flash' => $flash_media );
+          foreach( $flash_media AS $flash_media_items ) {
+            $aItem[] = array( 'flash' => $flash_media_items );
+          }
         }      
       }
       
@@ -548,8 +562,8 @@ class flowplayer_frontend extends flowplayer
   
           $aItem = array();
           $sSplashImage = false;
-          $flash_media = false;
-          foreach( $aPlaylist_item AS $aPlaylist_item_i ) {
+          $flash_media = array();
+          foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
             if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
               $sSplashImage = $aPlaylist_item_i;
               continue;
@@ -559,7 +573,7 @@ class flowplayer_frontend extends flowplayer
             if( is_array($media_url) ) {
               $actual_media_url = $media_url['media'];
               if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
-                $flash_media = $media_url['flash'];
+                $flash_media[] = $media_url['flash'];
               }
             } else {
               $actual_media_url = $media_url;
@@ -567,7 +581,7 @@ class flowplayer_frontend extends flowplayer
             $aItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
           }
           
-          if( $flash_media ) {
+          if( count($flash_media) ) {
             $bHaveFlash = false;
             foreach( $aItem AS $key => $aItemFile ) {
               if( in_array( 'flash', array_keys($aItemFile) ) ) {
@@ -576,7 +590,9 @@ class flowplayer_frontend extends flowplayer
             }
             
             if( !$bHaveFlash ) {
-              $aItem[] = array( 'flash' => $flash_media );
+              foreach( $flash_media AS $flash_media_items ) {
+                $aItem[] = array( 'flash' => $flash_media_items );
+              }
             }      
           }
       
@@ -815,6 +831,46 @@ class flowplayer_frontend extends flowplayer
   }
   
   
+  function get_sharing_html() {
+  
+    $sPermalink = urlencode(get_permalink());
+    $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+    $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
+   
+    $sHTMLSharing = <<< HTML
+  <label>Share the video</label>
+  <ul class="fvp-sharing">
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=$sPermalink" target="_blank">Facebook</a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/home?status=$sTitle$sPermalink" target="_blank">Twitter</a></li>
+    <li><a class="sharing-google" href="https://plus.google.com/share?url=$sPermalink" target="_blank">Google+</a></li>
+    <li><a class="sharing-email" href="mailto:?body=$sMail" target="_blank">Email</a></li>
+  </ul>
+HTML;
+
+    $sHTMLEmbed = <<< HTML
+  <label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label>
+  <div class="embed-code">
+    <label>Copy and paste this HTML code into your webpage to embed.</label>
+    <textarea></textarea>
+  </div>  
+HTML;
+
+    if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
+      $sHTMLEmbed = '';
+    }
+    
+    if( $this->aCurArgs['sharing'] == 'false' || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
+      $sHTMLSharing = '';
+    }    
+
+    if( $sHTMLSharing || $sHTMLEmbed ) {
+      $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLEmbed</div>";
+    }
+
+    return $sHTML;
+  }
+  
+  
   function get_video_checker_html() {
     global $fv_wp_flowplayer_ver;
     $sSpinURL = site_url('wp-includes/images/wpspin.gif');
@@ -888,10 +944,10 @@ HTML;
         }
 			} else {
         $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
-				$sReturn = '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />';
+				$sReturn = '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
         if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
-          $sReturn .= "\n\t\t".'<source '.$id.'src="'.trim($source_flash_encoded).'" type="video/flash" />';
+          $sReturn .= '<source '.$id.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
         }
         return $sReturn;
 			}

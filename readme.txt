@@ -257,7 +257,7 @@ The image needs to be 100x106px normal version nad 200x212px hi res version. You
 
 You need to put the code below into your theme CSS. Also add some element ID in front of it to make sure it overrides the default Flowplayer CSS, in the following example we use #content which is present in most templates. The code sample puts it into top right corner, but you can move the values around to get the placement you need:
 
-`#content .flowplayer .fp-logo {
+`#content .flowplayer .fp-logo, #colorbox .flowplayer .fp-logo {
 	top: 10px;
 	right: 10px;
 	bottom: auto;
@@ -322,6 +322,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * VAST/VPAID support
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
+* other bugfixes
+
+
+= 2.2.9 - 2014/06/04 =
+
+* Feature - share bar added!
+* Bugfix - "Convert old shortcodes with commas" option changed to work with old [flowplayer] shortcodes only
+* Bugfix - Pro extension settings forgotten if Pro extension was deactivated and options saved afterwards
+* Bugfix - shortcode editor fixes for captions
 
 = 2.2.8 - 2014/05/30 =
 
@@ -330,7 +339,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Fix - Amazon S3 secure URLs in playlists were sometimes failing in Flash
 * Pro - improved Vimeo error messages
 * Pro - video lightbox now autoplays the video
-
 
 = 2.2.7 - 2014/05/15 =
 
