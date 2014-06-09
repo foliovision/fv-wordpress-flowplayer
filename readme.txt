@@ -325,7 +325,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * other bugfixes
 
 
-= 2.2.9 - 2014/06/04 =
+= 2.3 - 2014/06/09 =
+
+* Bugfix - compatibility issues with "NextGen Gallery" plugin fixed
+* Pro - quality selection now works live (no page reloading)
+
+
+= 2.2.9 - 2014/06/05 =
 
 * Feature - share bar added!
 * Bugfix - annoying iOS 7 bug where black lines appear after videos - fixed!
