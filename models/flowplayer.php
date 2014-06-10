@@ -108,8 +108,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['backgroundColor'] ) ) $conf['backgroundColor'] = '#333333';
     if( !isset( $conf['canvas'] ) ) $conf['canvas'] = '#000000';
     if( !isset( $conf['sliderColor'] ) ) $conf['sliderColor'] = '#ffffff';
-    if( !isset( $conf['buttonColor'] ) ) $conf['buttonColor'] = '#ffffff';
-    if( !isset( $conf['buttonOverColor'] ) ) $conf['buttonOverColor'] = '#ffffff';
+    /*if( !isset( $conf['buttonColor'] ) ) $conf['buttonColor'] = '#ffffff';
+    if( !isset( $conf['buttonOverColor'] ) ) $conf['buttonOverColor'] = '#ffffff';*/
     if( !isset( $conf['durationColor'] ) ) $conf['durationColor'] = '#eeeeee';
     if( !isset( $conf['timeColor'] ) ) $conf['timeColor'] = '#eeeeee';
     if( !isset( $conf['progressColor'] ) ) $conf['progressColor'] = '#00a7c8';
@@ -139,7 +139,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';   		
 		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
-    if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';   		
+    if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';
+    if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';   
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -190,6 +191,146 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
 	}
+  
+  
+  function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
+    
+      $sShortcode = $aArgs['playlist'];
+      $sCaption = $aArgs['caption'];
+  
+      $replace_from = array('&amp;','\;', '\,');				
+      $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');				
+      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );			
+      $sItems = explode( ';', $sShortcode );
+
+      if( $sCaption ) {
+        $replace_from = array('&amp;quot;','&amp;','\;','&quot;');				
+        $replace_to = array('"','<!--amp-->','<!--semicolon-->','"');				
+        $sCaption = str_replace( $replace_from, $replace_to, $sCaption );
+        $aCaption = explode( ';', $sCaption );        
+      }
+      if( count($aCaption) > 0 ) {
+        foreach( $aCaption AS $key => $item ) {
+          $aCaption[$key] = str_replace('<!--amp-->','&',$item);
+        }
+      } 
+      				
+      $aItem = array();      
+      $flash_media = array();
+      
+      if( $rtmp ) {
+        $rtmp = 'rtmp:'.$rtmp;  
+      }
+      
+      foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
+        if( !$media_item ) continue;
+        $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), false, false, false, true, $suppress_filters );
+        if( is_array($media_url) ) {
+          $actual_media_url = $media_url['media'];
+          if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+            $flash_media[] = $media_url['flash'];
+          }
+        } else {
+          $actual_media_url = $media_url;
+        }
+        $aItem[] = array( ( stripos( $media_item, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($actual_media_url) => $actual_media_url ); //  hmm how to add Flash items?
+      }
+      
+      if( count($flash_media) ) {
+        $bHaveFlash = false;
+        foreach( $aItem AS $key => $aItemFile ) { //  how to avoid duplicates?
+          if( in_array( 'flash', array_keys($aItemFile) ) ) {
+            $bHaveFlash = true;
+          }
+        }
+        
+        if( !$bHaveFlash ) {
+          foreach( $flash_media AS $flash_media_items ) {
+            $aItem[] = array( 'flash' => $flash_media_items );
+          }
+        }      
+      }
+      
+      $aPlaylistItems[] = $aItem;
+
+      $sHTML = '';
+      if( $sShortcode && count($sItems) > 0 ) {
+        
+        $sHTML = array();
+        
+        $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
+        $sHTML[] = "\t\t<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
+        
+            
+        foreach( $sItems AS $iKey => $sItem ) {
+          $aPlaylist_item = explode( ',', $sItem );
+        
+          foreach( $aPlaylist_item AS $key => $item ) {
+            if( $key > 0 && ( stripos($item,'http:') !== 0 && stripos($item,'https:') !== 0 && stripos($item,'rtmp:') !== 0 && stripos($item,'/') !== 0 ) ) {
+              $aPlaylist_item[$key-1] .= ','.$item;              
+              $aPlaylist_item[$key] = $aPlaylist_item[$key-1];
+              unset($aPlaylist_item[$key-1]);
+            }
+            $aPlaylist_item[$key] = str_replace( $replace_to, $replace_from, $aPlaylist_item[$key] );	                        
+          }
+  
+          $aItem = array();
+          $sSplashImage = false;
+          $flash_media = array();
+          foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
+            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
+              $sSplashImage = $aPlaylist_item_i;
+              continue;
+            }
+            
+            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), false, false, false, true, $suppress_filters );
+            if( is_array($media_url) ) {
+              $actual_media_url = $media_url['media'];
+              if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+                $flash_media[] = $media_url['flash'];
+              }
+            } else {
+              $actual_media_url = $media_url;
+            }            
+            $aItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
+          }
+          
+          if( count($flash_media) ) {
+            $bHaveFlash = false;
+            foreach( $aItem AS $key => $aItemFile ) {
+              if( in_array( 'flash', array_keys($aItemFile) ) ) {
+                $bHaveFlash = true;
+              }
+            }
+            
+            if( !$bHaveFlash ) {
+              foreach( $flash_media AS $flash_media_items ) {
+                $aItem[] = array( 'flash' => $flash_media_items );
+              }
+            }      
+          }
+      
+          $aPlaylistItems[] = $aItem;
+          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
+
+          if( $sSplashImage ) {
+            $sHTML[] = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+          } else {
+            $sHTML[] = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
+          }
+          
+        }
+  
+        $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
+
+        $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
+        //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
+      }
+
+      return array( $sHTML, $aPlaylistItems );      
+  }  
+  
+  
   
   
   function css_generate( $style_tag = true ) {
@@ -461,6 +602,43 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  function get_file_extension($media, $default = 'flash' ) {
+    $pathinfo = pathinfo( trim($media) );
+
+    $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
+    $extension = preg_replace( '~[?#].+$~', '', $extension );
+    $extension = strtolower($extension);
+    
+		if( !$extension ) {
+			$output = $default;
+		} else {
+      if ($extension == 'm3u8' || $extension == 'm3u') {
+        $output = 'x-mpegurl';
+      } else if ($extension == 'm4v') {
+        $output = 'mp4';
+      } else if( $extension == 'mp3' ) {
+        $output = 'mpeg';
+      } else if( $extension == 'wav' ) {
+        $output = 'wav';
+      } else if( $extension == 'ogg' ) {
+        $output = 'ogg';
+      } else if( $extension == 'ogv' ) {
+        $output = 'ogg';
+      } else if( $extension == 'mov' ) {
+        $output = 'mp4';
+      } else if( $extension == '3gp' ) {
+        $output = 'mp4';      
+      } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
+        $output = $default;  
+      } else {
+        $output = $extension;
+      }
+    }
+
+    return apply_filters( 'fv_flowplayer_get_file_extension', $output, $media );  
+  }  
+  
+  
   public static function get_plugin_url() {
     if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
@@ -468,6 +646,72 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
     }
   }
+  
+  
+  public static function get_video_key( $sURL ) {
+    $sURL = str_replace( array('/','://'), array('-','-'), $sURL );
+    return '_fv_flowplayer_'.sanitize_title($sURL);
+  }
+  
+  
+  
+  
+  function get_video_src($media, $mobileUserAgent, $id = '', $rtmp = false, $url_only = false, $suppress_filters = false ) {
+  	if( $media ) { 
+			$extension = $this->get_file_extension($media);
+			//do not use https on mobile devices
+			if (strpos($media, 'https') !== false && $mobileUserAgent) {
+				$media = str_replace('https', 'http', $media);
+			}
+			$id = ($id) ? 'id="'.$id.'" ' : '';
+	
+      if( !$suppress_filters ) {
+        $media = apply_filters( 'fv_flowplayer_video_src', $media, $this );    
+        $media = $this->get_amazon_secure( $media, $this, $url_only );        
+        $media = apply_filters( 'fv_flowplayer_video_src_after', $media, $this );
+      }
+			
+			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
+			$source_flash_encoded = false;	
+			if( $this->is_secure_amazon_s3($media) /*&& stripos($media,'.webm') === false && stripos($media,'.ogv') === false */) {
+					$media_fixed = str_replace('%2B', '%25252B',$media);   
+					//	only if there was a change and we don't have an RTMP for Flash
+					if( $media_fixed != $media && empty($rtmp) ) {
+            $source_flash_encoded = $media_fixed;
+					}
+			}
+			
+			$url_parts = parse_url( ($source_flash_encoded) ? $source_flash_encoded : $media );					
+			if( stripos( $url_parts['path'], '+' ) !== false ) {
+
+				if( !empty($url_parts['path']) ) {
+						$url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts['path'])));
+				}
+				if( !empty($url_parts['query']) ) {
+						//$url_parts['query'] = str_replace( '&amp;', '&', $url_parts['query'] );				
+				}
+				
+				$source_flash_encoded = http_build_url( ($source_flash_encoded) ? $source_flash_encoded : $media, $url_parts);
+			}
+			
+			if( $url_only ) {
+        if( $source_flash_encoded ) {
+          return array( 'media' => $media, 'flash' => $source_flash_encoded );
+        } else {
+        	return trim($media);
+        }
+			} else {
+        $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
+				$sReturn = '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
+        
+        if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
+          $sReturn .= '<source '.$id.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
+        }
+        return $sReturn;
+			}
+    }
+    return null;
+  }  
   
   
   public static function is_licensed() {
@@ -494,9 +738,68 @@ function flowplayer_head() {
 }
 
 
+
+
 function flowplayer_jquery() {
   global $fv_wp_flowplayer_ver, $fv_fp;
   
 }
 
-?>
+
+
+
+function fv_wp_flowplayer_save_post( $post_id ) {
+	if( $parent_id = wp_is_post_revision($post_id) ) {
+  	$post_id = $parent_id;
+  }
+  
+  global $fv_fp, $post;
+  if( !DOING_CRON ) { //  todo: doesn't work!
+    $fv_fp->is_post_save = true;  //  make sure the check won't run more than a SECOND!
+  }
+  
+  $videos = array();
+  $saved_post = get_post($post_id);
+  preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $saved_post->post_content, $matches );
+  if( isset($matches[0]) && count($matches[0]) ) {
+    $aPlaylistItems = array();
+  	foreach( $matches[0] AS $shortcode ) {
+      $aArgs = shortcode_parse_atts( rtrim($shortcode,']') );
+      list( $playlist_items_external_html, $aPlaylistItems ) = $fv_fp->build_playlist( $aArgs, $aArgs['src'], false, false, false, false, true );
+  	}
+    //var_dump($aPlaylistItems);
+    if( count($aPlaylistItems) > 0 ) {
+      foreach( $aPlaylistItems AS $aItem ) {
+        $aKeys = array_keys($aItem[0]);
+        $videos[] = $aItem[0][$aKeys[0]];
+      }
+    }
+  }
+    
+  $iDone = 0;
+  if( count($videos) > 0 ) {
+  	$videos = array_unique($videos);
+    $tStart = microtime(true);
+  	foreach( $videos AS $video ) {
+    	if( microtime(true) - $tStart > apply_filters( 'fv_flowplayer_checker_save_post_time', 5 ) ) {
+        FV_Player_Checker::queue_add($post->ID);
+        break;
+      }
+      
+    	if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
+      	$video_secured = $fv_fp->get_amazon_secure($video, $fv_fp); //  todo: generalize
+      	if( FV_Player_Checker::check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
+          $iDone++;
+        }
+      } else {
+        $iDone++;
+      }
+      
+  	}
+  }
+  
+  if( $iDone == count($videos) ) {
+    FV_Player_Checker::queue_remove($post->ID);
+  }
+}
+

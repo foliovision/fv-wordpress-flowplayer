@@ -68,3 +68,26 @@ a.red-button {
 	padding-left: 30px; */
 	margin-bottom: 2px;
 }
+
+
+
+#wpbody-content #wpfp_options #postbox-container-1 { width: 100% }
+#wpfp_options .postbox h3 { cursor: default; }
+
+#wpfp_options table { width: 100% }
+#wpfp_options table td.first { width: 250px }
+#wpfp_options table.flowplayer-settings { width: 46%; }
+
+div.clear { clear: both }  
+div.column { float: left; width: 49% }  
+div.green { background-color: #e0ffe0; border-color: #88AA88; } 
+.amazon-s3-first .fv_fp_amazon_remove { display: none; }
+.form-table2 td p { line-height: 20px; }
+input[type=text] { width: 100%; }
+#wpfp_options input.button-primary, #wpfp_options input.button { margin-top: 16px }
+input.small { width: 80px }
+td.second-column { margin-left: 20px }
+
+span.new { color: #e00; font-weight: bold }
+
+#fv_flowplayer_amazon_options label { float: right }

@@ -325,7 +325,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * other bugfixes
 
 
-= 2.2.9 - 2014/06/04 =
+= 2.3 - 2014/06/09 =
+
+* Feature - play button now visible by default. Added option into Player Skin section.
+* Fix - settings screen cleanup
+* Bugfix - compatibility issues with "NextGen Gallery" plugin fixed
+* Pro (version 0.1.6) - quality selection now works live (no page reloading)
+
+
+= 2.2.9 - 2014/06/05 =
 
 * Feature - share bar added!
 * Bugfix - annoying iOS 7 bug where black lines appear after videos - fixed!

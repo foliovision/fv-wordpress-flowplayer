@@ -19,8 +19,7 @@
 /** 
  * Extension of original flowplayer class intended for administrator backend.
  */
-class flowplayer_backend extends flowplayer
-{
+class flowplayer_backend extends flowplayer {
 	/**
 	 * Displays elements that need to be added into head in administrator backend.
 	 */
@@ -33,8 +32,11 @@ class flowplayer_backend extends flowplayer
 	 	 * Admin specific CSS and JS
 	 	 */
 	 	if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
-	 		include dirname( __FILE__ ) . '/../view/backend-head.php'; 
+      global $fv_wp_flowplayer_ver;
+      ?>      
+        <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
+        <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
+      <?php
 	 	}
-	}
+	}  
 }
-?>
