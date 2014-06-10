@@ -328,10 +328,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 2.2.9 - 2014/06/04 =
 
 * Feature - share bar added!
+* Bugfix - annoying iOS 7 bug where black lines appear after videos - fixed!
 * Bugfix - "Convert old shortcodes with commas" option changed to work with old [flowplayer] shortcodes only
 * Bugfix - Pro extension settings forgotten if Pro extension was deactivated and options saved afterwards
 * Bugfix - shortcode editor fixes for captions
-* Pro - quality switching now happens live!
 
 = 2.2.8 - 2014/05/30 =
 
@@ -347,6 +347,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - video checker now also check RTMP!
 * Fix - playlist style fix - alignment of more than 4 items
 * Bugfix - basic Youtube embed fullscreen function
+* Pro - Pro extension released! Adds support for video lightbox and advanced Vimeo embedding!
 
 = 2.2.6 - 2014/04/17 =
 
