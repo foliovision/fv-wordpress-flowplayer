@@ -28,8 +28,6 @@ add_action('wp_footer','flowplayer_display_scripts',100);
 add_action('widget_text','flowplayer_content');
 add_action('wp_enqueue_scripts', 'flowplayer_jquery');
 
-add_filter( 'run_ngg_resource_manager', '__return_false' );
-
 
 function fv_flowplayer_remove_bad_scripts() {
   wp_deregister_script( 'flowplayer' );
