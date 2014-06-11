@@ -407,7 +407,7 @@ class FV_Player_Checker {
   
   function queue_add_all( $post_id ) {
     global $wpdb;
-    if( $aPosts = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_content LIKE '%[fvplayer%' " ) ) {
+    if( $aPosts = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_content LIKE '%[fvplayer%' ORDER BY post_date DESC" ) ) {
       $aQueue = array();
       foreach( $aPosts AS $iPostId ) {
         $aQueue[$iPostId] = true;

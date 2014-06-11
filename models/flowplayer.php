@@ -598,7 +598,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public static function get_duration( $post_id, $video_src ) {
     $sDuration = false;
-    if( $sVideoMeta = get_post_meta( $post_id, flowplayer::get_video_key($video_src), true ) ) {
+    if( $sVideoMeta = get_post_meta( $post_id, flowplayer::get_video_key($video_src), true ) ) {  //  todo: should probably work regardles of quality version
       if( isset($sVideoMeta['duration']) ) {
         $tDuration = $sVideoMeta['duration'];
         if( $tDuration < 3600 ) {
@@ -648,7 +648,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public static function get_duration_video( $content ) {
     global $fv_fp, $post;    
     if( !isset($fv_fp->conf['db_duration']) || $fv_fp->conf['db_duration'] != 'true' ) return $content;
-    
+
     $aArgs = func_get_args();
     if( $sDuration = flowplayer::get_duration( $post->ID, $aArgs[1]->aCurArgs['src']) ) {
       $content .= '<div class="fvfp_duration">'.$sDuration.'</div>';
@@ -724,6 +724,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function get_video_key( $sURL ) {
+    $sURL = preg_replace( '~\?.*$~', '', $sURL );
     $sURL = str_replace( array('/','://'), array('-','-'), $sURL );
     return '_fv_flowplayer_'.sanitize_title($sURL);
   }
