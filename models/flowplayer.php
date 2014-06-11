@@ -838,7 +838,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   $videos = FV_Player_Checker::get_videos($saved_post->post_content);
 
   $iDone = 0;
-  if( count($videos) > 0 ) {
+  if( is_array($videos) && count($videos) > 0 ) {
     $tStart = microtime(true);
   	foreach( $videos AS $video ) {
     	if( microtime(true) - $tStart > apply_filters( 'fv_flowplayer_checker_save_post_time', 5 ) ) {
