@@ -34,9 +34,9 @@ class flowplayer_frontend extends flowplayer
   
   var $aCurArgs = false;
   
-  var $sHTMLAfter = false;
-
+  var $sHTMLAfter = false;  
   
+
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
 	 * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
@@ -750,7 +750,7 @@ HTML;
       $sHTMLEmbed = '';
     }
     
-    if( $this->aCurArgs['sharing'] == 'false' || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
+    if( ( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'false' ) || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
       $sHTMLSharing = '';
     }    
 
@@ -797,3 +797,4 @@ HTML;
 	}
       
 }
+

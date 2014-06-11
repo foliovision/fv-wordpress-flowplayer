@@ -21,16 +21,13 @@ class FV_Player_Checker {
   
   
   
-  function __construct() {
-    add_filter( 'cron_schedules', 'cron_schedules' ); 
-    add_action( 'fv_flowplayer_checker_event', array( 'FV_Player_Checker', 'checker_cron' ) );
-    if ( !wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
-      wp_schedule_event( time(), '5minutes', 'fv_flowplayer_checker_event' );
-    }    
+  function __construct() {    
+    add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) ); 
+    add_action( 'fv_flowplayer_checker_event', array( $this, 'checker_cron' ) );
+    add_action( 'init', array( $this, 'cron_init' ) );
   }
   
-  
-  
+
   
   public static function check_headers( $headers, $remotefilename, $random, $args = false ) {
     global $fv_fp;
@@ -278,12 +275,25 @@ class FV_Player_Checker {
       global $post;
       $tmp = $post;
       $post = get_post($key);
-      fv_wp_flowplayer_save_post($key);
+      fv_wp_flowplayer_save_post($key);     
       $post = $tmp;
-      file_put_contents('test.txt', date('r').": ".$key."\n\n", FILE_APPEND );
     }
     
-  }  
+  }
+  
+  
+  
+  
+  function cron_init() {
+    global $fv_fp;      
+    if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) {
+      if ( !wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
+        wp_schedule_event( time(), '5minutes', 'fv_flowplayer_checker_event' );
+      }
+    } else if( wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
+      wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
+    }
+  }
 
   
   
@@ -294,7 +304,40 @@ class FV_Player_Checker {
       'display' => __('Every 5 minutes')
     );
     return $schedules;
-  }  
+  }
+  
+  
+  
+  
+  public static function get_videos( $content ) {
+    global $fv_fp;
+    
+    preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
+    
+    $videos = array();
+    if( isset($matches[0]) && count($matches[0]) ) {
+      $aPlaylistItems = array();
+      foreach( $matches[0] AS $shortcode ) {
+        $aArgs = shortcode_parse_atts( rtrim($shortcode,']') );
+        list( $playlist_items_external_html, $aPlaylistItems ) = $fv_fp->build_playlist( $aArgs, isset($aArgs['src']) ? $aArgs['src'] : false, false, false, false, false, true );
+        if( count($aPlaylistItems) > 0 ) {
+          foreach( $aPlaylistItems AS $aItem ) {
+            if( isset($aItem[0]) ) {
+              $aKeys = array_keys($aItem[0]);
+              $videos[] = $aItem[0][$aKeys[0]];
+            }
+          }
+        }      
+      }
+    }
+    
+    if( count($videos) > 0 ) {
+      $videos = array_unique($videos);
+    } else {
+      $videos = false;
+    }
+    return $videos;
+  }
   
   
   
@@ -358,6 +401,21 @@ class FV_Player_Checker {
     $aQueue[$post_id] = true;
     update_option( 'fv_flowplayer_checker_queue', $aQueue );
   }
+  
+  
+  
+  
+  function queue_add_all( $post_id ) {
+    global $wpdb;
+    if( $aPosts = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_content LIKE '%[fvplayer%' " ) ) {
+      $aQueue = array();
+      foreach( $aPosts AS $iPostId ) {
+        $aQueue[$iPostId] = true;
+      }
+      update_option( 'fv_flowplayer_checker_queue', $aQueue );
+    }
+    
+  }  
   
   
   

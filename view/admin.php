@@ -265,6 +265,13 @@ function fv_flowplayer_admin_integrations() {
               <input type="checkbox" name="js-everywhere" id="js-everywhere" value="true" <?php if( isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
+          <tr>
+						<td class="first"><label for="db_duratione">Scan video length (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?</abbr>):</label></td>
+						<td>
+              <input type="hidden" name="db_duration" value="false" />
+              <input type="checkbox" name="db_duration" id="db_duration" value="true" <?php if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>               
 					<!--<tr>
 						<td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
 						<td>
@@ -575,8 +582,8 @@ function fv_flowplayer_admin_skin() {
     <tr>              
       <td><label for="durationColor">Total time</label></td>
       <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo $fv_fp->conf['durationColor']; ?>" /></td>
-      <td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
-      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>              
+      <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
+      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->
     </tr>
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
