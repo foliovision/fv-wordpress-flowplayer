@@ -324,6 +324,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.10 - 2014/06/13 =
+
+* Bugfix - compatibility issues with "NextGen Gallery" plugin fixed
+* Bugfix - loading indicator fixes for IE (was causing rendering issues in some configurations)
+* Bugfix - share bar fixes for IE
+* Pro - quality switching now happens live, without reloading of the webpage!
 
 = 2.2.9 - 2014/06/04 =
 

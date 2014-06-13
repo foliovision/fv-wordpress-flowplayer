@@ -34,6 +34,8 @@ function fv_flowplayer_remove_bad_scripts() {
 }
 add_action( 'wp_print_scripts', 'fv_flowplayer_remove_bad_scripts', 100 );
 
+
+add_filter( 'run_ngg_resource_manager', '__return_false' ); //  Nextgen Gallery compatibility fix
  
 
 function flowplayer_content_remove_commas($content) {
