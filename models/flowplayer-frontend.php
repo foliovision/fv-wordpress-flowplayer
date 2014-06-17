@@ -697,31 +697,6 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_video_url($media) {
-  	if( strpos($media,'rtmp://') !== false ) {
-  		return null;
-  	}
-    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
-			// strip the first / from $media
-      if($media[0]=='/') $media = substr($media, 1);
-      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
-        $media = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
-      }
-      else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
-        $media = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
-      }
-      else{ // if the videos are not in the videos directory but they are adressed relatively
-        $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
-        $media = 'http://'.$media_path;
-      }
-		}
-    
-    $media = apply_filters( 'fv_flowplayer_media', $media, $this );
-    
-    return $media;
-  }
-  
-  
   function get_sharing_html() {
   
     $sPermalink = urlencode(get_permalink());

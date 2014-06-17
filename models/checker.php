@@ -232,11 +232,11 @@ class FV_Player_Checker {
             Only check file length
             */
             if( isset($meta_action) && $meta_action == 'check_time' ) {
-  
+              $time = false;
               if( isset($ThisFileInfo['playtime_seconds']) ) {
                 $time = $ThisFileInfo['playtime_seconds'];    	
               }
-  
+
               global $post;
               $fv_flowplayer_meta = get_post_meta( $post->ID, flowplayer::get_video_key($meta_original), true );
               $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
@@ -245,13 +245,13 @@ class FV_Player_Checker {
               $fv_flowplayer_meta['date'] = time();
               $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
 
-              if( !isset($fv_fp->is_post_save) || $time > 0 ) {
+              //if( !isset($fv_fp->is_post_save) ) {
                 update_post_meta( $post->ID, flowplayer::get_video_key($meta_original), $fv_flowplayer_meta );
                 return true;
-              } else {
-                self::queue_add($post->ID);
-                return false;
-              }
+              //} else {
+                //self::queue_add($post->ID);
+                //return false;
+              //}
               
             } 				
               

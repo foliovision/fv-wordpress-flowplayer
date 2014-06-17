@@ -599,7 +599,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public static function get_duration( $post_id, $video_src ) {
     $sDuration = false;
     if( $sVideoMeta = get_post_meta( $post_id, flowplayer::get_video_key($video_src), true ) ) {  //  todo: should probably work regardles of quality version
-      if( isset($sVideoMeta['duration']) ) {
+      if( isset($sVideoMeta['duration']) && $sVideoMeta['duration'] > 0 ) {
         $tDuration = $sVideoMeta['duration'];
         if( $tDuration < 3600 ) {
           $sDuration = gmdate( "i:s", $tDuration );
@@ -637,7 +637,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( isset($aArgs[1][0]) && is_array($aArgs[1][0]) ) {        
       $sItemKeys = array_keys($aArgs[1][0]);
       if( $sDuration = flowplayer::get_duration( $post->ID, $aArgs[1][0][$sItemKeys[0]] ) ) {
-        $caption .= ' <i class="dur">'.$sDuration.'</i>';
+        $caption .= '<i class="dur">'.$sDuration.'</i>';
       } 
     }
     
@@ -787,6 +787,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			}
     }
     return null;
+  }
+  
+  
+  function get_video_url($media) {
+  	if( strpos($media,'rtmp://') !== false ) {
+  		return null;
+  	}
+    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
+			// strip the first / from $media
+      if($media[0]=='/') $media = substr($media, 1);
+      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
+        $media = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
+      }
+      else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
+        $media = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
+      }
+      else{ // if the videos are not in the videos directory but they are adressed relatively
+        $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
+        $media = 'http://'.$media_path;
+      }
+		}
+    
+    $media = apply_filters( 'fv_flowplayer_media', $media, $this );
+    
+    return $media;
   }  
   
   
@@ -847,7 +872,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
       
     	if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-      	$video_secured = $fv_fp->get_amazon_secure($video, $fv_fp); //  todo: generalize
+      	$video_secured = $fv_fp->get_amazon_secure( flowplayer::get_video_url($video), $fv_fp); //  todo: generalize
       	if( FV_Player_Checker::check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
         }
