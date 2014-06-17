@@ -168,10 +168,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 	  $aNewOptions['key'] = trim($sKey);
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
-    if( !isset($aNewOptions['pro']) ) {
+    if( !isset($aNewOptions['pro']) || !is_array($aNewOptions['pro']) ) {
       $aNewOptions['pro'] = array();
     }
-    
+    if( !isset($aOldOptions['pro']) || !is_array($aOldOptions['pro']) ) {
+      $aOldOptions['pro'] = array();
+    }    
+
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);
 
