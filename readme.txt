@@ -329,7 +329,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Feature - play button now visible by default. Added option into Player Skin section.
 * Fix - settings screen cleanup
-* Bugfix - compatibility issues with "NextGen Gallery" plugin fixed
+* Beta feature - video duration scanning (check Integrations)
+* Pro (version 0.1.7.3) - fixing PHP warnings
 
 = 2.2.11 - 2014/06/17 =
 
