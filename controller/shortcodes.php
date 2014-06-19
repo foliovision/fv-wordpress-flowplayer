@@ -24,6 +24,8 @@ add_shortcode('flowplayer','flowplayer_content_handle');
 
 add_shortcode('fvplayer','flowplayer_content_handle');
 
+add_shortcode('fv_time','fv_player_time');
+
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
 	
@@ -100,6 +102,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'splashend' => '',
     'popup' => '',
     'controlbar' => '',
+    'play_button' => '',
     'redirect' => '',
     'loop' => '',
     'engine' => '',
@@ -130,6 +133,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 		$arguments['splashend'] = preg_replace('/\,/', '', $splashend);
 		$arguments['popup'] = $popup;
 		$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
+    $arguments['play_button'] = preg_replace('/\,/', '', $play_button);
 		$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
 		$arguments['loop'] = preg_replace('/\,/', '', $loop);
 		$arguments['engine'] = preg_replace('/\,/', '', $engine);
@@ -162,6 +166,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 			'splashend' => '',
 			'popup' => '',
 			'controlbar' => '',
+      'play_button' => '',
 			'redirect' => '',
 			'loop' => '',
 			'engine' => '',
@@ -285,4 +290,13 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   return $shortcode;
 }
 
-?>
+
+function fv_player_time() {
+  global $post, $fv_fp;
+  
+  if( $post->ID > 0 && isset($fv_fp->aCurArgs['src']) ) {
+    return flowplayer::get_duration( $post->ID, $fv_fp->aCurArgs['src'] );
+  } else {
+    return flowplayer::get_duration_post();
+  }
+}
