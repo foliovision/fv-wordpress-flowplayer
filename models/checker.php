@@ -19,6 +19,7 @@
 class FV_Player_Checker {
   
   
+  var $is_cron = false;
   
   
   function __construct() {    
@@ -35,6 +36,8 @@ class FV_Player_Checker {
     $args = wp_parse_args( $args, array( 'talk_bad_mime' => 'Video served with a bad mime type' , 'wrap'=>'p' ) );
   
     $sOutput = '';
+  
+    $video_errors = array();
   
     $bFatal = false;
     if( $headers && $headers['response']['code'] == '404' ) {
@@ -101,7 +104,7 @@ class FV_Player_Checker {
   
   
   
-  public static function check_mimetype( $URLs = false, $meta = false ) {
+  public function check_mimetype( $URLs = false, $meta = false ) {
     
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
     
@@ -146,7 +149,7 @@ class FV_Player_Checker {
           $video_errors[] = 'Error checking '.$media.'!<br />'.print_r($headers,true);  
         } else {
           if( $headers ) {
-            list( $aVideoErrors, $sContentType, $bFatal ) = FV_Player_Checker::check_headers( $headers, $remotefilename, $random );
+            list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
             if( $bFatal ) {
               $bValidFile = false;
             }
@@ -176,16 +179,17 @@ class FV_Player_Checker {
               //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
               $upload_dir = wp_upload_dir();      
               $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
-  
+
               $out = fopen( $localtempfilename,'wb' );
+           
               if( $out ) {
                 $aArgs = array( 'file' => $localtempfilename );
-                if( isset($fv_fp->is_post_save) ) {
-                  $aArgs['quick_check'] = 2;
+                if( !$this->is_cron ) {
+                  $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
                 }
-                list( $header, $sHTTPError ) = FV_Player_Checker::http_request( $remotefilename_encoded, $aArgs );
-  
-                
+                list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
+
+                $video_errors = array();
                 if( $sHTTPError ) {
                   $video_errors[] = $sHTTPError;
                   $bValidFile = false;
@@ -195,7 +199,7 @@ class FV_Player_Checker {
                 if( !$headers ) {
                   $headers = WP_Http::processHeaders( $header );			
   
-                  list( $aVideoErrors, $sContentType, $bFatal ) = FV_Player_Checker::check_headers( $headers, $remotefilename, $random );
+                  list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
                   if( $bFatal ) {
                     $bValidFile = false;
                   }
@@ -215,7 +219,7 @@ class FV_Player_Checker {
                     
                   }
                 }
-                
+
                 if( $bValidFile ) {
                   $ThisFileInfo = $getID3->analyze( $localtempfilename );
                 }
@@ -233,7 +237,7 @@ class FV_Player_Checker {
             */
             if( isset($meta_action) && $meta_action == 'check_time' ) {
               $time = false;
-              if( isset($ThisFileInfo['playtime_seconds']) ) {
+              if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
                 $time = $ThisFileInfo['playtime_seconds'];    	
               }
 
@@ -241,13 +245,14 @@ class FV_Player_Checker {
               $fv_flowplayer_meta = get_post_meta( $post->ID, flowplayer::get_video_key($meta_original), true );
               $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
               $fv_flowplayer_meta['duration'] = $time;
-              $fv_flowplayer_meta['etag'] = $headers['headers']['etag'];  //  todo: check!
+              $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
               $fv_flowplayer_meta['date'] = time();
               $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
 
-              //if( !isset($fv_fp->is_post_save) ) {
+              if( $time > 0 || $this->is_cron ) {
                 update_post_meta( $post->ID, flowplayer::get_video_key($meta_original), $fv_flowplayer_meta );
                 return true;
+              }
               //} else {
                 //self::queue_add($post->ID);
                 //return false;
@@ -268,6 +273,7 @@ class FV_Player_Checker {
   function checker_cron() {
     if( !$aQueue = self::queue_get() ) return;
     $tStart = microtime(true);
+    $this->is_cron = true;
     foreach( $aQueue AS $key => $item ) {
       if( microtime(true) - $tStart > apply_filters( 'fv_flowplayer_checker_cron_time', 20 ) ) {
         break;
@@ -405,7 +411,7 @@ class FV_Player_Checker {
   
   
   
-  function queue_add_all( $post_id ) {
+  function queue_add_all() {
     global $wpdb;
     if( $aPosts = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_content LIKE '%[fvplayer%' ORDER BY post_date DESC" ) ) {
       $aQueue = array();
@@ -415,6 +421,19 @@ class FV_Player_Checker {
       update_option( 'fv_flowplayer_checker_queue', $aQueue );
     }
     
+  }
+  
+  
+  
+  
+  function queue_check( $post_id = false ) {
+    global $post;
+    $post_id = ($post->ID) ? $post->ID : $post->ID;
+    $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
+    if( in_array($post_id,array_keys($aQueue)) ) {
+      return true;
+    }
+    return false;
   }  
   
   

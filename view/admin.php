@@ -266,7 +266,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
           <tr>
-						<td class="first"><label for="db_duratione">Scan video length (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?</abbr>):</label></td>
+						<td class="first"><label for="db_duration">Scan video length (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?</abbr>):</label></td>
 						<td>
               <input type="hidden" name="db_duration" value="false" />
               <input type="checkbox" name="db_duration" id="db_duration" value="true" <?php if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) echo 'checked="checked"'; ?> />

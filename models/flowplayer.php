@@ -617,8 +617,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  public static function get_duration_post( $post_id ) {
-    global $fv_fp;    
+  public static function get_duration_post( $post_id = false ) {
+    global $post, $fv_fp;
+    $post_id = ( $post_id ) ? $post_id : $post->ID;
 
     $content = false;
     $objPost = get_post($post_id);
@@ -859,10 +860,10 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   	$post_id = $parent_id;
   }
   
-  global $fv_fp, $post;
-  //if( !DOING_CRON ) { //  todo: doesn't work!
-    $fv_fp->is_post_save = true;  //  make sure the check won't run more than a SECOND!
-  //}
+  global $fv_fp, $post, $FV_Player_Checker;
+  if( !$FV_Player_Checker->is_cron && $FV_Player_Checker->queue_check($post->ID) ) {
+    return;
+  }
   
   $saved_post = get_post($post_id);
   $videos = FV_Player_Checker::get_videos($saved_post->post_content);
@@ -877,9 +878,11 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
       
     	if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-      	$video_secured = $fv_fp->get_amazon_secure( flowplayer::get_video_url($video), $fv_fp); //  todo: generalize
-      	if( FV_Player_Checker::check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
+      	$video_secured = $fv_fp->get_amazon_secure( $fv_fp->get_video_url($video), $fv_fp); //  todo: generalize
+      	if( $FV_Player_Checker->check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
+        } else {
+          FV_Player_Checker::queue_add($post->ID);
         }
       } else {
         $iDone++;
@@ -887,7 +890,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       
   	}
   }
-  
+
   if( $iDone == count($videos) ) {
     FV_Player_Checker::queue_remove($post->ID);
   }

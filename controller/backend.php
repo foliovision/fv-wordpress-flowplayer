@@ -778,10 +778,10 @@ function fv_wp_flowplayer_check_files() {
       }
  
 			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
-        list( $header, $message_out ) = FV_Player_Checker::http_request( trim($videos[0]['src']), array( 'quick_check' => 10, 'size' => 65536 ) );
+        list( $header, $message_out ) = $FV_Player_Checker->http_request( trim($videos[0]['src']), array( 'quick_check' => 10, 'size' => 65536 ) );
         if( $header ) {        
           $headers = WP_Http::processHeaders( $header );          
-          list( $new_errors, $mime_type, $fatal ) = FV_Player_Checker::check_headers( $headers, trim($videos[0]['src']), rand(0,999), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
+          list( $new_errors, $mime_type, $fatal ) = $FV_Player_Checker->check_headers( $headers, trim($videos[0]['src']), rand(0,999), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
           if( $fatal ) {            
             continue;
           }
