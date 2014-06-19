@@ -270,6 +270,18 @@ function fv_flowplayer_admin_integrations() {
 						<td>
               <input type="hidden" name="db_duration" value="false" />
               <input type="checkbox" name="db_duration" id="db_duration" value="true" <?php if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) echo 'checked="checked"'; ?> />
+              <?php
+              global $wpdb;
+              $iCount = $wpdb->get_var( "SELECT count(meta_id) FROM $wpdb->postmeta WHERE meta_key LIKE '_fv_flowplayer_%'" );
+              $iQueue = count(FV_Player_Checker::queue_get());
+              if( $iCount && $iQueue ) {
+                echo "Currently $iCount videos in database and $iQueue posts in queue.";
+              } else if( $iCount ) {
+                echo "Currently $iCount videos in database.";
+              } else if( $iQueue ) {
+                echo "Currently $iQueue posts in queue.";
+              }
+              ?>
 						</td>
 					</tr>               
 					<!--<tr>
