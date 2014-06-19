@@ -180,9 +180,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $FV_Player_Checker->queue_add_all();
     }
     
-    if( !isset($aNewOptions['pro']) ) {
+    if( !isset($aNewOptions['pro']) || !is_array($aNewOptions['pro']) ) {
       $aNewOptions['pro'] = array();
     }
+    
+    if( !isset($aOldOptions['pro']) || !is_array($aOldOptions['pro']) ) {
+      $aOldOptions['pro'] = array();
+    }    
+ 
     
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);

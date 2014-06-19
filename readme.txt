@@ -325,14 +325,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * other bugfixes
 
 
-= 2.3 - 2014/06/18 =
+= 2.2.12 - 2014/06/19 =
 
 * Feature - play button now visible by default. Added option into Player Skin section.
 * Fix - settings screen cleanup
 * Bugfix - compatibility issues with "NextGen Gallery" plugin fixed
+
+= 2.2.11 - 2014/06/17 =
+
+* Bugfix - PHP warnings on fresh install settings save
 * Pro (version 0.1.7.2) - fixing image lightbox to add class only for images.
 * Pro (version 0.1.7.1) - bugfix for quality switching.
-* Pro (version 0.1.7) - quality selection now works live (no page reloading)
 
 = 2.2.10 - 2014/06/13 =
 
