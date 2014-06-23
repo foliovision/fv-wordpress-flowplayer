@@ -776,6 +776,8 @@ function fv_wp_flowplayer_check_files() {
       if( stripos( $videos[0]['src'], '.mp4' ) === FALSE /*&& stripos( $videos[0]['src'], '.m4v' ) === FALSE*/ ) {
         continue;
       }
+      
+      global $FV_Player_Checker;
  
 			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
         list( $header, $message_out ) = $FV_Player_Checker->http_request( trim($videos[0]['src']), array( 'quick_check' => 10, 'size' => 65536 ) );
