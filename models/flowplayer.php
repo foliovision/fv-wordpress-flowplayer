@@ -860,10 +860,8 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   	$post_id = $parent_id;
   }
   
-  $post_id = ( isset($post->ID) ) ? $post->ID : $post_id;
-  
   global $fv_fp, $post, $FV_Player_Checker;
-  if( !$FV_Player_Checker->is_cron && $FV_Player_Checker->queue_check($post_id) ) {
+  if( !$FV_Player_Checker->is_cron && $FV_Player_Checker->queue_check($post->ID) ) {
     return;
   }
   

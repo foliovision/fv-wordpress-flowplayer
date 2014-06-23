@@ -428,7 +428,7 @@ class FV_Player_Checker {
   
   function queue_check( $post_id = false ) {
     global $post;
-    $post_id = ( isset($post->ID) ) ? $post->ID : $post_id;
+    $post_id = ($post->ID) ? $post->ID : $post->ID;
     $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
     if( in_array($post_id,array_keys($aQueue)) ) {
       return true;

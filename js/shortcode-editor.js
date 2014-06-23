@@ -175,38 +175,75 @@ function fv_wp_flowplayer_edit() {
 	  shortcode_parse_fix = shortcode_parse_fix.replace(/ad='[^']*?'/g, '');
     fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );  	
   	
-    var srcurl = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'src' );
-    var srcurl1 = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'src1' );
-    var srcurl2 = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'src2' );
+  	var srcurl = shortcode_parse_fix.match( /src=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src=['"]([^']*?)['"]/, '' );
+  	if( srcurl == null ) {
+  		srcurl = shortcode_parse_fix.match( /src=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src=([^,\]\s]*)/, '' );
+    }     
     
-    var srcrtmp = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'rtmp' );
-    var srcrtmp_path = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'rtmp_path' );
+  	var srcrtmp = shortcode_parse_fix.match( /rtmp=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /rtmp=['"]([^']*?)['"]/, '' );    
+		var srcrtmp_path = shortcode_parse_fix.match( /rtmp_path=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /rtmp_path=['"]([^']*?)['"]/, '' );        
+    
+    var srcurl1 = shortcode.match( /src1=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src1=['"]([^']*?)['"]/, '' );
+  	if( srcurl1 == null ) {
+  		srcurl1 = shortcode.match( /src1=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src1=([^,\]\s]*)/, '' );
+    }      
+    
+    var srcurl2 = shortcode.match( /src2=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src2=['"]([^']*?)['"]/, '' );
+  	if( srcurl2 == null ) {
+  		srcurl2 = shortcode.match( /src2=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /src2=([^,\]\s]*)/, '' );
+    }
   	                                                                          
-    var iwidth = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'width' );                                                                              
-    var iheight = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'height' );    
+    var iheight = shortcode_parse_fix.match( /height="?(\d*)"?/ );			
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /height="?(\d*)"?/, '' );
+  	var iwidth = shortcode_parse_fix.match( /width="?(\d*)"?/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /width="?(\d*)"?/, '' );
+  	var sautoplay = shortcode.match( /autoplay=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /autoplay=([^\s]+)/, '' );
+    var sembed = shortcode.match( /embed=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /embed=([^\s]+)/, '' );
+  	var ssplash = shortcode.match( /splash='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splash='([^']*)'/, '' );
+  	var ssubtitles = shortcode.match( /subtitles='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /subtitles='([^']*)'/, '' );    
+  	var smobile = shortcode.match( /mobile='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /mobile='([^']*)'/, '' );        
+    var sredirect = shortcode.match( /redirect='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /redirect='([^']*)'/, '' );
+  	if( ssplash == null ) {
+  		ssplash = shortcode.match( /splash=([^,\]\s]*)/ );
+      fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splash=([^,\]\s]*)/, '' );
+    }			
+  	var spopup = shortcode.match( /popup='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /popup='([^']*)'/, '' );
+    var sad = shortcode.match( /ad='([^']*)'/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /ad='([^']*)'/, '' ); 
+    var iadheight = shortcode_parse_fix.match( /ad_height="?(\d*)"?/ );			
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /ad_height="?(\d*)"?/, '' );
+  	var iadwidth = shortcode_parse_fix.match( /ad_width="?(\d*)"?/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /ad_width="?(\d*)"?/, '' );      
+    var sloop = shortcode.match( /loop=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /loop=([^\s]+)/, '' );
+    var ssplashend = shortcode.match( /splashend=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /splashend=([^\s]+)/, '' );
+  	var sad_skip = shortcode.match( /ad_skip=([^\s]+)/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /ad_skip=([^\s]+)/, '' ); 
+  	var salign = shortcode.match( /align="([^"]+)"/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /align="([^"]+)"/, '' ); 
     
-    var sad_skip = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad_skip' );
-    var salign = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'align' );    
-    var sautoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'autoplay' );
-    var sembed = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'embed' );
-    var sloop = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'loop' );    
-    var ssplash = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splash' );    
-    var ssplashend = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splashend' );
+  	var sPlaylist = shortcode_parse_fix.match( /playlist=['"]([^']*?)['"]/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /playlist=['"]([^']*?)['"]/, '' );
     
-    
-    var ssubtitles = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'subtitles' );
-    var smobile = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'mobile' );
-    var sredirect = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'redirect' );
-    
-    var sCaptions = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'caption' );
-    var sPlaylist = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'playlist' );
-    var spopup = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'popup' );
-    
-    
-    var sad = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad' );
-    var iadwidth = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad_width' );
-    var iadheight = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad_height' );
-    
+  	var sCaptions = shortcode_parse_fix.match( /caption="(.*?[^\\])"/ );
+    fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( /caption="(.*?[^\\])"/, '' );          
+
   	if( srcrtmp != null && srcrtmp[1] != null ) {
   		jQuery(".fv_wp_flowplayer_field_rtmp").val( srcrtmp[1] );
   		jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").css( 'display', 'table-row' );
@@ -370,39 +407,105 @@ function fv_wp_flowplayer_submit() {
 	
 	fv_wp_fp_shortcode = '[' + shorttag;	
    
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_src','src');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_src_1','src1');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_src_2','src2');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_rtmp','rtmp');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_rtmp_path','rtmp_path');
+  if ( document.getElementById("fv_wp_flowplayer_field_src").value != '' ) {
+    fv_wp_fp_shortcode += ' src=\'' + document.getElementById("fv_wp_flowplayer_field_src").value + '\''; 
+  } 
+   
+  if ( document.getElementById("fv_wp_flowplayer_field_src_1").value != '' ) {
+    fv_wp_fp_shortcode += ' src1=\'' + document.getElementById("fv_wp_flowplayer_field_src_1").value + '\''; 
+  }
+  if ( document.getElementById("fv_wp_flowplayer_field_src_2").value != '' ) {
+    fv_wp_fp_shortcode += ' src2=\'' + document.getElementById("fv_wp_flowplayer_field_src_2").value + '\''; 
+  }
   
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_width','width','int');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_height','height','int');
-  
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_align', 'align', false, false, ['left', 'right'] );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false'] );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
-  
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_loop', 'loop', false, true );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_splashend', 'splashend', false, true, ['show'] );
-			        
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_mobile','mobile');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_redirect','redirect');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_splash','splash');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_subtitles','subtitles');
-  
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad','ad','html');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
-  
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_height','ad_height','int');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_skip','ad_skip', false, true, ['yes']);
-	fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_width','ad_width','int');  
+  if ( jQuery(".fv_wp_flowplayer_field_rtmp").val() != '' ) {
+    fv_wp_fp_shortcode += ' rtmp="' + jQuery(".fv_wp_flowplayer_field_rtmp").val() + '"'; 
+  }
+  if ( jQuery(".fv_wp_flowplayer_field_rtmp_path").val() != '' ) {
+    fv_wp_fp_shortcode += ' rtmp_path="' + jQuery(".fv_wp_flowplayer_field_rtmp_path").val() + '"'; 
+  }  
+		
+	if( jQuery(".fv_wp_flowplayer_field_width").val() != '' && jQuery(".fv_wp_flowplayer_field_width").val() % 1 != 0 ) {
+		alert('Please enter a valid width.');
+		return false;
+	}
+	if( jQuery(".fv_wp_flowplayer_field_width").val() != '' )
+		fv_wp_fp_shortcode += ' width=' + jQuery(".fv_wp_flowplayer_field_width").val();
+		
+	if( jQuery(".fv_wp_flowplayer_field_height").val() != '' && jQuery(".fv_wp_flowplayer_field_height").val() % 1 != 0 ) {
+		alert('Please enter a valid height.');
+		return false;
+	}
+	if( jQuery(".fv_wp_flowplayer_field_height").val() != '' )
+		fv_wp_fp_shortcode += ' height=' + jQuery(".fv_wp_flowplayer_field_height").val();
+	
+  if( document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex == 1 )
+	  fv_wp_fp_shortcode += ' autoplay=true';
+	if( document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex == 2 )
+	  fv_wp_fp_shortcode += ' autoplay=false';
+    
+  if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 1 )
+	  fv_wp_fp_shortcode += ' embed=true';
+	if( document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex == 2 )
+	  fv_wp_fp_shortcode += ' embed=false';    
+    
+  if( document.getElementById("fv_wp_flowplayer_field_align").selectedIndex == 1 )
+	  fv_wp_fp_shortcode += ' align="left"';
+	if( document.getElementById("fv_wp_flowplayer_field_align").selectedIndex == 2 )
+	  fv_wp_fp_shortcode += ' align="right"';    
+        
+    
+  if( document.getElementById("fv_wp_flowplayer_field_loop").checked )
+		fv_wp_fp_shortcode += ' loop=true';    
+		
+	if( document.getElementById("fv_wp_flowplayer_field_mobile").value != '' )
+		fv_wp_fp_shortcode += ' mobile=\'' + document.getElementById("fv_wp_flowplayer_field_mobile").value + '\'';    		
+		
+	if( document.getElementById("fv_wp_flowplayer_field_splash").value != '' )
+		fv_wp_fp_shortcode += ' splash=\'' + document.getElementById("fv_wp_flowplayer_field_splash").value + '\'';
+    
+	if( document.getElementById("fv_wp_flowplayer_field_subtitles").value != '' )
+		fv_wp_fp_shortcode += ' subtitles=\'' + document.getElementById("fv_wp_flowplayer_field_subtitles").value + '\'';    
+    
+  if( document.getElementById("fv_wp_flowplayer_field_splashend").checked )
+		fv_wp_fp_shortcode += ' splashend=show';
+    
+  if( document.getElementById("fv_wp_flowplayer_field_redirect").value != '' )
+		fv_wp_fp_shortcode += ' redirect=\'' + document.getElementById("fv_wp_flowplayer_field_redirect").value + '\'';        
+    
+  if( document.getElementById("fv_wp_flowplayer_field_popup").value != '' ) {
+		var popup = document.getElementById("fv_wp_flowplayer_field_popup").value;
+		popup = popup.replace(/&/g,'&amp;');
+		popup = popup.replace(/'/g,'\\\'');
+		popup = popup.replace(/"/g,'&quot;');
+		popup = popup.replace(/</g,'&lt;');
+		popup = popup.replace(/>/g,'&gt;');
+		fv_wp_fp_shortcode += ' popup=\'' + popup +'\''
+	}        
+	
+  if( document.getElementById("fv_wp_flowplayer_field_ad").value != '' ) {
+		var ad = document.getElementById("fv_wp_flowplayer_field_ad").value;
+		ad = ad.replace(/&/g,'&amp;');
+		ad = ad.replace(/'/g,'\\\'');
+		ad = ad.replace(/"/g,'&quot;');
+		ad = ad.replace(/</g,'&lt;');
+		ad = ad.replace(/>/g,'&gt;');
+		fv_wp_fp_shortcode += ' ad=\'' + ad +'\''
+	}     	
+	
+	if( document.getElementById("fv_wp_flowplayer_field_ad_width").value != '' )
+		fv_wp_fp_shortcode += ' ad_width=' + document.getElementById("fv_wp_flowplayer_field_ad_width").value;
+	if( document.getElementById("fv_wp_flowplayer_field_ad_height").value != '' )
+		fv_wp_fp_shortcode += ' ad_height=' + document.getElementById("fv_wp_flowplayer_field_ad_height").value;		
+	if( document.getElementById("fv_wp_flowplayer_field_ad_skip").checked != '' )
+		fv_wp_fp_shortcode += ' ad_skip=yes';			
 		
 	if( jQuery('#fv-flowplayer-playlist table').length > 0 ) {
 		var aPlaylistItems = new Array();
     var aPlaylistCaptions = new Array();
 		jQuery('#fv-flowplayer-playlist table').each(function(i,e) {      
       aPlaylistCaptions.push(jQuery('[name=fv_wp_flowplayer_field_caption]',this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
+      console.log(aPlaylistCaptions);
       
 		  if( i == 0 ) return;  
       var aPlaylistItem = new Array();      
@@ -477,84 +580,4 @@ function fv_wp_flowplayer_add_rtmp() {
 	jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").show();
 	jQuery("#add_rtmp_wrapper").hide();
 	fv_wp_flowplayer_dialog_resize();
-}
-
-function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg ) {
-  var sOutput;
-  
-  var rDoubleQ = new RegExp(sArg+"=\"","g");
-  var rSingleQ = new RegExp(sArg+"='","g");
-  var rNoQ = new RegExp(sArg+"=[^\"']","g");
-  
-  var rMatch = false;
-  if( sShortcode.match(rDoubleQ) ) {
-    rMatch = new RegExp(sArg+"=\"([^\"]*?)\"","g");
-  } else if( sShortcode.match(rSingleQ) ) {
-    rMatch = new RegExp(sArg+"='([^']*?)'","g");
-  } else if( sShortcode.match(rNoQ) ) {
-    rMatch = new RegExp(sArg+"=([^\\]\\s,]+)","g");
-  }
-  
-  if( !rMatch ){
-    return false;
-  }
-  
-  var aOutput = rMatch.exec(sShortcode);
-  fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( rMatch, '' );
-
-  return aOutput;
-}
-
-function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, aValues ) {
-  if( typeof(document.getElementById(sField)) == "undefined") {
-    return false;
-  }
-  
-  var sValue = false;
-  if( bCheckbox ) {
-    if( document.getElementById(sField).checked ){
-      if( aValues ) {
-        sValue = aValues[0];
-      } else {
-        sValue = 'true';
-      }
-    }
-  } else if( aValues ){
-    if( typeof(aValues[document.getElementById(sField).selectedIndex -1 ]) == "undefined" ) {
-      return false;
-    }
-    sValue = aValues[document.getElementById(sField).selectedIndex -1 ];
-  } else if( document.getElementById(sField).value != '' ) {
-    sValue = document.getElementById(sField).value.trim();
-    var sOutput = false;
-    
-    if( sKind == "int" ) {
-      if( sValue % 1 !=0 ){
-        return false;
-      }
-    } else if( sKind == 'html' ){
-      sValue = sValue.replace(/&/g,'&amp;');
-      sValue = sValue.replace(/'/g,'\\\'');
-      sValue = sValue.replace(/"/g,'&quot;');
-      sValue = sValue.replace(/</g,'&lt;');
-      sValue = sValue.replace(/>/g,'&gt;');
-    }
-  } else {
-    return false;
-  }
-    
-  if( !sValue ){
-    return false;
-  }
-    
-  if( sValue.match(/"/) || sKind == 'html' ){
-    sOutput = "'"+sValue+"'";
-  } else {
-    sOutput = '"'+sValue+'"';
-  }
-  
-  if( sOutput ){
-    fv_wp_fp_shortcode += ' '+sArg+'='+sOutput; 
-  }
-  return sValue;
 }
