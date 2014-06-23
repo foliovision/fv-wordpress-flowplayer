@@ -776,7 +776,7 @@ function fv_wp_flowplayer_check_files() {
       if( stripos( $videos[0]['src'], '.mp4' ) === FALSE /*&& stripos( $videos[0]['src'], '.m4v' ) === FALSE*/ ) {
         continue;
       }
-      global $FV_Player_Checker;
+ 
 			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
         list( $header, $message_out ) = $FV_Player_Checker->http_request( trim($videos[0]['src']), array( 'quick_check' => 10, 'size' => 65536 ) );
         if( $header ) {        
@@ -790,7 +790,7 @@ function fv_wp_flowplayer_check_files() {
             foreach( $videos AS $video ) {
               $sPostsLinks .= '<a href="'.home_url().'?p='.$video['post_id'].'">'.$video['post_id'].'</a> ';	
             }
-            $errors[] = implode( " ",$new_errors ).'(<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$sPostsLinks.'</div>';
+            $errors[] = $new_errors.'(<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$sPostsLinks.'</div>';
             $count++;
             continue;           
           } else {
