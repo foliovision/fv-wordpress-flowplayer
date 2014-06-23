@@ -326,7 +326,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.2.13 - 2014/06/23 =
 
+* Bugfix - fix for embed function call when not available (non-fatal JavaScript error)
 * Bugfix - shortcode editor fixes for quotes in file URLs etc.
+* Bugfix - video checker was sometimes listing JavaScript objects
 
 = 2.2.12 - 2014/06/19 =
 
