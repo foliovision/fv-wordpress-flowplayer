@@ -324,6 +324,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.14 - 2014/06/24 =
+
+* Bugfix - important fix for Chrome - share bar embed button was triggering video loading on background and thus causing extra traffic to the server
+* Bugfix - some PHP and admin JS warnings 
+
 = 2.2.13 - 2014/06/23 =
 
 * Bugfix - fix for embed function call when not available (non-fatal JavaScript error)
@@ -835,6 +840,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.2.14 =
+* Important fix for share bar embed function in Chrome - it was triggering video loading on background in and thus causing extra traffic to the server
 
 = 2.2.4 =
 * Amazon S3 protected content playlist fixes. Please check you playlist after the upgrade.
