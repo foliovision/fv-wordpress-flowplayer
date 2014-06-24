@@ -721,14 +721,20 @@ HTML;
   </div>  
 HTML;
 
+
     if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
       $sHTMLEmbed = '';
     }
     
-    if( ( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'false' ) || ( $this->conf['disablesharing'] == 'true' && $this->aCurArgs['sharing'] != 'true' ) ) {
+    if( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'false' ) {
       $sHTMLSharing = '';
-    }    
+    } else if( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'true' ) {
+      
+    } else if( $this->conf['disablesharing'] == 'true' ) {
+      $sHTMLSharing = '';
+    }
 
+    $sHTML = false;
     if( $sHTMLSharing || $sHTMLEmbed ) {
       $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLEmbed</div>";
     }
