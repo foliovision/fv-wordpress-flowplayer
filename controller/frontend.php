@@ -282,6 +282,7 @@ function flowplayer_prepare_scripts() {
       $aConf['video_checker_site'] = home_url();
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;
+    $aConf['volume'] = $fv_fp->conf['volume'];
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );

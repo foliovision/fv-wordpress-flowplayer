@@ -146,7 +146,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
     if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';
-    if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';   
+    if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
+    if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;

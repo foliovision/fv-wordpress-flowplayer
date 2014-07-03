@@ -594,6 +594,8 @@ function fv_flowplayer_admin_skin() {
     <tr>              
       <td><label for="durationColor">Total time</label></td>
       <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo $fv_fp->conf['durationColor']; ?>" /></td>
+      <td><label for="volume">Default Volume</label></td>
+      <td><input class="small" id="volume" name="volume" title="Enter number between 0 and 1, like 0.5" type="text" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>        
       <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
       <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->
     </tr>
