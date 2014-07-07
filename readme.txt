@@ -324,6 +324,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.15 - 2014/07/03 =
+
+* Feature - added setting for default volume
+* Bugfix - rare IE 11 issues with splash screen on autoplay videos
+
 = 2.2.14 - 2014/06/24 =
 
 * Bugfix - important fix for Chrome - share bar embed button was triggering video loading on background and thus causing extra traffic to the server
