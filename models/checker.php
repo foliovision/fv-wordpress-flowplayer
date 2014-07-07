@@ -122,7 +122,7 @@ class FV_Player_Checker {
     
     if( isset($URLs) ) {
       $all_sources = $URLs;
-      
+
       foreach( $all_sources AS $source ) {
         if( preg_match( '!^rtmp://!', $source, $match ) ) {
           $found_rtmp = true;
