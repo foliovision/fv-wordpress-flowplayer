@@ -195,7 +195,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);
-
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
 	  update_option( 'fvwpflowplayer', $aNewOptions );
     $this->conf = $aNewOptions;    
     
@@ -745,7 +745,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			}
 			
 			$url_parts = parse_url( ($source_flash_encoded) ? $source_flash_encoded : $media );					
-			if( stripos( $url_parts['path'], '+' ) !== false ) {
+			if( isset($url_parts['path']) && stripos( $url_parts['path'], '+' ) !== false ) {
 
 				if( !empty($url_parts['path']) ) {
 						$url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts['path'])));
