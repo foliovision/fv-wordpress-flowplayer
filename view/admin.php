@@ -95,13 +95,22 @@ function fv_flowplayer_admin_amazon_options() {
 				<table class="form-table2">
 					<tr>
 						<td colspan="2">
-							<p>Secured Amazon S3 URLs are only recommended for member-only sections of the site. They don't work well with cache plugins, as they expire. Member-only sections in general require users to log in and thus use no WP cache. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
+							<p>Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly</p>
+              <p>If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expire Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won't be accounted and the video source URLs in your cached pages won't expire. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
 						</td>
 					</tr>
 					<tr>
-						<td class="first"><label for="amazon_expire">Default Expire Time [minutes] (<abbr title="Each video duration is stored on post save and then used as the expire time.">?</abbr>):</label></td>
-						<td><input type="text" size="40" name="amazon_expire" id="amazon_expire" value="<?php echo intval($fv_fp->conf['amazon_expire']); ?>" /></td>
-					</tr>		
+						<td class="first"><label for="amazon_expire">Default Expire Time [minutes] (<abbr title="Each video duration is stored on post save and then used as the expire time. If the duration is not available, this value is used.">?</abbr>):</label></td>
+						<td>
+              <input type="text" size="40" name="amazon_expire" id="amazon_expire" value="<?php echo intval($fv_fp->conf['amazon_expire']); ?>" />            
+            </td>
+					</tr>
+					<tr>
+						<td class="first"><label for="amazon_expire_force">Force the default expiration time:</label></td>
+						<td>             
+              <?php fv_flowplayer_admin_checkbox('amazon_expire_force'); ?>              
+            </td>
+					</tr>		          
 <?php
 			if( !isset($fv_fp->conf['amazon_bucket']) ) {
 				$fv_fp->conf['amazon_bucket'] = array('');

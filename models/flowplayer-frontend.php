@@ -401,11 +401,11 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= ">\n";
 									          
           foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-            $this->ret['html'] .= $this->get_video_src($media_item, $mobileUserAgent, null, $rtmp);
+            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
           }
 					if (!empty($mobile)) {
 						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-						$this->ret['html'] .= $this->get_video_src($mobile, $mobileUserAgent, 'wpfp_'.$this->hash.'_mobile', $rtmp);
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
 					}			
 			
 					if( isset($rtmp) && !empty($rtmp) ) {
@@ -503,7 +503,7 @@ class flowplayer_frontend extends flowplayer
 					
 			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
 			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
-			$this->ret['html'] .= "\t".'<audio src="'.$this->get_amazon_secure($media, $this).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" width="'.$width.'"'.$preload.'></audio>'."\n";  
+      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" width="'.$width.'"'.$preload.'></audio>'."\n";  
 			$this->ret['html'] .= '</div>'."\n";  
   }
   
@@ -580,9 +580,7 @@ class flowplayer_frontend extends flowplayer
         ';
       }
         
-      //	tricky way of moving over the error handler
-      $tmp = $this;
-      $mp4_video = $this->get_amazon_secure( $mp4_video, $tmp );	
+      $mp4_video = $this->get_video_src( $mp4_video, array( 'url_only' => true ) );
   
       $this->ret['script']['fv_flowplayer_browser_chrome_fail'][$this->hash] = array( 'attrs' => $attributes_html, 'mp4' => $mp4_video, 'auto_buffer' => ( (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true') ? "true" : "false" ) );
     }
@@ -684,7 +682,7 @@ class flowplayer_frontend extends flowplayer
       $aTest_media = array();
       foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
         if( $media_item ) {
-          $aTest_media[] = $this->get_amazon_secure( $media_item, $this );
+          $aTest_media[] = $this->get_video_src( $media_item, array( 'url_only' => true, 'dynamic' => true ) );
           //break;
         } 
       }    

@@ -86,6 +86,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
+    
+    add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
 	}
   
   
@@ -126,8 +128,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';    
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
-    if( !isset( $conf['width'] ) ) $conf['width'] = '600';
-    if( !isset( $conf['height'] ) ) $conf['height'] = '400';
+    if( !isset( $conf['width'] ) ) $conf['width'] = '720';
+    if( !isset( $conf['height'] ) ) $conf['height'] = '480';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
 		if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
@@ -141,7 +143,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		if( !isset( $conf['amazon_bucket'] ) || !is_array($conf['amazon_bucket']) ) $conf['amazon_bucket'] = array('');       
 		if( !isset( $conf['amazon_key'] ) || !is_array($conf['amazon_key']) ) $conf['amazon_key'] = array('');   
 		if( !isset( $conf['amazon_secret'] ) || !is_array($conf['amazon_secret']) ) $conf['amazon_secret'] = array('');  		
-		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';   
+		if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';
+    if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';   
 		if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';   		
 		if( isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
@@ -241,7 +244,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
         if( !$media_item ) continue;
-        $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), false, false, false, true, $suppress_filters );
+        $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
           if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
@@ -301,7 +304,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               continue;
             }
             
-            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), false, false, false, true, $suppress_filters );
+            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
             if( is_array($media_url) ) {
               $actual_media_url = $media_url['media'];
               if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
@@ -497,8 +500,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_amazon_secure( $media, &$fv_fp, $url_only= false ) {
-
+  function get_amazon_secure( $media ) {
+    $aArgs = func_get_args();
+    $aArgs = $aArgs[1];
+    global $fv_fp;
+  
 		$amazon_key = -1;
   	if( !empty($fv_fp->conf['amazon_key']) && !empty($fv_fp->conf['amazon_secret']) && !empty($fv_fp->conf['amazon_bucket']) ) {
   		foreach( $fv_fp->conf['amazon_bucket'] AS $key => $item ) {
@@ -512,15 +518,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   	if( $amazon_key != -1 && !empty($fv_fp->conf['amazon_key'][$amazon_key]) && !empty($fv_fp->conf['amazon_secret'][$amazon_key]) && !empty($fv_fp->conf['amazon_bucket'][$amazon_key]) && stripos( $media, trim($fv_fp->conf['amazon_bucket'][$amazon_key]) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
   	
 			$resource = trim( $media );
-			
+
 			if( !isset($fv_fp->expire_time) ) {
-				$time = 60 * intval($fv_fp->conf['amazon_expire'][$amazon_key]);
+				$time = 60 * intval($fv_fp->conf['amazon_expire']);
 			} else {
 				$time = intval(ceil($fv_fp->expire_time));
-			}			
+			}
+      
+      if( isset($fv_fp->conf['amazon_expire']) && $fv_fp->conf['amazon_expire_force'] == 'true' ) {
+        $time = 60 * intval($fv_fp->conf['amazon_expire']);
+      }
+      
 			if( $time < 900 ) {
 				$time = 900;
 			}
+      
 			$time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
 			$expires = time() + $time;
 		 
@@ -546,7 +558,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		
 			$url = $resource;
       
-      if( $url_only ) {
+      if( $aArgs['url_only'] ) {
         $url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].'&Expires='.$expires.'&Signature='.$signature;
       } else {
         $url .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].'&amp;Expires='.$expires.'&amp;Signature='.$signature;
@@ -559,46 +571,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   	}
   	
   	return $media;
-  }
-  
-  
-  function get_cloudfront_secure( $resource, $timeout = 900 ) {
-		//This comes from key pair you generated for cloudfront
-		$keyPairId = "YOUR_CLOUDFRONT_KEY_PAIR_ID";
-		
-		$expires = time() + $timeout; //Time out in seconds
-		$json = '{"Statement":[{"Resource":"'.$resource.'","Condition":{"DateLessThan":{"AWS:EpochTime":'.$expires.'}}}]}';		
-		
-		//Read Cloudfront Private Key Pair
-		$fp=fopen("private_key.pem","r"); 
-		$priv_key=fread($fp,8192); 
-		fclose($fp); 
-		
-		//Create the private key
-		$key = openssl_get_privatekey($priv_key);
-		if(!$key)
-		{
-			echo "<p>Failed to load private key!</p>";
-			die();
-			return;
-		}
-		
-		//Sign the policy with the private key
-		if(!openssl_sign($json, $signed_policy, $key, OPENSSL_ALGO_SHA1))
-		{
-			echo '<p>Failed to sign policy: '.openssl_error_string().'</p>';
-			die();
-			return;
-		}
-		
-		//Create url safe signed policy
-		$base64_signed_policy = base64_encode($signed_policy);
-		$signature = str_replace(array('+','=','/'), array('-','_','~'), $base64_signed_policy);
-		
-		//Construct the URL
-		$url = $resource.'?Expires='.$expires.'&Signature='.$signature.'&Key-Pair-Id='.$keyPairId;
-		
-		return $url;  
   }
   
   
@@ -739,19 +711,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   
-  function get_video_src($media, $mobileUserAgent, $id = '', $rtmp = false, $url_only = false, $suppress_filters = false ) {
+  function get_video_src($media, $aArgs ) {
+    $aArgs = wp_parse_args( $aArgs, array(
+          'dynamic' => false,
+          'id' => false,
+          'mobileUserAgent' => false,
+          'rtmp' => false,        
+          'suppress_filters' => false,
+          'url_only' => false
+        )
+      );
+    
   	if( $media ) { 
 			$extension = $this->get_file_extension($media);
 			//do not use https on mobile devices
-			if (strpos($media, 'https') !== false && $mobileUserAgent) {
+			if (strpos($media, 'https') !== false && $aArgs['mobileUserAgent']) {
 				$media = str_replace('https', 'http', $media);
 			}
-			$id = ($id) ? 'id="'.$id.'" ' : '';
+			$sID = ($aArgs['id']) ? 'id="'.$aArgs['id'].'" ' : '';
 	
-      if( !$suppress_filters ) {
-        $media = apply_filters( 'fv_flowplayer_video_src', $media, $this );    
-        $media = $this->get_amazon_secure( $media, $this, $url_only );        
-        $media = apply_filters( 'fv_flowplayer_video_src_after', $media, $this );
+      if( !$aArgs['suppress_filters'] ) {
+        $media = apply_filters( 'fv_flowplayer_video_src', $media, $aArgs );          
       }
 			
 			//	fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
@@ -759,7 +739,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			if( $this->is_secure_amazon_s3($media) /*&& stripos($media,'.webm') === false && stripos($media,'.ogv') === false */) {
 					$media_fixed = str_replace('%2B', '%25252B',$media);   
 					//	only if there was a change and we don't have an RTMP for Flash
-					if( $media_fixed != $media && empty($rtmp) ) {
+					if( $media_fixed != $media && empty($aArgs['rtmp']) ) {
             $source_flash_encoded = $media_fixed;
 					}
 			}
@@ -777,7 +757,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 				$source_flash_encoded = http_build_url( ($source_flash_encoded) ? $source_flash_encoded : $media, $url_parts);
 			}
 			
-			if( $url_only ) {
+			if( $aArgs['url_only'] ) {
         if( $source_flash_encoded ) {
           return array( 'media' => $media, 'flash' => $source_flash_encoded );
         } else {
@@ -785,10 +765,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }
 			} else {
         $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
-				$sReturn = '<source '.$id.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
+				$sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
         if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
-          $sReturn .= '<source '.$id.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
+          $sReturn .= '<source '.$sID.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
         }
         return $sReturn;
 			}
@@ -832,10 +812,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
 	}
 	
-
-	public function is_secure_cloudfront( $url ) {
-		return preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
-	}	
+  
 }
 /**
  * Defines some needed constants and loads the right flowplayer_head() function.
@@ -881,8 +858,8 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
       
     	if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-      	$video_secured = $fv_fp->get_amazon_secure( $fv_fp->get_video_url($video), $fv_fp); //  todo: generalize
-      	if( $FV_Player_Checker->check_mimetype( array($video_secured), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
+        $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true ) );
+      	if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
         } else {
           FV_Player_Checker::queue_add($post->ID);

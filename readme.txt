@@ -324,6 +324,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.16 - 2014/07/07 =
+
+* Feature - better support for Amazon S3 protected URLs and cache plugins - you can force a set expiry time now to match your cache timeout
+* Pro (version 0.1.8) - support for secured CloudFront
+
 = 2.2.15 - 2014/07/03 =
 
 * Feature - added setting for default volume
