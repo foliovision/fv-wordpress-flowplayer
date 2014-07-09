@@ -72,8 +72,6 @@ Visit [out site](http://wordpress.org/plugins/fv-wordpress-flowplayer/installati
 
 This should be related to your video format or mime type issues.
 
-Each browser supports different video format, MP4 is the recommended format: http://flowplayer.org/docs/#video-formats
-
 Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding).
 
 It seems HTML5 is more picky about what video it can play than Flash.
@@ -89,7 +87,7 @@ Please note that MP4 is just a container, it might contain various streams for a
 * Once it's finished, it changes color based on what problem is detected and you can click it to get video details.
 * The dialog also includes our tips on how to resolve the issues found. There is also a button labeled "Send to Foliovision" which sends your video with details straight to our private support tickets.
 
-Note: The checker works much better for local files (on the same server as site). For the remote files, we only grab first 2MB of the file, store it temporarily in your uploads folder, analyze it and then delete. Since we don't get the full file, some values might not be correct, but basic things like codecs should be not affected.
+Note: The checker doesn't work for localhost files, as our service is not able to access them.
 
 = My video doesn't play in Internet Explorer 9 and 10 =
 
