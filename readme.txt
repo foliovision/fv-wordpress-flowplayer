@@ -762,7 +762,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Added option for showing splash image at the end
 
 = 1.2.3 =
-* HTML 5 suport for mobile browsers (Thanks for donation from [enterpriseIT](http://enterpriseit.com/))
+* HTML 5 suport for mobile browsers (Thanks for donation from [enterpriseIT](http://www.enterpriseit.co.nz/))
 * incorrect paths fixed
 
 = 1.2.2 =
