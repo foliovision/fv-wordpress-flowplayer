@@ -702,10 +702,10 @@ class flowplayer_frontend extends flowplayer
     $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
    
     $sHTMLSharing = '<label>Share the video</label><ul class="fvp-sharing">
-    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=$sPermalink" target="_blank">Facebook</a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status=$sTitle$sPermalink" target="_blank">Twitter</a></li>
-    <li><a class="sharing-google" href="https://plus.google.com/share?url=$sPermalink" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body=$sMail" target="_blank">Email</a></li></ul>';
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/home?status='.$sTitle.$sPermalink.'" target="_blank">Twitter</a></li>
+    <li><a class="sharing-google" href="https://plus.google.com/share?url='.$sPermalink.'" target="_blank">Google+</a></li>
+    <li><a class="sharing-email" href="mailto:?body='.$sMail.'" target="_blank">Email</a></li></ul>';
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
