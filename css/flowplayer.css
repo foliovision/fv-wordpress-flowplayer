@@ -226,23 +226,49 @@
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
-.fvp-share-bar .fvp-sharing, #content .fvp-share-bar .fvp-sharing {
+
+/* style reset first */
+.flowplayer .fvp-sharing ul {
+	  list-style: none !important;
+}
+.fvp-share-bar ul,
+.fvp-share-bar .fvp-sharing, 
+#content .fvp-share-bar .fvp-sharing {
 	/*clear: both;
 	width: 102px;*/
 	min-height: 24px;
-	margin: 7px auto;
-  float:left;
-  font-family:"Lucida Console", Monaco, monospace
+	margin: 7px auto !important;
+  	padding: 0 !important;
+	float: left;
+  	font-family: "Lucida Console", Monaco, monospace;
+}
+.fvp-share-bar {
+	line-height: 24px !important;	
 }
 .fvp-share-bar label {
-	text-align: center;
+	text-align: center !important;
 }
-
+.fvp-share-bar .fvp-sharing li a:before,
+.fvp-share-bar .fvp-sharing li a:after,
+.fvp-share-bar .fvp-sharing li:before,
+.fvp-share-bar .fvp-sharing li:after {
+	content: "" !important;
+	display: none !important;
+}
 .fvp-share-bar .fvp-sharing li {
 	float: left;
 	display: inline-block;
-	margin: 0 5px;
-  padding: 0;
+	margin: 0 5px !important;
+	padding: 0 !important;
+	border: none !important;
+	background: none !important;
+}
+#content .flowplayer a, 
+.flowplayer a, 
+.flowplayer a:hover,
+.fvp-share-bar .fvp-sharing a {
+	color: #fff !important;
+	text-shadow: none !important;
 }
 
 .fvp-share-bar .fvp-sharing a {
