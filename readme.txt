@@ -322,7 +322,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.16 - 2014/07/07 =
+= 2.2.17 - 2014/07/?? =
+
+* Fix - plugin HTML made more robust - it won't get damaged by some weird templates which put in P tags anymore
+
+= 2.2.16 - 2014/07/09 =
 
 * Feature - better support for Amazon S3 protected URLs and cache plugins - you can force a set expiry time now to match your cache timeout
 * Pro (version 0.1.8) - support for secured CloudFront
@@ -760,7 +764,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Added option for showing splash image at the end
 
 = 1.2.3 =
-* HTML 5 suport for mobile browsers (Thanks for donation from [enterpriseIT](http://www.enterpriseit.co.nz/))
+* HTML 5 suport for mobile browsers (Thanks for donation from [enterpriseIT](http://enterpriseit.com/))
 * incorrect paths fixed
 
 = 1.2.2 =
