@@ -428,7 +428,7 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= "\t"."\t".'<track src="'.esc_attr($subtitles).'" />'."\n";
 					}     
 					
-					$this->ret['html'] .= "\t".'</video>'."\n";
+					$this->ret['html'] .= "\t".'</video>';//."\n";
 				}
 								
 				
@@ -442,7 +442,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= $ad_contents;  
 				}
         if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
-					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</div></div>';       
+					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
@@ -701,23 +701,13 @@ class flowplayer_frontend extends flowplayer
     $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
     $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
    
-    $sHTMLSharing = <<< HTML
-  <label>Share the video</label>
-  <ul class="fvp-sharing">
+    $sHTMLSharing = '<label>Share the video</label><ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=$sPermalink" target="_blank">Facebook</a></li>
     <li><a class="sharing-twitter" href="https://twitter.com/home?status=$sTitle$sPermalink" target="_blank">Twitter</a></li>
     <li><a class="sharing-google" href="https://plus.google.com/share?url=$sPermalink" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body=$sMail" target="_blank">Email</a></li>
-  </ul>
-HTML;
+    <li><a class="sharing-email" href="mailto:?body=$sMail" target="_blank">Email</a></li></ul>';
 
-    $sHTMLEmbed = <<< HTML
-  <label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label>
-  <div class="embed-code">
-    <label>Copy and paste this HTML code into your webpage to embed.</label>
-    <textarea></textarea>
-  </div>  
-HTML;
+    $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
 
     if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
@@ -754,12 +744,10 @@ HTML;
     </div>
     <div class="support-{$this->hash}">
       <textarea style="width: 98%; height: 150px" onclick="if( this.value == 'Enter your comment' ) this.value = ''" class="wpfp_message_field" id="wpfp_support_{$this->hash}">Enter your comment</textarea>
-      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p>
-    </div>
+      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p></div>
     <div class="more-{$this->hash} mail-content-details" style="display: none; ">
       <p>Plugin version: {$fv_wp_flowplayer_ver}</p>
-      <div class="fv-wp-flowplayer-notice-parsed level-0"></div>
-    </div>
+      <div class="fv-wp-flowplayer-notice-parsed level-0"></div></div>
   </div>
 </div>
 HTML;
