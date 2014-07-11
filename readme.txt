@@ -324,11 +324,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.17 - 2014/07/?? =
+= 2.2.17 - 2014/07/11 =
 
 * Fix - plugin HTML made more robust - it won't get damaged by some weird templates which put in P tags anymore
+* Fix - share bar CSS improved to not be affected by template CSS
+* Bugfix - plugin was failing to load its own JavaScript libraries in some rare cases (found on a website with Genesis framework, but we haven't found a compatibility issue when using it)
 
-= 2.2.16 - 2014/07/09 =
+= 2.2.16 - 2014/07/07 =
 
 * Feature - better support for Amazon S3 protected URLs and cache plugins - you can force a set expiry time now to match your cache timeout
 * Pro (version 0.1.8) - support for secured CloudFront
