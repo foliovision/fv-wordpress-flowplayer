@@ -280,6 +280,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
         $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
         $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
+        
+        $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+        
         $sHTML[] = "\t\t<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
         
             
@@ -298,6 +301,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $aItem = array();
           $sSplashImage = false;
           $flash_media = array();
+          
+          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+
           foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
             if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
               $sSplashImage = $aPlaylist_item_i;
@@ -334,7 +340,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $aPlaylistItems[] = $aItem;
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
-
+          
           if( $sSplashImage ) {
             $sHTML[] = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
           } else {
