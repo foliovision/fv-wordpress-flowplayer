@@ -402,7 +402,7 @@ class FV_Player_Checker {
   
   
   
-  function queue_add( $post_id ) {
+  public static function queue_add( $post_id ) {
     $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
     $aQueue[$post_id] = true;
     update_option( 'fv_flowplayer_checker_queue', $aQueue );
@@ -411,7 +411,7 @@ class FV_Player_Checker {
   
   
   
-  function queue_add_all() {
+  public static function queue_add_all() {
     global $wpdb;
     if( $aPosts = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_content LIKE '%[fvplayer%' ORDER BY post_date DESC" ) ) {
       $aQueue = array();
@@ -426,7 +426,7 @@ class FV_Player_Checker {
   
   
   
-  function queue_check( $post_id = false ) {
+  public static function queue_check( $post_id = false ) {
     global $post;
     $post_id = ( isset($post->ID) ) ? $post->ID : $post_id;
     $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
@@ -439,14 +439,14 @@ class FV_Player_Checker {
   
   
   
-  function queue_get() {
+  public static function queue_get() {
     return get_option( 'fv_flowplayer_checker_queue' );
   }
   
   
   
   
-  function queue_remove( $post_id ) {
+  public static function queue_remove( $post_id ) {
     $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
     if( isset($aQueue[$post_id]) ) {
       unset($aQueue[$post_id]);
