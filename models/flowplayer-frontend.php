@@ -632,7 +632,8 @@ class flowplayer_frontend extends flowplayer
       else {
         $splash_img = trim($this->aCurArgs['splash']);
       }  		  		
-    }    
+    }
+    $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
     return $splash_img;
   }
   
