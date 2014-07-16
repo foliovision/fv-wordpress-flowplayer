@@ -322,6 +322,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.2.18 - 2014/07/16 =
+
+* Bugfix - fix for PHP warnings
+
 = 2.2.17 - 2014/07/11 =
 
 * Fix - plugin HTML made more robust - it won't get damaged by some weird templates which put in P tags anymore
