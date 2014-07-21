@@ -237,6 +237,16 @@ var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*
             </select>
   				</td>
   			</tr>
+        <tr<?php if( $fv_flowplayer_conf["interface"]["controlbar"] !== 'true' ) echo ' style="display: none"'; ?>>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_controlbar" class="alignright">Controlbar</label></th>
+  				<td>
+            <select id="fv_wp_flowplayer_field_controlbar" name="fv_wp_flowplayer_field_controlbar">
+              <option>Default</option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+  				</td>
+  			</tr>        
         <?php do_action( 'fv_flowplayer_shortcode_editor_after' ); ?>        
   			<tr>
   				<th scope="row" class="label"></th>					
