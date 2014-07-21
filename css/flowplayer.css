@@ -384,6 +384,9 @@ a #add-format, a #add-rtmp {
 .flowplayer.alignleft { margin-right: 10px; margin-bottom: 10px;  }
 .flowplayer.alignright { margin-left: 10px; margin-bottom: 10px; }
 
+.flowplayer.no-controlbar .fp-controls{display:none}
+.flowplayer.no-controlbar .fp-time{display:none}
+
 /*
 MediaElement.js
 */

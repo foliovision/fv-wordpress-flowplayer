@@ -187,7 +187,6 @@ class flowplayer_frontend extends flowplayer
 				}			
 				
 				$popup = '';
-				$controlbar = 'hide';
 				
 				//check user agents
 				$aUserAgents = array('iphone', 'ipod', 'iPad', 'aspen', 'incognito', 'webmate', 'android', 'android', 'dream', 'cupcake', 'froyo', 'blackberry9500', 'blackberry9520', 'blackberry9530', 'blackberry9550', 'blackberry9800', 'Palm', 'webos', 's8000', 'bada', 'Opera Mini', 'Opera Mobi', 'htc_touch_pro');
@@ -248,7 +247,7 @@ class flowplayer_frontend extends flowplayer
           if( strcmp($this->aCurArgs['controlbar'],'yes') == 0 || strcmp($this->aCurArgs['controlbar'],'show') == 0 ) {
             $bFixedControlbar = true;
           } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 ) {
-            $bFixedControlbar = false;
+            $attributes['class'] .= ' no-controlbar';
           }
         }
         if( $bFixedControlbar ) {
