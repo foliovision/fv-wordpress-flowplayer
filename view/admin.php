@@ -337,7 +337,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>
 					<tr>          
-						<td><label for="interface[playlist]">Playlist captions: <span class="new">NEW</span></label></td>
+						<td><label for="interface[playlist]">Playlist captions:</label></td>
 						<td>
               <input type="hidden" name="interface[playlist_captions]" value="false" />
 							<input type="checkbox" name="interface[playlist_captions]" id="interface[playlist_captions]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_captions']) && $fv_fp->conf['interface']['playlist_captions'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -412,7 +412,14 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[align]" value="false" />
 							<input type="checkbox" name="interface[align]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['align']) && $fv_fp->conf['interface']['align'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr> 					
+					</tr>
+					<tr>          
+						<td><label for="interface[align]">Controlbar: <span class="new">NEW</span></label></td>
+						<td>
+              <input type="hidden" name="interface[controlbar]" value="false" />
+							<input type="checkbox" name="interface[controlbar]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['controlbar']) && $fv_fp->conf['interface']['controlbar'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr> 	          
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
