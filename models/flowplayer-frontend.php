@@ -613,19 +613,21 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
       $splash_img = $this->aCurArgs['splash'];
       if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
+        $http = is_ssl() ? 'https://' : 'http://';
+        
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
         if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
           if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
-            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
+            $splash_img = $http.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
           }
           else
           if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$splash_img)){ // if the videos folder is in the root
-            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
+            $splash_img = $http.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
           }
           else {
             //if the videos are not in the videos directory but they are adressed relatively
             $splash_img_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$splash_img);
-            $splash_img = 'http://'.$splash_img_path;
+            $splash_img = $http.$splash_img_path;
           }
       }
       else {
