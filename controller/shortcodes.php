@@ -119,7 +119,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'admin_warning' => '',
     'live' => '',
     'caption' => '',
-    'logo' => ''
+    'logo' => '',
+    'share' => ''
   ), $atts ) );
 
   if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
@@ -150,7 +151,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['admin_warning'] = $admin_warning;
     $arguments['live'] = $live;
     $arguments['caption'] = $caption;
-    $arguments['logo'] = $logo; 
+    $arguments['logo'] = $logo;
+    $arguments['share'] = $share; 
 		$src = trim( preg_replace('/\,/', '', $src) );
     $arguments['src'] = $src;
 	} else {
@@ -183,7 +185,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'admin_warning' => '',
       'live' => '',
       'caption' => '',
-      'logo' => ''
+      'logo' => '',
+      'share' => ''
 		), $atts );
 	}
   

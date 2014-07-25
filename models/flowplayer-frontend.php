@@ -699,9 +699,24 @@ class flowplayer_frontend extends flowplayer
   
   function get_sharing_html() {
   
-    $sPermalink = urlencode(get_permalink());
-    $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
-    $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
+    if( isset($this->aCurArgs['share']) ) { 
+      $aSharing = explode( ';', $this->aCurArgs['share'] );
+      if( count($aSharing) == 2 ) {
+        $sPermalink = urlencode($aSharing[1]);
+        $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[1] ) );
+        $sTitle = urlencode( $aSharing[0].' ');
+      } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
+        $sPermalink = urlencode($aSharing[0]);
+        $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[0] ) );
+        $sTitle = urlencode( get_bloginfo().' ');
+      }
+    }
+    
+    if( !isset($sPermalink) ) {  
+      $sPermalink = urlencode(get_permalink());
+      $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+      $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
+    }
    
     $sHTMLSharing = '<label>Share the video</label><ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
@@ -716,9 +731,9 @@ class flowplayer_frontend extends flowplayer
       $sHTMLEmbed = '';
     }
     
-    if( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'false' ) {
+    if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] == 'no' ) {
       $sHTMLSharing = '';
-    } else if( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'true' ) {
+    } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] != 'no' ) {
       
     } else if( $this->conf['disablesharing'] == 'true' ) {
       $sHTMLSharing = '';
