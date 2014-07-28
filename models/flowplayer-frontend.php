@@ -703,18 +703,18 @@ class flowplayer_frontend extends flowplayer
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
         $sPermalink = urlencode($aSharing[1]);
-        $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[1] ) );
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[1] ) );
         $sTitle = urlencode( $aSharing[0].' ');
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
         $sPermalink = urlencode($aSharing[0]);
-        $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[0] ) );
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[0] ) );
         $sTitle = urlencode( get_bloginfo().' ');
       }
     }
 				
     if( !isset($sPermalink) || empty($sPermalink) ) {  
       $sPermalink = urlencode(get_permalink());
-      $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
       $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
     }
 					
