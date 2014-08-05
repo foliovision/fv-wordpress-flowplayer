@@ -253,7 +253,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         } else {
           $actual_media_url = $media_url;
         }
-        $aItem[] = array( ( stripos( $media_item, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($actual_media_url) => $actual_media_url ); //  hmm how to add Flash items?
+        if( stripos( $media_item, 'rtmp:' ) === 0 ) {
+          $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.$actual_media_url );
+        } else {
+          $aItem[] = array( $this->get_file_extension($actual_media_url) => $actual_media_url );
+        }        
       }
       
       if( count($flash_media) ) {
@@ -318,8 +322,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               }
             } else {
               $actual_media_url = $media_url;
-            }            
-            $aItem[] = array( ( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) ? 'flash' : $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
+            }
+            if( stripos( $media_item, 'rtmp:' ) === 0 ) {
+              $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.$actual_media_url ); 
+            } else {
+              $aItem[] = array( $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
+            }                
+            
           }
           
           if( count($flash_media) ) {
@@ -788,17 +797,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   		return null;
   	}
     if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
+      $http = is_ssl() ? 'https://' : 'http://';
 			// strip the first / from $media
       if($media[0]=='/') $media = substr($media, 1);
       if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
-        $media = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
+        $media = $http.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
       }
       else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
-        $media = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
+        $media = $http.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
       }
       else{ // if the videos are not in the videos directory but they are adressed relatively
         $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
-        $media = 'http://'.$media_path;
+        $media = $http.$media_path;
       }
 		}
     

@@ -629,7 +629,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 	);
 	$resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
 
-  if( isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
+  if( isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
     return $data;
   } else {
     return false;  
@@ -651,6 +651,10 @@ function fv_wp_flowplayer_media_upload() {
 
 
 function fv_wp_flowplayer_after_plugin_row( $arg) {
+  if( apply_filters('fv_player_skip_ads',false) ) {
+    return;
+  }
+  
 	$args = func_get_args();
 	
 	if( $args[1]['Name'] == 'FV Wordpress Flowplayer' ) {		

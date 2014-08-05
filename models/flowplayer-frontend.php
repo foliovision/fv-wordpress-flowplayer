@@ -415,7 +415,7 @@ class flowplayer_frontend extends flowplayer
               $rtmp_url = parse_url($rtmp_item);
               $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
       
-              $extension = $this->get_file_extension($rtmp_url['path'], null);
+              $extension = $this->get_file_extension($rtmp_url['path'], 'mp4');
               if( $extension ) {
                 $extension .= ':';
               }
@@ -441,7 +441,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= $ad_contents;  
 				}
         if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
-					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
+					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript">troubleshooting guide</a> or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
@@ -613,19 +613,21 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
       $splash_img = $this->aCurArgs['splash'];
       if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
+        $http = is_ssl() ? 'https://' : 'http://';
+        
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
         if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
           if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
-            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
+            $splash_img = $http.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
           }
           else
           if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$splash_img)){ // if the videos folder is in the root
-            $splash_img = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
+            $splash_img = $http.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
           }
           else {
             //if the videos are not in the videos directory but they are adressed relatively
             $splash_img_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$splash_img);
-            $splash_img = 'http://'.$splash_img_path;
+            $splash_img = $http.$splash_img_path;
           }
       }
       else {
@@ -697,10 +699,25 @@ class flowplayer_frontend extends flowplayer
   
   function get_sharing_html() {
   
-    $sPermalink = urlencode(get_permalink());
-    $sMail = urlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
-    $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
-   
+    if( isset($this->aCurArgs['share']) ) { 
+      $aSharing = explode( ';', $this->aCurArgs['share'] );
+      if( count($aSharing) == 2 ) {
+        $sPermalink = urlencode($aSharing[1]);
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[1] ) );
+        $sTitle = urlencode( $aSharing[0].' ');
+      } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
+        $sPermalink = urlencode($aSharing[0]);
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[0] ) );
+        $sTitle = urlencode( get_bloginfo().' ');
+      }
+    }
+				
+    if( !isset($sPermalink) || empty($sPermalink) ) {  
+      $sPermalink = urlencode(get_permalink());
+      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+      $sTitle = urlencode( (is_singular()) ? get_the_title() : get_bloginfo().' ');
+    }
+					
     $sHTMLSharing = '<label>Share the video</label><ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
     <li><a class="sharing-twitter" href="https://twitter.com/home?status='.$sTitle.$sPermalink.'" target="_blank">Twitter</a></li>
@@ -714,9 +731,9 @@ class flowplayer_frontend extends flowplayer
       $sHTMLEmbed = '';
     }
     
-    if( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'false' ) {
+    if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] == 'no' ) {
       $sHTMLSharing = '';
-    } else if( isset($this->aCurArgs['sharing']) && $this->aCurArgs['sharing'] == 'true' ) {
+    } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] != 'no' ) {
       
     } else if( $this->conf['disablesharing'] == 'true' ) {
       $sHTMLSharing = '';

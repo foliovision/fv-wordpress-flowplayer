@@ -745,7 +745,9 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
   </p>
   <div id="fv_flowplayer_admin_notices">
   </div>
-  <?php 
+  <?php
+  
+  do_action('fv_player_settings_pre');
   
   if( flowplayer::is_licensed() ) {
     $aCheck = get_transient( 'fv_flowplayer_license' );
@@ -768,7 +770,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
   endif;
 
   
-  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>    
+  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
   <?php else : ?>
 		<div id="fv_flowplayer_ad">
 			<div class="text-part">
