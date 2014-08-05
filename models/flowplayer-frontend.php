@@ -415,7 +415,7 @@ class flowplayer_frontend extends flowplayer
               $rtmp_url = parse_url($rtmp_item);
               $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
       
-              $extension = $this->get_file_extension($rtmp_url['path'], null);
+              $extension = $this->get_file_extension($rtmp_url['path'], 'mp4');
               if( $extension ) {
                 $extension .= ':';
               }

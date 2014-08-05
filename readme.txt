@@ -323,13 +323,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.20 - 2014/07/?? =
+= 2.2.20 - 2014/08/?? =
 
 * Feature - use share="Title;URL" to specify a custom URL for sharing using the video sharing buttons. Use "no" and "yes" to enable/disabled the sharing on the video.
 * Fix - admin JavaScript check made less scary - it only shows up if you hover the player (and the JavaScript is broken of course)
 * Fix - relative video paths were not respecting HTTP/HTTPS preference
-* Fix - video checker won't work in IE 9 - added a warnings abou that
-* Pro - YouTube support added!
+* Fix - video checker won't work in IE 9 - added a warnings about that
+* Fix - Android 4.x fullscreen compatibility fix (switch to native full screen mode as it's more compatible)
+* Fix - Windows Mobile 8.1 compatibility fix (set to use inline playback)
+* Fix - RTMP streams without extension now don't need "mp4:" entered at the start of path
+* Pro - YouTube support added (enable in settings first)!
 * Pro - Vimeo splash screen parsing (re-save your post to take effect)
 
 = 2.2.19 - 2014/07/21 =
