@@ -96,11 +96,11 @@ class flowplayer_frontend extends flowplayer
         $rtmp = $media_item;
       }
     }
-    
+
     if( ( !empty($this->aCurArgs['rtmp']) || ( !empty($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' ) ) && !empty($this->aCurArgs['rtmp_path']) ) {
       $rtmp = trim( $this->aCurArgs['rtmp_path'] );
     }
-
+  
     list( $media, $src1, $src2 ) = apply_filters( 'fv_flowplayer_media_pre', array( $media, $src1, $src2 ), $this );
     
 		
@@ -308,13 +308,19 @@ class flowplayer_frontend extends flowplayer
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
 				}			
 				
+        //  determine the RTMP server
 				if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {
 					$attributes['data-rtmp'] = trim( $this->aCurArgs['rtmp'] );
 				} else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && !(isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
-					$rtmp_info = parse_url($rtmp);
-					if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
-						$attributes['data-rtmp'] = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
-					}
+          if( stripos($rtmp,'/mp4:') !== false ) {
+            $aTMP = explode( '/mp4:', $rtmp );
+            $attributes['data-rtmp'] = $aTMP[0];
+          } else {
+            $rtmp_info = parse_url($rtmp);
+            if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
+              $attributes['data-rtmp'] = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
+            }
+          }
 				} else if( !empty($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' ) {
           if( stripos( $this->conf['rtmp'], 'rtmp://' ) === 0 ) {
             $attributes['data-rtmp'] = $this->conf['rtmp'];
@@ -324,7 +330,7 @@ class flowplayer_frontend extends flowplayer
           }
         }
         
-        				
+         				
 				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
     
 
@@ -412,10 +418,16 @@ class flowplayer_frontend extends flowplayer
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
               $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
    
-              $rtmp_url = parse_url($rtmp_item);
-              $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-      
-              $extension = $this->get_file_extension($rtmp_url['path'], 'mp4');
+              if( stripos($rtmp,'/mp4:') !== false ) {
+                $aTMP = explode( '/mp4:', $rtmp );
+                $rtmp_file = $aTMP[1];
+                $extension = $this->get_file_extension($rtmp_file, 'mp4');
+              } else {
+                $rtmp_url = parse_url($rtmp_item);
+                $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
+                $extension = $this->get_file_extension($rtmp_url['path'], 'mp4');                
+              }
+
               if( $extension ) {
                 $extension .= ':';
               }

@@ -212,7 +212,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $salt;
 	}
   
-  
+  //  todo: this could be parsin rtmp://host/path/mp4:rtmp_path links as well
   function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
     
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
