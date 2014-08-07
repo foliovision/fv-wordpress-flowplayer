@@ -190,6 +190,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 		), $atts );
 	}
   
+  if( ( !isset($arguments['src']) || strlen(trim($arguments['src'])) == 0 ) && isset($arguments['mobile']) && strlen(trim($arguments['mobile'])) ) {
+    $arguments['src'] = $arguments['mobile'];
+    $src = $arguments['mobile'];
+    unset($arguments['mobile']);
+  }
+  
   $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
 	
 	if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {

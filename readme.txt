@@ -323,7 +323,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.20 - 2014/08/?? =
+= 2.2.21 - 2014/08/07 =
+
+* Fix - mobile video is now used if there is no primary video
+* Fix - UI fade out changed from 2 to 5 seconds for touch devices
+* Fix - improved RTMP URL parsing to support rtmp://server/path/mp4:file-path URLs - however use RTMP server and RTMP path separately if possible
+* Bugfix - sharing buttons were appearing even when disabled globally
+* Pro - YouTube fix for Internet Explorer
+* Pro - Quality switching enabled for HLS and other fixes
+
+= 2.2.20 - 2014/08/05 =
 
 * Feature - use share="Title;URL" to specify a custom URL for sharing using the video sharing buttons. Use "no" and "yes" to enable/disabled the sharing on the video.
 * Fix - admin JavaScript check made less scary - it only shows up if you hover the player (and the JavaScript is broken of course)
