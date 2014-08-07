@@ -323,7 +323,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             } else {
               $actual_media_url = $media_url;
             }
-            if( stripos( $media_item, 'rtmp:' ) === 0 ) {
+            if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
               $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.$actual_media_url ); 
             } else {
               $aItem[] = array( $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
