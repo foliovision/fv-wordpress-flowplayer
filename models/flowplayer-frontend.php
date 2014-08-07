@@ -745,7 +745,7 @@ class flowplayer_frontend extends flowplayer
     
     if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] == 'no' ) {
       $sHTMLSharing = '';
-    } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] != 'no' ) {
+    } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] && $this->aCurArgs['share'] != 'no' ) {
       
     } else if( $this->conf['disablesharing'] == 'true' ) {
       $sHTMLSharing = '';
