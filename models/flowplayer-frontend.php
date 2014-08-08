@@ -214,13 +214,7 @@ class flowplayer_frontend extends flowplayer
 					$show_splashend = true;
 					$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
 				}	
-				
-				//  change engine for IE9 and 10
-				
-				if( $this->conf['engine'] == 'false' ) {
-					$this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
-				}
-				
+								
 				
 				if ( !empty($redirect) ) {
 					$this->ret['script']['fv_flowplayer_redirect'][$this->hash] = $redirect;
@@ -467,6 +461,11 @@ class flowplayer_frontend extends flowplayer
 				$this->ret['html'] .= '</div>'."\n";
         
 				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+        
+				//  change engine for IE9 and 10
+				if( $this->aCurArgs['engine'] == 'false' ) {
+					$this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
+				}        
         
 		} //  end Video player
     
