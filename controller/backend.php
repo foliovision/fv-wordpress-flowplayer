@@ -848,7 +848,7 @@ function fv_wp_flowplayer_check_template() {
 			}
       
 			if( stripos( $response['body'], '/html5.js') === FALSE && stripos( $response['body'], '/html5shiv.js') === FALSE ) {
-        $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Get it <a href="https://code.google.com/p/html5shim/">here</a> and put it into your template.';
+        $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Read our instrutions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
 			}      
 			
       $ok[] = 'Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.';       

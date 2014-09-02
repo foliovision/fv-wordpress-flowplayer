@@ -729,6 +729,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   function get_video_src($media, $aArgs ) {
     $aArgs = wp_parse_args( $aArgs, array(
           'dynamic' => false,
+          'flash' => true,
           'id' => false,
           'mobileUserAgent' => false,
           'rtmp' => false,        
@@ -773,7 +774,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			}
 			
 			if( $aArgs['url_only'] ) {
-        if( $source_flash_encoded ) {
+        if( $aArgs['flash'] && $source_flash_encoded ) {
           return array( 'media' => $media, 'flash' => $source_flash_encoded );
         } else {
         	return trim($media);
