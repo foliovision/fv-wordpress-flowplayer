@@ -254,7 +254,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $actual_media_url = $media_url;
         }
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
-          $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.$actual_media_url );
+          $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.str_replace( '+', ' ', $actual_media_url ) );
         } else {
           $aItem[] = array( $this->get_file_extension($actual_media_url) => $actual_media_url );
         }        
@@ -324,7 +324,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               $actual_media_url = $media_url;
             }
             if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
-              $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.$actual_media_url ); 
+              $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.str_replace( '+', ' ', $actual_media_url ) ); 
             } else {
               $aItem[] = array( $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
             }                
@@ -729,6 +729,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   function get_video_src($media, $aArgs ) {
     $aArgs = wp_parse_args( $aArgs, array(
           'dynamic' => false,
+          'flash' => true,
           'id' => false,
           'mobileUserAgent' => false,
           'rtmp' => false,        
@@ -773,7 +774,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 			}
 			
 			if( $aArgs['url_only'] ) {
-        if( $source_flash_encoded ) {
+        if( $aArgs['flash'] && $source_flash_encoded ) {
           return array( 'media' => $media, 'flash' => $source_flash_encoded );
         } else {
         	return trim($media);

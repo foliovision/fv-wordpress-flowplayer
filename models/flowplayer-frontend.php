@@ -695,7 +695,7 @@ class flowplayer_frontend extends flowplayer
       $aTest_media = array();
       foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
         if( $media_item ) {
-          $aTest_media[] = $this->get_video_src( $media_item, array( 'url_only' => true, 'dynamic' => true ) );
+          $aTest_media[] = $this->get_video_src( $media_item, array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
           //break;
         } 
       }    

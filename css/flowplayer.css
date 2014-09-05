@@ -57,7 +57,7 @@
 }.is-fullscreen.flowplayer .fp-ui{background-size:auto}
 .is-seeking.flowplayer .fp-ui,.is-loading.flowplayer .fp-ui{background-image:none}
 .flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:30px;cursor:pointer;display:none;z-index:100;}
-.flowplayer .fp-logo img{width:100%; border-radius: 0; box-shadow: none;}
+.flowplayer .fp-logo img{width:100%; border-radius: 0; box-shadow: none; border: 0; background: transparent; }
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
 .flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close{position:absolute;top:5px;left:auto;right:5px;display:block;width:30px;height:21px;background-position:12px -197px;cursor:pointer;}
