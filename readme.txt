@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, WP flash Video Player, embed video
 Requires at least: 3.5
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -322,6 +322,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
+
+= 2.2.22 - 2014/09/05
+
+* Fix - Wordpress 4.0 compatibility fix
+* Fix - logo CSS fix
+* Fix - video checker fixes
+* Feature - playlist_hide added
 
 = 2.2.21 - 2014/08/07 =
 
@@ -885,6 +892,9 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.2.22 =
+* Fix for Amazon RTMP path parsing - plus signs in the path were handled incorrectly for Flash engine
 
 = 2.2.14 =
 * Important fix for share bar embed function in Chrome - it was triggering video loading on background in and thus causing extra traffic to the server
