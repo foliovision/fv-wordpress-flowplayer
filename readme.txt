@@ -81,7 +81,7 @@ Please note that MP4 is just a container, it might contain various streams for a
 = How to check my video properties using the built-in checker and how to report video not playing =
 
 * Login to your site as administrator (please use the browser in which the video is not playing for you)
-* Double check Settings -> FV Wordpress Flowplayer -> "Front-end video checker" is set to "Enabled"
+* Double check Settings -> FV Wordpress Flowplayer -> Sitewide Flowplayer Defaults -> "Disable admin video checker" is not checked
 * Come to any post which was video
 * A message in top left corner of the video should appear saying: "Checking the video file...". The check takes usually 1-2 seconds.
 * Once it's finished, it changes color based on what problem is detected and you can click it to get video details.
