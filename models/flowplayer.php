@@ -718,6 +718,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function get_video_key( $sURL ) {
+    $sURL = str_replace( '?v=', '-v=', $sURL );
     $sURL = preg_replace( '~\?.*$~', '', $sURL );
     $sURL = str_replace( array('/','://'), array('-','-'), $sURL );
     return '_fv_flowplayer_'.sanitize_title($sURL);
