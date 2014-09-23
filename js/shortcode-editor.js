@@ -438,7 +438,7 @@ function fv_wp_flowplayer_submit() {
     
     var bPlaylistCaptionExists = false;
     for( var i in aPlaylistCaptions ){
-      if( typeof(aPlaylistCaptions[i]) != "undefined" && aPlaylistCaptions[i].trim().length > 0 ) {
+      if( typeof(aPlaylistCaptions[i]) == "string" && aPlaylistCaptions[i].trim().length > 0 ) {
         bPlaylistCaptionExists = true;
       }
     }
