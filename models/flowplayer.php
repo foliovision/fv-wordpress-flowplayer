@@ -718,6 +718,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function get_video_key( $sURL ) {
+    $sURL = str_replace( '?v=', '-v=', $sURL );
     $sURL = preg_replace( '~\?.*$~', '', $sURL );
     $sURL = str_replace( array('/','://'), array('-','-'), $sURL );
     return '_fv_flowplayer_'.sanitize_title($sURL);
@@ -859,7 +860,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   
   global $fv_fp, $post, $FV_Player_Checker;
   if( !$FV_Player_Checker->is_cron && $FV_Player_Checker->queue_check($post_id) ) {
-    return;
+    //return;
   }
   
   $saved_post = get_post($post_id);
@@ -876,6 +877,9 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       
     	if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
         $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true ) );
+        if( !is_array($video_secured) ) {
+          $video_secured = array( 'media' => $video_secured );
+        }
       	if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
         } else {
@@ -888,7 +892,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   	}
   }
 
-  if( $iDone == count($videos) ) {
+  if( !$videos || $iDone == count($videos) ) {
     FV_Player_Checker::queue_remove($post->ID);
   }
 }

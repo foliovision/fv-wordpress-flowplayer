@@ -240,6 +240,8 @@ class FV_Player_Checker {
               if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
                 $time = $ThisFileInfo['playtime_seconds'];    	
               }
+              
+              $time = apply_filters( 'fv_flowplayer_checker_time', $time, $meta_original );
 
               global $post;
               $fv_flowplayer_meta = get_post_meta( $post->ID, flowplayer::get_video_key($meta_original), true );
@@ -281,6 +283,9 @@ class FV_Player_Checker {
       global $post;
       $tmp = $post;
       $post = get_post($key);
+      
+      do_action( 'fv_flowplayer_checker_cron_post', $key );
+      
       fv_wp_flowplayer_save_post($key);     
       $post = $tmp;
     }
