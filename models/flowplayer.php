@@ -856,6 +856,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   	$post_id = $parent_id;
   }
   
+  global $post;
   $post_id = ( isset($post->ID) ) ? $post->ID : $post_id;
   
   global $fv_fp, $post, $FV_Player_Checker;
@@ -871,7 +872,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
     $tStart = microtime(true);
   	foreach( $videos AS $video ) {
     	if( microtime(true) - $tStart > apply_filters( 'fv_flowplayer_checker_save_post_time', 5 ) ) {
-        FV_Player_Checker::queue_add($post->ID);
+        FV_Player_Checker::queue_add($post_id);
         break;
       }
       
@@ -883,7 +884,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       	if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
         } else {
-          FV_Player_Checker::queue_add($post->ID);
+          FV_Player_Checker::queue_add($post_id);
         }
       } else {
         $iDone++;
@@ -893,7 +894,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   }
 
   if( !$videos || $iDone == count($videos) ) {
-    FV_Player_Checker::queue_remove($post->ID);
+    FV_Player_Checker::queue_remove($post_id);
   }
 }
 
