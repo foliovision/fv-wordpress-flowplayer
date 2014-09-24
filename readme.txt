@@ -323,7 +323,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.2.22 - 2014/09/05
+= 2.3 - 2014/09/23 =
+
+* Feature - upgreaded to latest core Flowplayer (5.5.0)
+* Fix - fix for Windows Mobile 8.1 Update 1
+* Bugfix - editor bug in rate cases
+* Bugfix - video duratation checker fixes
+
+
+= 2.2.22 - 2014/09/05 =
 
 * Fix - Wordpress 4.0 compatibility fix
 * Fix - logo CSS fix
