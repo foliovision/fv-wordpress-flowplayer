@@ -357,6 +357,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           }
           
         }
+        
+        $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
   
         $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
 
