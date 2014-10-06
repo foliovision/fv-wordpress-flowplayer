@@ -266,7 +266,15 @@ function fv_flowplayer_admin_description() {
 function fv_flowplayer_admin_integrations() {
 	global $fv_fp;
 ?>
+        <p>Following options are suitable for web developers and programmers.</p>
 				<table class="form-table2">
+          <tr>
+						<td class="first"><label for="cbox_compatibility">Colobox Compatibility (<abbr title="Use if your theme is using colorbox lightbox to show content and clones the HTML content into it.">?</abbr>):</label></td>
+						<td>
+              <input type="hidden" name="cbox_compatibility" value="false" />
+              <input type="checkbox" name="cbox_compatibility" id="cbox_compatibility" value="true" <?php if( isset($fv_fp->conf['cbox_compatibility']) && $fv_fp->conf['cbox_compatibility'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>          
           <tr>
 						<td class="first"><label for="js-everywhere">Load FV Flowplayer JS everywhere (<abbr title="If you use some special JavaScript integration, you might prefer this option, otherwise it loads only if the shortcode is found.">?</abbr>):</label></td>
 						<td>
@@ -741,7 +749,8 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
   	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
   	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
   	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
-  	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+  	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+    <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
   </p>
   <div id="fv_flowplayer_admin_notices">
   </div>

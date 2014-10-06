@@ -323,13 +323,23 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.1 - 2014/10/06 =
+
+* Feature - Colorbox compatibility (enhancement for programmers, Pro version has its own video and image lightbox gallery)
+* Bugfix - fix for volume setting (no values above 1)
+* Pro - easier video lightbox - type in <a href="http://your-server.com/videos/your-video.mp4" class="colorbox">click here to play video</a> and it will be open a lightbox with the video playing
+* Pro - fixed YouTube video end bug when using Google Analytics tracking
+* Pro - Quality Switching interface improved
+* Pro (Beta) - added custom video ads (pre-roll, post-roll)
+* Pro (Beta) - added support for custom video start and end time
+
 = 2.3 - 2014/09/23 =
 
 * Feature - upgreaded to latest core Flowplayer (5.5.0)
 * Fix - fix for Windows Mobile 8.1 Update 1
 * Bugfix - editor bug in rate cases
 * Bugfix - video duratation checker fixes
-
+* Pro - YouTube - added support for Google Developer API to parse the video durations and splash screens properly
 
 = 2.2.22 - 2014/09/05 =
 
