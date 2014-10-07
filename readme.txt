@@ -323,6 +323,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.2 - 2014/10/06 =
+
+* Bugfix - bad Twitter sharing URLs
+* Bugfix - fix for [fvplayer] shortcode handling in text widgets
+
 = 2.3.1 - 2014/10/06 =
 
 * Feature - Colorbox compatibility (enhancement for programmers, Pro version has its own video and image lightbox gallery)
