@@ -30,6 +30,8 @@ class flowplayer_frontend extends flowplayer
 	
 	var $expire_time = 0;
   
+  var $aAds = array();
+  
   var $aPlaylists = array();
   
   var $aCurArgs = false;
@@ -444,7 +446,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= $popup_contents;  
 				}
 				if( $ad_contents = $this->get_ad_code() ) {
-					$this->ret['html'] .= $ad_contents;  
+					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
 				}
         if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript">troubleshooting guide</a> or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
@@ -542,7 +544,11 @@ class flowplayer_frontend extends flowplayer
       
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {			
-        $ad_contents = "\t<div id='wpfp_".$this->hash."_ad' class='wpfp_custom_ad'>\n\t\t<div class='wpfp_custom_ad_content' style='max-width: $ad_width; max-height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>\n\t</div>\n";                  
+        $ad_contents = array(
+                             'html' => "<div class='wpfp_custom_ad_content' style='max-width: $ad_width; max-height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'width' => $ad_width,
+                             'height' => $ad_height
+                            );                 
       }
     }
     
