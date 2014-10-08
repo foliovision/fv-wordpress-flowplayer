@@ -105,7 +105,7 @@ class FV_Player_Checker {
   
   
   public function check_mimetype( $URLs = false, $meta = false ) {
-    
+
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
     
     $tStart = microtime(true);
@@ -126,7 +126,7 @@ class FV_Player_Checker {
       foreach( $all_sources AS $source ) {
         if( preg_match( '!^rtmp://!', $source, $match ) ) {
           $found_rtmp = true;
-        } else if( !isset($media) && !preg_match( '!\.(m3u8|m3u|avi)$!', $source) ) {
+        } else if( !isset($media) && !preg_match( '!\.(m3u8ALLOW|m3uALLOW|avi)$!', $source) ) {
           $media = $source;
         }
       }    
@@ -143,7 +143,7 @@ class FV_Player_Checker {
         } else {
           $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded ) ), array( 'method' => 'GET', 'redirection' => 3 ) );
         }
-        
+           
         $bValidFile = true;
         if( is_wp_error($headers) ) {
           $video_errors[] = 'Error checking '.$media.'!<br />'.print_r($headers,true);  

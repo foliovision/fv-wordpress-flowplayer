@@ -664,7 +664,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Easter sale!
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Back to School Pricing!
 		</div>
 	</td>
 </tr>
@@ -1148,3 +1148,15 @@ function fv_wp_flowplayer_activate_extension() {
   echo "<FVFLOWPLAYER>".json_encode( array( 'message' => 'Success!', 'plugin' => $_POST['plugin'] ) )."</FVFLOWPLAYER>";
   die();
 }
+
+add_filter('plugin_action_links', 'fv_wp_flowplayer_plugin_action_links', 10, 2);
+
+function fv_wp_flowplayer_plugin_action_links($links, $file) {
+  	if( $file == 'fv-wordpress-flowplayer/flowplayer.php') {
+      $settings_link = '<a href="https://foliovision.com/pro-support" target="_blank">Premium Support</a>';
+  		array_unshift($links, $settings_link);
+  		$settings_link = '<a href="options-general.php?page=fvplayer">Settings</a>';
+  		array_unshift($links, $settings_link);      
+  	}
+  	return $links;
+  }

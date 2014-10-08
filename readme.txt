@@ -323,6 +323,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.2.1 - 2014/10/?? =
+
+* Feature - custom plugin row action links added for easier access to Settings
+* Feature - Scan video length - more information about videos in queue
+* Feature - Scan video length - "Scan Now" button added!
+* Bugfix - Scan video length was using Flash encoded URLs
+
 = 2.3.2 - 2014/10/06 =
 
 * Bugfix - bad Twitter sharing URLs
