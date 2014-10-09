@@ -34,6 +34,8 @@ class flowplayer_frontend extends flowplayer
   
   var $aPlaylists = array();
   
+  var $aPopups = array();
+  
   var $aCurArgs = false;
   
   var $sHTMLAfter = false;  
@@ -443,7 +445,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= $splashend_contents;
 				}
 				if( $popup_contents = $this->get_popup_code() ) {
-					$this->ret['html'] .= $popup_contents;  
+          $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;  
 				}
 				if( $ad_contents = $this->get_ad_code() ) {
 					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
@@ -532,13 +534,14 @@ class flowplayer_frontend extends flowplayer
       !strlen($this->aCurArgs['ad_skip'])				
     ) {
       if (isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad'])) {
-        $ad = html_entity_decode( str_replace('&#039;',"'", trim($this->aCurArgs['ad']) ) );
-        $ad_width = ( isset($this->aCurArgs['ad_width']) ) ? $this->aCurArgs['ad_width'].'px' : '60%';	
-        $ad_height = ( isset($this->aCurArgs['ad_height']) ) ? $this->aCurArgs['ad_height'].'px' : '';					
+        //$ad = html_entity_decode( str_replace('&#039;',"'", trim($this->aCurArgs['ad']) ) );
+        $ad = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($this->aCurArgs['ad']) ) );
+        $ad_width = ( isset($this->aCurArgs['ad_width']) && intval($this->aCurArgs['ad_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';	
+        $ad_height = ( isset($this->aCurArgs['ad_height']) && intval($this->aCurArgs['ad_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';					
       }
       else {
         $ad = trim($this->conf['ad']);			
-        $ad_width = ( isset($this->conf['ad_width']) && $this->conf['ad_width'] ) ? $this->conf['ad_width'].'px' : '60%';	
+        $ad_width = ( isset($this->conf['ad_width']) && $this->conf['ad_width'] ) ? $this->conf['ad_width'].'px' : '100%';	
         $ad_height = ( isset($this->conf['ad_height']) && $this->conf['ad_height'] ) ? $this->conf['ad_height'].'px' : '';
       }
       
@@ -551,7 +554,7 @@ class flowplayer_frontend extends flowplayer
                             );                 
       }
     }
-    
+    //var_dump($ad_contents);die();
     return $ad_contents;
   }
   
@@ -608,8 +611,9 @@ class flowplayer_frontend extends flowplayer
   function get_popup_code() {
     if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup']) ) ) {
       if (isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup'])) {
-        $popup = trim($this->aCurArgs['popup']);
-        $popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
+        //$popup = trim($this->aCurArgs['popup']);
+        //$popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
+        $popup = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($this->aCurArgs['popup']) ) );
       }
       else {
         $popup = 'Would you like to replay the video?';
@@ -617,7 +621,9 @@ class flowplayer_frontend extends flowplayer
       
       $popup = apply_filters( 'fv_flowplayer_popup_html', $popup );
       if( strlen(trim($popup)) > 0 ) {			
-        $popup_contents = '<div id="wpfp_'.$this->hash.'_custom_popup" class="wpfp_custom_popup"><div class="wpfp_custom_popup_content">'.$popup.'</div></div>';
+        $popup_contents = array(
+                             'html' => '<div class="wpfp_custom_popup_content">'.$popup.'</div>'
+                          );
         return $popup_contents;
       }
     }

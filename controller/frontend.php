@@ -275,6 +275,7 @@ function flowplayer_prepare_scripts() {
     }
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds );
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     
     $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
@@ -327,13 +328,26 @@ function flowplayer($shortcode) {
 
 
 /*
-Make sure our div won't be wrapped in any P tag.
+Make sure our div won't be wrapped in any P tag and that html attributes don't break the shortcode
 */
 function fv_flowplayer_the_content( $c ) {
-	$c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?\])</p>!', "\n".'$1'."\n", $c );
+	$c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?[^\\\]\])</p>!', "\n".'$1'."\n", $c );
+  $c = preg_replace_callback( '!\[(?:fvplayer|flowplayer).*?[^\\\]\]!', 'fv_flowplayer_shortfcode_fix_attrs', $c );
 	return $c;
 }
 add_filter( 'the_content', 'fv_flowplayer_the_content', 0 );
+
+
+function fv_flowplayer_shortfcode_fix_attrs( $aMatch ) {
+  $aMatch[0] = preg_replace_callback( '!(?:ad|popup)="(.*?[^\\\])"!', 'fv_flowplayer_shortfcode_fix_attr', $aMatch[0] );
+  return $aMatch[0];
+}
+
+
+function fv_flowplayer_shortfcode_fix_attr( $aMatch ) {
+  $aMatch[0] = str_replace( $aMatch[1], base64_encode($aMatch[1]), $aMatch[0] );
+  return $aMatch[0];
+}
 
 
 /*
