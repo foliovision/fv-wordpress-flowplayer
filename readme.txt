@@ -323,6 +323,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.3 - 2014/10/13 =
+
+* Feature - ad and popup feature now only loads the HTML content if the event (video playback or video end) occurs - making it more suitable for ads (as they won't load on background)
+* Feature - custom plugin row action links added for easier access to Settings
+* Feature - Scan video length - more information about videos in queue
+* Feature - Scan video length - "Scan Now" button added!
+* Bugfix - Scan video length was using Flash encoded URLs
+* Bugfix - video splash image appearing around the video when video aspect ratio doesn't match the player size
+
 = 2.3.2 - 2014/10/06 =
 
 * Bugfix - bad Twitter sharing URLs
@@ -915,6 +924,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.3.3 =
+
+* Fix for ad and popup codes, please check!
 
 = 2.2.22 =
 * Fix for Amazon RTMP path parsing - plus signs in the path were handled incorrectly for Flash engine

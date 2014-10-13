@@ -291,12 +291,19 @@ function fv_flowplayer_admin_integrations() {
               global $wpdb;
               $iCount = $wpdb->get_var( "SELECT count(meta_id) FROM $wpdb->postmeta WHERE meta_key LIKE '_fv_flowplayer_%'" );
               $iQueue = count(FV_Player_Checker::queue_get());
+              if( $iQueue && $aQueue = FV_Player_Checker::queue_get() ) {
+                $htmlQueue = "<a href='#' onclick='jQuery(this).siblings(\"span\").toggle(); return false'>$iQueue</a> <span style='display: none'>(";
+                foreach( $aQueue as $k => $i ) {
+                  $htmlQueue .= "<a href='".get_edit_post_link($k)."'>$k</a> ";
+                }
+                $htmlQueue .= ") <a href='".site_url()."/wp-admin/options-general.php?page=fvplayer&fv_flowplayer_checker'>Scan now!</a></span>";
+              }
               if( $iCount && $iQueue ) {
-                echo "Currently $iCount videos in database and $iQueue posts in queue.";
+                echo "Currently $iCount videos in database and $htmlQueue posts in queue.";
               } else if( $iCount ) {
                 echo "Currently $iCount videos in database.";
               } else if( $iQueue ) {
-                echo "Currently $iQueue posts in queue.";
+                echo "Currently $htmlQueue posts in queue.";
               }
               ?>
 						</td>
@@ -758,6 +765,10 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
   
   do_action('fv_player_settings_pre');
   
+  if( isset($_GET['fv_flowplayer_checker'] ) ) {
+    do_action('fv_flowplayer_checker_event');
+  }
+  
   if( flowplayer::is_licensed() ) {
     $aCheck = get_transient( 'fv_flowplayer_license' );
     $aInstalled = get_option('fv_flowplayer_extension_install');
@@ -790,7 +801,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">

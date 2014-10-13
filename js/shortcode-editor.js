@@ -164,16 +164,15 @@ function fv_wp_flowplayer_edit() {
 
   var shortcode = content.match( fv_wp_flowplayer_re_edit );  
 
-  if( shortcode != null ) {
+  if( shortcode != null ) { 
     shortcode = shortcode.join('');
-    shortcode = shortcode.replace('[', '');
-    shortcode = shortcode.replace(']', '');
+    shortcode = shortcode.replace(/^\[|\]+$/gm,'');
   	shortcode = shortcode.replace( fv_wp_flowplayer_re_insert, '' );
   	
   	shortcode = shortcode.replace( /\\'/g,'&#039;' );
-  	  
-	  var shortcode_parse_fix = shortcode.replace(/popup='[^']*?'/g, '');
-	  shortcode_parse_fix = shortcode_parse_fix.replace(/ad='[^']*?'/g, '');
+
+	  var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
+	  shortcode_parse_fix = shortcode_parse_fix.replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
     fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );  	
   	
     var srcurl = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'src' );
@@ -202,10 +201,10 @@ function fv_wp_flowplayer_edit() {
     
     var sCaptions = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'caption' );
     var sPlaylist = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'playlist' );
-    var spopup = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'popup' );
+    var spopup = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'popup', true );
     
     
-    var sad = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad' );
+    var sad = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad', true );
     var iadwidth = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad_width' );
     var iadheight = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad_height' );
     
@@ -489,7 +488,7 @@ function fv_wp_flowplayer_add_rtmp() {
 	fv_wp_flowplayer_dialog_resize();
 }
 
-function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg ) {
+function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML ) {
   var sOutput;
   
   var rDoubleQ = new RegExp(sArg+"=\"","g");
@@ -498,7 +497,7 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg ) {
   
   var rMatch = false;
   if( sShortcode.match(rDoubleQ) ) {
-    rMatch = new RegExp(sArg+"=\"([^\"]*?)\"","g");
+    rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
   } else if( sShortcode.match(rSingleQ) ) {
     rMatch = new RegExp(sArg+"='([^']*?)'","g");
   } else if( sShortcode.match(rNoQ) ) {
@@ -512,6 +511,9 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg ) {
   var aOutput = rMatch.exec(sShortcode);
   fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( rMatch, '' );
 
+  if( bHTML ) {
+    aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|\])/g, '$1');
+  }
   return aOutput;
 }
 
@@ -544,8 +546,8 @@ function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, a
       }
     } else if( sKind == 'html' ){
       sValue = sValue.replace(/&/g,'&amp;');
-      sValue = sValue.replace(/'/g,'\\\'');
-      sValue = sValue.replace(/"/g,'&quot;');
+      //sValue = sValue.replace(/'/g,'\\\'');
+      //sValue = sValue.replace(/"/g,'&quot;');
       sValue = sValue.replace(/</g,'&lt;');
       sValue = sValue.replace(/>/g,'&gt;');
     }
@@ -558,7 +560,7 @@ function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, a
   }
     
   if( sValue.match(/"/) || sKind == 'html' ){
-    sOutput = "'"+sValue+"'";
+    sOutput = '"'+sValue.replace(/"/g, '\\"').replace(/(\[|\])/g, '\\$1')+'"';
   } else {
     sOutput = '"'+sValue+'"';
   }

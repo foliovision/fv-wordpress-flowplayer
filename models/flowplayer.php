@@ -409,8 +409,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
   
     .wpfp_custom_background { display: none; }	
-    .wpfp_custom_popup { display: none; position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff; }
-    .is-finished .wpfp_custom_popup, .is-finished .wpfp_custom_background { display: block; }	
+    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff; }
+    .is-finished .wpfp_custom_background { display: block; }	
     .wpfp_custom_popup_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
   
     <?php echo trim($this->conf['ad_css']); ?>
@@ -879,13 +879,19 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
       
     	if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-        $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true ) );
+        $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true, 'flash' => false ) );
         if( !is_array($video_secured) ) {
           $video_secured = array( 'media' => $video_secured );
         }
       	if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
+          if( isset($_GET['fv_flowplayer_checker'] ) ) {
+            echo "<p>Post $post_id video '$video' ok!</p>\n";
+          }
         } else {
+          if( isset($_GET['fv_flowplayer_checker'] ) ) {
+            echo "<p>Post $post_id video '$video' not done, adding into queue!</p>\n";
+          }
           FV_Player_Checker::queue_add($post_id);
         }
       } else {
@@ -897,6 +903,9 @@ function fv_wp_flowplayer_save_post( $post_id ) {
 
   if( !$videos || $iDone == count($videos) ) {
     FV_Player_Checker::queue_remove($post_id);
+    if( isset($_GET['fv_flowplayer_checker'] ) ) {
+      echo "<p>Post $post_id done, removing from queue!</p>\n";
+    }
   }
 }
 
