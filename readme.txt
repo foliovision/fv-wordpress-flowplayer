@@ -323,7 +323,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.3.3 - 2014/10/?? =
+= 2.3.3 - 2014/10/13 =
 
 * Feature - ad and popup feature now only loads the HTML content if the event (video playback or video end) occurs - making it more suitable for ads (as they won't load on background)
 * Feature - custom plugin row action links added for easier access to Settings
