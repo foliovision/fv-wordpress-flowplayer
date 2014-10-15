@@ -490,27 +490,28 @@ function fv_wp_flowplayer_add_rtmp() {
 
 function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML ) {
   var sOutput;
-  
+
   var rDoubleQ = new RegExp(sArg+"=\"","g");
   var rSingleQ = new RegExp(sArg+"='","g");
   var rNoQ = new RegExp(sArg+"=[^\"']","g");
   
   var rMatch = false;
   if( sShortcode.match(rDoubleQ) ) {
-    rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
+    //rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
+    rMatch = new RegExp(sArg+'="(.*?[^\\\\])"',"g");
   } else if( sShortcode.match(rSingleQ) ) {
     rMatch = new RegExp(sArg+"='([^']*?)'","g");
   } else if( sShortcode.match(rNoQ) ) {
     rMatch = new RegExp(sArg+"=([^\\]\\s,]+)","g");
   }
-  
+
   if( !rMatch ){
     return false;
   }
   
   var aOutput = rMatch.exec(sShortcode);
   fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( rMatch, '' );
-
+ 
   if( bHTML ) {
     aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|\])/g, '$1');
   }
@@ -558,7 +559,7 @@ function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, a
   if( !sValue ){
     return false;
   }
-    
+
   if( sValue.match(/"/) || sKind == 'html' ){
     sOutput = '"'+sValue.replace(/"/g, '\\"').replace(/(\[|\])/g, '\\$1')+'"';
   } else {
