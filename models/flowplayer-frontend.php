@@ -592,7 +592,7 @@ class flowplayer_frontend extends flowplayer
     if( $mp4_position > $webm_position ) {
       if (isset($this->conf['auto_buffer']) && $this->conf['auto_buffer'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
         $scripts_after = '<script type="text/javascript">
-          if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) )  {
+          if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && document.getElementById("wpfp_'.$this->hash.'_video") )  {
             document.getElementById("wpfp_'.$this->hash.'_video").setAttribute("preload", "none");
           }
           </script>					
