@@ -76,6 +76,7 @@ a.red-button {
 
 #wpfp_options table { width: 100% }
 #wpfp_options table td.first { width: 250px }
+#wpfp_options #fv_flowplayer_integrations table td.first { width: 350px }
 #wpfp_options table.flowplayer-settings { width: 46%; }
 
 div.clear { clear: both }  

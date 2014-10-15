@@ -88,6 +88,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
+    
+    add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
+
 	}
   
   
@@ -836,6 +839,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
 	}
 	
+  
+  function css_writeout_option() {
+    if( isset($this->conf['css_disable']) && $this->conf['css_disable'] == 'true' ) {
+      return false;
+    }
+    return true;
+  }  
   
 }
 /**

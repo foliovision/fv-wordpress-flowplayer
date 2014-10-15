@@ -307,7 +307,14 @@ function fv_flowplayer_admin_integrations() {
               }
               ?>
 						</td>
-					</tr>               
+					</tr>
+          <tr>
+						<td class="first"><label for="css_disable">Disable saving of color settings into a static file (<abbr title="Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css, you can disable this here.">?</abbr>):</label></td>
+						<td>
+              <input type="hidden" name="css_disable" value="false" />
+              <input type="checkbox" name="css_disable" id="css_disable" value="true" <?php if( isset($fv_fp->conf['css_disable']) && $fv_fp->conf['css_disable'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>           
 					<!--<tr>
 						<td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
 						<td>
