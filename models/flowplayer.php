@@ -440,7 +440,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $site_id = 1;
     }
 
-    if( isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
+    if( apply_filters('fv_flowplayer_css_writeout', true ) && isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
       $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
       if( @file_exists($filename) ) {
         $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
@@ -462,6 +462,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function css_writeout() {
+    if( !apply_filters('fv_flowplayer_css_writeout', true ) ) {
+      return false;
+    }
+    
     $aOptions = get_option( 'fvwpflowplayer' );
     $aOptions[$this->css_option()] = false;
     update_option( 'fvwpflowplayer', $aOptions );
