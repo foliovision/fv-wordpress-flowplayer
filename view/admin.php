@@ -161,90 +161,123 @@ function fv_flowplayer_admin_default_options() {
 					<table class="form-table2">
 						<tr>
 							<td class="first"><label for="autoplay">AutoPlay:</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('autoplay'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="auto_buffer">Auto Buffering (<abbr title="Works for first 2 videos on the page only, to preserve your bandwidth.">?</abbr>):</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('auto_buffer'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="popupbox">Popup Box:</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('popupbox'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="scaling">Fit scaling (<abbr title="If set to true, the original aspect ratio of the video will be used to display the video in fullscreen mode as well as when embedded in the page.">?</abbr>):</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('scaling'); ?>
 							</td>
 						</tr>           
 						<tr>
 							<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('postthumbnail'); ?>
 							</td>
 						</tr>    	
 						<tr>
 							<td><label for="parse_commas">Convert old shortcodes with commas (<abbr title="Older versions of this plugin used commas to sepparate shortcode parameters. This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.">?</abbr>):</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('parse_commas'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="engine">Prefer Flash player by default (<abbr title="Default setting is off - IE9 and IE10 get Flash (due to server compatibility issues), Firefox in Windows gets Flash for M4V files (due to issues with M4V in it on PC), everyone else gets HTML5 (with Flash fallback)">?</abbr>):</label></td>
-							<td>
+							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('engine'); ?>
 							</td>
 						</tr>
 						<tr>
 							<td><label for="fixed_size">Always use fixed size player (<abbr title="Default setting - respects width and height setting of the video, but allows it to size down to be responsive">?</abbr>):</label></td>
-							<td> 					
+							<td colspan="2"> 					
 								<?php fv_flowplayer_admin_checkbox('fixed_size'); ?>					
 							</td>
 						</tr>
 						<tr>
 							<td><label for="disable_videochecker">Disable admin video checker</label></td>
-							<td> 					
+							<td colspan="2"> 					
 								<?php fv_flowplayer_admin_checkbox('disable_videochecker'); ?>			
 							</td>
 						</tr>    
 						<tr>
 							<td><label for="width">Default video size [px]:</label></td>
-							<td> 					
+							<td colspan="2"> 					
 								<label for="width">W:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo trim($fv_fp->conf['width']); ?>" />  
 								<label for="height">H:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo trim($fv_fp->conf['height']); ?>" />							
 							</td>
 						</tr>						
 						<tr>
 							<td><label for="googleanalytics">Google Analytics ID:</label></td>
-							<td><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
+							<td colspan="2"><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
 						</tr>
 						<tr>
 							<td><label for="key">Commercial License Key:</label></td>
-							<td><input type="text" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
+							<td colspan="2"><input type="text" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
 						</tr>
 						<tr>
 							<td><label for="logo">Logo:</label></td>
 							<td><input type="text"  name="logo" id="logo" value="<?php echo trim($fv_fp->conf['logo']); ?>" /></td>
-						</tr>
-						<tr>    		    		
-							<td colspan="2">Or <a title="Add FV WP Flowplayer Logo" href="media-upload.php?type=fvplayer_logo&TB_iframe=true&width=500&height=300" class="thickbox" >open media library</a> to upload logo.</td>
-						</tr>      
+              <td style="width: 5%"><input id="upload_image_button" class="button no-margin" type="button" value="Upload Image" /></td>
+						</tr>  
 						<tr>
 							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
-							<td><input type="text" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
+							<td colspan="2"><input type="text" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 						</tr>				
 						<tr>    		
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
 							</td>
 						</tr>						
-					</table>   
+					</table>
+<script>
+jQuery(document).ready(function($) {
+    var fv_flowplayer_logo_uploader;
+ 
+    $('#upload_image_button').click(function(e) {
+        e.preventDefault();
+         
+        //If the uploader object has already been created, reopen the dialog
+        if (fv_flowplayer_logo_uploader) {
+            fv_flowplayer_logo_uploader.open();
+            return;
+        }
+ 
+        //Extend the wp.media object
+        fv_flowplayer_logo_uploader = wp.media.frames.file_frame = wp.media({
+            title: 'Choose FV Flowplayer Logo',
+            button: {
+                text: 'Choose Image'
+            },
+            multiple: false
+        });
+ 
+        //When a file is selected, grab the URL and set it as the text field's value
+        fv_flowplayer_logo_uploader.on('select', function() {
+            attachment = fv_flowplayer_logo_uploader.state().get('selection').first().toJSON();
+            $('#logo').val(attachment.url);
+        });
+ 
+        //Open the uploader dialog
+        fv_flowplayer_logo_uploader.open();
+ 
+    });
+ 
+});  
+</script>          
 					<div class="clear"></div>
 <?php
 }

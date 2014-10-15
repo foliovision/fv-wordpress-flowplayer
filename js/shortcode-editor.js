@@ -2,7 +2,7 @@ var FVFP_iStoreWidth = 0;
 var FVFP_iStoreHeight = 0;  
 var FVFP_sStoreRTMP = 0;   
 
-jQuery(document).ready(function(){ 
+jQuery(document).ready(function($){ 
   if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
     jQuery(".fv-wordpress-flowplayer-button").colorbox( {
       width:"620px",
@@ -37,7 +37,48 @@ jQuery(document).ready(function(){
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_height').val( FVFP_iStoreHeight );
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( FVFP_sStoreRTMP );
     }
-  }); 
+  });
+  
+  var fv_flowplayer_uploader;
+  var fv_flowplayer_uploader_button;
+
+  $('#fv-wordpress-flowplayer-popup .button').click(function(e) {
+      e.preventDefault();
+      
+      fv_flowplayer_uploader_button = jQuery(this);
+      jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+      fv_flowplayer_uploader_button.siblings('input[type=text]').addClass('fv_flowplayer_target' );
+                       
+      //If the uploader object has already been created, reopen the dialog
+      if (fv_flowplayer_uploader) {
+          fv_flowplayer_uploader.open();
+          return;
+      }
+
+      //Extend the wp.media object
+      fv_flowplayer_uploader = wp.media.frames.file_frame = wp.media({
+          title: 'Add Video',
+          button: {
+              text: 'Choose'
+          },
+          multiple: false
+      });
+      
+      fv_flowplayer_uploader.on('open', function() {
+        jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
+      });      
+
+      //When a file is selected, grab the URL and set it as the text field's value
+      fv_flowplayer_uploader.on('select', function() {
+          attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
+          $('.fv_flowplayer_target').val(attachment.url);
+          jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+      });
+
+      //Open the uploader dialog
+      fv_flowplayer_uploader.open();
+
+  });
 });
 
 

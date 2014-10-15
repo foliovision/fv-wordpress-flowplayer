@@ -98,8 +98,11 @@ if(
 }
 
 add_action('the_content', 'flowplayer_content_remove_commas');
+
 add_filter('admin_print_scripts', 'flowplayer_print_scripts');
 add_action('admin_print_styles', 'flowplayer_print_styles');
+add_action('admin_enqueue_scripts', 'fv_flowplayer_admin_scripts');
+
 //conversion script via AJAX
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
 add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
@@ -1160,3 +1163,10 @@ function fv_wp_flowplayer_plugin_action_links($links, $file) {
   	}
   	return $links;
   }
+
+  
+function fv_flowplayer_admin_scripts() {
+  if (isset($_GET['page']) && $_GET['page'] == 'fvplayer') {
+    wp_enqueue_media();
+  }
+}

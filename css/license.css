@@ -86,6 +86,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .form-table2 td p { line-height: 20px; }
 input[type=text] { width: 100%; }
 #wpfp_options input.button-primary, #wpfp_options input.button { margin-top: 16px }
+#wpfp_options input.button.no-margin { margin-top: 0px }
 input.small { width: 80px }
 td.second-column { margin-left: 20px }
 
