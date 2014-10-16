@@ -18,13 +18,9 @@
 
 global $fv_wp_flowplayer_ver;
 
-if( is_admin() ) : ?>
-<script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/fv-flowplayer.min.js?ver=<?php echo $fv_wp_flowplayer_ver; ?>"></script>
-<?php endif; ?>
+echo $this->css_get();
 
-<?php echo $this->css_get(); ?>
-
-<?php if( current_user_can('manage_options') ) : ?>
+if( current_user_can('manage_options') ) : ?>
 	<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 	<style type="text/css">
 	.fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?> !important; }

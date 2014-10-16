@@ -88,6 +88,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
+    
+    add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
+
 	}
   
   
@@ -440,7 +443,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $site_id = 1;
     }
 
-    if( isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
+    if( apply_filters('fv_flowplayer_css_writeout', true ) && isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
       $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
       if( @file_exists($filename) ) {
         $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
@@ -462,6 +465,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function css_writeout() {
+    if( !apply_filters('fv_flowplayer_css_writeout', true ) ) {
+      return false;
+    }
+    
     $aOptions = get_option( 'fvwpflowplayer' );
     $aOptions[$this->css_option()] = false;
     update_option( 'fvwpflowplayer', $aOptions );
@@ -832,6 +839,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 		return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
 	}
 	
+  
+  function css_writeout_option() {
+    if( isset($this->conf['css_disable']) && $this->conf['css_disable'] == 'true' ) {
+      return false;
+    }
+    return true;
+  }  
   
 }
 /**

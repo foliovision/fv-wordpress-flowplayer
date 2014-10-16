@@ -534,8 +534,14 @@ class flowplayer_frontend extends flowplayer
       !strlen($this->aCurArgs['ad_skip'])				
     ) {
       if (isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad'])) {
-        //$ad = html_entity_decode( str_replace('&#039;',"'", trim($this->aCurArgs['ad']) ) );
-        $ad = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($this->aCurArgs['ad']) ) );
+        $ad = trim($this->aCurArgs['ad']);
+        if( stripos($ad,'<!--fv_flowplayer_base64_encoded-->') !== false ) {
+          $ad = str_replace('<!--fv_flowplayer_base64_encoded-->','',$ad);
+          $ad = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($ad) ) );
+        } else {
+          $ad = html_entity_decode( str_replace('&#039;',"'",$ad ) );
+        }
+
         $ad_width = ( isset($this->aCurArgs['ad_width']) && intval($this->aCurArgs['ad_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';	
         $ad_height = ( isset($this->aCurArgs['ad_height']) && intval($this->aCurArgs['ad_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';					
       }
@@ -548,7 +554,7 @@ class flowplayer_frontend extends flowplayer
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {			
         $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='max-width: $ad_width; max-height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
                              'width' => $ad_width,
                              'height' => $ad_height
                             );                 
@@ -611,9 +617,13 @@ class flowplayer_frontend extends flowplayer
   function get_popup_code() {
     if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup']) ) ) {
       if (isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup'])) {
-        //$popup = trim($this->aCurArgs['popup']);
-        //$popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
-        $popup = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($this->aCurArgs['popup']) ) );
+        $popup = trim($this->aCurArgs['popup']);
+        if( stripos($popup,'<!--fv_flowplayer_base64_encoded-->') !== false ) {
+          $popup = str_replace('<!--fv_flowplayer_base64_encoded-->','',$popup);
+          $popup = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($popup) ) );
+        } else {
+          $popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
+        }
       }
       else {
         $popup = 'Would you like to replay the video?';

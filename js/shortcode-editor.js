@@ -2,7 +2,7 @@ var FVFP_iStoreWidth = 0;
 var FVFP_iStoreHeight = 0;  
 var FVFP_sStoreRTMP = 0;   
 
-jQuery(document).ready(function(){ 
+jQuery(document).ready(function($){ 
   if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
     jQuery(".fv-wordpress-flowplayer-button").colorbox( {
       width:"620px",
@@ -37,7 +37,88 @@ jQuery(document).ready(function(){
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_height').val( FVFP_iStoreHeight );
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( FVFP_sStoreRTMP );
     }
-  }); 
+  });
+  
+  var fv_flowplayer_uploader;
+  var fv_flowplayer_uploader_button;
+
+  $('#fv-wordpress-flowplayer-popup .button').click(function(e) {
+      e.preventDefault();
+      
+      fv_flowplayer_uploader_button = jQuery(this);
+      jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+      fv_flowplayer_uploader_button.siblings('input[type=text]').addClass('fv_flowplayer_target' );
+                       
+      //If the uploader object has already been created, reopen the dialog
+      if (fv_flowplayer_uploader) {
+          fv_flowplayer_uploader.open();
+          return;
+      }
+
+      //Extend the wp.media object
+      fv_flowplayer_uploader = wp.media.frames.file_frame = wp.media({
+          title: 'Add Video',
+          button: {
+              text: 'Choose'
+          },
+          multiple: false
+      });
+      
+      fv_flowplayer_uploader.on('open', function() {
+        jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
+      });      
+
+      //When a file is selected, grab the URL and set it as the text field's value
+      fv_flowplayer_uploader.on('select', function() {
+          attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
+          console.log(attachment);
+          $('.fv_flowplayer_target').val(attachment.url);
+          $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+        
+          if( attachment.type == 'video' ) {
+            if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
+              $('#fv_wp_flowplayer_field_width').val(attachment.width);
+            }
+            if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
+              $('#fv_wp_flowplayer_field_height').val(attachment.height);
+            }
+            if( typeof(attachment.fileLength) != "undefined" ) {
+              $('#fv_wp_flowplayer_file_info').show();
+              $('#fv_wp_flowplayer_file_duration').html(attachment.fileLength);
+            }
+            if( typeof(attachment.filesizeHumanReadable) != "undefined" ) {
+              $('#fv_wp_flowplayer_file_info').show();
+              $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
+            }
+            
+          } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
+            if( jQuery('#remove-post-thumbnail').length > 0 ){
+              return;
+            }
+            jQuery.post(ajaxurl, {
+                action:"set-post-thumbnail",
+                post_id: fv_flowplayer_set_post_thumbnail_id,
+                thumbnail_id: attachment.id,
+                 _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
+                cookie: encodeURIComponent(document.cookie)
+              }, function(str){
+                var win = window.dialogArguments || opener || parent || top;
+                if ( str == '0' ) {
+                  alert( setPostThumbnailL10n.error );
+                } else {
+                  jQuery('#postimagediv .inside').html(str);
+                  jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+                }
+              } );
+            
+          }
+          
+      });
+
+      //Open the uploader dialog
+      fv_flowplayer_uploader.open();
+
+  });
 });
 
 

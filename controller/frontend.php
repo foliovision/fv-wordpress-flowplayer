@@ -273,14 +273,6 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
       wp_enqueue_script( 'flowplayer-mediaelement', flowplayer::get_plugin_url().'/mediaelement/mediaelement-and-player.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
     }
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
-    if( count($fv_fp->aAds) > 0 ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds ); 
-    }
-    if( count($fv_fp->aPopups) > 0 ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
-    }
-    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     
     $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
@@ -303,6 +295,15 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
+    
+    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
+    if( count($fv_fp->aAds) > 0 ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds ); 
+    }
+    if( count($fv_fp->aPopups) > 0 ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
+    }    
 
     if( count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
@@ -349,7 +350,7 @@ function fv_flowplayer_shortfcode_fix_attrs( $aMatch ) {
 
 
 function fv_flowplayer_shortfcode_fix_attr( $aMatch ) {
-  $aMatch[0] = str_replace( $aMatch[1], base64_encode($aMatch[1]), $aMatch[0] );
+  $aMatch[0] = str_replace( $aMatch[1], '<!--fv_flowplayer_base64_encoded-->'.base64_encode($aMatch[1]), $aMatch[0] );
   return $aMatch[0];
 }
 
@@ -376,3 +377,4 @@ function fv_flowplayer_attachment_page_video( $c ) {
 	return $c;
 }
 add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
+
