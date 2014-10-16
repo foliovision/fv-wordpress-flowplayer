@@ -184,7 +184,7 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>           
 						<tr>
-							<td><label for="postthumbnail">Enable Post Thumbnail:</label></td>
+							<td><label for="postthumbnail">Enable Post Thumbnail (<abbr title="When you set a splash screen from the media library, it will automatically become the splash image if there is none.">?</abbr>):</label></td>
 							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('postthumbnail'); ?>
 							</td>

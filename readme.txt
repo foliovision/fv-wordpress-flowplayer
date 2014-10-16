@@ -323,6 +323,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.4 - 2014/10/16 =
+
+* Feature - add %random% to your ad code to put in a random number if required by the ad provider
+* Feature - added option to skip CSS optimization (see Integrations settings)
+* Feature - shortcode editor now uses the latest Media Library interface to upload the videos
+* Bugfix - ad codes don't need to be responsive now that we check the player size before showing the code
+* Bugfix - fixes for Google Chrome version checks
+* Bugfix - shortcode editor fixes for /"
+
 = 2.3.3 - 2014/10/13 =
 
 * Feature - ad and popup feature now only loads the HTML content if the event (video playback or video end) occurs - making it more suitable for ads (as they won't load on background)
