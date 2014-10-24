@@ -323,6 +323,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.5 - 2014/10/?? =
+
+* Bugfix - bugfix for default volumne setting when set to 0 (mute)
+
 = 2.3.4 - 2014/10/16 =
 
 * Feature - add %random% to your ad code to put in a random number if required by the ad provider
