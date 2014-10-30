@@ -424,6 +424,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
     #content .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
     .fvfp_admin_error_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
+    
+    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['logoPosition']) ) :
+      if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
+        $sCSS = "bottom: 30px; left: 15px";
+      } else if( $fv_fp->conf['logoPosition'] == 'bottom-right' ) {
+        $sCSS = "bottom: 30px; right: 15px; left: auto";
+      } else if( $fv_fp->conf['logoPosition'] == 'top-left' ) {
+        $sCSS = "top: 30px; left: 15px; bottom: auto";
+      } else if( $fv_fp->conf['logoPosition'] == 'top-right' ) {
+        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
+      }
+      ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
   
     <?php if( $style_tag ) : ?>
       </style>  

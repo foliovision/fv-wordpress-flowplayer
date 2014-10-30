@@ -323,8 +323,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-= 2.3.5 - 2014/10/?? =
+= 2.3.5 - 2014/10/30 =
 
+* Feature - added logo position option - see Settings -> FV Wordpress Flowplayer -> Sitewide Flowplayer Defaults -> Logo
+* Feature - added subtitle font size option - see Settings -> FV Wordpress Flowplayer -> Player Skin -> Subitle Font Size
 * Bugfix - bugfix for default volumne setting when set to 0 (mute)
 
 = 2.3.4 - 2014/10/16 =
