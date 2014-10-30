@@ -222,20 +222,29 @@ function fv_flowplayer_admin_default_options() {
 						</tr>						
 						<tr>
 							<td><label for="googleanalytics">Google Analytics ID:</label></td>
-							<td colspan="2"><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
+							<td colspan="3"><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
 						</tr>
 						<tr>
 							<td><label for="key">Commercial License Key:</label></td>
-							<td colspan="2"><input type="text" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
+							<td colspan="3"><input type="text" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
 						</tr>
 						<tr>
 							<td><label for="logo">Logo:</label></td>
 							<td><input type="text"  name="logo" id="logo" value="<?php echo trim($fv_fp->conf['logo']); ?>" /></td>
               <td style="width: 5%"><input id="upload_image_button" class="button no-margin" type="button" value="Upload Image" /></td>
+              <td style="width: 5%">
+                <select name="logoPosition">
+                  <option value="bottom-left">Position</option>
+                  <option <?php if( !isset($fv_fp->conf['logoPosition']) || $fv_fp->conf['logoPosition'] == 'bottom-left' ) echo "selected"; ?> value="bottom-left">Bottom-left</option>
+                  <option <?php if( isset($fv_fp->conf['logoPosition']) && $fv_fp->conf['logoPosition'] == 'bottom-right' ) echo "selected"; ?> value="bottom-right">Bottom-right</option>
+                  <option <?php if( isset($fv_fp->conf['logoPosition']) && $fv_fp->conf['logoPosition'] == 'top-left' ) echo "selected"; ?> value="top-left">Top-left</option>
+                  <option <?php if( isset($fv_fp->conf['logoPosition']) && $fv_fp->conf['logoPosition'] == 'top-right' ) echo "selected"; ?> value="top-right">Top-right</option>
+                </select>
+              </td>
 						</tr>  
 						<tr>
 							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
-							<td colspan="2"><input type="text" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
+							<td colspan="3"><input type="text" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
 						</tr>				
 						<tr>    		
 							<td colspan="4">
@@ -659,14 +668,14 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="timeline">Timeline</label></td>
       <td><input class="color small" id="timelineColor" name="timelineColor" type="text" value="<?php echo $fv_fp->conf['timelineColor']; ?>" /></td>
-      <td><label for="ui_play_button">Play Button</label></td>
-      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_play_button'); ?></td>   
+      <td><label for="subtitleSize">Subitle Font Size</label></td>
+      <td><input class="small" id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
     </tr>		
     <tr>              
       <td><label for="durationColor">Total time</label></td>
       <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo $fv_fp->conf['durationColor']; ?>" /></td>
-      <td><label for="volume">Default Volume</label></td>
-      <td><input class="small" id="volume" name="volume" title="Enter number between 0 and 1, like 0.5" type="text" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>        
+      <td><label for="ui_play_button">Play Button</label></td>
+      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_play_button'); ?></td>        
       <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
       <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->
     </tr>
@@ -679,7 +688,8 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="durationColor">Border color</label></td>
       <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo $fv_fp->conf['borderColor']; ?>" /></td>
-           
+      <td><label for="volume">Default Volume</label></td>
+      <td><input class="small" id="volume" name="volume" title="Enter number between 0 and 1, like 0.5" type="text" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
     </tr>
     <tr>    		
       <td colspan="4">
