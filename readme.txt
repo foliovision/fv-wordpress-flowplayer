@@ -254,14 +254,7 @@ The image needs to be 100x106px normal version nad 200x212px hi res version. You
 
 = How can I change position of my custom logo? =
 
-You need to put the code below into your theme CSS. Also add some element ID in front of it to make sure it overrides the default Flowplayer CSS, in the following example we use #content which is present in most templates. The code sample puts it into top right corner, but you can move the values around to get the placement you need:
-
-`#content .flowplayer .fp-logo, #colorbox .flowplayer .fp-logo {
-	top: 10px;
-	right: 10px;
-	bottom: auto;
-	left: auto;
-}`
+Check out Settings -> FV WordPress Flowplayer -> Sitewide Flowplayer Defaults -> Logo.
 
 = Volume control in player looks weird =
 
