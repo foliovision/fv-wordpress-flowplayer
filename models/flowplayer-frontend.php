@@ -359,6 +359,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['style'] .= "background-image: url({$splash_img});";
           if( $autoplay ) {
             $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
+            $attributes['class'] .= ' is-splash';
           }
 				}
         
