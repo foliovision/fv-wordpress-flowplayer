@@ -310,8 +310,8 @@ class flowplayer_frontend extends flowplayer
 				if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {
 					$attributes['data-rtmp'] = trim( $this->aCurArgs['rtmp'] );
 				} else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && !(isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
-          if( stripos($rtmp,'/mp4:') !== false ) {
-            $aTMP = explode( '/mp4:', $rtmp );
+          if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
+            $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
             $attributes['data-rtmp'] = $aTMP[0];
           } else {
             $rtmp_info = parse_url($rtmp);
@@ -327,7 +327,6 @@ class flowplayer_frontend extends flowplayer
             $attributes['data-rtmp'] = 'rtmp://' . $this->conf['rtmp'] . '/cfx/st/';
           }
         }
-        
          				
 				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
     
@@ -417,10 +416,15 @@ class flowplayer_frontend extends flowplayer
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
               $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
    
-              if( stripos($rtmp,'/mp4:') !== false ) {
-                $aTMP = explode( '/mp4:', $rtmp );
-                $rtmp_file = $aTMP[1];
-                $extension = $this->get_file_extension($rtmp_file, 'mp4');
+              if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
+                $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+                if( isset($aTMP[1]) && isset($aTMP[2]) ) {             
+                  $rtmp_file = $aTMP[2];
+                  $extension = $this->get_file_extension($rtmp_file, $aTMP[1]);
+                } else {
+                  $rtmp_file = $aTMP[1];
+                  $extension = $this->get_file_extension($rtmp_file, false);                  
+                }
               } else {
                 $rtmp_url = parse_url($rtmp_item);
                 $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
