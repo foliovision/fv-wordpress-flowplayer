@@ -316,8 +316,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
-<<<<<<< HEAD
-=======
 = 2.3.6 - 2014/11/20 =
 
 * Bugfix - fixed inserting and editing of shortcodes with Foliopress WYSIWYG editor
@@ -325,7 +323,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - fix for handling of videos on attachment pages
 * Bugfix - fix for RTMP URLs with no file type like rtmp://host/live:stream-name
 
->>>>>>> dev
 = 2.3.5 - 2014/10/30 =
 
 * Feature - added logo position option - see Settings -> FV Wordpress Flowplayer -> Sitewide Flowplayer Defaults -> Logo

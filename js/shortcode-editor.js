@@ -71,11 +71,7 @@ jQuery(document).ready(function($){
       //When a file is selected, grab the URL and set it as the text field's value
       fv_flowplayer_uploader.on('select', function() {
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
-<<<<<<< HEAD
-          console.log(attachment);
-=======
           
->>>>>>> dev
           $('.fv_flowplayer_target').val(attachment.url);
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
         
@@ -261,14 +257,10 @@ function fv_wp_flowplayer_edit() {
   	shortcode = shortcode.replace( fv_wp_flowplayer_re_insert, '' );
   	
   	shortcode = shortcode.replace( /\\'/g,'&#039;' );
-<<<<<<< HEAD
-
-=======
     if( typeof(fv_wp_flowplayer_re_edit_webkit_fix) != "undefined" && fv_wp_flowplayer_re_edit_webkit_fix ) {
       shortcode = shortcode.replace( /<p><\/p>\s*?$/, '');
     }
     
->>>>>>> dev
 	  var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
 	  shortcode_parse_fix = shortcode_parse_fix.replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
     fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );  	
