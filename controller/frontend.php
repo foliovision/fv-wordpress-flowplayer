@@ -367,13 +367,15 @@ function fv_flowplayer_attachment_page_video( $c ) {
   if( !$src = wp_get_attachment_url($post->ID) ) {
     return $c;
   }
-  
+
   $meta = get_post_meta( $post->ID, '_wp_attachment_metadata', true );
   $size = (isset($meta['width']) && isset($meta['height']) && intval($meta['width'])>0 && intval($meta['height'])>0 ) ? ' width="'.intval($meta['width']).'" height="'.intval($meta['height']).'"' : false;
   
   $shortcode = '[fvplayer src="'.$src.'"'.$size.']';
   
   $c = preg_replace( '~<p class=.attachment.[\s\S]*?</p>~', $shortcode, $c );
+  $c = preg_replace( '~<div[^>]*?class="[^"]*?wp-video[^"]*?"[^>]*?>[\s\S]*?<video.*?</video></div>~', $shortcode, $c );
+
 	return $c;
 }
 add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );

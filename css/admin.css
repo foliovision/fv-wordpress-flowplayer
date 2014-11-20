@@ -44,5 +44,5 @@
 
 
 
-.flowplayer-wrapper { min-width: 50%; display: inline-block; float: right;}
+.flowplayer-wrapper { width: 54%; display: inline-block; float: right;}
 @media only screen and (max-width: 940px) {.flowplayer-wrapper { width: 100%; float: none;} .form-table2.flowplayer-settings {width: 100% !important;}}
