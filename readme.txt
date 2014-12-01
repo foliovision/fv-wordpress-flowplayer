@@ -316,6 +316,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.7 - 2014/12/01 =
+
+* Fix - changing retina CSS sprites to use a different post-fix. @x2 has issues with "All In One WP Security & Firewall" plugin
+
 = 2.3.6 - 2014/11/20 =
 
 * Bugfix - fix for auto play of playlists affecting other players on the page.
