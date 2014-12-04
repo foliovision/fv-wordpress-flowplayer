@@ -254,14 +254,7 @@ The image needs to be 100x106px normal version nad 200x212px hi res version. You
 
 = How can I change position of my custom logo? =
 
-You need to put the code below into your theme CSS. Also add some element ID in front of it to make sure it overrides the default Flowplayer CSS, in the following example we use #content which is present in most templates. The code sample puts it into top right corner, but you can move the values around to get the placement you need:
-
-`#content .flowplayer .fp-logo, #colorbox .flowplayer .fp-logo {
-	top: 10px;
-	right: 10px;
-	bottom: auto;
-	left: auto;
-}`
+Check out Settings -> FV WordPress Flowplayer -> Sitewide Flowplayer Defaults -> Logo.
 
 = Volume control in player looks weird =
 
@@ -323,9 +316,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * tools for fixing of slow loading videos (bad meta data location)
 * other bugfixes
 
+= 2.3.7 - 2014/12/01 =
+
+* Fix - changing retina CSS sprites to use a different post-fix. @x2 has issues with "All In One WP Security & Firewall" plugin
+
 = 2.3.6 - 2014/11/20 =
 
-* Bugfix - fixed inserting and editing of shortcodes with Foliopress WYSIWYG editor
 * Bugfix - fix for auto play of playlists affecting other players on the page.
 * Bugfix - fix for handling of videos on attachment pages
 * Bugfix - fix for RTMP URLs with no file type like rtmp://host/live:stream-name
