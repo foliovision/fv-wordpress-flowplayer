@@ -121,7 +121,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'live' => '',
     'caption' => '',
     'logo' => '',
-    'share' => ''
+    'share' => '',
+    'post' => '',
   ), $atts ) );
 
   if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
@@ -154,9 +155,11 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['live'] = $live;
     $arguments['caption'] = $caption;
     $arguments['logo'] = $logo;
-    $arguments['share'] = $share; 
+    $arguments['share'] = $share;
+    $arguments['post'] = $post;
 		$src = trim( preg_replace('/\,/', '', $src) );
     $arguments['src'] = $src;
+    
 	} else {
 		$arguments = shortcode_atts( array(
 			'src' => '',
@@ -189,7 +192,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'live' => '',
       'caption' => '',
       'logo' => '',
-      'share' => ''
+      'share' => '',
+      'post' => ''
 		), $atts );
 	}
   
@@ -201,7 +205,36 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   
   $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
 	
-	if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
+  if( $post == 'this' ) {
+    $post = get_the_ID();
+  }
+  
+  if( intval($post) > 0 ) {
+    $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
+    if( $objVideoQuery->have_posts() ) {
+      $sHTML = '';
+      while( $objVideoQuery->have_posts() ) {
+        $objVideoQuery->the_post();
+        $aArgs = $arguments;
+        $aArgs['src'] = wp_get_attachment_url(get_the_ID());
+        if( $aSplash = wp_get_attachment_image_src( get_post_thumbnail_id(get_the_ID()), 'large' ) ) {
+          $aArgs['splash'] = $aSplash[0];
+        }
+        if( strlen($aArgs['lightbox']) ) {
+          $aArgs['lightbox'] .= ';'.html_entity_decode(get_the_title());
+        }
+        if( strlen($aArgs['caption']) ) {
+          $aArgs['caption'] = apply_filters( 'fv_player_caption', $aArgs['caption'], false );
+        }        
+
+        $new_player = $fv_fp->build_min_player( $aArgs['src'],$aArgs );
+        $sHTML .= $new_player['html'];
+      }
+
+      return $sHTML;
+    }
+        
+  } else if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
     $new_player = $fv_fp->build_min_player($src,$arguments);		
     if (!empty($new_player['script'])) {
