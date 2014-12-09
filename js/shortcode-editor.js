@@ -42,7 +42,7 @@ jQuery(document).ready(function($){
   var fv_flowplayer_uploader;
   var fv_flowplayer_uploader_button;
 
-  $('#fv-wordpress-flowplayer-popup .button').click(function(e) {
+  $(document).on( 'click', '#fv-wordpress-flowplayer-popup .button', function(e) {
       e.preventDefault();
       
       fv_flowplayer_uploader_button = jQuery(this);
@@ -204,12 +204,17 @@ function fv_flowplayer_playlist_add( sInput, sCaption ) {
       jQuery('[name=fv_wp_flowplayer_field_caption]',jQuery('#fv-flowplayer-playlist table:last')).val(sCaption);
     }
   }
+  
+  jQuery('#fv-flowplayer-playlist table:last #fv_wp_flowplayer_file_info').hide();
   fv_wp_flowplayer_dialog_resize();
   return false;
 }
 
 
 function fv_wp_flowplayer_edit() {	
+  
+  var dialog = jQuery('#colorbox.fv-flowplayer-shortcode-editor');
+  dialog.removeAttr('tabindex');
   
   fv_wp_flowplayer_init();
   
@@ -271,7 +276,8 @@ function fv_wp_flowplayer_edit() {
     var scontrolbar = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'controlbar' );
     var sautoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'autoplay' );
     var sembed = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'embed' );
-    var sloop = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'loop' );    
+    var sloop = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'loop' );
+    var slive = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'live' );
     var ssplash = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splash' );    
     var ssplashend = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splashend' );
     
@@ -359,6 +365,8 @@ function fv_wp_flowplayer_edit() {
   		document.getElementById("fv_wp_flowplayer_field_redirect").value = sredirect[1];
     if( sloop != null && sloop[1] != null && sloop[1] == 'true' )
   		document.getElementById("fv_wp_flowplayer_field_loop").checked = 1;
+    if( slive != null && slive[1] != null && slive[1] == 'true' )
+  		document.getElementById("fv_wp_flowplayer_field_live").checked = 1;      
     if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' )
   		document.getElementById("fv_wp_flowplayer_field_splashend").checked = 1;  
 
@@ -474,6 +482,7 @@ function fv_wp_flowplayer_submit() {
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
   
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_loop', 'loop', false, true );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_live', 'live', false, true );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_splashend', 'splashend', false, true, ['show'] );
 			        
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_mobile','mobile');

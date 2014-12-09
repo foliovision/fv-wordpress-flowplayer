@@ -38,19 +38,19 @@
 .fv_wp_flowplayer_playlist_remove { display: none; }
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-flowplayer-playlist table input, #fv-flowplayer-playlist table input.with-button { width: 93%; }
-#fv-flowplayer-playlist table:first-child input.with-button { width: 70%; }
+#fv-flowplayer-playlist table/*:first-child*/ input.with-button { width: 70%; }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp { visibility: hidden; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: hidden; }
-#fv-flowplayer-playlist table .button { display: none; }
+/*#fv-flowplayer-playlist table .button { display: none; }*/
 #fv-flowplayer-playlist table:first-child tr.video-size { display: table-row; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_add_format_wrapper { display: table-row; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
-#fv-flowplayer-playlist table:first-child .button { display: inline-block; }
+/*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
 </style>
   
@@ -149,7 +149,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <?php }; //allow uploads splash image ?></td>
           </tr>
           
-          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" style="display: none">
+          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright">Caption</label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
           </tr>          
@@ -250,7 +250,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <option>No</option>
             </select>
   				</td>
-  			</tr>        
+  			</tr>
+        <tr<?php if( $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright">Live Stream</label></th>
+  				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
+  			</tr>           
         <?php do_action( 'fv_flowplayer_shortcode_editor_after' ); ?>        
   			<tr>
   				<th scope="row" class="label"></th>					

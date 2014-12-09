@@ -311,7 +311,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.3.8 - 2014/12/09 =
 
-* Feature - upgreade to latest core Flowplayer (5.5.2 you- fixed for HLS, Flash performance, Windows Phone 8.1)
+* Feature - upgrade to latest core Flowplayer (5.5.2 you- fixed for HLS, Flash performance, Windows Phone 8.1)
+* Feature - [fvplayer post="{post id or 'this'}"] shows all the attached video files
+* Feature - caption now shows up even for single videos
+* Feature - live streams now show this message if the loading fails: "Live stream load failed. Please try again later, perhaps the stream is currently offline."
+* Feature - playlist editor now has all the media upload buttons it needs
+* Bugfix - player alignment was aligning it to the wrong/oposite side
+* Bugfix - playlist editor showing duration of the last video added for new items
 * Pro - Vimeo - improved loading for mobile users and quality switching improvements
 
 = 2.3.7 - 2014/12/01 =
