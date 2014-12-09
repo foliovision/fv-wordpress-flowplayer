@@ -380,3 +380,24 @@ function fv_flowplayer_attachment_page_video( $c ) {
 }
 add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
 
+
+function fv_player_caption( $caption ) {
+  global $post, $authordata;
+  $caption = str_replace(
+                         array(
+                               '%post_title%',
+                               '%post_date%',
+                               '%post_author%',
+                               '%post_author_name%'
+                               ),
+                         array(
+                               get_the_title(),
+                               get_the_date(),
+                               sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ),
+                               get_the_author()
+                              ),
+                        $caption );
+  return $caption;
+}
+add_filter( 'fv_player_caption', 'fv_player_caption' );
+

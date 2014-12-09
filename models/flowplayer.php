@@ -393,6 +393,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php endif; ?>
   
     .flowplayer, flowplayer * { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
+    .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
     .flowplayer .fp-duration { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }

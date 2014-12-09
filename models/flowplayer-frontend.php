@@ -360,7 +360,12 @@ class flowplayer_frontend extends flowplayer
             $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
             $attributes['class'] .= ' is-splash';
           }
-				}
+          
+				} else if( strlen($this->aCurArgs['caption']) > 0 ) {
+          $attributes['class'] .= ' has-caption';
+          $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
+          
+        }
         
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);

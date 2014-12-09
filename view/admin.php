@@ -478,12 +478,19 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>
 					<tr>          
-						<td><label for="interface[align]">Controlbar: <span class="new">NEW</span></label></td>
+						<td><label for="interface[controlbar]">Controlbar: </label></td>
 						<td>
               <input type="hidden" name="interface[controlbar]" value="false" />
-							<input type="checkbox" name="interface[controlbar]" id="interface[align]" value="true" <?php if( isset($fv_fp->conf['interface']['controlbar']) && $fv_fp->conf['interface']['controlbar'] == 'true' ) echo 'checked="checked"'; ?> />
+							<input type="checkbox" name="interface[controlbar]" id="interface[controlbar]" value="true" <?php if( isset($fv_fp->conf['interface']['controlbar']) && $fv_fp->conf['interface']['controlbar'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr> 	          
+					</tr>
+					<tr>          
+						<td><label for="interface[live]">Live stream: </label></td>
+						<td>
+              <input type="hidden" name="interface[live]" value="false" />
+							<input type="checkbox" name="interface[live]" id="interface[live]" value="true" <?php if( isset($fv_fp->conf['interface']['live']) && $fv_fp->conf['interface']['live'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr> 	           
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
@@ -851,7 +858,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School Pricing!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">

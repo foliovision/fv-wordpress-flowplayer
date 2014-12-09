@@ -22,7 +22,7 @@ FV Wordpress Flowplayer WordPress plugin is a free, easy-to-use, and complete so
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Flowplayer all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
 * Beautiful playlists which you can skin with CSS.
-* Ultra-efficient player: just 43kB of JavaScript and 4kB of Flash code. You can extend Flowplayer using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* Ultra-efficient player: just 62kB of JavaScript and 8kB of Flash code. You can extend Flowplayer using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
 * Full support for Amazon S3 and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
@@ -309,12 +309,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= What's coming =
-* cue points support
-* VAST/VPAID support
-* improved checking of videos with improved integration in wp-admin (check all of your videos in one place)
-* tools for fixing of slow loading videos (bad meta data location)
-* other bugfixes
+= 2.3.8 - 2014/12/09 =
+
+* Feature - upgrade to latest core Flowplayer (5.5.2 you- fixed for HLS, Flash performance, Windows Phone 8.1)
+* Feature - [fvplayer post="{post id or 'this'}"] shows all the attached video files
+* Feature - caption now shows up even for single videos
+* Feature - live streams now show this message if the loading fails: "Live stream load failed. Please try again later, perhaps the stream is currently offline."
+* Feature - playlist editor now has all the media upload buttons it needs
+* Bugfix - player alignment was aligning it to the wrong/oposite side
+* Bugfix - playlist editor showing duration of the last video added for new items
+* Pro - Vimeo - improved loading for mobile users and quality switching improvements
+
+= 2.3.7 - 2014/12/01 =
+
+* Fix - changing retina CSS sprites to use a different post-fix. @x2 has issues with "All In One WP Security & Firewall" plugin
+* Pro - fix for Lightbox splash image responsiveness
 
 = 2.3.7 - 2014/12/01 =
 
@@ -325,12 +334,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - fix for auto play of playlists affecting other players on the page.
 * Bugfix - fix for handling of videos on attachment pages
 * Bugfix - fix for RTMP URLs with no file type like rtmp://host/live:stream-name
+* Pro - fix for dynamic playlist (Vimeo, CloudFront) autoplay
 
 = 2.3.5 - 2014/10/30 =
 
 * Feature - added logo position option - see Settings -> FV Wordpress Flowplayer -> Sitewide Flowplayer Defaults -> Logo
 * Feature - added subtitle font size option - see Settings -> FV Wordpress Flowplayer -> Player Skin -> Subitle Font Size
 * Bugfix - bugfix for default volumne setting when set to 0 (mute)
+* Pro - YouTube playlist items duration fix
 
 = 2.3.4 - 2014/10/16 =
 
@@ -340,6 +351,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - ad codes don't need to be responsive now that we check the player size before showing the code
 * Bugfix - fixes for Google Chrome version checks
 * Bugfix - shortcode editor fixes for /"
+* Pro - Vimeo quality switching added (beta)
 
 = 2.3.3 - 2014/10/13 =
 
@@ -349,11 +361,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - Scan video length - "Scan Now" button added!
 * Bugfix - Scan video length was using Flash encoded URLs
 * Bugfix - video splash image appearing around the video when video aspect ratio doesn't match the player size
+* Pro - video lightbox links
 
 = 2.3.2 - 2014/10/06 =
 
 * Bugfix - bad Twitter sharing URLs
 * Bugfix - fix for [fvplayer] shortcode handling in text widgets
+* Pro - fix for start/end time in seconds
 
 = 2.3.1 - 2014/10/06 =
 
@@ -942,6 +956,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.3.8 =
+
+* New core Flowplayer - fixed for HLS, Flash performance, Windows Phone 8.1
 
 = 2.3.3 =
 
