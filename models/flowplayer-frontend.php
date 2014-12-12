@@ -338,7 +338,7 @@ class flowplayer_frontend extends flowplayer
 				$ratio = round($height / $width, 4);   
         $this->fRatio = $ratio;
   
-				$attributes['data-ratio'] = $ratio;
+				$attributes['data-ratio'] = str_replace(',','.',$ratio);
 				if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 					$attributes['data-flashfit'] = 'true';
 				}

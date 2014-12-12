@@ -309,6 +309,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.9 - ?? =
+
+* Bugfix - ratio uses coma instead of dot for decimal numbers on some servers - breaking things
+* Bugfix - some PHP warnings
+
 = 2.3.8 - 2014/12/09 =
 
 * Feature - upgrade to latest core Flowplayer (5.5.2 you- fixed for HLS, Flash performance, Windows Phone 8.1)
