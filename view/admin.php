@@ -121,11 +121,29 @@ function fv_flowplayer_admin_amazon_options() {
 			foreach( $fv_fp->conf['amazon_bucket'] AS $key => $item ) :
 				$count++;
 				$amazon_tr_class = ($count==1) ? ' class="amazon-s3-first"' : ' class="amazon-s3-'.$count.'"';
+        $sRegion = ( isset($fv_fp->conf['amazon_region'][$key]) ) ? $fv_fp->conf['amazon_region'][$key] : false;
 ?>					
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td><label for="amazon_bucket[]">Amazon Bucket (<abbr title="We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.">?</abbr>):</label></td>
 						<td><input id="amazon_bucket[]" name="amazon_bucket[]" type="text" value="<?php echo trim($item); ?>" /></td>
-					</tr>							
+					</tr>
+					<tr<?php echo $amazon_tr_class; ?>>
+						<td><label for="amazon_region[]">Region</td>
+						<td>
+              <select id="amazon_region[]" name="amazon_region[]">
+                <option value="">Select the region</option>
+                <option value="eu-central-1"<?php if( $sRegion == 'eu-central-1' ) echo " selected"; ?>>Frankfurt</option>
+                <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>>Ireland</option>                              
+                <option value="us-west-1"<?php if( $sRegion == 'us-west-1' ) echo " selected"; ?>>Northern California</option>
+                <option value="us-west-2"<?php if( $sRegion == 'us-west-2' ) echo " selected"; ?>>Oregon</option>
+                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>>Sao Paulo</option>          
+                <option value="ap-southeast-1"<?php if( $sRegion == 'ap-southeast-1' ) echo " selected"; ?>>Singapore</option>
+                <option value="ap-southeast-2"<?php if( $sRegion == 'ap-southeast-2' ) echo " selected"; ?>>Sydney</option>
+                <option value="ap-northeast-1"<?php if( $sRegion == 'ap-northeast-1' ) echo " selected"; ?>>Tokyo</option>
+                <option value="us-east-1"<?php if( $sRegion == 'us-east-1' ) echo " selected"; ?>>US Standard</option>      
+              </select>
+            </td>
+					</tr>			          
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td><label for="amazon_key[]">Access Key ID:</label></td>
 						<td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo trim($fv_fp->conf['amazon_key'][$key]); ?>" /></td>

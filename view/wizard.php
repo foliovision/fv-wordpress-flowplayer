@@ -241,7 +241,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </select>
   				</td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["controlbar"] !== 'true' ) echo ' style="display: none"'; ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]["controlbar"]) || $fv_flowplayer_conf["interface"]["controlbar"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_controlbar" class="alignright">Controlbar</label></th>
   				<td>
             <select id="fv_wp_flowplayer_field_controlbar" name="fv_wp_flowplayer_field_controlbar">

@@ -338,7 +338,7 @@ class flowplayer_frontend extends flowplayer
 				$ratio = round($height / $width, 4);   
         $this->fRatio = $ratio;
   
-				$attributes['data-ratio'] = $ratio;
+				$attributes['data-ratio'] = str_replace(',','.',$ratio);
 				if( $scaling == "fit" && $this->conf['fixed_size'] == 'fixed' ) {
 					$attributes['data-flashfit'] = 'true';
 				}
@@ -527,7 +527,7 @@ class flowplayer_frontend extends flowplayer
 					
 			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
 			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
-      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" width="'.$width.'"'.$preload.'></audio>'."\n";  
+      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
 			$this->ret['html'] .= '</div>'."\n";  
   }
   
