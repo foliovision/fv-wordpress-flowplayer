@@ -578,10 +578,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = rawurlencode($url_components['path']); 
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
       $url_components['path'] = str_replace('%2B', '+', $url_components['path']);      
-      if( strpos( $url_components['path'], $fv_fp->conf['amazon_bucket'][$amazon_key] ) === false ) {
-        $url_components['path'] = '/'.$fv_fp->conf['amazon_bucket'][$amazon_key].$url_components['path'];
-      }
-      
+
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';        
       
       if( isset($fv_fp->conf['amazon_region'][$amazon_key]) && $fv_fp->conf['amazon_region'][$amazon_key] ) {
@@ -620,13 +617,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $resource .= $sGlue."X-Amz-Expires=$time";
         $resource .= $sGlue."X-Amz-SignedHeaders=$sSignedHeaders";
         $resource .= $sGlue."X-Amz-Signature=".$sSignature;              
-               
         
-              
         $this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
   
       } else {
         $expires = time() + $time;
+        
+        if( strpos( $url_components['path'], $fv_fp->conf['amazon_bucket'][$amazon_key] ) === false ) {
+          $url_components['path'] = '/'.$fv_fp->conf['amazon_bucket'][$amazon_key].$url_components['path'];
+        }        
             
         do {
           $expires++;
@@ -643,10 +642,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $resource .= '?AWSAccessKeyId='.$fv_fp->conf['amazon_key'][$amazon_key].$sGlue.'Expires='.$expires.$sGlue.'Signature='.$signature;
         
       }
+      
+      $media = $resource;
     
     }
-    
-    $media = $resource;
     
     return $media;
   }
