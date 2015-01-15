@@ -157,8 +157,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['logo'] = $logo;
     $arguments['share'] = $share;
     $arguments['post'] = $post;
-		$src = trim( preg_replace('/\,/', '', $src) );
-    $arguments['src'] = $src;
+		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
     
 	} else {
 		$arguments = shortcode_atts( array(
@@ -199,7 +198,6 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
   
   if( ( !isset($arguments['src']) || strlen(trim($arguments['src'])) == 0 ) && isset($arguments['mobile']) && strlen(trim($arguments['mobile'])) ) {
     $arguments['src'] = $arguments['mobile'];
-    $src = $arguments['mobile'];
     unset($arguments['mobile']);
   }
   
@@ -234,9 +232,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       return $sHTML;
     }
         
-  } else if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
+  } else if( $arguments['src'] != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
-    $new_player = $fv_fp->build_min_player($src,$arguments);		
+    $new_player = $fv_fp->build_min_player($arguments['src'],$arguments);		
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
