@@ -16,13 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-global $fv_wp_flowplayer_ver;
+global $fv_wp_flowplayer_ver, $fv_fp;
 
-echo $this->css_get();
+echo $fv_fp->css_get();
 
 if( current_user_can('manage_options') ) : ?>
 	<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 	<style type="text/css">
-	.fv-wp-flowplayer-notice-small { color: <?php echo trim($this->conf['timeColor']); ?> !important; }
+	.fv-wp-flowplayer-notice-small { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
 	</style>
 <?php endif;

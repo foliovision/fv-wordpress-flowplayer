@@ -16,11 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-include_once(dirname( __FILE__ ) . '/../models/flowplayer.php');
-include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
-
-$fv_fp = new flowplayer_frontend(); 
-
 //add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_head', 'flowplayer_head');
 add_action('wp_footer','flowplayer_prepare_scripts',9);
@@ -276,7 +271,7 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
-    if( !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
+    if( apply_filters( 'fv_flowplayer_safety_resize', true) && !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
       $aConf['safety_resize'] = true;
     }
     if( isset($fv_fp->conf['cbox_compatibility']) && strcmp($fv_fp->conf['cbox_compatibility'],'true') == 0 ) {

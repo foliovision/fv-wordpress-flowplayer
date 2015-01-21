@@ -118,10 +118,12 @@ class flowplayer_frontend extends flowplayer
 				} 
 				
 			global $post;
-			$fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
-			if( $fv_flowplayer_meta && isset($fv_flowplayer_meta[sanitize_title($media_item)]['time']) ) {
-				$this->expire_time = $fv_flowplayer_meta[sanitize_title($media_item)]['time'];
-			}
+      if( $post ) {
+        $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
+        if( $fv_flowplayer_meta && isset($fv_flowplayer_meta[sanitize_title($media_item)]['time']) ) {
+          $this->expire_time = $fv_flowplayer_meta[sanitize_title($media_item)]['time'];
+        }
+      }
 		}
     
 		if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {

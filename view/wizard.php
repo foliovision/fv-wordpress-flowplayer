@@ -127,7 +127,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           
           <tr<?php if( $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright">Mobile Video*</label></th>
-            <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value=""/>
+            <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" placeholder="Put low-bandwidth video here or leave blank" />
               <?php if ($allow_uploads=='true') { ?>
                 <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Video</a>
               <?php }; //allow uploads splash image ?></td>
@@ -167,6 +167,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
     <table width="100%">
       <tbody> 
         <?php
+        $show_additonal_features = false;
         foreach( $fv_flowplayer_conf["interface"] AS $option ) {
           if( $option == 'true' ) {
             $show_additonal_features = true;

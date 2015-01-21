@@ -3,7 +3,11 @@
 Plugin Name: FV Wordpress Flowplayer
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Embed videos (MP4, WEBM, OGV, FLV) into posts or pages. Uses Flowplayer 5. 
+<<<<<<< HEAD
 Version: 2.3.9
+=======
+Version: 2.3.10
+>>>>>>> dev
 Author URI: http://foliovision.com/
 License:     GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -24,7 +28,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
+*/
+
+$fv_wp_flowplayer_ver = '2.3.10';
+$fv_wp_flowplayer_core_ver = '5.5.2';
 
 include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -34,15 +41,16 @@ if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
 include( dirname( __FILE__ ) . '/models/checker.php' );
 $FV_Player_Checker = new FV_Player_Checker();
 
-if( is_admin() ) {
-	/**
-	 * If administrator is logged, loads the controller for backend.
-	 */
+include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
+include_once(dirname( __FILE__ ) . '/models/flowplayer-frontend.php');
+$fv_fp = new flowplayer_frontend();
 
+if( is_admin() ) {
 	include( dirname( __FILE__ ) . '/controller/backend.php' );
   
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
+<<<<<<< HEAD
 } else {
 	/**
 	 * If administrator is not logged, loads the controller for frontend.
@@ -55,4 +63,10 @@ if( is_admin() ) {
 $fv_wp_flowplayer_ver = '2.3.9';
 $fv_wp_flowplayer_core_ver = '5.5.2';
 
+=======
+} 
+	
+include( dirname( __FILE__ ) . '/controller/frontend.php' );
+require_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+>>>>>>> dev
 
