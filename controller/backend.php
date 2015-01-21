@@ -17,23 +17,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-include_once(dirname( __FILE__ ) . '/../models/flowplayer.php');
-include_once(dirname( __FILE__ ) . '/../models/flowplayer-backend.php');
-
-/**
- * Create the flowplayer_backend object
- */
-$fv_fp = new flowplayer_backend();
-
-/**
- * WP Hooks
- */
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
 add_action('wp_ajax_fv_wp_flowplayer_activate_extension', 'fv_wp_flowplayer_activate_extension');
 add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
  
-add_action('admin_head', 'flowplayer_head');
+add_action('admin_head', 'flowplayer_admin_head');
+add_action('admin_footer', 'flowplayer_admin_footer');
+
 add_action('admin_menu', 'flowplayer_admin');
 add_action('media_buttons', 'flowplayer_add_media_button', 30);
 add_action('media_upload_fvplayer_video', '__return_false'); // keep for compatibility!
@@ -79,19 +70,32 @@ function flowplayer_deactivate() {
 }
 
 
-function flowplayer_content_remove_commas($content) {
-  preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
-  $content_new = preg_replace('/\,/', '',$content);
-  if (isset($matches[1]))
-    $content_new = preg_replace('/popup=\'(.*?)\'/', 'popup=\''.$matches[1].'\'',$content_new);
-  return $content_new;
+function flowplayer_admin_head() {  
+  include dirname( __FILE__ ) . '/../view/frontend-head.php';
+  
+  if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
+    return; 
+  }  
+
+  global $fv_wp_flowplayer_ver;
+  ?>      
+    <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
+  <?php
 }
 
 
-/**
- * END WP Hooks
- */
- 
+function flowplayer_admin_footer() {
+  if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
+    return; 
+  }
+  
+  flowplayer_prepare_scripts();
+}
+
+
+
+
  
 
 
@@ -109,6 +113,7 @@ function flowplayer_admin () {
 			'flowplayer_page'
 			);
 	}
+  
 }
 
 

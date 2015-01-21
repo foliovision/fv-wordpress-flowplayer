@@ -703,7 +703,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public static function get_duration_video( $content ) {
     global $fv_fp, $post;    
-    if( !isset($fv_fp->conf['db_duration']) || $fv_fp->conf['db_duration'] != 'true' ) return $content;
+    if( !$post || !isset($fv_fp->conf['db_duration']) || $fv_fp->conf['db_duration'] != 'true' ) return $content;
 
     $aArgs = func_get_args();
     if( $sDuration = flowplayer::get_duration( $post->ID, $aArgs[1]->aCurArgs['src']) ) {

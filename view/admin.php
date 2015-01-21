@@ -616,33 +616,7 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
   <div class="flowplayer-wrapper">
-    <div class="flowplayer is-splash"
-      <?php if ($fv_fp->conf['engine'] == 'flash') echo 'data-engine="flash"'; ?>
-      data-swf="<?php echo FV_FP_RELATIVE_PATH ?>/flowplayer/flowplayer.swf"
-      data-ratio="0.417"
-      style="max-width:<?php echo $fv_fp->conf['width']; ?>px; max-height:<?php echo $fv_fp->conf['height']; ?>px;"
-      <?php if( $fv_fp->conf['allowfullscreen'] == 'false' ) echo 'data-fullscreen="false"'; ?>
-      <?php if( isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0 ) {
-        echo 'data-key="' . $fv_fp->conf['key'] . '"'; $commercial_key = true;
-      } ?>
-      <?php if( isset($commercial_key) && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0 ) {
-        echo ' data-logo="' . $fv_fp->conf['logo'] . '"';
-      } ?>
-      <?php if( $fv_fp->conf['scaling'] == "fit" ) {
-        echo 'data-flashfit="true"';
-      } ?>
-    >
-      <video poster="http://foliovision.com/videos/example.jpg"
-        <?php if (isset($fv_fp->conf['autoplay']) && $fv_fp->conf['autoplay'] == 'true') {
-          echo ' autoplay';
-        } ?>
-        <?php if (isset($fv_fp->conf['auto_buffer']) && $fv_fp->conf['auto_buffer'] == 'true') {
-          echo ' preload';
-        } ?>
-      >
-        <source src="http://foliovision.com/videos/example.mp4" type="video/mp4" />
-      </video>
-    </div>
+    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg"]'); ?>    
   </div>
 
   <table class="form-table2 flowplayer-settings">	
@@ -706,9 +680,9 @@ function fv_flowplayer_admin_skin() {
     </tr>
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
-      <td><input class="color small" type="text" name="buttonColor" id="buttonColor" value="<?php echo $fv_fp->conf['buttonColor']; ?>" /></td>
+      <td><input class="color small" type="text" name="buttonColor" id="buttonColor" value="<?php //echo $fv_fp->conf['buttonColor']; ?>" /></td>
       <td><label for="buttonOverColor">Mouseover</label></td>
-      <td><input class="color small" type="text" name="buttonOverColor" id="buttonOverColor" value="<?php echo $fv_fp->conf['buttonOverColor']; ?>" /></td>
+      <td><input class="color small" type="text" name="buttonOverColor" id="buttonOverColor" value="<?php //echo $fv_fp->conf['buttonOverColor']; ?>" /></td>
     <tr>-->
     <tr>
       <td><label for="durationColor">Border color</label></td>
@@ -721,7 +695,8 @@ function fv_flowplayer_admin_skin() {
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
       </td>
     </tr>					
-  </table>    					
+  </table>
+  <div style="clear: both"></div>
 <?php
 }
 

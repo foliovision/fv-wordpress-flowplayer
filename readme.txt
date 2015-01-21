@@ -309,9 +309,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.3.10 - 2015/01/15 =
+= 2.3.10 - 2015/01/21 =
 
+* Fix - admin player preview fixes
+* Fix - code revisions, code optimizations for wp-admin
 * Fix - src attribute parsing when fv_flowplayer_shortcode filter is used
+* Fix - touch devices now use the device native fullscreen playback due to the inperfections in the browser fullscreen modes in different mobile browsers
 
 = 2.3.9 - 2015/01/07 =
 

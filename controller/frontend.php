@@ -16,11 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-include_once(dirname( __FILE__ ) . '/../models/flowplayer.php');
-include_once(dirname( __FILE__ ) . '/../models/flowplayer-frontend.php');
-
-$fv_fp = new flowplayer_frontend(); 
-
 //add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_head', 'flowplayer_head');
 add_action('wp_footer','flowplayer_prepare_scripts',9);
