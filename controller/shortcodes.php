@@ -157,12 +157,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['logo'] = $logo;
     $arguments['share'] = $share;
     $arguments['post'] = $post;
-<<<<<<< HEAD
-		$src = trim( preg_replace('/\,/', '', $src) );
-    $arguments['src'] = $src;
-=======
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
->>>>>>> dev
     
 	} else {
 		$arguments = shortcode_atts( array(
@@ -237,11 +232,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       return $sHTML;
     }
         
-<<<<<<< HEAD
-  } else if( $src != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
-=======
   } else if( $arguments['src'] != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
->>>>>>> dev
 		// build new player
     $new_player = $fv_fp->build_min_player($arguments['src'],$arguments);		
     if (!empty($new_player['script'])) {
