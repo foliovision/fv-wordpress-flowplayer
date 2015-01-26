@@ -78,6 +78,12 @@ It seems HTML5 is more picky about what video it can play than Flash.
 
 Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
 
+= I want to align my player (left/right/middle) =
+
+By default the player is positioned in the middle. To change alignment of the player to either left or right:
+Go to FV WordPress Flowplayer settings > scroll down to post interface options > tick "Align". Now you can insert your video. In the interface you can now choose you alignment from the drop down menu: default (middle), left, or right.
+You can check [demo in here](https://foliovision.com/player/demos/align-settings).
+
 = How to check my video properties using the built-in checker and how to report video not playing =
 
 * Login to your site as administrator (please use the browser in which the video is not playing for you)
