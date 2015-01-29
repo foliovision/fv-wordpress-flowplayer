@@ -259,7 +259,12 @@ function fv_flowplayer_admin_default_options() {
                   <option <?php if( isset($fv_fp->conf['logoPosition']) && $fv_fp->conf['logoPosition'] == 'top-right' ) echo "selected"; ?> value="top-right">Top-right</option>
                 </select>
               </td>
-						</tr>  
+						</tr>
+						<tr>
+							<td><label for="logo">Splash Image (<abbr title="Default which will be used for any player without its own splash image">?</abbr>):</label></td>
+							<td colspan="2"><input type="text"  name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo trim($fv_fp->conf['splash']); ?>" /></td>
+              <td style="width: 5%"><input id="upload_image_button" class="button no-margin" type="button" value="Upload Image" /></td>
+						</tr>
 						<tr>
 							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
 							<td colspan="3"><input type="text" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
@@ -273,8 +278,25 @@ function fv_flowplayer_admin_default_options() {
 <script>
 jQuery(document).ready(function($) {
     var fv_flowplayer_logo_uploader;
- 
-    $('#upload_image_button').click(function(e) {
+    console.log(wp);
+    
+    //Extend the wp.media object
+    fv_flowplayer_logo_uploader = wp.media.frames.file_frame = wp.media({
+        title: 'Choose FV Flowplayer Logo',
+        button: {
+            text: 'Choose Image'
+        },
+        multiple: false
+    });
+    
+    //When a file is selected, grab the URL and set it as the text field's value
+    fv_flowplayer_logo_uploader.on('select', function() {
+        attachment = fv_flowplayer_logo_uploader.state().get('selection').first().toJSON();
+        $('#logo').val(attachment.url);
+    });    
+
+    //$('#upload_image_button').click(function(e) {
+    $(document).on( 'click', '#upload_image_button', function(e) {
         e.preventDefault();
          
         //If the uploader object has already been created, reopen the dialog
@@ -282,22 +304,7 @@ jQuery(document).ready(function($) {
             fv_flowplayer_logo_uploader.open();
             return;
         }
- 
-        //Extend the wp.media object
-        fv_flowplayer_logo_uploader = wp.media.frames.file_frame = wp.media({
-            title: 'Choose FV Flowplayer Logo',
-            button: {
-                text: 'Choose Image'
-            },
-            multiple: false
-        });
- 
-        //When a file is selected, grab the URL and set it as the text field's value
-        fv_flowplayer_logo_uploader.on('select', function() {
-            attachment = fv_flowplayer_logo_uploader.state().get('selection').first().toJSON();
-            $('#logo').val(attachment.url);
-        });
- 
+
         //Open the uploader dialog
         fv_flowplayer_logo_uploader.open();
  
