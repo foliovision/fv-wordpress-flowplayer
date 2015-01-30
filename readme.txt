@@ -315,6 +315,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.11 - 2015/01/30 =
+
+* Feature - setting for default splash screen added in Settings -> FV Wordpress Flowplayer -> Sitewide Flowplayer Defaults -> Splash Image
+* Bugfix - iOS 8 playback issues when using Video app
+* Bugfix - playback issues when Google Analytics is configured for FV Flowplayer and it's blocked by some browser extension (like Ghostery)
+
 = 2.3.10 - 2015/01/21 =
 
 * Fix - admin player preview fixes

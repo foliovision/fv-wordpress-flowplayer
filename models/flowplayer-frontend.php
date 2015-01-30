@@ -1,6 +1,6 @@
 <?php
 /*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
-    Copyright (C) 2013  Foliovision
+    Copyright (C) 2015  Foliovision
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -678,7 +678,10 @@ class flowplayer_frontend extends flowplayer
       else {
         $splash_img = trim($this->aCurArgs['splash']);
       }  		  		
-    }
+    } else if( isset($this->conf['splash']) && strlen(trim($this->conf['splash'])) > 0 ) {
+      $splash_img = $this->conf['splash'];
+    }    
+    
     $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
     return $splash_img;
   }
