@@ -249,7 +249,7 @@ function fv_flowplayer_admin_default_options() {
 						<tr>
 							<td><label for="logo">Logo:</label></td>
 							<td><input type="text"  name="logo" id="logo" value="<?php echo trim($fv_fp->conf['logo']); ?>" /></td>
-              <td style="width: 5%"><input id="upload_image_button" class="button no-margin" type="button" value="Upload Image" /></td>
+              <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="Upload Image" alt="Select Logo" /></td>
               <td style="width: 5%">
                 <select name="logoPosition">
                   <option value="bottom-left">Position</option>
@@ -263,7 +263,7 @@ function fv_flowplayer_admin_default_options() {
 						<tr>
 							<td><label for="logo">Splash Image (<abbr title="Default which will be used for any player without its own splash image">?</abbr>):</label></td>
 							<td colspan="2"><input type="text"  name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo trim($fv_fp->conf['splash']); ?>" /></td>
-              <td style="width: 5%"><input id="upload_image_button" class="button no-margin" type="button" value="Upload Image" /></td>
+              <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="Upload Image" alt="Select default Splash Screen" /></td>
 						</tr>
 						<tr>
 							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
@@ -276,39 +276,87 @@ function fv_flowplayer_admin_default_options() {
 						</tr>						
 					</table>
 <script>
-jQuery(document).ready(function($) {
-    var fv_flowplayer_logo_uploader;
-    console.log(wp);
-    
-    //Extend the wp.media object
-    fv_flowplayer_logo_uploader = wp.media.frames.file_frame = wp.media({
-        title: 'Choose FV Flowplayer Logo',
-        button: {
-            text: 'Choose Image'
-        },
-        multiple: false
-    });
-    
-    //When a file is selected, grab the URL and set it as the text field's value
-    fv_flowplayer_logo_uploader.on('select', function() {
-        attachment = fv_flowplayer_logo_uploader.state().get('selection').first().toJSON();
-        $('#logo').val(attachment.url);
-    });    
+jQuery(document).ready(function($) {    
+  var fv_flowplayer_uploader;
+  var fv_flowplayer_uploader_button;
 
-    //$('#upload_image_button').click(function(e) {
-    $(document).on( 'click', '#upload_image_button', function(e) {
-        e.preventDefault();
-         
-        //If the uploader object has already been created, reopen the dialog
-        if (fv_flowplayer_logo_uploader) {
-            fv_flowplayer_logo_uploader.open();
-            return;
-        }
+  $(document).on( 'click', '.upload_image_button', function(e) {
+      e.preventDefault();
+      
+      fv_flowplayer_uploader_button = jQuery(this);
+      jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+      fv_flowplayer_uploader_button.parents('tr').find('input[type=text]').addClass('fv_flowplayer_target' );
+                       
+      //If the uploader object has already been created, reopen the dialog
+      if (fv_flowplayer_uploader) {
+          fv_flowplayer_uploader.open();
+          return;
+      }
 
-        //Open the uploader dialog
-        fv_flowplayer_logo_uploader.open();
- 
-    });
+      //Extend the wp.media object
+      fv_flowplayer_uploader = wp.media.frames.file_frame = wp.media({
+          title: 'Pick the image',
+          button: {
+              text: 'Choose'
+          },
+          multiple: false
+      });
+      
+      fv_flowplayer_uploader.on('open', function() {
+        jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.attr('alt'));
+      });      
+
+      //When a file is selected, grab the URL and set it as the text field's value
+      fv_flowplayer_uploader.on('select', function() {
+          attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
+
+          $('.fv_flowplayer_target').val(attachment.url);
+          $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+        
+          /*if( attachment.type == 'video' ) {
+            if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
+              $('#fv_wp_flowplayer_field_width').val(attachment.width);
+            }
+            if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
+              $('#fv_wp_flowplayer_field_height').val(attachment.height);
+            }
+            if( typeof(attachment.fileLength) != "undefined" ) {
+              $('#fv_wp_flowplayer_file_info').show();
+              $('#fv_wp_flowplayer_file_duration').html(attachment.fileLength);
+            }
+            if( typeof(attachment.filesizeHumanReadable) != "undefined" ) {
+              $('#fv_wp_flowplayer_file_info').show();
+              $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
+            }
+            
+          } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
+            if( jQuery('#remove-post-thumbnail').length > 0 ){
+              return;
+            }
+            jQuery.post(ajaxurl, {
+                action:"set-post-thumbnail",
+                post_id: fv_flowplayer_set_post_thumbnail_id,
+                thumbnail_id: attachment.id,
+                 _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
+                cookie: encodeURIComponent(document.cookie)
+              }, function(str){
+                var win = window.dialogArguments || opener || parent || top;
+                if ( str == '0' ) {
+                  alert( setPostThumbnailL10n.error );
+                } else {
+                  jQuery('#postimagediv .inside').html(str);
+                  jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+                }
+              } );
+            
+          }*/
+          
+      });
+
+      //Open the uploader dialog
+      fv_flowplayer_uploader.open();
+
+  });    
  
 });  
 </script>          
@@ -623,7 +671,8 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
   <div class="flowplayer-wrapper">
-    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg"]'); ?>    
+    <?php //echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg"]'); ?>
+    Due to conflict with the Media Uploader in wp-admin the preview was temporarily removed.
   </div>
 
   <table class="form-table2 flowplayer-settings">	

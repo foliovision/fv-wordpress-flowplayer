@@ -682,7 +682,7 @@ class flowplayer_frontend extends flowplayer
       $splash_img = $this->conf['splash'];
     }    
     
-    $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );var_dump($splash_img);
+    $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
     return $splash_img;
   }
   
