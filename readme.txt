@@ -110,7 +110,6 @@ AddType video/webm            .webm
 AddType video/ogg             .ogv
 AddType application/x-mpegurl .m3u8
 AddType video/x-m4v           .m4v
-# hls transport stream segments:
 AddType video/mp2t            .ts`
 
 If you use Microsoft IIS, add following into web.config (one should be in your root website folder) into configuration/system.webServer/staticContent section:
@@ -137,6 +136,8 @@ Good example can be seen in our support forum: http://foliovision.com/support/fv
 Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 Part 2 video stream codecs.
 
 = How do I fix the bad metadata (moov) position? =
+
+This means that the video information (such as what codecs are used) is not stored at the beginning of the file. In our experience, video with bad meta data position might be slow to load in Flash engine (check some browser which doesn't play MP4 format in Flash - like Opera) and Firefox. Although Safary and iOS (iPAd, iPhone) may play it just fine. 
 
 If you are using Mac, try Lillipot (just remember to rename the file back to .mp4 extension): http://www.qtbridge.com/lillipot/lillipot.html
 
@@ -314,6 +315,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 2.3.12 - 2015/02/?? =
+
+* Bugfix - FV Flowplayer preview in admin screen conflict with WP Media Library fixed
 
 = 2.3.11 - 2015/01/30 =
 

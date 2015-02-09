@@ -671,8 +671,7 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
   <div class="flowplayer-wrapper">
-    <?php //echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg"]'); ?>
-    Due to conflict with the Media Uploader in wp-admin the preview was temporarily removed.
+    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg"]'); ?>
   </div>
 
   <table class="form-table2 flowplayer-settings">	
