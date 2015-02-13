@@ -24,6 +24,7 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
  
 add_action('admin_head', 'flowplayer_admin_head');
 add_action('admin_footer', 'flowplayer_admin_footer');
+add_action('admin_print_footer_scripts', 'flowplayer_admin_footer_wp_js_restore', 999999 );
 
 add_action('admin_menu', 'flowplayer_admin');
 add_action('media_buttons', 'flowplayer_add_media_button', 30);
@@ -81,6 +82,12 @@ function flowplayer_admin_head() {
   ?>      
     <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
+    
+    <script>
+    jQuery(window).on('unload', function(){
+      window.fv_flowplayer_wp = window.wp;
+    });
+    </script>
   <?php
 }
 
@@ -94,7 +101,19 @@ function flowplayer_admin_footer() {
 }
 
 
-
+function flowplayer_admin_footer_wp_js_restore() {
+  if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
+    return; 
+  }
+  
+  ?>
+  <script>
+  jQuery(window).on('unload', function(){
+    window.wp = window.fv_flowplayer_wp;
+  });
+  </script>
+  <?php
+}
 
  
 

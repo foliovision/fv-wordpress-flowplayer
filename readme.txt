@@ -316,6 +316,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.12 - 2015/02/13 =
+
+* Feature - player position setting - lets you change the default centering to left align with no text wrapping
+* Feature - RSS - improving player appearance
+* Bugfix - autobuffering option fixed
+* Bugfix - FV Flowplayer preview in admin screen conflict with WP Media Library fixed
+
 = 2.3.11 - 2015/01/30 =
 
 * Feature - setting for default splash screen added in Settings -> FV Wordpress Flowplayer -> Sitewide Flowplayer Defaults -> Splash Image

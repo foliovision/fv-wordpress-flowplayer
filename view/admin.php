@@ -178,15 +178,15 @@ function fv_flowplayer_admin_default_options() {
 ?>
 					<table class="form-table2">
 						<tr>
-							<td class="first"><label for="autoplay">AutoPlay:</label></td>
+							<td class="first"><label for="autoplay">AutoPlay (<abbr title="We make sure only one video per page autoplays">?</abbr>):</label></td>
 							<td colspan="2">
 								<?php fv_flowplayer_admin_checkbox('autoplay'); ?>
 							</td>
 						</tr>
 						<tr>
-							<td><label for="auto_buffer">Auto Buffering (<abbr title="Works for first 2 videos on the page only, to preserve your bandwidth.">?</abbr>):</label></td>
+							<td><label for="auto_buffering">Auto Buffering (<abbr title="Works for first 2 videos on the page only, to preserve your bandwidth.">?</abbr>):</label></td>
 							<td colspan="2">
-								<?php fv_flowplayer_admin_checkbox('auto_buffer'); ?>
+								<?php fv_flowplayer_admin_checkbox('auto_buffering'); ?>
 							</td>
 						</tr>
 						<tr>
@@ -671,16 +671,20 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
   <div class="flowplayer-wrapper">
-    <?php //echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg"]'); ?>
-    Due to conflict with the Media Uploader in wp-admin the preview was temporarily removed.
+    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg" autoplay="false"]'); ?>
   </div>
 
   <table class="form-table2 flowplayer-settings">	
     <tr>
       <td><label for="bufferColor">Buffer</label></td>
       <td><input class="color small" id="bufferColor" name="bufferColor" type="text" value="<?php echo $fv_fp->conf['bufferColor']; ?>" /></td>
-      <td><label for="hasBorder">Border</label></td>
-      <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
+      <td><label for="player-position">Player position</label> (<abbr title='You can still use align="right" where needed'>?</abbr>)</td>
+      <td>
+        <select id="player-position" name="player-position">
+          <option value=""<?php if( $fv_fp->conf['player-position'] == "" ) echo ' selected="selected"'; ?>>Centered</option>										  
+          <option value="left"<?php if( $fv_fp->conf['player-position'] == 'left'  ) echo ' selected="selected"'; ?>>Left (no text-wrap)</option>
+        </select> 							
+      </td>    
     </tr>
     <tr>
       <td><label for="canvas">Canvas</label></td>
@@ -745,6 +749,11 @@ function fv_flowplayer_admin_skin() {
       <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo $fv_fp->conf['borderColor']; ?>" /></td>
       <td><label for="volume">Default Volume</label></td>
       <td><input class="small" id="volume" name="volume" title="Enter number between 0 and 1, like 0.5" type="text" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
+    </tr>
+    <tr>
+      <td><label for="hasBorder">Border</label></td>
+      <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
+      <td colspan="2"></td>
     </tr>
     <tr>    		
       <td colspan="4">

@@ -108,7 +108,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
-    if( !isset( $conf['auto_buffer'] ) ) $conf['auto_buffer'] = 'false';
+    if( !isset( $conf['auto_buffering'] ) ) $conf['auto_buffering'] = 'false';
     if( !isset( $conf['scaling'] ) ) $conf['scaling'] = 'true';
     if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';    
@@ -155,6 +155,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
+    if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -439,6 +440,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+  
+    <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
   
     <?php if( $style_tag ) : ?>
       </style>  
@@ -945,7 +948,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
         break;
       }
       
-      if( !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
+      if( isset($post->ID) && !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
         $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true, 'flash' => false ) );
         if( !is_array($video_secured) ) {
           $video_secured = array( 'media' => $video_secured );
