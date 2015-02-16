@@ -320,6 +320,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Feature - player position setting - lets you change the default centering to left align with no text wrapping
 * Feature - RSS - improving player appearance
+* Bugfix - autobuffering option fixed
 * Bugfix - FV Flowplayer preview in admin screen conflict with WP Media Library fixed
 
 = 2.3.11 - 2015/01/30 =
@@ -986,6 +987,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.3.13 =
+
+* RTMP path fix - double check that you use RTMP file extensions properly - rtmp_path="mp4:example.mp4" for mp4 file and rtmp_path="example" for FLV/Flash video file.
 
 = 2.3.8 =
 
