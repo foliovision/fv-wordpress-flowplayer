@@ -242,7 +242,7 @@ class flowplayer_frontend extends flowplayer
 				$attributes = array();
 				$attributes['class'] = 'flowplayer';
 				
-				if( $autoplay == false && !(isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
+				if( $autoplay == false && !(isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
 					$attributes['class'] .= ' is-splash';
 				}
         
@@ -409,7 +409,7 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' loop';
 								
 					}     
-					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
+					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 						$this->ret['html'] .= ' preload';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
 					}	else if ($autoplay == false) {
@@ -620,7 +620,7 @@ class flowplayer_frontend extends flowplayer
 
     $scripts_after = false; 
     if( 1<0 && $mp4_position > $webm_position ) {
-      if (isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'true' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
+      if (isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
         $scripts_after = '<script type="text/javascript">
           if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && document.getElementById("wpfp_'.$this->hash.'_video") )  {
             document.getElementById("wpfp_'.$this->hash.'_video").setAttribute("preload", "none");
@@ -631,7 +631,7 @@ class flowplayer_frontend extends flowplayer
         
       $mp4_video = $this->get_video_src( $mp4_video, array( 'url_only' => true ) );
   
-      $this->ret['script']['fv_flowplayer_browser_chrome_fail'][$this->hash] = array( 'attrs' => $attributes_html, 'mp4' => $mp4_video, 'auto_buffer' => ( (isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'true') ? "true" : "false" ) );
+      $this->ret['script']['fv_flowplayer_browser_chrome_fail'][$this->hash] = array( 'attrs' => $attributes_html, 'mp4' => $mp4_video, 'auto_buffer' => ( (isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED') ? "true" : "false" ) );
     }
     
     return $scripts_after;
