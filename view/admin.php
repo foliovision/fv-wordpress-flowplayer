@@ -889,20 +889,25 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
     $aInstalled = get_option('fv_flowplayer_extension_install');
   }
   
-  if( isset($aCheck->valid) && $aCheck->valid && is_plugin_inactive('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <input type="button" class='button fv_wp_flowplayer_activate_extension' data-plugin='fv-player-pro/fv-player-pro.php' value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /></p>
-    </div>
-  <?php elseif( isset($aCheck->valid) && $aCheck->valid && is_plugin_active('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" /></p>
-    </div>
-  <?php elseif( isset($aCheck->valid) && $aCheck->valid ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <form method="post"><input type="submit" class="button" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?></form></p>
-    </div>
-  <?php
-  endif;
+  if( isset($aCheck->valid) && $aCheck->valid ){
+    
+    $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');
+    
+    if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>Thank you for purchasing FV Player license! <input type="button" class='button fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /></p>
+      </div>
+    <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" /></p>
+      </div>
+    <?php else : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>Thank you for purchasing FV Player license! <form method="post"><input type="submit" class="button" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?></form></p>
+      </div>
+    <?php
+    endif;
+  }
 
   
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    

@@ -962,3 +962,17 @@ function fv_flowplayer_admin_scripts() {
     wp_enqueue_media();
   }
 }
+
+//search for plugin path with {slug}.php
+function fv_flowplayer_get_extension_path( $slug ){
+  $plugin_slugs = get_transient('plugin_slugs');
+  if( !$plugin_slugs )
+    return false;
+
+  foreach( $plugin_slugs as $item ){
+    if( stripos($item,$slug.'.php') !== false )
+      return $item;
+  }
+  
+  return false;
+}
