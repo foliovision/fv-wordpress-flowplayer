@@ -316,6 +316,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.13 - 2015/04/?? =
+
+* Bugfix - RTMP playlist parsing fix is you enter the RTMP path like mp4:file.mp4
+
 = 2.3.12 - 2015/02/13 =
 
 * Feature - player position setting - lets you change the default centering to left align with no text wrapping

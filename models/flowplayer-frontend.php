@@ -79,7 +79,7 @@ class flowplayer_frontend extends flowplayer
 		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
 		
     
-		$autoplay = false;
+		$autoplay = false;  //  todo: should be changed into a property
 		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
 			$this->autobuffer_count++;
 			if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
