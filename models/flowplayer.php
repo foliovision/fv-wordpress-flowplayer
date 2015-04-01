@@ -402,7 +402,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       .flowplayer { border: 1px solid <?php echo trim($fv_fp->conf['borderColor']); ?> !important; }
     <?php endif; ?>
   
-    .flowplayer, flowplayer * { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
+    .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
