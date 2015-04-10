@@ -899,6 +899,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public static function is_optimizepress() {
+    if( ( isset($_GET['page']) && $_GET['page'] == 'optimizepress-page-builder' ) ||
+        ( isset($_POST['action']) && $_POST['action'] == 'optimizepress-live-editor-parse' )
+      ) {
+      return true;
+    }
+    return false;
+  }  
+  
+  
   public function is_secure_amazon_s3( $url ) {
     return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
   }

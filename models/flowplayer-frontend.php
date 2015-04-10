@@ -474,7 +474,10 @@ class flowplayer_frontend extends flowplayer
 				if( $ad_contents = $this->get_ad_code() ) {
 					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
 				}
-        if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
+        
+        if( flowplayer::is_optimizepress() ) {
+          $this->ret['html'] .= '<div class="fp-ui"></div>';       
+        } else if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript">troubleshooting guide</a> or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         

@@ -26,7 +26,7 @@ add_action('wp_enqueue_scripts', 'flowplayer_jquery');
 add_filter( 'run_ngg_resource_manager', '__return_false' );
 
 
-function fv_flowplayer_remove_bad_scripts() {
+function fv_flowplayer_remove_bad_scripts() {  
   global $wp_scripts;
   if( isset($wp_scripts->registered['flowplayer']) && isset($wp_scripts->registered['flowplayer']->src) && stripos($wp_scripts->registered['flowplayer']->src, 'fv-wordpress-flowplayer') === false ) {
     wp_deregister_script( 'flowplayer' );
@@ -252,6 +252,11 @@ function flowplayer_content( $content ) {
  */
 function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
+  
+  //  don't load script in Optimize Press 2 preview
+  if( flowplayer::is_optimizepress() ) {
+    return;  
+  }
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
@@ -312,7 +317,9 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-	global $fv_fp;
+  if( flowplayer::is_optimizepress() ) {
+    return;  
+  }  
 
 	if( is_user_logged_in() || isset($_GET['fv_wp_flowplayer_check_template']) ) {
 		echo "\n<!--fv-flowplayer-footer-->\n\n";
@@ -331,6 +338,10 @@ function flowplayer($shortcode) {
 Make sure our div won't be wrapped in any P tag and that html attributes don't break the shortcode
 */
 function fv_flowplayer_the_content( $c ) {
+  if( flowplayer::is_optimizepress() ) {
+    return $c;  
+  }    
+  
 	$c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?[^\\\]\])</p>!', "\n".'$1'."\n", $c );
   $c = preg_replace_callback( '!\[(?:fvplayer|flowplayer).*?[^\\\]\]!', 'fv_flowplayer_shortfcode_fix_attrs', $c );
 	return $c;
