@@ -463,7 +463,8 @@ class flowplayer_frontend extends flowplayer
 					
 					$this->ret['html'] .= "\t".'</video>';//."\n";
 				}
-								
+				
+        $this->ret['html'] .= $this->get_speed_buttons();
 				
 				if( isset($splashend_contents) ) {
 					$this->ret['html'] .= $splashend_contents;
@@ -665,6 +666,30 @@ class flowplayer_frontend extends flowplayer
       }
     }
     return false;
+  }
+  
+  
+  function get_speed_buttons() {
+    $bShow = false;
+    if( isset($this->conf['ui_speed']) && $this->conf['ui_speed'] == "true" || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+      $bShow = true;
+    }
+    
+    if( isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'no' ) {
+      $bShow = false;
+    }
+     
+    if( $bShow ) {   
+      return "<div class='speed-buttons-center'>
+        <div class='speed-buttons'>
+          <span class='fv_sp_slower'>&#9664;</span>
+          <span class='fv_sp_reset'>&#9655;</span>
+          <span class='fv_sp_faster'>&#9654;</span>
+        </div>
+      </div>";
+    } else {
+      return false;
+    }
   }
   
   

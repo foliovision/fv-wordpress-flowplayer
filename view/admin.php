@@ -748,12 +748,13 @@ function fv_flowplayer_admin_skin() {
       <td><label for="durationColor">Border color</label></td>
       <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo $fv_fp->conf['borderColor']; ?>" /></td>
       <td><label for="volume">Default Volume</label></td>
-      <td><input class="small" id="volume" name="volume" title="Enter number between 0 and 1, like 0.5" type="text" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
+      <td><input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
     </tr>
     <tr>
       <td><label for="hasBorder">Border</label></td>
       <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
-      <td colspan="2"></td>
+      <td><label for="ui_play_button">Speed Buttons (beta)</label></td>
+      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_speed'); ?></td>      
     </tr>
     <tr>    		
       <td colspan="4">

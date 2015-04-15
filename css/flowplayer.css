@@ -396,6 +396,50 @@ a #add-format, a #add-rtmp {
 
 p.fp-caption { text-align: center; }
 
+/* initially hide speed buttons while they cannot be used */
+.is-splash.flowplayer .speed-buttons, .is-loading.flowplayer .speed-buttons {
+  display: none;
+}
+.flowplayer .speed-buttons-center {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+}
+.flowplayer .speed-buttons {
+  position: relative;
+  left: -50%;
+  z-index: 2; /* make clickable */
+  display: block;
+  opacity: 1;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+}
+.is-mouseout.flowplayer .speed-buttons {
+  opacity: 0;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  /* same transition as other ui elements like fullscreen */
+  -webkit-transition: opacity .15s .3s;
+  -moz-transition: opacity .15s .3s;
+  transition: opacity .15s .3s;
+}
+.flowplayer .speed-buttons span {
+  padding: 0.6ex;
+  margin: 0.5ex;
+  width: 3em;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  background-color: #eee;
+  cursor: pointer;
+  -webkit-border-radius: 1ex;
+  -moz-border-radius: 1ex;
+  border-radius: 1ex;
+}
+.flowplayer .speed-buttons span.active {
+  color: #00a7c8;
+  background-color: #666;
+  cursor: default;
+}
+
 /*
 MediaElement.js
 */
