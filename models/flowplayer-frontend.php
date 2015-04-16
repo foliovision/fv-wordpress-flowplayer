@@ -682,9 +682,8 @@ class flowplayer_frontend extends flowplayer
     if( $bShow ) {   
       return "<div class='speed-buttons-center'>
         <div class='speed-buttons'>
-          <span class='fv_sp_slower'>&#9664;</span>
-          <span class='fv_sp_reset'>&#9655;</span>
-          <span class='fv_sp_faster'>&#9654;</span>
+          <span class='fv_sp_slower'>&#45;</span>
+         <span class='fv_sp_faster'>&#43;</span>
         </div>
       </div>";
     } else {
