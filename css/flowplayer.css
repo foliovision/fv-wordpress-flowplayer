@@ -423,12 +423,14 @@ p.fp-caption { text-align: center; }
 }
 .flowplayer .speed-buttons span {
   padding: 0.6ex;
-  margin: 0.5ex;
+  margin: 0.5ex 0;
   width: 3em;
   display: inline-block;
+  float: left;
   text-align: center;
   font-weight: bold;
-  background-color: #eee;
+  background-color: #ccc;
+  color: #fff;
   cursor: pointer;
   -webkit-border-radius: 1ex;
   -moz-border-radius: 1ex;
@@ -438,6 +440,17 @@ p.fp-caption { text-align: center; }
   color: #00a7c8;
   background-color: #666;
   cursor: default;
+}
+.flowplayer .speed-buttons span.fv_sp_slower {
+  -webkit-border-radius: 1ex 0 0 1ex;
+  -moz-border-radius: 1ex 0 0 1ex;
+  border-radius: 1ex 0 0 1ex;
+  margin-right: 2px;
+}
+.flowplayer .speed-buttons span.fv_sp_faster {
+  -webkit-border-radius: 0 1ex 1ex 0;
+  -moz-border-radius: 0 1ex 1ex 0;
+  border-radius: 0 1ex 1ex 0;
 }
 
 /*
