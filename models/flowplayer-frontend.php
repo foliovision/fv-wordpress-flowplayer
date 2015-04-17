@@ -79,7 +79,7 @@ class flowplayer_frontend extends flowplayer
 		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
 		
     
-		$autoplay = false;
+		$autoplay = false;  //  todo: should be changed into a property
 		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
 			$this->autobuffer_count++;
 			if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
@@ -447,7 +447,7 @@ class flowplayer_frontend extends flowplayer
               } else {
                 $rtmp_url = parse_url($rtmp_item);
                 $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-                $extension = $this->get_file_extension($rtmp_url['path'], 'mp4');                
+                $extension = $this->get_file_extension($rtmp_url['path'], false);                
               }
 
               if( $extension ) {
@@ -463,7 +463,8 @@ class flowplayer_frontend extends flowplayer
 					
 					$this->ret['html'] .= "\t".'</video>';//."\n";
 				}
-								
+				
+        $this->ret['html'] .= $this->get_speed_buttons();
 				
 				if( isset($splashend_contents) ) {
 					$this->ret['html'] .= $splashend_contents;
@@ -474,7 +475,10 @@ class flowplayer_frontend extends flowplayer
 				if( $ad_contents = $this->get_ad_code() ) {
 					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
 				}
-        if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
+        
+        if( flowplayer::is_optimizepress() ) {
+          $this->ret['html'] .= '<div class="fp-ui"></div>';       
+        } else if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript">troubleshooting guide</a> or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         
@@ -662,6 +666,29 @@ class flowplayer_frontend extends flowplayer
       }
     }
     return false;
+  }
+  
+  
+  function get_speed_buttons() {
+    $bShow = false;
+    if( isset($this->conf['ui_speed']) && $this->conf['ui_speed'] == "true" || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+      $bShow = true;
+    }
+    
+    if( isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'no' ) {
+      $bShow = false;
+    }
+     
+    if( $bShow ) {   
+      return "<div class='speed-buttons-center'>
+        <div class='speed-buttons'>
+          <span class='fv_sp_slower'>&#45;</span>
+         <span class='fv_sp_faster'>&#43;</span>
+        </div>
+      </div>";
+    } else {
+      return false;
+    }
   }
   
   

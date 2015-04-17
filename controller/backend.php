@@ -459,7 +459,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Christmas sale!
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Easter sale!
 		</div>
 	</td>
 </tr>
@@ -961,4 +961,18 @@ function fv_flowplayer_admin_scripts() {
   if (isset($_GET['page']) && $_GET['page'] == 'fvplayer') {
     wp_enqueue_media();
   }
+}
+
+//search for plugin path with {slug}.php
+function fv_flowplayer_get_extension_path( $slug ){
+  $plugin_slugs = get_transient('plugin_slugs');
+  if( !$plugin_slugs )
+    return false;
+
+  foreach( $plugin_slugs as $item ){
+    if( stripos($item,$slug.'.php') !== false )
+      return $item;
+  }
+  
+  return false;
 }

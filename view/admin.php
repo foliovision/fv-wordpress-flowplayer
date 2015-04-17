@@ -748,12 +748,13 @@ function fv_flowplayer_admin_skin() {
       <td><label for="durationColor">Border color</label></td>
       <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo $fv_fp->conf['borderColor']; ?>" /></td>
       <td><label for="volume">Default Volume</label></td>
-      <td><input class="small" id="volume" name="volume" title="Enter number between 0 and 1, like 0.5" type="text" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
+      <td><input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
     </tr>
     <tr>
       <td><label for="hasBorder">Border</label></td>
       <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
-      <td colspan="2"></td>
+      <td><label for="ui_play_button">Speed Buttons (beta)</label></td>
+      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_speed'); ?></td>      
     </tr>
     <tr>    		
       <td colspan="4">
@@ -889,20 +890,25 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
     $aInstalled = get_option('fv_flowplayer_extension_install');
   }
   
-  if( isset($aCheck->valid) && $aCheck->valid && is_plugin_inactive('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <input type="button" class='button fv_wp_flowplayer_activate_extension' data-plugin='fv-player-pro/fv-player-pro.php' value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /></p>
-    </div>
-  <?php elseif( isset($aCheck->valid) && $aCheck->valid && is_plugin_active('fv-player-pro/fv-player-pro.php') && !is_wp_error(validate_plugin('fv-player-pro/fv-player-pro.php')) ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" /></p>
-    </div>
-  <?php elseif( isset($aCheck->valid) && $aCheck->valid ) : ?>
-    <div id="fv_flowplayer_addon_pro">
-      <p>Thank you for purchasing FV Player license! <form method="post"><input type="submit" class="button" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?></form></p>
-    </div>
-  <?php
-  endif;
+  if( isset($aCheck->valid) && $aCheck->valid ){
+    
+    $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');
+    
+    if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>Thank you for purchasing FV Player license! <input type="button" class='button fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /></p>
+      </div>
+    <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" /></p>
+      </div>
+    <?php else : ?>
+      <div id="fv_flowplayer_addon_pro">
+        <p>Thank you for purchasing FV Player license! <form method="post"><input type="submit" class="button" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?></form></p>
+      </div>
+    <?php
+    endif;
+  }
 
   
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
@@ -916,7 +922,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
