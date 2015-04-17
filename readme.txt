@@ -316,8 +316,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.3.13 - 2015/04/?? =
+= 2.3.13 - 2015/04/17 =
 
+* Feature - Google Analytics now tracks Video start, first/second/third quartile and completed playback
 * Bugfix - OptimizePress 2 LiveEditor fix - live preview of video disabled for better compatibility
 * Bugfix - RTMP playlist parsing fix is you enter the RTMP path like mp4:file.mp4
 
