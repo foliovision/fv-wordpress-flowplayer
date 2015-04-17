@@ -455,6 +455,7 @@ p.fp-caption { text-align: center; }
   -moz-border-radius: 1ex 0 0 1ex;
   border-radius: 1ex 0 0 1ex;
   margin-right: 2px;
+  width: 2.05em;
 }
 .flowplayer .speed-buttons span.fv_sp_faster {
   -webkit-border-radius: 0 1ex 1ex 0;
