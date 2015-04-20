@@ -318,7 +318,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.3.14 - 2014/04/20 =
+= 2.3.14 - 2015/04/20 =
 
 * Feature - speed control buttons - check Settings -> FV Wordpress Flowplayer -> Player Skin - Speed Buttons
 * Feature - support for [video] shortcode - check Settings -> FV Wordpress Flowplayer -> Integrations -> Handle Wordpress [video] shortcodes. This will be the new default in a couple of versions.
