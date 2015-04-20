@@ -316,6 +316,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.14 - 2014/04/20 =
+
+* Feature - speed control buttons - check Settings -> FV Wordpress Flowplayer -> Player Skin - Speed Buttons
+* Feature - support for [video] shortcode - check Settings -> FV Wordpress Flowplayer -> Integrations -> Handle Wordpress [video] shortcodes. This will be the new default in a couple of versions.
+* Bugfix - fix for disappearing share bar (caused by new Google Analytics tracking in last version)
+
 = 2.3.13 - 2015/04/17 =
 
 * Feature - Google Analytics now tracks Video start, first/second/third quartile and completed playback
