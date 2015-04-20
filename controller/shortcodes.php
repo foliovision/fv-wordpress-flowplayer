@@ -346,3 +346,167 @@ function fv_player_time() {
     return flowplayer::get_duration_post();
   }
 }
+
+
+global $fv_fp;
+if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) && ( empty($_GET['action']) || $_GET['action'] != 'edit' ) && !empty($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) {
+    
+  function fv_flowplayer_shortcode_video( $output ) {
+    $aArgs = func_get_args();
+    $atts = $aArgs[1];
+    
+    $bridge_atts = array();
+    if( isset($atts['src']) ) {
+      $bridge_atts['src'] = $atts['src'];
+    }
+    foreach( array('mp4','webm','ogv','mov','flv','wmv','m4v') AS $key => $value ) {
+      $src = 'src'.(( $key > 0 ) ? $key : '');
+      if( isset($atts[$value]) ) {
+        $bridge_atts[$src] = $atts[$value];
+      }
+    }
+    
+    if( isset($atts['poster']) ) {
+      $bridge_atts['splash'] = $atts['poster'];
+    }
+    
+    if( isset($atts['loop']) && $atts['loop'] == 'on' ) {
+      $bridge_atts['loop'] = 'true';
+    } else if( isset($atts['loop']) && $atts['loop'] == 'off' ) {
+      $bridge_atts['loop'] = 'false';
+    }
+    
+    if( isset($atts['autoplay']) && $atts['autoplay'] == 'on' ) {
+      $bridge_atts['autoplay'] = 'true';
+    } else if( isset($atts['loop']) && $atts['loop'] == 'off' ) {
+      $bridge_atts['autoplay'] = 'false';
+    }
+    
+    if( isset($atts['width']) ) {
+      $bridge_atts['width'] = $atts['width'];
+    }
+    if( isset($atts['height']) ) {
+      $bridge_atts['height'] = $atts['height'];
+    }
+    
+    if( count($bridge_atts) == 0 ) {
+      return "<!--FV Flowplayer video shortcode integration - no attributes recognized-->";
+    }
+    return flowplayer_content_handle( $bridge_atts, false, 'video' );
+  }
+  
+  add_filter( 'wp_video_shortcode_override', 'fv_flowplayer_shortcode_video', 10, 4 );
+  
+  
+  
+  
+  function fv_flowplayer_shortcode_playlist( $output ) {
+    $aArgs = func_get_args();
+    $atts = $aArgs[1];
+
+    if( !empty($atts['type']) && $atts['type'] != 'video' ) {
+      return false;
+    }
+        
+    //  copy from wp-includes/media.php wp_playlist_shortcode()
+    global $post;
+    if ( ! empty( $attr['ids'] ) ) {
+      // 'ids' is explicitly ordered, unless you specify otherwise.
+      if ( empty( $attr['orderby'] ) ) {
+        $attr['orderby'] = 'post__in';
+      }
+      $attr['include'] = $attr['ids'];
+    }  
+    
+    $atts = shortcode_atts( array(
+      'type'		=> 'audio',
+      'order'		=> 'ASC',
+      'orderby'	=> 'menu_order ID',
+      'id'		=> $post ? $post->ID : 0,
+      'include'	=> '',
+      'exclude'   => '',
+      'style'		=> 'light',
+      'tracklist' => true,
+      'tracknumbers' => true,
+      'images'	=> true,
+      'artists'	=> true
+    ), $atts, 'playlist' );    
+      
+    $args = array(
+      'post_status' => 'inherit',
+      'post_type' => 'attachment',
+      'post_mime_type' => $atts['type'],
+      'order' => $atts['order'],
+      'orderby' => $atts['orderby']
+    );
+    
+    if( !empty($atts['include']) ) {
+      $args['include'] = $atts['include'];
+      $_attachments = get_posts( $args );
+      if( !count($_attachments) ) {
+        return false;
+      }
+  
+      $attachments = array();
+      foreach( $_attachments as $key => $val ) {
+        $attachments[$val->ID] = $_attachments[$key];
+      }
+    } else {
+      return false;
+    }
+    
+    
+    $bridge_atts = array();
+    $aPlaylistItems = array();
+    $aPlaylistImages = array();
+    $i = 0;
+    foreach ( $attachments as $attachment ) {
+      $i++;
+      
+      $url = wp_get_attachment_url( $attachment->ID );
+      if( $i == 1 ) {
+        $bridge_atts['src'] = $url;
+      } else {
+        $aPlaylistItems[] = $url;
+      }
+  
+      $thumb_id = get_post_thumbnail_id( $attachment->ID );
+      $src = false;
+      if( !empty( $thumb_id ) ) {        
+        list( $src, $width, $height ) = wp_get_attachment_image_src( $thumb_id, 'thumbnail' );
+      }
+      if( $i == 1 ) {
+        $bridge_atts['splash'] = $src;
+      } else {
+        $aPlaylistImages[] = $src;
+      }      
+
+    }
+    
+    
+    $bridge_atts['playlist'] = '';
+    foreach( $aPlaylistItems AS $key => $src ) {
+      $bridge_atts['playlist'] .= $src;
+      if( $aPlaylistImages[$key] ) {
+        $bridge_atts['playlist'] .= ','.$aPlaylistImages[$key];
+      }
+      $bridge_atts['playlist'] .= ';';
+    }
+    $bridge_atts['playlist'] = trim($bridge_atts['playlist'],';');
+     
+    if( isset($atts['width']) ) {
+      $bridge_atts['width'] = $atts['width'];
+    }
+    if( isset($atts['height']) ) {
+      $bridge_atts['height'] = $atts['height'];
+    }
+    
+    if( count($bridge_atts) == 0 ) {
+      return "<!--FV Flowplayer video shortcode integration - no attributes recognized-->";
+    }
+
+    return flowplayer_content_handle( $bridge_atts, false, 'video' );
+  }
+  
+  add_filter( 'post_playlist', 'fv_flowplayer_shortcode_playlist', 10, 2 );
+}
