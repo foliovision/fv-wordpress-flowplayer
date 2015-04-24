@@ -434,9 +434,10 @@ class flowplayer_frontend extends flowplayer
             
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
               $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
-   
-              if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
-                $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+              if( preg_match( '~([a-zA-Z0-9]+)?:~', $rtmp ) ) {
+                $aTMP = preg_split( '~([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+  
                 if( isset($aTMP[1]) && isset($aTMP[2]) ) {             
                   $rtmp_file = $aTMP[2];
                   $extension = $this->get_file_extension($rtmp_file, $aTMP[1]);
@@ -453,6 +454,7 @@ class flowplayer_frontend extends flowplayer
               if( $extension ) {
                 $extension .= ':';
               }
+
               $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
             }
 					}  
