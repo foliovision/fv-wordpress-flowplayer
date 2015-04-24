@@ -318,6 +318,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.15 - 2015/04/24 =
+
+* Bugfix - Fix for fancy quotes in shortcode attributes.
+* Bugfix - Internet Explorer on Windows Phone 8.1 pretend to be Android and iPhone - breaking the playback. Fixed.
+* Bugfix - RTMP extension parsing fix for RTMP path like mp4:file.mp4
+
 = 2.3.14 - 2015/04/20 =
 
 * Feature - speed control buttons - check Settings -> FV Wordpress Flowplayer -> Player Skin - Speed Buttons
