@@ -589,6 +589,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = rawurlencode($url_components['path']); 
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
       $url_components['path'] = str_replace('%2B', '+', $url_components['path']);      
+      $url_components['path'] = str_replace('%2523', '%23', $url_components['path']); 
 
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';        
       
@@ -828,6 +829,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $source_flash_encoded = false;  
       if( $this->is_secure_amazon_s3($media) /*&& stripos($media,'.webm') === false && stripos($media,'.ogv') === false */) {
           $media_fixed = str_replace('%2B', '%25252B',$media);   
+          $media_fixed = str_replace('%23', '%252523',$media_fixed ); 
           //  only if there was a change and we don't have an RTMP for Flash
           if( $media_fixed != $media && empty($aArgs['rtmp']) ) {
             $source_flash_encoded = $media_fixed;
