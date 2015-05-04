@@ -1,0 +1,128 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
+"POT-Creation-Date: 2015-04-20 17:36+0100\n"
+"PO-Revision-Date: 2015-04-20 17:36+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sk_SK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.6\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Poedit-KeywordsList: _e;_n;__\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../controller/backend.php:250
+#, php-format
+msgid ""
+"FV Wordpress Flowplayer has found old shortcodes in the content of your "
+"posts. <a href=\"%1$s\">Run the conversion script.</a>"
+msgstr ""
+
+#: ../controller/backend.php:329
+msgid "FV Player Video Checker"
+msgstr ""
+
+#: ../controller/backend.php:330
+msgid ""
+"<p>FV Player includes a free video checker which will check your videos for "
+"any encoding errors and helps ensure smooth playback of all your videos. To "
+"work its magic, our video checker must contact our server.</p><p>Would you "
+"like to enable the video encoding checker?</p>"
+msgstr ""
+
+#: ../controller/backend.php:332
+msgid "Allow"
+msgstr "Povoliť"
+
+#: ../controller/backend.php:333
+msgid "Disable the video checker"
+msgstr "Zakázať video kontrolu"
+
+#: ../controller/backend.php:345
+msgid "FV Flowplayer License Update"
+msgstr "Aktualizovať FV Flowplayer licenciu"
+
+#: ../controller/backend.php:346
+msgid ""
+"New version of FV Flowplayer core has been installed for your licensed "
+"website. Please accept the automatic license key updating (connects to "
+"Foliovision servers) or update the key manually by loggin into your "
+"Foliovision account."
+msgstr ""
+
+#: ../controller/backend.php:348
+msgid "Always auto-update"
+msgstr "Stále automatický aktualizovať"
+
+#: ../controller/backend.php:349
+msgid "I'll update it manually"
+msgstr "Aktualizujem to ručne"
+
+#: ../controller/frontend.php:48
+msgid "Video loading aborted"
+msgstr "Načítanie videa prerušené"
+
+#: ../controller/frontend.php:49
+msgid "Network error"
+msgstr "Chyba siete"
+
+#: ../controller/frontend.php:50
+msgid "Video not properly encoded"
+msgstr "Video nie je správne nakódované"
+
+#: ../controller/frontend.php:51
+msgid "Video file not found"
+msgstr "Súbor s videom nebol nájdený"
+
+#: ../controller/frontend.php:52
+msgid "Unsupported video"
+msgstr "Nepodporované video"
+
+#: ../controller/frontend.php:53
+msgid "Skin not found"
+msgstr "Skin nebol nájdený"
+
+#: ../controller/frontend.php:54
+msgid "SWF file not found"
+msgstr "SWF súbor nebol nájdený"
+
+#: ../controller/frontend.php:55
+msgid "Subtitles not found"
+msgstr "Titulky neboli nájdené"
+
+#: ../controller/frontend.php:56
+msgid "Invalid RTMP URL"
+msgstr "Neplatná RTMP URL"
+
+#: ../controller/frontend.php:57
+msgid "Unsupported video format. Try installing Adobe Flash."
+msgstr "Nepodporovaný video formát. Skúste nainštalovať Adobe Flash."
+
+#: ../controller/frontend.php:58 ../models/flowplayer-frontend.php:169
+msgid "Click to watch the video"
+msgstr "Kliknite pre pozeranie videa"
+
+#: ../controller/frontend.php:59 ../models/flowplayer-frontend.php:169
+msgid "[This post contains video, click to play]"
+msgstr "[Tento post obsahuje video, kliknite pre prehratie]"
+
+#: ../controller/frontend.php:427
+#, php-format
+msgid "Posts by %s"
+msgstr ""
+
+#: ../models/checker.php:315
+msgid "Every 5 minutes"
+msgstr ""
+
+#: ../view/admin.php:31
+msgid "Default Ad Code"
+msgstr "Predvoleny kod"
+
+#: ../view/admin.php:36
+msgid "Default set size"
+msgstr "Predvolena velkost"

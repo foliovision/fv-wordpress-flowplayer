@@ -22,19 +22,18 @@
  
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
-
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
 ?>
 					<table class="form-table2">	
 						<tr>
 							<td colspan="2">
-								<label for="ad">Default Ad Code:</label><br />
+								<label for="ad"><?php _e('Default Ad Code', 'fv_flowplayer'); ?>:</label><br />
 								<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><label for="width">Default ad size [px]:</label> <label for="ad_width">W:</label>&nbsp;<input type="text" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" class="small" /> <label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" class="small"  /> <label for="adTextColor">Ad text</label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo $fv_fp->conf['adTextColor']; ?>" /> <label for="adLinksColor">Ad links</label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo $fv_fp->conf['adLinksColor']; ?>" /> </td>			
+							<td colspan="2"><label for="width"><?php _e('Default set size', 'fv_flowplayer');?> [px]:</label> <label for="ad_width">W:</label>&nbsp;<input type="text" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" class="small" /> <label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" class="small"  /> <label for="adTextColor">Ad text</label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo $fv_fp->conf['adTextColor']; ?>" /> <label for="adLinksColor">Ad links</label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo $fv_fp->conf['adLinksColor']; ?>" /> </td>			
 						</tr>           
 						<tr>
 							<td colspan="2">
@@ -436,14 +435,14 @@ function fv_flowplayer_admin_integrations() {
               <input type="hidden" name="integrations[optimizepress2]" value="false" />
               <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( isset($fv_fp->conf['integrations']['optimizepress2']) && $fv_fp->conf['integrations']['optimizepress2'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>-->
+					</tr>
 					<tr>
 						<td><label for="wp_core_video">Handle Wordpress <code><small>[video]</small></code> shortcodes:</label></td>
 						<td>
               <input type="hidden" name="integrations[wp_core_video]" value="false" />
               <input type="checkbox" name="integrations[wp_core_video]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>           
+					</tr>-->             
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />

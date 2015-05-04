@@ -25,7 +25,6 @@ add_action('wp_enqueue_scripts', 'flowplayer_jquery');
 
 add_filter( 'run_ngg_resource_manager', '__return_false' );
 
-
 function fv_flowplayer_remove_bad_scripts() {  
   global $wp_scripts;
   if( isset($wp_scripts->registered['flowplayer']) && isset($wp_scripts->registered['flowplayer']->src) && stripos($wp_scripts->registered['flowplayer']->src, 'fv-wordpress-flowplayer') === false ) {
@@ -36,7 +35,32 @@ add_action( 'wp_print_scripts', 'fv_flowplayer_remove_bad_scripts', 100 );
 
 add_filter( 'run_ngg_resource_manager', '__return_false' ); //  Nextgen Gallery compatibility fix
 
- 
+function fv_flowplayer_ap_action_init(){
+  // Localization
+  load_plugin_textdomain('fv_flowplayer', false, dirname(dirname(plugin_basename(__FILE__))) . "/languages");
+}
+add_action('init', 'fv_flowplayer_ap_action_init');
+
+function fv_flowplayer_get_js_translations() {
+  
+  $aStrings = Array(
+  0 => __('', 'flowplayer'),
+  1 => __('Video loading aborted', 'fv_flowplayer'),
+  2 => __('Network error', 'fv_flowplayer'),
+  3 => __('Video not properly encoded', 'fv_flowplayer'),
+  4 => __('Video file not found', 'fv_flowplayer'),
+  5 => __('Unsupported video', 'fv_flowplayer'),
+  6 => __('Skin not found', 'fv_flowplayer'),
+  7 => __('SWF file not found', 'fv_flowplayer'),
+  8 => __('Subtitles not found', 'fv_flowplayer'),
+  9 => __('Invalid RTMP URL', 'fv_flowplayer'),
+  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv_flowplayer'),  
+  11 => __('Click to watch the video', 'fv_flowplayer'),
+  12 => __('[This post contains video, click to play]', 'fv_flowplayer'),
+  );
+  
+  return $aStrings;
+} 
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -296,6 +320,7 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
     
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
     if( count($fv_fp->aAds) > 0 ) {
