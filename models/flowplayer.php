@@ -757,6 +757,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     } else {
       if ($extension == 'm3u8' || $extension == 'm3u') {
         $output = 'x-mpegurl';
+      } else if ($extension == 'mpd') {
+        $output = 'dash+xml';
       } else if ($extension == 'm4v') {
         $output = 'mp4';
       } else if( $extension == 'mp3' ) {
@@ -856,7 +858,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           return trim($media);
         }
       } else {
-        $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
+        switch($extension)  {
+          case 'dash+xml' :
+            $mime_type = 'application/'.$extension;
+            break;
+          case 'x-mpegurl' :
+            $mime_type = 'application/'.$extension;
+            break;
+          default:
+            $mime_type = 'video/'.$extension;
+            break;
+        }
+
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
         if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
