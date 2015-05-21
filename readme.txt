@@ -318,6 +318,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.3.16 - 2015/05/21 =
+
+* Bugfix - Amazon S3 signed URLs - AWS signature version 4 fixes
+
 = 2.3.15 - 2015/04/24 =
 
 * Bugfix - Fix for fancy quotes in shortcode attributes.
@@ -1007,6 +1011,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.3.16 =
+
+* Check your videos using Amazon S3 download protection
 
 = 2.3.13 =
 
