@@ -415,6 +415,7 @@ add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
 
 function fv_player_caption( $caption ) {
   global $post, $authordata;
+  $sAuthorInfo = ( $authordata ) ? sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ) : false;
   $caption = str_replace(
                          array(
                                '%post_title%',
@@ -425,7 +426,7 @@ function fv_player_caption( $caption ) {
                          array(
                                get_the_title(),
                                get_the_date(),
-                               sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ),
+                               $sAuthorInfo,
                                get_the_author()
                               ),
                         $caption );
