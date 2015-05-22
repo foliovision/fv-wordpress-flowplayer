@@ -57,6 +57,14 @@ function fv_flowplayer_get_js_translations() {
   10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv_flowplayer'),  
   11 => __('Click to watch the video', 'fv_flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv_flowplayer'),
+  'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv_flowplayer'),
+  'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv_flowplayer'),
+  'mobile_browser_detected_1' => __('<p class="fv-flowplayer-mobile-switch">Mobile browser detected, serving low bandwidth video. <a href="','fv_flowplayer'),
+  'mobile_browser_detected_2' => __('?fv_flowplayer_mobile=no">Click here</a> for full quality.</p>','fv_flowplayer'),
+  'live_stream_failed' => __('<div class="fp-message"><h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3></div>','fv_flowplayer'),
+  'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
+  'what_is_wrong' => __('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please tell us what is wrong</strong>:</p>','fv_flowplayer'),
+  'full_sentence' => __('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>Please give us more information (a full sentence) so we can help you better</strong>:</p>','fv_flowplayer'),
   );
   
   return $aStrings;
