@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
-"POT-Creation-Date: 2015-05-22 15:12+0100\n"
-"PO-Revision-Date: 2015-05-22 15:31+0100\n"
+"POT-Creation-Date: 2015-05-22 16:08+0100\n"
+"PO-Revision-Date: 2015-05-22 16:13+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -125,27 +125,18 @@ msgstr ""
 "prosím.</h2>"
 
 #: ../controller/frontend.php:62
-msgid ""
-"<p class=\"fv-flowplayer-mobile-switch\">Mobile browser detected, serving "
-"low bandwidth video. <a href=\""
-msgstr ""
-"<p class=\"fv-flowplayer-mobile-switch\">Mobilné zariadenie prehráva video s "
-"nižšou kvalitou. <a href=\""
+msgid "Mobile browser detected, serving low bandwidth video."
+msgstr "Mobilný telefón prehráva video so zníženou kvalitou."
 
 #: ../controller/frontend.php:63
-msgid "?fv_flowplayer_mobile=no\">Click here</a> for full quality.</p>"
-msgstr "?fv_flowplayer_mobile=no\">Kliknite sem</a> pre plnú kvalitu.</p>"
+msgid "Click here"
+msgstr "Kliknite sem"
 
 #: ../controller/frontend.php:64
-msgid ""
-"<div class=\"fp-message\"><h2>Live stream load failed.</h2><h3>Please try "
-"again later, perhaps the stream is currently offline.</h3></div>"
-msgstr ""
-"<div class=\"fp-message\"><h2>Načítanie živého prenosu zlyhalo.</"
-"h2><h3>Prenos je pravdepodobne dočasne pozastavený. Skúste to neskôr, prosím."
-"</h3></div>"
+msgid "for full quality."
+msgstr "pre plnú kvalitu."
 
-#: ../controller/frontend.php:65
+#: ../controller/frontend.php:65 ../controller/frontend.php:66
 msgid ""
 "<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the "
 "stream is currently offline.</h3>"
@@ -153,25 +144,18 @@ msgstr ""
 "<h2>Načítanie živého prenosu zlyhalo.</h2><h3>Prenos je pravdepodobne "
 "dočasne pozastavený. Skúste to neskôr, prosím.</h3>"
 
-#: ../controller/frontend.php:66
-msgid ""
-"<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
-"\"><strong>Please tell us what is wrong</strong>:</p>"
-msgstr ""
-"<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
-"\"><strong>Prosím, povedzte nám čo je zlé</strong>:</p>"
-
 #: ../controller/frontend.php:67
-msgid ""
-"<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
-"\"><strong>Please give us more information (a full sentence) so we can help "
-"you better</strong>:</p>"
-msgstr ""
-"<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
-"\"><strong>Prosím, dajte nám viac informácií ( celou vetou),potom Vám budeme "
-"môcť lepšie pomôcť</strong>:</p>"
+msgid "Please tell us what is wrong :"
+msgstr "Prosím, povedzte nám čo je zlé :"
 
-#: ../controller/frontend.php:435
+#: ../controller/frontend.php:68
+msgid ""
+"Please give us more information (a full sentence) so we can help you better"
+msgstr ""
+"Prosím, dajte nám viac informácií (celou vetou). Potom Vám budeme vedieť "
+"ľahšie pomôcť "
+
+#: ../controller/frontend.php:436
 #, php-format
 msgid "Posts by %s"
 msgstr ""
@@ -383,6 +367,40 @@ msgstr ""
 #: ../view/wizard.php:281
 msgid "currently not working with playlist"
 msgstr "dočasne nefunguje s playlistom"
+
+#~ msgid ""
+#~ "<p class=\"fv-flowplayer-mobile-switch\">Mobile browser detected, serving "
+#~ "low bandwidth video. <a href=\""
+#~ msgstr ""
+#~ "<p class=\"fv-flowplayer-mobile-switch\">Mobilné zariadenie prehráva "
+#~ "video s nižšou kvalitou. <a href=\""
+
+#~ msgid "?fv_flowplayer_mobile=no\">Click here</a> for full quality.</p>"
+#~ msgstr "?fv_flowplayer_mobile=no\">Kliknite sem</a> pre plnú kvalitu.</p>"
+
+#~ msgid ""
+#~ "<div class=\"fp-message\"><h2>Live stream load failed.</h2><h3>Please try "
+#~ "again later, perhaps the stream is currently offline.</h3></div>"
+#~ msgstr ""
+#~ "<div class=\"fp-message\"><h2>Načítanie živého prenosu zlyhalo.</"
+#~ "h2><h3>Prenos je pravdepodobne dočasne pozastavený. Skúste to neskôr, "
+#~ "prosím.</h3></div>"
+
+#~ msgid ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Please tell us what is wrong</strong>:</p>"
+#~ msgstr ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Prosím, povedzte nám čo je zlé</strong>:</p>"
+
+#~ msgid ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Please give us more information (a full sentence) so we can "
+#~ "help you better</strong>:</p>"
+#~ msgstr ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Prosím, dajte nám viac informácií ( celou vetou),potom Vám "
+#~ "budeme môcť lepšie pomôcť</strong>:</p>"
 
 #~ msgid ""
 #~ "Admin note: Video uploads are currenty disabled, set 'Allow User Uploads' "
