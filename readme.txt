@@ -318,8 +318,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.3.16 - 2015/05/21 =
+= 2.3.16 - 2015/05/25 ? =
 
+* Feature - custom button API
 * Bugfix - Amazon S3 signed URLs - AWS signature version 4 fixes
 
 = 2.3.15 - 2015/04/24 =

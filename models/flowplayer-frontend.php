@@ -466,7 +466,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= "\t".'</video>';//."\n";
 				}
 				
-        $this->ret['html'] .= $this->get_speed_buttons();
+        $this->ret['html'] .= $this->get_buttons();
 				
 				if( isset($splashend_contents) ) {
 					$this->ret['html'] .= $splashend_contents;
@@ -609,6 +609,26 @@ class flowplayer_frontend extends flowplayer
     return $sClass;
   }
   
+    
+  function get_buttons() {
+    add_filter( 'fv_flowplayer_buttons_center', array( $this, 'get_speed_buttons' ) );
+    
+    $sHTML = false;
+    foreach( array('left','center','right','controlbar') AS $key ) {
+      $aButtons = apply_filters( 'fv_flowplayer_buttons_'.$key, array() );
+      if( !$aButtons || !count($aButtons) ) continue;
+
+      $sButtons = implode( '', $aButtons );
+      $sHTML .= "<div class='fv-player-buttons fv-player-buttons-$key'>$sButtons</div>";
+    }
+    if( $sHTML ) {
+      $sHTML = "<div class='fv-player-buttons-wrap'>$sHTML</div>";
+    }
+
+//var_dump($sHTML);die();
+    return $sHTML;
+  }
+  
   
   function get_chrome_fail_code( $media, $src1, $src2, $attributes_html ) {
     $count = $mp4_position = $webm_position = 0;
@@ -671,7 +691,7 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_speed_buttons() {
+  function get_speed_buttons( $aButtons ) {
     $bShow = false;
     if( isset($this->conf['ui_speed']) && $this->conf['ui_speed'] == "true" || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
       $bShow = true;
@@ -680,17 +700,12 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'no' ) {
       $bShow = false;
     }
-     
+
     if( $bShow ) {   
-      return "<div class='speed-buttons-center'>
-        <div class='speed-buttons'>
-          <span class='fv_sp_slower'>&#45;</span>
-         <span class='fv_sp_faster'>&#43;</span>
-        </div>
-      </div>";
-    } else {
-      return false;
+      $aButtons[] = "<ul class='fv-player-speed'><li><a class='fv_sp_slower'>&#45;</a></li><li><a class='fv_sp_faster'>&#43;</a></li></ul>";
     }
+    
+    return $aButtons;
   }
   
   
