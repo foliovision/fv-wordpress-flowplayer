@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
-"POT-Creation-Date: 2015-04-20 17:36+0100\n"
-"PO-Revision-Date: 2015-04-20 17:36+0100\n"
+"POT-Creation-Date: 2015-05-22 16:08+0100\n"
+"PO-Revision-Date: 2015-05-22 16:13+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -110,7 +110,52 @@ msgstr "Kliknite pre pozeranie videa"
 msgid "[This post contains video, click to play]"
 msgstr "[Tento post obsahuje video, kliknite pre prehratie]"
 
-#: ../controller/frontend.php:427
+#: ../controller/frontend.php:60
+msgid ""
+"<h2>Video file expired.<br />Please reload the page and play it again.</h2>"
+msgstr ""
+"<h2>Súbor s videom expiroval.<br />Pre prehratie videa prosím znova "
+"načítajte stránku .</h2>"
+
+#: ../controller/frontend.php:61
+msgid ""
+"<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>"
+msgstr ""
+"<h2>Nepodporovaný video formát.<br />Použite zariadenie podporujúce Flash "
+"prosím.</h2>"
+
+#: ../controller/frontend.php:62
+msgid "Mobile browser detected, serving low bandwidth video."
+msgstr "Mobilný telefón prehráva video so zníženou kvalitou."
+
+#: ../controller/frontend.php:63
+msgid "Click here"
+msgstr "Kliknite sem"
+
+#: ../controller/frontend.php:64
+msgid "for full quality."
+msgstr "pre plnú kvalitu."
+
+#: ../controller/frontend.php:65 ../controller/frontend.php:66
+msgid ""
+"<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the "
+"stream is currently offline.</h3>"
+msgstr ""
+"<h2>Načítanie živého prenosu zlyhalo.</h2><h3>Prenos je pravdepodobne "
+"dočasne pozastavený. Skúste to neskôr, prosím.</h3>"
+
+#: ../controller/frontend.php:67
+msgid "Please tell us what is wrong :"
+msgstr "Prosím, povedzte nám čo je zlé :"
+
+#: ../controller/frontend.php:68
+msgid ""
+"Please give us more information (a full sentence) so we can help you better"
+msgstr ""
+"Prosím, dajte nám viac informácií (celou vetou). Potom Vám budeme vedieť "
+"ľahšie pomôcť "
+
+#: ../controller/frontend.php:436
 #, php-format
 msgid "Posts by %s"
 msgstr ""
@@ -126,3 +171,240 @@ msgstr "Predvoleny kod"
 #: ../view/admin.php:36
 msgid "Default set size"
 msgstr "Predvolena velkost"
+
+#: ../view/wizard.php:75
+msgid "(remove)"
+msgstr "(zmazať)"
+
+#: ../view/wizard.php:76 ../view/wizard.php:96 ../view/wizard.php:105
+msgid "Video"
+msgstr "Video"
+
+#: ../view/wizard.php:80 ../view/wizard.php:99 ../view/wizard.php:108
+#: ../view/wizard.php:132
+msgid "Add Video"
+msgstr "Pridaj video"
+
+#: ../view/wizard.php:87
+msgid "Video Duration"
+msgstr "Dĺžka videa"
+
+#: ../view/wizard.php:88
+msgid "File size"
+msgstr "Veľkosť videa"
+
+#: ../view/wizard.php:92 ../view/wizard.php:231
+msgid "Width"
+msgstr "Šírka"
+
+#: ../view/wizard.php:92 ../view/wizard.php:231
+msgid "Height"
+msgstr "Výška"
+
+#: ../view/wizard.php:96 ../view/wizard.php:105
+msgid "(another format)"
+msgstr "(iný formát)"
+
+#: ../view/wizard.php:114
+msgid "RTMP Server"
+msgstr "RTMP server"
+
+#: ../view/wizard.php:114
+msgid "Leave empty to use Flash streaming server from plugin settings"
+msgstr ""
+"Nechajte prázdne pre použitie Flash streaming servra z nastavení pluginu"
+
+#: ../view/wizard.php:117
+msgid "RTMP Path"
+msgstr "RTMP cesta"
+
+#: ../view/wizard.php:124
+msgid "Add another format"
+msgstr "Pridaj iný formát"
+
+#: ../view/wizard.php:124
+msgid "(i.e. WebM, OGV)"
+msgstr "(napr. WebM, OGV)"
+
+#: ../view/wizard.php:125
+msgid "Add RTMP"
+msgstr "Pridajt RTMP"
+
+#: ../view/wizard.php:129
+msgid "Mobile Video"
+msgstr "Video pre mobil"
+
+#: ../view/wizard.php:130
+msgid "Put low-bandwidth video here or leave blank"
+msgstr "Vložte low-bandwith video alebo nechajte prázdne"
+
+#: ../view/wizard.php:137
+msgid "Splash Image"
+msgstr "Obrázok videa"
+
+#: ../view/wizard.php:140
+msgid "Add Image"
+msgstr "Pridaj obrázok"
+
+#: ../view/wizard.php:145
+msgid "Subtitles"
+msgstr "Titulky"
+
+#: ../view/wizard.php:148
+msgid "Add Subtitles"
+msgstr "Pridaj titulky"
+
+#: ../view/wizard.php:153
+msgid "Caption"
+msgstr "Názov"
+
+#: ../view/wizard.php:164
+msgid "Add Playlist Item"
+msgstr "Pridaj video do playlistu"
+
+#: ../view/wizard.php:181
+msgid "Additional features"
+msgstr "Rozšírené funkcie"
+
+#: ../view/wizard.php:184
+msgid "HTML Popup"
+msgstr "HTML Popup"
+
+#: ../view/wizard.php:188
+msgid "Redirect to"
+msgstr "Presmerovať na"
+
+#: ../view/wizard.php:192
+msgid "Autoplay"
+msgstr "Auto. prehratie"
+
+#: ../view/wizard.php:195 ../view/wizard.php:217 ../view/wizard.php:239
+#: ../view/wizard.php:249
+msgid "Default"
+msgstr "Predvolené"
+
+#: ../view/wizard.php:196 ../view/wizard.php:218
+msgid "On"
+msgstr "Zapnuté"
+
+#: ../view/wizard.php:197 ../view/wizard.php:219
+msgid "Off"
+msgstr "Vypnuté"
+
+#: ../view/wizard.php:202
+msgid "Loop"
+msgstr "Slučka"
+
+#: ../view/wizard.php:207
+msgid "Splash end"
+msgstr "Koncový obrázok"
+
+#: ../view/wizard.php:210
+msgid "(show splash image at the end)"
+msgstr "(zobraz obrázok po prehratí videa)"
+
+#: ../view/wizard.php:214
+msgid "Embedding"
+msgstr "Vkladanie"
+
+#: ../view/wizard.php:224
+msgid "Ad code"
+msgstr "Reklama(HTML alebo skript)"
+
+#: ../view/wizard.php:232
+msgid "Skip global ad in this video"
+msgstr "Vynechaj reklamu"
+
+#: ../view/wizard.php:236
+msgid "Align"
+msgstr "Zarovnanie"
+
+#: ../view/wizard.php:240
+msgid "Left"
+msgstr "Vľavo"
+
+#: ../view/wizard.php:241
+msgid "Right"
+msgstr "Vpravo"
+
+#: ../view/wizard.php:246
+msgid "Controlbar"
+msgstr "Ovládacia lišta"
+
+#: ../view/wizard.php:250
+msgid "Yes"
+msgstr "Áno"
+
+#: ../view/wizard.php:251
+msgid "No"
+msgstr "Nie"
+
+#: ../view/wizard.php:256
+msgid "Live Stream"
+msgstr "Živý prenos"
+
+#: ../view/wizard.php:263
+msgid "Insert"
+msgstr "Vlož"
+
+#: ../view/wizard.php:269
+msgid ""
+"Admin note: Video uploads are currenty disabled, set Allow User Uploads to "
+"true in"
+msgstr ""
+"Poznámka pre admina: Upload videa je dočasne zakázaný, zaškrtnite 'Povoliť "
+"upload uživateľovi' v "
+
+#: ../view/wizard.php:269 ../view/wizard.php:276
+msgid "Settings"
+msgstr "nastaveniach"
+
+#: ../view/wizard.php:276
+msgid "Admin note: Enable more per video features in Interface options in"
+msgstr ""
+"Poznámka pre admina: Nové funkcie videa nájdete v Používateľskom rozhraní  v"
+
+#: ../view/wizard.php:281
+msgid "currently not working with playlist"
+msgstr "dočasne nefunguje s playlistom"
+
+#~ msgid ""
+#~ "<p class=\"fv-flowplayer-mobile-switch\">Mobile browser detected, serving "
+#~ "low bandwidth video. <a href=\""
+#~ msgstr ""
+#~ "<p class=\"fv-flowplayer-mobile-switch\">Mobilné zariadenie prehráva "
+#~ "video s nižšou kvalitou. <a href=\""
+
+#~ msgid "?fv_flowplayer_mobile=no\">Click here</a> for full quality.</p>"
+#~ msgstr "?fv_flowplayer_mobile=no\">Kliknite sem</a> pre plnú kvalitu.</p>"
+
+#~ msgid ""
+#~ "<div class=\"fp-message\"><h2>Live stream load failed.</h2><h3>Please try "
+#~ "again later, perhaps the stream is currently offline.</h3></div>"
+#~ msgstr ""
+#~ "<div class=\"fp-message\"><h2>Načítanie živého prenosu zlyhalo.</"
+#~ "h2><h3>Prenos je pravdepodobne dočasne pozastavený. Skúste to neskôr, "
+#~ "prosím.</h3></div>"
+
+#~ msgid ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Please tell us what is wrong</strong>:</p>"
+#~ msgstr ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Prosím, povedzte nám čo je zlé</strong>:</p>"
+
+#~ msgid ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Please give us more information (a full sentence) so we can "
+#~ "help you better</strong>:</p>"
+#~ msgstr ""
+#~ "<p class=\"fv_flowplayer_submit_error\" style=\"display:none; "
+#~ "\"><strong>Prosím, dajte nám viac informácií ( celou vetou),potom Vám "
+#~ "budeme môcť lepšie pomôcť</strong>:</p>"
+
+#~ msgid ""
+#~ "Admin note: Video uploads are currenty disabled, set 'Allow User Uploads' "
+#~ "to true in"
+#~ msgstr ""
+#~ "Poznámka pre admina: Upload videa je dočasne zakázaný, zaškrtnite "
+#~ "'Povoliť upload uživateľovi' v "

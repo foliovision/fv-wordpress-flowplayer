@@ -58,6 +58,15 @@ function fv_flowplayer_get_js_translations() {
   10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv_flowplayer'),  
   11 => __('Click to watch the video', 'fv_flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv_flowplayer'),
+  'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv_flowplayer'),
+  'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv_flowplayer'),
+  'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv_flowplayer'),
+  'mobile_browser_detected_2' => __('Click here','fv_flowplayer'),
+  'mobile_browser_detected_3' => __('for full quality.','fv_flowplayer'),
+  'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
+  'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
+  'what_is_wrong' => __('Please tell us what is wrong :','fv_flowplayer'),
+  'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv_flowplayer'),
   );
   
   return $aStrings;
