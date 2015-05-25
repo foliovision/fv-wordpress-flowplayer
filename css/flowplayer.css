@@ -407,7 +407,6 @@ p.fp-caption { text-align: center; }
 }
 .fv-player-buttons > ul {
   position: relative;
-  left: -50%;
   z-index: 2; /* make clickable */
   display: block;
   opacity: 1;
