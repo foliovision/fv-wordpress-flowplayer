@@ -38,14 +38,17 @@
 .fv_wp_flowplayer_playlist_remove { display: none; }
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-flowplayer-playlist table input, #fv-flowplayer-playlist table input.with-button { width: 93%; }
+#fv-flowplayer-playlist table input.half-field { width: 46%; }
 #fv-flowplayer-playlist table/*:first-child*/ input.with-button { width: 70%; }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp { visibility: hidden; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: hidden; }
+#fv-flowplayer-playlist table .hint { display: none; }
 /*#fv-flowplayer-playlist table .button { display: none; }*/
 #fv-flowplayer-playlist table:first-child tr.video-size { display: table-row; }
+#fv-flowplayer-playlist table:first-child .hint { display: inline; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_add_format_wrapper { display: table-row; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
@@ -83,13 +86,13 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
     
           <tr style="display: none" id="fv_wp_flowplayer_file_info">
             <th></th>
-            <td>
+            <td colspan="2">
               <?php _e('Video Duration', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_duration"></span><br />
               <?php _e('File size', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_size"></span>
             </td>
           </tr>
           <tr class="video-size"><th></th>
-            <td class="field"><label for="fv_wp_flowplayer_field_width"><?php _e('Width', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height"><?php _e('Height', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value=""/></td>
+            <td class="field" colspan="2"><label for="fv_wp_flowplayer_field_width"><?php _e('Width', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height"><?php _e('Height', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value=""/></td>
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_src_1_wrapper">
@@ -121,7 +124,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           
           <tr id="fv_wp_flowplayer_add_format_wrapper">
             <th scope="row" class="label" style="width: 19%"></th>
-            <td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_format()" style="outline: 0"><span id="add-format">+</span>&nbsp;<?php _e('Add another format', 'fv_flowplayer'); ?></a> <?php _e('(i.e. WebM, OGV)', 'fv_flowplayer'); ?></div></td>
+            <td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_format(); return false" style="outline: 0"><span id="add-format">+</span>&nbsp;<?php _e('Add another format', 'fv_flowplayer'); ?></a> <?php _e('(i.e. WebM, OGV)', 'fv_flowplayer'); ?></div></td>
             <td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_rtmp(); return false" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add RTMP', 'fv_flowplayer'); ?></a></div></td>  				
           </tr>      
           
@@ -152,7 +155,9 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Caption', 'fv_flowplayer'); ?></label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
-          </tr>          
+          </tr>
+          
+          <?php do_action( 'fv_flowplayer_shortcode_editor_item_after' ); ?>
   
         </tbody>
       </table>
