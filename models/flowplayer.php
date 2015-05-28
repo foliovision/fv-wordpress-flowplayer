@@ -586,14 +586,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
       
       $url_components = parse_url($resource);
-      $url_components['path'] = rawurlencode($url_components['path']); 
-      $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
-      $url_components['path'] = str_replace('%2B', '+', $url_components['path']);      
-
-      $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';        
       
-      if( isset($fv_fp->conf['amazon_region'][$amazon_key]) && $fv_fp->conf['amazon_region'][$amazon_key] ) {
-       
+      $iAWSVersion = ( isset($fv_fp->conf['amazon_region'][$amazon_key]) && $fv_fp->conf['amazon_region'][$amazon_key] ) ? 4 : 2;
+      
+      if( $iAWSVersion == 4 ) {
+        $url_components['path'] = str_replace('+', ' ', $url_components['path']);
+      }
+      
+      $url_components['path'] = rawurlencode($url_components['path']);
+      $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
+      $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
+      $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
+      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);      
+          
+      $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
+      
+      if( $iAWSVersion == 4 ) {
         $sXAMZDate = date('Ymd\THis\Z');
         $sDate = date('Ymd');
         $sCredentialScope = $sDate."/".$fv_fp->conf['amazon_region'][$amazon_key]."/s3/aws4_request"; //  todo: variable
@@ -756,6 +764,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     } else {
       if ($extension == 'm3u8' || $extension == 'm3u') {
         $output = 'x-mpegurl';
+      } else if ($extension == 'mpd') {
+        $output = 'dash+xml';
       } else if ($extension == 'm4v') {
         $output = 'mp4';
       } else if( $extension == 'mp3' ) {
@@ -828,23 +838,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $source_flash_encoded = false;  
       if( $this->is_secure_amazon_s3($media) /*&& stripos($media,'.webm') === false && stripos($media,'.ogv') === false */) {
           $media_fixed = str_replace('%2B', '%25252B',$media);   
+          $media_fixed = str_replace('%23', '%252523',$media_fixed );
+          $media_fixed = str_replace('+', '%2B',$media_fixed ); 
           //  only if there was a change and we don't have an RTMP for Flash
           if( $media_fixed != $media && empty($aArgs['rtmp']) ) {
             $source_flash_encoded = $media_fixed;
           }
-      }
-      
-      $url_parts = parse_url( ($source_flash_encoded) ? $source_flash_encoded : $media );          
-      if( isset($url_parts['path']) && stripos( $url_parts['path'], '+' ) !== false ) {
-
-        if( !empty($url_parts['path']) ) {
-            $url_parts['path'] = join('/', array_map('rawurlencode', explode('/', $url_parts['path'])));
-        }
-        if( !empty($url_parts['query']) ) {
-            //$url_parts['query'] = str_replace( '&amp;', '&', $url_parts['query'] );        
-        }
-        
-        $source_flash_encoded = http_build_url( ($source_flash_encoded) ? $source_flash_encoded : $media, $url_parts);
       }
       
       if( $aArgs['url_only'] ) {
@@ -854,7 +853,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           return trim($media);
         }
       } else {
-        $mime_type = ( $extension == 'x-mpegurl' ) ? 'application/x-mpegurl' : 'video/'.$extension;
+        switch($extension)  {
+          case 'dash+xml' :
+            $mime_type = 'application/'.$extension;
+            break;
+          case 'x-mpegurl' :
+            $mime_type = 'application/'.$extension;
+            break;
+          default:
+            $mime_type = 'video/'.$extension;
+            break;
+        }
+
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
         if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {

@@ -8,7 +8,7 @@
 .flowplayer .fp-message{display:none;text-align:center;padding-top:5%;cursor:default;}
 .flowplayer .fp-message h2{font-size:120%;margin-bottom:1em}
 .flowplayer .fp-message p{color:#666;font-size:95%}
-.flowplayer .fp-controls{position:absolute;bottom:0;width:100%;}
+.flowplayer .fp-controls{position:absolute;bottom:0;width:100%;height:0;}
 .no-background.flowplayer .fp-controls{background-color:transparent !important;background-image:-moz-linear-gradient(transparent,transparent) !important;background-image:-webkit-gradient(linear,0 0,0 100%,from(transparent),to(transparent)) !important}
 .is-fullscreen.flowplayer .fp-controls{bottom:3px}
 .is-mouseover.flowplayer .fp-controls{bottom:0}
@@ -56,7 +56,7 @@
 .is-rtl.color-light.is-splash.flowplayer .fp-ui,.is-rtl.color-light.is-paused.flowplayer .fp-ui{background-image:url(img/play_black_rtl-x2.png)}
 }.is-fullscreen.flowplayer .fp-ui{background-size:auto}
 .is-seeking.flowplayer .fp-ui,.is-loading.flowplayer .fp-ui{background-image:none}
-.flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:30px;cursor:pointer;display:none;z-index:100;}
+.flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:30px;cursor:pointer;display:none;z-index:1;}
 .flowplayer .fp-logo img{width:100%; border-radius: 0; box-shadow: none; border: 0; background: transparent; }
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
@@ -167,10 +167,10 @@
 .flowplayer.is-error .fp-message{display:block}
 .flowplayer.is-error object,.flowplayer.is-error video,.flowplayer.is-error .fp-controls,.flowplayer.is-error .fp-time,.flowplayer.is-error .fp-subtitle{display:none}
 .flowplayer.is-ready.is-muted .fp-mute{opacity:.5;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=50)}
-.flowplayer.is-mouseout .fp-controls{height:0;-webkit-transition:height .15s .3s;-moz-transition:height .15s .3s;transition:height .15s .3s}
+.flowplayer.is-mouseout .fp-controls{all:0;-webkit-transition:height .15s ease .3s;-moz-transition:all .15s ease .3s;transition:all .15s ease .3s}
 .flowplayer.is-mouseout .fp-timeline{margin:0 !important}
 .flowplayer.is-mouseout .fp-timeline{-webkit-transition:height .15s .3s,top .15s .3s,margin .15s .3s;-moz-transition:height .15s .3s,top .15s .3s,margin .15s .3s;transition:height .15s .3s,top .15s .3s,margin .15s .3s;height:4px;top:0;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}
-.flowplayer.is-mouseout .fp-fullscreen,.flowplayer.is-mouseout .fp-unload,.flowplayer.is-mouseout .fp-elapsed,.flowplayer.is-mouseout .fp-remaining,.flowplayer.is-mouseout .fp-duration,.flowplayer.is-mouseout .fp-embed,.flowplayer.is-mouseout .fp-volume,.flowplayer.is-mouseout .fp-play{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
+.flowplayer.is-mouseout .fp-fullscreen,.flowplayer.is-mouseout .fp-unload,.flowplayer.is-mouseout .fp-elapsed,.flowplayer.is-mouseout .fp-remaining,.flowplayer.is-mouseout .fp-duration,.flowplayer.is-mouseout .fp-embed,.flowplayer.is-mouseout .fp-volume,.flowplayer.is-mouseout .fp-play{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s ease .3s;-moz-transition:opacity .15s ease .3s;transition:opacity .15s ease .3s;}
 .flowplayer.is-mouseover .fp-controls,.flowplayer.fixed-controls .fp-controls{height:20px}
 .flowplayer.is-mouseover .fp-fullscreen,.flowplayer.fixed-controls .fp-fullscreen,.flowplayer.is-mouseover .fp-unload,.flowplayer.fixed-controls .fp-unload,.flowplayer.is-mouseover .fp-elapsed,.flowplayer.fixed-controls .fp-elapsed,.flowplayer.is-mouseover .fp-remaining,.flowplayer.fixed-controls .fp-remaining,.flowplayer.is-mouseover .fp-duration,.flowplayer.fixed-controls .fp-duration,.flowplayer.is-mouseover .fp-embed,.flowplayer.fixed-controls .fp-embed,.flowplayer.is-mouseover .fp-logo,.flowplayer.fixed-controls .fp-logo,.flowplayer.is-mouseover .fp-volume,.flowplayer.fixed-controls .fp-volume,.flowplayer.is-mouseover .fp-play,.flowplayer.fixed-controls .fp-play{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.fixed-controls .fp-volume{display:block}
@@ -327,7 +327,7 @@
 .flowplayer .fp-next{right:-20px;background-position:0 -400px;}
 .flowplayer .fp-next:hover{background-position:0 -500px}
 
-.fp-playlist-external { text-align:center; }
+.fp-playlist-external { text-align:center; margin-bottom: 24px;}
 .fp-playlist-external a { width:148px; display:inline-block; vertical-align:top; margin:5px 0px 0px 0px;}
 .fp-playlist-external a span { display:block;width:120px;height:80px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:4px solid #fff;background:gray;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;background-size:auto 100px;background-position:center;}
 .fp-playlist-external a:hover span { border-color:#ccc }
@@ -397,70 +397,101 @@ a #add-format, a #add-rtmp {
 p.fp-caption { text-align: center; }
 
 /* initially hide speed buttons while they cannot be used */
-.is-splash.flowplayer .speed-buttons, .is-loading.flowplayer .speed-buttons {
+.is-splash.flowplayer .fv-player-buttons, .is-loading.flowplayer .fv-player-buttons {
   display: none;
 }
-.flowplayer .speed-buttons-center {
+.fv-player-buttons-center {
   position: absolute;
   left: 50%;
+	margin-left: -34px;
   bottom: 20px;
 }
-.flowplayer .speed-buttons {
+.fv-player-buttons > ul {
   position: relative;
-  left: -50%;
   z-index: 2; /* make clickable */
   display: block;
   opacity: 1;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+  margin: 0 auto;
 }
-.is-mouseout.flowplayer .speed-buttons {
+.fv-player-buttons > ul:last {
+  margin-left: 0px;
+}
+.fv-player-buttons-right {
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+}
+.fv-player-buttons-right > ul {
+  /*position: relative;
+  left: -95%;*/
+}
+.fv-player-buttons-left {
+  position: absolute;
+  left: 0;
+  bottom: 20px;
+}
+.fv-player-buttons-left > ul {  
+  left: 0;
+}
+.is-mouseout .fv-player-buttons > ul {
   opacity: 0;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   /* same transition as other ui elements like fullscreen */
-  -webkit-transition: opacity .15s .3s;
-  -moz-transition: opacity .15s .3s;
-  transition: opacity .15s .3s;
+  -webkit-transition: opacity .15s ease .3s;
+  -moz-transition: opacity .15s ease .3s;
+  transition: opacity .15s ease .3s;
 }
-.flowplayer .speed-buttons span {
-  padding: 0.2ex 0.4ex;
-  margin: 0.5ex 0;
-  width: 2em;
+.fv-player-buttons li {
   display: inline-block;
   float: left;
+  margin: 0 0.3em;
+}
+.fv-player-buttons a {
+  display: inline-block;
+  float: left;  
+  padding: 0.4ex 0.6ex;
+  margin: 0.5ex 0;
+  width: 100%;
   text-align: center;
-  font-weight: bold;
+  font-weight: 400;
   background-color: #ccc;
   background-color: rgba(255,255,255,0.5);
   color: #fff;
   cursor: pointer;
   line-height: 1.3em;
-  -webkit-border-radius: 1ex;
-  -moz-border-radius: 1ex;
-  border-radius: 1ex;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
      -webkit-transition: background-color 0.2s ease-out;
     -moz-transition: background-color 0.2s ease-out;
     -o-transition: background-color 0.2s ease-out;
     transition: background-color 0.2s ease-out; 
+	font-size: 14px;
 }
-.flowplayer .speed-buttons span:active {
+.fv-player-buttons a:active {
 	background-color: rgba(255,255,255,0.85);
 }
-.flowplayer .speed-buttons span.active {
+.fv-player-buttons a.current {
 	color: #00a7c8;
-  background-color: #666;
+  background-color: #555;
   cursor: default;
 }
-.flowplayer .speed-buttons span.fv_sp_slower {
+.fv-player-buttons a.fv_sp_slower {
   -webkit-border-radius: 1ex 0 0 1ex;
   -moz-border-radius: 1ex 0 0 1ex;
   border-radius: 1ex 0 0 1ex;
   margin-right: 2px;
   width: 2.05em;
 }
-.flowplayer .speed-buttons span.fv_sp_faster {
+.fv-player-buttons a.fv_sp_faster {
   -webkit-border-radius: 0 1ex 1ex 0;
   -moz-border-radius: 0 1ex 1ex 0;
   border-radius: 0 1ex 1ex 0;
+  width: 2em;
+}
+.fv-player-speed li {
+  margin: 0;
 }
 
 /*

@@ -36,7 +36,41 @@ add_action( 'wp_print_scripts', 'fv_flowplayer_remove_bad_scripts', 100 );
 
 add_filter( 'run_ngg_resource_manager', '__return_false' ); //  Nextgen Gallery compatibility fix
 
- 
+function fv_flowplayer_ap_action_init(){
+  // Localization
+  load_plugin_textdomain('fv_flowplayer', false, dirname(dirname(plugin_basename(__FILE__))) . "/languages");
+}
+add_action('init', 'fv_flowplayer_ap_action_init');
+
+function fv_flowplayer_get_js_translations() {
+  
+  $aStrings = Array(
+  0 => __('', 'flowplayer'),
+  1 => __('Video loading aborted', 'fv_flowplayer'),
+  2 => __('Network error', 'fv_flowplayer'),
+  3 => __('Video not properly encoded', 'fv_flowplayer'),
+  4 => __('Video file not found', 'fv_flowplayer'),
+  5 => __('Unsupported video', 'fv_flowplayer'),
+  6 => __('Skin not found', 'fv_flowplayer'),
+  7 => __('SWF file not found', 'fv_flowplayer'),
+  8 => __('Subtitles not found', 'fv_flowplayer'),
+  9 => __('Invalid RTMP URL', 'fv_flowplayer'),
+  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv_flowplayer'),  
+  11 => __('Click to watch the video', 'fv_flowplayer'),
+  12 => __('[This post contains video, click to play]', 'fv_flowplayer'),
+  'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv_flowplayer'),
+  'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv_flowplayer'),
+  'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv_flowplayer'),
+  'mobile_browser_detected_2' => __('Click here','fv_flowplayer'),
+  'mobile_browser_detected_3' => __('for full quality.','fv_flowplayer'),
+  'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
+  'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
+  'what_is_wrong' => __('Please tell us what is wrong :','fv_flowplayer'),
+  'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv_flowplayer'),
+  );
+  
+  return $aStrings;
+} 
 
 function flowplayer_content_remove_commas($content) {
   preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
@@ -296,6 +330,7 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
     
+    wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
     if( count($fv_fp->aAds) > 0 ) {
@@ -389,6 +424,7 @@ add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
 
 function fv_player_caption( $caption ) {
   global $post, $authordata;
+  $sAuthorInfo = ( $authordata ) ? sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ) : false;
   $caption = str_replace(
                          array(
                                '%post_title%',
@@ -399,7 +435,7 @@ function fv_player_caption( $caption ) {
                          array(
                                get_the_title(),
                                get_the_date(),
-                               sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ),
+                               $sAuthorInfo,
                                get_the_author()
                               ),
                         $caption );

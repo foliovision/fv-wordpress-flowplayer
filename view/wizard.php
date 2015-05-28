@@ -38,14 +38,17 @@
 .fv_wp_flowplayer_playlist_remove { display: none; }
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-flowplayer-playlist table input, #fv-flowplayer-playlist table input.with-button { width: 93%; }
+#fv-flowplayer-playlist table input.half-field { width: 46%; }
 #fv-flowplayer-playlist table/*:first-child*/ input.with-button { width: 70%; }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp { visibility: hidden; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: hidden; }
+#fv-flowplayer-playlist table .hint { display: none; }
 /*#fv-flowplayer-playlist table .button { display: none; }*/
 #fv-flowplayer-playlist table:first-child tr.video-size { display: table-row; }
+#fv-flowplayer-playlist table:first-child .hint { display: inline; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_add_format_wrapper { display: table-row; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
@@ -72,87 +75,89 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <?php do_action( 'fv_flowplayer_shortcode_editor_before' ); ?>
           <tr>
             <th scope="row" class="label" style="width: 19%">
-              <a class="alignleft fv_wp_flowplayer_playlist_remove" href="#" onclick="return fv_wp_flowplayer_playlist_remove(this)">(remove)</a>
-              <label for="fv_wp_flowplayer_field_src" class="alignright">Video</label>
+              <a class="alignleft fv_wp_flowplayer_playlist_remove" href="#" onclick="return fv_wp_flowplayer_playlist_remove(this)"><?php _e('(remove)', 'fv_flowplayer'); ?></a>
+              <label for="fv_wp_flowplayer_field_src" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?></label>
             </th>
             <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" />
             <?php if ($allow_uploads=="true") { ?>      
-              <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Video</a>
+              <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
             <?php }; //allow uplads video ?></td>
           </tr>
     
           <tr style="display: none" id="fv_wp_flowplayer_file_info">
             <th></th>
-            <td>
-              Video Duration: <span id="fv_wp_flowplayer_file_duration"></span><br />
-              File size: <span id="fv_wp_flowplayer_file_size"></span>
+            <td colspan="2">
+              <?php _e('Video Duration', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_duration"></span><br />
+              <?php _e('File size', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_size"></span>
             </td>
           </tr>
           <tr class="video-size"><th></th>
-            <td class="field"><label for="fv_wp_flowplayer_field_width">Width <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height">Height <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value=""/></td>
+            <td class="field" colspan="2"><label for="fv_wp_flowplayer_field_width"><?php _e('Width', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height"><?php _e('Height', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value=""/></td>
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_src_1_wrapper">
-            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_1" class="alignright">Video <small>(another format)</small></label></th>
+            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_1" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?> <small><?php _e('(another format)', 'fv_flowplayer'); ?></small></label></th>
             <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src_1" name="fv_wp_flowplayer_field_src_1" value=""/>
             <?php if ($allow_uploads=="true") { ?> 
-              <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Video</a>
+              <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
             <?php }; //allow uplads video ?>
             </td>
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_src_2_wrapper">
-            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_2" class="alignright">Video <small>(another format)</small></label></th>
+            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_2" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?> <small><?php _e('(another format)', 'fv_flowplayer'); ?></small></label></th>
             <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src_2" name="fv_wp_flowplayer_field_src_2" value=""/>
             <?php if ($allow_uploads=="true") {	?>  
-              <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Video</a>
+              <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
             <?php }; //allow uplads video ?>
             </td>    			
           </tr>
           
           <tr style="display: none;" class="fv_wp_flowplayer_field_rtmp_wrapper">
-            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright">RTMP Server</label> <?php if( !empty($fv_flowplayer_conf["rtmp"]) ) : ?>(<abbr title="Leave empty to use Flash streaming server from plugin settings">?</abbr>)<?php endif; ?></th>
+            <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright"><?php _e('RTMP Server', 'fv_flowplayer'); ?></label> <?php if( !empty($fv_flowplayer_conf["rtmp"]) ) : ?>(<abbr title="<?php _e('Leave empty to use Flash streaming server from plugin settings', 'fv_flowplayer'); ?>">?</abbr>)<?php endif; ?></th>
             <td colspan="2" class="field">
               <input type="text" class="text fv_wp_flowplayer_field_rtmp" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" placeholder="<?php if( !empty($fv_flowplayer_conf["rtmp"]) ) echo $fv_flowplayer_conf["rtmp"]; ?>" />
-              &nbsp;<label for="fv_wp_flowplayer_field_rtmp_path"><strong>RTMP Path</strong></label>
+              &nbsp;<label for="fv_wp_flowplayer_field_rtmp_path"><strong><?php _e('RTMP Path', 'fv_flowplayer'); ?></strong></label>
               <input type="text" class="text fv_wp_flowplayer_field_rtmp_path" id="fv_wp_flowplayer_field_rtmp_path" name="fv_wp_flowplayer_field_rtmp_path" value="" style="width: 37%" />
             </td> 
           </tr>  			
           
           <tr id="fv_wp_flowplayer_add_format_wrapper">
             <th scope="row" class="label" style="width: 19%"></th>
-            <td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_format()" style="outline: 0"><span id="add-format">+</span>&nbsp;Add another format</a> (i.e. WebM, OGV)</div></td>
-            <td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_rtmp()" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;Add RTMP</a></div></td>  				
+            <td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_format(); return false" style="outline: 0"><span id="add-format">+</span>&nbsp;<?php _e('Add another format', 'fv_flowplayer'); ?></a> <?php _e('(i.e. WebM, OGV)', 'fv_flowplayer'); ?></div></td>
+            <td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_rtmp(); return false" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add RTMP', 'fv_flowplayer'); ?></a></div></td>  				
           </tr>      
           
           <tr<?php if( $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>
-            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright">Mobile Video*</label></th>
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright"><?php _e('Mobile Video', 'fv_flowplayer'); ?>*</label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" placeholder="Put low-bandwidth video here or leave blank" />
               <?php if ($allow_uploads=='true') { ?>
-                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Video</a>
+                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
               <?php }; //allow uploads splash image ?></td>
           </tr>
           
           <tr>
-            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_splash" class="alignright">Splash Image</label></th>
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_splash" class="alignright"><?php _e('Splash Image', 'fv_flowplayer'); ?></label></th>
             <td class="field" colspan="2"><input type="text" class="text fv_wp_flowplayer_field_splash<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_splash" name="fv_wp_flowplayer_field_splash" value=""/>
               <?php if ($allow_uploads=='true') { ?>
-                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Image</a>
+                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Image', 'fv_flowplayer'); ?></a>
               <?php }; //allow uploads splash image ?></td>
           </tr>
         		        
           <tr<?php if( $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
-            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright">Subtitles</label></th>
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
               <?php if ($allow_uploads=='true') { ?>
-                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> Add Subtitles</a>
+                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
               <?php }; //allow uploads splash image ?></td>
           </tr>
           
           <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
-            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright">Caption</label></th>
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Caption', 'fv_flowplayer'); ?></label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
-          </tr>          
+          </tr>
+          
+          <?php do_action( 'fv_flowplayer_shortcode_editor_item_after' ); ?>
   
         </tbody>
       </table>
@@ -161,7 +166,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
       <tr id="fv_wp_flowplayer_add_format_wrapper">
         <th scope="row" class="label" style="width: 19%"></th>
         <td class="field" style="width: 50%"></td>
-        <td class="field"><div id="add_rtmp_wrapper"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;Add Playlist Item</a></div></td>  				
+        <td class="field"><div id="add_rtmp_wrapper"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div></td>  				
       </tr>
     </table>  					      
     <table width="100%">
@@ -178,106 +183,106 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
         ?>     
         <tr<?php if( !$show_additonal_features ) echo ' style="display: none"';?>>
           <th scope="row" width="19%"></th>
-          <td style="text-align: left; padding: 10px 0; text-transform: uppercase;">Additional features</td>
+          <td style="text-align: left; padding: 10px 0; text-transform: uppercase;"><?php _e('Additional features', 'fv_flowplayer'); ?></td>
         </tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["popup"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup" class="alignright">HTML Popup</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup" class="alignright"><?php _e('HTML Popup', 'fv_flowplayer'); ?></label></th>
   				<td><textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea></td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright">Redirect to</label></th>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
   				<td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["autoplay"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_autoplay" class="alignright">Autoplay</label></th>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_autoplay" class="alignright"><?php _e('Autoplay', 'fv_flowplayer'); ?></label></th>
   				<td class="field">
             <select id="fv_wp_flowplayer_field_autoplay" name="fv_wp_flowplayer_field_autoplay">
-              <option>Default</option>
-              <option>On</option>
-              <option>Off</option>
+              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
+              <option><?php _e('On', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Off', 'fv_flowplayer'); ?></option>
             </select>
           </td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["loop"] !== 'true' ) { echo ' style="display: none"'; } ?>>
-  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright">Loop</label></th>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright"><?php _e('Loop', 'fv_flowplayer'); ?></label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
   			</tr>   
         <tr<?php if( $fv_flowplayer_conf["interface"]["splashend"] !== 'true' ) { echo ' style="display: none"'; } ?>>
           <th scope="row" class="label">
-            <label for="fv_wp_flowplayer_field_splashend">Splash end</label>
+            <label for="fv_wp_flowplayer_field_splashend"><?php _e('Splash end', 'fv_flowplayer'); ?></label>
           </th>
           <td>
-            <input type="checkbox" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" /> (show splash image at the end)
+            <input type="checkbox" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" /> <?php _e('(show splash image at the end)', 'fv_flowplayer'); ?>
           </td> 
         </tr>    
         <tr<?php if( $fv_flowplayer_conf["interface"]["embed"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_embed" class="alignright">Embeding</label></th>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_embed" class="alignright"><?php _e('Embedding', 'fv_flowplayer'); ?></label></th>
   				<td class="field">
             <select id="fv_wp_flowplayer_field_embed" name="fv_wp_flowplayer_field_embed">
-              <option>Default</option>
-              <option>On</option>
-              <option>Off</option>
+              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
+              <option><?php _e('On', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Off', 'fv_flowplayer'); ?></option>
             </select>
           </td>
   			</tr>           
         <tr<?php if( $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_ad" class="alignright">Ad code</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
   				<td>
   					<textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
   				</td>
   			</tr> 
   			<tr<?php if( $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' style="display: none"'; ?>><th></th>
   				<td class="field">
-  					<label for="fv_wp_flowplayer_field_ad_width">Width <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_ad_height">Height <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%" value=""/><br />
-  					<input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> Skip global ad in this video  					
+  					<label for="fv_wp_flowplayer_field_ad_width"><?php _e('Width', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_ad_height"><?php _e('Height', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%" value=""/><br />
+  					<input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
   				</td>
   			</tr>			
         <tr<?php if( $fv_flowplayer_conf["interface"]["align"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_align" class="alignright">Align</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_align" class="alignright"><?php _e('Align', 'fv_flowplayer'); ?></label></th>
   				<td>
             <select id="fv_wp_flowplayer_field_align" name="fv_wp_flowplayer_field_align">
-              <option>Default</option>
-              <option>Left</option>
-              <option>Right</option>
+              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Left', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Right', 'fv_flowplayer'); ?></option>
             </select>
   				</td>
   			</tr>
         <tr<?php if( !isset($fv_flowplayer_conf["interface"]["controlbar"]) || $fv_flowplayer_conf["interface"]["controlbar"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_controlbar" class="alignright">Controlbar</label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_controlbar" class="alignright"><?php _e('Controlbar', 'fv_flowplayer'); ?></label></th>
   				<td>
             <select id="fv_wp_flowplayer_field_controlbar" name="fv_wp_flowplayer_field_controlbar">
-              <option>Default</option>
-              <option>Yes</option>
-              <option>No</option>
+              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Yes', 'fv_flowplayer'); ?></option>
+              <option><?php _e('No', 'fv_flowplayer'); ?></option>
             </select>
   				</td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
-  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright">Live Stream</label></th>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live Stream', 'fv_flowplayer'); ?></label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
   			</tr>           
         <?php do_action( 'fv_flowplayer_shortcode_editor_after' ); ?>        
   			<tr>
   				<th scope="row" class="label"></th>					
-            	<td  style="padding-top: 20px;"><input type="button" value="Insert" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignleft" onclick="fv_wp_flowplayer_submit();" />
+            	<td  style="padding-top: 20px;"><input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignleft" onclick="fv_wp_flowplayer_submit();" />
   				</td>
   			</tr>
             <?php if( !$allow_uploads && current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">
-              	<div class="fv-wp-flowplayer-notice">Admin note: Video uploads are currenty disabled, set 'Allow User Uploads' to true in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer">Settings</a></div>
+              	<div class="fv-wp-flowplayer-notice"><?php _e('Admin note: Video uploads are currenty disabled, set Allow User Uploads to true in', 'fv_flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer"><?php _e('Settings', 'fv_flowplayer'); ?></a></div>
               </td>
             </tr>            
             <?php } ?>
             <?php if( current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">
-              	<div class="fv-wp-flowplayer-notice fv-wp-flowplayer-note">Admin note: Enable more per video features in Interface options in <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#interface">Settings</a></div>
+              	<div class="fv-wp-flowplayer-notice fv-wp-flowplayer-note"><?php _e('Admin note: Enable more per video features in Interface options in', 'fv_flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#interface"><?php _e('Settings', 'fv_flowplayer'); ?></a></div>
               </td>
             </tr>            
             <?php } ?>
 			<tr<?php if( $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>
-			  <td colspan="2">* - currently not working with playlist</td>
+			  <td colspan="2">* - <?php _e('currently not working with playlist', 'fv_flowplayer'); ?> </td>
 			</tr>
   		</tbody>
   	</table>

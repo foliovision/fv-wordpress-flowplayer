@@ -29,12 +29,12 @@ function fv_flowplayer_admin_ads() {
 					<table class="form-table2">	
 						<tr>
 							<td colspan="2">
-								<label for="ad">Default Ad Code:</label><br />
+								<label for="ad"><?php _e('Default Ad Code', 'fv_flowplayer'); ?>:</label><br />
 								<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><label for="width">Default ad size [px]:</label> <label for="ad_width">W:</label>&nbsp;<input type="text" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" class="small" /> <label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" class="small"  /> <label for="adTextColor">Ad text</label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo $fv_fp->conf['adTextColor']; ?>" /> <label for="adLinksColor">Ad links</label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo $fv_fp->conf['adLinksColor']; ?>" /> </td>			
+							<td colspan="2"><label for="width"><?php _e('Default set size', 'fv_flowplayer');?> [px]:</label> <label for="ad_width">W:</label>&nbsp;<input type="text" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" class="small" /> <label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" class="small"  /> <label for="adTextColor">Ad text</label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo $fv_fp->conf['adTextColor']; ?>" /> <label for="adLinksColor">Ad links</label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo $fv_fp->conf['adLinksColor']; ?>" /> </td>			
 						</tr>           
 						<tr>
 							<td colspan="2">
