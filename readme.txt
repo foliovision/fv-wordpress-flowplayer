@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, WP flash Video Player, embed video
 Requires at least: 3.5
-Tested up to: 4.2.1
+Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -320,6 +320,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.3.16 - 2015/05/28 =
 
+* Feature - MPEG DASH experimental support
 * Feature - support for translations (covers front-end error messages and shortcode editor)
 * Bugfix - Amazon S3 signed URLs - AWS signature version 4 fixes
 * Bugfix - playlist loading improvements
