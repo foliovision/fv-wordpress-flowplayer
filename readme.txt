@@ -318,10 +318,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.3.16 - 2015/05/25 ? =
+= 2.3.16 - 2015/05/28 =
 
-* Feature - custom button API
+* Feature - support for translations (covers front-end error messages and shortcode editor)
 * Bugfix - Amazon S3 signed URLs - AWS signature version 4 fixes
+* Bugfix - playlist loading improvements
+* Bugfix - styling fixes (for FV Player Pro)
 
 = 2.3.15 - 2015/04/24 =
 
