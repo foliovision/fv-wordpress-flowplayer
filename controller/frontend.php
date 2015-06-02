@@ -301,14 +301,14 @@ function flowplayer_prepare_scripts() {
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
-    $sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
+    $sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : ''; //  v6 wtf
     $sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
     
     if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
       wp_enqueue_script( 'flowplayer-mediaelement', flowplayer::get_plugin_url().'/mediaelement/mediaelement-and-player.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
     }
     
-    $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
+    $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver ), 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
       $aConf['safety_resize'] = true;

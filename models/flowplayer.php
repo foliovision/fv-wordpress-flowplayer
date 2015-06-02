@@ -252,7 +252,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
-          if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+          if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
             $flash_media[] = $media_url['flash'];
           }
         } else {
@@ -260,12 +260,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
           if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-            $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.str_replace( '+', ' ', $actual_media_url ) );
+            $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           } else {
-            $aItem[] = array( 'flash' => str_replace( '+', ' ', $actual_media_url ) );
+            $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           }
         } else {
-          $aItem[] = array( $this->get_file_extension($actual_media_url) => $actual_media_url );
+          $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
         }        
       }
       
@@ -284,7 +284,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }      
       }
       
-      $aPlaylistItems[] = $aItem;
+      $aPlaylistItems[] = array( 'sources' => $aItem );
 
       $sHTML = '';
       if( $sShortcode && count($sItems) > 0 ) {
@@ -326,7 +326,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
             if( is_array($media_url) ) {
               $actual_media_url = $media_url['media'];
-              if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+              if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
                 $flash_media[] = $media_url['flash'];
               }
             } else {
@@ -334,12 +334,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             }
             if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
               if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-                $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.str_replace( '+', ' ', $actual_media_url ) );
+                $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
               } else {
-                $aItem[] = array( 'flash' => str_replace( '+', ' ', $actual_media_url ) );
+                $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
               }              
             } else {
-              $aItem[] = array( $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
+              $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
             }                
             
           }
@@ -358,8 +358,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               }
             }      
           }
-      
-          $aPlaylistItems[] = $aItem;
+
+          $aPlaylistItems[] = array( 'sources' => $aItem );
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
@@ -378,7 +378,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
         //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
-
+echo "<!--playlist: \n".var_export($aPlaylistItems,true)."\n-->\n\n\n";
       return array( $sHTML, $aPlaylistItems );      
   }  
   
@@ -752,7 +752,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_file_extension($media, $default = 'flash' ) {
+  function get_mime_type($media, $default = 'flash', $no_video = false) {
     $pathinfo = pathinfo( trim($media) );
 
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
@@ -786,8 +786,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $output = $extension;
       }
     }
+    
+    if( !$no_video ) {
+      switch($extension)  {
+        case 'dash+xml' :
+          $output = 'application/'.$output;
+          break;
+        case 'x-mpegurl' :
+          $output = 'application/'.$output;
+          break;
+        default:
+          $output = 'video/'.$output;
+          break;
+      }
+    }
 
-    return apply_filters( 'fv_flowplayer_get_file_extension', $output, $media );  
+    return apply_filters( 'fv_flowplayer_get_mime_type', $output, $media );  
   }
   
   
@@ -823,7 +837,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       );
     
     if( $media ) { 
-      $extension = $this->get_file_extension($media);
+      $mime_type = $this->get_mime_type($media);
       //do not use https on mobile devices
       if (strpos($media, 'https') !== false && $aArgs['mobileUserAgent']) {
         $media = str_replace('https', 'http', $media);
@@ -853,17 +867,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           return trim($media);
         }
       } else {
-        switch($extension)  {
-          case 'dash+xml' :
-            $mime_type = 'application/'.$extension;
-            break;
-          case 'x-mpegurl' :
-            $mime_type = 'application/'.$extension;
-            break;
-          default:
-            $mime_type = 'video/'.$extension;
-            break;
-        }
 
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         

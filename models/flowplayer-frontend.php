@@ -313,7 +313,7 @@ class flowplayer_frontend extends flowplayer
 				}
 				
         global $fv_wp_flowplayer_ver;
-				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;
+				//$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
 				//$attributes['data-flashfit'] = "true";
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
@@ -440,15 +440,15 @@ class flowplayer_frontend extends flowplayer
   
                 if( isset($aTMP[1]) && isset($aTMP[2]) ) {             
                   $rtmp_file = $aTMP[2];
-                  $extension = $this->get_file_extension($rtmp_file, $aTMP[1]);
+                  $extension = $this->get_mime_type($rtmp_file, $aTMP[1], true);
                 } else {
                   $rtmp_file = $aTMP[1];
-                  $extension = $this->get_file_extension($rtmp_file, false);                  
+                  $extension = $this->get_mime_type($rtmp_file, false, true);                  
                 }
               } else {
                 $rtmp_url = parse_url($rtmp_item);
                 $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-                $extension = $this->get_file_extension($rtmp_url['path'], false);                
+                $extension = $this->get_mime_type($rtmp_url['path'], false, true);                
               }
 
               if( $extension ) {
@@ -547,7 +547,7 @@ class flowplayer_frontend extends flowplayer
 					
 			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
 			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
-      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
+      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_mime_type($media, false, true).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
 			$this->ret['html'] .= '</div>'."\n";  
   }
   
