@@ -411,7 +411,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-volumelevel { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }  
     .flowplayer .fp-volumeslider { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo trim($fv_fp->conf['timelineColor']); ?> !important; }
-    .flowplayer .fp-progress { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
+    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
     .flowplayer .fp-buffer { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     
