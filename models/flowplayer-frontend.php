@@ -214,9 +214,8 @@ class flowplayer_frontend extends flowplayer
 						$mobileUserAgent = true;
 				}
 				
-				$redirect = '';			
-	
-				if (isset($this->aCurArgs['redirect'])&&!empty($this->aCurArgs['redirect'])) $redirect = trim($this->aCurArgs['redirect']);
+
+        
 				$scaling = "scale";
 				if (isset($this->conf['scaling'])&&($this->conf['scaling']=="true"))
 					$scaling = "fit";
@@ -234,9 +233,6 @@ class flowplayer_frontend extends flowplayer
 				}	
 								
 				
-				if ( !empty($redirect) ) {
-					$this->ret['script']['fv_flowplayer_redirect'][$this->hash] = $redirect;
-				}
 	
 				
 				$attributes = array();
@@ -379,6 +375,14 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
+        }        
+        
+	    if( !empty($this->aCurArgs['redirect']) ) {
+          $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
+        }
+        
+        if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+          $attributes['data-fv_loop'] = true;
         }
         
         if( isset($this->aCurArgs['admin_warning']) ) {
@@ -393,9 +397,6 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 				
-				if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-					$this->ret['script']['fv_flowplayer_loop'][$this->hash] = true;
-				}
 				
 				if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';      
@@ -405,10 +406,7 @@ class flowplayer_frontend extends flowplayer
 					if( $autoplay == true ) {
 						$this->ret['html'] .= ' autoplay';  
 					}
-					if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-						$this->ret['html'] .= ' loop';
-								
-					}     
+    
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 						$this->ret['html'] .= ' preload';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';

@@ -23,6 +23,6 @@ echo $fv_fp->css_get();
 if( current_user_can('manage_options') ) : ?>
 	<link rel="stylesheet" href="<?php echo FV_FP_RELATIVE_PATH; ?>/css/admin.css?ver=<?php echo $fv_wp_flowplayer_ver; ?>" type="text/css" media="screen" />
 	<style type="text/css">
-	.fv-wp-flowplayer-notice-small { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
+	.fv-wp-flowplayer-notice-small { color: #fff !important; }
 	</style>
 <?php endif;

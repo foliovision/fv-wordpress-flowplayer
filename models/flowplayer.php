@@ -378,7 +378,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
         //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
-echo "<!--playlist: \n".var_export($aPlaylistItems,true)."\n-->\n\n\n";
+      //echo "<!--playlist: \n".var_export($aPlaylistItems,true)."\n-->\n\n\n";
       return array( $sHTML, $aPlaylistItems );      
   }  
   
@@ -404,15 +404,16 @@ echo "<!--playlist: \n".var_export($aPlaylistItems,true)."\n-->\n\n\n";
   
     .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
-    .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
+    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
-    .flowplayer .fp-duration { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }
+    .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }
     .flowplayer .fp-elapsed { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
     .flowplayer .fp-volumelevel { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }  
-    .flowplayer .fp-volumeslider { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
+    .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo trim($fv_fp->conf['timelineColor']); ?> !important; }
-    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
-    .flowplayer .fp-buffer { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
+    .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
+    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
+    .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 

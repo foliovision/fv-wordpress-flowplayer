@@ -71,9 +71,9 @@
 	border: none !important;
 	background: none !important;
 }
-#content .flowplayer a, 
+/*#content .flowplayer a, 
 .flowplayer a, 
-.flowplayer a:hover,
+.flowplayer a:hover, viktor, please check */
 .fvp-share-bar .fvp-sharing a {
 	color: #fff !important;
 	text-shadow: none !important;
