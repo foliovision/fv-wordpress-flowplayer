@@ -189,8 +189,8 @@ a #add-format, a #add-rtmp {
 
 .wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, 	.wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
 
-.flowplayer.alignleft { margin-left: 10px; margin-bottom: 10px;  }
-.flowplayer.alignright { margin-right: 10px; margin-bottom: 10px; }
+.flowplayer.alignleft { margin-right: 10px; margin-bottom: 10px;  }
+.flowplayer.alignright { margin-left: 10px; margin-bottom: 10px; }
 
 .flowplayer.no-controlbar .fp-controls{display:none}
 .flowplayer.no-controlbar .fp-time{display:none}
