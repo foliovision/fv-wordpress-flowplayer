@@ -3,19 +3,22 @@ var FVFP_iStoreHeight = 0;
 var FVFP_sStoreRTMP = 0;   
 
 jQuery(document).ready(function($){ 
-  if( jQuery(".fv-wordpress-flowplayer-button").length > 0 && jQuery().colorbox ) {     
-    jQuery(".fv-wordpress-flowplayer-button").colorbox( {
-      width:"620px",
-      height:"600px",
-      href: "#fv-wordpress-flowplayer-popup",
-      inline: true,
-      onComplete : fv_wp_flowplayer_edit,
-      onClosed : fv_wp_flowplayer_on_close,
-      onOpen: function(){
-        jQuery("#colorbox").addClass("fv-flowplayer-shortcode-editor");
-        jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
-      }
-    } );
+  if( jQuery().fv_player_box ) {     
+    $(document).on( 'click', '.fv-wordpress-flowplayer-button', function() {
+      $.fv_player_box( {
+        width:"620px",
+        height:"600px",
+        href: "#fv-wordpress-flowplayer-popup",
+        inline: true,
+        title: 'Add FV WP Flowplayer',
+        onComplete : fv_wp_flowplayer_edit,
+        onClosed : fv_wp_flowplayer_on_close,
+        onOpen: function(){
+          jQuery("#fv_player_box").addClass("fv-flowplayer-shortcode-editor");
+          jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
+        }
+      } );
+    });
     
     jQuery(".fv-wordpress-flowplayer-button").click( function() {
       if( jQuery('#wp-content-wrap').hasClass('html-active') && typeof(FCKeditorAPI) != "object" ) {
@@ -213,7 +216,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption ) {
 
 function fv_wp_flowplayer_edit() {	
   
-  var dialog = jQuery('#colorbox.fv-flowplayer-shortcode-editor');
+  var dialog = jQuery('#fv_player_box.fv-flowplayer-shortcode-editor');
   dialog.removeAttr('tabindex');
   
   fv_wp_flowplayer_init();
@@ -426,7 +429,7 @@ function fv_wp_flowplayer_edit() {
 function fv_wp_flowplayer_dialog_resize() {
   var iContentHeight = parseInt( jQuery('#fv-wordpress-flowplayer-popup').css('height') );
   if( iContentHeight < 150 ) iContentHeight = 150;
-  jQuery('#fv-wordpress-flowplayer-popup').colorbox.resize({width:620, height:(iContentHeight+100)})
+  jQuery('#fv-wordpress-flowplayer-popup').fv_player_box.resize({width:620, height:(iContentHeight+100)})
 }
 
 
@@ -545,7 +548,7 @@ function fv_wp_flowplayer_submit() {
   
 	fv_wp_fp_shortcode += ']';
 		
-	jQuery(".fv-wordpress-flowplayer-button").colorbox.close();
+	jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
   
 	fv_wp_flowplayer_insert( fv_wp_fp_shortcode );  
 }
