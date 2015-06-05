@@ -49,9 +49,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   var $hash = false;  
   
-  public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+  public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
   
-  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
+  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
   
   /**
    * Class constructor
@@ -424,12 +424,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
   
     .wpfp_custom_background { display: none; }  
-    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff; }
+    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }  
     .wpfp_custom_popup_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
   
     <?php echo trim($this->conf['ad_css']); ?>
-    .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; }
+    .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; z-index: 20 !important; }
     .wpfp_custom_ad a { color: <?php echo trim($fv_fp->conf['adLinksColor']); ?> }
     
     .fvfp_admin_error { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
@@ -913,6 +913,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public static function is_special_editor() {
+    return flowplayer::is_optimizepress() || flowplayer::is_themify();
+  }
+  
+  
   public static function is_optimizepress() {
     if( ( isset($_GET['page']) && $_GET['page'] == 'optimizepress-page-builder' ) ||
         ( isset($_POST['action']) && $_POST['action'] == 'optimizepress-live-editor-parse' )
@@ -920,7 +925,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return true;
     }
     return false;
-  }  
+  }
+  
+  
+  public static function is_themify() {
+    if( isset($_POST['action']) && $_POST['action'] == 'tfb_load_module_partial' ) {
+      return true;
+    }
+    return false;
+  }    
   
   
   public function is_secure_amazon_s3( $url ) {

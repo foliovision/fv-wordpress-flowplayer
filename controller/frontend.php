@@ -288,7 +288,7 @@ function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
   
   //  don't load script in Optimize Press 2 preview
-  if( flowplayer::is_optimizepress() ) {
+  if( flowplayer::is_special_editor() ) {
     return;  
   }
 
@@ -352,7 +352,7 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-  if( flowplayer::is_optimizepress() ) {
+  if( flowplayer::is_special_editor() ) {
     return;  
   }  
 
@@ -373,7 +373,7 @@ function flowplayer($shortcode) {
 Make sure our div won't be wrapped in any P tag and that html attributes don't break the shortcode
 */
 function fv_flowplayer_the_content( $c ) {
-  if( flowplayer::is_optimizepress() ) {
+  if( flowplayer::is_special_editor() ) {
     return $c;  
   }    
   
