@@ -510,3 +510,18 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   
   add_filter( 'post_playlist', 'fv_flowplayer_shortcode_playlist', 10, 2 );
 }
+
+
+add_filter( 'fv_flowplayer_shortcode', 'fv_flowplayer_shortcode_fix_fancy_quotes' );
+
+function fv_flowplayer_shortcode_fix_fancy_quotes( $aArgs ) {
+  
+  foreach( $aArgs AS $k => $v ) {   
+    $v = preg_replace( "~^(\xe2\x80\x9c|\xe2\x80\x9d|\xe2\x80\xb3)~","", $v);
+    $v = preg_replace( "~(\xe2\x80\x9c|\xe2\x80\x9d|\xe2\x80\xb3)$~","", $v);
+            
+    $aArgs[$k] = $v;
+  }
+  
+  return $aArgs;
+}

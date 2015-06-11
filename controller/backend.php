@@ -976,3 +976,26 @@ function fv_flowplayer_get_extension_path( $slug ){
   
   return false;
 }
+
+
+
+
+function fv_player_disable_object_cache($value=null){
+    global $_wp_using_ext_object_cache, $fv_player_wp_using_ext_object_cache_prev;
+    $fv_player_wp_using_ext_object_cache_prev = $_wp_using_ext_object_cache;
+    $_wp_using_ext_object_cache = false;
+    return $value;
+}
+
+function fv_player_enable_object_cache($value=null){
+    global $_wp_using_ext_object_cache, $fv_player_wp_using_ext_object_cache_prev;
+    $_wp_using_ext_object_cache = $fv_player_wp_using_ext_object_cache_prev;
+    return $value;
+}
+
+add_filter( 'pre_set_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
+add_filter( 'pre_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
+add_action( 'delete_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
+add_action( 'set_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
+add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' );
+add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );

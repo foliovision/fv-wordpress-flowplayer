@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
 Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, WP flash Video Player, embed video
 Requires at least: 3.5
-Tested up to: 4.1
+Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -138,6 +138,8 @@ Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 
 = How do I fix the bad metadata (moov) position? =
 
 This means that the video information (such as what codecs are used) is not stored at the beginning of the file. In our experience, video with bad meta data position might be slow to load in Flash engine (check some browser which doesn't play MP4 format in Flash - like Opera) and Firefox. Although Safary and iOS (iPAd, iPhone) may play it just fine. 
+
+In general we recommend you to re-encode your video as [per our instructions](https://foliovision.com/player/encoding#encoding-samples), but here are some quick tools:
 
 If you are using Mac, try Lillipot (just remember to rename the file back to .mp4 extension): http://www.qtbridge.com/lillipot/lillipot.html
 
@@ -316,7 +318,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.3.14 - 2014/04/20 =
+= 2.3.16 - 2015/05/28 =
+
+* Feature - MPEG DASH experimental support
+* Feature - support for translations (covers front-end error messages and shortcode editor)
+* Bugfix - Amazon S3 signed URLs - AWS signature version 4 fixes
+* Bugfix - playlist loading improvements
+* Bugfix - styling fixes (for FV Player Pro)
+
+= 2.3.15 - 2015/04/24 =
+
+* Bugfix - Fix for fancy quotes in shortcode attributes.
+* Bugfix - Internet Explorer on Windows Phone 8.1 pretend to be Android and iPhone - breaking the playback. Fixed.
+* Bugfix - RTMP extension parsing fix for RTMP path like mp4:file.mp4
+
+= 2.3.14 - 2015/04/20 =
 
 * Feature - speed control buttons - check Settings -> FV Wordpress Flowplayer -> Player Skin - Speed Buttons
 * Feature - support for [video] shortcode - check Settings -> FV Wordpress Flowplayer -> Integrations -> Handle Wordpress [video] shortcodes. This will be the new default in a couple of versions.
@@ -999,6 +1015,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.3.16 =
+
+* Check your videos using Amazon S3 download protection
 
 = 2.3.13 =
 

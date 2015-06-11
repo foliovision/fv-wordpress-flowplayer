@@ -22,6 +22,7 @@
  
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
+
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
 ?>
@@ -435,14 +436,14 @@ function fv_flowplayer_admin_integrations() {
               <input type="hidden" name="integrations[optimizepress2]" value="false" />
               <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( isset($fv_fp->conf['integrations']['optimizepress2']) && $fv_fp->conf['integrations']['optimizepress2'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>
+					</tr>-->
 					<tr>
 						<td><label for="wp_core_video">Handle Wordpress <code><small>[video]</small></code> shortcodes:</label></td>
 						<td>
               <input type="hidden" name="integrations[wp_core_video]" value="false" />
               <input type="checkbox" name="integrations[wp_core_video]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>-->             
+					</tr>           
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />

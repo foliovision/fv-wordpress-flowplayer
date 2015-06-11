@@ -214,9 +214,8 @@ class flowplayer_frontend extends flowplayer
 						$mobileUserAgent = true;
 				}
 				
-				$redirect = '';			
-	
-				if (isset($this->aCurArgs['redirect'])&&!empty($this->aCurArgs['redirect'])) $redirect = trim($this->aCurArgs['redirect']);
+
+        
 				$scaling = "scale";
 				if (isset($this->conf['scaling'])&&($this->conf['scaling']=="true"))
 					$scaling = "fit";
@@ -234,9 +233,6 @@ class flowplayer_frontend extends flowplayer
 				}	
 								
 				
-				if ( !empty($redirect) ) {
-					$this->ret['script']['fv_flowplayer_redirect'][$this->hash] = $redirect;
-				}
 	
 				
 				$attributes = array();
@@ -313,7 +309,7 @@ class flowplayer_frontend extends flowplayer
 				}
 				
         global $fv_wp_flowplayer_ver;
-				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;
+				//$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
 				//$attributes['data-flashfit'] = "true";
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
@@ -379,6 +375,14 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
+        }        
+        
+	    if( !empty($this->aCurArgs['redirect']) ) {
+          $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
+        }
+        
+        if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+          $attributes['data-fv_loop'] = true;
         }
         
         if( isset($this->aCurArgs['admin_warning']) ) {
@@ -393,9 +397,6 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 				
-				if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-					$this->ret['script']['fv_flowplayer_loop'][$this->hash] = true;
-				}
 				
 				if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';      
@@ -405,10 +406,7 @@ class flowplayer_frontend extends flowplayer
 					if( $autoplay == true ) {
 						$this->ret['html'] .= ' autoplay';  
 					}
-					if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-						$this->ret['html'] .= ' loop';
-								
-					}     
+    
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 						$this->ret['html'] .= ' preload';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
@@ -434,25 +432,27 @@ class flowplayer_frontend extends flowplayer
             
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
               $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
-   
-              if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
-                $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+              if( preg_match( '~([a-zA-Z0-9]+)?:~', $rtmp ) ) {
+                $aTMP = preg_split( '~([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+  
                 if( isset($aTMP[1]) && isset($aTMP[2]) ) {             
                   $rtmp_file = $aTMP[2];
-                  $extension = $this->get_file_extension($rtmp_file, $aTMP[1]);
+                  $extension = $this->get_mime_type($rtmp_file, $aTMP[1], true);
                 } else {
                   $rtmp_file = $aTMP[1];
-                  $extension = $this->get_file_extension($rtmp_file, false);                  
+                  $extension = $this->get_mime_type($rtmp_file, false, true);                  
                 }
               } else {
                 $rtmp_url = parse_url($rtmp_item);
                 $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-                $extension = $this->get_file_extension($rtmp_url['path'], false);                
+                $extension = $this->get_mime_type($rtmp_url['path'], false, true);                
               }
 
               if( $extension ) {
                 $extension .= ':';
               }
+
               $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
             }
 					}  
@@ -464,7 +464,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= "\t".'</video>';//."\n";
 				}
 				
-        $this->ret['html'] .= $this->get_speed_buttons();
+        $this->ret['html'] .= $this->get_buttons();
 				
 				if( isset($splashend_contents) ) {
 					$this->ret['html'] .= $splashend_contents;
@@ -476,7 +476,7 @@ class flowplayer_frontend extends flowplayer
 					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
 				}
         
-        if( flowplayer::is_optimizepress() ) {
+        if( flowplayer::is_special_editor() ) {
           $this->ret['html'] .= '<div class="fp-ui"></div>';       
         } else if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript">troubleshooting guide</a> or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
@@ -545,7 +545,7 @@ class flowplayer_frontend extends flowplayer
 					
 			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
 			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
-      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
+      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_mime_type($media, false, true).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
 			$this->ret['html'] .= '</div>'."\n";  
   }
   
@@ -605,6 +605,26 @@ class flowplayer_frontend extends flowplayer
       } 
     }
     return $sClass;
+  }
+  
+    
+  function get_buttons() {
+    add_filter( 'fv_flowplayer_buttons_center', array( $this, 'get_speed_buttons' ) );
+    
+    $sHTML = false;
+    foreach( array('left','center','right','controlbar') AS $key ) {
+      $aButtons = apply_filters( 'fv_flowplayer_buttons_'.$key, array() );
+      if( !$aButtons || !count($aButtons) ) continue;
+
+      $sButtons = implode( '', $aButtons );
+      $sHTML .= "<div class='fv-player-buttons fv-player-buttons-$key'>$sButtons</div>";
+    }
+    if( $sHTML ) {
+      $sHTML = "<div class='fv-player-buttons-wrap'>$sHTML</div>";
+    }
+
+//var_dump($sHTML);die();
+    return $sHTML;
   }
   
   
@@ -669,7 +689,7 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_speed_buttons() {
+  function get_speed_buttons( $aButtons ) {
     $bShow = false;
     if( isset($this->conf['ui_speed']) && $this->conf['ui_speed'] == "true" || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
       $bShow = true;
@@ -678,17 +698,12 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'no' ) {
       $bShow = false;
     }
-     
+
     if( $bShow ) {   
-      return "<div class='speed-buttons-center'>
-        <div class='speed-buttons'>
-          <span class='fv_sp_slower'>&#45;</span>
-         <span class='fv_sp_faster'>&#43;</span>
-        </div>
-      </div>";
-    } else {
-      return false;
+      $aButtons[] = "<ul class='fv-player-speed'><li><a class='fv_sp_slower'>&#45;</a></li><li><a class='fv_sp_faster'>&#43;</a></li></ul>";
     }
+    
+    return $aButtons;
   }
   
   

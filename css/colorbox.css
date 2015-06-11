@@ -5,32 +5,32 @@ ColorBox Core Style
 The following rules are the styles that are consistant between themes.
 Avoid changing this area to maintain compatability with future versions of ColorBox.
 */
-#colorbox, #cboxOverlay, #cboxWrapper, #colorbox.fv-flowplayer-shortcode-editor, #cboxOverlay.fv-flowplayer-shortcode-editor, #cboxWrapper.fv-flowplayer-shortcode-editor{position:absolute; top:0; left:0; z-index:1001; overflow:hidden;}
-#cboxOverlay, #cboxOverlay.fv-flowplayer-shortcode-editor{position:fixed; width:100%; height:100%; z-index: 1000}
-#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
-#cboxContent{position:relative; overflow:hidden;}
-#cboxLoadedContent{overflow:auto;}
-#cboxLoadedContent iframe{display:block; width:100%; height:100%; border:0; background-color: white;}
-.fv-flowplayer-shortcode-editor #cboxTitle{margin:5px; text-align: left; bottom: auto }
-#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%;}
-#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
+#fv_player_box, #fv_player_boxOverlay, #fv_player_boxWrapper, #fv_player_box.fv-flowplayer-shortcode-editor, #fv_player_boxOverlay.fv-flowplayer-shortcode-editor, #fv_player_boxWrapper.fv-flowplayer-shortcode-editor{position:absolute; top:0; left:0; z-index:100001; overflow:hidden;}
+#fv_player_boxOverlay, #fv_player_boxOverlay.fv-flowplayer-shortcode-editor{position:fixed; width:100%; height:100%; z-index: 100000}
+#fv_player_boxMiddleLeft, #fv_player_boxBottomLeft{clear:left;}
+#fv_player_boxContent{position:relative; overflow:hidden;}
+#fv_player_boxLoadedContent{overflow:auto;}
+#fv_player_boxLoadedContent iframe{display:block; width:100%; height:100%; border:0; background-color: white;}
+.fv-flowplayer-shortcode-editor #fv_player_boxTitle{margin:5px; text-align: left; bottom: auto }
+#fv_player_boxLoadingOverlay, #fv_player_boxLoadingGraphic{position:absolute; top:0; left:0; width:100%;}
+#fv_player_boxPrevious, #fv_player_boxNext, #fv_player_boxClose, #fv_player_boxSlideshow{cursor:pointer;}
 
 /*
 ColorBox example user style
 The following rules are ordered and tabbed in a way that represents the
 order/nesting of the generated HTML, so that the structure easier to understand.
 */
-#cboxOverlay{background:#111;}
+#fv_player_boxOverlay{background:#111;}
 
 #colorBox{}
-    #cboxContent{background:#fff; padding: 5px;background:url(loading.gif) 50% 50% no-repeat #fff; }
-        #cboxLoadedContent{margin-top:35px;}
-        #cboxTitle{position:absolute; top:0px; left:0; padding: 8px 0 8px 18.5%; width:100%; color:#9D1A28; font-size: 14px;}
-        #cboxCurrent{position:absolute; bottom:0px; left:100px; color:#999;}
-        #cboxSlideshow{position:absolute; bottom:0px; right:42px; color:#444;}
-        #cboxPrevious{position:absolute; bottom:0px; left:0; color:#444;}
-        #cboxNext{position:absolute; bottom:0px; left:63px; color:#444;}
-        /*#cboxLoadingOverlay{ text-align: center; background:url(loading.gif) 5px 5px no-repeat #fff;}*/
-        #cboxClose{position:absolute; top:2px; right:2px; display:block; color:#444; height: 16px; width: 16px; overflow: hidden; text-indent: 25px; background: url("img/uploader-icons.png") -98px 0 no-repeat transparent; border: 0; }
-        #cboxClose:hover { background-position: -98px 0; }
+    #fv_player_boxContent{background:#fff; padding: 5px;background:url(loading.gif) 50% 50% no-repeat #fff; }
+        #fv_player_boxLoadedContent{margin-top:35px;}
+        #fv_player_boxTitle{position:absolute; top:0px; left:0; padding: 8px 0 8px 18.5%; width:100%; color:#9D1A28; font-size: 14px;}
+        #fv_player_boxCurrent{position:absolute; bottom:0px; left:100px; color:#999;}
+        #fv_player_boxSlideshow{position:absolute; bottom:0px; right:42px; color:#444;}
+        #fv_player_boxPrevious{position:absolute; bottom:0px; left:0; color:#444;}
+        #fv_player_boxNext{position:absolute; bottom:0px; left:63px; color:#444;}
+        /*#fv_player_boxLoadingOverlay{ text-align: center; background:url(loading.gif) 5px 5px no-repeat #fff;}*/
+        #fv_player_boxClose{position:absolute; top:2px; right:2px; display:block; color:#444; height: 16px; width: 16px; overflow: hidden; text-indent: 25px; background: url("img/uploader-icons.png") -98px 0 no-repeat transparent; border: 0; }
+        #fv_player_boxClose:hover { background-position: -98px 0; }
         
