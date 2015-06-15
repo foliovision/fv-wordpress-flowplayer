@@ -67,6 +67,10 @@ function fv_flowplayer_get_js_translations() {
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv_flowplayer'),
   'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv_flowplayer'),
+  'error_JSON' =>__('Admin: Error parsing JSON','fv_flowplayer'),
+  'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv_flowplayer'),
+  'check_failed' =>__('Admin: Check failed.','fv_flowplayer'),
+  'video_issues' =>__('Video Issues','fv_flowplayer'),
   );
   
   return $aStrings;
