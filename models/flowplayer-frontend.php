@@ -236,7 +236,7 @@ class flowplayer_frontend extends flowplayer
 	
 				
 				$attributes = array();
-				$attributes['class'] = 'flowplayer';
+				$attributes['class'] = 'flowplayer no-brand';
 				
 				if( $autoplay == false && !(isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
 					$attributes['class'] .= ' is-splash';
