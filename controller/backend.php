@@ -25,6 +25,7 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
 add_action('admin_head', 'flowplayer_admin_head');
 add_action('admin_footer', 'flowplayer_admin_footer');
 add_action('admin_print_footer_scripts', 'flowplayer_admin_footer_wp_js_restore', 999999 );
+add_action('admin_footer-plugins.php', 'fv_flowplayer_admin_block_update_now', 999999 );
 
 add_action('admin_menu', 'flowplayer_admin');
 add_action('media_buttons', 'flowplayer_add_media_button', 30);
@@ -956,6 +957,18 @@ function fv_wp_flowplayer_plugin_action_links($links, $file) {
   	return $links;
   }
 
+  
+function fv_flowplayer_admin_block_update_now() {
+  $aCheck = get_transient( 'fv_flowplayer_license' );  
+  if( $aCheck && isset($aCheck->expired) && $aCheck->expired ) :
+  ?>
+<script>
+jQuery(".update-link [href*='fv-wordpress-flowplayer']").click( function() { return confirm('Your FV Flowplayer license is expired. The Flowplayer 5 core was upgraded to Flowplayer 6, so your license key is no longer valid.\n\nIf you proceed with the update, you will loose your custom logo.') });
+</script>
+  <?php
+  endif;
+}
+  
   
 function fv_flowplayer_admin_scripts() {
   if (isset($_GET['page']) && $_GET['page'] == 'fvplayer') {
