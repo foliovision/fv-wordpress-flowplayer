@@ -353,6 +353,22 @@ function fv_wp_flowplayer_admin_init() {
     }
   }
   
+  if( 
+    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false || $_GET['page'] === 'fvplayer') 
+    && $pnotices = get_option('fv_wordpress_flowplayer_persistent_notices') 
+  ) {  
+    $fv_fp->pointer_boxes['fv_flowplayer_license_expired'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_flowplayer_license_expired',
+      'pointerWidth' => 340,
+      'heading' => __('FV Flowplayer License Expired', 'fv_flowplayer'),
+      'content' => __( $pnotices ),
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1' => __('I understand', 'fv_flowplayer'),
+      'button2' => __('I\'ll check this later', 'fv_flowplayer')
+    );    
+  }
+  
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
     update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
@@ -381,16 +397,13 @@ function fv_wp_flowplayer_admin_init() {
 
     $aCheck = get_transient( 'fv_flowplayer_license' );
     $aInstalled = get_option('fv_flowplayer_extension_install');
-    if(
-      isset($aCheck->valid) && $aCheck->valid &&
-      (
-        !isset($aInstalled['fv_player_pro']) ||
-        ( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( $_REQUEST['nonce_fv_player_pro_install'], 'fv_player_pro_install') )
-      )
-    ) {
-      fv_wp_flowplayer_install_extension('fv_player_pro');
-    }    
-    
+    if( isset($aCheck->valid) && $aCheck->valid){
+      if( !isset($aInstalled['fv_player_pro']) || ( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( $_REQUEST['nonce_fv_player_pro_install'], 'fv_player_pro_install') ) ) {
+        fv_wp_flowplayer_install_extension('fv_player_pro');
+      }
+      
+      delete_option('fv_wordpress_flowplayer_persistent_notices');
+    }
   }  
 }   
 
@@ -399,6 +412,7 @@ function fv_wp_flowplayer_admin_key_update() {
 	global $fv_fp, $fv_wp_flowplayer_core_ver;
 	
 	$data = fv_wp_flowplayer_license_check( array('action' => 'key_update') );
+	file_put_contents(get_home_path().'fdebug.txt', var_export($data, true), FILE_APPEND );
 	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
@@ -406,6 +420,10 @@ function fv_wp_flowplayer_admin_key_update() {
 			update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
 			return true;
 		}                            
+	} else if( isset($data->expired) && $data->expired && isset($data->message) ){
+    update_option( 'fv_wordpress_flowplayer_persistent_notices', $data->message );
+    update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+    return false;
 	} else {
     update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer License upgrade failed - please check if you are running the plugin on your licensed domain.' );
     update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
@@ -823,7 +841,14 @@ function fv_wp_flowplayer_pointers_ajax() {
 			update_option( 'fvwpflowplayer', $conf );
 		}
 		die();
-	}  
+	}
+	
+  if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_license_expired' && isset($_POST['value']) && $_POST['value'] === 'true' ) {
+    check_ajax_referer('fv_flowplayer_license_expired');
+    delete_option("fv_wordpress_flowplayer_persistent_notices");
+    die();
+  }
+	
 }
 
 
