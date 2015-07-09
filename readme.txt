@@ -318,6 +318,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.2 - 2015/07/09
+
+* Upgrade to Flowplayer 6 core! HLS Flash playback, skin improvements, hover tooltip for seeking and a lot more.
+
+= 2.3.17 - 2015/07/07 =
+
+* Core - putting in warning for Flowplayer 6 upgrade
+
 = 2.3.16 - 2015/05/28 =
 
 * Feature - MPEG DASH experimental support
