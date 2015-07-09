@@ -796,6 +796,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         case 'x-mpegurl' :
           $output = 'application/'.$output;
           break;
+        case 'm3u8' :
+          $output = 'application/'.$output;
+          break;        
         default:
           $output = 'video/'.$output;
           break;
