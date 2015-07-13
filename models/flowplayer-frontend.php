@@ -77,19 +77,6 @@ class flowplayer_frontend extends flowplayer
 		        
 		$src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
 		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
-		
-    
-		$autoplay = false;  //  todo: should be changed into a property
-		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
-			$this->autobuffer_count++;
-			if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
-				$autoplay = true;
-			}
-		}  
-		if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
-			$this->autobuffer_count++;
-			$autoplay = true;
-		}
     
     
     $splash_img = $this->get_splash();
@@ -156,6 +143,20 @@ class flowplayer_frontend extends flowplayer
     }    
     
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
+    
+    
+		$autoplay = false;  //  todo: should be changed into a property
+		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
+			$this->autobuffer_count++;
+			if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
+				$autoplay = true;
+			}
+		}  
+		if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
+			$this->autobuffer_count++;
+			$autoplay = true;
+		}
+    
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
