@@ -17,11 +17,9 @@
 */ 
 
 //add_action('the_content', 'flowplayer_content_remove_commas');
-add_action('wp_head', 'flowplayer_head');
 add_action('wp_footer','flowplayer_prepare_scripts',9);
 add_action('wp_footer','flowplayer_display_scripts',100);          
 add_action('widget_text','do_shortcode');
-add_action('wp_enqueue_scripts', 'flowplayer_jquery');
 
 add_filter( 'run_ngg_resource_manager', '__return_false' );
 

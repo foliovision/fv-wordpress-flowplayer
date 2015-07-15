@@ -963,7 +963,7 @@ function fv_flowplayer_admin_block_update_now() {
   if( $aCheck && isset($aCheck->expired) && $aCheck->expired ) :
   ?>
 <script>
-jQuery(".update-link [href*='fv-wordpress-flowplayer']").click( function() { return confirm('Your FV Flowplayer license is expired. The Flowplayer 5 core was upgraded to Flowplayer 6, so your license key is no longer valid.\n\nIf you proceed with the update, you will loose your custom logo.') });
+jQuery(".update-link [href*='fv-wordpress-flowplayer']").click( function() { return confirm('Your FV Flowplayer license is expired.\n\nThanks for your early support for FV Player Pro. To enjoy the new features of Flowplayer 6 core, please renew your license. If proceed with the upgrade without renewing your license, you will lose your custom logo and your pro features.') });
 </script>
   <?php
   endif;

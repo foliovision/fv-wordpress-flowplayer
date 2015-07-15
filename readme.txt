@@ -318,6 +318,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 2.4 - 2015/07/15
+
+* Compatibily - CSS styles are now loaded using WP API wp_enqueue_scripts()
+
 = 2.3.17 - 2015/07/07 =
 
 * Core - putting in warning for Flowplayer 6 upgrade
@@ -1019,6 +1023,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 2.4 =
+
+* CSS styles are now loaded using WP API wp_enqueue_scripts(). Please check your player appearance.
 
 = 2.3.16 =
 

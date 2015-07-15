@@ -47,7 +47,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   var $ret = array('html' => false, 'script' => false);
   
-  var $hash = false;  
+  var $hash = false;
+  
+  var $bCSSInline = false;
   
   public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
   
@@ -90,6 +92,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
     
     add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
+    
+    add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
+    add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
 
   }
   
@@ -385,12 +390,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   
-  function css_generate( $style_tag = true ) {
+  function css_generate( $skip_style_tag = true ) {
     global $fv_fp;
     
     $iMarginBottom = (isset($fv_fp->conf['marginBottom']) && intval($fv_fp->conf['marginBottom']) > -1 ) ? intval($fv_fp->conf['marginBottom']) : '28';
     
-    if( $style_tag ) : ?>
+    if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
     
@@ -431,6 +436,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; }
     .wpfp_custom_ad a { color: <?php echo trim($fv_fp->conf['adLinksColor']); ?> }
     
+    .fv-wp-flowplayer-notice-small { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
+    
     .fvfp_admin_error { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
     .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
     #content .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
@@ -451,16 +458,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
   
-    <?php if( $style_tag ) : ?>
+    <?php if( !$skip_style_tag ) : ?>
       </style>  
     <?php endif;
   }
   
   
-  function css_get() {
+  function css_enqueue() {
+    if( is_admin() && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+      return;
+    }
+    
     global $fv_wp_flowplayer_ver;
-    $bInline = true;
-    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css?ver='.$fv_wp_flowplayer_ver;    
+    $this->bCSSInline = true;
+    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
+    $sVer = $fv_wp_flowplayer_ver;
     
     if( is_multisite() ) {
       global $blog_id;
@@ -472,16 +484,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( apply_filters('fv_flowplayer_css_writeout', true ) && isset($this->conf[$this->css_option()]) && $this->conf[$this->css_option()] ) {
       $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
       if( @file_exists($filename) ) {
-        $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css?ver='.$this->conf[$this->css_option()];
-        $bInline = false;
+        $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css';
+        $sVer = $this->conf[$this->css_option()];
+        $this->bCSSInline = false;
       }
     }
     
-    echo '<link rel="stylesheet" href="'.$sURL.'" type="text/css" media="screen" />'."\n";
-    if( $bInline ) {
-      $this->css_generate();
+    wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
+    
+    if( current_user_can('manage_options') ) {
+      wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
     }
-    return ;
+    
+    if( $this->bCSSInline ) {
+      add_action( 'wp_head', array( $this, 'css_generate' ) );
+      add_action( 'admin_head', array( $this, 'css_generate' ) );
+    }
+    
   }
   
   
@@ -533,7 +552,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     ob_start();
-    $this->css_generate(false);
+    $this->css_generate(true);
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
     if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
       return false;
@@ -930,21 +949,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     return true;
   }  
-  
-}
-/**
- * Defines some needed constants and loads the right flowplayer_head() function.
- */
-function flowplayer_head() {
-  global $fv_fp;  
-  $fv_fp->flowplayer_head();
-}
-
-
-
-
-function flowplayer_jquery() {
-  global $fv_wp_flowplayer_ver, $fv_fp;
   
 }
 

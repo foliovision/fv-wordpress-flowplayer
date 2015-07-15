@@ -876,14 +876,7 @@ HTML;
 
     return $sHTML;
   }
+
   
-  
-	/**
-	 * Displays the elements that need to be added to frontend.
-	 */
-	function flowplayer_head() {
-    include dirname( __FILE__ ) . '/../view/frontend-head.php';
-	}
-      
 }
 
