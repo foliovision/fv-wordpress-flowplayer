@@ -73,7 +73,6 @@ function flowplayer_deactivate() {
 
 
 function flowplayer_admin_head() {  
-  include dirname( __FILE__ ) . '/../view/frontend-head.php';
   
   if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
     return; 
