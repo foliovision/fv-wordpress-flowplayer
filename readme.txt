@@ -318,11 +318,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.2 - 2015/07/09
+= 6.0.2.1 - 2015/07/15 =
+
+* Bugfix - fix for CSS font paths
+
+= 6.0.2 - 2015/07/09 =
 
 * Upgrade to Flowplayer 6 core! HLS Flash playback, skin improvements, hover tooltip for seeking and a lot more.
 
-= 2.4 - 2015/07/15
+= 2.4 - 2015/07/15 =
 
 * Compatibily - CSS styles are now loaded using WP API wp_enqueue_scripts()
 
