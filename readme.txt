@@ -318,7 +318,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.4 - 2015/07/15
+= 2.4 - 2015/07/15 =
 
 * Compatibily - CSS styles are now loaded using WP API wp_enqueue_scripts()
 
