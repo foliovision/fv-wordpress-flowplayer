@@ -558,6 +558,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return false;
     }
     $sCSSCurrent = preg_replace( '~url\((")?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+    $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, $sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
       return false;

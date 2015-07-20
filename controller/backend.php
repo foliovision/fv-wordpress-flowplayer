@@ -354,7 +354,7 @@ function fv_wp_flowplayer_admin_init() {
   }
   
   $aOptions = get_option( 'fvwpflowplayer' );
-  if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
+  if( !isset($aOptions['version']) /*|| version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] )*/ ) {
     update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
