@@ -1014,12 +1014,21 @@ function fv_flowplayer_after_plugin_row( $file, $plugin_data ){
     $active_class = ( is_plugin_active( $plugin_data['plugin'] ) ) ? ' active' : '';
     echo '<tr class="plugin-update-tr' . $active_class . '" id="fv-wordpress-flowplayer-update" data-slug="fv-wordpress-flowplayer"><td colspan="' . esc_attr( $wp_list_table->get_column_count() ) . '" class="plugin-update colspanchange"><div class="update-message">';
     
-    echo preg_replace( '~<div[\s\S]*?</div>~', '', $aCheck->message );
+    global $fv_flowplayer_form;
+    preg_match( '~<form[\s\S]*?</form>~', $aCheck->message, $fv_flowplayer_form );
+    $fv_flowplayer_form = $fv_flowplayer_form[0];
+    preg_match( '~<[^>]*?type="submit"[^>]*?>~', $aCheck->message, $button );
+    $aCheck->message = preg_replace( '~<form[\s\S]*?</form>~', $button[0], $aCheck->message );
+    echo $aCheck->message;
+        
+    add_filter( 'admin_footer', 'fv_flowplayer_update_footer_html' );
+    
     echo '<a href="'.admin_url('plugins.php?fv_flowplayer_allow_update=1').'">Click here</a> to allow upgrade anyway.';
 
     echo '</div></td></tr>';
     
     echo '<script type="text/javascript">';
+    echo "jQuery('#fv-wordpress-flowplayer-update').find('input[type=submit]').click( function() { jQuery('.fv_licensing_form').find('input[type=submit]').click(); return false;} );";
     echo 'jQuery(document).ready( function(){jQuery("#fv-wordpress-flowplayer").addClass("update"); });';
     echo '</script>';
   }
@@ -1067,5 +1076,15 @@ function fv_flowplayer_allow_update(){
     delete_site_transient('update_plugins');
     
     wp_redirect( admin_url('plugins.php') );
+  }
+}
+
+
+
+
+function fv_flowplayer_update_footer_html() {
+  global $fv_flowplayer_form;
+  if( flowplayer::is_licensed() && isset($fv_flowplayer_form) ) {
+    echo "<div style='display: none'>\n".$fv_flowplayer_form."</div>\n";
   }
 }
