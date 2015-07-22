@@ -1008,6 +1008,9 @@ function fv_flowplayer_after_plugin_row( $file, $plugin_data ){
   if( $update_row != 'removed' ){
     return;
   }
+  
+  global $fv_player_pro_form;
+  if( isset($fv_player_pro_form) ) return;
 
   if ( is_network_admin() || !is_multisite() ) {
     $wp_list_table = _get_list_table('WP_Plugins_List_Table');
