@@ -994,6 +994,10 @@ add_filter( 'pre_set_site_transient_update_plugins', 'fv_flowplayer_check_plugin
 add_action( 'admin_init', 'fv_flowplayer_allow_update' );
 
 function fv_flowplayer_after_plugin_row( $file, $plugin_data ){
+  if( !flowplayer::is_licensed() ) {
+    return;
+  }
+  
   $update_row = get_option('fvwpflowplayer_update_row');
 
   $aCheck = get_transient( 'fv_flowplayer_license' );
@@ -1025,6 +1029,10 @@ function fv_flowplayer_after_plugin_row( $file, $plugin_data ){
 
 
 function fv_flowplayer_check_plugin_update( $data ){
+  if( !flowplayer::is_licensed() ) {
+    return $data;
+  }
+  
   $update_row = get_option('fvwpflowplayer_update_row');
   
   $aCheck = get_transient( 'fv_flowplayer_license' );
@@ -1042,7 +1050,7 @@ function fv_flowplayer_check_plugin_update( $data ){
     $old_version = substr($fv_wp_flowplayer_ver,0,1);
     $new_version = substr($data->response['fv-wordpress-flowplayer/flowplayer.php']->new_version,0,1);
     
-    if( 1 ){//$old_version == '2' && $new_version == '6'){
+    if( $old_version == '2' && $new_version == '6'){
       unset($data->response['fv-wordpress-flowplayer/flowplayer.php']);
       update_option('fvwpflowplayer_update_row', 'removed');
     }
