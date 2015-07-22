@@ -318,11 +318,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 2.4.2 - 2015/07/22
+= 2.4.2 - 2015/07/22 =
 
 * Flowplayer 6 - last preparations for the upgrade
 
-= 2.4.1 - 2015/07/20
+= 2.4.1 - 2015/07/20 =
 
 * CSS - making sure the CSS writeout uses protocol independent links
 
