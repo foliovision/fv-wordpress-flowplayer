@@ -258,6 +258,13 @@ function fv_wp_flowplayer_admin_notice() {
     	echo "</p></div>";
     }
   }*/
+  
+  if( isset($_GET['fv-licensing']) && $_GET['fv-licensing'] == "check" ){
+    echo '<div class="updated inline">
+            <p>Thank you for purchase. Your license will be renewed in couple of minutes.<br/>
+            Please make sure you upgrade <strong>FV Player Pro</strong> and <strong>FV Player VAST</strong> if you are using it.</p>
+          </div>';
+  }  
 }
 
 
@@ -300,6 +307,14 @@ function fv_wp_flowplayer_admin_init() {
 			echo 'Error saving FV Flowplayer options.';
 		}
 	}
+  
+  if( isset($_GET['fv-licensing']) && $_GET['fv-licensing'] == "check" ){
+    delete_option("fv_wordpress_flowplayer_persistent_notices");
+    
+    //license will expire in one minute
+    fv_wp_flowplayer_change_transient_expiration("fv_flowplayer_license",60);
+    fv_wp_flowplayer_delete_extensions_transients(60);
+	}  
 
   global $fv_fp;
   global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
@@ -1073,12 +1088,37 @@ function fv_flowplayer_check_plugin_update( $data ){
 
 
 
+
 function fv_flowplayer_allow_update(){
   if( isset($_GET['fv_flowplayer_allow_update']) ){
     update_option('fvwpflowplayer_update_row', 'allowed');
     delete_site_transient('update_plugins');
     
     wp_redirect( admin_url('plugins.php') );
+  }
+}
+
+
+
+
+function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
+    $transient_val = get_transient($transient_name);
+    if( $transient_val ){
+      set_transient($transient_name,$transient_val,$time);
+      return true;
+    }
+    return false;
+}
+
+
+function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
+  if( !$delete_delay ){
+    delete_transient("fv-player-pro_license");
+    delete_transient("fv-player-vast_license");
+  }
+  else{
+    fv_wp_flowplayer_change_transient_expiration("fv-player-pro_license",$delete_delay);
+    fv_wp_flowplayer_change_transient_expiration("fv-player-vast_license",$delete_delay);
   }
 }
 
