@@ -429,7 +429,6 @@ function fv_wp_flowplayer_admin_key_update() {
 	global $fv_fp, $fv_wp_flowplayer_core_ver;
 	
 	$data = fv_wp_flowplayer_license_check( array('action' => 'key_update') );
-	file_put_contents(get_home_path().'fdebug.txt', var_export($data, true), FILE_APPEND );
 	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
