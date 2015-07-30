@@ -318,6 +318,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.2.2 - 2015/07/30 =
+
+* Bugfix - PHP missing includes
+
 = 6.0.2.1 - 2015/07/15 =
 
 * Bugfix - fix for CSS font paths
