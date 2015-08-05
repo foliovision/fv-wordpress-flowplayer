@@ -16,13 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
+require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
 
 class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
-  var $strPluginSlug = 'fv-wordpress-flowplayer';
-  var $strPluginFile = 'fv-wordpress-flowplayer/flowplayer.php';
-  var $strPrivateAPI = 'https://foliovision.com/plugins/';  
-  
   private $count = 0;
   /**
    * Relative URL path
@@ -75,8 +71,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
        
        //  pointer boxes
       parent::__construct();
-    
-      parent::auto_updates();         
     }
     
 
@@ -564,7 +558,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
       return false;
     }
-    $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+    $sCSSCurrent = preg_replace( '~url\((")?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+    $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, $sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
       return false;
