@@ -258,10 +258,10 @@ function fv_wp_flowplayer_admin_notice() {
   }
   
   global $FV_Player_Pro;
-  if( $FV_Player_Pro && version_compare($FV_Player_Pro->version,'0.5') != 1 ) : 
+  if( $FV_Player_Pro && version_compare($FV_Player_Pro->version,'0.5') == -1 ) : 
   ?>
   <div class="error">
-      <p><?php _e( 'FV Wordpress Flowplayer: Your pro extension is intalled, but it\'s not compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'my-text-domain' ); ?></p>
+      <p><?php _e( 'FV Wordpress Flowplayer: Your pro extension is installed, but it\'s not compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'my-text-domain' ); ?></p>
   </div>
   <?php
   endif;
