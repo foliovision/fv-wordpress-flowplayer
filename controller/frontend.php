@@ -65,6 +65,10 @@ function fv_flowplayer_get_js_translations() {
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv_flowplayer'),
   'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv_flowplayer'),
+  'error_JSON' =>__('Admin: Error parsing JSON','fv_flowplayer'),
+  'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv_flowplayer'),
+  'check_failed' =>__('Admin: Check failed.','fv_flowplayer'),
+  'video_issues' =>__('Video Issues','fv_flowplayer'),
   );
   
   return $aStrings;
@@ -286,7 +290,7 @@ function flowplayer_prepare_scripts() {
 	global $fv_fp, $fv_wp_flowplayer_ver;
   
   //  don't load script in Optimize Press 2 preview
-  if( flowplayer::is_optimizepress() ) {
+  if( flowplayer::is_special_editor() ) {
     return;  
   }
 
@@ -306,7 +310,7 @@ function flowplayer_prepare_scripts() {
       wp_enqueue_script( 'flowplayer-mediaelement', flowplayer::get_plugin_url().'/mediaelement/mediaelement-and-player.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
     }
     
-    $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver ) );
+    $aConf = array('embed' => array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver ), 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
       $aConf['safety_resize'] = true;
@@ -350,7 +354,7 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-  if( flowplayer::is_optimizepress() ) {
+  if( flowplayer::is_special_editor() ) {
     return;  
   }  
 
@@ -371,7 +375,7 @@ function flowplayer($shortcode) {
 Make sure our div won't be wrapped in any P tag and that html attributes don't break the shortcode
 */
 function fv_flowplayer_the_content( $c ) {
-  if( flowplayer::is_optimizepress() ) {
+  if( flowplayer::is_special_editor() ) {
     return $c;  
   }    
   

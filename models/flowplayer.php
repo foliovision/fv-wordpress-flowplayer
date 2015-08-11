@@ -48,12 +48,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   var $ret = array('html' => false, 'script' => false);
   
   var $hash = false;
-  
+
   var $bCSSInline = false;
   
-  public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+  public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
   
-  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 2; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
+  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
   
   /**
    * Class constructor
@@ -66,11 +66,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       //  update notices
       $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';    
       if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
-         add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
-       }
+        add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
+      }
        
        //  pointer boxes
-       parent::__construct();
+      parent::__construct();
     }
     
 
@@ -257,7 +257,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
-          if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+          if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
             $flash_media[] = $media_url['flash'];
           }
         } else {
@@ -265,12 +265,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
           if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-            $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.str_replace( '+', ' ', $actual_media_url ) );
+            $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           } else {
-            $aItem[] = array( 'flash' => str_replace( '+', ' ', $actual_media_url ) );
+            $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           }
         } else {
-          $aItem[] = array( $this->get_file_extension($actual_media_url) => $actual_media_url );
+          $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
         }        
       }
       
@@ -289,7 +289,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }      
       }
       
-      $aPlaylistItems[] = $aItem;
+      $aPlaylistItems[] = array( 'sources' => $aItem );
 
       $sHTML = '';
       if( $sShortcode && count($sItems) > 0 ) {
@@ -331,7 +331,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
             if( is_array($media_url) ) {
               $actual_media_url = $media_url['media'];
-              if( $this->get_file_extension($actual_media_url) == 'mp4' ) {
+              if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
                 $flash_media[] = $media_url['flash'];
               }
             } else {
@@ -339,12 +339,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             }
             if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
               if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-                $aItem[] = array( 'flash' => $this->get_file_extension($actual_media_url,'mp4').':'.str_replace( '+', ' ', $actual_media_url ) );
+                $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
               } else {
-                $aItem[] = array( 'flash' => str_replace( '+', ' ', $actual_media_url ) );
+                $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
               }              
             } else {
-              $aItem[] = array( $this->get_file_extension($aPlaylist_item_i) => $actual_media_url ); 
+              $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
             }                
             
           }
@@ -363,8 +363,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               }
             }      
           }
-      
-          $aPlaylistItems[] = $aItem;
+
+          $aPlaylistItems[] = array( 'sources' => $aItem );
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
@@ -383,7 +383,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
         //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
-
+      //echo "<!--playlist: \n".var_export($aPlaylistItems,true)."\n-->\n\n\n";
       return array( $sHTML, $aPlaylistItems );      
   }  
   
@@ -409,15 +409,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
     .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
-    .flowplayer .fp-controls { background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
+    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
-    .flowplayer .fp-duration { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }
+    .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; }
     .flowplayer .fp-elapsed { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
     .flowplayer .fp-volumelevel { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }  
-    .flowplayer .fp-volumeslider { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
+    .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo trim($fv_fp->conf['timelineColor']); ?> !important; }
-    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
-    .flowplayer .fp-buffer { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
+    .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
+    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
+    .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
@@ -428,12 +429,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
   
     .wpfp_custom_background { display: none; }  
-    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 2; text-align: center; width: 100%; color: #fff; }
+    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }  
     .wpfp_custom_popup_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
   
     <?php echo trim($this->conf['ad_css']); ?>
-    .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; }
+    .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; z-index: 20 !important; }
     .wpfp_custom_ad a { color: <?php echo trim($fv_fp->conf['adLinksColor']); ?> }
     
     .fv-wp-flowplayer-notice-small { color: <?php echo trim($fv_fp->conf['timeColor']); ?> !important; }
@@ -772,7 +773,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_file_extension($media, $default = 'flash' ) {
+  function get_mime_type($media, $default = 'flash', $no_video = false) {
     $pathinfo = pathinfo( trim($media) );
 
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
@@ -806,8 +807,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $output = $extension;
       }
     }
+    
+    if( !$no_video ) {
+      switch($extension)  {
+        case 'dash+xml' :
+          $output = 'application/'.$output;
+          break;
+        case 'x-mpegurl' :
+          $output = 'application/'.$output;
+          break;
+        case 'm3u8' :
+          $output = 'application/'.$output;
+          break;        
+        default:
+          $output = 'video/'.$output;
+          break;
+      }
+    }
 
-    return apply_filters( 'fv_flowplayer_get_file_extension', $output, $media );  
+    return apply_filters( 'fv_flowplayer_get_mime_type', $output, $media );  
   }
   
   
@@ -843,7 +861,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       );
     
     if( $media ) { 
-      $extension = $this->get_file_extension($media);
+      $mime_type = $this->get_mime_type($media);
       //do not use https on mobile devices
       if (strpos($media, 'https') !== false && $aArgs['mobileUserAgent']) {
         $media = str_replace('https', 'http', $media);
@@ -873,17 +891,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           return trim($media);
         }
       } else {
-        switch($extension)  {
-          case 'dash+xml' :
-            $mime_type = 'application/'.$extension;
-            break;
-          case 'x-mpegurl' :
-            $mime_type = 'application/'.$extension;
-            break;
-          default:
-            $mime_type = 'video/'.$extension;
-            break;
-        }
 
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
@@ -929,6 +936,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public static function is_special_editor() {
+    return flowplayer::is_optimizepress() || flowplayer::is_themify();
+  }
+  
+  
   public static function is_optimizepress() {
     if( ( isset($_GET['page']) && $_GET['page'] == 'optimizepress-page-builder' ) ||
         ( isset($_POST['action']) && $_POST['action'] == 'optimizepress-live-editor-parse' )
@@ -936,7 +948,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return true;
     }
     return false;
-  }  
+  }
+  
+  
+  public static function is_themify() {
+    if( isset($_POST['action']) && $_POST['action'] == 'tfb_load_module_partial' ) {
+      return true;
+    }
+    return false;
+  }    
   
   
   public function is_secure_amazon_s3( $url ) {

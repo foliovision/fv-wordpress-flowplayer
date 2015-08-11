@@ -318,6 +318,22 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3 - 2015/08/11 =
+
+* Core - upgrade to Flowplayer 6.0.3
+
+= 6.0.2.2 - 2015/07/30 =
+
+* Bugfix - PHP missing includes
+
+= 6.0.2.1 - 2015/07/15 =
+
+* Bugfix - fix for CSS font paths
+
+= 6.0.2 - 2015/07/09 =
+
+* Upgrade to Flowplayer 6 core! HLS Flash playback, skin improvements, hover tooltip for seeking and a lot more.
+
 = 2.4.2 - 2015/07/22 =
 
 * Flowplayer 6 - last preparations for the upgrade

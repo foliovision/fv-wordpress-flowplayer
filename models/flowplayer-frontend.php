@@ -77,6 +77,7 @@ class flowplayer_frontend extends flowplayer
 		        
 		$src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
 		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
+		
     
     
     $splash_img = $this->get_splash();
@@ -215,9 +216,8 @@ class flowplayer_frontend extends flowplayer
 						$mobileUserAgent = true;
 				}
 				
-				$redirect = '';			
-	
-				if (isset($this->aCurArgs['redirect'])&&!empty($this->aCurArgs['redirect'])) $redirect = trim($this->aCurArgs['redirect']);
+
+        
 				$scaling = "scale";
 				if (isset($this->conf['scaling'])&&($this->conf['scaling']=="true"))
 					$scaling = "fit";
@@ -235,13 +235,10 @@ class flowplayer_frontend extends flowplayer
 				}	
 								
 				
-				if ( !empty($redirect) ) {
-					$this->ret['script']['fv_flowplayer_redirect'][$this->hash] = $redirect;
-				}
 	
 				
 				$attributes = array();
-				$attributes['class'] = 'flowplayer';
+				$attributes['class'] = 'flowplayer no-brand';
 				
 				if( $autoplay == false && !(isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
 					$attributes['class'] .= ' is-splash';
@@ -314,7 +311,7 @@ class flowplayer_frontend extends flowplayer
 				}
 				
         global $fv_wp_flowplayer_ver;
-				$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;
+				//$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
 				//$attributes['data-flashfit'] = "true";
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
@@ -380,6 +377,14 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
+        }        
+        
+	    if( !empty($this->aCurArgs['redirect']) ) {
+          $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
+        }
+        
+        if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+          $attributes['data-fv_loop'] = true;
         }
         
         if( isset($this->aCurArgs['admin_warning']) ) {
@@ -394,9 +399,6 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 				
-				if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-					$this->ret['script']['fv_flowplayer_loop'][$this->hash] = true;
-				}
 				
 				if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';      
@@ -406,10 +408,7 @@ class flowplayer_frontend extends flowplayer
 					if( $autoplay == true ) {
 						$this->ret['html'] .= ' autoplay';  
 					}
-					if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-						$this->ret['html'] .= ' loop';
-								
-					}     
+    
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 						$this->ret['html'] .= ' preload';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
@@ -441,15 +440,15 @@ class flowplayer_frontend extends flowplayer
   
                 if( isset($aTMP[1]) && isset($aTMP[2]) ) {             
                   $rtmp_file = $aTMP[2];
-                  $extension = $this->get_file_extension($rtmp_file, $aTMP[1]);
+                  $extension = $this->get_mime_type($rtmp_file, $aTMP[1], true);
                 } else {
                   $rtmp_file = $aTMP[1];
-                  $extension = $this->get_file_extension($rtmp_file, false);                  
+                  $extension = $this->get_mime_type($rtmp_file, false, true);                  
                 }
               } else {
                 $rtmp_url = parse_url($rtmp_item);
                 $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-                $extension = $this->get_file_extension($rtmp_url['path'], false);                
+                $extension = $this->get_mime_type($rtmp_url['path'], false, true);                
               }
 
               if( $extension ) {
@@ -479,7 +478,7 @@ class flowplayer_frontend extends flowplayer
 					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
 				}
         
-        if( flowplayer::is_optimizepress() ) {
+        if( flowplayer::is_special_editor() ) {
           $this->ret['html'] .= '<div class="fp-ui"></div>';       
         } else if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
 					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript">troubleshooting guide</a> or <a href="http://foliovision.com/wordpress/pro-install">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
@@ -548,7 +547,7 @@ class flowplayer_frontend extends flowplayer
 					
 			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
 			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
-      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_file_extension($media).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
+      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_mime_type($media, false, true).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
 			$this->ret['html'] .= '</div>'."\n";  
   }
   
@@ -876,7 +875,7 @@ HTML;
 
     return $sHTML;
   }
-
+  
   
 }
 
