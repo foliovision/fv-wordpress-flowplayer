@@ -318,6 +318,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3 - 2015/08/11 =
+
+* Core - upgrade to Flowplayer 6.0.3
+
 = 6.0.2.2 - 2015/07/30 =
 
 * Bugfix - PHP missing includes
