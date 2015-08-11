@@ -318,6 +318,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.1 - 2015/08/11 =
+
+* Bugfix - CSS rewriting fix
+* Bugfix - updated SWF files
+
 = 6.0.3 - 2015/08/11 =
 
 * Core - upgrade to Flowplayer 6.0.3
