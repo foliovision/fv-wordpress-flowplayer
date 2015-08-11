@@ -78,6 +78,27 @@ It seems HTML5 is more picky about what video it can play than Flash.
 
 Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
 
+= Player buttons are gone - there are only square symbols =
+
+1) This can happen if your site is at www.domain.com, but the CSS is loaded from your CDN at cdn.domain.com. Based on CSS3 and HTML5 specs not all the resources can be shared between domains.
+
+So you need to set the following on your CDN for web fonts (woff, eot, ttf, svg):
+
+Access-Control-Allow-Origin: *
+
+Or you can allow your domain only (but in that case it might be good to also allow it with https):
+
+Access-Control-Allow-Origin: http://www.domain.com
+
+Or you can exclude wp-content/plugins/fv-wordpress-flowplayer/css/flowplayer.css from CDN.
+
+2) Second cause might be that your webfonts are served with bad mimetype
+
+`AddType application/x-font-woff woff
+AddType application/x-font-ttf ttf
+AddType application/vnd.ms-fontobject eot
+AddType image/svg+xml svg`
+
 = I want to align my player (left/right/middle) =
 
 By default the player is positioned in the middle. To change alignment of the player to either left or right:
