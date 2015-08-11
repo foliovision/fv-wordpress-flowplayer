@@ -310,9 +310,8 @@ function fv_wp_flowplayer_admin_init() {
 	if( isset($_GET['fv-licensing']) && $_GET['fv-licensing'] == "check" ){
     delete_option("fv_wordpress_flowplayer_persistent_notices");
     
-    //license will expire in one minute
-    fv_wp_flowplayer_change_transient_expiration("fv_flowplayer_license",60);
-    fv_wp_flowplayer_delete_extensions_transients(60);
+    //license will expire in 5 seconds in the function:
+    fv_wp_flowplayer_admin_key_update();
 	}
 
   global $fv_fp;
@@ -432,7 +431,10 @@ function fv_wp_flowplayer_admin_key_update() {
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
 			update_option( 'fvwpflowplayer', $fv_fp->conf );
-			update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+			update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver );
+      
+      fv_wp_flowplayer_change_transient_expiration("fv_flowplayer_license",5);
+      fv_wp_flowplayer_delete_extensions_transients(5);
 			return true;
 		}                            
 	} else if( isset($data->expired) && $data->expired && isset($data->message) ){
