@@ -63,7 +63,7 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    4. Optionally, if you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there. Otherwise, you would have to type in a complete URL of video files.
    5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
    
-Visit [out site](http://wordpress.org/plugins/fv-wordpress-flowplayer/installation/) for a fully featured guide with **screenshots** and more!
+Visit [our site](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation) for a fully featured guide with **screenshots** and more!
 
    
 == Frequently Asked Questions ==
