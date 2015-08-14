@@ -266,7 +266,6 @@ function fv_wp_flowplayer_admin_notice() {
   <?php
   endif;
   
->>>>>>> master
   /*if( isset($_GET['page']) && $_GET['page'] == 'backend.php' ) {
 	  $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' ) {
