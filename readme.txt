@@ -63,7 +63,7 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    4. Optionally, if you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there. Otherwise, you would have to type in a complete URL of video files.
    5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
    
-Visit [out site](http://wordpress.org/plugins/fv-wordpress-flowplayer/installation/) for a fully featured guide with **screenshots** and more!
+Visit [our site](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation) for a fully featured guide with **screenshots** and more!
 
    
 == Frequently Asked Questions ==
@@ -77,6 +77,27 @@ Each browser supports different video format, MP4 is the recommended format. In 
 It seems HTML5 is more picky about what video it can play than Flash.
 
 Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
+
+= Player buttons are gone - there are only square symbols =
+
+1) This can happen if your site is at www.domain.com, but the CSS is loaded from your CDN at cdn.domain.com. Based on CSS3 and HTML5 specs not all the resources can be shared between domains.
+
+So you need to set the following on your CDN for web fonts (woff, eot, ttf, svg):
+
+Access-Control-Allow-Origin: *
+
+Or you can allow your domain only (but in that case it might be good to also allow it with https):
+
+Access-Control-Allow-Origin: http://www.domain.com
+
+Or you can exclude wp-content/plugins/fv-wordpress-flowplayer/css/flowplayer.css from CDN.
+
+2) Second cause might be that your webfonts are served with bad mimetype
+
+`AddType application/x-font-woff woff
+AddType application/x-font-ttf ttf
+AddType application/vnd.ms-fontobject eot
+AddType image/svg+xml svg`
 
 = I want to align my player (left/right/middle) =
 
@@ -318,6 +339,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+<<<<<<< HEAD
+=======
+= 6.0.3.1 - 2015/08/11 =
+
+* Bugfix - CSS rewriting fix
+* Bugfix - updated SWF files
+
+>>>>>>> master
 = 6.0.3 - 2015/08/11 =
 
 * Core - upgrade to Flowplayer 6.0.3
@@ -1048,6 +1077,13 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
+<<<<<<< HEAD
+=======
+= 6.0.3 =
+
+* Brand new core Flowplayer 6!
+
+>>>>>>> master
 = 2.4 =
 
 * CSS styles are now loaded using WP API wp_enqueue_scripts(). Please check your player appearance.
