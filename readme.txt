@@ -1074,13 +1074,10 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
-<<<<<<< HEAD
-=======
 = 6.0.3 =
 
 * Brand new core Flowplayer 6!
 
->>>>>>> master
 = 2.4 =
 
 * CSS styles are now loaded using WP API wp_enqueue_scripts(). Please check your player appearance.
