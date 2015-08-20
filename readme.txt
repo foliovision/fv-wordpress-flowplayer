@@ -339,6 +339,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.3 - 2015/08/20 =
+
+* Bugfix - bad logo link for licensed users revised
+
 = 6.0.3.2 - 2015/08/18 =
 
 * Bugfix - bad logo link for licensed users
