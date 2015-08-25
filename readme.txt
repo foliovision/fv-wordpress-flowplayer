@@ -1,48 +1,52 @@
 === FV Wordpress Flowplayer ===
 Contributors: FolioVision
 Donate link: http://foliovision.com/donate/
-Tags: video, flash, flowplayer, player, jwplayer, mobile, mobile video, html5, Vimeo, Vimeo Pro, video player, video plugin, Video Player plugin, video widget, videos, flash player, html5 video, html5 player, HTML5 video player, youtube, youtube player, youtube Video Player, youtube videos, embed youtube, youtube widget, youtube plugin, youtube playlist, MP4, m4v, WebM, h264, h.264, flv, video embed, video blog, playlist, playlists, video playlist, high definition Video Player, flash video player, WP flash Video Player, embed video
+Tags: video player, flowplayer, jwplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, spider player, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.2.2
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Wordpress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, stats, Vimeo, YouTube.
+Wordpress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, stats, Vimeo and YouTube.
 
 == Description ==
 
 Custom HTML 5 video on your own site with Flash fallback for legacy browsers is here.
 
-FV Wordpress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Wordpress Flowplayer offers 98% coverage even on mobile devices.
+FV Wordpress Flowplayer 6 WordPress plugin is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Wordpress Flowplayer offers 98% coverage even on mobile devices.
 
-* **New:** Automated checking of video mime type for logged in admins on MP4 videos
-* FV Flowplayer 5 is the only completely responsive WordPress video player.
+* **NEW** easy AB looped playback for your visitors (great for teaching sites)
+* **NEW** improved and more powerful playlists (more playlist features coming soon).
+* Automated checking of video mime type for logged in admins on MP4 videos
+* FV Flowplayer 5 is a completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Flowplayer all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
-* Beautiful playlists which you can skin with CSS.
+* Single site pro license available (jwPlayer requires five pack for full features)
 * Ultra-efficient player: just 62kB of JavaScript and 8kB of Flash code. You can extend Flowplayer using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
-* Full support for Amazon S3 and other CDN's.
+* Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy).
 
-Licenses are on a May Day half price launch sale for May 2013. Don't miss out!
+Back to school special 25% off pro licenses until end of September.
 
 **Additional Technical information**
 
-* Plugin based on opensource version of Flowplayer 5. 
+* Core video engine: open source Flowplayer 6. 
 * Supported video formats are FLV, H.264, and MP4 ([read about HTML5 video formats](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding)). Multiple videos can be displayed in one post or page.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with Wordpress Flowplayer plugin, there are several improvements:
 
-	1. Usage is simpler and forgiving, making the plugin easier to use.
-	2. Allows user to display clickable splash screen at the beginning of video (which not only looks good, but improves the performance significantly).
-	3. Allows user to display popup box after the video ends, with any HTML content (clickable links, images, styling, etc.)
-	4. Allows to upload videos and images through WP Media Library
-	5. Does not use configuration file, but Wordpress Options
+	1. Allows user to display clickable splash screen at the beginning of video (which not only looks good, but improves the performance significantly).
+	2. Allows user to display popup box after the video ends, with any HTML content (clickable links, images, styling, etc.)
+	3. Does not use configuration file, but Wordpress Options
+	4. Does not drive you to use an in-house proprietary CDN but supports all CDN.
+	5. Includes advanced built-in social sharing.
+	6. Inexpensive [pro support](https://foliovision.com/pro-support) available.
+	7. Includes an advanced built-in video encoding and theme checker to make sure your videos are encoded properly and your site is set up for video playback.
 
 **Additional Documentation at Foliovision.com**
 
@@ -60,7 +64,7 @@ There aren't any special requirements for FV Wordpress Flowplayer to work, and y
    1. Download and unpack zip archive containing the plugin.
    2. Upload the fv-wordpress-flowplayer directory into wp-content/plugins/ directory of your wordpress installation.
    3. Go into Wordpress plugins setup in Wordpress administration interface and activate FV Wordpress Flowplayer plugin.
-   4. Optionally, if you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there. Otherwise, you would have to type in a complete URL of video files.
+   4. If you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there(you use complete URL of video files).
    5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
    
 Visit [our site](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation) for a fully featured guide with **screenshots** and more!
@@ -74,7 +78,7 @@ This should be related to your video format or mime type issues.
 
 Each browser supports different video format, MP4 is the recommended format. In general, it's recommended to use constant frame rate. Detailed instructions about [video encoding for HTML 5](http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding).
 
-It seems HTML5 is more picky about what video it can play than Flash.
+HTML5 is pickier about what video it can play than Flash.
 
 Please note that MP4 is just a container, it might contain various streams for audio and video. You should check what audio and video stream are you using. Read next question to find out how.
 
