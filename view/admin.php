@@ -958,7 +958,8 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
 				?>
 			</div>
-		</div>  
+		</div>
+    <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
   </form>
   
 </div>

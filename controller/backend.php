@@ -308,6 +308,8 @@ function fv_wp_flowplayer_admin_init() {
   }
   
   if( isset($_POST['fv-wp-flowplayer-submit']) ) {
+    check_admin_referer('fv_flowplayer_settings_nonce','fv_flowplayer_settings_nonce');
+    
   	global $fv_fp;
   	if( method_exists($fv_fp,'_set_conf') ) {
 			$fv_fp->_set_conf();    
