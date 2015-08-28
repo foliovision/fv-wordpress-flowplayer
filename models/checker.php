@@ -331,17 +331,17 @@ class FV_Player_Checker {
       foreach( $matches[0] AS $shortcode ) {
         $aArgs = shortcode_parse_atts( rtrim($shortcode,']') );
         list( $playlist_items_external_html, $aPlaylistItems ) = $fv_fp->build_playlist( $aArgs, isset($aArgs['src']) ? $aArgs['src'] : false, false, false, false, false, true );
+        
         if( count($aPlaylistItems) > 0 ) {
           foreach( $aPlaylistItems AS $aItem ) {
-            if( isset($aItem[0]) ) {
-              $aKeys = array_keys($aItem[0]);
-              $videos[] = $aItem[0][$aKeys[0]];
+            if( isset($aItem['sources']) && isset($aItem['sources'][0]) && isset($aItem['sources'][0]['src']) ) {              
+              $videos[] = $aItem['sources'][0]['src'];
             }
           }
         }      
       }
     }
-    
+
     if( count($videos) > 0 ) {
       $videos = array_unique($videos);
     } else {
