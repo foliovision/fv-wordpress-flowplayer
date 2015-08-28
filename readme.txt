@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.4 - 2015/08/28 =
+
+* Security fixes - CSFR protection for settings page
+
 = 6.0.3.3 - 2015/08/20 =
 
 * Bugfix - bad logo link for licensed users revised
