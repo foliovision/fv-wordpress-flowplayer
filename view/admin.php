@@ -384,7 +384,7 @@ function fv_flowplayer_admin_integrations() {
         <p>Following options are suitable for web developers and programmers.</p>
 				<table class="form-table2">
           <tr>
-						<td class="first"><label for="cbox_compatibility">Colobox Compatibility (<abbr title="Use if your theme is using colorbox lightbox to show content and clones the HTML content into it.">?</abbr>):</label></td>
+						<td class="first"><label for="cbox_compatibility">Colorbox Compatibility (<abbr title="Use if your theme is using colorbox lightbox to show content and clones the HTML content into it.">?</abbr>):</label></td>
 						<td>
               <input type="hidden" name="cbox_compatibility" value="false" />
               <input type="checkbox" name="cbox_compatibility" id="cbox_compatibility" value="true" <?php if( isset($fv_fp->conf['cbox_compatibility']) && $fv_fp->conf['cbox_compatibility'] == 'true' ) echo 'checked="checked"'; ?> />
