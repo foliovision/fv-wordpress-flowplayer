@@ -243,10 +243,6 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="3"><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo esc_attr($fv_fp->conf['googleanalytics']); ?>" /></td>
 						</tr>
 						<tr>
-							<td><label for="key">Commercial License Key:</label></td>
-							<td colspan="3"><input type="text" name="key" id="key" value="<?php echo esc_attr($fv_fp->conf['key']); ?>" /></td>
-						</tr>
-						<tr>
 							<td><label for="logo">Logo:</label></td>
 							<td><input type="text"  name="logo" id="logo" value="<?php echo esc_attr($fv_fp->conf['logo']); ?>" /></td>
               <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="Upload Image" alt="Select Logo" /></td>
@@ -886,15 +882,21 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
     <div id="icon-options-general" class="icon32"></div>
     <h2>FV Wordpress Flowplayer</h2>
   </div>
-  <p id="fv_flowplayer_admin_buttons">
-  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
-  	<input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" /> 
-  	<img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
-  	<img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
-    <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
-  </p>
-  <div id="fv_flowplayer_admin_notices">
-  </div>
+  
+  <form id="wpfp_options" method="post" action="">  
+  
+    <p id="fv_flowplayer_admin_buttons">
+      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
+      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" />
+      
+      <input type="text" name="key" id="key" placeholder="Commercial License Key" value="<?php if( $fv_fp->conf['key'] !== "false" ) echo esc_attr($fv_fp->conf['key']); ?>" /> <a title="Click here for license info" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
+      
+      <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
+      <img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+      <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
+    </p>
+    <div id="fv_flowplayer_admin_notices">
+    </div>
   <?php
   
   do_action('fv_player_settings_pre');
@@ -949,7 +951,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 		</div>
   <?php endif; ?>	
   
-  <form id="wpfp_options" method="post" action="">  
+  
 		<div id="dashboard-widgets" class="metabox-holder columns-1">
 			<div id='postbox-container-1' class='postbox-container'>    
 				<?php

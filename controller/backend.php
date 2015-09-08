@@ -395,13 +395,14 @@ function fv_wp_flowplayer_admin_init() {
   
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
-    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
+    //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
     $fv_fp->css_writeout();
     
     fv_wp_flowplayer_delete_extensions_transients();
+    delete_option('fv_flowplayer_extension_install');
   }
   
   if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
@@ -479,24 +480,37 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 
 
 function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
-    $transient_val = get_transient($transient_name);
-    if( $transient_val ){
-      set_transient($transient_name,$transient_val,$time);
-      return true;
-    }
-    return false;
+  $transient_val = get_transient($transient_name);
+  if( $transient_val ){
+    set_transient($transient_name,$transient_val,$time);
+    return true;
+  }
+  return false;
 }
 
 
 function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
-  if( !$delete_delay ){
-    delete_transient("fv-player-pro_license");
-    delete_transient("fv-player-vast_license");
+  $aTransientsLike = array('fv-player-pro_license','fv-player-vast_license','fv-player-pro_fp-private-updates','fv-player-vast_fp-private-updates');
+  
+  global $wpdb;
+  $aWhere = array();
+  foreach( $aTransientsLike AS $sKey ) {
+    $aWhere[] = 'option_name LIKE "%'.$sKey.'%"';
   }
-  else{
-    fv_wp_flowplayer_change_transient_expiration("fv-player-pro_license",$delete_delay);
-    fv_wp_flowplayer_change_transient_expiration("fv-player-vast_license",$delete_delay);
+  $sWhere = implode(" OR ", $aWhere);
+  $aOptions = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '%_transient_fv%' AND ( ".$sWhere." )" );
+  
+  foreach( $aOptions AS $sKey ) {
+    if( !$delete_delay ){
+      delete_transient( str_replace('_transient_','',$sKey) );
+    } else {
+      fv_wp_flowplayer_change_transient_expiration( str_replace('_transient_','',$sKey), $delete_delay );
+    }
   }
+
+  $aUpdates = get_site_transient('update_plugins');
+  set_site_transient('update_plugins', $aUpdates );
+  
 }
 
 
@@ -931,6 +945,9 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   $aPluginInfo = get_transient( 'fv_flowplayer_license' );
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug; 
   $download_url = $aPluginInfo->{$plugin_package}->url;
+  
+  $sPluginBasenameReal = fv_flowplayer_get_extension_path( str_replace( '_', '-', $plugin_package ) );
+  $plugin_basename = $sPluginBasenameReal ? $sPluginBasenameReal : $plugin_basename;
 
   $url = wp_nonce_url( site_url().'/wp-admin/options-general.php?page=fvplayer', 'fv_player_pro_install', 'nonce_fv_player_pro_install' );
 
@@ -957,7 +974,8 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
 
   require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
      
-  if( !is_plugin_active($plugin_basename) || is_wp_error(validate_plugin($plugin_basename)) ) {
+  $sTaskDone = 'FV Flowplayer Pro extension installed - check the new <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">Pro features!</a>!';
+  if( !$sPluginBasenameReal || is_wp_error(validate_plugin($plugin_basename)) ) {
     echo '<div style="display: none;">';
     $objInstaller = new Plugin_Upgrader();
     $objInstaller->install( $download_url );
@@ -979,11 +997,37 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
         $bResult = false;
       }
     }
+    
+  } else if( $sPluginBasenameReal ) {
+    $sTaskDone = 'FV Flowplayer Pro extension upgraded succesfully!';
+    
+    echo '<div style="display: none;">';
+    $objInstaller = new Plugin_Upgrader();
+    $objInstaller->upgrade( $sPluginBasenameReal );    
+    echo '</div></div>';  //  explanation: extra closing tag just to be safe (in case of "The plugin is at the latest version.")
+    wp_cache_flush();
+    
+    if ( is_wp_error( $objInstaller->skin->result ) ) {
+      update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension upgrade failed - '.$objInstaller->skin->result->get_error_message() );
+      $bResult = false;
+    } else {    
+      if ( $objInstaller->plugin_info() ) {
+        $plugin_basename = $objInstaller->plugin_info();
+        
+      }
+      
+      $activate = activate_plugin( $plugin_basename );
+      if ( is_wp_error( $activate ) ) {
+        update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension upgrade failed - '.$activate->get_error_message() );
+        $bResult = false;
+      }
+    }    
+    
   }
 
   if( !isset($bResult) ) {
     if( !isset($_GET['page']) || strcmp($_GET['page'],'fvplayer') != 0 ) {
-      update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension installed - check the new <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">Pro features!</a>!' );
+      update_option( 'fv_wordpress_flowplayer_deferred_notices', $sTaskDone );
     }
     $bResult = true;
   }
@@ -1040,14 +1084,22 @@ function fv_flowplayer_admin_scripts() {
 
 //search for plugin path with {slug}.php
 function fv_flowplayer_get_extension_path( $slug ){
-  $plugin_slugs = get_transient('plugin_slugs');
-  if( !$plugin_slugs )
+  $aPluginSlugs = get_transient('plugin_slugs');  
+  $aActivePlugins = get_option('active_plugins');
+  $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
+  
+  if( !$aPluginSlugs )
     return false;
 
-  foreach( $plugin_slugs as $item ){
+  foreach( $aActivePlugins as $item ){
     if( stripos($item,$slug.'.php') !== false )
       return $item;
   }
+  
+  foreach( $aInactivePlugins as $item ){
+    if( stripos($item,$slug.'.php') !== false )
+      return $item;
+  }  
   
   return false;
 }

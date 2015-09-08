@@ -298,8 +298,15 @@ function flowplayer_prepare_scripts() {
      isset($GLOBALS['fv_fp_scripts']) ||
      (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
      isset($_GET['fv_wp_flowplayer_check_template'])
-  ) {    
-    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
+  ) {
+    
+    $aDependencies = array('jquery');
+    if( $fv_fp->load_tabs ) {
+      wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
+      $aDependencies[] = 'jquery-ui-tabs';
+    }
+    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   

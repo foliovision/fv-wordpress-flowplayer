@@ -39,7 +39,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   /**
    * We set this to true in shortcode parsing and then determine if we need to enqueue the JS, or if it's already included
    */
-  public $load_mediaelement = false;  
+  public $load_mediaelement = false;
+  public $load_tabs = false;    
   /**
    * Store scripts to load in footer
    */
@@ -281,17 +282,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }      
       }
       
+      $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
+      $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
+      
+      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      
       $aPlaylistItems[] = array( 'sources' => $aItem );
+      $aSplashScreens[] = $splash_img;
+      $aCaptions[] = $sItemCaption;
 
       $sHTML = '';
       if( $sShortcode && count($sItems) > 0 ) {
         
         $sHTML = array();
         
-        $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
-        $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
         
-        $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
         
         $sHTML[] = "\t\t<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
         
@@ -362,6 +367,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           
           if( $sSplashImage ) {
             $sHTML[] = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+            $aSplashScreens[] = $sSplashImage;
+            $aCaptions[] = $sItemCaption;
           } else {
             $sHTML[] = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
           }
@@ -375,8 +382,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
         //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
-      //echo "<!--playlist: \n".var_export($aPlaylistItems,true)."\n-->\n\n\n";
-      return array( $sHTML, $aPlaylistItems );      
+      
+      return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  
   
   

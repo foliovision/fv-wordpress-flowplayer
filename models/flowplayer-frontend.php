@@ -138,11 +138,13 @@ class flowplayer_frontend extends flowplayer
 			}
 		}
         
-    $aPlaylistItems = array();    
+    $aPlaylistItems = array();
+    $aSplashScreens = array();
+    $aCaptions = array();
     if( isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {                 
-      list( $playlist_items_external_html, $aPlaylistItems ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
-    }    
-    
+      list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
+    }
+        
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
     
     
@@ -161,11 +163,18 @@ class flowplayer_frontend extends flowplayer
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
+    /*
+     *  Video player tabs
+     */
+    if( $player_type == 'video'  && $args['liststyle'] == 'tabs' && count($aPlaylistItems) ) {
+      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions);            
+    }    
+    
     
     /*
      *  Video player
      */
-		if( $player_type == 'video' ) {
+		else if( $player_type == 'video' ) {
       
         if( is_feed() ) {
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
@@ -768,6 +777,42 @@ class flowplayer_frontend extends flowplayer
       return $subtitles;
     }
     return false;
+  }
+  
+  
+  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions) {
+    global $post;
+    
+    $this->count_tabs++;
+    $output = new stdClass;
+    $output->ret = array();
+    $output->ret['html'] = '<div class="fv_flowplayer_tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
+    $output->ret['script'] = '';
+    
+    $output->ret['html'] .= '<ul>';
+    foreach( $aPlaylistItems AS $key => $aSrc ) {
+      $sCaption = !empty($aCaptions[$key]) ? $aCaptions[$key] : $key;
+      $output->ret['html'] .= '<li><a href="#tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$sCaption.'</a></li>';
+    }
+    $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
+    
+    foreach( $aPlaylistItems AS $key => $aSrc ) {
+      unset($this->aCurArgs['playlist']);
+      $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
+      $this->aCurArgs['splash'] = $aSplashScreens[$key];
+      unset($this->aCurArgs['caption']);
+      
+      $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
+      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$aPlayer['html'].'</div>';
+      foreach( $aPlayer['script'] AS $key => $value ) {
+        $output->ret['script'][$key] = array_merge( $output->ret['script'][$key], $aPlayer['script'][$key] );
+      }
+    }
+    $output->ret['html'] .= '<div class="fv_flowplayer_tabs_cl"></div><div class="fv_flowplayer_tabs_cr"></div></div></div>';
+          
+    $this->load_tabs = true;
+          
+    return $output->ret;    
   }
   
   
