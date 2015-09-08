@@ -637,3 +637,5 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 
 .fv_flowplayer_tabs .fv_flowplayer_tabs_cl{display:block;visibility:hidden;clear:left;height:0;content:".";}
 .fv_flowplayer_tabs .fv_flowplayer_tabs_cr{display:block;visibility:hidden;clear:right;height:0;content:".";}
+
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li i.dur {display: none; }

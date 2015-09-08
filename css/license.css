@@ -84,12 +84,14 @@ div.column { float: left; width: 49% }
 div.green { background-color: #e0ffe0; border-color: #88AA88; } 
 .amazon-s3-first .fv_fp_amazon_remove { display: none; }
 .form-table2 td p { line-height: 20px; }
-input[type=text] { width: 100%; }
-#wpfp_options input.button-primary, #wpfp_options input.button { margin-top: 16px }
+.meta-box-sortables input[type=text] { width: 100%; }*/
+#wpfp_options .meta-box-sortables input.button-primary, #wpfp_options .meta-box-sortables input.button { margin-top: 16px }
 #wpfp_options input.button.no-margin { margin-top: 0px }
-input.small { width: 80px }
+.meta-box-sortables input.small { width: 80px }
 td.second-column { margin-left: 20px }
 
 span.new { color: #e00; font-weight: bold }
 
 #fv_flowplayer_amazon_options label { float: right }
+
+#fv_flowplayer_admin_buttons a { color: gray; display: inline-block; text-decoration: none; }
