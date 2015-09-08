@@ -123,7 +123,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'logo' => '',
     'share' => '',
     'post' => '',
-    'speed' => ''
+    'speed' => '',
+    'liststyle' => ''
   ), $atts ) );
 
   if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
@@ -159,6 +160,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['share'] = $share;
     $arguments['post'] = $post;
     $arguments['speed'] = $speed;
+    $arguments['liststyle'] = $liststyle;
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
     
 	} else {
@@ -195,7 +197,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'logo' => '',
       'share' => '',
       'post' => '',
-      'speed' => ''
+      'speed' => '',
+      'liststyle' => ''
 		), $atts );
 	}
   

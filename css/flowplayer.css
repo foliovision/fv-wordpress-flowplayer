@@ -618,3 +618,22 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .is-ready .fvfp_duration, .is-loading .fvfp_duration  { display: none; }
 .fp-playlist-external .dur { margin-left: 10px; display: none; }
   
+
+
+/*
+ *  FV Flowplayer Tabs
+ */
+.fv_flowplayer_tabs ul.ui-tabs,.fv_flowplayer_tabs ul.ui-tabs-nav{margin:0 !important;font-size:13px;font-family:Arial, Helvetica, sans-serif;font-weight:bold;line-height:24px !important}
+.fv_flowplayer_tabs .ui-tabs { padding: 0; zoom: 1; }
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 1px 0; }
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li { position: relative; float: left; border-width: 0 !important; margin: 0 4px 2px 0 !important; padding: 0 !important; list-style:none !important;line-height:24px !important;}
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: 4px 10px !important; color:#5E5E5E !important;line-height:24px !important;background-color:#EFEFEF;}
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li.ui-state-active a, .fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; color:#FFF !important; background-color:#5E5E5E;}
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li a, .fv_flowplayer_tabs .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-state-active a { cursor: pointer; outline: none; border: none; }
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-panel { padding: 4px 0; display: block; border-width: 0; background: none; }
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-hide { position: absolute; left: -10000px; }
+
+.fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li.ui-corner-top, .fv_flowplayer_tabs .ui-tabs-horizontal-top .wpts_ext{padding-bottom:4px!important;height:32px; }
+
+.fv_flowplayer_tabs .fv_flowplayer_tabs_cl{display:block;visibility:hidden;clear:left;height:0;content:".";}
+.fv_flowplayer_tabs .fv_flowplayer_tabs_cr{display:block;visibility:hidden;clear:right;height:0;content:".";}
