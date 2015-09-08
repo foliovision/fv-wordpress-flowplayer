@@ -55,9 +55,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
   
-  /**
-   * Class constructor
-   */  
+
   public function __construct() {
     //load conf data into stack
     $this->_get_conf();
@@ -99,11 +97,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  /**
-   * Gets configuration from cfg file.
-   * 
-   * @return bool Returns false on failiure, true on success.
-   */
   private function _get_conf() {
     ///  Addition  2010/07/12  mv
     $conf = get_option( 'fvwpflowplayer' );  
@@ -167,9 +160,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return true;   
     /// End of addition
   }
-  /**
-   * Writes configuration into file.
-   */
+
+  
   public function _set_conf() {
     $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
@@ -180,7 +172,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
-        $aNewOptions[$key] = stripslashes($value);
+        $aNewOptions[$key] = stripslashes(trim($value));
       }
       if( (strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) {
         $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);

@@ -30,11 +30,11 @@ function fv_flowplayer_admin_ads() {
 						<tr>
 							<td colspan="2">
 								<label for="ad"><?php _e('Default Ad Code', 'fv_flowplayer'); ?>:</label><br />
-								<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo trim($fv_fp->conf['ad']); ?></textarea>			
+								<textarea id="ad" name="ad" class="large-text code"><?php if( isset($fv_fp->conf['ad']) ) echo esc_textarea($fv_fp->conf['ad']); ?></textarea>			
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><label for="width"><?php _e('Default set size', 'fv_flowplayer');?> [px]:</label> <label for="ad_width">W:</label>&nbsp;<input type="text" name="ad_width" id="ad_width" value="<?php echo trim($fv_fp->conf['ad_width']); ?>" class="small" /> <label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo trim($fv_fp->conf['ad_height']); ?>" class="small"  /> <label for="adTextColor">Ad text</label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo $fv_fp->conf['adTextColor']; ?>" /> <label for="adLinksColor">Ad links</label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo $fv_fp->conf['adLinksColor']; ?>" /> </td>			
+							<td colspan="2"><label for="width"><?php _e('Default set size', 'fv_flowplayer');?> [px]:</label> <label for="ad_width">W:</label>&nbsp;<input type="text" name="ad_width" id="ad_width" value="<?php echo intval($fv_fp->conf['ad_width']); ?>" class="small" /> <label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval($fv_fp->conf['ad_height']); ?>" class="small"  /> <label for="adTextColor">Ad text</label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo esc_attr($fv_fp->conf['adTextColor']); ?>" /> <label for="adLinksColor">Ad links</label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo esc_attr($fv_fp->conf['adLinksColor']); ?>" /> </td>			
 						</tr>           
 						<tr>
 							<td colspan="2">
@@ -47,7 +47,7 @@ function fv_flowplayer_admin_ads() {
 										<option value="<?php echo esc_attr($fv_fp->ad_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->conf['ad_css']))  == 0 ) echo ' selected="selected"'; ?>>White, centered at the bottom of the video</option>					  		
 									</select>
 									<br />
-									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php if( isset($fv_fp->conf['ad_css']) ) echo trim($fv_fp->conf['ad_css']); ?></textarea>
+									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php if( isset($fv_fp->conf['ad_css']) ) echo esc_textarea($fv_fp->conf['ad_css']); ?></textarea>
 									<p class="description">(Hint: put .wpfp_custom_ad_content before your own CSS selectors)</p>
 									<script type="text/javascript">
 									jQuery('#ad_css_select').change( function() {
@@ -125,7 +125,7 @@ function fv_flowplayer_admin_amazon_options() {
 ?>					
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td><label for="amazon_bucket[]">Amazon Bucket (<abbr title="We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.">?</abbr>):</label></td>
-						<td><input id="amazon_bucket[]" name="amazon_bucket[]" type="text" value="<?php echo trim($item); ?>" /></td>
+						<td><input id="amazon_bucket[]" name="amazon_bucket[]" type="text" value="<?php echo esc_attr($item); ?>" /></td>
 					</tr>
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td><label for="amazon_region[]">Region</td>
@@ -146,11 +146,11 @@ function fv_flowplayer_admin_amazon_options() {
 					</tr>			          
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td><label for="amazon_key[]">Access Key ID:</label></td>
-						<td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo trim($fv_fp->conf['amazon_key'][$key]); ?>" /></td>
+						<td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo esc_attr($fv_fp->conf['amazon_key'][$key]); ?>" /></td>
 					</tr>	
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td><label for="amazon_secret[]">Secret Access Key:</label></td>
-						<td><input id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo trim($fv_fp->conf['amazon_secret'][$key]); ?>" /></td>
+						<td><input id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr($fv_fp->conf['amazon_secret'][$key]); ?>" /></td>
 					</tr>
 					<tr<?php echo $amazon_tr_class; ?>>
 						<td colspan="2">
@@ -234,21 +234,21 @@ function fv_flowplayer_admin_default_options() {
 						<tr>
 							<td><label for="width">Default video size [px]:</label></td>
 							<td colspan="2"> 					
-								<label for="width">W:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo trim($fv_fp->conf['width']); ?>" />  
-								<label for="height">H:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo trim($fv_fp->conf['height']); ?>" />							
+								<label for="width">W:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval($fv_fp->conf['width']); ?>" />  
+								<label for="height">H:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval($fv_fp->conf['height']); ?>" />							
 							</td>
 						</tr>						
 						<tr>
 							<td><label for="googleanalytics">Google Analytics ID:</label></td>
-							<td colspan="3"><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo trim($fv_fp->conf['googleanalytics']); ?>" /></td>
+							<td colspan="3"><input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo esc_attr($fv_fp->conf['googleanalytics']); ?>" /></td>
 						</tr>
 						<tr>
 							<td><label for="key">Commercial License Key:</label></td>
-							<td colspan="3"><input type="text" name="key" id="key" value="<?php echo trim($fv_fp->conf['key']); ?>" /></td>
+							<td colspan="3"><input type="text" name="key" id="key" value="<?php echo esc_attr($fv_fp->conf['key']); ?>" /></td>
 						</tr>
 						<tr>
 							<td><label for="logo">Logo:</label></td>
-							<td><input type="text"  name="logo" id="logo" value="<?php echo trim($fv_fp->conf['logo']); ?>" /></td>
+							<td><input type="text"  name="logo" id="logo" value="<?php echo esc_attr($fv_fp->conf['logo']); ?>" /></td>
               <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="Upload Image" alt="Select Logo" /></td>
               <td style="width: 5%">
                 <select name="logoPosition">
@@ -262,12 +262,12 @@ function fv_flowplayer_admin_default_options() {
 						</tr>
 						<tr>
 							<td><label for="logo">Splash Image (<abbr title="Default which will be used for any player without its own splash image">?</abbr>):</label></td>
-							<td colspan="2"><input type="text"  name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo trim($fv_fp->conf['splash']); ?>" /></td>
+							<td colspan="2"><input type="text"  name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo esc_attr($fv_fp->conf['splash']); ?>" /></td>
               <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="Upload Image" alt="Select default Splash Screen" /></td>
 						</tr>
 						<tr>
 							<td><label for="rtmp">Flash streaming server<br />(Amazon CloudFront domain) (<abbr title="Enter your default RTMP streaming server here">?</abbr>):</label></td>
-							<td colspan="3"><input type="text" name="rtmp" id="rtmp" value="<?php echo trim($fv_fp->conf['rtmp']); ?>" /></td>
+							<td colspan="3"><input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr($fv_fp->conf['rtmp']); ?>" /></td>
 						</tr>				
 						<tr>    		
 							<td colspan="4">
@@ -384,7 +384,7 @@ function fv_flowplayer_admin_integrations() {
         <p>Following options are suitable for web developers and programmers.</p>
 				<table class="form-table2">
           <tr>
-						<td class="first"><label for="cbox_compatibility">Colobox Compatibility (<abbr title="Use if your theme is using colorbox lightbox to show content and clones the HTML content into it.">?</abbr>):</label></td>
+						<td class="first"><label for="cbox_compatibility">Colorbox Compatibility (<abbr title="Use if your theme is using colorbox lightbox to show content and clones the HTML content into it.">?</abbr>):</label></td>
 						<td>
               <input type="hidden" name="cbox_compatibility" value="false" />
               <input type="checkbox" name="cbox_compatibility" id="cbox_compatibility" value="true" <?php if( isset($fv_fp->conf['cbox_compatibility']) && $fv_fp->conf['cbox_compatibility'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -595,6 +595,24 @@ function fv_flowplayer_admin_pro() {
           Use Vimeo as your video host and use all of FV Flowplayer features.
         </p>
       </td>
+    </tr>
+    <tr>
+      <td><label>Advanced Youtube embeding:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Use Youtube as your video host and use all of FV Flowplayer features.
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td><label>Enable user defined AB loop:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Let your users repeat the parts of the video which they like!
+        </p>
+      </td>
     </tr>    
     <tr>
       <td><label>Enable video lightbox:</label></td>
@@ -613,7 +631,16 @@ function fv_flowplayer_admin_pro() {
           Upload your videos in multiple quality for best user experience with Youtube-like quality switching!
         </p>
       </td>
-    </tr>    
+    </tr>
+    <tr>
+      <td><label>Amazon CloudFront protected content:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" checked="checked" disabled="true" />
+          Protect your Amazon CDN hosted videos.
+        </p>
+      </td>
+    </tr>        
     <tr>
       <td><label>Use video lightbox for images as well:</label></td>
       <td>
@@ -636,15 +663,6 @@ function fv_flowplayer_admin_pro() {
   <p>Upcoming pro features:</p>
   <table class="form-table2">
     <tr>
-      <td><label>Advanced Youtube embeding:</label></td>
-      <td>
-        <p class="description">
-          <input type="checkbox" checked="checked" disabled="true" />
-          Use Youtube as your video host and use all of FV Flowplayer features.
-        </p>
-      </td>
-    </tr>
-    <tr>
       <td><label>Enable PayWall:</label></td>
       <td>
         <p class="description">
@@ -652,16 +670,7 @@ function fv_flowplayer_admin_pro() {
           Monetize the video content on your membership site.
         </p>
       </td>
-    </tr>
-    <tr>
-      <td><label>Amazon CloudFront protected content:</label></td>
-      <td>
-        <p class="description">
-          <input type="checkbox" checked="checked" disabled="true" />
-          Protect your Amazon CDN hosted videos.
-        </p>
-      </td>
-    </tr>      
+    </tr>  
   </table>  
   <?php
 }
@@ -677,7 +686,7 @@ function fv_flowplayer_admin_skin() {
   <table class="form-table2 flowplayer-settings">	
     <tr>
       <td><label for="bufferColor">Buffer</label></td>
-      <td><input class="color small" id="bufferColor" name="bufferColor" type="text" value="<?php echo $fv_fp->conf['bufferColor']; ?>" /></td>
+      <td><input class="color small" id="bufferColor" name="bufferColor" type="text" value="<?php echo esc_attr($fv_fp->conf['bufferColor']); ?>" /></td>
       <td><label for="player-position">Player position</label> (<abbr title='You can still use align="right" where needed'>?</abbr>)</td>
       <td>
         <select id="player-position" name="player-position">
@@ -688,31 +697,31 @@ function fv_flowplayer_admin_skin() {
     </tr>
     <tr>
       <td><label for="canvas">Canvas</label></td>
-      <td><input class="color small" id="canvas" name="canvas" type="text" value="<?php echo $fv_fp->conf['canvas']; ?>" /></td>
+      <td><input class="color small" id="canvas" name="canvas" type="text" value="<?php echo esc_attr($fv_fp->conf['canvas']); ?>" /></td>
       <td><label for="marginBottom">Bottom Margin</label></td>
-      <td><input class="small" id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="<?php echo $fv_fp->conf['marginBottom']; ?>" /></td>           
+      <td><input class="small" id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="<?php echo esc_attr($fv_fp->conf['marginBottom']); ?>" /></td>           
     </tr>            
     <tr>
       <td><label for="backgroundColor">Controlbar</label></td>
-      <td><input class="color small" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo $fv_fp->conf['backgroundColor']; ?>" /></td>
+      <td><input class="color small" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo esc_attr($fv_fp->conf['backgroundColor']); ?>" /></td>
       <td class="second-column"><label for="disableembedding">Disable Embed Button</label></td>
       <td><?php fv_flowplayer_admin_checkbox('disableembedding'); ?></td>
     </tr>
     <tr>
       <td><label for="progressColor">Progress</label></td>
-      <td><input class="color small" id="progressColor" name="progressColor" type="text" value="<?php echo $fv_fp->conf['progressColor']; ?>" /></td>
+      <td><input class="color small" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr($fv_fp->conf['progressColor']); ?>" /></td>
       <td><label for="disablesharing">Disable Sharing</label></td>
       <td><?php fv_flowplayer_admin_checkbox('disablesharing'); ?></td>   
     </tr>
     <tr>
       <td><label for="sliderColor">Sliders</label></td>
-      <td><input class="color small" id="sliderColor" name="sliderColor" type="text" value="<?php echo $fv_fp->conf['sliderColor']; ?>" /></td>
+      <td><input class="color small" id="sliderColor" name="sliderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['sliderColor']); ?>" /></td>
       <td><label for="allowfullscreen">Enable Fullscreen</label></td>
       <td><?php fv_flowplayer_admin_checkbox('allowfullscreen'); ?></td>              
     </tr>            
     <tr>
       <td><label for="timeColor">Time</label></td>
-      <td><input class="color small" id="timeColor" name="timeColor" type="text" value="<?php echo $fv_fp->conf['timeColor']; ?>" /></td>
+      <td><input class="color small" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timeColor']); ?>" /></td>
       <!--<td><label for="ui_fixed_controlbar">Fixed Controlbar</label></td>
       <td><?php fv_flowplayer_admin_checkbox('ui_fixed_controlbar'); ?></td>-->
       <td><label for="font-face">Font Face</label></td>
@@ -726,13 +735,13 @@ function fv_flowplayer_admin_skin() {
     </tr>            
     <tr>
       <td><label for="timeline">Timeline</label></td>
-      <td><input class="color small" id="timelineColor" name="timelineColor" type="text" value="<?php echo $fv_fp->conf['timelineColor']; ?>" /></td>
+      <td><input class="color small" id="timelineColor" name="timelineColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timelineColor']); ?>" /></td>
       <td><label for="subtitleSize">Subitle Font Size</label></td>
       <td><input class="small" id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
     </tr>		
     <tr>              
       <td><label for="durationColor">Total time</label></td>
-      <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo $fv_fp->conf['durationColor']; ?>" /></td>
+      <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" /></td>
       <td><label for="ui_play_button">Play Button</label></td>
       <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_play_button'); ?></td>        
       <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
@@ -746,9 +755,9 @@ function fv_flowplayer_admin_skin() {
     <tr>-->
     <tr>
       <td><label for="durationColor">Border color</label></td>
-      <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo $fv_fp->conf['borderColor']; ?>" /></td>
+      <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
       <td><label for="volume">Default Volume</label></td>
-      <td><input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo $fv_fp->conf['volume']; ?>" /></td>     
+      <td><input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo esc_attr($fv_fp->conf['volume']); ?>" /></td>     
     </tr>
     <tr>
       <td><label for="hasBorder">Border</label></td>
@@ -778,12 +787,21 @@ function fv_flowplayer_admin_usage() {
 								<div class="clear"></div>
 								<ul>
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide">Inserting videos</a>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide#license">License key and custom logo</a>
-									</li>					
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads">Using ads</a></li>				
+									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide#license">License key and custom logo</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/creating-playlists">How to create a playlist</a></li>
+									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads">Using ads</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/google-advertising-options">Using Google Ads</a></li>
 									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams">RTMP streams</a></li>
                   <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles">Subtitles</a></li>
                   <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide">Amazon S3 secure content guide</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/hls-stream">How to setup a HLS stream</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/google-analytics-flowplayer">Google Analytics support</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/how-to-use-lightbox">Video lightbox</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/youtube-with-flowplayer">YouTube integration</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/switch-video-quality">Quality Switching</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/how-to-use-vimeo-pro">Vimeo integration</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-roll-post">Custom video ads</a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/serving-private-cloudfront">CloudFront CDN - protected video downloads</a></li>
 								</ul>
 							</div>
 							<div class="column">
@@ -840,8 +858,8 @@ function fv_flowplayer_admin_usage() {
 function fv_flowplayer_admin_checkbox( $name ) {
 	global $fv_fp;
 ?>
-	<input type="hidden" name="<?php echo $name; ?>" value="false" />
-  <input type="checkbox" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="true" <?php if( isset($fv_fp->conf[$name]) && $fv_fp->conf[$name] == 'true' ) echo 'checked="checked"'; ?> />
+	<input type="hidden" name="<?php echo esc_attr($name); ?>" value="false" />
+  <input type="checkbox" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="true" <?php if( isset($fv_fp->conf[$name]) && $fv_fp->conf[$name] == 'true' ) echo 'checked="checked"'; ?> />
 <?php
 }
 
@@ -940,7 +958,8 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
 				?>
 			</div>
-		</div>  
+		</div>
+    <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
   </form>
   
 </div>
