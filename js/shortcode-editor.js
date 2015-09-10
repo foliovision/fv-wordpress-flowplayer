@@ -225,6 +225,8 @@ function fv_wp_flowplayer_edit() {
   jQuery("#fv-wordpress-flowplayer-popup textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv_wp_flowplayer_field_autoplay').prop('selectedIndex',0);
+  jQuery('#fv_wp_flowplayer_field_speed').prop('selectedIndex',0);
+  jQuery('#fv_wp_flowplayer_field_liststyle').prop('selectedIndex',0);
   jQuery('#fv_wp_flowplayer_field_embed').prop('selectedIndex',0);
   jQuery('#fv_wp_flowplayer_field_align').prop('selectedIndex',0);
   jQuery('#fv_wp_flowplayer_field_controlbar').prop('selectedIndex',0); 
@@ -278,9 +280,11 @@ function fv_wp_flowplayer_edit() {
     var salign = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'align' );
     var scontrolbar = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'controlbar' );
     var sautoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'autoplay' );
+    var sliststyle = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'liststyle' );
     var sembed = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'embed' );
     var sloop = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'loop' );
     var slive = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'live' );
+    var sspeed = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'speed' );
     var ssplash = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splash' );    
     var ssplashend = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splashend' );
     
@@ -336,6 +340,10 @@ function fv_wp_flowplayer_edit() {
       if (sautoplay[1] == 'false') 
         document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex = 2;
     }
+  	if( sliststyle != null && sliststyle[1] != null ) {
+  		if (sliststyle[1] == 'tabs') 
+        document.getElementById("fv_wp_flowplayer_field_liststyle").selectedIndex = 1;
+    }    
   	if( sembed != null && sembed[1] != null ) {
   		if (sembed[1] == 'true') 
         document.getElementById("fv_wp_flowplayer_field_embed").selectedIndex = 1;
@@ -369,7 +377,13 @@ function fv_wp_flowplayer_edit() {
     if( sloop != null && sloop[1] != null && sloop[1] == 'true' )
   		document.getElementById("fv_wp_flowplayer_field_loop").checked = 1;
     if( slive != null && slive[1] != null && slive[1] == 'true' )
-  		document.getElementById("fv_wp_flowplayer_field_live").checked = 1;      
+  		document.getElementById("fv_wp_flowplayer_field_live").checked = 1;
+  	if( sspeed != null && sspeed[1] != null ) {
+  		if (sspeed[1] == 'buttons') 
+        document.getElementById("fv_wp_flowplayer_field_speed").selectedIndex = 1;
+      if (sspeed[1] == 'no') 
+        document.getElementById("fv_wp_flowplayer_field_speed").selectedIndex = 2;
+    }    
     if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' )
   		document.getElementById("fv_wp_flowplayer_field_splashend").checked = 1;  
 
@@ -481,8 +495,10 @@ function fv_wp_flowplayer_submit() {
   
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_align', 'align', false, false, ['left', 'right'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false'] );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_liststyle', 'liststyle', false, false, ['tabs'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_controlbar', 'controlbar', false, false, ['yes', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_speed', 'speed', false, false, ['buttons', 'no'] );
   
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_loop', 'loop', false, true );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_live', 'live', false, true );

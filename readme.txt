@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.6 - 2015/09/10 =
+
+* Feature - playlist style "Tabs" added with per player setting in shortcode editor
+* Feature - per player speed buttons setting for shortcode editor
+
 = 6.0.3.5 - 2015/09/08 =
 
 * Making the license field more prominent

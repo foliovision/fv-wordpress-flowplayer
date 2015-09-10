@@ -161,14 +161,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
   
         </tbody>
       </table>
-    </div><!-- #fv-flowplayer-playlist-->
-    <table<?php if( $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?>>
-      <tr id="fv_wp_flowplayer_add_format_wrapper">
-        <th scope="row" class="label" style="width: 19%"></th>
-        <td class="field" style="width: 50%"></td>
-        <td class="field"><div id="add_rtmp_wrapper"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div></td>  				
-      </tr>
-    </table>  					      
+    </div><!-- #fv-flowplayer-playlist-->  					      
     <table width="100%">
       <tbody> 
         <?php
@@ -180,7 +173,17 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             $show_more_features = true;
           }
         }
-        ?>     
+        ?>
+        <tr<?php if( $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' style="display: none"'; ?> id="fv_wp_flowplayer_add_format_wrapper">
+          <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Playlist Style', 'fv_flowplayer'); ?></label></th>
+          <td class="field" style="width: 50%">
+            <select id="fv_wp_flowplayer_field_liststyle" name="fv_wp_flowplayer_field_liststyle">
+              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Tabs', 'fv_flowplayer'); ?></option>            
+            </select>          
+            <div id="add_rtmp_wrapper" class="alignright"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div>
+          </td>  				
+        </tr>        
         <tr<?php if( !$show_additonal_features ) echo ' style="display: none"';?>>
           <th scope="row" width="19%"></th>
           <td style="text-align: left; padding: 10px 0; text-transform: uppercase;"><?php _e('Additional features', 'fv_flowplayer'); ?></td>
@@ -260,7 +263,17 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
         <tr<?php if( $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live Stream', 'fv_flowplayer'); ?></label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
-  			</tr>           
+  			</tr>
+        <tr<?php if( $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+  				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_speed" class="alignright"><?php _e('Speed Buttons', 'fv_flowplayer'); ?></label></th>
+  				<td class="field">
+            <select id="fv_wp_flowplayer_field_speed" name="fv_wp_flowplayer_field_speed">
+              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
+              <option><?php _e('Yes', 'fv_flowplayer'); ?></option>
+              <option><?php _e('No', 'fv_flowplayer'); ?></option>
+            </select>
+          </td>
+  			</tr>                  
         <?php do_action( 'fv_flowplayer_shortcode_editor_after' ); ?>        
   			<tr>
   				<th scope="row" class="label"></th>					
