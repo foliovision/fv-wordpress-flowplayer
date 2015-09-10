@@ -805,7 +805,7 @@ class flowplayer_frontend extends flowplayer
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
       $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$aPlayer['html'].'</div>';
       foreach( $aPlayer['script'] AS $key => $value ) {
-        $output->ret['script'][$key] = array_merge( $output->ret['script'][$key], $aPlayer['script'][$key] );
+        $output->ret['script'][$key] = array_merge( isset($output->ret['script'][$key]) ? $output->ret['script'][$key] : array(), $aPlayer['script'][$key] );
       }
     }
     $output->ret['html'] .= '<div class="fv_flowplayer_tabs_cl"></div><div class="fv_flowplayer_tabs_cr"></div></div></div>';
