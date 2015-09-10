@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.5 - 2015/09/08 =
+
+* Making the license field more prominent
+* Bugfix - FV Flowplayer 5 -> 6 update process
+
 = 6.0.3.4 - 2015/08/28 =
 
 * Security fixes - CSFR protection for settings page
