@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.7 - 2015/09/?? =
+
+* Fix - Playlist tabs - fix for Divi (Elegant Themes) triggering scroll action on tab click
+
 = 6.0.3.6 - 2015/09/10 =
 
 * Feature - playlist style "Tabs" added with per player setting in shortcode editor

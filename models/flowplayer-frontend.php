@@ -786,7 +786,7 @@ class flowplayer_frontend extends flowplayer
     $this->count_tabs++;
     $output = new stdClass;
     $output->ret = array();
-    $output->ret['html'] = '<div class="fv_flowplayer_tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
+    $output->ret['html'] = '<div class="fv_flowplayer_tabs tabs woocommerce-tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
     $output->ret['script'] = '';
     
     $output->ret['html'] .= '<ul>';
