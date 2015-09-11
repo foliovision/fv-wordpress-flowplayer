@@ -559,7 +559,14 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[live]" value="false" />
 							<input type="checkbox" name="interface[live]" id="interface[live]" value="true" <?php if( isset($fv_fp->conf['interface']['live']) && $fv_fp->conf['interface']['live'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr> 	           
+					</tr>
+					<tr>          
+						<td><label for="interface[live]">Speed Buttons: </label></td>
+						<td>
+              <input type="hidden" name="interface[speed]" value="false" />
+							<input type="checkbox" name="interface[speed]" id="interface[speed]" value="true" <?php if( isset($fv_fp->conf['interface']['speed']) && $fv_fp->conf['interface']['speed'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
+					</tr>           
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
@@ -758,7 +765,7 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="hasBorder">Border</label></td>
       <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
-      <td><label for="ui_play_button">Speed Buttons (beta)</label></td>
+      <td><label for="ui_play_button">Speed Buttons</label></td>
       <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_speed'); ?></td>      
     </tr>
     <tr>    		
@@ -942,7 +949,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School sale!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
