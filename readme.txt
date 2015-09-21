@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.3.7 - 2015/09/?? =
 
 * Fix - Playlist tabs - fix for Divi (Elegant Themes) triggering scroll action on tab click
+* Fix - Playlist tabs - fix for pausing the playing video on tab switch event
 
 = 6.0.3.6 - 2015/09/10 =
 
