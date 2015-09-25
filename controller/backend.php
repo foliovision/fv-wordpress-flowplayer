@@ -1084,7 +1084,8 @@ function fv_flowplayer_admin_scripts() {
 
 //search for plugin path with {slug}.php
 function fv_flowplayer_get_extension_path( $slug ){
-  $aPluginSlugs = get_transient('plugin_slugs');  
+  $aPluginSlugs = get_transient('plugin_slugs');
+  $aPluginSlugs = is_array($aPluginSlugs) ? $aPluginSlugs : array( 'fv-player-pro/fv-player-pro.php');
   $aActivePlugins = get_option('active_plugins');
   $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
   
