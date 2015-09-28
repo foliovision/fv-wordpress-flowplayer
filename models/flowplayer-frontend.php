@@ -463,7 +463,7 @@ class flowplayer_frontend extends flowplayer
               if( $extension ) {
                 $extension .= ':';
               } else {
-                $extension = 'mp4:';
+                //$extension = 'mp4:';  //  https://github.com/flowplayer/flowplayer/search?q=rtmp&type=Issues&utf8=%E2%9C%93
               }
 
               $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
