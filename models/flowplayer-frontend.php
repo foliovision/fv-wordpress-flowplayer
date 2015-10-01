@@ -38,7 +38,9 @@ class flowplayer_frontend extends flowplayer
   
   var $aCurArgs = false;
   
-  var $sHTMLAfter = false;  
+  var $sHTMLAfter = false;
+  
+  var $count_tabs = 0;
   
 
 	/**
@@ -382,7 +384,7 @@ class flowplayer_frontend extends flowplayer
             $attributes['class'] .= ' is-splash';
           }
           
-				} else if( strlen($this->aCurArgs['caption']) > 0 ) {
+				} else if( !empty($this->aCurArgs['caption']) ) {
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           

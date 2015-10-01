@@ -378,7 +378,7 @@ function fv_wp_flowplayer_admin_init() {
   }
   
   if( 
-    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false || $_GET['page'] === 'fvplayer') 
+    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false || ( isset($_GET['page']) && $_GET['page'] === 'fvplayer' ) ) 
     && $pnotices = get_option('fv_wordpress_flowplayer_persistent_notices') 
   ) {  
     $fv_fp->pointer_boxes['fv_flowplayer_license_expired'] = array(
