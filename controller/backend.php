@@ -378,7 +378,7 @@ function fv_wp_flowplayer_admin_init() {
   }
   
   if( 
-    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false || $_GET['page'] === 'fvplayer') 
+    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false || ( isset($_GET['page']) && $_GET['page'] === 'fvplayer' ) ) 
     && $pnotices = get_option('fv_wordpress_flowplayer_persistent_notices') 
   ) {  
     $fv_fp->pointer_boxes['fv_flowplayer_license_expired'] = array(
@@ -868,7 +868,7 @@ function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
     if ( false === $closed )
-        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_skin' );
+        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_player_pro' );
 
     return $closed;
 }
@@ -1084,7 +1084,8 @@ function fv_flowplayer_admin_scripts() {
 
 //search for plugin path with {slug}.php
 function fv_flowplayer_get_extension_path( $slug ){
-  $aPluginSlugs = get_transient('plugin_slugs');  
+  $aPluginSlugs = get_transient('plugin_slugs');
+  $aPluginSlugs = is_array($aPluginSlugs) ? $aPluginSlugs : array( 'fv-player-pro/fv-player-pro.php');
   $aActivePlugins = get_option('active_plugins');
   $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
   
