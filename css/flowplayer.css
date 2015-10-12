@@ -415,7 +415,7 @@
 /*#content .flowplayer.is-ready .fp-embed-code.visible textarea, .flowplayer.is-ready .fp-embed-code.visible textarea { height: 140px; }*/
 .fvp-share-bar a.embed-code-toggle { font-weight: bold; color: white; }
 
-.flowplayer .fp-prev, .flowplayer .fp-next{/* next and prev buttons */position:absolute;top:44%;cursor:pointer;-webkit-transition:opacity .5s;-moz-transition:opacity .5s;transition:opacity .5s;/*background:url("img/playlist-buttons.png");*/opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);height:20px;width:12px;}
+.flowplayer .fp-prev, .flowplayer .fp-next{/* next and prev buttons */position:absolute;top:44%;cursor:pointer;-webkit-transition:opacity .5s;-moz-transition:opacity .5s;transition:opacity .5s;opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);height:20px;width:12px;}
 .is-mouseover.is-ready.flowplayer .fp-prev,.is-mouseover.is-ready.flowplayer .fp-next{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer .fp-prev{left:-20px;background-position:0 -200px;}
 .flowplayer .fp-prev:hover{background-position:0 -300px}
