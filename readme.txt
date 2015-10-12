@@ -348,6 +348,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Fix - Playlist tabs - fix for Divi (Elegant Themes) triggering scroll action on tab click
 * Fix - Playlist tabs - fix for pausing the playing video on tab switch event
 * Fix - RTMP playback for streams without extension prefix (where rtmp_path="live" instead of rtmp_path="mp4:live")
+* Fix - Using safer names for CSS images
 
 = 6.0.3.6 - 2015/09/10 =
 
