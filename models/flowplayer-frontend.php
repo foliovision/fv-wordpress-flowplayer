@@ -151,17 +151,17 @@ class flowplayer_frontend extends flowplayer
     
     
 		$autoplay = false;  //  todo: should be changed into a property
-		if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
-			$this->autobuffer_count++;
-			if( $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 ) ) {
-				$autoplay = true;
-			}
-		}  
-		if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
-			$this->autobuffer_count++;
-			$autoplay = true;
-		}
-    
+    if( $this->autoplay_count < 1 ) {
+      if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
+        $this->autoplay_count++;
+        $autoplay = true;
+
+      }  
+      if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
+        $this->autoplay_count++;
+        $autoplay = true;
+      }
+    }
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
