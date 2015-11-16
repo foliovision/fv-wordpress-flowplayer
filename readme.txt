@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.3.10 - 2015/11/16 =
+
+* Fix - applying Flash engine fix for complex URLs
+
 = 6.0.3.9 - 2015/11/04 =
 
 * Fix - autoplay when enabled for multiple videos on a single page
