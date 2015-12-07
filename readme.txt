@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4 - 2015/12/07 =
+
+* Core - upgrade to latest core Flowplayer (6.0.4)
+
 = 6.0.3.10 - 2015/11/16 =
 
 * Fix - applying Flash engine fix for complex URLs
