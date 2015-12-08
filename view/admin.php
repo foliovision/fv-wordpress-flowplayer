@@ -439,6 +439,13 @@ function fv_flowplayer_admin_integrations() {
               <input type="hidden" name="integrations[wp_core_video]" value="false" />
               <input type="checkbox" name="integrations[wp_core_video]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
+					</tr>
+					<tr>
+						<td><label for="embed_iframe">Use iframe embedding (beta):</label></td>
+						<td>
+              <input type="hidden" name="integrations[embed_iframe]" value="false" />
+              <input type="checkbox" name="integrations[embed_iframe]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
+						</td>
 					</tr>           
 					<tr>    		
 						<td colspan="4">
