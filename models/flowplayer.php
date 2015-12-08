@@ -94,6 +94,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
+    
+    add_filter( 'post_rewrite_rules', array( $this, 'rewrite_embed' ) );
+    add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
+    add_filter( 'init', array( $this, 'rewrite_check' ) );
+    
+    add_action( 'template_redirect', array( $this, 'template_embed' ) );
 
   }
   
@@ -419,6 +425,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important; }
     .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
+    .flowplayer .fp-dropdown li.active { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
@@ -968,7 +975,93 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return false;
     }
     return true;
-  }  
+  }
+  
+  
+  function rewrite_check( $aRules ) {
+    $aRewriteRules = get_option('rewrite_rules');
+    $bFound = false;
+    foreach( $aRewriteRules AS $k => $v ) {
+      if( stripos($v,'&fv_player_embed=') !== false ) {
+        $bFound = true;
+        break;
+      }
+    }
+    
+    if( !$bFound ) {
+      flush_rewrite_rules( true );
+    }
+  }
+  
+  
+  function rewrite_embed( $aRules ) {
+    $aRulesNew = array();
+    foreach( $aRules AS $k => $v ) {
+      $aRulesNew[$k] = $v;
+      if( stripos($k,'/trackback/') !== false ) {
+        $k = str_replace( '/trackback/', '/fvp/', $k );
+        $v = str_replace( '&tb=1', '&fv_player_embed=1', $v );
+        $aRulesNew[$k] = $v;
+        $k = str_replace( '/trackback/', '/fvp(\d+)?/', $k );
+        $v = str_replace( '&tb=1', '&fv_player_embed=$matches['.(substr_count($v,'$matches[')+1).']', $v );
+        $aRulesNew[$k] = $v;        
+      }
+    }
+    return $aRulesNew;
+  }
+  
+  
+  function rewrite_vars( $public_query_vars ) {
+    $public_query_vars[] = 'fv_player_embed';
+    return $public_query_vars;
+  }
+  
+  
+  function template_embed() {
+    if( get_query_var('fv_player_embed') ) {
+      ?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title><?php the_title(); ?></title>
+  <?php wp_head(); ?>
+  <style>
+    body { margin: 0; padding: 0; }
+  </style>
+</head>
+<body>
+  <?php while ( have_posts() ) : the_post(); ?>
+    <?php
+
+    $bFound = false;
+    $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
+    $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );    
+    $content = apply_filters( 'the_content', get_the_content() );
+    
+    $aPlayers = explode( '<!--fv player end-->', $content );
+    if( $aPlayers ) {
+      foreach( $aPlayers AS $k => $v ) {
+        if( stripos($v,$sLink.'"') !== false ) {
+          echo substr($v, stripos($v,'<div id="wpfp_') );
+          $bFound = true;
+        }
+      }
+    }
+    
+    if( !$bFound ) {
+      echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
+    }    
+    
+    ?>
+  <?php endwhile; ?>
+</body>
+<?php wp_footer(); ?>
+</html>       
+      <?php
+      exit();  
+    }
+  }
+  
   
 }
 

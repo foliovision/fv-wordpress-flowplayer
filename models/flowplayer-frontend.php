@@ -32,6 +32,8 @@ class flowplayer_frontend extends flowplayer
   
   var $aAds = array();
   
+  var $aPlayers = array();
+  
   var $aPlaylists = array();
   
   var $aPopups = array();
@@ -307,9 +309,17 @@ class flowplayer_frontend extends flowplayer
 					$attributes['data-engine'] = 'flash';
 				}
 				
-				if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
-					$attributes['data-embed'] = 'false';
-				}           
+        if( !empty($this->conf['integrations']['embed_iframe']) && $this->conf['integrations']['embed_iframe'] == 'true' ) {
+          if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
+            
+          } else {
+            $attributes['data-fv-embed'] = $this->get_embed_url();
+          }
+        } else {
+          if( $this->aCurArgs['embed'] == 'false' || ( $this->conf['disableembedding'] == 'true' && $this->aCurArgs['embed'] != 'true' ) ) {
+            $attributes['data-embed'] = 'false';
+          } 
+        }
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
 					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
@@ -507,7 +517,7 @@ class flowplayer_frontend extends flowplayer
         
 				$this->ret['html'] .= '</div>'."\n";
         
-				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after."<!--fv player end-->";
         
 				//  change engine for IE9 and 10
 				if( $this->aCurArgs['engine'] == 'false' ) {
@@ -674,6 +684,18 @@ class flowplayer_frontend extends flowplayer
     }
     
     return $scripts_after;
+  }
+  
+  
+  function get_embed_url() {
+    if( empty($this->aPlayers[get_the_ID()]) ) {
+      $this->aPlayers[get_the_ID()] = 1;
+      $append = 'fvp';
+    } else {
+      $this->aPlayers[get_the_ID()]++;
+      $append = 'fvp'.$this->aPlayers[get_the_ID()];
+    }
+    return user_trailingslashit( trailingslashit( get_permalink() ).$append );
   }
   
   
