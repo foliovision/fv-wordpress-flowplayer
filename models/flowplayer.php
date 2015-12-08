@@ -97,6 +97,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_filter( 'post_rewrite_rules', array( $this, 'rewrite_embed' ) );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
+    add_filter( 'init', array( $this, 'rewrite_check' ) );
     
     add_action( 'template_redirect', array( $this, 'template_embed' ) );
 
@@ -977,6 +978,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  function rewrite_check( $aRules ) {
+    $aRewriteRules = get_option('rewrite_rules');
+    $bFound = false;
+    foreach( $aRewriteRules AS $k => $v ) {
+      if( stripos($v,'&fv_player_embed=') !== false ) {
+        $bFound = true;
+        break;
+      }
+    }
+    
+    if( !$bFound ) {
+      flush_rewrite_rules( true );
+    }
+  }
+  
+  
   function rewrite_embed( $aRules ) {
     $aRulesNew = array();
     foreach( $aRules AS $k => $v ) {
@@ -1006,7 +1023,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 <!DOCTYPE html>
 <html>
 <head>
+  <title><?php the_title(); ?></title>
   <?php wp_head(); ?>
+  <style>
+    body { margin: 0; padding: 0; }
+  </style>
 </head>
 <body>
   <?php while ( have_posts() ) : the_post(); ?>
@@ -1020,7 +1041,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aPlayers = explode( '<!--fv player end-->', $content );
     if( $aPlayers ) {
       foreach( $aPlayers AS $k => $v ) {
-        if( stripos($v,$sLink) !== false ) {
+        if( stripos($v,$sLink.'"') !== false ) {
           echo substr($v, stripos($v,'<div id="wpfp_') );
           $bFound = true;
         }
