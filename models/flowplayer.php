@@ -96,6 +96,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
     add_filter( 'post_rewrite_rules', array( $this, 'rewrite_embed' ) );
+    add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
@@ -999,12 +1000,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aRules AS $k => $v ) {
       $aRulesNew[$k] = $v;
       if( stripos($k,'/trackback/') !== false ) {
-        $k = str_replace( '/trackback/', '/fvp/', $k );
-        $v = str_replace( '&tb=1', '&fv_player_embed=1', $v );
-        $aRulesNew[$k] = $v;
-        $k = str_replace( '/trackback/', '/fvp(\d+)?/', $k );
-        $v = str_replace( '&tb=1', '&fv_player_embed=$matches['.(substr_count($v,'$matches[')+1).']', $v );
-        $aRulesNew[$k] = $v;        
+        $new_k = str_replace( '/trackback/', '/fvp/', $k );
+        $new_v = str_replace( '&tb=1', '&fv_player_embed=1', $v );
+        $aRulesNew[$new_k] = $new_v;
+        $new_k = str_replace( '/trackback/', '/fvp(\d+)?/', $k );
+        $new_v = str_replace( '&tb=1', '&fv_player_embed=$matches['.(substr_count($v,'$matches[')+1).']', $v );
+        $aRulesNew[$new_k] = $new_v;        
       }
     }
     return $aRulesNew;
