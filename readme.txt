@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.1 - 2015/12/09 =
+
+* Beta - iframe embedding fixes
+
 = 6.0.4 - 2015/12/07 =
 
 * Core - upgrade to latest core Flowplayer (6.0.4)
