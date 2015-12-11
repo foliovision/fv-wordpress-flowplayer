@@ -245,7 +245,7 @@
 .is-rtl.flowplayer.is-fullscreen{left:auto !important;right:0 !important}
 .flowplayer.is-fullscreen .fp-player{background-color:#333}
 .flowplayer.is-error{border:1px solid #909090;background:#fdfdfd !important;}
-.flowplayer.is-error h2{font-weight:bold;font-size:large;margin-top:10%}
+.flowplayer.is-error h2{font-weight:bold;font-size:large;margin-top:10%;color: #000;}
 .flowplayer.is-error .fp-message{display:block}
 .flowplayer.is-error object,.flowplayer.is-error video,.flowplayer.is-error .fp-controls,.flowplayer.is-error .fp-time,.flowplayer.is-error .fp-subtitle{display:none}
 .flowplayer.is-ready.is-muted .fp-mute{opacity:.7;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=70)}
