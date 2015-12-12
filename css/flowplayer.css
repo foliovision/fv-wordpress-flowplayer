@@ -127,7 +127,7 @@
 .flowplayer .fp-play{display:none;height:30px !important;position:absolute;bottom:0;left:0;text-align:center;}
 .is-rtl.flowplayer .fp-play{left:auto;right:0}
 .is-playing.flowplayer .fp-play:before{content:"\e607"}
-.flowplayer .fp-menu{display:none;position:absolute;bottom:0;z-index:11;right:10px;}
+.flowplayer .fp-menu{display:none;position:absolute;bottom:0;z-index:21;right:10px;}
 .is-rtl.flowplayer .fp-menu{right:auto;left:10px}
 .has-menu.flowplayer .fp-menu{display:block}
 .flowplayer .fp-menu .fp-dropdown{z-index:12;display:none;left:-42.5px;line-height:auto;width:149px;-webkit-transform:none;-moz-transform:none;transform:none;}
