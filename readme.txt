@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.2 - 2015/12/15 =
+
+* Flash engine - fix for URLs with %2A and %2F in them
+
 = 6.0.4.1 - 2015/12/09 =
 
 * Beta - iframe embedding fixes
