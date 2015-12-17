@@ -152,7 +152,17 @@ class flowplayer_frontend extends flowplayer
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
     
     
-		$autoplay = false;  //  todo: should be changed into a property
+    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
+    
+    /*
+     *  Video player tabs
+     */
+    if( $player_type == 'video'  && $args['liststyle'] == 'tabs' && count($aPlaylistItems) ) {
+      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions);            
+    }    
+    
+    
+    $autoplay = false;  //  todo: should be changed into a property
     if( $this->autoplay_count < 1 ) {
       if( isset($this->conf['autoplay']) && $this->conf['autoplay'] == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
         $this->autoplay_count++;
@@ -165,20 +175,11 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
-    
-    /*
-     *  Video player tabs
-     */
-    if( $player_type == 'video'  && $args['liststyle'] == 'tabs' && count($aPlaylistItems) ) {
-      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$autoplay);            
-    }    
-    
     
     /*
      *  Video player
      */
-		else if( $player_type == 'video' ) {
+		if( $player_type == 'video' ) {
       
         if( is_feed() ) {
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
@@ -806,7 +807,7 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$autoplay) {
+  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions) {
     global $post;
     
     $this->count_tabs++;
@@ -826,11 +827,6 @@ class flowplayer_frontend extends flowplayer
       unset($this->aCurArgs['playlist']);
       $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
       $this->aCurArgs['splash'] = $aSplashScreens[$key];
-      if( $autoplay ) { //  this is quite ugly :(
-        $this->autoplay_count = 0;
-        $this->aCurArgs['autoplay'] = 'true';
-        $autoplay = false;
-      }
       unset($this->aCurArgs['caption']);
       
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
