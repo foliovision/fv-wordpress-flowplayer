@@ -255,6 +255,7 @@
 .flowplayer.is-mouseout .fp-title{overflow:hidden}
 .flowplayer.is-mouseout .fp-timeline{margin:0 !important}
 .flowplayer.is-mouseout .fp-timeline,.flowplayer.is-mouseout .fp-volume{-webkit-transition:height .15s .3s,top .15s .3s,margin .15s .3s;-moz-transition:height .15s .3s,top .15s .3s,margin .15s .3s;transition:height .15s .3s,top .15s .3s,margin .15s .3s;height:4px;top:0;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}
+.flowplayer.is-mouseout .fp-volume{top:12px}
 .flowplayer.is-mouseout .fp-fullscreen,.flowplayer.is-mouseout .fp-unload,.flowplayer.is-mouseout .fp-elapsed,.flowplayer.is-mouseout .fp-remaining,.flowplayer.is-mouseout .fp-duration,.flowplayer.is-mouseout .fp-embed,.flowplayer.is-mouseout .fp-volume,.flowplayer.is-mouseout .fp-play,.flowplayer.is-mouseout .fp-menu,.flowplayer.is-mouseout .fp-brand,.flowplayer.is-mouseout .fp-timeline-tooltip,.flowplayer.is-mouseout.aside-time .fp-time{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
 .flowplayer.is-mouseover .fp-controls,.flowplayer.fixed-controls .fp-controls{height:30px}
 .flowplayer.is-mouseover .fp-title,.flowplayer.fixed-controls .fp-title{height:30px}
