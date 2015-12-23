@@ -746,16 +746,14 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="timeline">Timeline</label></td>
       <td><input class="color small" id="timelineColor" name="timelineColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timelineColor']); ?>" /></td>
-      <td><label for="subtitleSize">Subitle Font Size</label></td>
+      <td><label for="subtitleSize">Subtitle Font Size</label></td>
       <td><input class="small" id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
     </tr>		
     <tr>              
       <td><label for="durationColor">Total time</label></td>
       <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" /></td>
-      <td><label for="ui_play_button">Play Button</label></td>
-      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_play_button'); ?></td>        
-      <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
-      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->
+      <td><label for="subtitleOn">Subtitles On By Default</label></td>
+      <td colspan="2"><?php fv_flowplayer_admin_checkbox('subtitleOn'); ?></td>       
     </tr>
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
@@ -767,13 +765,21 @@ function fv_flowplayer_admin_skin() {
       <td><label for="durationColor">Border color</label></td>
       <td><input class="color small" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
       <td><label for="volume">Default Volume</label></td>
-      <td><input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo esc_attr($fv_fp->conf['volume']); ?>" /></td>     
+      <td><input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo esc_attr($fv_fp->conf['volume']); ?>" /></td>                   
     </tr>
     <tr>
       <td><label for="hasBorder">Border</label></td>
       <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
+      <td><label for="ui_play_button">Play Button</label></td>
+      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_play_button'); ?></td>        
+      <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
+      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->       
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
       <td><label for="ui_play_button">Speed Buttons</label></td>
-      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_speed'); ?></td>      
+      <td colspan="2"><?php fv_flowplayer_admin_checkbox('ui_speed'); ?></td>   
     </tr>
     <tr>    		
       <td colspan="4">
@@ -956,7 +962,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 					<li>Or remove the logo completely</li>
 					<li>The best video plugin for Wordpress</li>
 					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Back to School sale!</strong><br />All Licenses 20% Off</a></p>
+						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
 				</div>
 				<div class="graphic-part">
 					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">

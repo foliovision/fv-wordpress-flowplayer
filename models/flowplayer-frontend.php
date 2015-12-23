@@ -484,7 +484,25 @@ class flowplayer_frontend extends flowplayer
 					}  
 					
 					if (isset($subtitles) && !empty($subtitles)) {
-						$this->ret['html'] .= "\t"."\t".'<track src="'.esc_attr($subtitles).'" />'."\n";
+            $sExtra = isset($this->conf['subtitleOn']) && strcmp($this->conf['subtitleOn'],'true') == 0 ? 'default ': '';
+            $aLang = explode('-', get_bloginfo('language'));
+            $sExtra .= !empty($aLang[0]) ? 'srclang="'.$aLang[0].'" ' : '';
+            
+            $sCaption = false;
+            if( !empty($aLang[0]) && $aLang[0] == 'en' ) {
+              $sCaption = 'English';
+              
+            } elseif( !empty($aLang[0]) ) {
+              $translations = get_site_transient( 'available_translations' );
+              $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
+              if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
+                $sCaption = $translations[$sLangCode]['native_name'];
+              }
+              
+            }            
+            $sExtra .= $sCaption ? 'label="'.$sCaption.'" ' : '';
+            
+						$this->ret['html'] .= "\t"."\t".'<track '.$sExtra.'src="'.esc_attr($subtitles).'" />'."\n";
 					}     
 					
 					$this->ret['html'] .= "\t".'</video>';//."\n";
