@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.4 - 2016/01/05 =
+
+* Bugfix - PHP warnings for websites without permalinks fixed
+
 = 6.0.4.3 - 2015/12/23 =
 
 * Subtitles - added "Subtitles On By Default" setting

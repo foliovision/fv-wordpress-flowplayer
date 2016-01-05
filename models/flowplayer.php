@@ -981,6 +981,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function rewrite_check( $aRules ) {
     $aRewriteRules = get_option('rewrite_rules');
+    if( empty($aRewriteRules) ) {
+      return;
+    }
+    
     $bFound = false;
     foreach( $aRewriteRules AS $k => $v ) {
       if( stripos($v,'&fv_player_embed=') !== false ) {
@@ -1035,8 +1039,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php
 
     $bFound = false;
-    $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
-    $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );    
+    $rewrite = get_option('rewrite_rules');var_dump('test1',get_query_var('fv_player_embed'));
+    if( empty($rewrite) ) {
+      $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
+    } else {
+      $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
+      $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
+    }
     $content = apply_filters( 'the_content', get_the_content() );
     
     $aPlayers = explode( '<!--fv player end-->', $content );
