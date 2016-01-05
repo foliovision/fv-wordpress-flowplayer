@@ -710,11 +710,19 @@ class flowplayer_frontend extends flowplayer
     if( empty($this->aPlayers[get_the_ID()]) ) {
       $this->aPlayers[get_the_ID()] = 1;
       $append = 'fvp';
+      $append_num = 1;
     } else {
       $this->aPlayers[get_the_ID()]++;
-      $append = 'fvp'.$this->aPlayers[get_the_ID()];
+      $append_num = $this->aPlayers[get_the_ID()];
+      $append = 'fvp'.$append_num;      
     }
-    return user_trailingslashit( trailingslashit( get_permalink() ).$append );
+    
+    $rewrite = get_option('rewrite_rules');
+    if( empty($rewrite) ) {
+      return add_query_arg( 'fv_player_embed', $append_num, get_permalink() );
+    } else {
+      return user_trailingslashit( trailingslashit( get_permalink() ).$append );
+    }
   }
   
   
