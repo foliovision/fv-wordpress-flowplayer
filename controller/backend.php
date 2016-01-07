@@ -20,7 +20,8 @@
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
 add_action('wp_ajax_fv_wp_flowplayer_activate_extension', 'fv_wp_flowplayer_activate_extension');
 add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
-add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files'); 
+add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files');
+add_action('wp_ajax_fv_wp_flowplayer_check_license', 'fv_wp_flowplayer_check_license');
  
 add_action('admin_head', 'flowplayer_admin_head');
 add_action('admin_footer', 'flowplayer_admin_footer');
@@ -788,7 +789,24 @@ function fv_wp_flowplayer_check_template() {
   }
   
   die('-1');
-} 
+}
+
+
+function fv_wp_flowplayer_check_license() {
+  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
+    if( fv_wp_flowplayer_admin_key_update() ) {
+      $output = array( 'errors' => false, 'ok' => array('License key acquired successfully. <a href="">Reload</a>') );
+      fv_wp_flowplayer_install_extension();
+    } else {
+      $message = get_option('fv_wordpress_flowplayer_deferred_notices');
+      if( !$message ) $message = get_option('fv_wordpress_flowplayer_persistent_notices');
+      $output = array( 'errors' => array($message), 'ok' => false );            
+    }
+    echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+		die();
+  }
+  die('-1');
+}
 
  
 function fv_wp_flowplayer_array_search_by_item( $find, $in_array, &$found, $like = false ) {
