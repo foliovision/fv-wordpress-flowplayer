@@ -33,7 +33,7 @@
 }
 #fv_flowplayer_ad h2 {
 	text-shadow: 1px 1px 1px #fff;
-	padding: 9px 0;
+	padding: 0 0 9px 0;
 }
 /* paragraph */
 #fv_flowplayer_ad p {
@@ -60,7 +60,7 @@ a.red-button {
 	font-size: 20px;
 }
 #fv_flowplayer_ad ul {
-	margin: 15px 0;
+	margin: 12px 0 15px;
 	font-size: 16px;
 }
 #fv_flowplayer_ad ul li {
