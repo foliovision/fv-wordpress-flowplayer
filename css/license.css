@@ -94,4 +94,24 @@ span.new { color: #e00; font-weight: bold }
 
 #fv_flowplayer_amazon_options label { float: right }
 
+form#fv_flowplayer_admin_buttons { margin: 13px 0; }
 #fv_flowplayer_admin_buttons a { color: gray; display: inline-block; text-decoration: none; }
+
+.wp-core-ui input.fv-license-inactive {
+  background: #f88;
+}
+.wp-core-ui input.fv-license-active {
+  background: #8f8;
+}
+.wp-core-ui input.fv-license-yellow {
+  background: #ff8;
+}
+.wp-core-ui input.fv-license-inactive:hover, .wp-core-ui input.fv-license-inactive:active {
+  background: #f66;
+}
+.wp-core-ui input.fv-license-active:hover, .wp-core-ui input.fv-license-active:active {
+  background: #6f6;
+}
+.wp-core-ui input.fv-license-yellow:hover, .wp-core-ui input.fv-license-yellow:active {
+  background: #ff6;
+}
