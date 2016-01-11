@@ -239,8 +239,7 @@ class flowplayer_frontend extends flowplayer
 					$scaling = "scale";
 				
         
-        $subtitles = $this->get_subtitles();
-        
+        $aSubtitles = $this->get_subtitles();
 			
 				$show_splashend = false;
 				if (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {      
@@ -483,26 +482,41 @@ class flowplayer_frontend extends flowplayer
             }
 					}  
 					
-					if (isset($subtitles) && !empty($subtitles)) {
-            $sExtra = isset($this->conf['subtitleOn']) && strcmp($this->conf['subtitleOn'],'true') == 0 ? 'default ': '';
-            $aLang = explode('-', get_bloginfo('language'));
-            $sExtra .= !empty($aLang[0]) ? 'srclang="'.$aLang[0].'" ' : '';
-            
-            $sCaption = false;
-            if( !empty($aLang[0]) && $aLang[0] == 'en' ) {
-              $sCaption = 'English';
-              
-            } elseif( !empty($aLang[0]) ) {
-              $translations = get_site_transient( 'available_translations' );
-              $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
-              if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
-                $sCaption = $translations[$sLangCode]['native_name'];
+					if (isset($aSubtitles) && !empty($aSubtitles)) {
+            $aLangs = $this->get_languages();
+            $countSubtitles = 0;
+            foreach( $aSubtitles AS $key => $subtitles ) {
+              if( $key == 'subtitles' ) {                   
+                $aLang = explode('-', get_bloginfo('language'));
+                $sExtra = !empty($aLang[0]) ? 'srclang="'.$aLang[0].'" ' : '';
+                $sCode = $aLang[0];
+                
+                $sCaption = '';
+                if( !empty($sCode) && $sCode == 'en' ) {
+                  $sCaption = 'English';
+                
+                } elseif( !empty($sCode) ) {
+                  $translations = get_site_transient( 'available_translations' );
+                  $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
+                  if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
+                    $sCaption = $translations[$sLangCode]['native_name'];
+                  }
+                  
+                }
+                
+                if( $sCaption ) {
+                  $sExtra .= 'label="'.$sCaption.'" ';
+                }
+                
+              } else {
+                $sExtra = 'srclang="'.$key.'" label="'.$aLangs[strtoupper($key)].'" ';
               }
               
-            }            
-            $sExtra .= $sCaption ? 'label="'.$sCaption.'" ' : '';
-            
-						$this->ret['html'] .= "\t"."\t".'<track '.$sExtra.'src="'.esc_attr($subtitles).'" />'."\n";
+              $sExtra .= $countSubtitles == 0 && isset($this->conf['subtitleOn']) && strcmp($this->conf['subtitleOn'],'true') == 0 ? 'default ': '';
+              
+              $countSubtitles++;
+              $this->ret['html'] .= "\t"."\t".'<track '.$sExtra.'src="'.esc_attr($subtitles).'" />'."\n";
+            }
 					}     
 					
 					$this->ret['html'] .= "\t".'</video>';//."\n";
@@ -806,8 +820,12 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_subtitles() {
-    if (isset($this->aCurArgs['subtitles']) && !empty($this->aCurArgs['subtitles'])) {
-      $subtitles = $this->aCurArgs['subtitles'];
+    $aSubtitles = array();
+    foreach( $this->aCurArgs AS $key => $subtitles ) {
+      if( stripos($key,'subtitles') !== 0 ) {
+        continue;
+      }
+
       if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
         if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
@@ -825,11 +843,14 @@ class flowplayer_frontend extends flowplayer
           }
       }
       else {
-        $subtitles = trim($this->aCurArgs['subtitles']);
+        $subtitles = trim($subtitles);
       }
-      return $subtitles;
+      
+      $aSubtitles[str_replace( 'subtitles_', '', $key )] = $subtitles;
+      
     }
-    return false;
+
+    return $aSubtitles;
   }
   
   
