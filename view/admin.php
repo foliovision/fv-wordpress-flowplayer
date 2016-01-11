@@ -903,11 +903,35 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
     <h2>FV Wordpress Flowplayer</h2>
   </div>
   
-  <form id="wpfp_options" method="post" action="">  
+  <?php
+  do_action('fv_player_settings_pre');
   
+  if( isset($_GET['fv_flowplayer_checker'] ) ) {
+    do_action('fv_flowplayer_checker_event');
+  }
+  
+  $aCheck = false;
+  if( flowplayer::is_licensed() ) {
+    $aCheck = get_transient( 'fv_flowplayer_license' );
+    $aInstalled = get_option('fv_flowplayer_extension_install');
+  }
+  ?>
+  
+  <form id="wpfp_options" method="post" action="">
+    
     <p id="fv_flowplayer_admin_buttons">
-      <?php if( !preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>
-        <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="Apply Pro upgrade" />
+      <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>
+        <?php
+        $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');      
+        if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
+          <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+        <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
+          <input type="button" class="button fv-license-active" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" />
+        <?php else : ?>
+          <input type="submit" class="button fv-license-yellow" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?>
+        <?php endif; ?>
+      <?php elseif( !preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>
+        <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="Apply Pro upgrade" />
       <?php endif; ?>
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" />
@@ -920,61 +944,27 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
       <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
     </p>
     <div id="fv_flowplayer_admin_notices">
-    </div>
-  <?php
-  
-  do_action('fv_player_settings_pre');
-  
-  if( isset($_GET['fv_flowplayer_checker'] ) ) {
-    do_action('fv_flowplayer_checker_event');
-  }
-  
-  if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
-    $aInstalled = get_option('fv_flowplayer_extension_install');
-  }
-  
-  if( isset($aCheck->valid) && $aCheck->valid ){
+    </div>  
     
-    $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');
-    
-    if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
-      <div id="fv_flowplayer_addon_pro">
-        <p>Thank you for purchasing FV Player license! <input type="button" class='button fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /></p>
-      </div>
-    <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
-      <div id="fv_flowplayer_addon_pro">
-        <p>Thank you for purchasing FV Player license! <input type="button" class="button" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" /></p>
-      </div>
+    <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
-      <div id="fv_flowplayer_addon_pro">
-        <p>Thank you for purchasing FV Player license! <form method="post"><input type="submit" class="button" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?></form></p>
+      <div id="fv_flowplayer_ad">
+        <div class="text-part">
+          <h2>FV Wordpress<strong>Flowplayer</strong></h2>
+          <span class="red-text">with your own branding</span>
+            <ul>
+            <li>Put up your own logo</li>
+            <li>Or remove the logo completely</li>
+            <li>The best video plugin for Wordpress</li>
+            </ul>
+              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
+          </div>
+          <div class="graphic-part">
+            <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
+            <img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
+          </div>
       </div>
-    <?php
-    endif;
-  }
-
-  
-  if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
-  <?php else : ?>
-		<div id="fv_flowplayer_ad">
-			<div class="text-part">
-				<h2>FV Wordpress<strong>Flowplayer</strong></h2>
-				<span class="red-text">with your own branding</span>
-					<ul>
-					<li>Put up your own logo</li>
-					<li>Or remove the logo completely</li>
-					<li>The best video plugin for Wordpress</li>
-					</ul>
-						<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
-				</div>
-				<div class="graphic-part">
-					<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
-					<img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
-				</div>
-		</div>
-  <?php endif; ?>	
-  
+    <?php endif; ?>	
   
 		<div id="dashboard-widgets" class="metabox-holder columns-1">
 			<div id='postbox-container-1' class='postbox-container'>    
@@ -1011,18 +1001,25 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
 		jQuery.post( ajaxurl, { action: type }, function( response ) {
       response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
       response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
-			var obj = (jQuery.parseJSON( response ) );
-			var css_class = '';
-			jQuery('#fv_flowplayer_admin_notices').html('');
-			if( obj.errors && obj.errors.length > 0 ) {
-				jQuery('#fv_flowplayer_admin_notices').append( '<div class="error"><p>'+obj.errors.join('</p><p>')+'</p></div>' );
-			} else {
-				css_class = ' green';
-			}
-
-			if( obj.ok && obj.ok.length > 0 ) {
-				jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
-			}
+      try {
+        var obj = (jQuery.parseJSON( response ) );
+        var css_class = '';
+        jQuery('#fv_flowplayer_admin_notices').html('');
+        if( obj.errors && obj.errors.length > 0 ) {
+          jQuery('#fv_flowplayer_admin_notices').append( '<div class="error"><p>'+obj.errors.join('</p><p>')+'</p></div>' );
+        } else {
+          css_class = ' green';
+        }
+  
+        if( obj.ok && obj.ok.length > 0 ) {
+          jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
+        }
+        
+      } catch(err) {
+        jQuery('#fv_flowplayer_admin_notices').append( jQuery('#wpbody', response ) );
+        
+      }
+      
 			jQuery('.'+type+'-spin').hide();
 		} );              
   }
@@ -1053,11 +1050,11 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
     
     jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
       var button = jQuery(this);
-      jQuery(button).siblings('img').show();
+      jQuery(button).siblings('img').eq(0).show();
       
       var button = this;
       jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_activate_extension' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
-        jQuery(button).siblings('img').hide();
+        jQuery(button).siblings('img').eq(0).hide();
         
         var obj;
         try {
@@ -1065,7 +1062,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
           response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
           obj = jQuery.parseJSON( response );
 
-          jQuery(button).attr('class','button');
+          jQuery(button).removeClass('fv_wp_flowplayer_activate_extension');
           jQuery(button).attr('value',obj.message);
           
           if( typeof(obj.error) == "undefined" ) {
@@ -1079,7 +1076,7 @@ add_meta_box( 'fv_flowplayer_usage', 'Usage', 'fv_flowplayer_admin_usage', 'fv_f
         }
     
       } ).error(function() {
-        jQuery(button).siblings('img').hide();
+        jQuery(button).siblings('img').eq(0).hide();
         jQuery(button).after('<p>Error!</p>');
       });  
     } );
