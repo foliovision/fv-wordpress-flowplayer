@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'fpicons';
-  src:url('fonts/fpicons.eot?yg5dv7');
-  src:url('fonts/fpicons.eot?#iefixyg5dv7') format('embedded-opentype'),
-    url('fonts/fpicons.woff?yg5dv7') format('woff'),
-    url('fonts/fpicons.ttf?yg5dv7') format('truetype'),
-    url('fonts/fpicons.svg?yg5dv7#fpicons') format('svg');
+  src:url('fonts/fpicons.eot?ver=yg5dv7');
+  src:url('fonts/fpicons.eot?ver=yg5dv7#iefix') format('embedded-opentype'),
+    url('fonts/fpicons.woff?ver=yg5dv7') format('woff'),
+    url('fonts/fpicons.ttf?ver=yg5dv7') format('truetype'),
+    url('fonts/fpicons.svg?ver=yg5dv7#fpicons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
