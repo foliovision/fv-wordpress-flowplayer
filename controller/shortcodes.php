@@ -207,6 +207,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     unset($arguments['mobile']);
   }
   
+  foreach( $atts AS $key => $val ) {
+    if( stripos($key,'subtitles_') === 0 ) {
+      $arguments[$key] = $val;
+    }
+  }
+  
   $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
 	
   if( $post == 'this' ) {

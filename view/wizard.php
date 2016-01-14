@@ -40,6 +40,9 @@
 #fv-flowplayer-playlist table input, #fv-flowplayer-playlist table input.with-button { width: 93%; }
 #fv-flowplayer-playlist table input.half-field { width: 46%; }
 #fv-flowplayer-playlist table/*:first-child*/ input.with-button { width: 70%; }
+#fv-flowplayer-playlist table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
+#fv-flowplayer-playlist table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
+#fv-flowplayer-playlist table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%; }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
@@ -146,10 +149,34 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
         		        
           <tr<?php if( $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
-            <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
-              <?php if ($allow_uploads=='true') { ?>
-                <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
-              <?php }; //allow uploads splash image ?></td>
+            <td class="field fv-fp-subtitles" colspan="2">
+              <div class="fv-fp-subtitle">
+                <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
+                  <option></option>
+                  <?php
+                  $aLanguages = flowplayer::get_languages();
+                  $aCurrent = explode('-',get_bloginfo('language'));
+                  $sCurrent = '';//aCurrent[0];
+                  foreach( $aLanguages AS $sCode => $sLabel ) {
+                    ?><option value="<?php echo strtolower($sCode); ?>"<?php if( strtolower($sCode) == $sCurrent ) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
+                    <?php
+                  }
+                  ?>
+                </select>                
+                <input type="text" class="text<?php echo $upload_field_class; ?> fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
+                <?php if ($allow_uploads=='true') { ?>
+                  <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
+                <a class="fv-fp-subtitle-remove" href="#" style="display: none">X</a>
+              <?php }; ?>
+              </div>
+            </td>
+          </tr>
+          <tr<?php if( $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
+            <td colspan="2">
+            </td>              
+            <td>
+              <a style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
+            </td>
           </tr>
           
           <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>

@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.5 - 2016/01/12 =
+
+* Subtitles - multilingual subtitles support added!
+
 = 6.0.4.4 - 2016/01/05 =
 
 * Bugfix - PHP warnings for websites without permalinks fixed
