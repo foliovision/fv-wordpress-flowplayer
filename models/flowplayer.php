@@ -810,7 +810,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       'CS' => 'Czech',
       'DA' => 'Danish',
       'NL' => 'Dutch',
-      'EN' => 'English, American',
+      'EN' => 'English',
       'EO' => 'Esperanto',
       'ET' => 'Estonian',
       'FO' => 'Faeroese',

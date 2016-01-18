@@ -822,7 +822,7 @@ class flowplayer_frontend extends flowplayer
   function get_subtitles() {
     $aSubtitles = array();
     foreach( $this->aCurArgs AS $key => $subtitles ) {
-      if( stripos($key,'subtitles') !== 0 ) {
+      if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
         continue;
       }
 
