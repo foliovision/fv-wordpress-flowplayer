@@ -529,6 +529,12 @@ p.fp-caption { text-align: center; }
   left: 0;
   bottom: 30px;
 }
+.flowplayer.fixed-controls .fv-player-buttons-left, .flowplayer.fixed-controls .fv-player-buttons-right, .flowplayer.fixed-controls .fv-player-buttons-center {
+  bottom: 0px;
+}
+.flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-left, .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-right, .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-center {
+  bottom: 30px;
+}
 .fv-player-buttons-left > ul {  
   left: 0;
 }

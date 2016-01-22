@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.6 - 2016/01/22 =
+
+* Controlbar - appearance fixes when controlbar set to always on
+
 = 6.0.4.5 - 2016/01/12 =
 
 * Subtitles - multilingual subtitles support added!
