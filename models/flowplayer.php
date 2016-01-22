@@ -414,6 +414,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php endif; ?>
   
     .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
+    .flowplayer.fixed-controls { margin: 0 auto <?php echo $iMarginBottom+30; ?>px auto; display: block; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
