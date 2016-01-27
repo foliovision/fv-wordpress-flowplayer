@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.7 - 2016/01/27 =
+
+* Playlist - Allow plugins to create custom playlist styles
+* Bugfix - Improving file extension parsing for URLs with http:// in query argument
+
 = 6.0.4.6 - 2016/01/22 =
 
 * Controlbar - appearance fixes when controlbar set to always on
