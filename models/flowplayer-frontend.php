@@ -154,6 +154,16 @@ class flowplayer_frontend extends flowplayer
     
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
     
+    
+    /*
+     *  Allow plugins to create custom playlist styles
+     */
+    $res = apply_filters( 'fv_flowplayer_playlist_style', false, $this->aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions );
+    if( $res ) {
+      return $res;
+    }  
+    
+    
     /*
      *  Video player tabs
      */
