@@ -191,7 +191,8 @@ function flowplayer_add_media_button() {
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
 	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
 	$img = (!$found) ? '<img src="' . $button_src . '" alt="' . $button_tip . '" />' : '';
-	echo '<a title="Add FV WP Flowplayer" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
+
+	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
 }
 
 
@@ -729,7 +730,8 @@ function fv_wp_flowplayer_check_template() {
         $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Read our instrutions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
 			}      
 			
-      $ok[] = 'Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.';       
+      //$ok[] = 'Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.';
+      $ok[] = __('Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv_flowplayer');
       
 			$response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
 			
@@ -744,7 +746,8 @@ function fv_wp_flowplayer_check_template() {
 					if( $check == - 1 ) {
 						$errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
 					} else if( $check == 1 ) {
-						$ok[] = "FV Flowplayer script found: <code>$flowplayer_script</code>!";
+						//$ok[] = "FV Flowplayer script found: <code>$flowplayer_script</code>!";
+            $ok[] = __("FV Flowplayer script found: ", "fv_flowplayer") . "<code>$flowplayer_script</code>!";
 						$fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
 					}
 				}
@@ -761,7 +764,8 @@ function fv_wp_flowplayer_check_template() {
 					if( $check == - 1 ) {
 						$errors[] = "jQuery library <code>$jquery_script</code> is old version and might not be compatible with Flowplayer.";
 					} else if( $check == 1 ) {
-						$ok[] = "jQuery library 1.7.1+ found: <code>$jquery_script</code>!";
+						//$ok[] = "jQuery library 1.7.1+ found: <code>$jquery_script</code>!";
+            $ok[] = __("jQuery library 1.7.1+ found: ", "fv_flowplayer") . "<code>$jquery_script</code>!";
 						$jquery_pos = strpos( $response['body'], $jquery_script );
 					} else if( $check == 2 ) {
 						//	nothing
@@ -795,7 +799,8 @@ function fv_wp_flowplayer_check_template() {
 function fv_wp_flowplayer_check_license() {
   if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
     if( fv_wp_flowplayer_admin_key_update() ) {
-      $output = array( 'errors' => false, 'ok' => array('License key acquired successfully. <a href="">Reload</a>') );
+      //$output = array( 'errors' => false, 'ok' => array('License key acquired successfully. <a href="">Reload</a>') );
+      $output = array( 'errors' => false, 'ok' => array(__('License key acquired successfully. <a href="">Reload</a>', 'fv_flowplayer')) );
       fv_wp_flowplayer_install_extension();
     } else {
       $message = get_option('fv_wordpress_flowplayer_deferred_notices');
@@ -992,7 +997,8 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
 
   require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
      
-  $sTaskDone = 'FV Flowplayer Pro extension installed - check the new <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">Pro features!</a>!';
+  //$sTaskDone = 'FV Flowplayer Pro extension installed - check the new <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">Pro features!</a>!';
+  $sTaskDone = __('FV Flowplayer Pro extension installed - check the new ', 'fv_flowplayer') . '<a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">' . __('Pro features', 'fv_flowplayer') . '</a>!';
   if( !$sPluginBasenameReal || is_wp_error(validate_plugin($plugin_basename)) ) {
     echo '<div style="display: none;">';
     $objInstaller = new Plugin_Upgrader();
@@ -1001,7 +1007,9 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
     wp_cache_flush();
     
     if ( is_wp_error( $objInstaller->skin->result ) ) {
-      update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension install failed - '.$objInstaller->skin->result->get_error_message() );
+      
+      //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension install failed - '.$objInstaller->skin->result->get_error_message() );
+      update_option( 'fv_wordpress_flowplayer_deferred_notices', __('FV Flowplayer Pro extension install failed - ', 'fv_flowplayer') . $objInstaller->skin->result->get_error_message() );
       $bResult = false;
     } else {    
       if ( $objInstaller->plugin_info() ) {
@@ -1011,14 +1019,16 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
       
       $activate = activate_plugin( $plugin_basename );
       if ( is_wp_error( $activate ) ) {
-        update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension install failed - '.$activate->get_error_message() );
+        //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension install failed - '.$activate->get_error_message() );
+        update_option( 'fv_wordpress_flowplayer_deferred_notices', __('FV Flowplayer Pro extension install failed - ', 'fv_flowplayer') . $activate->get_error_message());
         $bResult = false;
       }
     }
     
   } else if( $sPluginBasenameReal ) {
-    $sTaskDone = 'FV Flowplayer Pro extension upgraded succesfully!';
-    
+    //$sTaskDone = 'FV Flowplayer Pro extension upgraded succesfully!';
+    $sTaskDone = __('FV Flowplayer Pro extension upgraded successfully!', 'fv_flowplayer');
+
     echo '<div style="display: none;">';
     $objInstaller = new Plugin_Upgrader();
     $objInstaller->upgrade( $sPluginBasenameReal );    

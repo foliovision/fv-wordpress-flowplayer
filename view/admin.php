@@ -43,7 +43,7 @@ function fv_flowplayer_admin_ads() {
 						</tr>           
 						<tr>
 							<td colspan="2">
-								<label for="width"><?php _e('Ad CSS', 'fv_flowplayer'); ?> CSS:</label>
+								<label for="width"><?php _e('Ad CSS', 'fv_flowplayer'); ?>:</label>
 								<a href="#" onclick="jQuery('.ad_css_wrap').show(); jQuery(this).hide(); return false"><?php _e('Show styling options', 'fv_flowplayer'); ?></a>
 								<div class="ad_css_wrap" style="display: none; ">
 									<select id="ad_css_select">
@@ -264,7 +264,7 @@ function fv_flowplayer_admin_default_options() {
 						<tr>
 							<td><label for="logo"><?php _e('Splash Image', 'fv_flowplayer'); ?> (<abbr title="<?php _e('Default which will be used for any player without its own splash image', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
 							<td colspan="2"><input type="text"  name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo esc_attr($fv_fp->conf['splash']); ?>" /></td>
-              <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="Upload Image" alt="Select default Splash Screen" /></td>
+              <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="<?php _e('Upload Image', 'fv_flowplayer'); ?>" alt="Select default Splash Screen" /></td>
 						</tr>
 						<tr>
 							<td><label for="rtmp"><?php _e('Flash streaming server (Amazon CloudFront domain)', 'fv_flowplayer'); ?><br /> (<abbr title="<?php _e('Enter your default RTMP streaming server here', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
@@ -421,11 +421,11 @@ function fv_flowplayer_admin_integrations() {
                 $htmlQueue .= ") <a href='".site_url()."/wp-admin/options-general.php?page=fvplayer&fv_flowplayer_checker'>Scan now!</a></span>";
               }
               if( $iCount && $iQueue ) {
-                echo "Currently $iCount videos in database and $htmlQueue posts in queue.";
+                echo _e("Currently $iCount videos in database and $htmlQueue posts in queue.", "fv_flowplayer");
               } else if( $iCount ) {
-                echo "Currently $iCount videos in database.";
+                echo _e("Currently $iCount videos in database.", "fv_flowplayer");
               } else if( $iQueue ) {
-                echo "Currently $htmlQueue posts in queue.";
+                echo _e("Currently $htmlQueue posts in queue.", "fv_flowplayer");
               }
               ?>
 						</td>
@@ -579,7 +579,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>
 					<tr>          
-						<td><label for="interface[live]">Speed Buttons: </label></td>
+						<td><label for="interface[live]"><?php _e('Speed Buttons', 'fv_flowplayer'); ?>: </label></td>
 						<td>
               <input type="hidden" name="interface[speed]" value="false" />
 							<input type="checkbox" name="interface[speed]" id="interface[speed]" value="true" <?php if( isset($fv_fp->conf['interface']['speed']) && $fv_fp->conf['interface']['speed'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -763,7 +763,7 @@ function fv_flowplayer_admin_skin() {
     <tr>              
       <td><label for="durationColor"><?php _e('Total time', 'fv_flowplayer'); ?></label></td>
       <td><input class="color small" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" /></td>
-      <td><label for="subtitleOn">Subtitles On By Default</label></td>
+      <td><label for="subtitleOn"><?php _e('Subtitles On By Default', 'fv_flowplayer'); ?></label></td>
       <td colspan="2"><?php fv_flowplayer_admin_checkbox('subtitleOn'); ?></td>       
     </tr>
     <!--<tr>
@@ -936,19 +936,19 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
         <?php
         $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');      
         if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
-          <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="Enable the Pro extension" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+          <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="<?php _e('Enable the Pro extension', 'fv_flowplayer'); ?>" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
         <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
-          <input type="button" class="button fv-license-active" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="Pro pack installed" />
+          <input type="button" class="button fv-license-active" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="<?php _e('Pro pack installed', 'fv_flowplayer'); ?>" />
         <?php else : ?>
-          <input type="submit" class="button fv-license-yellow" value="Install Pro extension" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?>
+          <input type="submit" class="button fv-license-yellow" value="<?php _e('Install Pro extension', 'fv_flowplayer'); ?>" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?>
         <?php endif; ?>
       <?php elseif( !preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) : ?>
-        <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="Apply Pro upgrade" />
+        <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="<?php _e('Apply Pro upgrade', 'fv_flowplayer'); ?>" />
       <?php endif; ?>
-      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="Check template" /> 
-      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="Check videos" />
+      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php _e('Check template', 'fv_flowplayer'); ?>" /> 
+      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php _e('Check videos', 'fv_flowplayer'); ?>" />
       
-      <input type="text" name="key" id="key" placeholder="Commercial License Key" value="<?php if( $fv_fp->conf['key'] !== "false" ) echo esc_attr($fv_fp->conf['key']); ?>" /> <a title="Click here for license info" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
+      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv_flowplayer'); ?>" value="<?php if( $fv_fp->conf['key'] !== "false" ) echo esc_attr($fv_fp->conf['key']); ?>" /> <a title="<?php _e('Click here for license info', 'fv_flowplayer'); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
       
       <img class="fv_wp_flowplayer_check_license-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
       <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
