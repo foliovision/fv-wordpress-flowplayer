@@ -1188,7 +1188,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php
 
     $bFound = false;
-    $rewrite = get_option('rewrite_rules');var_dump('test1',get_query_var('fv_player_embed'));
+    $rewrite = get_option('rewrite_rules');
     if( empty($rewrite) ) {
       $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
     } else {
