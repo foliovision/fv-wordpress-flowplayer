@@ -77,7 +77,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if (!defined('FV_FP_RELATIVE_PATH')) {
       define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
       
-      $vid = 'http://'.$_SERVER['SERVER_NAME'];
+      $aURL = parse_url( home_url() );
+      $vid = isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'] : $aURL['scheme'].'://'.$aURL['host'];
       if (dirname($_SERVER['PHP_SELF']) != '/') 
         $vid .= dirname($_SERVER['PHP_SELF']);
       define('VIDEO_DIR', '/videos/');
