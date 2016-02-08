@@ -570,7 +570,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
-    if( !$wp_filesystem->put_contents( $filename, $sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
+    if( !$wp_filesystem->put_contents( $filename, "/*\nFV Flowplayer custom styles\n\nWarning: This file is not mean to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n*/\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
       return false;
     } else {
       $aOptions[$this->css_option()] = date('U');
