@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.9 - 2016/02/08
+
+* Playlist - fix for autoplay
+
 = 6.0.4.8 - 2016/02/05
 
 * Iframe embedding - fixing stray debug code appearing in the iframe embeds
