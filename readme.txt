@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.8 - 2016/02/05
+
+* Iframe embedding - fixing stray debug code appearing in the iframe embeds
+
 = 6.0.4.7 - 2016/01/27 =
 
 * Playlist - Allow plugins to create custom playlist styles
