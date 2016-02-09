@@ -77,7 +77,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if (!defined('FV_FP_RELATIVE_PATH')) {
       define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
       
-      $vid = 'http://'.$_SERVER['SERVER_NAME'];
+      $aURL = parse_url( home_url() );
+      $vid = isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'] : $aURL['scheme'].'://'.$aURL['host'];
       if (dirname($_SERVER['PHP_SELF']) != '/') 
         $vid .= dirname($_SERVER['PHP_SELF']);
       define('VIDEO_DIR', '/videos/');
@@ -1188,7 +1189,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php
 
     $bFound = false;
-    $rewrite = get_option('rewrite_rules');var_dump('test1',get_query_var('fv_player_embed'));
+    $rewrite = get_option('rewrite_rules');
     if( empty($rewrite) ) {
       $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
     } else {
