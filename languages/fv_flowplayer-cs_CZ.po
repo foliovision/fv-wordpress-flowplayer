@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-02-04 17:39+0100\n"
-"PO-Revision-Date: 2016-02-04 17:39+0100\n"
+"POT-Creation-Date: 2016-02-09 12:04+0100\n"
+"PO-Revision-Date: 2016-02-09 12:07+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -613,6 +613,21 @@ msgstr ""
 "Beta verze! Zapnutím umožníte zistovaní trvání videa. Vypnete, pokud se "
 "setkáte s problémy při ukládání příspěvků."
 
+#: ../view/admin.php:424
+#, php-format
+msgid "Currently %d videos in database and %s posts in queue."
+msgstr "Aktuálně %d videí v databázi a %s příspěvků ve frontě."
+
+#: ../view/admin.php:426
+#, php-format
+msgid "Currently %d videos in database."
+msgstr "Aktuálně %d videí v databázi."
+
+#: ../view/admin.php:428
+#, php-format
+msgid "Currently %s posts in queue."
+msgstr "Aktuálně %s příspěvků ve frontě."
+
 #: ../view/admin.php:434
 msgid "Disable saving of color settings into a static file"
 msgstr "Zakázat ukládání nastavení barev do statického souboru"
@@ -1219,6 +1234,15 @@ msgstr ""
 #: ../view/wizard.php:325
 msgid "currently not working with playlist"
 msgstr "V současné době nefunguje s playlistem"
+
+#~ msgid "Currently "
+#~ msgstr "Sucasne "
+
+#~ msgid "One title."
+#~ msgstr "Jedn titulok."
+
+#~ msgid "Two title."
+#~ msgstr "Dvaaa titulkyyyyyyyyy."
 
 #~ msgid "Ad"
 #~ msgstr "Reklama"

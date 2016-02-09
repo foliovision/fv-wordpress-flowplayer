@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
-"POT-Creation-Date: 2015-10-16 20:12+0100\n"
-"PO-Revision-Date: 2015-10-16 20:12+0100\n"
-"Last-Translator: Maros Polak <maros.polak@foliovision.com>\n"
+"POT-Creation-Date: 2016-02-09 11:18+0100\n"
+"PO-Revision-Date: 2016-02-09 14:56+0100\n"
+"Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
-"Language: sk_SK\n"
+"Language: Slovak\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,6 +14,231 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-KeywordsList: _e;_n;__\n"
 "X-Poedit-SearchPath-0: ..\n"
+
+#: ../models/flowplayer-frontend.php:195 ../controller/frontend.php:57
+msgid "Click to watch the video"
+msgstr "Kliknite pre pozeranie videa"
+
+#: ../models/flowplayer-frontend.php:195 ../controller/frontend.php:58
+msgid "[This post contains video, click to play]"
+msgstr "[Tento post obsahuje video, kliknite pre prehratie]"
+
+#: ../models/checker.php:315
+msgid "Every 5 minutes"
+msgstr ""
+
+#: ../controller/frontend.php:47
+msgid "Video loading aborted"
+msgstr "Načítanie videa prerušené"
+
+#: ../controller/frontend.php:48
+msgid "Network error"
+msgstr "Chyba siete"
+
+#: ../controller/frontend.php:49
+msgid "Video not properly encoded"
+msgstr "Video nie je správne kódované"
+
+#: ../controller/frontend.php:50
+msgid "Video file not found"
+msgstr "Súbor s videom nebol nájdený"
+
+#: ../controller/frontend.php:51
+msgid "Unsupported video"
+msgstr "Nepodporované video"
+
+#: ../controller/frontend.php:52
+msgid "Skin not found"
+msgstr "Skin nebol nájdený"
+
+#: ../controller/frontend.php:53
+msgid "SWF file not found"
+msgstr "SWF súbor nebol nájdený"
+
+#: ../controller/frontend.php:54
+msgid "Subtitles not found"
+msgstr "Titulky neboli nájdené"
+
+#: ../controller/frontend.php:55
+msgid "Invalid RTMP URL"
+msgstr "Neplatná RTMP URL"
+
+#: ../controller/frontend.php:56
+msgid "Unsupported video format. Try installing Adobe Flash."
+msgstr "Nepodporovaný video formát. Skúste nainštalovať Adobe Flash."
+
+#: ../controller/frontend.php:59
+msgid ""
+"<h2>Video file expired.<br />Please reload the page and play it again.</h2>"
+msgstr ""
+"<h2>Súbor s videom expiroval.<br />Pre prehratie videa prosím znova "
+"načítajte stránku .</h2>"
+
+#: ../controller/frontend.php:60
+msgid ""
+"<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>"
+msgstr ""
+"<h2>Nepodporovaný video formát.<br />Použite zariadenie podporujúce Flash "
+"prosím.</h2>"
+
+#: ../controller/frontend.php:61
+msgid "Mobile browser detected, serving low bandwidth video."
+msgstr "Mobilný telefón prehráva video so zníženou kvalitou."
+
+#: ../controller/frontend.php:62
+msgid "Click here"
+msgstr "Kliknite sem"
+
+#: ../controller/frontend.php:63
+msgid "for full quality."
+msgstr "pre plnú kvalitu."
+
+#: ../controller/frontend.php:64 ../controller/frontend.php:65
+msgid ""
+"<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the "
+"stream is currently offline.</h3>"
+msgstr ""
+"<h2>Načítanie živého prenosu zlyhalo.</h2><h3>Prenos je pravdepodobne "
+"dočasne pozastavený. Skúste to neskôr, prosím.</h3>"
+
+#: ../controller/frontend.php:66
+msgid "Please tell us what is wrong :"
+msgstr "Prosím, povedzte nám čo je zlé :"
+
+#: ../controller/frontend.php:67
+msgid ""
+"Please give us more information (a full sentence) so we can help you better"
+msgstr ""
+"Prosím, dajte nám viac informácií (celou vetou). Potom Vám budeme vedieť "
+"ľahšie pomôcť "
+
+#: ../controller/frontend.php:68
+msgid "Admin: Error parsing JSON"
+msgstr "Admin: Chyba pri parsovaní JSON"
+
+#: ../controller/frontend.php:69
+msgid "Admin: Video checker doesn't support IE 9."
+msgstr "Admin: Kontrola videa nepodporuje IE 9."
+
+#: ../controller/frontend.php:70
+msgid "Admin: Check failed."
+msgstr "Admin: Kontrola zlyhala."
+
+#: ../controller/frontend.php:71
+msgid "Video Issues"
+msgstr "Problémy s videom"
+
+#: ../controller/frontend.php:443
+#, php-format
+msgid "Posts by %s"
+msgstr ""
+
+#: ../controller/backend.php:195
+msgid "Add FV WP Flowplayer"
+msgstr ""
+
+#: ../controller/backend.php:251
+#, php-format
+msgid ""
+"FV Wordpress Flowplayer has found old shortcodes in the content of your "
+"posts. <a href=\"%1$s\">Run the conversion script.</a>"
+msgstr ""
+
+#: ../controller/backend.php:266
+msgid ""
+"FV Wordpress Flowplayer: Your pro extension is installed, but it's not "
+"compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to "
+"version 0.5 or above."
+msgstr ""
+
+#: ../controller/backend.php:355
+msgid "FV Player Video Checker"
+msgstr ""
+
+#: ../controller/backend.php:356
+msgid ""
+"<p>FV Player includes a free video checker which will check your videos for "
+"any encoding errors and helps ensure smooth playback of all your videos. To "
+"work its magic, our video checker must contact our server.</p><p>Would you "
+"like to enable the video encoding checker?</p>"
+msgstr ""
+
+#: ../controller/backend.php:358
+msgid "Allow"
+msgstr "Povoliť"
+
+#: ../controller/backend.php:359
+msgid "Disable the video checker"
+msgstr "Zakázať video kontrolu"
+
+#: ../controller/backend.php:371
+msgid "FV Flowplayer License Update"
+msgstr "Aktualizovať FV Flowplayer licenciu"
+
+#: ../controller/backend.php:372
+msgid ""
+"New version of FV Flowplayer core has been installed for your licensed "
+"website. Please accept the automatic license key updating (connects to "
+"Foliovision servers) or update the key manually by loggin into your "
+"Foliovision account."
+msgstr ""
+
+#: ../controller/backend.php:374
+msgid "Always auto-update"
+msgstr "Stále automaticky aktualizovať"
+
+#: ../controller/backend.php:375
+msgid "I'll update it manually"
+msgstr "Aktualizujem to ručne"
+
+#: ../controller/backend.php:390
+#, fuzzy
+msgid "FV Flowplayer License Expired"
+msgstr "Aktualizovať FV Flowplayer licenciu"
+
+#: ../controller/backend.php:393
+msgid "Hide this notice"
+msgstr ""
+
+#: ../controller/backend.php:394
+msgid "I'll check this later"
+msgstr ""
+
+#: ../controller/backend.php:734
+msgid ""
+"Template checker has changed. Just open any of your videos on your site and "
+"see if you get a red warning message about JavaScript not working."
+msgstr ""
+
+#: ../controller/backend.php:750
+#, fuzzy
+msgid "FV Flowplayer script found: "
+msgstr "Aktualizovať FV Flowplayer licenciu"
+
+#: ../controller/backend.php:768
+msgid "jQuery library 1.7.1+ found: "
+msgstr ""
+
+#: ../controller/backend.php:803
+msgid "License key acquired successfully. <a href=\"\">Reload</a>"
+msgstr ""
+
+#: ../controller/backend.php:1001
+msgid "FV Flowplayer Pro extension installed - check the new "
+msgstr ""
+
+#: ../controller/backend.php:1001
+#, fuzzy
+msgid "Pro features"
+msgstr "Rozšírené funkcie"
+
+#: ../controller/backend.php:1012 ../controller/backend.php:1023
+msgid "FV Flowplayer Pro extension install failed - "
+msgstr ""
+
+#: ../controller/backend.php:1030
+msgid "FV Flowplayer Pro extension upgraded successfully!"
+msgstr ""
 
 #: ../view/admin.php:32
 msgid "Default Ad Code"
@@ -32,7 +257,7 @@ msgid "Ad links"
 msgstr ""
 
 #: ../view/admin.php:46
-msgid "Ad"
+msgid "Ad CSS"
 msgstr ""
 
 #: ../view/admin.php:47
@@ -55,8 +280,8 @@ msgstr ""
 msgid "(Hint: put .wpfp_custom_ad_content before your own CSS selectors)"
 msgstr ""
 
-#: ../view/admin.php:69 ../view/admin.php:172 ../view/admin.php:279
-#: ../view/admin.php:461 ../view/admin.php:581 ../view/admin.php:782
+#: ../view/admin.php:69 ../view/admin.php:172 ../view/admin.php:275
+#: ../view/admin.php:483 ../view/admin.php:610 ../view/admin.php:817
 msgid "Save All Changes"
 msgstr ""
 
@@ -162,7 +387,7 @@ msgstr ""
 msgid "Add more Amazon S3 secure buckets"
 msgstr ""
 
-#: ../view/admin.php:186 ../view/admin.php:510 ../view/wizard.php:197
+#: ../view/admin.php:186 ../view/admin.php:532 ../view/wizard.php:227
 msgid "Autoplay"
 msgstr "Automatické prehratie"
 
@@ -244,654 +469,704 @@ msgstr "Zakázať video kontrolu"
 msgid "Default video size"
 msgstr "Predvolena velkost"
 
-#: ../view/admin.php:251
-msgid "Commercial License Key"
-msgstr ""
-
-#: ../view/admin.php:257
+#: ../view/admin.php:253 ../view/admin.php:267
 #, fuzzy
 msgid "Upload Image"
 msgstr "Obrázok videa"
 
-#: ../view/admin.php:260
+#: ../view/admin.php:256
 msgid "Position"
 msgstr ""
 
-#: ../view/admin.php:261
+#: ../view/admin.php:257
 msgid "Bottom-left"
 msgstr ""
 
-#: ../view/admin.php:262
+#: ../view/admin.php:258
 msgid "Bottom-right"
 msgstr ""
 
-#: ../view/admin.php:263
+#: ../view/admin.php:259
 msgid "Top-left"
 msgstr ""
 
-#: ../view/admin.php:264
+#: ../view/admin.php:260
 msgid "Top-right"
 msgstr ""
 
-#: ../view/admin.php:269 ../view/wizard.php:140
+#: ../view/admin.php:265 ../view/wizard.php:143
 msgid "Splash Image"
 msgstr "Obrázok videa"
 
-#: ../view/admin.php:269
+#: ../view/admin.php:265
 msgid "Default which will be used for any player without its own splash image"
 msgstr ""
 
-#: ../view/admin.php:274
+#: ../view/admin.php:270
 msgid "Flash streaming server (Amazon CloudFront domain)"
 msgstr ""
 
-#: ../view/admin.php:274
+#: ../view/admin.php:270
 msgid "Enter your default RTMP streaming server here"
 msgstr ""
 
-#: ../view/admin.php:380
+#: ../view/admin.php:375
 msgid ""
 "FV WordPress Flowplayer WordPress plugin is a free, easy-to-use, and "
 "complete solution for embedding"
 msgstr ""
 
-#: ../view/admin.php:382
+#: ../view/admin.php:377
 msgid "and"
 msgstr ""
 
-#: ../view/admin.php:384
+#: ../view/admin.php:379
 msgid ""
 "videos into your posts or pages. With MP4 videos, FV WordPress Flowplayer "
 "offers 98&#37; coverage even on mobile devices."
 msgstr ""
 
-#: ../view/admin.php:396
+#: ../view/admin.php:388
+msgid "One title."
+msgstr "Jedon titulok."
+
+#: ../view/admin.php:390
+msgid "Two title."
+msgstr "Dva titulky."
+
+#: ../view/admin.php:392 ../view/admin.php:444
+msgid "Currently videos in database and posts in queue."
+msgstr ""
+
+#: ../view/admin.php:410
 msgid "Following options are suitable for web developers and programmers."
 msgstr ""
 
-#: ../view/admin.php:399
+#: ../view/admin.php:413
 msgid "Colorbox Compatibility"
 msgstr ""
 
-#: ../view/admin.php:399
+#: ../view/admin.php:413
 msgid ""
 "Use if your theme is using colorbox lightbox to show content and clones the "
 "HTML content into it."
 msgstr ""
 
-#: ../view/admin.php:406
+#: ../view/admin.php:420
 msgid "Load FV Flowplayer JS everywhere"
 msgstr ""
 
-#: ../view/admin.php:406
+#: ../view/admin.php:420
 msgid ""
 "If you use some special JavaScript integration, you might prefer this "
 "option, otherwise it loads only if the shortcode is found."
 msgstr ""
 
-#: ../view/admin.php:413
+#: ../view/admin.php:427
 msgid "Scan video length"
 msgstr ""
 
-#: ../view/admin.php:413
+#: ../view/admin.php:427
 msgid ""
 "Beta version! Turn on to enable video duration scanning. Turn off if you "
 "experience issues when saving posts."
 msgstr ""
 
-#: ../view/admin.php:439
+#: ../view/admin.php:454
 msgid "Disable saving of color settings into a static file"
 msgstr ""
 
-#: ../view/admin.php:439
+#: ../view/admin.php:454
 msgid ""
 "Normally the player CSS configuration is stored in wp-content/fv-player-"
 "custom/style-{blog_id}.css, you can disable this here."
 msgstr ""
 
-#: ../view/admin.php:453
+#: ../view/admin.php:468
 msgid "Handle WordPress"
 msgstr ""
 
-#: ../view/admin.php:453
+#: ../view/admin.php:468
 msgid "shortcodes"
 msgstr ""
 
-#: ../view/admin.php:472
+#: ../view/admin.php:494
 msgid "Which features should be available in shortcode editor?"
 msgstr ""
 
-#: ../view/admin.php:475
+#: ../view/admin.php:497
 msgid "Allow User Uploads"
 msgstr ""
 
-#: ../view/admin.php:482
+#: ../view/admin.php:504
 #, fuzzy
 msgid "Playlist"
 msgstr "Pridaj video do playlistu"
 
-#: ../view/admin.php:489
+#: ../view/admin.php:511
 msgid "Playlist captions"
 msgstr ""
 
-#: ../view/admin.php:496 ../view/wizard.php:189
+#: ../view/admin.php:518 ../view/wizard.php:219
 #, fuzzy
 msgid "HTML popup"
 msgstr "HTML Popup"
 
-#: ../view/admin.php:503
+#: ../view/admin.php:525
 #, fuzzy
 msgid "Redirect"
 msgstr "Presmerovať na"
 
-#: ../view/admin.php:517 ../view/wizard.php:207
+#: ../view/admin.php:539 ../view/wizard.php:237
 msgid "Loop"
 msgstr "Slučka"
 
-#: ../view/admin.php:524 ../view/wizard.php:212
+#: ../view/admin.php:546 ../view/wizard.php:242
 msgid "Splash end"
 msgstr "Koncový obrázok"
 
-#: ../view/admin.php:531
+#: ../view/admin.php:553
 #, fuzzy
 msgid "Embed"
 msgstr "Vkladanie"
 
-#: ../view/admin.php:538 ../view/admin.php:807 ../view/wizard.php:148
+#: ../view/admin.php:560 ../view/admin.php:842 ../view/wizard.php:151
 msgid "Subtitles"
 msgstr "Titulky"
 
-#: ../view/admin.php:545 ../view/admin.php:884
+#: ../view/admin.php:567 ../view/admin.php:919
 msgid "Ads"
 msgstr ""
 
-#: ../view/admin.php:552 ../view/wizard.php:132
+#: ../view/admin.php:574 ../view/wizard.php:135
 #, fuzzy
 msgid "Mobile video"
 msgstr "Video pre mobil"
 
-#: ../view/admin.php:559 ../view/wizard.php:241
+#: ../view/admin.php:581 ../view/wizard.php:271
 msgid "Align"
 msgstr "Zarovnanie"
 
-#: ../view/admin.php:566 ../view/admin.php:717 ../view/wizard.php:251
+#: ../view/admin.php:588 ../view/admin.php:746 ../view/wizard.php:281
 msgid "Controlbar"
 msgstr "Ovládacia lišta"
 
-#: ../view/admin.php:573 ../view/wizard.php:261
+#: ../view/admin.php:595 ../view/wizard.php:291
 #, fuzzy
 msgid "Live stream"
 msgstr "Živý prenos"
 
-#: ../view/admin.php:597
+#: ../view/admin.php:602 ../view/admin.php:812 ../view/wizard.php:295
+msgid "Speed Buttons"
+msgstr ""
+
+#: ../view/admin.php:626
 msgid ""
 "Valid license found, click the button at the top of the screen to install FV "
 "Player Pro!"
 msgstr ""
 
-#: ../view/admin.php:599
+#: ../view/admin.php:628
 #, fuzzy
 msgid "Purchase FV Flowplayer license"
 msgstr "Aktualizovať FV Flowplayer licenciu"
 
-#: ../view/admin.php:599
+#: ../view/admin.php:628
 #, fuzzy
 msgid "to enable Pro features!"
 msgstr "Rozšírené funkcie"
 
-#: ../view/admin.php:603
+#: ../view/admin.php:632
 msgid "Advanced Vimeo embeding"
 msgstr ""
 
-#: ../view/admin.php:607
+#: ../view/admin.php:636
 msgid "Use Vimeo as your video host and use all of FV Flowplayer features."
 msgstr ""
 
-#: ../view/admin.php:612
+#: ../view/admin.php:641
 msgid "Advanced YouTube embeding"
 msgstr ""
 
-#: ../view/admin.php:616
+#: ../view/admin.php:645
 msgid "Use YouTube as your video host and use all of FV Flowplayer features."
 msgstr ""
 
-#: ../view/admin.php:621
+#: ../view/admin.php:650
 msgid "Enable user defined AB loop"
 msgstr ""
 
-#: ../view/admin.php:625
+#: ../view/admin.php:654
 msgid "Let your users repeat the parts of the video which they like!"
 msgstr ""
 
-#: ../view/admin.php:630
+#: ../view/admin.php:659
 msgid "Enable video lightbox"
 msgstr ""
 
-#: ../view/admin.php:634
+#: ../view/admin.php:663
 msgid "Enables Lightbox video gallery to show videos in a lightbox popup!"
 msgstr ""
 
-#: ../view/admin.php:639
+#: ../view/admin.php:668
 msgid "Enable quality switching"
 msgstr ""
 
-#: ../view/admin.php:643
+#: ../view/admin.php:672
 msgid ""
 "Upload your videos in multiple quality for best user experience with YouTube-"
 "like quality switching!"
 msgstr ""
 
-#: ../view/admin.php:648
+#: ../view/admin.php:677
 msgid "Amazon CloudFront protected content"
 msgstr ""
 
-#: ../view/admin.php:652
+#: ../view/admin.php:681
 msgid "Protect your Amazon CDN hosted videos"
 msgstr ""
 
-#: ../view/admin.php:657
+#: ../view/admin.php:686
 msgid "Use video lightbox for images as well"
 msgstr ""
 
-#: ../view/admin.php:661
+#: ../view/admin.php:690
 msgid "Will group images as well as videos into the same lightbox gallery."
 msgstr ""
 
-#: ../view/admin.php:666
+#: ../view/admin.php:695
 #, fuzzy
 msgid "Autoplay just once"
 msgstr "Automatické prehratie"
 
-#: ../view/admin.php:670
+#: ../view/admin.php:699
 msgid "Makes sure each video autoplays only once for each visitor."
 msgstr ""
 
-#: ../view/admin.php:675
+#: ../view/admin.php:704
 msgid "Upcoming pro features"
 msgstr ""
 
-#: ../view/admin.php:678
+#: ../view/admin.php:707
 msgid "Enable PayWall"
 msgstr ""
 
-#: ../view/admin.php:682
+#: ../view/admin.php:711
 msgid "Monetize the video content on your membership site."
 msgstr ""
 
-#: ../view/admin.php:700
+#: ../view/admin.php:729
 msgid "Buffer"
 msgstr ""
 
-#: ../view/admin.php:702
+#: ../view/admin.php:731
 msgid "Player position"
 msgstr ""
 
-#: ../view/admin.php:702
+#: ../view/admin.php:731
 msgid "You can still use align=\"right\" where needed"
 msgstr ""
 
-#: ../view/admin.php:705
+#: ../view/admin.php:734
 msgid "Centered"
 msgstr ""
 
-#: ../view/admin.php:706
+#: ../view/admin.php:735
 msgid "Left (no text-wrap)"
 msgstr ""
 
-#: ../view/admin.php:711
+#: ../view/admin.php:740
 msgid "Canvas"
 msgstr ""
 
-#: ../view/admin.php:713
+#: ../view/admin.php:742
 msgid "Bottom Margin"
 msgstr ""
 
-#: ../view/admin.php:719
+#: ../view/admin.php:748
 msgid "Disable Embed Button"
 msgstr ""
 
-#: ../view/admin.php:723
+#: ../view/admin.php:752
 msgid "Progress"
 msgstr ""
 
-#: ../view/admin.php:725
+#: ../view/admin.php:754
 msgid "Disable Sharing"
 msgstr ""
 
-#: ../view/admin.php:729
+#: ../view/admin.php:758
 msgid "Sliders"
 msgstr ""
 
-#: ../view/admin.php:731
+#: ../view/admin.php:760
 msgid "Enable Fullscreen"
 msgstr ""
 
-#: ../view/admin.php:735
+#: ../view/admin.php:764
 msgid "Time"
 msgstr ""
 
-#: ../view/admin.php:739
+#: ../view/admin.php:768
 msgid "Font Face"
 msgstr ""
 
-#: ../view/admin.php:744
+#: ../view/admin.php:773
 msgid "(inherit from template)"
 msgstr ""
 
-#: ../view/admin.php:749
+#: ../view/admin.php:778
 msgid "Timeline"
 msgstr ""
 
-#: ../view/admin.php:751
+#: ../view/admin.php:780
 #, fuzzy
 msgid "Subitle Font Size"
 msgstr "Titulky neboli nájdené"
 
-#: ../view/admin.php:755
+#: ../view/admin.php:784
 msgid "Total time"
 msgstr ""
 
-#: ../view/admin.php:757
-msgid "Play Button"
-msgstr ""
+#: ../view/admin.php:786
+#, fuzzy
+msgid "Subtitles On By Default"
+msgstr "Titulky neboli nájdené"
 
-#: ../view/admin.php:769
+#: ../view/admin.php:796
 msgid "Border color"
 msgstr ""
 
-#: ../view/admin.php:771
+#: ../view/admin.php:798
 #, fuzzy
 msgid "Default Volume"
 msgstr "Predvoleny kod"
 
-#: ../view/admin.php:775
+#: ../view/admin.php:802
 msgid "Border"
 msgstr ""
 
-#: ../view/admin.php:777
-msgid "Speed Buttons (beta)"
+#: ../view/admin.php:804
+msgid "Play Button"
 msgstr ""
 
-#: ../view/admin.php:798
+#: ../view/admin.php:833
 msgid "Illustrated user guides"
 msgstr ""
 
-#: ../view/admin.php:801
+#: ../view/admin.php:836
 #, fuzzy
 msgid "Inserting videos"
 msgstr "Nepodporované video"
 
-#: ../view/admin.php:802
+#: ../view/admin.php:837
 msgid "License key and custom logo"
 msgstr ""
 
-#: ../view/admin.php:803
+#: ../view/admin.php:838
 msgid "How to create a playlist"
 msgstr ""
 
-#: ../view/admin.php:804
+#: ../view/admin.php:839
 msgid "Using ads"
 msgstr ""
 
-#: ../view/admin.php:805
+#: ../view/admin.php:840
 msgid "Using Google Ads"
 msgstr ""
 
-#: ../view/admin.php:806
+#: ../view/admin.php:841
 #, fuzzy
 msgid "RTMP streams"
 msgstr "RTMP server"
 
-#: ../view/admin.php:808
+#: ../view/admin.php:843
 msgid "Amazon S3 secure content guide"
 msgstr ""
 
-#: ../view/admin.php:809
+#: ../view/admin.php:844
 msgid "How to setup a HLS stream"
 msgstr ""
 
-#: ../view/admin.php:810
+#: ../view/admin.php:845
 msgid "Google Analytics support"
 msgstr ""
 
-#: ../view/admin.php:811
+#: ../view/admin.php:846
 #, fuzzy
 msgid "Video lightbox"
 msgstr "Načítanie videa prerušené"
 
-#: ../view/admin.php:812
+#: ../view/admin.php:847
 msgid "YouTube integration"
 msgstr ""
 
-#: ../view/admin.php:813
+#: ../view/admin.php:848
 msgid "Quality Switching"
 msgstr ""
 
-#: ../view/admin.php:814
+#: ../view/admin.php:849
 #, fuzzy
 msgid "Vimeo integration"
 msgstr "Dĺžka videa"
 
-#: ../view/admin.php:815
+#: ../view/admin.php:850
 msgid "Custom video ads"
 msgstr ""
 
-#: ../view/admin.php:816
+#: ../view/admin.php:851
 msgid "CloudFront CDN - protected video downloads"
 msgstr ""
 
-#: ../view/admin.php:821
+#: ../view/admin.php:856
 msgid "Troubleshooting"
 msgstr ""
 
-#: ../view/admin.php:824
+#: ../view/admin.php:859
 msgid "Automated checks"
 msgstr ""
 
-#: ../view/admin.php:825
+#: ../view/admin.php:860
 #, fuzzy
 msgid "Video encoding tips"
 msgstr "Načítanie videa prerušené"
 
-#: ../view/admin.php:826
+#: ../view/admin.php:861
 msgid "Video formats to avoid"
 msgstr ""
 
-#: ../view/admin.php:827
+#: ../view/admin.php:862
 msgid "Fixing mime type on Amazon S3"
 msgstr ""
 
-#: ../view/admin.php:828
+#: ../view/admin.php:863
 msgid "Plugin FAQ"
 msgstr ""
 
-#: ../view/admin.php:829
+#: ../view/admin.php:864
 msgid "Support forums"
 msgstr ""
 
-#: ../view/admin.php:830
+#: ../view/admin.php:865
 msgid "Downgrading the plugin"
 msgstr ""
 
-#: ../view/admin.php:879
+#: ../view/admin.php:914
 msgid "Description"
 msgstr ""
 
-#: ../view/admin.php:880
+#: ../view/admin.php:915
 msgid "Player Skin"
 msgstr ""
 
-#: ../view/admin.php:881
+#: ../view/admin.php:916
 msgid "Post Interface Options"
 msgstr ""
 
-#: ../view/admin.php:882
+#: ../view/admin.php:917
 msgid "Sitewide Flowplayer Defaults"
 msgstr ""
 
-#: ../view/admin.php:883
+#: ../view/admin.php:918
 msgid "Amazon S3 Protected Content"
 msgstr ""
 
-#: ../view/admin.php:885
+#: ../view/admin.php:920
 #, fuzzy
 msgid "Integrations"
 msgstr "Dĺžka videa"
 
-#: ../view/admin.php:888
+#: ../view/admin.php:923
 #, fuzzy
 msgid "Pro Features"
 msgstr "Rozšírené funkcie"
 
-#: ../view/admin.php:890
+#: ../view/admin.php:925
 msgid "Usage"
 msgstr ""
 
-#: ../view/admin.php:903
+#: ../view/admin.php:959
+msgid "Enable the Pro extension"
+msgstr ""
+
+#: ../view/admin.php:961
+msgid "Pro pack installed"
+msgstr ""
+
+#: ../view/admin.php:963
+msgid "Install Pro extension"
+msgstr ""
+
+#: ../view/admin.php:966
+msgid "Apply Pro upgrade"
+msgstr ""
+
+#: ../view/admin.php:968
 msgid "Check template"
 msgstr ""
 
-#: ../view/admin.php:904
+#: ../view/admin.php:969
 msgid "Check videos"
 msgstr ""
 
-#: ../view/admin.php:930 ../view/admin.php:934 ../view/admin.php:938
-#, fuzzy
-msgid "Thank you for purchasing FV Player license!"
-msgstr "Aktualizovať FV Flowplayer licenciu"
+#: ../view/admin.php:971
+msgid "Commercial License Key"
+msgstr ""
 
-#: ../view/wizard.php:78
+#: ../view/admin.php:971
+msgid "Click here for license info"
+msgstr ""
+
+#: ../view/wizard.php:81
 msgid "(remove)"
 msgstr "(zmazať)"
 
-#: ../view/wizard.php:79 ../view/wizard.php:99 ../view/wizard.php:108
+#: ../view/wizard.php:82 ../view/wizard.php:102 ../view/wizard.php:111
 msgid "Video"
 msgstr "Video"
 
-#: ../view/wizard.php:83 ../view/wizard.php:102 ../view/wizard.php:111
-#: ../view/wizard.php:135
+#: ../view/wizard.php:86 ../view/wizard.php:105 ../view/wizard.php:114
+#: ../view/wizard.php:138
 msgid "Add Video"
 msgstr "Pridaj video"
 
-#: ../view/wizard.php:90
+#: ../view/wizard.php:93
 msgid "Video Duration"
 msgstr "Dĺžka videa"
 
-#: ../view/wizard.php:91
+#: ../view/wizard.php:94
 msgid "File size"
 msgstr "Veľkosť videa"
 
-#: ../view/wizard.php:95 ../view/wizard.php:236
+#: ../view/wizard.php:98 ../view/wizard.php:266
 msgid "Width"
 msgstr "Šírka"
 
-#: ../view/wizard.php:95 ../view/wizard.php:236
+#: ../view/wizard.php:98 ../view/wizard.php:266
 msgid "Height"
 msgstr "Výška"
 
-#: ../view/wizard.php:99 ../view/wizard.php:108
+#: ../view/wizard.php:102 ../view/wizard.php:111
 msgid "(another format)"
 msgstr "(iný formát)"
 
-#: ../view/wizard.php:117
+#: ../view/wizard.php:120
 msgid "RTMP Server"
 msgstr "RTMP server"
 
-#: ../view/wizard.php:117
+#: ../view/wizard.php:120
 msgid "Leave empty to use Flash streaming server from plugin settings"
 msgstr ""
 "Nechajte prázdne pre použitie Flash streaming servra z nastavení pluginov"
 
-#: ../view/wizard.php:120
+#: ../view/wizard.php:123
 msgid "RTMP Path"
 msgstr "RTMP cesta"
 
-#: ../view/wizard.php:127
+#: ../view/wizard.php:130
 msgid "Add another format"
 msgstr "Pridaj iný formát"
 
-#: ../view/wizard.php:127
+#: ../view/wizard.php:130
 msgid "(i.e. WebM, OGV)"
 msgstr "(napr. WebM, OGV)"
 
-#: ../view/wizard.php:128
+#: ../view/wizard.php:131
 msgid "Add RTMP"
 msgstr "Pridaj RTMP"
 
-#: ../view/wizard.php:143
+#: ../view/wizard.php:136
+msgid "Put low-bandwidth video here or leave blank"
+msgstr "Vložte low-bandwith video alebo nechajte prázdne"
+
+#: ../view/wizard.php:146
 msgid "Add Image"
 msgstr "Pridaj obrázok"
 
-#: ../view/wizard.php:151
+#: ../view/wizard.php:168
 msgid "Add Subtitles"
 msgstr "Pridaj titulky"
 
-#: ../view/wizard.php:156
+#: ../view/wizard.php:178
+#, fuzzy
+msgid "Add Another Language"
+msgstr "Pridaj iný formát"
+
+#: ../view/wizard.php:183
 msgid "Caption"
 msgstr "Názov"
 
-#: ../view/wizard.php:169
-msgid "Add Playlist Item"
+#: ../view/wizard.php:205
+#, fuzzy
+msgid "Playlist Style"
 msgstr "Pridaj video do playlistu"
 
-#: ../view/wizard.php:186
-msgid "Additional features"
-msgstr "Rozšírené funkcie"
-
-#: ../view/wizard.php:193
-msgid "Redirect to"
-msgstr "Presmerovať na"
-
-#: ../view/wizard.php:200 ../view/wizard.php:222 ../view/wizard.php:244
-#: ../view/wizard.php:254
+#: ../view/wizard.php:208 ../view/wizard.php:230 ../view/wizard.php:252
+#: ../view/wizard.php:274 ../view/wizard.php:284 ../view/wizard.php:298
 msgid "Default"
 msgstr "Predvolené"
 
-#: ../view/wizard.php:201 ../view/wizard.php:223
+#: ../view/wizard.php:209
+msgid "Tabs"
+msgstr ""
+
+#: ../view/wizard.php:211
+msgid "Add Playlist Item"
+msgstr "Pridaj video do playlistu"
+
+#: ../view/wizard.php:216
+msgid "Additional features"
+msgstr "Rozšírené funkcie"
+
+#: ../view/wizard.php:223
+msgid "Redirect to"
+msgstr "Presmerovať na"
+
+#: ../view/wizard.php:231 ../view/wizard.php:253
 msgid "On"
 msgstr "Zapnuté"
 
-#: ../view/wizard.php:202 ../view/wizard.php:224
+#: ../view/wizard.php:232 ../view/wizard.php:254
 msgid "Off"
 msgstr "Vypnuté"
 
-#: ../view/wizard.php:215
+#: ../view/wizard.php:245
 msgid "(show splash image at the end)"
 msgstr "(zobraz obrázok po prehratí videa)"
 
-#: ../view/wizard.php:219
+#: ../view/wizard.php:249
 msgid "Embedding"
 msgstr "Vkladanie"
 
-#: ../view/wizard.php:229
+#: ../view/wizard.php:259
 msgid "Ad code"
 msgstr "Reklama (HTML alebo skript)"
 
-#: ../view/wizard.php:237
+#: ../view/wizard.php:267
 msgid "Skip global ad in this video"
 msgstr "Vynechaj reklamu"
 
-#: ../view/wizard.php:245
+#: ../view/wizard.php:275
 msgid "Left"
 msgstr "Vľavo"
 
-#: ../view/wizard.php:246
+#: ../view/wizard.php:276
 msgid "Right"
 msgstr "Vpravo"
 
-#: ../view/wizard.php:255
+#: ../view/wizard.php:285 ../view/wizard.php:299
 msgid "Yes"
 msgstr "Áno"
 
-#: ../view/wizard.php:256
+#: ../view/wizard.php:286 ../view/wizard.php:300
 msgid "No"
 msgstr "Nie"
 
-#: ../view/wizard.php:267
+#: ../view/wizard.php:307
 msgid "Insert"
 msgstr "Vlož"
 
-#: ../view/wizard.php:273
+#: ../view/wizard.php:313
 #, fuzzy
 msgid ""
 "Admin note: Video uploads are currently disabled, set Allow User Uploads to "
@@ -900,218 +1175,22 @@ msgstr ""
 "Poznámka pre admina: Upload videa je dočasne zakázaný, zaškrtnite 'Povoliť "
 "upload uživateľovi' v "
 
-#: ../view/wizard.php:273 ../view/wizard.php:280
+#: ../view/wizard.php:313 ../view/wizard.php:320
 msgid "Settings"
 msgstr "nastavenia"
 
-#: ../view/wizard.php:280
+#: ../view/wizard.php:320
 msgid "Admin note: Enable more per video features in Interface options in"
 msgstr ""
 "Poznámka pre admina: Nové funkcie videa nájdete v Používateľskom rozhraní v"
 
-#: ../view/wizard.php:285
+#: ../view/wizard.php:325
 msgid "currently not working with playlist"
 msgstr "dočasne nefunguje s playlistom"
 
-#: ../controller/frontend.php:47
-msgid "Video loading aborted"
-msgstr "Načítanie videa prerušené"
-
-#: ../controller/frontend.php:48
-msgid "Network error"
-msgstr "Chyba siete"
-
-#: ../controller/frontend.php:49
-msgid "Video not properly encoded"
-msgstr "Video nie je správne kódované"
-
-#: ../controller/frontend.php:50
-msgid "Video file not found"
-msgstr "Súbor s videom nebol nájdený"
-
-#: ../controller/frontend.php:51
-msgid "Unsupported video"
-msgstr "Nepodporované video"
-
-#: ../controller/frontend.php:52
-msgid "Skin not found"
-msgstr "Skin nebol nájdený"
-
-#: ../controller/frontend.php:53
-msgid "SWF file not found"
-msgstr "SWF súbor nebol nájdený"
-
-#: ../controller/frontend.php:54
-msgid "Subtitles not found"
-msgstr "Titulky neboli nájdené"
-
-#: ../controller/frontend.php:55
-msgid "Invalid RTMP URL"
-msgstr "Neplatná RTMP URL"
-
-#: ../controller/frontend.php:56
-msgid "Unsupported video format. Try installing Adobe Flash."
-msgstr "Nepodporovaný video formát. Skúste nainštalovať Adobe Flash."
-
-#: ../controller/frontend.php:57 ../models/flowplayer-frontend.php:171
-msgid "Click to watch the video"
-msgstr "Kliknite pre pozeranie videa"
-
-#: ../controller/frontend.php:58 ../models/flowplayer-frontend.php:171
-msgid "[This post contains video, click to play]"
-msgstr "[Tento post obsahuje video, kliknite pre prehratie]"
-
-#: ../controller/frontend.php:59
-msgid ""
-"<h2>Video file expired.<br />Please reload the page and play it again.</h2>"
-msgstr ""
-"<h2>Súbor s videom expiroval.<br />Pre prehratie videa prosím znova "
-"načítajte stránku .</h2>"
-
-#: ../controller/frontend.php:60
-msgid ""
-"<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>"
-msgstr ""
-"<h2>Nepodporovaný video formát.<br />Použite zariadenie podporujúce Flash "
-"prosím.</h2>"
-
-#: ../controller/frontend.php:61
-msgid "Mobile browser detected, serving low bandwidth video."
-msgstr "Mobilný telefón prehráva video so zníženou kvalitou."
-
-#: ../controller/frontend.php:62
-msgid "Click here"
-msgstr "Kliknite sem"
-
-#: ../controller/frontend.php:63
-msgid "for full quality."
-msgstr "pre plnú kvalitu."
-
-#: ../controller/frontend.php:64 ../controller/frontend.php:65
-msgid ""
-"<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the "
-"stream is currently offline.</h3>"
-msgstr ""
-"<h2>Načítanie živého prenosu zlyhalo.</h2><h3>Prenos je pravdepodobne "
-"dočasne pozastavený. Skúste to neskôr, prosím.</h3>"
-
-#: ../controller/frontend.php:66
-msgid "Please tell us what is wrong :"
-msgstr "Prosím, povedzte nám čo je zlé :"
-
-#: ../controller/frontend.php:67
-msgid ""
-"Please give us more information (a full sentence) so we can help you better"
-msgstr ""
-"Prosím, dajte nám viac informácií (celou vetou). Potom Vám budeme vedieť "
-"ľahšie pomôcť "
-
-#: ../controller/frontend.php:68
-msgid "Admin: Error parsing JSON"
-msgstr "Admin: Chyba pri parsovaní JSON"
-
-#: ../controller/frontend.php:69
-msgid "Admin: Video checker doesn't support IE 9."
-msgstr "Admin: Kontrola videa nepodporuje IE 9."
-
-#: ../controller/frontend.php:70
-msgid "Admin: Check failed."
-msgstr "Admin: Kontrola zlyhala."
-
-#: ../controller/frontend.php:71
-msgid "Video Issues"
-msgstr "Problémy s videom"
-
-#: ../controller/frontend.php:429
-#, php-format
-msgid "Posts by %s"
-msgstr ""
-
-#: ../controller/backend.php:249
-#, php-format
-msgid ""
-"FV Wordpress Flowplayer has found old shortcodes in the content of your "
-"posts. <a href=\"%1$s\">Run the conversion script.</a>"
-msgstr ""
-
-#: ../controller/backend.php:264
-msgid ""
-"FV Wordpress Flowplayer: Your pro extension is installed, but it's not "
-"compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to "
-"version 0.5 or above."
-msgstr ""
-
-#: ../controller/backend.php:353
-msgid "FV Player Video Checker"
-msgstr ""
-
-#: ../controller/backend.php:354
-msgid ""
-"<p>FV Player includes a free video checker which will check your videos for "
-"any encoding errors and helps ensure smooth playback of all your videos. To "
-"work its magic, our video checker must contact our server.</p><p>Would you "
-"like to enable the video encoding checker?</p>"
-msgstr ""
-
-#: ../controller/backend.php:356
-msgid "Allow"
-msgstr "Povoliť"
-
-#: ../controller/backend.php:357
-msgid "Disable the video checker"
-msgstr "Zakázať video kontrolu"
-
-#: ../controller/backend.php:369
-msgid "FV Flowplayer License Update"
-msgstr "Aktualizovať FV Flowplayer licenciu"
-
-#: ../controller/backend.php:370
-msgid ""
-"New version of FV Flowplayer core has been installed for your licensed "
-"website. Please accept the automatic license key updating (connects to "
-"Foliovision servers) or update the key manually by loggin into your "
-"Foliovision account."
-msgstr ""
-
-#: ../controller/backend.php:372
-msgid "Always auto-update"
-msgstr "Stále automaticky aktualizovať"
-
-#: ../controller/backend.php:373
-msgid "I'll update it manually"
-msgstr "Aktualizujem to ručne"
-
-#: ../controller/backend.php:388
 #, fuzzy
-msgid "FV Flowplayer License Expired"
-msgstr "Aktualizovať FV Flowplayer licenciu"
-
-#: ../controller/backend.php:391
-msgid "Hide this notice"
-msgstr ""
-
-#: ../controller/backend.php:392
-msgid "I'll check this later"
-msgstr ""
-
-#: ../controller/backend.php:718
-msgid ""
-"Template checker has changed. Just open any of your videos on your site and "
-"see if you get a red warning message about JavaScript not working."
-msgstr ""
-
-#: ../controller/backend.php:734
-#, fuzzy
-msgid "FV Flowplayer script found: "
-msgstr "Aktualizovať FV Flowplayer licenciu"
-
-#: ../controller/backend.php:751
-msgid "jQuery library 1.7.1+ found: "
-msgstr ""
-
-#: ../models/checker.php:315
-msgid "Every 5 minutes"
-msgstr ""
+#~ msgid "Thank you for purchasing FV Player license!"
+#~ msgstr "Aktualizovať FV Flowplayer licenciu"
 
 #, fuzzy
 #~ msgid "AutoPlay"
@@ -1122,9 +1201,6 @@ msgstr ""
 
 #~ msgid "Live Stream"
 #~ msgstr "Živý prenos"
-
-#~ msgid "Put low-bandwidth video here or leave blank"
-#~ msgstr "Vložte low-bandwith video alebo nechajte prázdne"
 
 #~ msgid ""
 #~ "<p class=\"fv-flowplayer-mobile-switch\">Mobile browser detected, serving "

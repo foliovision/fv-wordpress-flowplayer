@@ -262,7 +262,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
 						</tr>
 						<tr>
-							<td><label for="logo"><?php _e('Splash Image', 'fv_flowplayer'); ?> (<abbr title="<?php _e('Default which will be used for any player without its own splash image', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
+							<td><label for="splash"><?php _e('Splash Image', 'fv_flowplayer'); ?> (<abbr title="<?php _e('Default which will be used for any player without its own splash image', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
 							<td colspan="2"><input type="text"  name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo esc_attr($fv_fp->conf['splash']); ?>" /></td>
               <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="<?php _e('Upload Image', 'fv_flowplayer'); ?>" alt="Select default Splash Screen" /></td>
 						</tr>
@@ -372,7 +372,7 @@ function fv_flowplayer_admin_description() {
 					<tr>
 						<td colspan="4">
                             <p>                                 
-                                <?php _e('FV WordPress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding', 'fv_flowplayer'); ?> 
+                                <?php _e('FV WordPress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding', 'fv_flowplayer'); ?>
                                 <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong>, <strong>MOV</strong>
                                 <?php _e('and', 'fv_flowplayer'); ?>
                                 <strong>FLV</strong>
@@ -421,12 +421,12 @@ function fv_flowplayer_admin_integrations() {
                 $htmlQueue .= ") <a href='".site_url()."/wp-admin/options-general.php?page=fvplayer&fv_flowplayer_checker'>Scan now!</a></span>";
               }
               if( $iCount && $iQueue ) {
-                echo _e("Currently $iCount videos in database and $htmlQueue posts in queue.", "fv_flowplayer");
-              } else if( $iCount ) {
-                echo _e("Currently $iCount videos in database.", "fv_flowplayer");
-              } else if( $iQueue ) {
-                echo _e("Currently $htmlQueue posts in queue.", "fv_flowplayer");
-              }
+								printf(__('Currently %d videos in database and %s posts in queue.', 'fv_flowplayer'), $iCount, $htmlQueue);
+						  } else if( $iCount ) {
+						    printf(__("Currently %d videos in database.", "fv_flowplayer"), $iCount);
+						  } else if( $iQueue ) {
+						    printf(__("Currently %s posts in queue.", "fv_flowplayer"), $htmlQueue);
+						  }
               ?>
 						</td>
 					</tr>

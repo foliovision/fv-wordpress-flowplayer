@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-02-04 17:40+0100\n"
-"PO-Revision-Date: 2016-02-04 17:42+0100\n"
+"POT-Creation-Date: 2016-02-09 12:29+0100\n"
+"PO-Revision-Date: 2016-02-09 14:32+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -617,6 +617,22 @@ msgstr ""
 "Beta version! Schalten Sie ein zum Video Dauer feststellen. Schalten Sie "
 "aus, wenn haben Sie Probleme mit Speichern der Beiträge."
 
+#: ../view/admin.php:424
+#, php-format
+msgid "Currently %d videos in database and %s posts in queue."
+msgstr ""
+"Aktuell %d Videos in der Datenbank und %s Beiträge in der Warteschlange."
+
+#: ../view/admin.php:426
+#, php-format
+msgid "Currently %d videos in database."
+msgstr "Aktuell %d Videos in der Datenbank."
+
+#: ../view/admin.php:428
+#, php-format
+msgid "Currently %s posts in queue."
+msgstr "Aktuell %s Beiträge in der Warteschlange."
+
 #: ../view/admin.php:434
 msgid "Disable saving of color settings into a static file"
 msgstr "Deaktiviere speichern von Farben einstellungen in eine statische Datei"
@@ -1067,7 +1083,7 @@ msgstr "Video"
 #: ../view/wizard.php:86 ../view/wizard.php:105 ../view/wizard.php:114
 #: ../view/wizard.php:138
 msgid "Add Video"
-msgstr "Hinzufügen Video"
+msgstr "Hinzufügen"
 
 #: ../view/wizard.php:93
 msgid "Video Duration"
@@ -1105,7 +1121,7 @@ msgstr "RTMP Pfad"
 
 #: ../view/wizard.php:130
 msgid "Add another format"
-msgstr "Hinzufügen anderes Fromat"
+msgstr "hzfg. anderes Format"
 
 #: ../view/wizard.php:130
 msgid "(i.e. WebM, OGV)"
@@ -1125,11 +1141,11 @@ msgstr "Hinzufügen Bild"
 
 #: ../view/wizard.php:168
 msgid "Add Subtitles"
-msgstr "Hinzufügen Untertitel"
+msgstr "Hinzufügen"
 
 #: ../view/wizard.php:178
 msgid "Add Another Language"
-msgstr "Hinzufügen eine andere Sprache"
+msgstr "hzfg. andere Sprache"
 
 #: ../view/wizard.php:183
 msgid "Caption"
@@ -1150,11 +1166,11 @@ msgstr "Registerkarten"
 
 #: ../view/wizard.php:211
 msgid "Add Playlist Item"
-msgstr "Hinzufügen Element zum Playlist"
+msgstr "hzfg. Element zum Playlist"
 
 #: ../view/wizard.php:216
 msgid "Additional features"
-msgstr "Zusätzlich Ergänzungen"
+msgstr "ZUSATZFUNKTIONEN"
 
 #: ../view/wizard.php:223
 msgid "Redirect to"
