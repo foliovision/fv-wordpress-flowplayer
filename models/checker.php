@@ -180,7 +180,7 @@ class FV_Player_Checker {
               $upload_dir = wp_upload_dir();      
               $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
 
-              $out = fopen( $localtempfilename,'wb' );
+              $out = @fopen( $localtempfilename,'wb' );
            
               if( $out ) {
                 $aArgs = array( 'file' => $localtempfilename );
