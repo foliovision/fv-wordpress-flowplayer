@@ -343,11 +343,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.4.9 - 2016/02/08
+= 6.0.4.10 - 2016/02/10 =
+
+* Added German translation
+* Added Spanish translation
+
+= 6.0.4.9 - 2016/02/08 =
 
 * Playlist - fix for autoplay
 
-= 6.0.4.8 - 2016/02/05
+= 6.0.4.8 - 2016/02/05 =
 
 * Iframe embedding - fixing stray debug code appearing in the iframe embeds
 
