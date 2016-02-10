@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-02-09 12:29+0100\n"
-"PO-Revision-Date: 2016-02-09 14:32+0100\n"
+"PO-Revision-Date: 2016-02-10 14:31+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -663,11 +663,11 @@ msgstr "Erlaube dem Benutzer hochladen"
 
 #: ../view/admin.php:484
 msgid "Playlist"
-msgstr "Playlist"
+msgstr "Wiedergabeliste"
 
 #: ../view/admin.php:491
 msgid "Playlist captions"
-msgstr "Playlist hauptzeile"
+msgstr "Wiedergabeliste mit Überschriften"
 
 #: ../view/admin.php:498 ../view/wizard.php:219
 msgid "HTML popup"
