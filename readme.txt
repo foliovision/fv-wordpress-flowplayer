@@ -345,6 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.4.10 - 2016/02/10 =
 
+* Added Czech translation
 * Added German translation
 * Added Spanish translation
 
