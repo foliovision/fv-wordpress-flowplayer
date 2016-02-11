@@ -223,7 +223,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $salt;
   }
   
-  //  todo: this could be parsin rtmp://host/path/mp4:rtmp_path links as well
+  //  todo: this could be parsing rtmp://host/path/mp4:rtmp_path links as well
   function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
     
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
@@ -299,13 +299,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $aSplashScreens[] = $splash_img;
       $aCaptions[] = $sItemCaption;
 
-      $sHTML = '';
-      if( $sShortcode && count($sItems) > 0 ) {
+      
+      $sHTML = array();
+      
+      if( $sShortcode && count($sItems) > 0) {
         
-        $sHTML = array();
-        
-        
-        
+       
         $sHTML[] = "\t\t<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
         
             
@@ -383,14 +382,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           
         }
         
-        $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
-  
-        $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
-
-        $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
-        //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
       
+      $aPlaylistItems = apply_filters('fv_player_pro_playlist_items',$aPlaylistItems,$this);
+      
+
+      $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
+
+      $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
+
+      $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
+      //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
+     
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  
   
