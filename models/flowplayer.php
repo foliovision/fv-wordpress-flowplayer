@@ -384,6 +384,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
       }
       
+      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'prevnext' ){
+        $sHTML = [];
+      }
+      
+      
       $aPlaylistItems = apply_filters('fv_player_pro_playlist_items',$aPlaylistItems,$this);
       
 
