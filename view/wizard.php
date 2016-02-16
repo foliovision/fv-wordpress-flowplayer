@@ -206,7 +206,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <td class="field" style="width: 50%">
             <select id="fv_wp_flowplayer_field_liststyle" name="fv_wp_flowplayer_field_liststyle">
               <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-              <option><?php _e('Tabs', 'fv_flowplayer'); ?></option>            
+              <option><?php _e('Tabs', 'fv_flowplayer'); ?></option> 
+              <option><?php _e('Prev/Next', 'fv_flowplayer'); ?></option>
             </select>          
             <div id="add_rtmp_wrapper" class="alignright"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div>
           </td>  				
