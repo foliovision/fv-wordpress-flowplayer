@@ -393,7 +393,7 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
-          if( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) {
+          if( $args['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
             $this->sHTMLAfter .= $playlist_items_external_html;
           }
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;

@@ -343,8 +343,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.11 - 2016/02/17 =
+
+* Playlist - adding Prev/Next style (with some only basic styling currently)
+* Playlist - improving the fv_player_pro_playlist_items filter
+
 = 6.0.4.10 - 2016/02/10 =
 
+* Added Czech translation
 * Added German translation
 * Added Spanish translation
 
