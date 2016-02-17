@@ -909,7 +909,7 @@ class flowplayer_frontend extends flowplayer
     
     if(
       current_user_can('manage_options') && $this->ajax_count < 100 && $this->conf['disable_videochecker'] != 'true' &&
-      ( $this->conf['video_checker_agreement'] == 'true' || $this->conf['key_automatic'] == 'true' )
+      ( !empty($this->conf['video_checker_agreement']) && $this->conf['video_checker_agreement'] == 'true' || !empty($this->conf['key_automatic']) && $this->conf['key_automatic'] == 'true' )
     ) {
       $this->ajax_count++;
       
@@ -973,7 +973,7 @@ class flowplayer_frontend extends flowplayer
       $sHTMLSharing = '';
     } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] && $this->aCurArgs['share'] != 'no' ) {
       
-    } else if( $this->conf['disablesharing'] == 'true' ) {
+    } else if( !empty($this->conf['disablesharing']) && $this->conf['disablesharing'] == 'true' ) {
       $sHTMLSharing = '';
     }
 
