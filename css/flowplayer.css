@@ -421,12 +421,36 @@
 /*#content .flowplayer.is-ready .fp-embed-code.visible textarea, .flowplayer.is-ready .fp-embed-code.visible textarea { height: 140px; }*/
 .fvp-share-bar a.embed-code-toggle { font-weight: bold; color: white; }
 
-.flowplayer .fp-prev, .flowplayer .fp-next{/* next and prev buttons */position:absolute;top:44%;cursor:pointer;-webkit-transition:opacity .5s;-moz-transition:opacity .5s;transition:opacity .5s;opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);height:20px;width:12px;}
-.is-mouseover.is-ready.flowplayer .fp-prev,.is-mouseover.is-ready.flowplayer .fp-next{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
-.flowplayer .fp-prev{left:-20px;background-position:0 -200px;}
-.flowplayer .fp-prev:hover{background-position:0 -300px}
-.flowplayer .fp-next{right:-20px;background-position:0 -400px;}
-.flowplayer .fp-next:hover{background-position:0 -500px}
+.is-splash.flowplayer .fp-prev, .is-splash.flowplayer .fp-next {
+  display: none;
+}
+.flowplayer .fp-prev, .flowplayer .fp-next {
+  position: absolute;
+  top: 44%;
+  font-size: 240%;
+  color: #fff;
+  padding: 4px;
+  font-weight: bold;
+  text-shadow: 0 0 1px #000;
+  cursor: pointer;
+  z-index: 12; /* make clickable */
+  opacity: 1;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+}
+.flowplayer .fp-prev {
+  left: 5px;
+}
+.flowplayer .fp-next {
+  right: 5px;
+}
+.is-mouseout.flowplayer .fp-prev, .is-mouseout.flowplayer .fp-next {
+  opacity: 0;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  /* same transition as other ui elements like fullscreen */
+  -webkit-transition: opacity .15s .3s;
+  -moz-transition: opacity .15s .3s;
+  transition: opacity .15s .3s;
+}
 
 .fp-playlist-external { text-align:center; margin-bottom: 24px;}
 .fp-playlist-external a { width:148px; display:inline-block; vertical-align:top; margin:5px 0px 0px 0px; border: 0}
@@ -545,7 +569,6 @@ p.fp-caption { text-align: center; }
 .is-mouseout .fv-player-buttons > ul {
   opacity: 0;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-  /* same transition as other ui elements like fullscreen */
   -webkit-transition: opacity .15s ease .3s;
   -moz-transition: opacity .15s ease .3s;
   transition: opacity .15s ease .3s;

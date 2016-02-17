@@ -145,7 +145,8 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();
     $aSplashScreens = array();
     $aCaptions = array();
-    if( isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {                 
+    if(apply_filters('fv_player_pro_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
+
       list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }
         
@@ -170,7 +171,6 @@ class flowplayer_frontend extends flowplayer
     if( $player_type == 'video'  && $args['liststyle'] == 'tabs' && count($aPlaylistItems) ) {
       return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions);            
     }    
-    
     
     $autoplay = false;  //  todo: should be changed into a property
     if( $this->autoplay_count < 1 ) {
@@ -393,7 +393,7 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
-          if( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) {
+          if( $args['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
             $this->sHTMLAfter .= $playlist_items_external_html;
           }
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
@@ -429,9 +429,8 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
-				
-				
-				if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
+
+      if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';      
 					if (isset($splash_img) && !empty($splash_img)) {
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
@@ -556,6 +555,10 @@ class flowplayer_frontend extends flowplayer
 
         if( current_user_can('manage_options') && $this->conf['disable_videochecker'] != 'true' ) {
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
+        }
+        
+        if ($args['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
+          $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
         }
         
 				$this->ret['html'] .= '</div>'."\n";
@@ -879,12 +882,14 @@ class flowplayer_frontend extends flowplayer
       $output->ret['html'] .= '<li><a href="#tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$sCaption.'</a></li>';
     }
     $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
-    
+
     foreach( $aPlaylistItems AS $key => $aSrc ) {
       unset($this->aCurArgs['playlist']);
       $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      $this->aCurArgs['splash'] = $aSplashScreens[$key];
+      
+      $this->aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:'';
       unset($this->aCurArgs['caption']);
+      $this->aCurArgs['liststyle']='';
       
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
       $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$aPlayer['html'].'</div>';
