@@ -250,13 +250,8 @@ function fv_wp_flowplayer_edit() {
   
   jQuery("#fv-wordpress-flowplayer-popup input").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
   jQuery("#fv-wordpress-flowplayer-popup textarea").each( function() { jQuery(this).val( '' ) } );
+  jQuery('#fv-wordpress-flowplayer-popup select').prop('selectedIndex',0);
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
-  jQuery('#fv_wp_flowplayer_field_autoplay').prop('selectedIndex',0);
-  jQuery('#fv_wp_flowplayer_field_speed').prop('selectedIndex',0);
-  jQuery('#fv_wp_flowplayer_field_liststyle').prop('selectedIndex',0);
-  jQuery('#fv_wp_flowplayer_field_embed').prop('selectedIndex',0);
-  jQuery('#fv_wp_flowplayer_field_align').prop('selectedIndex',0);
-  jQuery('#fv_wp_flowplayer_field_controlbar').prop('selectedIndex',0); 
   jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
   
 	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
