@@ -465,6 +465,9 @@
 .fp-playlist-external a.is-active { color:#52b9e4;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
 #content .fp-playlist-external a { border: 0}
 
+.fp-playlist-vertical { text-align: left; overflow: scroll; overflow-x: hidden; background: #fff; border-bottom: 1px solid #ccc; max-height: 423px; max-width: 100%; }
+.fp-playlist-vertical-player{ float: left!important; max-width:calc( 100% - 156px)!important;}
+
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;
     display: inline-block;

@@ -141,6 +141,16 @@ class flowplayer_frontend extends flowplayer
 				$player_type = 'vimeo';
 			}
 		}
+    
+    
+    if( !isset($this->aCurArgs['liststyle']) || empty($this->aCurArgs['liststyle']) ){
+      if(!isset($this->conf['liststyle'])){
+        $this->aCurArgs['liststyle'] = '';
+      }else{
+        $this->aCurArgs['liststyle'] = $this->conf['liststyle'];
+      }      
+    }
+    
         
     $aPlaylistItems = array();
     $aSplashScreens = array();
@@ -168,7 +178,8 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Video player tabs
      */
-    if( $player_type == 'video'  && $args['liststyle'] == 'tabs' && count($aPlaylistItems) ) {
+ 
+    if( $player_type == 'video'  && $this->aCurArgs['liststyle'] == 'tabs' && count($aPlaylistItems) > 1 ) {
       return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions);            
     }    
     
@@ -585,7 +596,6 @@ class flowplayer_frontend extends flowplayer
 			$this->build_audio_player( $media, $width, $autoplay );
 		}
     
-		$this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
 		return $this->ret;
 	}
@@ -898,7 +908,7 @@ class flowplayer_frontend extends flowplayer
       
       $this->aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:'';
       unset($this->aCurArgs['caption']);
-      $this->aCurArgs['liststyle']='';
+      $this->aCurArgs['liststyle']='none';
       
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
       $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$aPlayer['html'].'</div>';

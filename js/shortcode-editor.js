@@ -371,6 +371,10 @@ function fv_wp_flowplayer_edit() {
         document.getElementById("fv_wp_flowplayer_field_liststyle").selectedIndex = 1;
         if (sliststyle[1] == 'prevnext') 
         document.getElementById("fv_wp_flowplayer_field_liststyle").selectedIndex = 2;
+        if (sliststyle[1] == 'vertical') 
+        document.getElementById("fv_wp_flowplayer_field_liststyle").selectedIndex = 3;
+        if (sliststyle[1] == 'horizontal') 
+        document.getElementById("fv_wp_flowplayer_field_liststyle").selectedIndex = 4;
     }    
   	if( sembed != null && sembed[1] != null ) {
   		if (sembed[1] == 'true') 
@@ -527,7 +531,7 @@ function fv_wp_flowplayer_submit() {
   
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_align', 'align', false, false, ['left', 'right'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false'] );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_liststyle', 'liststyle', false, false, ['tabs','prevnext'] );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_liststyle', 'liststyle', false, false, ['tabs', 'prevnext', 'vertical','horizontal'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_controlbar', 'controlbar', false, false, ['yes', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_speed', 'speed', false, false, ['buttons', 'no'] );
