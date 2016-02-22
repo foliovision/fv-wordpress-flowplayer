@@ -267,14 +267,26 @@ function fv_flowplayer_admin_default_options() {
               <td style="width: 5%"><input id="upload_image_button" class="upload_image_button button no-margin" type="button" value="<?php _e('Upload Image', 'fv_flowplayer'); ?>" alt="Select default Splash Screen" /></td>
 						</tr>
 						<tr>
-							<td><label for="rtmp"><?php _e('Flash streaming server (Amazon CloudFront domain)', 'fv_flowplayer'); ?><br /> (<abbr title="<?php _e('Enter your default RTMP streaming server here', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
+							<td><label for="rtmp"><?php _e('Flash streaming server (Amazon CloudFront domain)', 'fv_flowplayer'); ?> (<abbr title="<?php _e('Enter your default RTMP streaming server here', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
 							<td colspan="3"><input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr($fv_fp->conf['rtmp']); ?>" /></td>
-						</tr>				
+						</tr>			
+            <tr>
+							<td><label for="liststyle"><?php _e('Playlist style', 'fv_flowplayer'); ?> (<abbr title="<?php _e('Enter your default playlist style here', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
+							<td colspan="3"> 
+                <select id="liststyle" name="liststyle">
+                  <option value="horizontal"<?=( (!isset($fv_fp->conf['liststyle']) && $fv_fp->conf['liststyle'] = '') || $fv_fp->conf['liststyle'] == '' || $fv_fp->conf['liststyle'] == 'horizontal' )?' selected="selected"':''?> ><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
+                  <option value="tabs"      <?=( $fv_fp->conf['liststyle'] == 'tabs' ) ?     ' selected="selected"' : ''?> ><?php _e('Tabs', 'fv_flowplayer'); ?></option> 
+                  <option value="prevnext"  <?=( $fv_fp->conf['liststyle'] == 'prevnext' ) ? ' selected="selected"' : ''?> ><?php _e('Prev/Next', 'fv_flowplayer'); ?></option>
+                  <option value="vertical"  <?=( $fv_fp->conf['liststyle'] == 'vertical' ) ? ' selected="selected"' : ''?> ><?php _e('Vertical', 'fv_flowplayer'); ?></option>
+                </select>
+              </td>
+						</tr>	
 						<tr>    		
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />
 							</td>
 						</tr>						
+            
 					</table>
 <script>
 jQuery(document).ready(function($) {    
