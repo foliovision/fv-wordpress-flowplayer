@@ -100,7 +100,7 @@ function fv_flowplayer_admin_amazon_options() {
 				<table class="form-table2">
 					<tr>
 						<td colspan="2">
-							<p><?php _e('Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly', 'fv_flowplayer'); ?></p>
+							<p><?php _e('Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly.', 'fv_flowplayer'); ?></p>
               <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expire Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv_flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Flowplayer guide', 'fv_flowplayer'); ?></a>.</p>
 						</td>
 					</tr>
@@ -493,7 +493,8 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <input type="hidden" name="css_disable" value="false" />
                 <input type="checkbox" name="css_disable" id="css_disable" value="true" <?php if( isset($fv_fp->conf['css_disable']) && $fv_fp->conf['css_disable'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css, you can disable this here.', 'fv_flowplayer'); ?>
+                <?php _e('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv_flowplayer'); ?>
+                <span class="more"><?php _e('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
               </p>
 						</td>
 					</tr> 
@@ -502,7 +503,7 @@ function fv_flowplayer_admin_integrations() {
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('scaling'); ?>
-                <?php _e('Original aspect ratio of the video will be used to display the video in fullscreen mode as well as when embedded in the page.', 'fv_flowplayer'); ?>
+                <?php _e('Original aspect ratio of the video will be used to display the video - for troubleshooting of fullscreen issues.', 'fv_flowplayer'); ?>
               </p>
             </td>
           </tr>
@@ -521,7 +522,8 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <input type="hidden" name="js-everywhere" value="false" />
                 <input type="checkbox" name="js-everywhere" id="js-everywhere" value="true" <?php if( isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('If you use some special JavaScript integration, you might prefer this option, otherwise it loads only if the shortcode is found.', 'fv_flowplayer'); ?>
+                <?php _e('If you use some special JavaScript integration you might prefer this option.','fv_flowplayer'); ?>
+                <span class="more"><?php _e('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
               </p>
 						</td>
 					</tr>
@@ -530,7 +532,8 @@ function fv_flowplayer_admin_integrations() {
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('parse_commas'); ?>
-                <?php _e('Older versions of this plugin used commas to sepparate shortcode parameters. This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv_flowplayer'); ?>
+                <?php _e('Older versions of this plugin used commas to sepparate shortcode parameters.','fv_flowplayer'); ?>
+                <span class="more"><?php _e('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
               </p>
             </td>
           </tr>
@@ -539,7 +542,7 @@ function fv_flowplayer_admin_integrations() {
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('postthumbnail'); ?>
-                <?php _e('When you set a splash screen from the media library, it will automatically become the splash image if there is none.', 'fv_flowplayer'); ?>
+                <?php _e('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv_flowplayer'); ?>
               </p>
             </td>
           </tr>            
@@ -548,7 +551,8 @@ function fv_flowplayer_admin_integrations() {
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('engine'); ?>
-                <?php _e('Provides greater compatibiliy. We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv_flowplayer'); ?>
+                <?php _e('Provides greater compatibility.','fv_flowplayer'); ?>
+                <span class="more"><?php _e('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
               </p>
             </td>
           </tr>
@@ -558,7 +562,8 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <input type="hidden" name="db_duration" value="false" />
                 <input type="checkbox" name="db_duration" id="db_duration" value="true" <?php if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.', 'fv_flowplayer'); ?>
+                <?php _e('Beta version, turn off if you experience issues when saving posts!','fv_flowplayer'); ?>
+                <span class="more"><?php _e('Turn on to enable video duration scanning.', 'fv_flowplayer'); ?>
                 <?php
                 global $wpdb;
                 $iCount = $wpdb->get_var( "SELECT count(meta_id) FROM $wpdb->postmeta WHERE meta_key LIKE '_fv_flowplayer_%'" );
@@ -578,6 +583,7 @@ function fv_flowplayer_admin_integrations() {
                   printf(__("Currently %s posts in queue.", "fv_flowplayer"), $htmlQueue);
                 }
                 ?>
+                </span> <a href="#" class="show-more">(more)</a>
               </p>            
 						</td>
 					</tr>          
@@ -1235,6 +1241,18 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       jQuery('html, body').animate({
           scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
       }, 1000);
+    } );
+    
+    jQuery('.show-more').click( function(e) {
+      e.preventDefault();
+      
+      jQuery('.more', jQuery(this).parent() ).toggle();
+      
+      if( jQuery('.more:visible', jQuery(this).parent() ).length > 0 ) {
+        jQuery(this).html('(less)');
+      } else {
+        jQuery(this).html('(more)');
+      }      
     } );    
 	});
 	//]]>

@@ -76,7 +76,7 @@ a.red-button {
 
 #wpfp_options table { width: 100% }
 #wpfp_options table td.first { width: 250px }
-#wpfp_options #fv_flowplayer_integrations table td.first { width: 350px }
+#wpfp_options #fv_flowplayer_integrations table td.first { width: 310px }
 #wpfp_options table.flowplayer-settings { width: 46%; }
 
 div.clear { clear: both }  
@@ -120,9 +120,13 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
 
 #flowplayer-wrapper label {
   display: block;
-  width: 80px;
+  width: 110px;
 }
 
 #flowplayer-wrapper input[type=text], #flowplayer-wrapper select {
   width: 95%;
+}
+
+.description .more {
+  display: none;
 }
