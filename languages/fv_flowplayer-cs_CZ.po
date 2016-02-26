@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-02-10 13:36+0100\n"
-"PO-Revision-Date: 2016-02-10 13:37+0100\n"
+"PO-Revision-Date: 2016-02-12 12:00+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -462,7 +462,7 @@ msgstr ""
 
 #: ../view/admin.php:216
 msgid "Convert old shortcodes with commas"
-msgstr "Překonvertovat staré shortcodes čárkami"
+msgstr "Překonvertovat staré shortcodes s čárkami"
 
 #: ../view/admin.php:216
 msgid ""
@@ -603,7 +603,7 @@ msgstr ""
 
 #: ../view/admin.php:408
 msgid "Scan video length"
-msgstr "Zjistuj délku videa"
+msgstr "Zjisti délku videa"
 
 #: ../view/admin.php:408
 msgid ""
