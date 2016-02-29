@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.12 - 2016/02/26 =
+
+* Playlist - fixing the fv_player_pro_playlist_items filter - renamed to fv_flowplayer_playlist_items because with conflict with addon plugin
+
 = 6.0.4.11 - 2016/02/17 =
 
 * Playlist - adding Prev/Next style (with some only basic styling currently)
