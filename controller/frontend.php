@@ -459,3 +459,24 @@ function fv_player_caption( $caption ) {
 }
 add_filter( 'fv_player_caption', 'fv_player_caption' );
 
+
+
+
+add_action('amp_post_template_css','fv_flowplayer_amp_post_template_css');
+
+function fv_flowplayer_amp_post_template_css() {
+  global $fv_fp;
+  $fv_fp->css_enqueue();
+}
+
+
+
+
+add_action('amp_post_template_footer','fv_flowplayer_amp_post_template_footer',9);
+
+function fv_flowplayer_amp_post_template_footer() {
+  flowplayer_prepare_scripts();
+  do_action( 'wp_print_footer_scripts' );
+}
+
+
