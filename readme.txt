@@ -23,8 +23,8 @@ FV WordPress Flowplayer 6 WordPress plugin is a free, easy-to-use, and complete 
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Flowplayer all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
-* Single site pro license available (jwPlayer requires five pack for full features)
-* Ultra-efficient player: just 62kB of JavaScript and 8kB of Flash code. You can extend Flowplayer using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* Single site pro license available (JW Player requires five pack for full features)
+* Ultra-efficient player: just 129kB of JavaScript and 9.9kB of Flash code. You can extend Flowplayer using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
