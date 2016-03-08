@@ -342,6 +342,7 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>               
           </table>
+          <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.</small>   
           <table class="form-table2">
 				
 
@@ -349,7 +350,6 @@ function fv_flowplayer_admin_default_options() {
 
 						<tr>    		
 							<td colspan="4">
-                <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.</small>   
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />
 							</td>
 						</tr>						
@@ -450,11 +450,11 @@ function fv_flowplayer_admin_description() {
 					<tr>
 						<td colspan="4">
                             <p>                                 
-                                <?php _e('FV WordPress Flowplayer WordPress plugin is a free, easy-to-use, and complete solution for embedding', 'fv_flowplayer'); ?>
+                                <?php _e('FV Player is a free, easy-to-use, and complete solution for embedding', 'fv_flowplayer'); ?>
                                 <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong>, <strong>MOV</strong>
                                 <?php _e('and', 'fv_flowplayer'); ?>
                                 <strong>FLV</strong>
-                                <?php _e('videos into your posts or pages. With MP4 videos, FV WordPress Flowplayer offers 98&#37; coverage even on mobile devices.', 'fv_flowplayer'); ?>
+                                <?php _e('videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; coverage even on mobile devices.', 'fv_flowplayer'); ?>
                             </p>
 						</td>
 					</tr>
@@ -494,7 +494,7 @@ function fv_flowplayer_admin_integrations() {
                 <input type="hidden" name="css_disable" value="false" />
                 <input type="checkbox" name="css_disable" id="css_disable" value="true" <?php if( isset($fv_fp->conf['css_disable']) && $fv_fp->conf['css_disable'] == 'true' ) echo 'checked="checked"'; ?> />
                 <?php _e('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv_flowplayer'); ?>
-                <span class="more"><?php _e('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
+                <span class="more"><?php _e('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
 						</td>
 					</tr> 
@@ -523,7 +523,7 @@ function fv_flowplayer_admin_integrations() {
                 <input type="hidden" name="js-everywhere" value="false" />
                 <input type="checkbox" name="js-everywhere" id="js-everywhere" value="true" <?php if( isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) echo 'checked="checked"'; ?> />
                 <?php _e('If you use some special JavaScript integration you might prefer this option.','fv_flowplayer'); ?>
-                <span class="more"><?php _e('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
+                <span class="more"><?php _e('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
 						</td>
 					</tr>
@@ -533,7 +533,7 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('parse_commas'); ?>
                 <?php _e('Older versions of this plugin used commas to sepparate shortcode parameters.','fv_flowplayer'); ?>
-                <span class="more"><?php _e('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
+                <span class="more"><?php _e('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
             </td>
           </tr>
@@ -552,7 +552,7 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('engine'); ?>
                 <?php _e('Provides greater compatibility.','fv_flowplayer'); ?>
-                <span class="more"><?php _e('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(more)</a>
+                <span class="more"><?php _e('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
             </td>
           </tr>
@@ -583,7 +583,7 @@ function fv_flowplayer_admin_integrations() {
                   printf(__("Currently %s posts in queue.", "fv_flowplayer"), $htmlQueue);
                 }
                 ?>
-                </span> <a href="#" class="show-more">(more)</a>
+                </span> <a href="#" class="show-more">(&hellip;)</a>
               </p>            
 						</td>
 					</tr>          
@@ -755,7 +755,7 @@ function fv_flowplayer_admin_pro() {
   <?php endif; ?>
   <table class="form-table2">
     <tr>
-      <td><label><?php _e('Advanced Vimeo embeding', 'fv_flowplayer'); ?>:</label></td>
+      <td class="first"><label><?php _e('Advanced Vimeo embeding', 'fv_flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="checkbox" checked="checked" disabled="true" />
@@ -825,12 +825,21 @@ function fv_flowplayer_admin_pro() {
           <?php _e('Makes sure each video autoplays only once for each visitor.', 'fv_flowplayer'); ?>
         </p>
       </td>
-    </tr>    
+    </tr>
+    <tr>
+      <td><label><?php _e('Enable video ads', 'fv_flowplayer'); ?>:</label></td>
+      <td>
+        <p class="description">
+          <input type="checkbox" disabled="true" />
+          <?php _e('Define your own videos ads to play in together with your videos - postroll or prerool', 'fv_flowplayer'); ?>
+        </p>
+      </td>
+    </tr>     
   </table>
-  <p><?php _e('Upcoming pro features', 'fv_flowplayer'); ?>:</p>
+  <p><strong><?php _e('Upcoming pro features', 'fv_flowplayer'); ?></strong>:</p>
   <table class="form-table2">
     <tr>
-      <td><label><?php _e('Enable PayWall', 'fv_flowplayer'); ?>:</label></td>
+      <td class="first"><label><?php _e('Enable PayWall', 'fv_flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="checkbox" checked="checked" disabled="true" />
@@ -1056,7 +1065,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>
-    <h2>FV Wordpress Flowplayer</h2>
+    <h2>FV Player</h2>
   </div>
   
   <?php
@@ -1249,9 +1258,9 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       jQuery('.more', jQuery(this).parent() ).toggle();
       
       if( jQuery('.more:visible', jQuery(this).parent() ).length > 0 ) {
-        jQuery(this).html('(less)');
+        jQuery(this).html('(hide)');
       } else {
-        jQuery(this).html('(more)');
+        jQuery(this).html('(&hellip;)');
       }      
     } );    
 	});
