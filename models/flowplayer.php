@@ -384,7 +384,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
       }
       
-      $aPlaylistItems = apply_filters('fv_player_pro_playlist_items',$aPlaylistItems,$this);
+      $aPlaylistItems = apply_filters('fv_flowplayer_playlist_items',$aPlaylistItems,$this);
       
 
       $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
