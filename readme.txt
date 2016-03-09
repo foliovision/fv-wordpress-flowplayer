@@ -1,4 +1,4 @@
-=== FV Video Player ===
+=== FV Flowplayer Video Player ===
 Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
