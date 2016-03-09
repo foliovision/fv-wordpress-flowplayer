@@ -1101,7 +1101,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
-        if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
+        if( $source_flash_encoded && strcmp($mime_type,'video/mp4') == 0 ) {
           $sReturn .= '<source '.$sID.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
         }
         return $sReturn;
