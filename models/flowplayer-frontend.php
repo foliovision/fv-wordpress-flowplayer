@@ -596,10 +596,11 @@ class flowplayer_frontend extends flowplayer
 			$this->build_audio_player( $media, $width, $autoplay );
 		}
     
-    $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
     if(isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical'){
       $this->ret['html'] = '<div class="fp-playlist-vertical-wrapper">'.$this->ret['html'].'</div>';
     }
+    $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
+
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
