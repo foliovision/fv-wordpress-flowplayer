@@ -122,17 +122,10 @@ function flowplayer_admin_footer_wp_js_restore() {
  * Administrator environment function.
  */
 function flowplayer_admin () {
-	// if we are in administrator environment
-	if (function_exists('add_submenu_page')) {
-		add_options_page(
-		  'FV Wordpress Flowplayer', 
-			'FV Wordpress Flowplayer', 
-			'manage_options', 
-			'fvplayer', 
-			'flowplayer_page'
-			);
-	}
-  
+	if( function_exists('add_submenu_page') ) {
+		add_options_page( 'FV Wordpress Flowplayer', 'FV Wordpress Flowplayer', 'manage_options', 'fvplayer#legacy', 'flowplayer_page' );
+		add_options_page( 'FV Player', 'FV Player', 'manage_options', 'fvplayer', 'flowplayer_page' );
+  }
 }
 
 

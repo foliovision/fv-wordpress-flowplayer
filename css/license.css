@@ -76,7 +76,8 @@ a.red-button {
 
 #wpfp_options table { width: 100% }
 #wpfp_options table td.first { width: 250px }
-#wpfp_options #fv_flowplayer_integrations table td.first { width: 350px }
+#wpfp_options #fv_player_pro table td.first { width: 278px }
+#wpfp_options #fv_flowplayer_integrations table td.first { width: 310px }
 #wpfp_options table.flowplayer-settings { width: 46%; }
 
 div.clear { clear: both }  
@@ -87,7 +88,9 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .meta-box-sortables input[type=text] { width: 100%; }
 #wpfp_options .meta-box-sortables input.button-primary, #wpfp_options .meta-box-sortables input.button { margin-top: 16px }
 #wpfp_options input.button.no-margin { margin-top: 0px }
-.meta-box-sortables input.small { width: 80px }
+.meta-box-sortables input.small, .meta-box-sortables select.small { width: 16%; }
+.meta-box-sortables input.medium { width: 50%; }
+.meta-box-sortables input.large { width: 66%; }
 td.second-column { margin-left: 20px }
 
 span.new { color: #e00; font-weight: bold }
@@ -114,4 +117,40 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
 }
 .wp-core-ui input.fv-license-yellow:hover, .wp-core-ui input.fv-license-yellow:active {
   background: #ff6;
+}
+
+#flowplayer-wrapper label {
+  display: block;
+  text-align: right;
+  width: 110px;  
+}
+
+#flowplayer-wrapper input[type=text], #flowplayer-wrapper select {
+  width: 95%;
+}
+
+#wpfp_options .button-primary {
+  float: right;
+}
+
+#wpfp_options #flowplayer-wrapper .button-primary {
+  float: none;
+}
+
+#wpfp_options .inside label {
+  display: block;
+  text-align: right;
+}
+
+#fv_flowplayer_ads .inside label, #fv_player_pro_video_ads .inside label, #fv_player_pro_vimeo .inside label, #wpfp_options .inside .description label {
+  display: initial;
+  text-align: inherit;
+}
+
+#fv_flowplayer_default_options input#width, #fv_flowplayer_default_options input#height {
+  width: 48px;
+}
+
+.description .more {
+  display: none;
 }

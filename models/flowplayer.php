@@ -430,7 +430,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       
       if(isset($aArgs['liststyle']) && $aArgs['liststyle'] != 'tabs'){
-        $aPlaylistItems = apply_filters('fv_player_pro_playlist_items',$aPlaylistItems,$this);
+        $aPlaylistItems = apply_filters('fv_flowplayer_playlist_items',$aPlaylistItems,$this);
       }
     
       
@@ -477,6 +477,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
+    .fp-playlist-external a.is-active { color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
+    .fp-playlist-external a.is-active span { border-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
@@ -1099,7 +1101,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
-        if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
+        if( $source_flash_encoded && strcmp($mime_type,'video/mp4') == 0 ) {
           $sReturn .= '<source '.$sID.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
         }
         return $sReturn;
