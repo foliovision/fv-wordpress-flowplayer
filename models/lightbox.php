@@ -22,7 +22,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
     add_action('fv_flowplayer_shortcode_editor_after', array($this, 'shortcode_editor'), 8);
 
     add_action('fv_flowplayer_admin_default_options_after', [ $this, 'lightbox_admin_default_options_html']);
-    add_filter('fv_flowplayer_admin_default_options_after', [ $this, 'lightbox_admin_interface_html']);
+    add_filter('fv_flowplayer_admin_interface_options_after', [ $this, 'lightbox_admin_interface_html']);
   }
 
   function remove_pro_hooks() {
@@ -37,9 +37,9 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'));  //  moved after the shortcodes are parsed to work for galleries
     }
   }
-  
+
   function lightbox_enable($sType) {
-    
+
     if ($sType === 'video') {
       add_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
     } else {
@@ -195,24 +195,17 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   function lightbox_add_post($content) {
-
+    global $fv_fp;
     //TODO IMAGES
-    //var_dump()
-    //if( !$this->is_option_enabled('lightbox_images') ) {
-    //  return $content;    
-    //}
+ 
+    if( $fv_fp->conf['lightbox_images'] !== 'true' ) {
+      return $content;    
+    }
 
     $content = preg_replace_callback('~(<a.*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
     return $content;
   }
-
-  function disable_autoplay($aArgs) {
-    if (isset($aArgs['lightbox'])) {
-      $aArgs['autoplay'] = 'false';
-    }
-    return $aArgs;
-  }
-
+  
   function lightbox_add_callback($matches) {
     if (!preg_match('~href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]~', $matches[1]))
       return $matches[0];
@@ -223,6 +216,13 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
       $matches[1] = preg_replace('~(class=[\'"])~', '$1colorbox ', $matches[1]);
     }
     return $matches[1] . $matches[2];
+  }
+
+  function disable_autoplay($aArgs) {
+    if (isset($aArgs['lightbox'])) {
+      $aArgs['autoplay'] = 'false';
+    }
+    return $aArgs;
   }
 
   function shortcode_editor() {
@@ -296,7 +296,8 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
 
-  function fv_flowplayer_admin_interface_options_after() {
+  function lightbox_admin_interface_html() {
+    global $fv_fp;
     ?>
     <tr>
       <td style="width: 250px"><label for="interface[lightbox]">Enable video lightbox:</label></td>
@@ -305,6 +306,22 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
           <input type="hidden" value="false" name="interface[lightbox]" />
           <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
           You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.
+        </p>
+      </td>
+    </tr>
+    <?php
+  }
+
+  function lightbox_admin_default_options_html() {
+    global $fv_fp;
+    ?>
+    <tr>
+      <td style="width: 250px"><label for=""lightbox_images">Use video lightbox for images as well:</label></td>
+      <td>
+        <p class="description">
+          <input type="hidden" value="false" name="lightbox_images" />
+          <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true') echo 'checked="checked"'; ?> />
+          Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.
         </p>
       </td>
     </tr>

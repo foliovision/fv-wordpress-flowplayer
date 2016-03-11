@@ -297,6 +297,7 @@ function flowplayer_prepare_scripts() {
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
      (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
+     (isset($fv_fp->conf['lightbox_images']) && strcmp($fv_fp->conf['lightbox_images'],'true') == 0 ) ||
      isset($_GET['fv_wp_flowplayer_check_template'])
   ) {
     
@@ -319,6 +320,12 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
+    if( !empty($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) {
+      $aConf['lightbox_images'] = true;
+    } else {
+      $aConf['lightbox_images'] = false;
+    }
+
     if( !empty($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) {
       $aConf['embed'] = false;
     } else {
