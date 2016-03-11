@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-02-10 13:36+0100\n"
-"PO-Revision-Date: 2016-02-12 12:00+0100\n"
+"PO-Revision-Date: 2016-03-01 10:11+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -654,7 +654,7 @@ msgstr "Které funkce by měly být k dispozici v shortcode editore?"
 
 #: ../view/admin.php:477
 msgid "Allow User Uploads"
-msgstr "Povolit uživatelům odesílat"
+msgstr "Povolit uživatelům nahrávat"
 
 #: ../view/admin.php:484
 msgid "Playlist"
@@ -1179,7 +1179,7 @@ msgstr "Vypnout"
 
 #: ../view/wizard.php:245
 msgid "(show splash image at the end)"
-msgstr "(zobraz náhledový obrázek na konci)"
+msgstr "(zobrazit náhledový obrázek na konci)"
 
 #: ../view/wizard.php:249
 msgid "Embedding"
@@ -1218,18 +1218,18 @@ msgid ""
 "Admin note: Video uploads are currently disabled, set Allow User Uploads to "
 "true in"
 msgstr ""
-"Administrátorská poznámka: Nahrávaní videa je momentálně zakázáno, nastavte "
-"položku \"Povolit užívatelovi nahrávat\" na hodnotu pravdivé"
+"Poznámka pro administrátora: Nahrávaní videa je momentálně zakázáno, "
+"zaškrnite položku \"Povolit uživatelům nahrávat\" v"
 
 #: ../view/wizard.php:313 ../view/wizard.php:320
 msgid "Settings"
-msgstr "Nastavení"
+msgstr "Nastaveních"
 
 #: ../view/wizard.php:320
 msgid "Admin note: Enable more per video features in Interface options in"
 msgstr ""
-"Administrátorská poznámka: Povolit víc doplňků na video v nastaveních "
-"rozhraní v"
+"Poznámka pro administrátora: Povolte víc doplňků ve videu v Možnosti "
+"rozhraní příspěvků v"
 
 #: ../view/wizard.php:325
 msgid "currently not working with playlist"
