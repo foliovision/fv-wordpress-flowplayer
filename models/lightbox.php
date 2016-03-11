@@ -1,6 +1,6 @@
 <?php
 
-class FV_Player_lightbbox extends FV_Wordpress_Flowplayer_Plugin {
+class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
 
   public function __construct() {
     //load conf data into stack
@@ -10,7 +10,8 @@ class FV_Player_lightbbox extends FV_Wordpress_Flowplayer_Plugin {
 
     add_filter('fv_flowplayer_shortcode', array($this, 'shortcode'), 15, 3);
 
-    add_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
+    add_filter('fv_flowplayer_player_type', array($this, 'lightbox_enable'));
+
     add_filter('fv_flowplayer_playlist_style', array($this, 'lightbox_playlist'), 10, 5);
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
@@ -36,6 +37,17 @@ class FV_Player_lightbbox extends FV_Wordpress_Flowplayer_Plugin {
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'));  //  moved after the shortcodes are parsed to work for galleries
     }
   }
+  
+  function lightbox_enable($sType) {
+    
+    if ($sType === 'video') {
+      add_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
+    } else {
+      remove_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
+    }
+
+    return $sType;
+  }
 
   function shortcode($attrs) {
     $aArgs = func_get_args();
@@ -55,7 +67,6 @@ class FV_Player_lightbbox extends FV_Wordpress_Flowplayer_Plugin {
 
   function lightbox_html($html) {
     $aArgs = func_get_args();
-    //var_dump($aArgs[1]);
 
     if (isset($aArgs[1]) && isset($aArgs[1]->aCurArgs['lightbox'])) {
       global $fv_fp;
@@ -302,4 +313,4 @@ class FV_Player_lightbbox extends FV_Wordpress_Flowplayer_Plugin {
 
 }
 
-new FV_Player_lightbbox();
+$FV_Player_lightbox = new FV_Player_lightbox();

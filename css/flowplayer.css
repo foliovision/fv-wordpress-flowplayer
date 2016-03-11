@@ -721,25 +721,25 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 */
 #fv_player_pro_boxOverlay{background:#000;}
 #colorbox{outline:0;}
-    #fv_player_pro_boxTopLeft{width:14px; height:14px; background:url(images/controls.png) no-repeat 0 0;}
+    #fv_player_pro_boxTopLeft{width:14px; height:14px; background:url(img/controls.png) no-repeat 0 0;}
     #fv_player_pro_boxTopCenter{height:14px;}
-    #fv_player_pro_boxTopRight{width:14px; height:14px; background:url(images/controls.png) no-repeat -36px 0;}
-    #fv_player_pro_boxBottomLeft{width:14px; height:43px; background:url(images/controls.png) no-repeat 0 -32px;}
+    #fv_player_pro_boxTopRight{width:14px; height:14px; background:url(img/controls.png) no-repeat -36px 0;}
+    #fv_player_pro_boxBottomLeft{width:14px; height:43px; background:url(img/controls.png) no-repeat 0 -32px;}
     #fv_player_pro_boxBottomCenter{height:43px;}
-    #fv_player_pro_boxBottomRight{width:14px; height:43px; background:url(images/controls.png) no-repeat -36px -32px;}
-    #fv_player_pro_boxMiddleLeft{width:14px; background:url(images/controls.png) repeat-y -175px 0;}
-    #fv_player_pro_boxMiddleRight{width:14px; background:url(images/controls.png) repeat-y -211px 0;}
+    #fv_player_pro_boxBottomRight{width:14px; height:43px; background:url(img/controls.png) no-repeat -36px -32px;}
+    #fv_player_pro_boxMiddleLeft{width:14px; background:url(img/controls.png) repeat-y -175px 0;}
+    #fv_player_pro_boxMiddleRight{width:14px; background:url(img/controls.png) repeat-y -211px 0;}
     #fv_player_pro_boxContent{background:#fff; overflow:visible;}
         .fv_player_pro_boxIframe{background:#fff;}
         #fv_player_pro_boxError{padding:50px; border:1px solid #ccc;}
         #fv_player_pro_boxLoadedContent{margin-bottom:5px;}
         
-        #fv_player_pro_boxLoadingGraphic{background:url(images/loading.gif) no-repeat center center;}
+        #fv_player_pro_boxLoadingGraphic{background:url(img/loading.gif) no-repeat center center;}
         #fv_player_pro_boxTitle{position:absolute; bottom:-25px; left:0; text-align:center; width:100%; font-weight:bold; color:#7C7C7C;}
         #fv_player_pro_boxCurrent{position:absolute; bottom:-25px; left:58px; font-weight:bold; color:#7C7C7C;}
 
         /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-        #fv_player_pro_boxPrevious, #fv_player_pro_boxNext, #fv_player_pro_boxSlideshow, #fv_player_pro_boxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(images/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;}
+        #fv_player_pro_boxPrevious, #fv_player_pro_boxNext, #fv_player_pro_boxSlideshow, #fv_player_pro_boxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(img/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;}
         
         /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
         #fv_player_pro_boxPrevious:active, #fv_player_pro_boxNext:active, #fv_player_pro_boxSlideshow:active, #fv_player_pro_boxClose:active {outline:0;}
@@ -772,12 +772,12 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 
 #fv_player_pro_boxSlideshow, 
 #fv_player_pro_boxClose {
-	background-image: url("images/controls.png");
+	background-image: url("img/controls.png");
 	background-repeat: no-repeat;
 }
 
 #fv_player_pro_boxClose {
-	background-image: url("images/closelabel.png");
+	background-image: url("img/closelabel.png");
 	background-position: center center;
 	width: 66px;
 }
@@ -835,13 +835,13 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 
 #fv_player_pro_boxPrevious {
 	left: 0;
-	background: url("images/prevlabel.gif") no-repeat -999em center;
+	background: url("img/prevlabel.gif") no-repeat -999em center;
 }
 
 #fv_player_pro_boxNext {
 	right: -1px;
 	left: 85%;
-	background: url("images/nextlabel.gif") no-repeat 999em center;
+	background: url("img/nextlabel.gif") no-repeat 999em center;
 }
 
 #fv_player_pro_boxPrevious:hover {
@@ -850,4 +850,11 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 
 #fv_player_pro_boxNext:hover {
 	background-position: right center;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),(min-resolution: 2dppx){
+	#fv_player_pro_colorbox #fv_player_pro_boxClose {
+		background-image: url("img/closelabel-x2.png");
+		background-size: 100%;
+	}
 }
