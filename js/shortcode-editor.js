@@ -19,6 +19,7 @@ jQuery(document).ready(function($){
           jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
         }
       } );
+      FVFP_sWidgetId = jQuery(this).data().number;
     });
     
     // why 2 separate onclicks async?
@@ -148,6 +149,7 @@ function fv_wp_flowplayer_init() {
   } else if( typeof FCKeditorAPI !== 'undefined' ) {
     fv_wp_flowplayer_oEditor = FCKeditorAPI.GetInstance('content');    
   } else {
+    fv_wp_flowplayer_content = undefined;
     fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').html();
   }
   jQuery('#fv_wp_flowplayer_file_info').hide();
@@ -259,9 +261,11 @@ function fv_wp_flowplayer_edit() {
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
   jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
   
-  if(fv_wp_flowplayer_oEditor == undefined && fv_wp_flowplayer_hTinyMCE == undefined && fv_wp_flowplayer_content != undefined){
-    
+  if(jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
+    if(fv_wp_flowplayer_content.match(/\[/) )
     fv_wp_flowplayer_content = '<p>[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+'</p>'
+    else
+    fv_wp_flowplayer_content =   '<p><'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+'</p>'  
   }else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
