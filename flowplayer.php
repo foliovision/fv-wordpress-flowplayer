@@ -39,6 +39,7 @@ $FV_Player_Checker = new FV_Player_Checker();
 
 include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
 include_once(dirname( __FILE__ ) . '/models/flowplayer-frontend.php');
+include_once(dirname( __FILE__ ) . '/models/widget.php');
 $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {
