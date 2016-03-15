@@ -36,11 +36,16 @@ function fv_flowplayer_admin_ads() {
 						<tr>
 							<td colspan="2"><label for="width"><?php _e('Default set size', 'fv_flowplayer');?> [px]:</label> 
 								<label for="ad_width">W:</label>&nbsp; <input type="text" name="ad_width" id="ad_width" value="<?php echo intval($fv_fp->conf['ad_width']); ?>" class="small" /> 
-								<label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval($fv_fp->conf['ad_height']); ?>" class="small"  /> 
+								<label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval($fv_fp->conf['ad_height']); ?>" class="small"  /> v
 								<label for="adTextColor"><?php _e('Ad text', 'fv_flowplayer');?></label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo esc_attr($fv_fp->conf['adTextColor']); ?>" /> 
 								<label for="adLinksColor"><?php _e('Ad links', 'fv_flowplayer');?></label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo esc_attr($fv_fp->conf['adLinksColor']); ?>" /> 
 							</td>			
-						</tr>           
+						</tr> 
+            <tr>
+              <td>
+                <label for="ad_width"><?php _e('Show After', 'fv_flowplayer');?>[s]:</label>&nbsp; <input type="text" name="ad_show_after" id="ad_show_after" value="<?php echo intval($fv_fp->conf['ad_show_after']); ?>" class="small" /> 
+              </td>
+            </tr> 
 						<tr>
 							<td colspan="2">
 								<label for="width"><?php _e('Ad CSS', 'fv_flowplayer'); ?>:</label>

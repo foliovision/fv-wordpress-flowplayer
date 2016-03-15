@@ -145,7 +145,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
     if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
     if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
-    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;         
+    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;
+    if( !isset( $conf['ad_show_after'] ) ) $conf['ad_show_after'] = 0;         
     if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';            
     if( isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }         
     if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'ads' => false, 'mobile' => false, 'align' => false );        

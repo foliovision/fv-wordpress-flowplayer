@@ -647,11 +647,20 @@ class flowplayer_frontend extends flowplayer
         $ad_width = ( isset($this->conf['ad_width']) && $this->conf['ad_width'] ) ? $this->conf['ad_width'].'px' : '100%';	
         $ad_height = ( isset($this->conf['ad_height']) && $this->conf['ad_height'] ) ? $this->conf['ad_height'].'px' : '';
       }
+     
+      $ad_diplay = 'block' ;
+      if( isset($this->conf['ad_show_after']) && $this->conf['ad_show_after'] > 0){
+        $ad_diplay = 'none';
+        $ad_js = '<script>setTimeout(function(){jQuery("#wpfp_'.$this->hash.'_ad>.wpfp_custom_ad_content").fadeIn()},'.($this->conf['ad_show_after'] * 1000).')</script>';
+        
+      }
+      
+      
       
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {			
         $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_diplay;'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>$ad_js",
                              'width' => $ad_width,
                              'height' => $ad_height
                             );                 
