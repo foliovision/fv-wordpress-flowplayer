@@ -262,9 +262,9 @@ function fv_wp_flowplayer_edit() {
   
   if(jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
     if(fv_wp_flowplayer_content.match(/\[/) )
-    fv_wp_flowplayer_content = '<p>[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+'</p>'
+    fv_wp_flowplayer_content = '[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+''
     else
-    fv_wp_flowplayer_content =   '<p><'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+'</p>'  
+    fv_wp_flowplayer_content =   '<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+''  
   }else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {

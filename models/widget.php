@@ -13,7 +13,9 @@ class FV_Player_Widget extends WP_Widget {
 
   function widget_init() {
     register_widget('FV_Player_widget');
-    add_action('admin_footer-widgets.php', [$this,'formFooter']);
+    add_action('admin_footer-widgets.php', [$this, 'formFooter']);
+    //add_action('wp_enqueue_scripts', 'fv_flowplayer_admin_scripts');
+    wp_enqueue_media();
   }
 
   /**
@@ -91,13 +93,16 @@ class FV_Player_Widget extends WP_Widget {
     $title = sanitize_text_field($instance['title']);
 
     //var_dump($this->number);
+    ?><p><label for = "<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
 
-    ?><p><label for = "<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:');?></label>
-    <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
+      <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
 
-    <p><label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Content:'); ?></label>
-      <textarea class="widefat" rows="16" cols="20" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo esc_textarea($instance['text']); ?></textarea></p>
-    <div class="fv-wordpress-flowplayer-button" data-number="<?=$this->number?>" >button</div>
+    <p>
+      <label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Player:'); ?></label>&nbsp;&nbsp;
+      <input type="button" id="widget-widget_fvplayer-<?= $this->number ?>-savewidget" class="button button-primary left fv-wordpress-flowplayer-button"  data-number="<?= $this->number ?>" value="<?php _e('Edit'); ?>">    
+
+      <textarea class="widefat" rows="5" cols="5" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo esc_textarea($instance['text']); ?></textarea>
+    </p>
     <?php
   }
 
