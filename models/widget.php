@@ -14,8 +14,6 @@ class FV_Player_Widget extends WP_Widget {
   function widget_init() {
     register_widget('FV_Player_widget');
     add_action('admin_footer-widgets.php', [$this, 'formFooter']);
-    //add_action('wp_enqueue_scripts', 'fv_flowplayer_admin_scripts');
-    wp_enqueue_media();
   }
 
   /**
@@ -88,6 +86,9 @@ class FV_Player_Widget extends WP_Widget {
    * @param array $instance Current settings.
    */
   public function form($instance) {
+    //add_action('wp_enqueue_scripts', 'fv_flowplayer_admin_scripts');
+    wp_enqueue_media();
+    
     $instance = wp_parse_args((array) $instance, array('title' => '', 'text' => ''));
     $filter = isset($instance['filter']) ? $instance['filter'] : 0;
     $title = sanitize_text_field($instance['title']);

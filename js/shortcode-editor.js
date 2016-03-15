@@ -143,7 +143,7 @@ var fv_wp_fp_shortcode;
 
 function fv_wp_flowplayer_init() {
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
-    fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').html();
+    fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val();
   } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
     fv_wp_flowplayer_hTinyMCE = tinymce.activeEditor;
   } else if( typeof tinyMCE !== 'undefined' ) {
