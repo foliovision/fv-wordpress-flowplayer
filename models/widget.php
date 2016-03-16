@@ -100,7 +100,7 @@ class FV_Player_Widget extends WP_Widget {
 
     <p>
       <label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Player:'); ?></label>&nbsp;&nbsp;
-      <input type="button" id="widget-widget_fvplayer-<?= $this->number ?>-savewidget" class="button button-primary left fv-wordpress-flowplayer-button"  data-number="<?= $this->number ?>" value="<?php _e('Edit'); ?>">    
+      <input type="button" id="widget-widget_fvplayer-<?= $this->number ?>-savewidget" class="button button-primary left fv-wordpress-flowplayer-button"  data-number="<?= $this->number ?>" value="<?php _e( strlen( trim($instance['text']) ) ? 'Edit' : 'Add' ); ?>">    
 
       <textarea class="widefat" rows="5" cols="5" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo esc_textarea($instance['text']); ?></textarea>
     </p>
