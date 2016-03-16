@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-02-09 12:29+0100\n"
-"PO-Revision-Date: 2016-02-10 14:31+0100\n"
+"POT-Creation-Date: 2016-03-16 16:08+0100\n"
+"PO-Revision-Date: 2016-03-16 16:08+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -133,11 +133,11 @@ msgstr "Problem mit Video "
 msgid "Posts by %s"
 msgstr "Beiträge von dem %s"
 
-#: ../controller/backend.php:195
+#: ../controller/backend.php:188
 msgid "Add FV WP Flowplayer"
 msgstr "FV WP Flowplayer Hinzufügen"
 
-#: ../controller/backend.php:251
+#: ../controller/backend.php:244
 #, php-format
 msgid ""
 "FV Wordpress Flowplayer has found old shortcodes in the content of your "
@@ -146,7 +146,7 @@ msgstr ""
 "FV Wordpress Flowplayer hat alte shortcode in den Inhalt Ihrer Beiträge "
 "gefunden. <a href=\"%1$s\">Schalten sie das konvertierungs Skript.</a>"
 
-#: ../controller/backend.php:266
+#: ../controller/backend.php:259
 msgid ""
 "FV Wordpress Flowplayer: Your pro extension is installed, but it's not "
 "compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to "
@@ -156,11 +156,11 @@ msgstr ""
 "nicht mit FV Flowplayer 6 kompatibel! Stellen Sie sicher, dass Ihre FV "
 "Player Pro version ist 0.5 oder höher."
 
-#: ../controller/backend.php:355
+#: ../controller/backend.php:348
 msgid "FV Player Video Checker"
 msgstr "FV Player Video Kontroller"
 
-#: ../controller/backend.php:356
+#: ../controller/backend.php:349
 msgid ""
 "<p>FV Player includes a free video checker which will check your videos for "
 "any encoding errors and helps ensure smooth playback of all your videos. To "
@@ -173,19 +173,19 @@ msgstr ""
 "wollen, müsst unserer Video Kontroller mit unserem Server in verbindung "
 "sein. </ P><p>Wollen Sie, der Video codierung Kontroller aktivieren?</p>"
 
-#: ../controller/backend.php:358
+#: ../controller/backend.php:351
 msgid "Allow"
 msgstr "Erlauben"
 
-#: ../controller/backend.php:359
+#: ../controller/backend.php:352
 msgid "Disable the video checker"
 msgstr "Deaktiviere den Video Controller"
 
-#: ../controller/backend.php:371
+#: ../controller/backend.php:364
 msgid "FV Flowplayer License Update"
 msgstr "FV Flowplayer Lizenz aktualisieren"
 
-#: ../controller/backend.php:372
+#: ../controller/backend.php:365
 msgid ""
 "New version of FV Flowplayer core has been installed for your licensed "
 "website. Please accept the automatic license key updating (connects to "
@@ -197,27 +197,27 @@ msgstr ""
 "Lizenzschlüssel (verbindet sich mit Foliovision Server) oder aktualisieren "
 "Sie den Schlüssel manuell durch loggin in euren Foliovision Konto."
 
-#: ../controller/backend.php:374
+#: ../controller/backend.php:367
 msgid "Always auto-update"
 msgstr "Immer automatisch aktualisieren"
 
-#: ../controller/backend.php:375
+#: ../controller/backend.php:368
 msgid "I'll update it manually"
 msgstr "Ich werde es manuell aktualisieren"
 
-#: ../controller/backend.php:390
+#: ../controller/backend.php:383
 msgid "FV Flowplayer License Expired"
 msgstr "FV Flowplayer Lizenz ist abgelaufen"
 
-#: ../controller/backend.php:393
+#: ../controller/backend.php:386
 msgid "Hide this notice"
 msgstr "Verstecke die Anmerkung"
 
-#: ../controller/backend.php:394
+#: ../controller/backend.php:387
 msgid "I'll check this later"
 msgstr "Ich prüfe es später"
 
-#: ../controller/backend.php:734
+#: ../controller/backend.php:726
 msgid ""
 "Template checker has changed. Just open any of your videos on your site and "
 "see if you get a red warning message about JavaScript not working."
@@ -226,33 +226,33 @@ msgstr ""
 "Ihrer Website und sehen Sie, ob Sie ein rotes Warnmeldung bekommen über dass "
 "das JavaScript arbeiten nicht."
 
-#: ../controller/backend.php:750
+#: ../controller/backend.php:741
 msgid "FV Flowplayer script found: "
 msgstr "FV Flowplayer Script gefunden:"
 
-#: ../controller/backend.php:768
+#: ../controller/backend.php:758
 msgid "jQuery library 1.7.1+ found: "
 msgstr "jQuery Bibliothek 1.7.1+ gefunden: "
 
-#: ../controller/backend.php:803
+#: ../controller/backend.php:792
 msgid "License key acquired successfully. <a href=\"\">Reload</a>"
-msgstr "Lizenzschlüssel war erfolgreich erworben. <a href=\"\">neu laden </a>"
+msgstr "Lizenzschlüssel war erfolgreich erworben. <a href=\"\">neu laden</a>"
 
-#: ../controller/backend.php:1001
+#: ../controller/backend.php:989
 msgid "FV Flowplayer Pro extension installed - check the new "
 msgstr ""
 "FV Flowplayer Pro Erweiterung war erfolgreich installiert - überprüfen Sie "
 "die neue "
 
-#: ../controller/backend.php:1001
+#: ../controller/backend.php:989
 msgid "Pro features"
 msgstr "Pro Funktionen"
 
-#: ../controller/backend.php:1012 ../controller/backend.php:1023
+#: ../controller/backend.php:999 ../controller/backend.php:1009
 msgid "FV Flowplayer Pro extension install failed - "
 msgstr "FV Flowplayer Pro Erweiterung Installation fehlgeschlagen - "
 
-#: ../controller/backend.php:1030
+#: ../controller/backend.php:1015
 msgid "FV Flowplayer Pro extension upgraded successfully!"
 msgstr "FV Flowplayer Pro Erweiterung war erfolgreich aktualisiert!"
 
@@ -297,8 +297,8 @@ msgid "(Hint: put .wpfp_custom_ad_content before your own CSS selectors)"
 msgstr ""
 "(Rat: stellen Sie .wpfp_custom_ad_content bevor Ihre eigenen CSS-Selektoren)"
 
-#: ../view/admin.php:69 ../view/admin.php:172 ../view/admin.php:275
-#: ../view/admin.php:463 ../view/admin.php:590 ../view/admin.php:797
+#: ../view/admin.php:69 ../view/admin.php:172 ../view/admin.php:353
+#: ../view/admin.php:609 ../view/admin.php:736 ../view/admin.php:950
 msgid "Save All Changes"
 msgstr "Alle Änderungen speichern"
 
@@ -306,9 +306,9 @@ msgstr "Alle Änderungen speichern"
 msgid ""
 "Secured Amazon S3 URLs are recommended for member-only sections of the site. "
 "We check the video length and make sure the link expiration time is big "
-"enough for the video to buffer properly"
+"enough for the video to buffer properly."
 msgstr ""
-"Sichere Amazon S3 URLs sind empfiehlt nur für Mitglieder Sektionen auf der "
+"Sichere Amazon S3 URL sind empfiehlt nur für Mitglieder Sektionen auf der "
 "Webseite. Wir überprüfen die Videolänge und stellen sich sicher, dass die "
 "Verbindung ablaufzeit ist groß genug für das Video, um richtig zu Puffern."
 
@@ -418,306 +418,454 @@ msgstr "Geheimnis Zugriffsschlüssel"
 msgid "Add more Amazon S3 secure buckets"
 msgstr "Hinzufüge mehr Amazon S3 geschützter buckets"
 
-#: ../view/admin.php:186 ../view/admin.php:512 ../view/wizard.php:227
+#: ../view/admin.php:189 ../view/admin.php:658 ../view/wizard.php:228
 msgid "Autoplay"
 msgstr "Autoplay"
 
-#: ../view/admin.php:186
-msgid "We make sure only one video per page autoplays"
-msgstr "Wir wollen, dass nur eins Video pro Seite wird automatisch gespielt ."
+#: ../view/admin.php:193
+msgid ""
+"We make sure only one video per page autoplays. Note that mobile devices "
+"don't support autoplay."
+msgstr ""
+"Wir sicherstellen, dass nur eins Video pro Seite wird automatisch gespielt. "
+"Beachten Sie, dass mobile Geräte unterstützen nicht die automatische "
+"Wiedergabe."
 
-#: ../view/admin.php:192
+#: ../view/admin.php:198
 msgid "Auto Buffering"
 msgstr "Automatisches Puffern"
 
-#: ../view/admin.php:192
+#: ../view/admin.php:202
 msgid "Works for first 2 videos on the page only, to preserve your bandwidth."
 msgstr ""
 "Funktioniert nur für die erste 2 Videos auf der Seite, um Ihre Bandbreite zu "
 "behalten."
 
-#: ../view/admin.php:198
-msgid "Popup Box"
-msgstr "Popup Box"
-
-#: ../view/admin.php:204
-msgid "Fit scaling"
-msgstr "Videogröße anpassen"
-
-#: ../view/admin.php:204
-msgid ""
-"If set to true, the original aspect ratio of the video will be used to "
-"display the video in fullscreen mode as well as when embedded in the page."
-msgstr ""
-"Wenn ist auf Wahr gesetzt, wird das original Aspektverhältnis des Videos "
-"angewandte um das Video im Vollbild zeigen, ebenso wenn ist in die Seite "
-"eingebettet anzuzeigen."
-
-#: ../view/admin.php:210
-msgid "Enable Post Thumbnail"
-msgstr "Aktiviere Miniaturansicht in Beitrag"
-
-#: ../view/admin.php:210
-msgid ""
-"When you set a splash screen from the media library, it will automatically "
-"become the splash image if there is none."
-msgstr ""
-"Wenn Sie einen Beitragsbild aus der Mediathek einstellen, es wird "
-"automatisch das Beitragsbild werden, wenn es kein dort ist."
-
-#: ../view/admin.php:216
-msgid "Convert old shortcodes with commas"
-msgstr "Converte alten shortcodes mit Komma"
-
-#: ../view/admin.php:216
-msgid ""
-"Older versions of this plugin used commas to sepparate shortcode parameters. "
-"This option will make sure it works with current version. Turn this off if "
-"you have some problems with display or other plugins which use shortcodes."
-msgstr ""
-"Ältere Versionen dieses Plugins benutzen Kommas zum sepparate shortcode. "
-"Diese Option wird sicherstellen, dass es mit der aktuellen Version "
-"funktioniert wird. Schalten Sie diese Option aus, wenn Sie Problemen mit dem "
-"Anzeige haben oder mit andere Plugins, die die shortcodes benutzen."
-
-#: ../view/admin.php:222
-msgid "Prefer Flash player by default"
-msgstr "Bevorzugen Flash Player Standardmäßig"
-
-#: ../view/admin.php:222
-msgid ""
-"Default setting is off - IE9 and IE10 get Flash (due to server compatibility "
-"issues), Firefox in Windows gets Flash for M4V files (due to issues with M4V "
-"in it on PC), everyone else gets HTML5 (with Flash fallback)"
-msgstr ""
-"Standard Einstellungen sind aus - IE9 und IE10 bekommen Flash (wegen von "
-"Server Kompatibilitäts Probleme), Firefox in Windows bekommt Flash für M4V "
-"Dateien (wegen Problemen mit M4V auf Computer), jeder sonst bekommt HTML5 "
-"(mit Flash-Fallback)"
-
-#: ../view/admin.php:228
-msgid "Always use fixed size player"
-msgstr "Immer benutze festgesetzt Format des Video Player"
-
-#: ../view/admin.php:228
-msgid ""
-"Default setting - respects width and height setting of the video, but allows "
-"it to size down to be responsive"
-msgstr ""
-"Standard Einstellungen - respektiert die Breite und die Höhe einstellung das "
-"Video, aber erlaubt die Größe zu responsiv sein."
-
-#: ../view/admin.php:234
-msgid "Disable admin video checker"
-msgstr "Deaktiviere Verwalter Video Kontroller"
-
-#: ../view/admin.php:240
-msgid "Default video size"
+#: ../view/admin.php:207
+msgid "Default Video Size"
 msgstr "Standard Video Größe"
 
-#: ../view/admin.php:253 ../view/admin.php:267
+#: ../view/admin.php:210 ../view/wizard.php:98 ../view/wizard.php:267
+msgid "Width"
+msgstr "Breite"
+
+#: ../view/admin.php:211 ../view/wizard.php:98 ../view/wizard.php:267
+msgid "Height"
+msgstr "Höhe"
+
+#: ../view/admin.php:212
+msgid "Enter values in pixels"
+msgstr "Geben Sie die Werte in Pixel"
+
+#: ../view/admin.php:217
+msgid "Default Volume"
+msgstr "Standard Volumen"
+
+#: ../view/admin.php:225
+msgid "Disable Admin Video Checker:"
+msgstr "Deaktiviere Verwalter Video Kontroller"
+
+#: ../view/admin.php:229
+msgid ""
+"Checks your video encoding when you open a post with video as admin. "
+"Notifies you about possible playback issues."
+msgstr ""
+"Überprüft Ihre Video-Encoding, wenn Sie einen Beitrag mit Video als Admin "
+"öffnen. Informiert Sie über mögliche Probleme bei der Wiedergabe."
+
+#: ../view/admin.php:234
+msgid "Disable Embed Button"
+msgstr "Deaktiviere den einbinden Taste"
+
+#: ../view/admin.php:238
+msgid "Removes embed button from top bar."
+msgstr "Entfernt einbetten Schaltfläche von oben bar."
+
+#: ../view/admin.php:243
+msgid "Disable Sharing"
+msgstr "Deaktiviere teilung"
+
+#: ../view/admin.php:247
+msgid "Removes sharing buttons from top bar."
+msgstr "Entfernt Teilung Schaltflächen von oben bar."
+
+#: ../view/admin.php:252
+msgid "Flash Streaming Server"
+msgstr "Flash Streaming Server"
+
+#: ../view/admin.php:255
+msgid "Enter your default RTMP streaming server (Amazon CloudFront domain)."
+msgstr ""
+"Eingeben Sie Ihren Standard RTMP Streaming Server (Amazon CloudFront domain)"
+
+#: ../view/admin.php:260
+msgid "Fullscreen Button"
+msgstr "Schaltfläche Vollbild"
+
+#: ../view/admin.php:264
+msgid "Adds fullscreen button to player top bar."
+msgstr "Fügt Vollbild-Taste, in die obere Leiste den Videospieler."
+
+#: ../view/admin.php:269
+msgid "Google Analytics ID"
+msgstr "Google Analytics ID"
+
+#: ../view/admin.php:272
+msgid "Will be automatically loaded when playing a video."
+msgstr "Wird automatisch geladen, wenn ein Video abgespielt wird."
+
+#: ../view/admin.php:285
+msgid "You have a valid FV Flowplayer license, you can put up your logo here"
+msgstr ""
+"Sie haben eine gültige FV Flowplayer Lizenz, Sie können Ihr Logo hier setzen"
+
+#: ../view/admin.php:287
+msgid "You need to have a FV Flowplayer license to use it"
+msgstr "Sie benötigen eine FV Flowplayer Lizenz zu haben, um es benutzen"
+
+#: ../view/admin.php:291 ../view/admin.php:333
 msgid "Upload Image"
 msgstr "Bild hochladen"
 
-#: ../view/admin.php:256
+#: ../view/admin.php:294
 msgid "Position"
 msgstr "Stellung"
 
-#: ../view/admin.php:257
+#: ../view/admin.php:295
 msgid "Bottom-left"
 msgstr "Unten links"
 
-#: ../view/admin.php:258
+#: ../view/admin.php:296
 msgid "Bottom-right"
 msgstr "Unten rechts"
 
-#: ../view/admin.php:259
+#: ../view/admin.php:297
 msgid "Top-left"
 msgstr "Oben links"
 
-#: ../view/admin.php:260
+#: ../view/admin.php:298
 msgid "Top-right"
 msgstr "Oben rechts"
 
-#: ../view/admin.php:265 ../view/wizard.php:143
+#: ../view/admin.php:303
+msgid "Play Button"
+msgstr "Play Taste"
+
+#: ../view/admin.php:307
+msgid "Adds play button to player controlbar."
+msgstr "Fügt die Play-Taste, in die Player Kontrollleiste."
+
+#: ../view/admin.php:312
+msgid "Popup Box"
+msgstr "Popup Box"
+
+#: ../view/admin.php:316
+msgid ""
+"Shows a generic \"Would you like to replay the video?\" message at the end "
+"of each video."
+msgstr ""
+"Zeigt eine generische \"Möchten Sie das Video abzuspielen? \" Nachricht am "
+"Ende jedes Video."
+
+#: ../view/admin.php:321 ../view/admin.php:728 ../view/wizard.php:296
+msgid "Speed Buttons"
+msgstr "Tasten für die Drehzahlregelung "
+
+#: ../view/admin.php:325
+msgid ""
+"Speed buttons control playback speed and only work in HTML5 compatible "
+"browsers."
+msgstr ""
+"Tasten für Wiedergabegeschwindigkeit funktionieren nur in HTML5 kompatiblen "
+"Browsern."
+
+#: ../view/admin.php:330 ../view/wizard.php:143
 msgid "Splash Image"
 msgstr " Beitragsbild"
 
-#: ../view/admin.php:265
-msgid "Default which will be used for any player without its own splash image"
+#: ../view/admin.php:332
+msgid "Default which will be used for any player without its own splash image."
 msgstr ""
-"Standard die für jeden Video Player ohne eigenes Beitragsbild verwendet wird"
+"Standard die für jeden Video Player ohne eigenes Beitragsbild verwendet wird."
 
-#: ../view/admin.php:270
-msgid "Flash streaming server (Amazon CloudFront domain)"
-msgstr "Flash streaming Server (Amazon CloudFront domain)"
+#: ../view/admin.php:336
+msgid "Subtitles On By Default"
+msgstr "Untertitel sind automatisch eingeschaltet"
 
-#: ../view/admin.php:270
-msgid "Enter your default RTMP streaming server here"
-msgstr "Geben Sie Ihrer standard RTMP streaming Server hier"
-
-#: ../view/admin.php:375
-msgid ""
-"FV WordPress Flowplayer WordPress plugin is a free, easy-to-use, and "
-"complete solution for embedding"
+#: ../view/admin.php:340
+msgid "Normally you have to hit a button in controlbar to turn on subtitles."
 msgstr ""
-"FV Wordpress Flowplayer Wordpress-Plugin ist ein kostenloses, "
-"benutzerfreundlich und komplette Lösung für die Einbettung"
+"Normalerweise müssen Sie auf die Schaltfläche in Controlbar klicken um "
+"Untertitel aktivieren."
 
-#: ../view/admin.php:377
+#: ../view/admin.php:345 ../view/admin.php:860
+msgid "Missing settings? Check"
+msgstr "Fehlende Einstellungen? Prüfen Sie"
+
+#: ../view/admin.php:345 ../view/admin.php:1053
+msgid "Integrations/Compatibility"
+msgstr "Integrationen/Kompatibilität"
+
+#: ../view/admin.php:345 ../view/admin.php:860
+msgid "box below"
+msgstr "Box unten"
+
+#: ../view/admin.php:453
+msgid "FV Player is a free, easy-to-use, and complete solution for embedding"
+msgstr ""
+"FV Player ist kostenlos, benutzerfreundlich und vollständiges Lösung für die "
+"Einbettung"
+
+#: ../view/admin.php:455
 msgid "and"
 msgstr "und"
 
-#: ../view/admin.php:379
+#: ../view/admin.php:457
 msgid ""
-"videos into your posts or pages. With MP4 videos, FV WordPress Flowplayer "
-"offers 98&#37; coverage even on mobile devices."
+"videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; "
+"coverage even on mobile devices."
 msgstr ""
-"Videos in Ihre Beiträge oder Seiten. Mit MP4-Videos, bietet FV Wordpress "
-"Flowplayer 98&#37; Deckung, auch an mobilen Geräten."
+"Videos in Ihre Beiträge oder Seiten. Mit MP4-Videos, bietet FV Player "
+"98&#37; Deckung, auch an mobilen Geräten."
 
-#: ../view/admin.php:391
+#: ../view/admin.php:469
 msgid "Following options are suitable for web developers and programmers."
 msgstr "Folgende Optionen sind passend für Web-entwickler und Programmierer."
 
-#: ../view/admin.php:394
+#: ../view/admin.php:472
+msgid "Always use fixed size player"
+msgstr "Immer benutze festgesetzt Format des Video Player"
+
+#: ../view/admin.php:476
+msgid "Enable to force video size at cost of loosing the video responsiveness."
+msgstr ""
+"Schalten Sie an um die Videogröße zwingen zum Preis verlierung das Video "
+"Ansprechbarkeit."
+
+#: ../view/admin.php:481
 msgid "Colorbox Compatibility"
 msgstr "Colorbox Kompatibilität"
 
-#: ../view/admin.php:394
+#: ../view/admin.php:486
 msgid ""
-"Use if your theme is using colorbox lightbox to show content and clones the "
-"HTML content into it."
+"Enable if your theme is using colorbox lightbox to show content and clones "
+"the HTML content into it."
 msgstr ""
-"Benutzen Sie, wenn Ihres Thema benutzt colorbox lightbox zum aufzeig dem "
-"Inhalt und Klone der HTML-Inhalt darein."
+"Benutzen Sie, wenn Ihr Thema benutzt colorbox lightbox um dem Inhalt "
+"anzeigen und Klone der HTML-Inhalt darein."
 
-#: ../view/admin.php:401
+#: ../view/admin.php:491
+msgid "Disable saving of color settings into a static file"
+msgstr "Deaktiviere speichern von Farben einstellungen in eine statische Datei"
+
+#: ../view/admin.php:496
+msgid ""
+"Normally the player CSS configuration is stored in wp-content/fv-player-"
+"custom/style-{blog_id}.css."
+msgstr ""
+"Normalerweise ist die Player CSS Konfiguration in wp-content/fv-player-"
+"custom/style-{blog_id}.css gespeichert."
+
+#: ../view/admin.php:497
+msgid ""
+"We do this to avoid outputting CSS code into your site <head>. Don't edit "
+"this file though, as it will be overwritten by plugin update or saving its "
+"options!"
+msgstr ""
+"Wir tun dies, zu vermeiden Ausdrucken das CSS-Code in Ihre <head> Website. "
+"Bearbeiten Sie nicht diese Datei, da es durch Plugin-Update oder bei "
+"Speichern die Optionen überschrieben wird!"
+
+#: ../view/admin.php:502
+msgid "Fit scaling"
+msgstr "Videogröße anpassen"
+
+#: ../view/admin.php:506
+msgid ""
+"Original aspect ratio of the video will be used to display the video - for "
+"troubleshooting of fullscreen issues."
+msgstr ""
+"Original Aspektverhältnis des Videos wird das Video angezeigt werden - für "
+"die Fehlerbehebung von Vollbild Fragen."
+
+#: ../view/admin.php:511
+msgid "Handle WordPress"
+msgstr "WordPress verhalten"
+
+#: ../view/admin.php:511
+msgid "shortcodes"
+msgstr "shortcodes"
+
+#: ../view/admin.php:520
 msgid "Load FV Flowplayer JS everywhere"
 msgstr "Laden Sie FV Flowplayer JS überall"
 
-#: ../view/admin.php:401
+#: ../view/admin.php:525
 msgid ""
-"If you use some special JavaScript integration, you might prefer this "
-"option, otherwise it loads only if the shortcode is found."
+"If you use some special JavaScript integration you might prefer this option."
 msgstr ""
-"Wenn Sie benutzen irgendein speziellen JavaScript Integration, Sie sollten "
-"lieber diese Option bevorrechten, sonst lädt es nur wenn der shortcode wird "
-"gefunden."
+"Wenn Sie irgendein speziellen JavaScript Integration benutzen, sollten Sie "
+"lieber diese Option bevorzugen."
 
-#: ../view/admin.php:408
+#: ../view/admin.php:526
+msgid ""
+"Otherwise our JavaScript only loads if the shortcode is found in any of the "
+"posts being currently displayed."
+msgstr ""
+"Andernfalls unser JavaScript lädt nur, wenn ist die shortcode in einem "
+"Beinträg vom aktuell angezeigte gefunden."
+
+#: ../view/admin.php:531
+msgid "Parse old shortcodes with commas"
+msgstr "Convert alten shortcodes mit Komma"
+
+#: ../view/admin.php:535
+msgid ""
+"Older versions of this plugin used commas to separate shortcode parameters."
+msgstr ""
+"Ältere Versionen dieses Plugins verwendet Kommas um die shortcode Parameter "
+"trennen."
+
+#: ../view/admin.php:536
+msgid ""
+"This option will make sure it works with current version. Turn this off if "
+"you have some problems with display or other plugins which use shortcodes."
+msgstr ""
+"Diese Option wird sicherstellen, dass es mit der aktuellen Version "
+"funktionieren wird. Schalten Sie diese Option aus, wenn Sie Problemen mit "
+"dem Anzeige haben oder mit andere Plugins, die die shortcodes benutzen."
+
+#: ../view/admin.php:541
+msgid "Post Thumbnail"
+msgstr "Miniaturansicht für Beitrag"
+
+#: ../view/admin.php:545
+msgid ""
+"Setting a video splash screen from the media library will automatically make "
+"it the splash image if there is none."
+msgstr ""
+"Wenn ist das Vorschaubild aus der Medienbibliothek gesetzt, dann wird dieses "
+"Vorschaubild  automatisch verwendet, wenn kein anderes gewählt ist."
+
+#: ../view/admin.php:550
+msgid "Prefer Flash player by default"
+msgstr "Bevorzugen Flash Player Standardmäßig"
+
+#: ../view/admin.php:554
+msgid "Provides greater compatibility."
+msgstr "Bietet bessere Kompatibilität."
+
+#: ../view/admin.php:555
+msgid ""
+"We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of "
+"this setting."
+msgstr ""
+"Wir verwenden Flash für MP4-Dateien in IE9-10 und M4V-Dateien in Firefox "
+"unabhängig von dieser Einstellung."
+
+#: ../view/admin.php:560
 msgid "Scan video length"
 msgstr "Video Länge feststellen"
 
-#: ../view/admin.php:408
-msgid ""
-"Beta version! Turn on to enable video duration scanning. Turn off if you "
-"experience issues when saving posts."
+#: ../view/admin.php:565
+msgid "Beta version, turn off if you experience issues when saving posts!"
 msgstr ""
-"Beta version! Schalten Sie ein zum Video Dauer feststellen. Schalten Sie "
-"aus, wenn haben Sie Probleme mit Speichern der Beiträge."
+"Beta Version, schalten Sie aus wenn Sie Probleme mit Speichern der Beiträge "
+"haben."
 
-#: ../view/admin.php:424
+#: ../view/admin.php:566
+msgid "Turn on to enable video duration scanning."
+msgstr "Schalten Sie an um das Video Dauer scannen ermöglichen."
+
+#: ../view/admin.php:579
 #, php-format
 msgid "Currently %d videos in database and %s posts in queue."
 msgstr ""
 "Aktuell %d Videos in der Datenbank und %s Beiträge in der Warteschlange."
 
-#: ../view/admin.php:426
+#: ../view/admin.php:581
 #, php-format
 msgid "Currently %d videos in database."
 msgstr "Aktuell %d Videos in der Datenbank."
 
-#: ../view/admin.php:428
+#: ../view/admin.php:583
 #, php-format
 msgid "Currently %s posts in queue."
 msgstr "Aktuell %s Beiträge in der Warteschlange."
 
-#: ../view/admin.php:434
-msgid "Disable saving of color settings into a static file"
-msgstr "Deaktiviere speichern von Farben einstellungen in eine statische Datei"
+#: ../view/admin.php:598
+msgid "Use iframe embedding"
+msgstr "Verwende  iFrame Einbettung"
 
-#: ../view/admin.php:434
+#: ../view/admin.php:603
 msgid ""
-"Normally the player CSS configuration is stored in wp-content/fv-player-"
-"custom/style-{blog_id}.css, you can disable this here."
+"Beta version! New kind of embedding which supports all the features in "
+"embedded player."
 msgstr ""
-"Normalerweise ist der Player CSS Konfiguration in wp-content/fv-player-"
-"custom/style-{blog_id}.css gespeichert, sie können Sie hier deaktivieren."
+"Betaversion! Neue Art von Einbettung, die alle Funktionen in Embedded-Player "
+"unterstützt."
 
-#: ../view/admin.php:448
-msgid "Handle WordPress"
-msgstr "WordPress verhalten"
-
-#: ../view/admin.php:448
-msgid "shortcodes"
-msgstr "shortcodes"
-
-#: ../view/admin.php:474
+#: ../view/admin.php:620
 msgid "Which features should be available in shortcode editor?"
 msgstr "Welche funktionen sollten in shortcode editor verfügbar sein?"
 
-#: ../view/admin.php:477
+#: ../view/admin.php:623
 msgid "Allow User Uploads"
 msgstr "Erlaube dem Benutzer hochladen"
 
-#: ../view/admin.php:484
+#: ../view/admin.php:630
 msgid "Playlist"
-msgstr "Wiedergabeliste"
+msgstr "Playlist"
 
-#: ../view/admin.php:491
+#: ../view/admin.php:637
 msgid "Playlist captions"
-msgstr "Wiedergabeliste mit Überschriften"
+msgstr "Playlist hauptzeile"
 
-#: ../view/admin.php:498 ../view/wizard.php:219
+#: ../view/admin.php:644 ../view/wizard.php:220
 msgid "HTML popup"
 msgstr "HTML Popup-meldung"
 
-#: ../view/admin.php:505
+#: ../view/admin.php:651
 msgid "Redirect"
-msgstr "Umleiten"
+msgstr "Umleitung"
 
-#: ../view/admin.php:519 ../view/wizard.php:237
+#: ../view/admin.php:665 ../view/wizard.php:238
 msgid "Loop"
 msgstr "Schleife"
 
-#: ../view/admin.php:526 ../view/wizard.php:242
+#: ../view/admin.php:672 ../view/wizard.php:243
 msgid "Splash end"
-msgstr "Beitragsbild am ende"
+msgstr "Beitragsbild am Ende"
 
-#: ../view/admin.php:533
+#: ../view/admin.php:679
 msgid "Embed"
-msgstr "Einbetten"
+msgstr "Einbettung"
 
-#: ../view/admin.php:540 ../view/admin.php:822 ../view/wizard.php:151
+#: ../view/admin.php:686 ../view/admin.php:975 ../view/wizard.php:151
 msgid "Subtitles"
 msgstr "Untertitel"
 
-#: ../view/admin.php:547 ../view/admin.php:899
+#: ../view/admin.php:693 ../view/admin.php:1052
 msgid "Ads"
 msgstr "Werbungs"
 
-#: ../view/admin.php:554 ../view/wizard.php:135
+#: ../view/admin.php:700 ../view/wizard.php:135
 msgid "Mobile video"
 msgstr "Mobile Video"
 
-#: ../view/admin.php:561 ../view/wizard.php:271
+#: ../view/admin.php:707 ../view/wizard.php:272
 msgid "Align"
 msgstr "Ausrichtung"
 
-#: ../view/admin.php:568 ../view/admin.php:726 ../view/wizard.php:281
+#: ../view/admin.php:714 ../view/admin.php:889 ../view/wizard.php:282
 msgid "Controlbar"
 msgstr "Controlbar"
 
-#: ../view/admin.php:575 ../view/wizard.php:291
+#: ../view/admin.php:721 ../view/wizard.php:292
 msgid "Live stream"
 msgstr "Live-Übertrag"
 
-#: ../view/admin.php:582 ../view/admin.php:792 ../view/wizard.php:295
-msgid "Speed Buttons"
-msgstr "Tasten für die Drehzahlregelung "
-
-#: ../view/admin.php:606
+#: ../view/admin.php:752
 msgid ""
 "Valid license found, click the button at the top of the screen to install FV "
 "Player Pro!"
@@ -725,57 +873,57 @@ msgstr ""
 "Valid Lizenz gefunden, klicken Sie auf der Taste am ober der Bildschirms zu "
 "installieren FV Player Pro!"
 
-#: ../view/admin.php:608
+#: ../view/admin.php:754
 msgid "Purchase FV Flowplayer license"
 msgstr "Kaufen Sie Ihre FV Flowplayer Lizenz"
 
-#: ../view/admin.php:608
+#: ../view/admin.php:754
 msgid "to enable Pro features!"
 msgstr "zu ermöglichen die Pro-Funktionen"
 
-#: ../view/admin.php:612
+#: ../view/admin.php:758
 msgid "Advanced Vimeo embeding"
 msgstr "Fortgeschritten Vimeo einfügung"
 
-#: ../view/admin.php:616
+#: ../view/admin.php:762
 msgid "Use Vimeo as your video host and use all of FV Flowplayer features."
 msgstr ""
 "Verwenden Sie Vimeo, wie Ihr Video-Host und benutzen Sie alle FV Flowplayer "
 "Funktionen."
 
-#: ../view/admin.php:621
+#: ../view/admin.php:767
 msgid "Advanced YouTube embeding"
 msgstr "Fortschrittliche YouTube einfügung"
 
-#: ../view/admin.php:625
+#: ../view/admin.php:771
 msgid "Use YouTube as your video host and use all of FV Flowplayer features."
 msgstr ""
 "Verwenden Sie Youtube als Video Host und benutzen Sie alle FV Flowplayer "
 "Funktionen."
 
-#: ../view/admin.php:630
+#: ../view/admin.php:776
 msgid "Enable user defined AB loop"
 msgstr "Aktiviere Benutzer definiert AB schleife"
 
-#: ../view/admin.php:634
+#: ../view/admin.php:780
 msgid "Let your users repeat the parts of the video which they like!"
 msgstr ""
 "Lassen Sie Ihre Benutzer die Teile von des Videos wiederholen die Sie mögen!"
 
-#: ../view/admin.php:639
+#: ../view/admin.php:785
 msgid "Enable video lightbox"
 msgstr "Aktiviere Video lightbox"
 
-#: ../view/admin.php:643
+#: ../view/admin.php:789
 msgid "Enables Lightbox video gallery to show videos in a lightbox popup!"
 msgstr ""
 "Ermöglicht Lightbox Videogalerie, um Videos in einem lightbox popup zeigen!"
 
-#: ../view/admin.php:648
+#: ../view/admin.php:794
 msgid "Enable quality switching"
 msgstr "Aktiviere der Quality Schalter"
 
-#: ../view/admin.php:652
+#: ../view/admin.php:798
 msgid ""
 "Upload your videos in multiple quality for best user experience with YouTube-"
 "like quality switching!"
@@ -783,292 +931,268 @@ msgstr ""
 "Laden Sie Ihre Videos in mehreren Qualität für beste Benutzererfahrung mit "
 "YouTube-ähnlicher Qualität Schalt!"
 
-#: ../view/admin.php:657
+#: ../view/admin.php:803
 msgid "Amazon CloudFront protected content"
 msgstr "Amazon CloudFront geschützter Inhalt"
 
-#: ../view/admin.php:661
+#: ../view/admin.php:807
 msgid "Protect your Amazon CDN hosted videos"
 msgstr "Schütze Ihre Amazon CDN gehosteten Videos"
 
-#: ../view/admin.php:666
+#: ../view/admin.php:812
 msgid "Use video lightbox for images as well"
 msgstr "Verwenden Sie Video Lightbox auch für Bilder"
 
-#: ../view/admin.php:670
+#: ../view/admin.php:816
 msgid "Will group images as well as videos into the same lightbox gallery."
 msgstr "Will gruppieren Bilder so wie Videos in der gleichen lightbox Galerie."
 
-#: ../view/admin.php:675
+#: ../view/admin.php:821
 msgid "Autoplay just once"
 msgstr "Autoplay nur einmal"
 
-#: ../view/admin.php:679
+#: ../view/admin.php:825
 msgid "Makes sure each video autoplays only once for each visitor."
 msgstr ""
 "Stellt sich sicher, dass jedes Video autoplays nur einmal für jeden Besucher."
 
-#: ../view/admin.php:684
+#: ../view/admin.php:830
+msgid "Enable video ads"
+msgstr "Aktiviere Video Werbungen"
+
+#: ../view/admin.php:834
+msgid ""
+"Define your own videos ads to play in together with your videos - postroll "
+"or prerool"
+msgstr ""
+"Wählen Sie Ihre eigene Wiedergabe Einstellungen für die Video Werbungen - am "
+"Anfang oder am Ende des Videos"
+
+#: ../view/admin.php:839
 msgid "Upcoming pro features"
 msgstr "Die kommende Pro-Funktionen"
 
-#: ../view/admin.php:687
+#: ../view/admin.php:842
 msgid "Enable PayWall"
 msgstr "Aktiviere PayWall"
 
-#: ../view/admin.php:691
+#: ../view/admin.php:846
 msgid "Monetize the video content on your membership site."
 msgstr "Monetarisieren die Video-Inhalte auf Ihrer Mitgliedschaft Website."
 
-#: ../view/admin.php:709
-msgid "Buffer"
-msgstr "Puffern"
-
-#: ../view/admin.php:711
-msgid "Player position"
-msgstr "Player position"
-
-#: ../view/admin.php:711
-msgid "You can still use align=\"right\" where needed"
-msgstr "Sie können weiter align=\"right\" benutzen, wenn Sie brauchen"
-
-#: ../view/admin.php:714
-msgid "Centered"
-msgstr "Zentriert"
-
-#: ../view/admin.php:715
-msgid "Left (no text-wrap)"
-msgstr "Links (kein Textumbruch)"
-
-#: ../view/admin.php:720
-msgid "Canvas"
-msgstr "Arbeitsfläche"
-
-#: ../view/admin.php:722
-msgid "Bottom Margin"
-msgstr "Unten Außenabstand"
-
-#: ../view/admin.php:728
-msgid "Disable Embed Button"
-msgstr "Deaktiviere den einbinden Taste"
-
-#: ../view/admin.php:732
-msgid "Progress"
-msgstr "die Folge"
-
-#: ../view/admin.php:734
-msgid "Disable Sharing"
-msgstr "Deaktiviere teilung"
-
-#: ../view/admin.php:738
-msgid "Sliders"
-msgstr "Schieber"
-
-#: ../view/admin.php:740
-msgid "Enable Fullscreen"
-msgstr "Aktiviere Vollbild"
-
-#: ../view/admin.php:744
-msgid "Time"
-msgstr "Zeit"
-
-#: ../view/admin.php:748
-msgid "Font Face"
-msgstr "Schriftart"
-
-#: ../view/admin.php:753
-msgid "(inherit from template)"
-msgstr "(erben von Thema)"
-
-#: ../view/admin.php:758
-msgid "Timeline"
-msgstr "Zeitlinie"
-
-#: ../view/admin.php:760
-msgid "Subitle Font Size"
-msgstr "Untertitel Schriftgröße"
-
-#: ../view/admin.php:764
-msgid "Total time"
-msgstr "Gesamtzeit"
-
-#: ../view/admin.php:766
-msgid "Subtitles On By Default"
-msgstr "Untertitel sind automatisch eingeschaltet"
-
-#: ../view/admin.php:776
-msgid "Border color"
-msgstr "Rahmen Farbe"
-
-#: ../view/admin.php:778
-msgid "Default Volume"
-msgstr "Standard Volumen"
-
-#: ../view/admin.php:782
-msgid "Border"
-msgstr "Rahmen"
-
-#: ../view/admin.php:784
-msgid "Play Button"
-msgstr "Play Taste"
-
-#: ../view/admin.php:813
-msgid "Illustrated user guides"
-msgstr "Illustriert Benutzerhandbücher"
-
-#: ../view/admin.php:816
-msgid "Inserting videos"
-msgstr "Einfügen Videos"
-
-#: ../view/admin.php:817
-msgid "License key and custom logo"
-msgstr "Lizenzschlüssel und Individuelles Logo"
-
-#: ../view/admin.php:818
-msgid "How to create a playlist"
-msgstr "Wie man ein Playlist erstellen"
-
-#: ../view/admin.php:819
-msgid "Using ads"
-msgstr "Einsatz der Werbung"
-
-#: ../view/admin.php:820
-msgid "Using Google Ads"
-msgstr "Einsatz der Google Werbung"
-
-#: ../view/admin.php:821
-msgid "RTMP streams"
-msgstr "RTMP Streams"
-
-#: ../view/admin.php:823
-msgid "Amazon S3 secure content guide"
-msgstr "Amazon S3 geschützter Inhalt Handbuch"
-
-#: ../view/admin.php:824
-msgid "How to setup a HLS stream"
-msgstr "Wie ein HLS stream konfigurieren"
-
-#: ../view/admin.php:825
-msgid "Google Analytics support"
-msgstr "Google Analytics hilfe"
-
-#: ../view/admin.php:826
-msgid "Video lightbox"
-msgstr "Video lightbox"
-
-#: ../view/admin.php:827
-msgid "YouTube integration"
-msgstr "YouTube integration"
-
-#: ../view/admin.php:828
-msgid "Quality Switching"
-msgstr "Quality Schalter"
-
-#: ../view/admin.php:829
-msgid "Vimeo integration"
-msgstr "Vimeo integration"
-
-#: ../view/admin.php:830
-msgid "Custom video ads"
-msgstr "Eigene Video Werbunge"
-
-#: ../view/admin.php:831
-msgid "CloudFront CDN - protected video downloads"
-msgstr "Cloudfront CDN - geschützten Video herunterladen"
-
-#: ../view/admin.php:836
-msgid "Troubleshooting"
-msgstr "Fehlerbehebung"
-
-#: ../view/admin.php:839
-msgid "Automated checks"
-msgstr "Automatisiert überprüfungen"
-
-#: ../view/admin.php:840
-msgid "Video encoding tips"
-msgstr "Video Codierung Tips"
-
-#: ../view/admin.php:841
-msgid "Video formats to avoid"
-msgstr "Videoformate welche sollten sie vermeiden"
-
-#: ../view/admin.php:842
-msgid "Fixing mime type on Amazon S3"
-msgstr "Reparieren den MIME-Typ auf Amazon S3"
-
-#: ../view/admin.php:843
-msgid "Plugin FAQ"
-msgstr "Plugin FAQ"
-
-#: ../view/admin.php:844
-msgid "Support forums"
-msgstr "Support Forums"
-
-#: ../view/admin.php:845
-msgid "Downgrading the plugin"
-msgstr "Herabstufung den Zusatzmodul"
-
-#: ../view/admin.php:894
-msgid "Description"
-msgstr "Beschreibung"
-
-#: ../view/admin.php:895
-msgid "Player Skin"
-msgstr "Player Skin"
-
-#: ../view/admin.php:896
-msgid "Post Interface Options"
-msgstr "Schnittstelle Optionen  für Beitrag"
-
-#: ../view/admin.php:897
+#: ../view/admin.php:860 ../view/admin.php:1050
 msgid "Sitewide Flowplayer Defaults"
 msgstr "Flowplayer Standard Einstellung für alle Webseiten"
 
-#: ../view/admin.php:898
+#: ../view/admin.php:865
+msgid "Border color"
+msgstr "Rahmen Farbe"
+
+#: ../view/admin.php:867
+msgid "Border"
+msgstr "Rahmen"
+
+#: ../view/admin.php:871
+msgid "Buffer"
+msgstr "Pufferung"
+
+#: ../view/admin.php:873
+msgid "Bottom Margin"
+msgstr "Unten Außenabstand"
+
+#: ../view/admin.php:877
+msgid "Canvas"
+msgstr "Arbeitsfläche"
+
+#: ../view/admin.php:879
+msgid "Font Face"
+msgstr "Schriftart"
+
+#: ../view/admin.php:884
+msgid "(inherit from template)"
+msgstr "(erben von Thema)"
+
+#: ../view/admin.php:891
+msgid "Player position"
+msgstr "Position des Spielers"
+
+#: ../view/admin.php:894
+msgid "Centered"
+msgstr "Zentriert"
+
+#: ../view/admin.php:895
+msgid "Left (no text-wrap)"
+msgstr "Links (kein Textumbruch)"
+
+#: ../view/admin.php:900
+msgid "Progress"
+msgstr "Fortschrittsbalken"
+
+#: ../view/admin.php:902
+msgid "Subtitle Font Size"
+msgstr "Untertitel Schriftgröße"
+
+#: ../view/admin.php:906
+msgid "Time"
+msgstr "Zeit"
+
+#: ../view/admin.php:916
+msgid "Timeline"
+msgstr "Zeitlinie"
+
+#: ../view/admin.php:922
+msgid "Total time"
+msgstr "Gesamtzeit"
+
+#: ../view/admin.php:966
+msgid "Illustrated user guides"
+msgstr "Illustriert Benutzerhandbücher"
+
+#: ../view/admin.php:969
+msgid "Inserting videos"
+msgstr "Einfügen Videos"
+
+#: ../view/admin.php:970
+msgid "License key and custom logo"
+msgstr "Lizenzschlüssel und Individuelles Logo"
+
+#: ../view/admin.php:971
+msgid "How to create a playlist"
+msgstr "Wie man ein Playlist erstellen"
+
+#: ../view/admin.php:972
+msgid "Using ads"
+msgstr "Einsatz der Werbung"
+
+#: ../view/admin.php:973
+msgid "Using Google Ads"
+msgstr "Einsatz der Google Werbung"
+
+#: ../view/admin.php:974
+msgid "RTMP streams"
+msgstr "RTMP Streams"
+
+#: ../view/admin.php:976
+msgid "Amazon S3 secure content guide"
+msgstr "Amazon S3 geschützter Inhalt Handbuch"
+
+#: ../view/admin.php:977
+msgid "How to setup a HLS stream"
+msgstr "Wie ein HLS stream konfigurieren"
+
+#: ../view/admin.php:978
+msgid "Google Analytics support"
+msgstr "Google Analytics hilfe"
+
+#: ../view/admin.php:979
+msgid "Video lightbox"
+msgstr "Video lightbox"
+
+#: ../view/admin.php:980
+msgid "YouTube integration"
+msgstr "YouTube integration"
+
+#: ../view/admin.php:981
+msgid "Quality Switching"
+msgstr "Quality Schalter"
+
+#: ../view/admin.php:982
+msgid "Vimeo integration"
+msgstr "Vimeo integration"
+
+#: ../view/admin.php:983
+msgid "Custom video ads"
+msgstr "Eigene Video Werbunge"
+
+#: ../view/admin.php:984
+msgid "CloudFront CDN - protected video downloads"
+msgstr "Cloudfront CDN - geschützten Video herunterladen"
+
+#: ../view/admin.php:989
+msgid "Troubleshooting"
+msgstr "Fehlerbehebung"
+
+#: ../view/admin.php:992
+msgid "Automated checks"
+msgstr "Automatisiert überprüfungen"
+
+#: ../view/admin.php:993
+msgid "Video encoding tips"
+msgstr "Video Codierung Tips"
+
+#: ../view/admin.php:994
+msgid "Video formats to avoid"
+msgstr "Videoformate welche sollten sie vermeiden"
+
+#: ../view/admin.php:995
+msgid "Fixing mime type on Amazon S3"
+msgstr "Reparieren den MIME-Typ auf Amazon S3"
+
+#: ../view/admin.php:996
+msgid "Plugin FAQ"
+msgstr "Plugin FAQ"
+
+#: ../view/admin.php:997
+msgid "Support forums"
+msgstr "Support Forums"
+
+#: ../view/admin.php:998
+msgid "Downgrading the plugin"
+msgstr "Herabstufung den Zusatzmodul"
+
+#: ../view/admin.php:1047
+msgid "Description"
+msgstr "Beschreibung"
+
+#: ../view/admin.php:1048
+msgid "Player Skin"
+msgstr "Player Skin"
+
+#: ../view/admin.php:1049
+msgid "Post Interface Options"
+msgstr "Schnittstelle Optionen  für Beitrag"
+
+#: ../view/admin.php:1051
 msgid "Amazon S3 Protected Content"
 msgstr "Amazon S3 geschützter Inhalt"
 
-#: ../view/admin.php:900
-msgid "Integrations"
-msgstr "Integrationen"
-
-#: ../view/admin.php:903
+#: ../view/admin.php:1056
 msgid "Pro Features"
 msgstr "Pro Funktionen"
 
-#: ../view/admin.php:905
+#: ../view/admin.php:1058
 msgid "Usage"
 msgstr "Verwendung"
 
-#: ../view/admin.php:939
+#: ../view/admin.php:1092
 msgid "Enable the Pro extension"
 msgstr "Aktivieren  die Pro Erweiterung"
 
-#: ../view/admin.php:941
+#: ../view/admin.php:1094
 msgid "Pro pack installed"
 msgstr "Pro Version installiert"
 
-#: ../view/admin.php:943
+#: ../view/admin.php:1096
 msgid "Install Pro extension"
 msgstr "Die Pro Erweiterung Installieren"
 
-#: ../view/admin.php:946
+#: ../view/admin.php:1099
 msgid "Apply Pro upgrade"
 msgstr "Aktivieren das Pro Upgrade"
 
-#: ../view/admin.php:948
+#: ../view/admin.php:1101
 msgid "Check template"
 msgstr "Prüfen das Thema"
 
-#: ../view/admin.php:949
+#: ../view/admin.php:1102
 msgid "Check videos"
 msgstr "Prüfen das Video"
 
-#: ../view/admin.php:951
+#: ../view/admin.php:1104
 msgid "Commercial License Key"
 msgstr "Gewerbliche Lizenzschlüssel"
 
-#: ../view/admin.php:951
+#: ../view/admin.php:1104
 msgid "Click here for license info"
 msgstr "Klicken Sie hier für Lizenz info"
 
@@ -1092,14 +1216,6 @@ msgstr "Dauerung der Video"
 #: ../view/wizard.php:94
 msgid "File size"
 msgstr "Dateigröße"
-
-#: ../view/wizard.php:98 ../view/wizard.php:266
-msgid "Width"
-msgstr "Breite"
-
-#: ../view/wizard.php:98 ../view/wizard.php:266
-msgid "Height"
-msgstr "Höhe"
 
 #: ../view/wizard.php:102 ../view/wizard.php:111
 msgid "(another format)"
@@ -1155,8 +1271,8 @@ msgstr "Beschriftung"
 msgid "Playlist Style"
 msgstr "Playlist Stil"
 
-#: ../view/wizard.php:208 ../view/wizard.php:230 ../view/wizard.php:252
-#: ../view/wizard.php:274 ../view/wizard.php:284 ../view/wizard.php:298
+#: ../view/wizard.php:208 ../view/wizard.php:231 ../view/wizard.php:253
+#: ../view/wizard.php:275 ../view/wizard.php:285 ../view/wizard.php:299
 msgid "Default"
 msgstr "Standard"
 
@@ -1164,63 +1280,67 @@ msgstr "Standard"
 msgid "Tabs"
 msgstr "Registerkarten"
 
-#: ../view/wizard.php:211
+#: ../view/wizard.php:210
+msgid "Prev/Next"
+msgstr "Vorherige/Nächste"
+
+#: ../view/wizard.php:212
 msgid "Add Playlist Item"
 msgstr "hzfg. Element zum Playlist"
 
-#: ../view/wizard.php:216
+#: ../view/wizard.php:217
 msgid "Additional features"
 msgstr "ZUSATZFUNKTIONEN"
 
-#: ../view/wizard.php:223
+#: ../view/wizard.php:224
 msgid "Redirect to"
 msgstr "Umleiten zum"
 
-#: ../view/wizard.php:231 ../view/wizard.php:253
+#: ../view/wizard.php:232 ../view/wizard.php:254
 msgid "On"
 msgstr "Ein"
 
-#: ../view/wizard.php:232 ../view/wizard.php:254
+#: ../view/wizard.php:233 ../view/wizard.php:255
 msgid "Off"
 msgstr "Aus"
 
-#: ../view/wizard.php:245
+#: ../view/wizard.php:246
 msgid "(show splash image at the end)"
 msgstr "(Beitragsbild am Ende zeigen)"
 
-#: ../view/wizard.php:249
+#: ../view/wizard.php:250
 msgid "Embedding"
 msgstr "Einbettung"
 
-#: ../view/wizard.php:259
+#: ../view/wizard.php:260
 msgid "Ad code"
 msgstr "Werbung Code"
 
-#: ../view/wizard.php:267
+#: ../view/wizard.php:268
 msgid "Skip global ad in this video"
 msgstr "Überspringe dem globalen Werbung in diesem Video"
 
-#: ../view/wizard.php:275
+#: ../view/wizard.php:276
 msgid "Left"
 msgstr "Links"
 
-#: ../view/wizard.php:276
+#: ../view/wizard.php:277
 msgid "Right"
 msgstr "Recht"
 
-#: ../view/wizard.php:285 ../view/wizard.php:299
+#: ../view/wizard.php:286 ../view/wizard.php:300
 msgid "Yes"
 msgstr "Ja"
 
-#: ../view/wizard.php:286 ../view/wizard.php:300
+#: ../view/wizard.php:287 ../view/wizard.php:301
 msgid "No"
 msgstr "Nein"
 
-#: ../view/wizard.php:307
+#: ../view/wizard.php:308
 msgid "Insert"
 msgstr "Einfügen"
 
-#: ../view/wizard.php:313
+#: ../view/wizard.php:314
 msgid ""
 "Admin note: Video uploads are currently disabled, set Allow User Uploads to "
 "true in"
@@ -1228,19 +1348,49 @@ msgstr ""
 "Verwalter Anmerkung: Hochladen Video ist gegenwärtig deaktiviert, schalten "
 "sie die Möglichkeit \"Erlaube dem Benutzer hochladen\" ein"
 
-#: ../view/wizard.php:313 ../view/wizard.php:320
+#: ../view/wizard.php:314 ../view/wizard.php:321
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: ../view/wizard.php:320
+#: ../view/wizard.php:321
 msgid "Admin note: Enable more per video features in Interface options in"
 msgstr ""
 "Verwalter Anmerkung: Aktivieren mehr pro Video-Funktionen in "
 "Schnittstellenoptionen"
 
-#: ../view/wizard.php:325
+#: ../view/wizard.php:326
 msgid "currently not working with playlist"
 msgstr "Zur Zeit funktioniert nicht mit Playlist"
+
+#~ msgid ""
+#~ "Default setting is off - IE9 and IE10 get Flash (due to server "
+#~ "compatibility issues), Firefox in Windows gets Flash for M4V files (due "
+#~ "to issues with M4V in it on PC), everyone else gets HTML5 (with Flash "
+#~ "fallback)"
+#~ msgstr ""
+#~ "Standard Einstellungen sind aus - IE9 und IE10 bekommen Flash (wegen von "
+#~ "Server Kompatibilitäts Probleme), Firefox in Windows bekommt Flash für "
+#~ "M4V Dateien (wegen Problemen mit M4V auf Computer), jeder sonst bekommt "
+#~ "HTML5 (mit Flash-Fallback)"
+
+#~ msgid ""
+#~ "Default setting - respects width and height setting of the video, but "
+#~ "allows it to size down to be responsive"
+#~ msgstr ""
+#~ "Standard Einstellungen - respektiert die Breite und die Höhe einstellung "
+#~ "das Video, aber erlaubt die Größe zu responsiv sein."
+
+#~ msgid "Enter your default RTMP streaming server here"
+#~ msgstr "Geben Sie Ihrer standard RTMP streaming Server hier"
+
+#~ msgid "You can still use align=\"right\" where needed"
+#~ msgstr "Sie können weiter align=\"right\" benutzen, wenn Sie brauchen"
+
+#~ msgid "Sliders"
+#~ msgstr "Schieber"
+
+#~ msgid "Enable Fullscreen"
+#~ msgstr "Aktiviere Vollbild"
 
 #~ msgid "Ad"
 #~ msgstr "Werbung"
