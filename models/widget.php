@@ -13,7 +13,7 @@ class FV_Player_Widget extends WP_Widget {
 
   function widget_init() {
     register_widget('FV_Player_widget');
-    add_action('admin_footer-widgets.php', [$this, 'formFooter']);
+    add_action('admin_footer-widgets.php', array($this, 'formFooter') );
   }
 
   /**
