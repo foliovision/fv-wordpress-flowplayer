@@ -651,8 +651,15 @@ class flowplayer_frontend extends flowplayer
       $ad_diplay = 'block' ;
       if( isset($this->conf['ad_show_after']) && $this->conf['ad_show_after'] > 0){
         $ad_diplay = 'none';
-        $ad_js = '<script>setTimeout(function(){jQuery("#wpfp_'.$this->hash.'_ad>.wpfp_custom_ad_content").fadeIn()},'.($this->conf['ad_show_after'] * 1000).')</script>';
-        
+        $ad_js = '<script>'
+                . ' jQuery("#wpfp_' . $this->hash . '").data("flowplayer").bind("progress",function(e,api,current){'
+                . '   if(!jQuery("#wpfp_' . $this->hash . '").hasClass("is-cva")){'
+                . '     if( current > ' . ($this->conf['ad_show_after'] ) . '){'
+                . '       jQuery("#wpfp_' . $this->hash . '_ad>.wpfp_custom_ad_content").fadeIn();'
+                . '     }'
+                . '   }'
+                . ' })'
+                . '</script>';
       }
       
       
