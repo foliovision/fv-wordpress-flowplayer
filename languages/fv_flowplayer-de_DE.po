@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-03-16 16:08+0100\n"
-"PO-Revision-Date: 2016-03-16 16:08+0100\n"
+"POT-Creation-Date: 2016-03-18 15:10+0100\n"
+"PO-Revision-Date: 2016-03-18 16:52+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -308,9 +308,11 @@ msgid ""
 "We check the video length and make sure the link expiration time is big "
 "enough for the video to buffer properly."
 msgstr ""
-"Sichere Amazon S3 URL sind empfiehlt nur für Mitglieder Sektionen auf der "
-"Webseite. Wir überprüfen die Videolänge und stellen sich sicher, dass die "
-"Verbindung ablaufzeit ist groß genug für das Video, um richtig zu Puffern."
+"Sichere Amazon S3 URLs sind empfohlen für Websites mit bezahlten Inhalt für "
+"logged Benutzer. Wir überprüfen die Videolänge und stellen sich sicher, dass "
+"die Verbindung ablaufzeit ist groß genug für das Video, um richtig zu "
+"Puffern.Sichere Amazon S3-URL für Websites mit Paid Content für registrierte "
+"Benutzer empfohlen."
 
 #: ../view/admin.php:104
 msgid ""
@@ -428,7 +430,7 @@ msgid ""
 "don't support autoplay."
 msgstr ""
 "Wir sicherstellen, dass nur eins Video pro Seite wird automatisch gespielt. "
-"Beachten Sie, dass mobile Geräte unterstützen nicht die automatische "
+"Vergessen Sie nicht, dass mobile Geräte unterstützen nicht die automatische "
 "Wiedergabe."
 
 #: ../view/admin.php:198
@@ -479,7 +481,9 @@ msgstr "Deaktiviere den einbinden Taste"
 
 #: ../view/admin.php:238
 msgid "Removes embed button from top bar."
-msgstr "Entfernt einbetten Schaltfläche von oben bar."
+msgstr ""
+"Entfernt die Taste, um den HTML-Code des Video Spielers von die obige Leiste "
+"bekommen."
 
 #: ../view/admin.php:243
 msgid "Disable Sharing"
@@ -500,11 +504,11 @@ msgstr ""
 
 #: ../view/admin.php:260
 msgid "Fullscreen Button"
-msgstr "Schaltfläche Vollbild"
+msgstr "Schaltfläche für Vollbild"
 
 #: ../view/admin.php:264
 msgid "Adds fullscreen button to player top bar."
-msgstr "Fügt Vollbild-Taste, in die obere Leiste den Videospieler."
+msgstr "Fügt Vollbild Schaltfläche, in die obere Leiste den Videospieler."
 
 #: ../view/admin.php:269
 msgid "Google Analytics ID"
@@ -521,7 +525,7 @@ msgstr ""
 
 #: ../view/admin.php:287
 msgid "You need to have a FV Flowplayer license to use it"
-msgstr "Sie benötigen eine FV Flowplayer Lizenz zu haben, um es benutzen"
+msgstr "Um das Logo zu verwenden, brauchen Sie FV Flowplayer Lizenz"
 
 #: ../view/admin.php:291 ../view/admin.php:333
 msgid "Upload Image"
@@ -590,7 +594,7 @@ msgstr ""
 
 #: ../view/admin.php:336
 msgid "Subtitles On By Default"
-msgstr "Untertitel sind automatisch eingeschaltet"
+msgstr "Untertitel automatisch anzeigen"
 
 #: ../view/admin.php:340
 msgid "Normally you have to hit a button in controlbar to turn on subtitles."
@@ -625,7 +629,7 @@ msgid ""
 "videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; "
 "coverage even on mobile devices."
 msgstr ""
-"Videos in Ihre Beiträge oder Seiten. Mit MP4-Videos, bietet FV Player "
+"Videos in Ihre Beiträge oder Seiten. Mit MP4-Video Format, bietet FV Player "
 "98&#37; Deckung, auch an mobilen Geräten."
 
 #: ../view/admin.php:469
@@ -639,8 +643,8 @@ msgstr "Immer benutze festgesetzt Format des Video Player"
 #: ../view/admin.php:476
 msgid "Enable to force video size at cost of loosing the video responsiveness."
 msgstr ""
-"Schalten Sie an um die Videogröße zwingen zum Preis verlierung das Video "
-"Ansprechbarkeit."
+"Schalten Sie an um die Videogröße zwingen zum Preis verlierung "
+"Ansprechbarkeit des Thema."
 
 #: ../view/admin.php:481
 msgid "Colorbox Compatibility"
@@ -651,8 +655,8 @@ msgid ""
 "Enable if your theme is using colorbox lightbox to show content and clones "
 "the HTML content into it."
 msgstr ""
-"Benutzen Sie, wenn Ihr Thema benutzt colorbox lightbox um dem Inhalt "
-"anzeigen und Klone der HTML-Inhalt darein."
+"Aktivieren Sie, wenn Ihr Thema benutzt colorbox lightbox und Klone der HTML-"
+"Inhalt darein."
 
 #: ../view/admin.php:491
 msgid "Disable saving of color settings into a static file"
@@ -690,7 +694,7 @@ msgstr ""
 
 #: ../view/admin.php:511
 msgid "Handle WordPress"
-msgstr "WordPress verhalten"
+msgstr "WordPress bearbeiten"
 
 #: ../view/admin.php:511
 msgid "shortcodes"
@@ -704,20 +708,20 @@ msgstr "Laden Sie FV Flowplayer JS überall"
 msgid ""
 "If you use some special JavaScript integration you might prefer this option."
 msgstr ""
-"Wenn Sie irgendein speziellen JavaScript Integration benutzen, sollten Sie "
-"lieber diese Option bevorzugen."
+"Wenn Sie ein speziell JavaScript verwenden um unseren Spieler einfügen, "
+"können Sie diese Option verwenden."
 
 #: ../view/admin.php:526
 msgid ""
 "Otherwise our JavaScript only loads if the shortcode is found in any of the "
 "posts being currently displayed."
 msgstr ""
-"Andernfalls unser JavaScript lädt nur, wenn ist die shortcode in einem "
-"Beinträg vom aktuell angezeigte gefunden."
+"Andernfalls lädt sich unser JavaScript nur, wenn ist der shortcode in "
+"irgendeine Beitrag gefunden der ist aktuell angezeigt."
 
 #: ../view/admin.php:531
 msgid "Parse old shortcodes with commas"
-msgstr "Convert alten shortcodes mit Komma"
+msgstr "Alten shortcodes mit Komma bearbeiten"
 
 #: ../view/admin.php:535
 msgid ""
@@ -811,7 +815,7 @@ msgstr "Welche funktionen sollten in shortcode editor verfügbar sein?"
 
 #: ../view/admin.php:623
 msgid "Allow User Uploads"
-msgstr "Erlaube dem Benutzer hochladen"
+msgstr "Erlauben Einfügung aus Mediathek"
 
 #: ../view/admin.php:630
 msgid "Playlist"
@@ -819,7 +823,7 @@ msgstr "Playlist"
 
 #: ../view/admin.php:637
 msgid "Playlist captions"
-msgstr "Playlist hauptzeile"
+msgstr "Die Titel des Videos in der Wiedergabeliste"
 
 #: ../view/admin.php:644 ../view/wizard.php:220
 msgid "HTML popup"
@@ -839,7 +843,7 @@ msgstr "Beitragsbild am Ende"
 
 #: ../view/admin.php:679
 msgid "Embed"
-msgstr "Einbettung"
+msgstr "Einfügung HTML Code des Video Player"
 
 #: ../view/admin.php:686 ../view/admin.php:975 ../view/wizard.php:151
 msgid "Subtitles"
@@ -982,11 +986,11 @@ msgstr "Monetarisieren die Video-Inhalte auf Ihrer Mitgliedschaft Website."
 
 #: ../view/admin.php:860 ../view/admin.php:1050
 msgid "Sitewide Flowplayer Defaults"
-msgstr "Flowplayer Standard Einstellung für alle Webseiten"
+msgstr "Globale Einstellungen für Flowplayer"
 
 #: ../view/admin.php:865
 msgid "Border color"
-msgstr "Rahmen Farbe"
+msgstr "Rahmenfarbe"
 
 #: ../view/admin.php:867
 msgid "Border"
@@ -1345,8 +1349,8 @@ msgid ""
 "Admin note: Video uploads are currently disabled, set Allow User Uploads to "
 "true in"
 msgstr ""
-"Verwalter Anmerkung: Hochladen Video ist gegenwärtig deaktiviert, schalten "
-"sie die Möglichkeit \"Erlaube dem Benutzer hochladen\" ein"
+"Verwalter Anmerkung: Hochladen Video ist gegenwärtig deaktiviert, aktivieren "
+"sie die Möglichkeit \"Erlauben Einfügung aus Mediathek\" ein"
 
 #: ../view/wizard.php:314 ../view/wizard.php:321
 msgid "Settings"
@@ -1355,8 +1359,8 @@ msgstr "Einstellungen"
 #: ../view/wizard.php:321
 msgid "Admin note: Enable more per video features in Interface options in"
 msgstr ""
-"Verwalter Anmerkung: Aktivieren mehr pro Video-Funktionen in "
-"Schnittstellenoptionen"
+"Verwalter Anmerkung: Aktivieren mehr pro Video-Einstellungen in "
+"Schnittstellenoptionen in"
 
 #: ../view/wizard.php:326
 msgid "currently not working with playlist"

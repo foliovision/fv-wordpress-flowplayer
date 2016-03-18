@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-03-11 16:40+0100\n"
-"PO-Revision-Date: 2016-03-11 16:42+0100\n"
+"PO-Revision-Date: 2016-03-18 15:09+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -306,9 +306,10 @@ msgid ""
 "We check the video length and make sure the link expiration time is big "
 "enough for the video to buffer properly."
 msgstr ""
-"Zabezpečené Amazon S3 URL adresy jsou doporučené jen pro členy sekcí webu. "
-"Kontrolujeme délku videa a zajišťujeme, aby byla doba platnosti spojení "
-"dostatečně velká pro správně nahrání videa do vyrovnávací paměti."
+"Zabezpečené Amazon S3 URL adresy jsou doporučené pro weby s placeným obsahem "
+"pro přihlášené uživatele. Kontrolujeme délku videa a zajišťujeme, aby byla "
+"doba platnosti spojení dostatečně velká pro správně nahrání videa do "
+"vyrovnávací paměti."
 
 #: ../view/admin.php:104
 msgid ""
@@ -425,7 +426,7 @@ msgid ""
 "don't support autoplay."
 msgstr ""
 "Zajistíme, aby se začalo automaticky přehrávat pouze jedno video na stránce. "
-"Nepřehlédněte, že mobilní zařízení nepodporují automatické přehrávání."
+"Nezapomínejte, že mobilní zařízení nepodporují automatické přehrávání."
 
 #: ../view/admin.php:198
 msgid "Auto Buffering"
@@ -473,11 +474,11 @@ msgstr "Zakázat vkládání"
 
 #: ../view/admin.php:238
 msgid "Removes embed button from top bar."
-msgstr "Odstraní tlačítko vkládání z horní lišty."
+msgstr "Odstraní tlačítko pro získání HTML kódu přehrávače z horní lišty."
 
 #: ../view/admin.php:243
 msgid "Disable Sharing"
-msgstr "Zakázat sdílení"
+msgstr "Zakázat získání HTML kódu"
 
 #: ../view/admin.php:247
 msgid "Removes sharing buttons from top bar."
@@ -485,7 +486,7 @@ msgstr "Odstraní tlačítko sdílení z horní lišty."
 
 #: ../view/admin.php:252
 msgid "Flash Streaming Server"
-msgstr "Server pro streamování Flashu"
+msgstr "Server pro Flash streamování"
 
 #: ../view/admin.php:255
 msgid "Enter your default RTMP streaming server (Amazon CloudFront domain)."
@@ -494,19 +495,19 @@ msgstr ""
 
 #: ../view/admin.php:260
 msgid "Fullscreen Button"
-msgstr "Tlačítka pro  režim celé obrazovky"
+msgstr "Tlačítko pro  režim celé obrazovky"
 
 #: ../view/admin.php:264
 msgid "Adds fullscreen button to player top bar."
-msgstr "Přidá tlačítko pro celou obrazovku do vrchní lišty přehrávače."
+msgstr "Přidá tlačítko pro režim celé obrazovky do vrchní lišty přehrávače."
 
 #: ../view/admin.php:269
 msgid "Google Analytics ID"
-msgstr "Google ID webové analýzy"
+msgstr "Google Analytics ID"
 
 #: ../view/admin.php:272
 msgid "Will be automatically loaded when playing a video."
-msgstr "Se automaticky načte při přehrávání videa."
+msgstr "Se automaticky načte při přehrávání videa"
 
 #: ../view/admin.php:285
 msgid "You have a valid FV Flowplayer license, you can put up your logo here"
@@ -514,7 +515,7 @@ msgstr "Máte platnou licenci FV Flowplayer, zde si můžete vložit své logo"
 
 #: ../view/admin.php:287
 msgid "You need to have a FV Flowplayer license to use it"
-msgstr "Potřebujete FV Flowplayer licenci pro použítí loga"
+msgstr "Pro použítí loga potřebujete FV Flowplayer licenci"
 
 #: ../view/admin.php:291 ../view/admin.php:333
 msgid "Upload Image"
@@ -584,7 +585,7 @@ msgstr ""
 
 #: ../view/admin.php:336
 msgid "Subtitles On By Default"
-msgstr "Titulky jsou zapnuté ve výchozím nastavení "
+msgstr "Automaticky zobrazit titulky"
 
 #: ../view/admin.php:340
 msgid "Normally you have to hit a button in controlbar to turn on subtitles."
@@ -619,7 +620,7 @@ msgid ""
 "videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; "
 "coverage even on mobile devices."
 msgstr ""
-"videa do vašich příspěvků nebo stránek. S MP4  videi nabízí FV Player  "
+"videa do vašich příspěvků nebo stránek. S formátem MP4  nabízí FV Player  "
 "98&#37; pokrytí i na mobilních zařízeních."
 
 #: ../view/admin.php:469
@@ -632,7 +633,8 @@ msgstr "Vždy použít pevne zadanou velikost přehrávače"
 
 #: ../view/admin.php:476
 msgid "Enable to force video size at cost of loosing the video responsiveness."
-msgstr "Zapnete pro vynucení velikosti videa za cenu ztráty video odezvy."
+msgstr ""
+"Zapnete pro vynucení velikosti videa za cenu ztráty responzívnosti tématu."
 
 #: ../view/admin.php:481
 msgid "Colorbox Compatibility"
@@ -643,8 +645,7 @@ msgid ""
 "Enable if your theme is using colorbox lightbox to show content and clones "
 "the HTML content into it."
 msgstr ""
-"Použijte, pokud vaše téma používa colorbox lightbox na ukázaní obsahu a "
-"klonování HTML obsahu do něj."
+"Použijte, pokud vaše téma používa colorbox lightbox a klonuje do ní HTML."
 
 #: ../view/admin.php:491
 msgid "Disable saving of color settings into a static file"
@@ -665,7 +666,7 @@ msgid ""
 "options!"
 msgstr ""
 "Děláme to proto, aby se zabránilo výstupu CSS kódu do vašich  <head> "
-"stránek. Neupravujte tento soubor, i když bude přepsán aktualizacemi "
+"stránek. Neupravujte tento soubor, protože bude přepsán aktualizacemi "
 "pluginu, nebo uložením jeho nastaveními!"
 
 #: ../view/admin.php:502
@@ -682,7 +683,7 @@ msgstr ""
 
 #: ../view/admin.php:511
 msgid "Handle WordPress"
-msgstr "Manipulace s WordPress"
+msgstr "Spracovavat WordPress"
 
 #: ../view/admin.php:511
 msgid "shortcodes"
@@ -696,8 +697,8 @@ msgstr "Načíst FV Flowplayer JS všude"
 msgid ""
 "If you use some special JavaScript integration you might prefer this option."
 msgstr ""
-"Pokud používáte nějaký zvláštní integrace JavaScriptu, měli byste dát "
-"přednost této možnosti."
+"Pokud používáte nějaký speciální JavaScript na vkládání našeho přehrávače "
+"můžete použít tuto možnost."
 
 #: ../view/admin.php:526
 msgid ""
@@ -705,11 +706,11 @@ msgid ""
 "posts being currently displayed."
 msgstr ""
 "Jinak se náš JavaScript načte pouze v případě, že se najde shortcode v "
-"jakémkoli příspěvku včetně aktuálně zobrazeného."
+"jakémkoli příspěvku, který se aktuálně zobrazuje."
 
 #: ../view/admin.php:531
 msgid "Parse old shortcodes with commas"
-msgstr "Překonvertovat staré shortcodes čárkami"
+msgstr "Zpracovat staré shortcodes čárkami"
 
 #: ../view/admin.php:535
 msgid ""
@@ -722,7 +723,7 @@ msgid ""
 "This option will make sure it works with current version. Turn this off if "
 "you have some problems with display or other plugins which use shortcodes."
 msgstr ""
-"Tato možnost zabezpečuje, fungování s aktuální verzí. Vypnite tuto funkci, "
+"Tato možnost zajistí jejich fungování s aktuální verzí. Vypnite tuto funkci, "
 "pokud máte nějaké problémy se zobrazováním nebo jinými pluginy, které "
 "používají shortcodes."
 
@@ -799,7 +800,7 @@ msgstr "Které funkce by měly být k dispozici v shortcode editore?"
 
 #: ../view/admin.php:623
 msgid "Allow User Uploads"
-msgstr "Povolit uživatelům odesílat"
+msgstr "Povolit vkládání z knihovny médií"
 
 #: ../view/admin.php:630
 msgid "Playlist"
@@ -807,7 +808,7 @@ msgstr "Playlist"
 
 #: ../view/admin.php:637
 msgid "Playlist captions"
-msgstr "Nadpis playlistu"
+msgstr "Nadpisy videí v playlistu"
 
 #: ../view/admin.php:644 ../view/wizard.php:220
 msgid "HTML popup"
@@ -827,7 +828,7 @@ msgstr "Náhledový obrázek na konci"
 
 #: ../view/admin.php:679
 msgid "Embed"
-msgstr "Vkládání videa"
+msgstr "Vkládání HTML kódu přehrávače"
 
 #: ../view/admin.php:686 ../view/admin.php:975 ../view/wizard.php:151
 msgid "Subtitles"
@@ -969,15 +970,15 @@ msgstr "Zpeněžit obsah videa na členských stránkach."
 
 #: ../view/admin.php:860 ../view/admin.php:1050
 msgid "Sitewide Flowplayer Defaults"
-msgstr "Výchozí nastavení Flowplayeru na všech stránkách"
+msgstr "Globální nastavení Flowplayeru"
 
 #: ../view/admin.php:865
 msgid "Border color"
-msgstr "Barva rámu"
+msgstr "Barva okraje"
 
 #: ../view/admin.php:867
 msgid "Border"
-msgstr "Rám"
+msgstr "Okraj"
 
 #: ../view/admin.php:871
 msgid "Buffer"
@@ -985,7 +986,7 @@ msgstr "Vyrovnávací paměť"
 
 #: ../view/admin.php:873
 msgid "Bottom Margin"
-msgstr "Spodní okraj"
+msgstr "Spodní odsazení"
 
 #: ../view/admin.php:877
 msgid "Canvas"
@@ -1331,8 +1332,8 @@ msgid ""
 "Admin note: Video uploads are currently disabled, set Allow User Uploads to "
 "true in"
 msgstr ""
-"Administrátorská poznámka: Nahrávaní videa je momentálně zakázáno, nastavte "
-"položku \"Povolit užívatelovi nahrávat\" na hodnotu pravdivé"
+"Administrátorská poznámka: Nahrávaní videa je momentálně zakázáno, povolte "
+"možnost \"Povolit vkládání z knihovny médií\" na hodnotu pravdivé"
 
 #: ../view/wizard.php:314 ../view/wizard.php:321
 msgid "Settings"
@@ -1341,7 +1342,7 @@ msgstr "Nastavení"
 #: ../view/wizard.php:321
 msgid "Admin note: Enable more per video features in Interface options in"
 msgstr ""
-"Administrátorská poznámka: Povolit víc doplňků na video v nastaveních "
+"Administrátorská poznámka: Povolit víc nastavení pro video v možnostech "
 "rozhraní v"
 
 #: ../view/wizard.php:326
