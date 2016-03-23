@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-02-09 13:45+0100\n"
-"PO-Revision-Date: 2016-02-09 14:35+0100\n"
+"PO-Revision-Date: 2016-02-10 15:05+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Spain\n"
@@ -1056,7 +1056,7 @@ msgstr ""
 
 #: ../view/admin.php:948
 msgid "Check template"
-msgstr "Controlar plantillas"
+msgstr "Controlar plantilla"
 
 #: ../view/admin.php:949
 msgid "Check videos"
@@ -1081,7 +1081,7 @@ msgstr "Vídeo"
 #: ../view/wizard.php:86 ../view/wizard.php:105 ../view/wizard.php:114
 #: ../view/wizard.php:138
 msgid "Add Video"
-msgstr "Agregar vídeos"
+msgstr "Añadir vídeos"
 
 #: ../view/wizard.php:93
 msgid "Video Duration"
@@ -1118,7 +1118,7 @@ msgstr "RTPM camino"
 
 #: ../view/wizard.php:130
 msgid "Add another format"
-msgstr "Agregar otro formato"
+msgstr "Añadir otro formato"
 
 #: ../view/wizard.php:130
 msgid "(i.e. WebM, OGV)"
@@ -1126,7 +1126,7 @@ msgstr "(por ej. WebM, OGV)"
 
 #: ../view/wizard.php:131
 msgid "Add RTMP"
-msgstr "Agregar RTPM"
+msgstr "Añadir RTPM"
 
 #: ../view/wizard.php:136
 msgid "Put low-bandwidth video here or leave blank"
@@ -1134,15 +1134,15 @@ msgstr ""
 
 #: ../view/wizard.php:146
 msgid "Add Image"
-msgstr "Agregar imagen"
+msgstr "Añadir imagen"
 
 #: ../view/wizard.php:168
 msgid "Add Subtitles"
-msgstr "Agregar"
+msgstr "Añadir"
 
 #: ../view/wizard.php:178
 msgid "Add Another Language"
-msgstr "Agregar otro idioma"
+msgstr "Añadir otro idioma"
 
 #: ../view/wizard.php:183
 msgid "Caption"
@@ -1163,7 +1163,7 @@ msgstr ""
 
 #: ../view/wizard.php:211
 msgid "Add Playlist Item"
-msgstr "Agregar un elemento a playlist"
+msgstr "Añadir un elemento a playlist"
 
 #: ../view/wizard.php:216
 msgid "Additional features"

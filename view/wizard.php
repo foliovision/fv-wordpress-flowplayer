@@ -17,7 +17,7 @@
 */ 
 
   global $post;
-  $post_id = $post->ID;
+  $post_id = isset($post->ID) ? $post->ID : 0;
   
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
   $allow_uploads = false;
