@@ -345,6 +345,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.4.13 - 2016/03/23 =
 
+* Plugin name changed to FV Player
+* Added FV Player widget to allow inserting player into sidebar easily
 * AMP - support for the WordPress AMP plugin
 * Playlist style vertical added (beta)
 * Translation fixes
