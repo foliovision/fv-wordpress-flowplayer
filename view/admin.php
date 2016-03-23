@@ -307,7 +307,21 @@ function fv_flowplayer_admin_default_options() {
                   <?php _e('Adds play button to player controlbar.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
-						</tr>               
+						</tr>
+            <tr>
+							<td><label for="liststyle"><?php _e('Playlist style', 'fv_flowplayer'); ?>:</label></td>
+							<td colspan="3">
+                <p class="description">
+                  <select id="liststyle" name="liststyle">
+                    <option value="horizontal"<?=( (!isset($fv_fp->conf['liststyle']) && $fv_fp->conf['liststyle'] = '') || $fv_fp->conf['liststyle'] == '' || $fv_fp->conf['liststyle'] == 'horizontal' )?' selected="selected"':''?> ><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
+                    <option value="tabs"      <?=( $fv_fp->conf['liststyle'] == 'tabs' ) ?     ' selected="selected"' : ''?> ><?php _e('Tabs', 'fv_flowplayer'); ?></option> 
+                    <option value="prevnext"  <?=( $fv_fp->conf['liststyle'] == 'prevnext' ) ? ' selected="selected"' : ''?> ><?php _e('Prev/Next', 'fv_flowplayer'); ?></option>
+                    <option value="vertical"  <?=( $fv_fp->conf['liststyle'] == 'vertical' ) ? ' selected="selected"' : ''?> ><?php _e('Vertical', 'fv_flowplayer'); ?></option>
+                  </select>
+                  <?php _e('Enter your default playlist style here', 'fv_flowplayer'); ?>
+                </p>
+              </td>
+						</tr>	            
 						<tr>
 							<td><label for="popupbox"><?php _e('Popup Box', 'fv_flowplayer'); ?>:</label></td>
 							<td>
@@ -325,8 +339,8 @@ function fv_flowplayer_admin_default_options() {
                   <?php _e('Speed buttons control playback speed and only work in HTML5 compatible browsers.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
-						</tr>
-						<tr>
+						</tr>		
+            <tr>
 							<td><label for="splash"><?php _e('Splash Image', 'fv_flowplayer'); ?>:</label></td>
               <td>
                 <input type="text" name="splash" id="splash" value="<?php if( isset($fv_fp->conf['splash']) ) echo esc_attr($fv_fp->conf['splash']); ?>" class="large" placeholder="<?php _e('Default which will be used for any player without its own splash image.', 'fv_flowplayer'); ?>" />
@@ -344,10 +358,6 @@ function fv_flowplayer_admin_default_options() {
           </table>
           <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.</small>   
           <table class="form-table2">
-				
-
-
-
 						<tr>    		
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />
@@ -856,7 +866,7 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
   <div class="flowplayer-wrapper">
-    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg" autoplay="false"]'); ?>
+    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg" autoplay="false" preroll="no" postroll="no"]'); ?>
     <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.</small>
   </div>
 

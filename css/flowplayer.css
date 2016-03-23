@@ -393,6 +393,11 @@
 	overflow: hidden;
 	background: url("img/flp-share-icons.png") no-repeat;
 	text-indent: -9999em;
+	-wekbit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+	border-bottom: 0 !important;
+	text-decoration: none !important;	
 }
 
 .fvp-share-bar .fvp-sharing a.sharing-twitter {
@@ -460,6 +465,9 @@
 .fp-playlist-external a.is-active { color:#52b9e4;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
 #content .fp-playlist-external a { border: 0}
 
+.fp-playlist-vertical { text-align: left; overflow: scroll; overflow-x: hidden; background: #fff; border-bottom: 1px solid #ccc; max-height: 423px; max-width: 100%; }
+.fp-playlist-vertical-player{ float: left!important; max-width:calc( 100% - 156px)!important;}
+
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;
     display: inline-block;
@@ -502,7 +510,7 @@ a #add-format, a #add-rtmp {
 .flowplayer.video1, .flowplayer.video2, .flowplayer.video3, .flowplayer.video4, .flowplayer.video5, .flowplayer.video6, .flowplayer.video7, .flowplayer.video8, .flowplayer.video9, .flowplayer.video10, .flowplayer.video11, .flowplayer.video12, .flowplayer.video13, .flowplayer.video14, .flowplayer.video15, .flowplayer.video16 { background-image: none !important; }
 
 .flowplayer .fp-volume { text-align: left; }
-#content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; }
+#content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; -wekbit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; border-bottom: 0 !important; text-decoration: none !important; }
 
 .flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }  	
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
