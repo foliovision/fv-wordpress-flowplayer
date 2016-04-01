@@ -56,7 +56,6 @@ Back to school special 25% off pro licenses until end of September.
 [User Guide](https://foliovision.com/player/user-guide) | 
 [Detailed FAQ](https://foliovision.com/player/faq)
 
-
 == Installation ==
 
 There aren't any special requirements for FV Player to work, and you don't need to install any additional plugins.
@@ -68,7 +67,6 @@ There aren't any special requirements for FV Player to work, and you don't need 
    5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
    
 Visit [our site](https://foliovision.com/player/installation) for a fully featured guide with **screenshots** and more!
-
 
 == Frequently Asked Questions ==
 
