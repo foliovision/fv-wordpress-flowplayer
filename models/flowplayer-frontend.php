@@ -403,7 +403,7 @@ class flowplayer_frontend extends flowplayer
           
         }        
         
-	    if( !empty($this->aCurArgs['redirect']) ) {
+        if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
         
@@ -413,6 +413,10 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
+        }
+        
+        if( isset($this->conf['ad_show_after']) ) {
+          $attributes['data-ad_show_after'] = $this->conf['ad_show_after'];
         }
 				
 				$attributes_html = '';
