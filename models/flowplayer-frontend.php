@@ -403,7 +403,7 @@ class flowplayer_frontend extends flowplayer
           
         }        
         
-	    if( !empty($this->aCurArgs['redirect']) ) {
+        if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
         
@@ -413,6 +413,10 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
+        }
+        
+        if( isset($this->conf['ad_show_after']) ) {
+          $attributes['data-ad_show_after'] = $this->conf['ad_show_after'];
         }
 				
 				$attributes_html = '';
@@ -647,11 +651,27 @@ class flowplayer_frontend extends flowplayer
         $ad_width = ( isset($this->conf['ad_width']) && $this->conf['ad_width'] ) ? $this->conf['ad_width'].'px' : '100%';	
         $ad_height = ( isset($this->conf['ad_height']) && $this->conf['ad_height'] ) ? $this->conf['ad_height'].'px' : '';
       }
+     
+      $ad_diplay = 'block' ;
+      if( isset($this->conf['ad_show_after']) && $this->conf['ad_show_after'] > 0){
+        $ad_diplay = 'none';
+        $ad_js = '<script>'
+                . ' jQuery("#wpfp_' . $this->hash . '").data("flowplayer").bind("progress",function(e,api,current){'
+                . '   if(!jQuery("#wpfp_' . $this->hash . '").hasClass("is-cva")){'
+                . '     if( current > ' . ($this->conf['ad_show_after'] ) . '){'
+                . '       jQuery("#wpfp_' . $this->hash . '_ad>.wpfp_custom_ad_content").fadeIn();'
+                . '     }'
+                . '   }'
+                . ' })'
+                . '</script>';
+      }
+      
+      
       
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {			
         $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; '>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_diplay;'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>$ad_js",
                              'width' => $ad_width,
                              'height' => $ad_height
                             );                 
