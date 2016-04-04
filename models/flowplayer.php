@@ -678,7 +678,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
       $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
       $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
-      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);      
+      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
+      $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
           
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
       
