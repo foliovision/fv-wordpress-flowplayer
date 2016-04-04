@@ -1226,6 +1226,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function template_embed() {
     if( get_query_var('fv_player_embed') ) {
+      show_admin_bar(false);
+      remove_action('wp_head', '_admin_bar_bump_cb');
       ?>
 <!DOCTYPE html>
 <html>
@@ -1233,7 +1235,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <title><?php the_title(); ?></title>
   <?php wp_head(); ?>
   <style>
-    body { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0; overflow:hidden;}
   </style>
 </head>
 <body>
