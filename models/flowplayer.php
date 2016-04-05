@@ -145,7 +145,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
     if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
     if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
-    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;         
+    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;
+    if( !isset( $conf['ad_show_after'] ) ) $conf['ad_show_after'] = 0;         
     if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';            
     if( isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }         
     if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'ads' => false, 'mobile' => false, 'align' => false );        
@@ -677,7 +678,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
       $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
       $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
-      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);      
+      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
+      $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
           
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
       
@@ -1224,6 +1226,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function template_embed() {
     if( get_query_var('fv_player_embed') ) {
+      show_admin_bar(false);
+      remove_action('wp_head', '_admin_bar_bump_cb');
       ?>
 <!DOCTYPE html>
 <html>
@@ -1231,7 +1235,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <title><?php the_title(); ?></title>
   <?php wp_head(); ?>
   <style>
-    body { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0; overflow:hidden;}
   </style>
 </head>
 <body>
