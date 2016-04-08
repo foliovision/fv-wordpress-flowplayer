@@ -330,7 +330,7 @@ function flowplayer_prepare_scripts() {
     }elseif($fv_fp->conf['ui_speed_increment'] == 0.1){
       $aConf['speeds'] = [.25,.3,.4,.5,.6,.7,.8,.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2];
     }elseif($fv_fp->conf['ui_speed_increment'] == 0.5){
-      $aConf['speeds'] = [.5,.1,1.5,2];
+      $aConf['speeds'] = [.25,.5,1,1.5,2];
     }  
     
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
