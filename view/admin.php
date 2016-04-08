@@ -318,10 +318,10 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="3">
                 <p class="description">
                   <select id="liststyle" name="liststyle">
-                    <option value="horizontal"<?=( (!isset($fv_fp->conf['liststyle']) && $fv_fp->conf['liststyle'] = '') || $fv_fp->conf['liststyle'] == '' || $fv_fp->conf['liststyle'] == 'horizontal' )?' selected="selected"':''?> ><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
-                    <option value="tabs"      <?=( $fv_fp->conf['liststyle'] == 'tabs' ) ?     ' selected="selected"' : ''?> ><?php _e('Tabs', 'fv_flowplayer'); ?></option> 
-                    <option value="prevnext"  <?=( $fv_fp->conf['liststyle'] == 'prevnext' ) ? ' selected="selected"' : ''?> ><?php _e('Prev/Next', 'fv_flowplayer'); ?></option>
-                    <option value="vertical"  <?=( $fv_fp->conf['liststyle'] == 'vertical' ) ? ' selected="selected"' : ''?> ><?php _e('Vertical', 'fv_flowplayer'); ?></option>
+                    <option value="horizontal"<?php echo ( (!isset($fv_fp->conf['liststyle']) && $fv_fp->conf['liststyle'] = '') || $fv_fp->conf['liststyle'] == '' || $fv_fp->conf['liststyle'] == 'horizontal' )?' selected="selected"':''?> ><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
+                    <option value="tabs"      <?php echo ( $fv_fp->conf['liststyle'] == 'tabs' ) ?     ' selected="selected"' : ''?> ><?php _e('Tabs', 'fv_flowplayer'); ?></option> 
+                    <option value="prevnext"  <?php echo ( $fv_fp->conf['liststyle'] == 'prevnext' ) ? ' selected="selected"' : ''?> ><?php _e('Prev/Next', 'fv_flowplayer'); ?></option>
+                    <option value="vertical"  <?php echo ( $fv_fp->conf['liststyle'] == 'vertical' ) ? ' selected="selected"' : ''?> ><?php _e('Vertical', 'fv_flowplayer'); ?></option>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv_flowplayer'); ?>
                 </p>
@@ -344,7 +344,21 @@ function fv_flowplayer_admin_default_options() {
                   <?php _e('Speed buttons control playback speed and only work in HTML5 compatible browsers.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
-						</tr>		
+						</tr>
+            <tr>
+							<td><label for="ui_speed_increment"><?php _e('Speed Increments', 'fv_flowplayer'); ?>:</label></td>
+							<td colspan="3">
+                <p class="description">
+                  <select id="ui_speed_increment" name="ui_speed_increment">
+                    <option value=""   <?php echo ( !isset($fv_fp->conf['ui_speed_increment']) || $fv_fp->conf['ui_speed_increment'] == '' )?' selected="selected"':''?> >Default</option>
+                    <option value="0.1"   <?php echo ( $fv_fp->conf['ui_speed_increment'] == 0.1 ) ? ' selected="selected"' : ''?> >0.1s</option>
+                    <option value="0.25"  <?php echo ( $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25s</option> 
+                    <option value="0.5"   <?php echo ( $fv_fp->conf['ui_speed_increment'] == 0.5 ) ? ' selected="selected"' : ''?> >0.5s</option>
+                  </select>
+                  <?php _e('Speed buttons will incremnt/decrement the speed in steps of selected value', 'fv_flowplayer'); ?>
+                </p>
+              </td>
+						</tr>
             <tr>
 							<td><label for="splash"><?php _e('Splash Image', 'fv_flowplayer'); ?>:</label></td>
               <td>
