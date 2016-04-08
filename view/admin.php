@@ -350,10 +350,9 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="3">
                 <p class="description">
                   <select id="ui_speed_increment" name="ui_speed_increment">
-                    <option value=""   <?php echo ( !isset($fv_fp->conf['ui_speed_increment']) || $fv_fp->conf['ui_speed_increment'] == '' )?' selected="selected"':''?> >Default</option>
-                    <option value="0.1"   <?php echo ( $fv_fp->conf['ui_speed_increment'] == 0.1 ) ? ' selected="selected"' : ''?> >0.1s</option>
-                    <option value="0.25"  <?php echo ( $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25s</option> 
-                    <option value="0.5"   <?php echo ( $fv_fp->conf['ui_speed_increment'] == 0.5 ) ? ' selected="selected"' : ''?> >0.5s</option>
+                    <option value="0.1"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.1 )  ? ' selected="selected"' : ''?> >0.1s</option>
+                    <option value="0.25"  <?php echo ( !isset($fv_fp->conf['ui_speed_increment'])|| $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25s</option> 
+                    <option value="0.5"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.5 )  ? ' selected="selected"' : ''?> >0.5s</option>
                   </select>
                   <?php _e('Speed buttons will incremnt/decrement the speed in steps of selected value', 'fv_flowplayer'); ?>
                 </p>
