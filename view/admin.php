@@ -346,15 +346,15 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
             <tr>
-							<td><label for="ui_speed_increment"><?php _e('Speed Increments', 'fv_flowplayer'); ?>:</label></td>
+							<td><label for="ui_speed_increment"><?php _e('Speed Step', 'fv_flowplayer'); ?>:</label></td>
 							<td colspan="3">
                 <p class="description">
                   <select id="ui_speed_increment" name="ui_speed_increment">
-                    <option value="0.1"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.1 )  ? ' selected="selected"' : ''?> >0.1s</option>
-                    <option value="0.25"  <?php echo ( !isset($fv_fp->conf['ui_speed_increment'])|| $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25s</option> 
-                    <option value="0.5"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.5 )  ? ' selected="selected"' : ''?> >0.5s</option>
+                    <option value="0.1"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.1 )  ? ' selected="selected"' : ''?> >0.1</option>
+                    <option value="0.25"  <?php echo ( !isset($fv_fp->conf['ui_speed_increment'])|| $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25</option> 
+                    <option value="0.5"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.5 )  ? ' selected="selected"' : ''?> >0.5</option>
                   </select>
-                  <?php _e('Speed buttons will incremnt/decrement the speed in steps of selected value', 'fv_flowplayer'); ?>
+                  <?php _e('Speed buttons will increase or decreaese the speed in steps of selected value', 'fv_flowplayer'); ?>
                 </p>
               </td>
 						</tr>
