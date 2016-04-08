@@ -372,6 +372,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.14.1 - 2016/04/?? =
+
+* Speed Buttons - added option to chose steps of 0.1 0.25 0.5 seconds
+
 = 6.0.4.14 - 2016/04/05 =
 
 * Ads - setting to show the ad after X seconds
