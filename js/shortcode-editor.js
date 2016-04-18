@@ -184,7 +184,8 @@ function fv_wp_flowplayer_insert( shortcode ) {
       fv_wp_flowplayer_content = fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, shortcode )      
       fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );            
     } else {
-      send_to_editor( shortcode );  //  disappears?
+      fv_wp_flowplayer_content = shortcode;
+      send_to_editor( shortcode );  
     }                                                
   }  
 } 
