@@ -262,10 +262,11 @@ function fv_wp_flowplayer_edit() {
   jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
   
   if(jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
-    if(fv_wp_flowplayer_content.match(/\[/) )
-    fv_wp_flowplayer_content = '[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+''
-    else
-    fv_wp_flowplayer_content =   '<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+''  
+    if(fv_wp_flowplayer_content.match(/\[/) ) {
+      fv_wp_flowplayer_content = '[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+'';
+    } else {
+      fv_wp_flowplayer_content =   '<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+'';
+    }
   }else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
@@ -276,10 +277,21 @@ function fv_wp_flowplayer_edit() {
 	else {
     fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();
     fv_wp_flowplayer_hTinyMCE.settings.validate = false;
-    if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {      
-      //fv_wp_flowplayer_hTinyMCE.selection.setContent('<span data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></span>');
-      fv_wp_flowplayer_hTinyMCE.execCommand('mceInsertContent', false,'<'+fvwpflowplayer_helper_tag+' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></'+fvwpflowplayer_helper_tag+'>');
-      fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();      
+    if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {   
+      var tags = ['b','span','div'];
+      for( var i in tags ){
+        fv_wp_flowplayer_hTinyMCE.execCommand('mceInsertContent', false,'<'+tags[i]+' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></'+tags[i]+'>');
+        fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();
+        
+        fv_wp_flowplayer_re_edit = new RegExp( '\\[f[^\\]]*?<'+tags[i]+'[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</'+tags[i]+'>.*?[^\]\\]', "mi" );
+        fv_wp_flowplayer_re_insert = new RegExp( '<'+tags[i]+'[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</'+tags[i]+'>', "gi" );
+        
+        if( fv_wp_flowplayer_content.match(fv_wp_flowplayer_re_insert) ){
+          break;
+        }
+        
+      }
+      
     }
     fv_wp_flowplayer_hTinyMCE.settings.validate = true;		
 	}

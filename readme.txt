@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.15 - 2016/04/22 =
+
+* Wordpress 4.5 - fix for malfunction of shortcode editor
+
 = 6.0.4.14 - 2016/04/05 =
 
 * Ads - setting to show the ad after X seconds
