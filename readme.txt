@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.17 - 2016/04/26 =
+
+* fix for PHP errors - greater compatibility
+
 = 6.0.4.16 - 2016/04/26 =
 
 * Speed Buttons - added option to chose steps of 0.1 0.25 0.5 seconds, see Sitewide Flowplayer Defaults -> Speed Step
