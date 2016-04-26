@@ -540,13 +540,13 @@ p.fp-caption { text-align: center; }
 .is-splash.flowplayer .fv-player-buttons, .is-loading.flowplayer .fv-player-buttons {
   display: none;
 }
-.fv-player-buttons-center {
+.flowplayer .fv-player-buttons-center {
   position: absolute;
   left: 50%;
 	margin-left: -34px;
   bottom: 30px;
 }
-.fv-player-buttons > ul {
+.flowplayer .fv-player-buttons > ul {
   position: relative;
   z-index: 20; /* make clickable */
   display: block;
@@ -554,19 +554,19 @@ p.fp-caption { text-align: center; }
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   margin: 0 auto;
 }
-.fv-player-buttons > ul:last {
+.flowplayer .fv-player-buttons > ul:last {
   margin-left: 0px;
 }
-.fv-player-buttons-right {
+.flowplayer .fv-player-buttons-right {
   position: absolute;
   right: 0;
   bottom: 30px;
 }
-.fv-player-buttons-right > ul {
+.flowplayer .fv-player-buttons-right > ul {
   /*position: relative;
   left: -95%;*/
 }
-.fv-player-buttons-left {
+.flowplayer .fv-player-buttons-left {
   position: absolute;
   left: 0;
   bottom: 30px;
@@ -577,22 +577,23 @@ p.fp-caption { text-align: center; }
 .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-left, .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-right, .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-center {
   bottom: 30px;
 }
-.fv-player-buttons-left > ul {  
+.flowplayer .fv-player-buttons-left > ul {  
   left: 0;
 }
-.is-mouseout .fv-player-buttons > ul {
+.flowplayer.is-mouseout .fv-player-buttons > ul {
   opacity: 0;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   -webkit-transition: opacity .15s ease .3s;
   -moz-transition: opacity .15s ease .3s;
   transition: opacity .15s ease .3s;
 }
-.fv-player-buttons li {
+.flowplayer .fv-player-buttons li {
   display: inline-block;
   float: left;
   margin: 0 0.3em;
+  padding: 0;
 }
-.fv-player-buttons a {
+.flowplayer .fv-player-buttons a {
   display: inline-block;
   float: left;  
   padding: 0.4ex 0.6ex;
@@ -615,22 +616,22 @@ p.fp-caption { text-align: center; }
 	font-size: 14px;
 	box-sizing: border-box;
 }
-.fv-player-buttons a:active {
+.flowplayer .fv-player-buttons a:active {
 	background-color: rgba(255,255,255,0.85);
 }
-.fv-player-buttons a.current {
+.flowplayer .fv-player-buttons a.current {
 	color: #00a7c8;
   background-color: #555;
   cursor: default;
 }
-.fv-player-buttons a.fv_sp_slower {
+.flowplayer .fv-player-buttons a.fv_sp_slower {
   -webkit-border-radius: 1ex 0 0 1ex;
   -moz-border-radius: 1ex 0 0 1ex;
   border-radius: 1ex 0 0 1ex;
   margin-right: 2px;
   width: 2.05em;
 }
-.fv-player-buttons a.fv_sp_faster {
+.flowplayer .fv-player-buttons a.fv_sp_faster {
   -webkit-border-radius: 0 1ex 1ex 0;
   -moz-border-radius: 0 1ex 1ex 0;
   border-radius: 0 1ex 1ex 0;
