@@ -675,7 +675,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .is-ready .fvfp_duration, .is-loading .fvfp_duration  { display: none; }
 .fp-playlist-external .dur { margin-left: 10px; display: none; }
   
-
+.no-animation.flowplayer * { -webkit-transition:none !important;-moz-transition:none !important;transition:none !important; }
 
 /*
  *  FV Flowplayer Tabs
