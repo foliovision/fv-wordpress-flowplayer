@@ -450,7 +450,7 @@ class flowplayer_frontend extends flowplayer
 					$this->ret['html'] .= ">\n";
 									          
           foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-            $this->ret['html'] .= $this->get_video_src($media_item, array( 'rtmp' => $rtmp ) );
+            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
           }
 					if (!empty($mobile)) {
 						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;

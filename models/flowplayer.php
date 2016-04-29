@@ -1071,6 +1071,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( $media ) { 
       $mime_type = $this->get_mime_type($media);
+      //do not use https on mobile devices
+      if (strpos($media, 'https') !== false && $aArgs['mobileUserAgent']) {
+        $media = str_replace('https', 'http', $media);
+      }
       $sID = ($aArgs['id']) ? 'id="'.$aArgs['id'].'" ' : '';
   
       if( !$aArgs['suppress_filters'] ) {
