@@ -339,6 +339,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+= 6.0.4.18 - 2016/04/26 =
+* Cloudfront - fix http/https problem on mobile devices
 
 = 6.0.4.17 - 2016/04/26 =
 
