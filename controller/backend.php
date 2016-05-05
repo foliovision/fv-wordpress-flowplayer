@@ -748,7 +748,7 @@ function fv_wp_flowplayer_check_template() {
 			
 
 			//	check jQuery scripts						
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?\/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
 			if( count($jquery_scripts[1]) > 0 ) {   
 				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
 					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
