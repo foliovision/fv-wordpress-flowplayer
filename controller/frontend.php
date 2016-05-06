@@ -326,11 +326,11 @@ function flowplayer_prepare_scripts() {
     }
    
     if( !isset($fv_fp->conf['ui_speed_increment']) || empty($fv_fp->conf['ui_speed_increment']) || $fv_fp->conf['ui_speed_increment'] == 0.25){
-      $aConf['speeds'] = [.25,.5,.75,1,1.25,1.5,1.75,2];
+      $aConf['speeds'] = array( 0.25,0.5,0.75,1,1.25,1.5,1.75,2 );
     }elseif($fv_fp->conf['ui_speed_increment'] == 0.1){
-      $aConf['speeds'] = [.25,.3,.4,.5,.6,.7,.8,.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2];
+      $aConf['speeds'] = array( 0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2 );
     }elseif($fv_fp->conf['ui_speed_increment'] == 0.5){
-      $aConf['speeds'] = [.25,.5,1,1.5,2];
+      $aConf['speeds'] = array( 0.25,0.5,1,1.5,2 );
     }  
     
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
