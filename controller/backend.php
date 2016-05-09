@@ -256,11 +256,52 @@ function fv_wp_flowplayer_admin_notice() {
   if( $FV_Player_Pro && version_compare($FV_Player_Pro->version,'0.5') == -1 ) : 
   ?>
   <div class="error">
-      <p><?php _e( 'FV Wordpress Flowplayer: Your pro extension is installed, but it\'s not compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'my-text-domain' ); ?></p>
+      <p><?php _e( 'FV Wordpress Flowplayer: Your pro extension is installed, but it\'s not compatible with FV Flowplayer 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'fv_flowplayer' ); ?></p>
   </div>
   <?php
   endif;
   
+  $aDismissedNotices = (array)unserialize(get_option('fv_player_incompatible_notice'));
+  if(isset($_GET['dismiss_incompatible'])){
+    $aDismissedNotices[] = $_GET['dismiss_incompatible'];
+    update_option('fv_player_incompatible_notice', serialize($aDismissedNotices));
+  }
+  $aIncompatibilePlugins = array(
+        'Hide My Wp',//? http://codecanyon.net/item/hide-my-wp-amazing-security-plugin-for-wordpress/4177158
+        'HideMyWp',
+        'WPLMS',
+        'Widgetkit',//? http://yootheme.com/widgetkit
+        'RokSprocket',
+        //'Photo Gallery', //?? version 1.1.8
+        'OptimizePress', 
+        'Incapsula',
+        'SiteLock',
+    );
+    
+    $aIncompatibilePlugins = array_diff($aIncompatibilePlugins,$aDismissedNotices);
+    foreach (get_plugins() as $sPluginPath => $aPluginData) {
+      if (is_plugin_active($sPluginPath)) {
+        if (in_array($aPluginData['Name'], $aIncompatibilePlugins)):
+          ?>
+          <div class="error">
+            <p><?php _e('FV Player: It seems You are using a plugin: "', 'fv_flowplayer'); echo $aPluginData['Name']; _e('" installed. This plugin may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>.
+              (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($aPluginData['Name'])) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
+            </p>
+          </div>  
+        <?php
+        endif;
+      }
+    }
+    $sTheme = (string) wp_get_theme();
+    if (in_array($sTheme, $aIncompatibilePlugins)):
+      ?>
+      <div class="error">
+        <p><?php _e('FV Player: It seems You have a theme: "', 'fv_flowplayer'); echo $sTheme; _e('" installed. This theme may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>
+        (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($sTheme)) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
+        </p>
+      </div>  
+    <?php
+  endif;
   /*if( isset($_GET['page']) && $_GET['page'] == 'backend.php' ) {
 	  $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' ) {
