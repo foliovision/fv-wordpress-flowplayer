@@ -277,14 +277,17 @@ function fv_wp_flowplayer_admin_notice() {
         'Incapsula',
         'SiteLock',
     );
-    
-    $aIncompatibilePlugins = array_diff($aIncompatibilePlugins,$aDismissedNotices);
+    if(!(isset($_GET['page']) && $_GET['page'] == 'fvplayer' )){
+      $aIncompatibilePlugins = array_diff($aIncompatibilePlugins,$aDismissedNotices);
+    }
     foreach (get_plugins() as $sPluginPath => $aPluginData) {
-      if (is_plugin_active($sPluginPath) && in_array($aPluginData['Name'], $aIncompatibilePlugins)):
+      if (is_plugin_active($sPluginPath) && in_array($aPluginData['Name'], $aIncompatibilePlugins ) ):
         ?>
         <div class="error">
           <p><?php _e('FV Player: It seems You are using a plugin: "', 'fv_flowplayer'); echo $aPluginData['Name']; _e('" installed. This plugin may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>.
+            <?php if( !in_array($aPluginData['Name'], $aDismissedNotices)):?>
             (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($aPluginData['Name'])) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
+            <?php endif; ?>
           </p>
         </div>  
       <?php
@@ -294,8 +297,10 @@ function fv_wp_flowplayer_admin_notice() {
     if (in_array($sTheme, $aIncompatibilePlugins)):
       ?>
       <div class="error">
-        <p><?php _e('FV Player: It seems You have a theme: "', 'fv_flowplayer'); echo $sTheme; _e('" installed. This theme may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>
-        (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($sTheme)) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
+        <p><?php _e('FV Player: It seems You are using a theme: "', 'fv_flowplayer'); echo $sTheme; _e('" installed. This theme may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>
+            <?php if( !in_array( $sTheme, $aDismissedNotices)): ?>
+            (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($sTheme)) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
+            <?php endif; ?>
         </p>
       </div>  
     <?php
