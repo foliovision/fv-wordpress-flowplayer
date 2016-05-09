@@ -280,17 +280,15 @@ function fv_wp_flowplayer_admin_notice() {
     
     $aIncompatibilePlugins = array_diff($aIncompatibilePlugins,$aDismissedNotices);
     foreach (get_plugins() as $sPluginPath => $aPluginData) {
-      if (is_plugin_active($sPluginPath)) {
-        if (in_array($aPluginData['Name'], $aIncompatibilePlugins)):
-          ?>
-          <div class="error">
-            <p><?php _e('FV Player: It seems You are using a plugin: "', 'fv_flowplayer'); echo $aPluginData['Name']; _e('" installed. This plugin may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>.
-              (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($aPluginData['Name'])) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
-            </p>
-          </div>  
-        <?php
-        endif;
-      }
+      if (is_plugin_active($sPluginPath) && in_array($aPluginData['Name'], $aIncompatibilePlugins)):
+        ?>
+        <div class="error">
+          <p><?php _e('FV Player: It seems You are using a plugin: "', 'fv_flowplayer'); echo $aPluginData['Name']; _e('" installed. This plugin may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>.
+            (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($aPluginData['Name'])) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
+          </p>
+        </div>  
+      <?php
+      endif;
     }
     $sTheme = (string) wp_get_theme();
     if (in_array($sTheme, $aIncompatibilePlugins)):
