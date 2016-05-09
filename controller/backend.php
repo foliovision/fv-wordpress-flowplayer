@@ -284,7 +284,7 @@ function fv_wp_flowplayer_admin_notice() {
       if (is_plugin_active($sPluginPath) && in_array($aPluginData['Name'], $aIncompatibilePlugins ) ):
         ?>
         <div class="error">
-          <p><?php _e('FV Player: It seems You are using a plugin: "', 'fv_flowplayer'); echo $aPluginData['Name']; _e('" installed. This plugin may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>.
+          <p><?php _e('FV Player: It seems You are using a plugin: "', 'fv_flowplayer'); echo $aPluginData['Name']; _e('" installed. This plugin may cause issues with video playback. Please check our documentation for more information: ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">Incompatible Plugins and Scripts</a>.
             <?php if( !in_array($aPluginData['Name'], $aDismissedNotices)):?>
             (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($aPluginData['Name'])) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
             <?php endif; ?>
@@ -297,7 +297,7 @@ function fv_wp_flowplayer_admin_notice() {
     if (in_array($sTheme, $aIncompatibilePlugins)):
       ?>
       <div class="error">
-        <p><?php _e('FV Player: It seems You are using a theme: "', 'fv_flowplayer'); echo $sTheme; _e('" installed. This theme may cause issues with video playback. For more information go ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">here</a>
+        <p><?php _e('FV Player: It seems You are using a theme: "', 'fv_flowplayer'); echo $sTheme; _e('" installed. This theme may cause issues with video playback. Please check our documentation for more information:  ', 'fv_flowplayer'); ?><a href="https://foliovision.com/player/compatibility">Incompatible Plugins and Scripts</a>
             <?php if( !in_array( $sTheme, $aDismissedNotices)): ?>
             (<a href="<?php echo site_url('wp-admin/options-general.php?page=fvplayer&dismiss_incompatible='.urlencode($sTheme)) ; ?>"><?php _e('Dissmiss', 'fv_flowplayer');?></a>)
             <?php endif; ?>
