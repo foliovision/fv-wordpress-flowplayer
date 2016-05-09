@@ -269,7 +269,8 @@ function fv_wp_flowplayer_admin_notice() {
   $aIncompatibilePlugins = array(
         'Hide My Wp',//? http://codecanyon.net/item/hide-my-wp-amazing-security-plugin-for-wordpress/4177158
         'HideMyWp',
-        'WPLMS',
+        'Vibe Course Module',
+        'VibeCourseModule',
         'Widgetkit',//? http://yootheme.com/widgetkit
         'RokSprocket',
         //'Photo Gallery', //?? version 1.1.8
