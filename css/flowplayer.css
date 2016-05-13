@@ -320,6 +320,7 @@
 .no-time.flowplayer.play-button .fp-timeline,.aside-time.flowplayer.play-button .fp-timeline{margin-left:27px;}
 .is-rtl.no-time.flowplayer.play-button .fp-timeline,.is-rtl.aside-time.flowplayer.play-button .fp-timeline{margin-right:27px}
 
+.flowplayer .fp-waiting em { opacity: 1 !important; }
 
 .is-error.flowplayer .fp-ui{background:url(img/no_play_white.png) center no-repeat;background-size:12%;}
 .is-error.flowplayer .fp-ui {background:url(img/no_play_white-x2.png) center no-repeat;background-size:12%}
