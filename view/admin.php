@@ -994,22 +994,22 @@ function fv_flowplayer_admin_usage() {
 								<p><?php _e('Illustrated user guides', 'fv_flowplayer'); ?>:</p>
 								<div class="clear"></div>
 								<ul>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide"><?php _e('Inserting videos', 'fv_flowplayer'); ?></a>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide#license"><?php _e('License key and custom logo', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/creating-playlists"><?php _e('How to create a playlist', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads"><?php _e('Using ads', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/google-advertising-options"><?php _e('Using Google Ads', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams"><?php _e('RTMP streams', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles"><?php _e('Subtitles', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide"><?php _e('Amazon S3 secure content guide', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/hls-stream"><?php _e('How to setup a HLS stream', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/google-analytics-flowplayer"><?php _e('Google Analytics support', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/how-to-use-lightbox"><?php _e('Video lightbox', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/youtube-with-flowplayer"><?php _e('YouTube integration', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/switch-video-quality"><?php _e('Quality Switching', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/how-to-use-vimeo-pro"><?php _e('Vimeo integration', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-roll-post"><?php _e('Custom video ads', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/serving-private-cloudfront"><?php _e('CloudFront CDN - protected video downloads', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide#insert-videos"><?php _e('Inserting videos', 'fv_flowplayer'); ?></a>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide"><?php _e('License key and custom logo', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists"><?php _e('How to create a playlist', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/ads"><?php _e('Using ads', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/ads/incorporating-google-adsense"><?php _e('Using Google Ads', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/rtmp-streams"><?php _e('RTMP streams', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/advanced/subtitles"><?php _e('Subtitles', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide"><?php _e('Amazon S3 secure content guide', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/hls-stream"><?php _e('How to setup a HLS stream', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/advanced/google-analytics-flowplayer"><?php _e('Google Analytics support', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-lightbox"><?php _e('Video lightbox', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player"><?php _e('YouTube integration', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/setting-quality-switching"><?php _e('Quality Switching', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo"><?php _e('Vimeo integration', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/ads/using-preroll-postroll-ads"><?php _e('Custom video ads', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/serving-private-cloudfront"><?php _e('CloudFront CDN - protected video downloads', 'fv_flowplayer'); ?></a></li>
 								</ul>
 							</div>
 							<div class="column">
@@ -1017,13 +1017,12 @@ function fv_flowplayer_admin_usage() {
 								<p><?php _e('Troubleshooting', 'fv_flowplayer'); ?>:</p>
 								<div class="clear"></div>
 								<ul>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation"><?php _e('Automated checks', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding"><?php _e('Video encoding tips', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only"><?php _e('Video formats to avoid', 'fv_flowplayer'); ?></a></li>		
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/fix-amazon-mime-type"><?php _e('Fixing mime type on Amazon S3', 'fv_flowplayer'); ?></a></li>		
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq"><?php _e('Plugin FAQ', 'fv_flowplayer'); ?></a></li>									
-									<li><a target="_blank" href="http://foliovision.com/support/fv-wordpress-flowplayer/"><?php _e('Support forums', 'fv_flowplayer'); ?></a></li>	
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation/downgrading"><?php _e('Downgrading the plugin', 'fv_flowplayer'); ?></a></li>									
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/installation"><?php _e('Automated checks', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding"><?php _e('Video encoding tips', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding#flash-only"><?php _e('Video formats to avoid', 'fv_flowplayer'); ?></a></li>		
+									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide/fix-amazon-mime-type"><?php _e('Fixing mime type on Amazon S3', 'fv_flowplayer'); ?></a></li>		
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/faq"><?php _e('Plugin FAQ', 'fv_flowplayer'); ?></a></li>									
+									<li><a target="_blank" href="http://foliovision.com/support/fv-wordpress-flowplayer/"><?php _e('Support forums', 'fv_flowplayer'); ?></a></li>										
 								</ul>
 							</div>
 							<div class="clear"></div>
