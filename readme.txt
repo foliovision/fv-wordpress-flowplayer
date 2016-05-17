@@ -343,6 +343,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.4.20 - 2016/05/16 =
 
 * Iframe embedding - fix for responsiveness
+* Video checker - please make sure you upgrade this plugin to continue using it
 
 = 6.0.4.19 - 2016/05/13 =
 
