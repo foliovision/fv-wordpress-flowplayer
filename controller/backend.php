@@ -834,8 +834,7 @@ function fv_wp_flowplayer_array_search_by_item( $find, $in_array, &$found, $like
 function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
 
-  	global $current_user;
-    get_currentuserinfo();
+  	$current_user = wp_get_current_user();    
 
   	$content = '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
   	$content .= '<p>User Agent: '.$_SERVER['HTTP_USER_AGENT']."</p>\n";  	
