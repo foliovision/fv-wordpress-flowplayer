@@ -474,7 +474,7 @@
 	.fp-playlist-vertical-wrapper .flowplayer { width:65%;float:left;margin-bottom:0;margin-top:2px; }
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical { width:34%;float:right;margin-bottom:0; }
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a { display:block; }
-	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video { min-height: 0 !important; height: 100% !important; }
+
 
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;
