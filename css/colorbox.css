@@ -23,6 +23,7 @@ order/nesting of the generated HTML, so that the structure easier to understand.
 #fv_player_boxOverlay{background:#111;}
 .wp-media-buttons .fv-wordpress-flowplayer-button{min-height: 26px; display: inline-block;}
 .wp-media-buttons .fv-wordpress-flowplayer-button img{padding: 1px 2px 0;}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {.wp-media-buttons .fv-wordpress-flowplayer-button{background:url('../images/icon@x2.png') no-repeat 15px center;min-width:44px;background-size:contain;display:inline-block;min-height:40px;} .wp-media-buttons .fv-wordpress-flowplayer-button img{visibility:hidden;} }
 
 #colorBox{}
     #fv_player_boxContent{background:#fff; padding: 5px;background:url(loading.gif) 50% 50% no-repeat #fff; }
