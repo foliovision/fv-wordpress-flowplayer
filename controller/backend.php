@@ -748,7 +748,7 @@ function fv_wp_flowplayer_check_template() {
 			
 
 			//	check jQuery scripts						
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
 			if( count($jquery_scripts[1]) > 0 ) {   
 				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
 					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
@@ -834,8 +834,7 @@ function fv_wp_flowplayer_array_search_by_item( $find, $in_array, &$found, $like
 function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
 
-  	global $current_user;
-    get_currentuserinfo();
+  	$current_user = wp_get_current_user();    
 
   	$content = '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
   	$content .= '<p>User Agent: '.$_SERVER['HTTP_USER_AGENT']."</p>\n";  	
