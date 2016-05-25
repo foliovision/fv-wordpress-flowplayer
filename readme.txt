@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.21 - 2016/05/23 =
+
+* Volume - Volume is now remembered between page loads and across all instances of the player
+
 = 6.0.4.20 - 2016/05/16 =
 
 * Iframe embedding - fix for responsiveness
