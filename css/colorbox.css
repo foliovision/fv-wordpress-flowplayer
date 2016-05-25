@@ -21,6 +21,8 @@ The following rules are ordered and tabbed in a way that represents the
 order/nesting of the generated HTML, so that the structure easier to understand.
 */
 #fv_player_boxOverlay{background:#111;}
+.wp-media-buttons .fv-wordpress-flowplayer-button{min-height: 26px; display: inline-block;}
+.wp-media-buttons .fv-wordpress-flowplayer-button img{padding: 1px 2px 0;}
 
 #colorBox{}
     #fv_player_boxContent{background:#fff; padding: 5px;background:url(loading.gif) 50% 50% no-repeat #fff; }
