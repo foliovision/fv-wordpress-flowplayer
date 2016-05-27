@@ -185,7 +185,7 @@ function flowplayer_add_media_button() {
 	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
 	$img = (!$found) ? '<img src="' . $button_src . '" alt="' . $button_tip . '" />' : '';
 
-	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
+	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" href="#" class="fv-wordpress-flowplayer-button thickbox button authormedia-insert-shortcode-button">'.$img.' Player</a>';
 }
 
 
