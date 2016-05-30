@@ -36,26 +36,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add'));
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'));  //  moved after the shortcodes are parsed to work for galleries
       
-      /*legacy - */
-      if(is_admin()){
-        global $fv_fp;
-        if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['interface']['lightbox']) && $fv_fp->conf['pro']['interface']['lightbox'] == true ){
-          $fv_fp->conf['interface']['lightbox'] = true;
-          $fv_fp->conf['pro']['interface']['lightbox'] = false;
-          $options = get_option('fvwpflowplayer');
-          unset($options['pro']['interface']['lightbox']); 
-          $options['interface']['lightbox'] = true;
-          update_option('fvwpflowplayer', $options);
-        }
-        if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['lightbox_images']) && $fv_fp->conf['pro']['lightbox_images'] == true ){
-          $fv_fp->conf['lightbox_images'] = true;
-          $fv_fp->conf['pro']['lightbox_images'] = false;
-          $options = get_option('fvwpflowplayer');
-          unset($options['pro']['lightbox_images']);
-          $options['lightbox_images'] = true;
-          update_option('fvwpflowplayer', $options);
-        }
-      }    
+   
     }
   }
 
