@@ -28,7 +28,7 @@ add_action('admin_footer', 'flowplayer_admin_footer');
 add_action('admin_print_footer_scripts', 'flowplayer_admin_footer_wp_js_restore', 999999 );
 
 add_action('admin_menu', 'flowplayer_admin');
-add_action('media_buttons', 'flowplayer_add_media_button', 30);
+add_action('media_buttons', 'flowplayer_add_media_button', 10);
 add_action('media_upload_fvplayer_video', '__return_false'); // keep for compatibility!
 
 
@@ -182,10 +182,9 @@ function flowplayer_add_media_button() {
 	}
 	$button_tip = 'Insert a Flash Video Player';
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
-	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
-	$img = (!$found) ? '<img src="' . $button_src . '" alt="' . $button_tip . '" />' : '';
+	$icon = '<span> </span>';
 
-	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
+	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
 }
 
 
