@@ -340,6 +340,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.22 - 2016/06/01 =
+
+* Lightbox feature - for both your videos and images
+* Popups - support for input and textarea tags added
+* Shortcode editor - new icon (button)
+
 = 6.0.4.21 - 2016/05/23 =
 
 * Volume - Volume is now remembered between page loads and across all instances of the player
