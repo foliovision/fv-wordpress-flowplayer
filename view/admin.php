@@ -106,11 +106,11 @@ function fv_flowplayer_admin_amazon_options() {
 					<tr>
 						<td colspan="2">
 							<p><?php _e('Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly.', 'fv_flowplayer'); ?></p>
-              <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expire Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv_flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Flowplayer guide', 'fv_flowplayer'); ?></a>.</p>
+              <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv_flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Flowplayer guide', 'fv_flowplayer'); ?></a>.</p>
 						</td>
 					</tr>
 					<tr>
-						<td class="first"><label for="amazon_expire"><?php _e('Default Expire Time', 'fv_flowplayer'); ?> [minutes] (<abbr title="<?php _e('Each video duration is stored on post save and then used as the expire time. If the duration is not available, this value is used.', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
+						<td class="first"><label for="amazon_expire"><?php _e('Default Expiration Time', 'fv_flowplayer'); ?> [minutes] (<abbr title="<?php _e('Each video duration is stored on post save and then used as the expire time. If the duration is not available, this value is used.', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
 						<td>
               <input type="text" size="40" name="amazon_expire" id="amazon_expire" value="<?php echo intval($fv_fp->conf['amazon_expire']); ?>" />            
             </td>
