@@ -180,7 +180,7 @@ function flowplayer_add_media_button() {
 		if( stripos($plugin,'foliopress-wysiwyg') !== FALSE )
 			$found = true;
 	}
-	$button_tip = 'Insert a Flash Video Player';
+	$button_tip = 'Insert a video';
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
 	$icon = '<span> </span>';
 
