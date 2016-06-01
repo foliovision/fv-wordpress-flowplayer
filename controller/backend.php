@@ -28,7 +28,7 @@ add_action('admin_footer', 'flowplayer_admin_footer');
 add_action('admin_print_footer_scripts', 'flowplayer_admin_footer_wp_js_restore', 999999 );
 
 add_action('admin_menu', 'flowplayer_admin');
-add_action('media_buttons', 'flowplayer_add_media_button', 30);
+add_action('media_buttons', 'flowplayer_add_media_button', 10);
 add_action('media_upload_fvplayer_video', '__return_false'); // keep for compatibility!
 
 
@@ -180,12 +180,11 @@ function flowplayer_add_media_button() {
 		if( stripos($plugin,'foliopress-wysiwyg') !== FALSE )
 			$found = true;
 	}
-	$button_tip = 'Insert a Flash Video Player';
+	$button_tip = 'Insert a video';
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
-	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
-	$img = (!$found) ? '<img src="' . $button_src . '" alt="' . $button_tip . '" />' : '';
+	$icon = '<span> </span>';
 
-	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
+	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
 }
 
 
@@ -394,6 +393,8 @@ function fv_wp_flowplayer_admin_init() {
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
+    
+    fv_wp_flowplayer_pro_settings_update_for_lightbox();
     $fv_fp->css_writeout();
     
     fv_wp_flowplayer_delete_extensions_transients();
@@ -473,6 +474,26 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
   }
 }
 
+function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
+  global $fv_fp;
+  if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['interface']['lightbox']) && $fv_fp->conf['pro']['interface']['lightbox'] == true ){
+    $fv_fp->conf['interface']['lightbox'] = true;
+    $fv_fp->conf['pro']['interface']['lightbox'] = false;
+    $options = get_option('fvwpflowplayer');
+    unset($options['pro']['interface']['lightbox']); 
+    $options['interface']['lightbox'] = true;
+    update_option('fvwpflowplayer', $options);
+  }
+  if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['lightbox_images']) && $fv_fp->conf['pro']['lightbox_images'] == true ){
+    $fv_fp->conf['lightbox_images'] = true;
+    $fv_fp->conf['pro']['lightbox_images'] = false;
+    $options = get_option('fvwpflowplayer');
+    unset($options['pro']['lightbox_images']);
+    $options['lightbox_images'] = true;
+    update_option('fvwpflowplayer', $options);
+  }
+   
+}
 
 function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
   $transient_val = get_transient($transient_name);
