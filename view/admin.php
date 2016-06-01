@@ -372,7 +372,8 @@ function fv_flowplayer_admin_default_options() {
                   <?php _e('Normally you have to hit a button in controlbar to turn on subtitles.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
-						</tr>               
+						</tr>
+            <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
           <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.</small>   
           <table class="form-table2">
@@ -758,7 +759,8 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[speed]" value="false" />
 							<input type="checkbox" name="interface[speed]" id="interface[speed]" value="true" <?php if( isset($fv_fp->conf['interface']['speed']) && $fv_fp->conf['interface']['speed'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>           
+					</tr> 
+          <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />

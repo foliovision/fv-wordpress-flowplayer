@@ -393,6 +393,8 @@ function fv_wp_flowplayer_admin_init() {
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
+    
+    fv_wp_flowplayer_pro_settings_update_for_lightbox();
     $fv_fp->css_writeout();
     
     fv_wp_flowplayer_delete_extensions_transients();
@@ -472,6 +474,26 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
   }
 }
 
+function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
+  global $fv_fp;
+  if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['interface']['lightbox']) && $fv_fp->conf['pro']['interface']['lightbox'] == true ){
+    $fv_fp->conf['interface']['lightbox'] = true;
+    $fv_fp->conf['pro']['interface']['lightbox'] = false;
+    $options = get_option('fvwpflowplayer');
+    unset($options['pro']['interface']['lightbox']); 
+    $options['interface']['lightbox'] = true;
+    update_option('fvwpflowplayer', $options);
+  }
+  if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['lightbox_images']) && $fv_fp->conf['pro']['lightbox_images'] == true ){
+    $fv_fp->conf['lightbox_images'] = true;
+    $fv_fp->conf['pro']['lightbox_images'] = false;
+    $options = get_option('fvwpflowplayer');
+    unset($options['pro']['lightbox_images']);
+    $options['lightbox_images'] = true;
+    update_option('fvwpflowplayer', $options);
+  }
+   
+}
 
 function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
   $transient_val = get_transient($transient_name);
