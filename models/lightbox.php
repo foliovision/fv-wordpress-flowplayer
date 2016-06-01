@@ -3,10 +3,7 @@
 class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
 
   public function __construct() {
-    //load conf data into stack
-    //$this->_get_conf();
-
-    add_action('plugins_loaded', array($this, 'remove_pro_hooks'), 10);
+    add_action('init', array($this, 'remove_pro_hooks'), 10);
 
     add_filter('fv_flowplayer_shortcode', array($this, 'shortcode'), 15, 3);
 
@@ -21,20 +18,22 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
 
     add_action('fv_flowplayer_shortcode_editor_after', array($this, 'shortcode_editor'), 8);
 
-    add_action('fv_flowplayer_admin_default_options_after', [ $this, 'lightbox_admin_default_options_html']);
-    add_filter('fv_flowplayer_admin_interface_options_after', [ $this, 'lightbox_admin_interface_html']);
+    add_action('fv_flowplayer_admin_default_options_after', array( $this, 'lightbox_admin_default_options_html' ) );
+    add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
+    
+    add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
   }
 
   function remove_pro_hooks() {
     global $FV_Player_Pro;
-
+    
     if (isset($FV_Player_Pro)) {
       //remove_filter('fv_flowplayer_shortcode', array($FV_Player_Pro, 'shortcode'));
-      remove_filter('fv_flowplayer_html', array($FV_Player_Pro, 'lightbox_html'));
-      remove_filter('fv_flowplayer_playlist_style', array($FV_Player_Pro, 'lightbox_playlist'));
+      remove_filter('fv_flowplayer_html', array($FV_Player_Pro, 'lightbox_html'), 11 );
+      remove_filter('fv_flowplayer_playlist_style', array($FV_Player_Pro, 'lightbox_playlist'), 10);
       remove_filter('fv_flowplayer_args', array($FV_Player_Pro, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add'));
-      remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'));  //  moved after the shortcodes are parsed to work for galleries
+      remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'), 999 );  //  moved after the shortcodes are parsed to work for galleries
       
    
     }
@@ -329,8 +328,8 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
     </tr>
     <script>
       jQuery(document).ready(function(){
-        jQuery('[name="pro[interface][lightbox]"]').parents('tr').hide();
-        jQuery('[name="pro[lightbox_images]"]').parents('tr').hide();
+        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
+        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
       })   
     </script>
     <?php

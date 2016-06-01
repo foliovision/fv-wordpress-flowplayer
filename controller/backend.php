@@ -333,7 +333,6 @@ function fv_wp_flowplayer_admin_init() {
     if( version_compare( $fv_wp_flowplayer_core_ver, $version ) == 1 ) {
       fv_wp_flowplayer_admin_key_update();
       fv_wp_flowplayer_delete_extensions_transients();
-      fv_wp_flowplayer_pro_settings_update();
     }      
   }
   
@@ -394,6 +393,8 @@ function fv_wp_flowplayer_admin_init() {
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
+    
+    fv_wp_flowplayer_pro_settings_update_for_lightbox();
     $fv_fp->css_writeout();
     
     fv_wp_flowplayer_delete_extensions_transients();
@@ -473,7 +474,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
   }
 }
 
-function fv_wp_flowplayer_pro_settings_update(){
+function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
   global $fv_fp;
   if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['interface']['lightbox']) && $fv_fp->conf['pro']['interface']['lightbox'] == true ){
     $fv_fp->conf['interface']['lightbox'] = true;
