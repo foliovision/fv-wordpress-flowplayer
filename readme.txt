@@ -340,6 +340,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.24 - 2016/06/03 =
+
+* Amazon S3 - fix for signed URLs when using tabbed playlist
+* Logo - fix for display in full-screen
+
 = 6.0.4.22 - 2016/06/01 =
 
 * Lightbox feature - for both your videos and images
