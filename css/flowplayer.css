@@ -535,8 +535,11 @@ a #add-format, a #add-rtmp {
 .flowplayer.alignleft { margin-left: 10px; margin-bottom: 10px;  }
 .flowplayer.alignright { margin-right: 10px; margin-bottom: 10px; }
 
-.flowplayer.no-controlbar .fp-controls{display:none}
-.flowplayer.no-controlbar .fp-time{display:none}
+.flowplayer.no-controlbar .fp-controls a,.flowplayer.no-controlbar .fp-controls .fp-volume,.flowplayer.no-controlbar .fp-time {display:none;}
+.flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.fixed-controls.no-controlbar .fp-controls {height:auto;}
+.flowplayer.is-mouseover.no-controlbar .fp-timeline {height:4px;top:0;}
+.has-menu.no-brand.flowplayer.no-controlbar .fp-timeline,.flowplayer.play-button.no-controlbar .fp-timeline {margin:0;}
+.flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.is-mouseover.no-controlbar .fp-mute, .flowplayer.is-mouseover.no-controlbar .fp-title {height:0;}
 
 p.fp-caption { text-align: center; }
 
