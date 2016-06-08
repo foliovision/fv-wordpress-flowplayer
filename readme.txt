@@ -343,6 +343,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.4.25 - 2016/06/?? =
 
 * Compatibility witch WPBakery Visual Composer tabs
+* Controlbar - FV Player now shows a thin timeline below the video even when using controlbar="no"
 
 = 6.0.4.24 - 2016/06/03 =
 
