@@ -306,7 +306,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
         <p class="description">
           <input type="hidden" value="false" name="interface[lightbox]" />
           <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
-          You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.
+          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv_flowplayer'); ?>
         </p>
       </td>
     </tr>
