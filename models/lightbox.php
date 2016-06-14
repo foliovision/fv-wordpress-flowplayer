@@ -199,7 +199,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
     global $fv_fp;
     //TODO IMAGES
  
-    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] !== 'true' ) {
+    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
       return $content;    
     }
 
