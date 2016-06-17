@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.4.26 - 2016/06/08 =
+
+* Scurity - video url is no longer showing in an error message.
+
 = 6.0.4.25 - 2016/06/08 =
 
 * Compatibility witch WPBakery Visual Composer tabs
