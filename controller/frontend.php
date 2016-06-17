@@ -296,8 +296,8 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
-     (isset($fv_fp->conf['lightbox_images']) && strcmp($fv_fp->conf['lightbox_images'],'true') == 0 ) ||
+     (isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) ||
+     (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) ||
      isset($_GET['fv_wp_flowplayer_check_template'])
   ) {
     
