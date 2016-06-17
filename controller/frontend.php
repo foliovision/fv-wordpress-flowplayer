@@ -360,6 +360,9 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
+    if( current_user_can('edit_posts') ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_user_edit', array(true) );     
+    }
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
