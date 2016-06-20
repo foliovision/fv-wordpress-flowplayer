@@ -325,6 +325,10 @@ function flowplayer_prepare_scripts() {
     } else {
       $aConf['lightbox_images'] = false;
     }
+    
+    if( !empty($fv_fp->conf['rtmp-live-buffer']) && $fv_fp->conf['rtmp-live-buffer'] == 'true' ) {
+      $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
+    }
 
     if( !empty($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) {
       $aConf['embed'] = false;
