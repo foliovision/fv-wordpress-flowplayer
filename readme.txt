@@ -342,7 +342,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.2 - 2016/06/21 =
 
-* Error message - Video URL no longer shows up when the player fails
+* Error message - The error message no longer reveals the URL to users who are not admins or editors
 
 = 6.0.5.1 - 2016/06/20 =
 
