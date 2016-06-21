@@ -203,13 +203,15 @@ class flowplayer_frontend extends flowplayer
 		if( $player_type == 'video' ) {
       
         if( is_feed() ) {
-          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
+          
+          $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
+          /*$this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
           if( $splash_img ) {
             $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
           }
           $this->ret['html'] .= '</a></p>';
           
-          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );*/
           
           return $this->ret;
         }
