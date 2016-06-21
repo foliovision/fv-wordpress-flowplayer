@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.2 - 2016/06/21 =
+
+* Error message - The error message no longer reveals the URL to users who are not admins or editors
+
 = 6.0.5.1 - 2016/06/20 =
 
 * Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
