@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.1 - 2016/06/20 =
+
+* Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
+
 = 6.0.5 - 2016/06/17 =
 
 * Core - updated to Flowplayer 6.0.5

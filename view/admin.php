@@ -586,6 +586,16 @@ function fv_flowplayer_admin_integrations() {
             </td>
           </tr>
           <tr>
+            <td><label for="rtmp-live-buffer"><?php _e('RTMP bufferTime tweak', 'fv_flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('rtmp-live-buffer'); ?>
+                <?php _e('Use if your live streams are not smooth.','fv_flowplayer'); ?>
+                <span class="more"><?php _e('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> that bufferTime is set to 0 for live streams, but if your stream us not smooth, you can use this setting.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>          
+          <tr>
 						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <p class="description">
