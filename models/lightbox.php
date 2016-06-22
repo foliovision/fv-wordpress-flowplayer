@@ -229,7 +229,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   function shortcode_editor() {
     global $fv_fp;
 
-    $bLightbox = ($fv_fp->conf['interface']['lightbox'] == 'true');
+    $bLightbox = (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true' );
 
     if ($bLightbox) {
       ?>
