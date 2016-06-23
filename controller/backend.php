@@ -184,7 +184,7 @@ function flowplayer_add_media_button() {
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
 	$icon = '<span> </span>';
 
-	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
+	echo '<a title="' . __("Add FV Player", "fv_flowplayer") . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
 }
 
 
