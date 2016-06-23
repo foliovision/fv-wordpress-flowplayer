@@ -61,7 +61,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   function disp__lightboxed_players() {
-    if (strlen($this->htmlAfter)) {
+    if (isset($this->htmlAfter) && strlen($this->htmlAfter)) {
       echo $this->htmlAfter . "<!-- lightboxed players -->\n\n";
     }
   }

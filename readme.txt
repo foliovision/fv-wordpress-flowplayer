@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.3 - 2016/06/23 =
+
+* Lightbox - Fix for php warnings
+
 = 6.0.5.2 - 2016/06/21 =
 
 * Lightbox - you can now use <a href="URL" data-colorbox="#ELEMENT" class="colorbox">Link</a> to have a working link in case user has JS disabled or something goes wrong
