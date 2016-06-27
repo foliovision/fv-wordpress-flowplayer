@@ -2,6 +2,8 @@
 
 class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
 
+  private $htmlAfter;
+  
   public function __construct() {
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
@@ -61,7 +63,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   function disp__lightboxed_players() {
-    if (isset($this->htmlAfter) && strlen($this->htmlAfter)) {
+    if ( strlen($this->htmlAfter)) {
       echo $this->htmlAfter . "<!-- lightboxed players -->\n\n";
     }
   }
@@ -123,7 +125,6 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
 
         $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div></div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $html . "</div>";
       }
-      $this->bLightbox = true;
     }
     return $html;
   }
