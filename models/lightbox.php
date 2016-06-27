@@ -1,8 +1,8 @@
 <?php
 
-class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
+class FV_Player_lightbox {
 
-  private $htmlAfter;
+  private $lightboxHtml;
   
   public function __construct() {
     add_action('init', array($this, 'remove_pro_hooks'), 10);
@@ -63,8 +63,8 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   function disp__lightboxed_players() {
-    if ( strlen($this->htmlAfter)) {
-      echo $this->htmlAfter . "<!-- lightboxed players -->\n\n";
+    if ( strlen($this->lightboxHtml)) {
+      echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
     }
   }
 
@@ -92,7 +92,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
 
       if ($bUseAnchor) {
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
-        $this->htmlAfter .= "<div style='display: none'>\n" . $html . "</div>\n";
+        $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
         $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' href='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
