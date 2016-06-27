@@ -63,7 +63,7 @@ class FV_Player_lightbox {
   }
 
   function disp__lightboxed_players() {
-    if ( strlen($this->lightboxHtml)) {
+    if (strlen($this->lightboxHtml)) {
       echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
     }
   }
