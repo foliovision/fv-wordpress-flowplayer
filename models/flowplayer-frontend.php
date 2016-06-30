@@ -554,9 +554,12 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
         }
         
-        if ($args['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
-          $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
+        if (($args['liststyle'] == 'prevnext' || $args['liststyle'] == 'vertical') && count($aPlaylistItems)) {
+          $liststyle_style = ( ($args['liststyle'] == 'vertical')?'display:none;':'' );
+          $this->ret['html'].='<a class="fp-prev" style="'.$liststyle_style.'" title="prev">&lt;</a><a class="fp-next" style="'.$liststyle_style.'" title="next">&gt;</a>'; 
         }
+          
+        
         
 				$this->ret['html'] .= '</div>'."\n";
         
