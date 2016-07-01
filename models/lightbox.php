@@ -61,7 +61,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   function disp__lightboxed_players() {
-    if (strlen($this->htmlAfter)) {
+    if (isset($this->htmlAfter) && strlen($this->htmlAfter)) {
       echo $this->htmlAfter . "<!-- lightboxed players -->\n\n";
     }
   }
@@ -199,7 +199,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
     global $fv_fp;
     //TODO IMAGES
  
-    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] !== 'true' ) {
+    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
       return $content;    
     }
 
@@ -229,7 +229,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
   function shortcode_editor() {
     global $fv_fp;
 
-    $bLightbox = ($fv_fp->conf['interface']['lightbox'] == 'true');
+    $bLightbox = (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true' );
 
     if ($bLightbox) {
       ?>
@@ -306,7 +306,7 @@ class FV_Player_lightbox extends FV_Wordpress_Flowplayer_Plugin {
         <p class="description">
           <input type="hidden" value="false" name="interface[lightbox]" />
           <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
-          You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.
+          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv_flowplayer'); ?>
         </p>
       </td>
     </tr>

@@ -212,9 +212,9 @@ function fv_flowplayer_admin_default_options() {
 							<td><label for="width"><?php _e('Default Video Size', 'fv_flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <label for="width">Width:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval($fv_fp->conf['width']); ?>" />  
-                  <label for="height">Height:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval($fv_fp->conf['height']); ?>" />
-                  Enter values in pixels.
+                  <label for="width"><?php _e('Width', 'fv_flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval($fv_fp->conf['width']); ?>" />  
+                  <label for="height"><?php _e('Height', 'fv_flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval($fv_fp->conf['height']); ?>" />
+                  <?php _e('Enter values in pixels.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
 						</tr>            
@@ -354,7 +354,7 @@ function fv_flowplayer_admin_default_options() {
                     <option value="0.25"  <?php echo ( !isset($fv_fp->conf['ui_speed_increment'])|| $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25</option> 
                     <option value="0.5"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.5 )  ? ' selected="selected"' : ''?> >0.5</option>
                   </select>
-                  <?php _e('Speed buttons will increase or decreaese the speed in steps of selected value', 'fv_flowplayer'); ?>
+                  <?php _e('Speed buttons will increase or decrease the speed in steps of selected value', 'fv_flowplayer'); ?>
                 </p>
               </td>
 						</tr>
@@ -537,7 +537,7 @@ function fv_flowplayer_admin_integrations() {
             </td>
           </tr>
 					<tr>
-						<td><label for="wp_core_video"><?php _e('Handle WordPress', 'fv_flowplayer'); ?> <code><small>[video]</small></code> <?php _e('shortcodes', 'fv_flowplayer'); ?>:</label></td>
+						<td><label for="wp_core_video"><?php _e('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[wp_core_video]" value="false" />
@@ -585,6 +585,16 @@ function fv_flowplayer_admin_integrations() {
               </p>
             </td>
           </tr>
+          <tr>
+            <td><label for="rtmp-live-buffer"><?php _e('RTMP bufferTime tweak', 'fv_flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('rtmp-live-buffer'); ?>
+                <?php _e('Use if your live streams are not smooth.','fv_flowplayer'); ?>
+                <span class="more"><?php _e('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>          
           <tr>
 						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv_flowplayer'); ?>:</label></td>
 						<td>

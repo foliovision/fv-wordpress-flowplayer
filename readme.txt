@@ -340,6 +340,23 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.3 - 2016/06/23 =
+
+* Lightbox - Fix for php warnings
+
+= 6.0.5.2 - 2016/06/21 =
+
+* Lightbox - you can now use <a href="URL" data-colorbox="#ELEMENT" class="colorbox">Link</a> to have a working link in case user has JS disabled or something goes wrong
+* Error message - The error message no longer reveals the URL to users who are not admins or editors
+
+= 6.0.5.1 - 2016/06/20 =
+
+* Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
+
+= 6.0.5 - 2016/06/17 =
+
+* Core - updated to Flowplayer 6.0.5
+
 = 6.0.4.25 - 2016/06/08 =
 
 * Compatibility witch WPBakery Visual Composer tabs
@@ -1234,6 +1251,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 6.0.5 =
+
+* Brand new core Flowplayer 6.0.5!
 
 = 6.0.3 =
 
