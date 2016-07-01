@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.4 - 2016/0?/?? =
+
+* Vertical Playlist - Responsive vertical playlist changes to prev-next style when on mobile
+
 = 6.0.5.3 - 2016/06/23 =
 
 * Lightbox - Fix for php warnings
