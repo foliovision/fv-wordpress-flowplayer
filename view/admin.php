@@ -651,6 +651,129 @@ function fv_flowplayer_admin_integrations() {
 				</table>  
 <?php
 }
+function fv_flowplayer_admin_select_popup_ads($aArgs){
+  global $fv_fp;
+  
+  //$aPopupData = get_option('fv_player_popups');
+  
+
+  $sId = (isset($aArgs['id'])?$aArgs['id']:'popup_ads_default');
+  $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'cva_id'=>'', 'show_default' => false ) );
+  ?>
+  <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
+    <?php if( $aArgs['show_default'] ) : ?>
+      <option>Use site default</option>
+    <?php endif; ?>
+    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">No ad</option>
+    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+    <?php
+    if( isset($fv_fp->conf['popup_ads']) && is_array($fv_fp->conf['popup_ads']) && count($fv_fp->conf['popup_ads']) > 0 ) {
+      foreach( $fv_fp->conf['popup_ads'] AS $key => $aVideoAd ) {
+        ?><option <?php if( $aArgs['cva_id'] == $key+1 ) echo 'selected'; ?> value="<?php echo $key+1; ?>"><?php
+        echo $key+1;
+        if( !empty($aVideoAd['name']) ) echo ' - '.$aVideoAd['name'];
+        if( $aVideoAd['disabled'] == 1 ) echo ' (currently disabled)';
+        ?></option><?php
+      }
+    } ?>      
+  </select>
+  <?php
+}
+
+
+function fv_flowplayer_admin_popup_ads(){
+  global $fv_fp;
+    ?>
+    <style>
+      #fv-player-popup-ads-settings tr.data:nth-child(even) { background-color: #eee; }
+      .fv-player-popup-ad-remove { visibility: hidden; }
+      td:hover > .fv-player-popup-ad-remove { visibility: visible; }
+      table.fv-player-popup-ad-formats td:first-child { width: 132px }
+    </style>
+    <table class="form-table2" style="margin: 5px; ">
+      <tr>
+        <td style="width: 250px"><label for="popup_ads_default_pre">Default pre-roll ad:</label></td>
+        <td>
+          <p class="description">
+            <?php $cva_id = isset($fv_fp->conf['popup_ads_default_pre']) ? $fv_fp->conf['popup_ads_default_pre'] : 'no'; ?>
+            <?php fv_flowplayer_admin_select_popup_ads( array('item_id'=>$cva_id,'id'=>'popup_ads_default_pre') ); ?>
+            Set which ad should be played before videos.
+          </p>
+        </td>
+      </tr>
+      </table>
+      <table class="form-table2" style="margin: 5px; ">  
+      <tr>    		
+        <td>
+          <table id="fv-player-popup-ads-settings">
+            <thead><tr><td>ID</td><td></td><td>Status</td></tr></thead>
+            <tbody>
+            <?php
+            //TODO
+            //$aPopupData = get_option('fv_player_popups');
+            $aPopupData = $fv_fp->conf['popup_ads'];
+            if(empty($aPopupData)){
+              $aPopupData = array(
+                  '#fv_popup_dummy_key#' => array(),
+                  array(),
+              );
+            }
+            //TODO This code can be improved it we add a hidden 0th dummy <TR>
+            foreach( $aPopupData AS $key => $aPopup ) {
+              ?>
+              <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
+                <td class='id'><?php echo is_int($key) ? $key + 1 : $key ; ?></td>
+                    <td>
+                      <table class='fv-player-popup-ad-formats'>
+                        <tr><td>Name:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
+                        <tr><td>Ad URL:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][url]' value='<?php echo ( !empty($aPopup['url']) ? esc_attr($aPopup['url']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
+                        <tr><td>Ad HTML:</td><td colspan='2'><textarea type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? esc_attr($aPopup['html']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Ad CSS:</td><td colspan='2'><textarea type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? esc_attr($aPopup['css']) : '' ); ?></textarea></td></tr>
+                      </table>
+                    </td>
+                    <td>
+                      <input type='hidden' name='popup_ads[<?php echo $key; ?>][disabled]' value='0' />
+                      <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popup_ads[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> /> 
+                      <label for='PopupAdDisabled-<?php echo $key; ?>'>Disable</label><br />
+                      <a class='fv-player-popup-ad-remove' href=''>Remove</a></td>
+                  </tr>
+              <?php
+            }
+              
+            ?>
+            </tbody>
+          </table>
+        </td>
+      </tr>         
+      <tr>    		
+        <td>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
+          <input type="button" value="Add more Popup ads" class="button" id="fv-player-popup-ads-add" />
+        </td>
+      </tr>         
+    </table>
+
+    <script>
+    
+    jQuery('#fv-player-popup-ads-add').click( function() {
+      var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popup-ads-settings tr.data:last .id').html()  ) || 0 ) + 1;
+      jQuery('#fv-player-popup-ads-settings').append(jQuery('#fv-player-popup-ads-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
+      jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
+      return false;
+    } );
+    
+    jQuery(document).on('click','.fv-player-popup-ad-remove', false, function() {
+      if( confirm('Are you sure you want to remove the popup ad?') ){
+        jQuery(this).parents('.data').remove();
+        if(jQuery('#fv-player-popup-ads-settings .data').length === 1) {
+          jQuery('#fv-player-popup-ads-add').trigger('click');
+        }
+      }      
+      return false;
+    } );
+    </script>
+    <?php
+}
 
 
 function fv_flowplayer_admin_interface_options() {
@@ -1090,6 +1213,7 @@ add_meta_box( 'fv_flowplayer_default_options', __('Sitewide Flowplayer Defaults'
 add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv_flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_popup_ads', __('Popup Ads'), 'fv_flowplayer_admin_popup_ads' , 'fv_flowplayer_settings', 'normal' );
 
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv_flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
