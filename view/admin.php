@@ -1207,6 +1207,7 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_popups',  'hash' => 'tab_popups', 'name' => 'Popups' ),
   array('id' => 'fv_flowplayer_settings_help',    'hash' => 'tab_help',   'name' => 'Help'   ),
 );
+$fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
 
 /* basic tab */
 add_meta_box( 'fv_flowplayer_description', __('Description', 'fv_flowplayer'), 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal' );
@@ -1448,6 +1449,9 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 <script>
   jQuery(document).ready(function(){
     var anchor = window.location.hash.substring(1);
+    if(!jQuery('[href=#'+anchor+']').length){
+      anchor = 'tab_basic'; 
+    }
     jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
     jQuery('#postbox-container-' + anchor).show();
     jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
@@ -1456,7 +1460,6 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
       jQuery('#dashboard-widgets .postbox-container').hide();
       jQuery('#postbox-container-' + anchor).show();
-    })
-    
+    });
   });
 </script>
