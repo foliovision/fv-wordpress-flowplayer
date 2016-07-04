@@ -73,7 +73,13 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 <div style="display: none">
   <div id="fv-wordpress-flowplayer-popup">
     <div class="fv-player-tabs-header">
-      <a href="#" rel="fv-player-tab-video-files">Video files</a> | <a href="#" rel="fv-player-tab-subtitles">Subtitles</a> | <a href="#" rel="fv-player-tab-misc">Misc</a> | <a href="#" rel="fv-player-timeline">Timeline Actions</a>  | <a href="#" rel="fv-player-enhancements">Enhancements</a>
+      <h2 class="nav-tab-wrapper hide-if-no-js">
+				<a href="#" class="nav-tab nav-tab-active" style="outline: 0px;" rel="fv-player-tab-video-files">Video files</a>
+				<a href="#" class="nav-tab" style="outline: 0px;" rel="fv-player-tab-subtitles">Subtitles</a>
+				<a href="#" class="nav-tab" style="outline: 0px;" rel="fv-player-tab-misc">Misc</a>
+				<a href="#" class="nav-tab" style="outline: 0px;" rel="fv-player-timeline">Timeline Actions</a>
+				<a href="#" class="nav-tab" style="outline: 0px;" rel="fv-player-enhancements">Enhancements</a>
+			</h2>
     </div>
     <div class="fv-player-tabs">
       <div class="fv-player-tab-video-files">
@@ -135,7 +141,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_rtmp(); return false" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add RTMP', 'fv_flowplayer'); ?></a></div></td>  				
             </tr>      
             
-            <tr<?php if( $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' style="display: none"'; ?>>
+            <tr>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright"><?php _e('Mobile video', 'fv_flowplayer'); ?>*</label></th>
               <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" placeholder="<?php _e('Put low-bandwidth video here or leave blank', 'fv_flowplayer'); ?>" />
                 <?php if ($allow_uploads=='true') { ?>
@@ -151,37 +157,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 <?php }; //allow uploads splash image ?></td>
             </tr>
                       
-            <tr<?php if( $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
-              <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
-              <td class="field fv-fp-subtitles" colspan="2">
-                <div class="fv-fp-subtitle">
-                  <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
-                    <option></option>
-                    <?php
-                    $aLanguages = flowplayer::get_languages();
-                    $aCurrent = explode('-',get_bloginfo('language'));
-                    $sCurrent = '';//aCurrent[0];
-                    foreach( $aLanguages AS $sCode => $sLabel ) {
-                      ?><option value="<?php echo strtolower($sCode); ?>"<?php if( strtolower($sCode) == $sCurrent ) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
-                      <?php
-                    }
-                    ?>
-                  </select>                
-                  <input type="text" class="text<?php echo $upload_field_class; ?> fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
-                  <?php if ($allow_uploads=='true') { ?>
-                    <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
-                  <a class="fv-fp-subtitle-remove" href="#" style="display: none">X</a>
-                <?php }; ?>
-                </div>
-              </td>
-            </tr>
-            <tr<?php if( $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' style="display: none"'; ?>>
-              <td colspan="2">
-              </td>              
-              <td>
-                <a style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
-              </td>
-            </tr>
+
             
             <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Caption', 'fv_flowplayer'); ?></label></th>
@@ -193,18 +169,54 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           </tbody>
         </table>      
       </div>
-      <div class="fv-player-tab-subtitles" style="display: none"></div>
+      
+      <div class="fv-player-tab-subtitles" style="display: none">
+        <table width="100%">
+          <tr>
+            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
+            <td class="field fv-fp-subtitles" colspan="2">
+              <div class="fv-fp-subtitle">
+                <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
+                  <option></option>
+                  <?php
+                  $aLanguages = flowplayer::get_languages();
+                  $aCurrent = explode('-',get_bloginfo('language'));
+                  $sCurrent = '';//aCurrent[0];
+                  foreach( $aLanguages AS $sCode => $sLabel ) {
+                    ?><option value="<?php echo strtolower($sCode); ?>"<?php if( strtolower($sCode) == $sCurrent ) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
+                    <?php
+                  }
+                  ?>
+                </select>                
+                <input type="text" class="text<?php echo $upload_field_class; ?> fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
+                <?php if ($allow_uploads=='true') { ?>
+                  <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
+                <a class="fv-fp-subtitle-remove" href="#" style="display: none">X</a>
+              <?php }; ?>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            </td>              
+            <td>
+              <a style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
+            </td>
+          </tr>          
+        </table>
+      </div>
+      
       <div class="fv-player-tab-misc" style="display: none">
         <table width="100%">
-          <tr<?php if( $fv_flowplayer_conf["interface"]["popup"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup" class="alignright"><?php _e('HTML popup', 'fv_flowplayer'); ?></label></th>
             <td><textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea></td>
           </tr>
-          <tr<?php if( $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
             <td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
           </tr>
-          <tr<?php if( $fv_flowplayer_conf["interface"]["autoplay"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_autoplay" class="alignright"><?php _e('Autoplay', 'fv_flowplayer'); ?></label></th>
             <td class="field">
               <select id="fv_wp_flowplayer_field_autoplay" name="fv_wp_flowplayer_field_autoplay">
@@ -214,11 +226,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               </select>
             </td>
           </tr>
-          <tr<?php if( $fv_flowplayer_conf["interface"]["loop"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+          <tr>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright"><?php _e('Loop', 'fv_flowplayer'); ?></label></th>
             <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
           </tr>   
-          <tr<?php if( $fv_flowplayer_conf["interface"]["splashend"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+          <tr>
             <th scope="row" class="label">
               <label for="fv_wp_flowplayer_field_splashend"><?php _e('Splash end', 'fv_flowplayer'); ?></label>
             </th>
@@ -226,7 +238,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <input type="checkbox" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" /> <?php _e('(show splash image at the end)', 'fv_flowplayer'); ?>
             </td> 
           </tr>    
-          <tr<?php if( $fv_flowplayer_conf["interface"]["embed"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embed" class="alignright"><?php _e('Embedding', 'fv_flowplayer'); ?></label></th>
             <td class="field">
               <select id="fv_wp_flowplayer_field_embed" name="fv_wp_flowplayer_field_embed">
@@ -236,7 +248,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               </select>
             </td>
           </tr>           
-          <tr<?php if( $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
             <td>
               <textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
@@ -248,7 +260,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
             </td>
           </tr>			
-          <tr<?php if( $fv_flowplayer_conf["interface"]["align"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_align" class="alignright"><?php _e('Align', 'fv_flowplayer'); ?></label></th>
             <td>
               <select id="fv_wp_flowplayer_field_align" name="fv_wp_flowplayer_field_align">
@@ -258,7 +270,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               </select>
             </td>
           </tr>
-          <tr<?php if( !isset($fv_flowplayer_conf["interface"]["controlbar"]) || $fv_flowplayer_conf["interface"]["controlbar"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr>
             <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_controlbar" class="alignright"><?php _e('Controlbar', 'fv_flowplayer'); ?></label></th>
             <td>
               <select id="fv_wp_flowplayer_field_controlbar" name="fv_wp_flowplayer_field_controlbar">
@@ -268,11 +280,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               </select>
             </td>
           </tr>
-          <tr<?php if( !isset($fv_flowplayer_conf["interface"]['live']) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+          <tr>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
             <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
           </tr>
-          <tr<?php if( !isset($fv_flowplayer_conf["interface"]['speed']) || $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+          <tr>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_speed" class="alignright"><?php _e('Speed Buttons', 'fv_flowplayer'); ?></label></th>
             <td class="field">
               <select id="fv_wp_flowplayer_field_speed" name="fv_wp_flowplayer_field_speed">
@@ -350,6 +362,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
 <script>
 jQuery('.fv-player-tabs-header a').click( function() {
+  jQuery('.fv-player-tabs-header a').removeClass('nav-tab-active');
+  jQuery(this).addClass('nav-tab-active');
   jQuery( '.fv-player-tabs > div' ).hide();
   jQuery( '.'+jQuery(this).attr('rel') ).show();
 });  
