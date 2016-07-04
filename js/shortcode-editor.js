@@ -412,11 +412,20 @@ function fv_wp_flowplayer_edit() {
   		document.getElementById("fv_wp_flowplayer_field_splash").value = ssplash[1];
   	if( ssubtitles != null && ssubtitles[1] != null )
   		jQuery(".fv_wp_flowplayer_field_subtitles").eq(0).val( ssubtitles[1] );
+    
+    //legacy support
+    document.getElementById("fv_wp_flowplayer_field_popup").parentNode.parentNode.style.display = 'none'
   	if( spopup != null && spopup[1] != null ) {
   		spopup = spopup[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
   		spopup = spopup.replace(/&amp;/g,'&');
-  		document.getElementById("fv_wp_flowplayer_field_popup").value = spopup;
-  	}
+      if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random') {
+        document.getElementById("fv_wp_flowplayer_field_popup_id").value = spopup;
+      } else {
+        document.getElementById("fv_wp_flowplayer_field_popup").parentNode.parentNode.style.display = 'table-row'
+        document.getElementById("fv_wp_flowplayer_field_popup").value = spopup;
+      }
+    }
+    
   	if( sad != null && sad[1] != null ) {
   		sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
   		sad = sad.replace(/&amp;/g,'&');
@@ -579,7 +588,14 @@ function fv_wp_flowplayer_submit() {
   });   
   
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad','ad','html');
-  fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
+  //
+  
+  if(  jQuery('[name=fv_wp_flowplayer_field_popup]').val() !== ''){
+    fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
+  }else{
+    fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
+  }
+  
   
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_height','ad_height','int');
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_skip','ad_skip', false, true, ['yes']);

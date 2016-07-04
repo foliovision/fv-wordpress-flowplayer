@@ -176,6 +176,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
 
+    if(isset($aNewOptions['popup_ads'])){
+       unset($aNewOptions['popup_ads']['#fv_popup_dummy_key#']);
+       update_option('fv_player_popups',$aNewOptions['popup_ads']);
+       unset($aNewOptions['popup_ads']);
+    }
+    
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;

@@ -654,7 +654,7 @@ function fv_flowplayer_admin_integrations() {
 function fv_flowplayer_admin_select_popup_ads($aArgs){
   global $fv_fp;
   
-  //$aPopupData = get_option('fv_player_popups');
+  $aPopupData = get_option('fv_player_popups');
   
 
   $sId = (isset($aArgs['id'])?$aArgs['id']:'popup_ads_default');
@@ -667,12 +667,12 @@ function fv_flowplayer_admin_select_popup_ads($aArgs){
     <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">No ad</option>
     <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
     <?php
-    if( isset($fv_fp->conf['popup_ads']) && is_array($fv_fp->conf['popup_ads']) && count($fv_fp->conf['popup_ads']) > 0 ) {
-      foreach( $fv_fp->conf['popup_ads'] AS $key => $aVideoAd ) {
-        ?><option <?php if( $aArgs['cva_id'] == $key+1 ) echo 'selected'; ?> value="<?php echo $key+1; ?>"><?php
+    if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
+      foreach( $aPopupData AS $key => $aPopupAd ) {
+        ?><option <?php if( $aArgs['item_id'] == $key+1 ) echo 'selected'; ?> value="<?php echo $key+1; ?>"><?php
         echo $key+1;
-        if( !empty($aVideoAd['name']) ) echo ' - '.$aVideoAd['name'];
-        if( $aVideoAd['disabled'] == 1 ) echo ' (currently disabled)';
+        if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
+        if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
       }
     } ?>      
@@ -692,12 +692,12 @@ function fv_flowplayer_admin_popup_ads(){
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="width: 250px"><label for="popup_ads_default_pre">Default pre-roll ad:</label></td>
+        <td style="width: 250px"><label for="popup_ads_default_pre">Default Popup ad:</label></td>
         <td>
           <p class="description">
             <?php $cva_id = isset($fv_fp->conf['popup_ads_default_pre']) ? $fv_fp->conf['popup_ads_default_pre'] : 'no'; ?>
             <?php fv_flowplayer_admin_select_popup_ads( array('item_id'=>$cva_id,'id'=>'popup_ads_default_pre') ); ?>
-            Set which ad should be played before videos.
+            Set which ad should be showed after videos.
           </p>
         </td>
       </tr>
@@ -709,17 +709,14 @@ function fv_flowplayer_admin_popup_ads(){
             <thead><tr><td>ID</td><td></td><td>Status</td></tr></thead>
             <tbody>
             <?php
-            //TODO
-            //$aPopupData = get_option('fv_player_popups');
-            $aPopupData = $fv_fp->conf['popup_ads'];
-            if(empty($aPopupData)){
+            $aPopupData = get_option('fv_player_popups');
+            if (empty($aPopupData)) {
               $aPopupData = array(
                   '#fv_popup_dummy_key#' => array(),
                   array(),
               );
             }
-            //TODO This code can be improved it we add a hidden 0th dummy <TR>
-            foreach( $aPopupData AS $key => $aPopup ) {
+            foreach ($aPopupData AS $key => $aPopup) {
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo is_int($key) ? $key + 1 : $key ; ?></td>
@@ -727,8 +724,8 @@ function fv_flowplayer_admin_popup_ads(){
                       <table class='fv-player-popup-ad-formats'>
                         <tr><td>Name:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
                         <tr><td>Ad URL:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][url]' value='<?php echo ( !empty($aPopup['url']) ? esc_attr($aPopup['url']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
-                        <tr><td>Ad HTML:</td><td colspan='2'><textarea type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? esc_attr($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>Ad CSS:</td><td colspan='2'><textarea type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? esc_attr($aPopup['css']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Ad HTML:</td><td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? esc_attr($aPopup['html']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Ad CSS:</td> <td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? esc_attr($aPopup['css']) : '' ); ?></textarea></td></tr>
                       </table>
                     </td>
                     <td>
@@ -739,7 +736,6 @@ function fv_flowplayer_admin_popup_ads(){
                   </tr>
               <?php
             }
-              
             ?>
             </tbody>
           </table>
