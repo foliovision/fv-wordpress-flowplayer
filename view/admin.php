@@ -1201,7 +1201,14 @@ function fv_flowplayer_admin_checkbox( $name ) {
 <?php
 }
 
+/* TABS */
+$fv_player_aSettingsTabs = array(
+  array('id' => 'fv_flowplayer_settings',         'hash' => 'tab_basic' , 'name' => 'Basic'  ),
+  array('id' => 'fv_flowplayer_settings_popups',  'hash' => 'tab_popups', 'name' => 'Popups' ),
+  array('id' => 'fv_flowplayer_settings_help',    'hash' => 'tab_help',   'name' => 'Help'   ),
+);
 
+/* basic tab */
 add_meta_box( 'fv_flowplayer_description', __('Description', 'fv_flowplayer'), 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv_flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv_flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
@@ -1209,12 +1216,14 @@ add_meta_box( 'fv_flowplayer_default_options', __('Sitewide Flowplayer Defaults'
 add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv_flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_popup_ads', __('Popup Ads'), 'fv_flowplayer_admin_popup_ads' , 'fv_flowplayer_settings', 'normal' );
-
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv_flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
-add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
+/* popup tab */
+add_meta_box( 'fv_flowplayer_popup_ads', __('Popup Ads'), 'fv_flowplayer_admin_popup_ads' , 'fv_flowplayer_settings_popups', 'normal' );
+
+/* help tab */
+add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'low' );
 
 ?>
 
@@ -1239,6 +1248,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     $aCheck = get_transient( 'fv_flowplayer_license' );
     $aInstalled = get_option('fv_flowplayer_extension_install');
   }
+  
   ?>
   
   <form id="wpfp_options" method="post" action="">
@@ -1268,7 +1278,14 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
     </p>
     <div id="fv_flowplayer_admin_notices">
-    </div>  
+    </div> 
+    <div id="fv_flowplayer_admin_tabs">
+      <h2 class="nav-tab-wrapper">
+        <?php foreach($fv_player_aSettingsTabs as $val):?>
+        <a href="#<?php echo $val['hash'];?>" class="nav-tab" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
+        <?php endforeach;?>
+      </h2>
+    </div>
     
     <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
@@ -1291,13 +1308,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     <?php endif; ?>	
   
 		<div id="dashboard-widgets" class="metabox-holder columns-1">
-			<div id='postbox-container-1' class='postbox-container'>    
+      <?php foreach($fv_player_aSettingsTabs as $val):?>
+      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container' style="display:none;" >    
 				<?php
-				do_meta_boxes('fv_flowplayer_settings', 'normal', false );
+				do_meta_boxes($val['id'], 'normal', false );
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
 				?>
 			</div>
+      <?php endforeach;?>
 		</div>
     <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
   </form>
@@ -1426,3 +1445,18 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 	//]]>
 </script>
 
+<script>
+  jQuery(document).ready(function(){
+    var anchor = window.location.hash.substring(1);
+    jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+    jQuery('#postbox-container-' + anchor).show();
+    jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
+      var anchor = jQuery(this).attr('href').substring(1);
+      jQuery('#fv_flowplayer_admin_tabs .nav-tab-active').removeClass('nav-tab-active');
+      jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+      jQuery('#dashboard-widgets .postbox-container').hide();
+      jQuery('#postbox-container-' + anchor).show();
+    })
+    
+  });
+</script>
