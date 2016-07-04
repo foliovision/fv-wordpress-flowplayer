@@ -57,7 +57,7 @@ add_action('admin_enqueue_scripts', 'fv_flowplayer_admin_scripts');
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
 add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
-add_filter('fvp_custom_css','fvp_popup_css');
+add_filter('fv_player_custom_css','fv_player_popup_css');
 
 function flowplayer_activate() {
 	
@@ -1164,13 +1164,18 @@ add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object
 
 
 //popup ads
-function fvp_popup_css( $css ){
+function fv_player_popup_css( $css ){
   $aPopupData = get_option('fv_player_popups');
-  $css .="\n/*custom popup css*/\n";
+  $sNewCss = '';
   foreach($aPopupData as $key => $val){
-   $css.="\n/*ad: $key*/";
-   $css.="\n ".stripslashes($val['css']);
+    if(empty($val['css'])){
+      continue;
+    }
+   $sNewCss.="\n/*ad: $key*/";
+   $sNewCss.="\n ".stripslashes($val['css']);
   }
-  $css .="\n/*end custom opup css*/\n";
+  if(strlen($sNewCss)){
+    $css .= "\n/*custom popup css*/\n".$sNewCss."\n/*end custom opup css*/\n";
+  }
   return $css;
 }
