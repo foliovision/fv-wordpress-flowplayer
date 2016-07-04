@@ -651,6 +651,7 @@ function fv_flowplayer_admin_integrations() {
 				</table>  
 <?php
 }
+
 function fv_flowplayer_admin_select_popup_ads($aArgs){
   global $fv_fp;
   
@@ -692,11 +693,11 @@ function fv_flowplayer_admin_popup_ads(){
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="width: 250px"><label for="popup_ads_default_pre">Default Popup ad:</label></td>
+        <td style="width: 250px"><label for="popup_ads_default">Default Popup ad:</label></td>
         <td>
           <p class="description">
-            <?php $cva_id = isset($fv_fp->conf['popup_ads_default_pre']) ? $fv_fp->conf['popup_ads_default_pre'] : 'no'; ?>
-            <?php fv_flowplayer_admin_select_popup_ads( array('item_id'=>$cva_id,'id'=>'popup_ads_default_pre') ); ?>
+            <?php $cva_id = isset($fv_fp->conf['popup_ads_default']) ? $fv_fp->conf['popup_ads_default'] : 'no'; ?>
+            <?php fv_flowplayer_admin_select_popup_ads( array('item_id'=>$cva_id,'id'=>'popup_ads_default') ); ?>
             Set which ad should be showed after videos.
           </p>
         </td>
@@ -711,21 +712,20 @@ function fv_flowplayer_admin_popup_ads(){
             <?php
             $aPopupData = get_option('fv_player_popups');
             if (empty($aPopupData)) {
-              $aPopupData = array(
-                  '#fv_popup_dummy_key#' => array(),
-                  array(),
-              );
+              $aPopupData = array( 1 => array());
+            }else{
+              $aPopupData =  array( '#fv_popup_dummy_key#' => array() ) + $aPopupData ;
             }
             foreach ($aPopupData AS $key => $aPopup) {
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
-                <td class='id'><?php echo is_int($key) ? $key + 1 : $key ; ?></td>
+                <td class='id'><?php echo $key ; ?></td>
                     <td>
                       <table class='fv-player-popup-ad-formats'>
                         <tr><td>Name:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
                         <tr><td>Ad URL:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][url]' value='<?php echo ( !empty($aPopup['url']) ? esc_attr($aPopup['url']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
                         <tr><td>Ad HTML:</td><td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? esc_attr($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>Ad CSS:</td> <td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? esc_attr($aPopup['css']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Ad CSS:</td> <td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? str_replace('\\','',esc_attr($aPopup['css'])) : '' ); ?></textarea></td></tr>
                       </table>
                     </td>
                     <td>

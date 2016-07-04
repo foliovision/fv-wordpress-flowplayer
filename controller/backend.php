@@ -57,6 +57,7 @@ add_action('admin_enqueue_scripts', 'fv_flowplayer_admin_scripts');
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
 add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
+add_filter('fvp_custom_css','fvp_popup_css');
 
 function flowplayer_activate() {
 	
@@ -1160,3 +1161,16 @@ add_action( 'delete_transient_fv_flowplayer_license', 'fv_player_disable_object_
 add_action( 'set_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
 add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' );
 add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
+
+
+//popup ads
+function fvp_popup_css( $css ){
+  $aPopupData = get_option('fv_player_popups');
+  $css .="\n/*custom popup css*/\n";
+  foreach($aPopupData as $key => $val){
+   $css.="\n/*ad: $key*/";
+   $css.="\n ".stripslashes($val['css']);
+  }
+  $css .="\n/*end custom opup css*/\n";
+  return $css;
+}

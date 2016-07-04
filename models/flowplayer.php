@@ -524,7 +524,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
-  
+    <?php echo apply_filters('fvp_custom_css',''); ?>
     <?php if( !$skip_style_tag ) : ?>
       </style>  
     <?php endif;
@@ -624,6 +624,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
       return false;
     }
+    $sCSSCurrent = apply_filters('fvp_custom_css',$sCSSCurrent);
     $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
