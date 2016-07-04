@@ -340,6 +340,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.4 - 2016/07/?? =
+
+* Settings - Added Tabs
+* Popup Ads - Improved UI for popup ads - Moved to settings screen
+
 = 6.0.5.3 - 2016/06/23 =
 
 * Lightbox - Fix for php warnings
