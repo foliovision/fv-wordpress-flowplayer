@@ -1175,7 +1175,7 @@ function fv_player_popup_css( $css ){
     $sNewCss.="\n ".stripslashes($val['css']);
   }
   if(strlen($sNewCss)){
-    $css .= "\n/*custom popup css*/\n".$sNewCss."\n/*end custom opup css*/\n";
+    $css .= "\n/*custom popup css*/\n".$sNewCss."\n/*end custom popup css*/\n";
   }
   return $css;
 }
