@@ -47,8 +47,8 @@
     <?php
     if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
       foreach( $aPopupData AS $key => $aPopupAd ) {
-        ?><option <?php if( $aArgs['item_id'] == $key+1 ) echo 'selected'; ?> value="<?php echo $key+1; ?>"><?php
-        echo $key+1;
+        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
+        echo $key;
         if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
         if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php

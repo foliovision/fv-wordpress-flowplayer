@@ -171,6 +171,7 @@ function fv_wp_flowplayer_init() {
   fv_wp_fp_language_item_template = jQuery('.fv-fp-subtitle').parent().html();
   
   jQuery('.fv_wp_flowplayer_field_subtitles_lang').val(0);
+  document.getElementById("fv_wp_flowplayer_field_popup").parentNode.parentNode.style.display = 'none'
 }
 
 

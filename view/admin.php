@@ -670,8 +670,8 @@ function fv_flowplayer_admin_select_popup_ads($aArgs){
     <?php
     if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
       foreach( $aPopupData AS $key => $aPopupAd ) {
-        ?><option <?php if( $aArgs['item_id'] == $key+1 ) echo 'selected'; ?> value="<?php echo $key+1; ?>"><?php
-        echo $key+1;
+        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
+        echo $key;
         if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
         if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
@@ -727,9 +727,8 @@ function fv_flowplayer_admin_popup_ads(){
                     <td>
                       <table class='fv-player-popup-ad-formats'>
                         <tr><td>Name:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
-                        <tr><td>Ad URL:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][url]' value='<?php echo ( !empty($aPopup['url']) ? esc_attr($aPopup['url']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
-                        <tr><td>Ad HTML:</td><td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? esc_attr($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>Ad CSS:</td> <td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? str_replace('\\','',esc_attr($aPopup['css'])) : '' ); ?></textarea></td></tr>
+                        <tr><td>Ad HTML:</td><td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? stripslashes($aPopup['html']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Ad CSS:</td> <td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? stripslashes($aPopup['css']) : '' ); ?></textarea></td></tr>
                       </table>
                     </td>
                     <td>
