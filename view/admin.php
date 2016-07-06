@@ -689,11 +689,15 @@ function fv_flowplayer_admin_popup_ads(){
       #fv-player-popup-ads-settings tr.data:nth-child(even) { background-color: #eee; }
       .fv-player-popup-ad-remove { visibility: hidden; }
       td:hover > .fv-player-popup-ad-remove { visibility: visible; }
-      table.fv-player-popup-ad-formats td:first-child { width: 132px }
+      table.fv-player-popup-ad-formats td:first-child { width: 72px }
+      #fv_flowplayer_popup_ads .inside label {
+        display: initial;
+        text-align: inherit;
+      }
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="width: 250px"><label for="popup_ads_default">Default Popup ad:</label></td>
+        <td style="width: 150px"><label for="popup_ads_default">Default Popup ad:</label></td>
         <td>
           <p class="description">
             <?php $cva_id = isset($fv_fp->conf['popup_ads_default']) ? $fv_fp->conf['popup_ads_default'] : 'no'; ?>
