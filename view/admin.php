@@ -1452,7 +1452,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 <script>
 jQuery(document).ready(function(){
   var anchor = window.location.hash.substring(1);
-  if( !anchor ) return;
+  if( !anchor || !anchor.match(/tab_/) ) return;
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
