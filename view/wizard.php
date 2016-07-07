@@ -255,7 +255,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           </td>          
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["popup"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('HTML popup', 'fv_flowplayer'); ?></label></th>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
   				<td><?php fv_flowplayer_admin_select_popups(array( 'id'=>'fv_wp_flowplayer_field_popup_id', 'show_default' => true ))?></td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
