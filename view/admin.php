@@ -726,9 +726,9 @@ function fv_flowplayer_admin_popup_ads(){
                 <td class='id'><?php echo $key ; ?></td>
                     <td>
                       <table class='fv-player-popup-ad-formats'>
-                        <tr><td>Name:</td><td colspan='2'><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='Ad name' /></td></tr>
-                        <tr><td>Ad HTML:</td><td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['html']) ? stripslashes($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>Ad CSS:</td> <td colspan='2'><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='Clicking the video ad will open the URL in new window' ><?php echo ( !empty($aPopup['css']) ? stripslashes($aPopup['css']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Name:</td><td><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='' /></td></tr>
+                        <tr><td>HTML:</td><td><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? stripslashes($aPopup['html']) : '' ); ?></textarea></td></tr>
+                        <tr><td>CSS:</td> <td><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? stripslashes($aPopup['css']) : '' ); ?></textarea></td></tr>
                       </table>
                     </td>
                     <td>
@@ -1285,8 +1285,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     </div> 
     <div id="fv_flowplayer_admin_tabs">
       <h2 class="nav-tab-wrapper">
-        <?php foreach($fv_player_aSettingsTabs as $val):?>
-        <a href="#<?php echo $val['hash'];?>" class="nav-tab" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
+        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+        <a href="#<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
         <?php endforeach;?>
       </h2>
     </div>
@@ -1312,8 +1312,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     <?php endif; ?>	
   
 		<div id="dashboard-widgets" class="metabox-holder columns-1">
-      <?php foreach($fv_player_aSettingsTabs as $val):?>
-      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container' style="display:none;" >    
+      <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style="display:none;"<?php endif; ?>>    
 				<?php
 				do_meta_boxes($val['id'], 'normal', false );
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
@@ -1450,19 +1450,21 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 </script>
 
 <script>
-  jQuery(document).ready(function(){
-    var anchor = window.location.hash.substring(1);
-    if(!jQuery('[href=#'+anchor+']').length){
-      anchor = 'tab_basic'; 
-    }
-    jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
-    jQuery('#postbox-container-' + anchor).show();
-    jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
-      var anchor = jQuery(this).attr('href').substring(1);
-      jQuery('#fv_flowplayer_admin_tabs .nav-tab-active').removeClass('nav-tab-active');
-      jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
-      jQuery('#dashboard-widgets .postbox-container').hide();
-      jQuery('#postbox-container-' + anchor).show();
-    });
-  });
+jQuery(document).ready(function(){
+  var anchor = window.location.hash.substring(1);
+  if( !anchor ) return;
+  
+  jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
+  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('#dashboard-widgets .postbox-container').hide();
+  jQuery('#postbox-container-' + anchor).show();
+});
+
+jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
+  var anchor = jQuery(this).attr('href').substring(1);
+  jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
+  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('#dashboard-widgets .postbox-container').hide();
+  jQuery('#postbox-container-' + anchor).show();
+});  
 </script>
