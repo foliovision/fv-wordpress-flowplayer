@@ -769,7 +769,7 @@ class flowplayer_frontend extends flowplayer
     if ( !empty($this->aCurArgs['popup'])) {
       $popup = trim($this->aCurArgs['popup']);
     } else {
-      $popup = empty($this->conf['popup_ads_default'])?'no':$this->conf['popup_ads_default'];
+      $popup = empty($this->conf['popups_default'])?'no':$this->conf['popups_default'];
     }
     if (stripos($popup, '<!--fv_flowplayer_base64_encoded-->') !== false) {
       $popup = str_replace('<!--fv_flowplayer_base64_encoded-->', '', $popup);

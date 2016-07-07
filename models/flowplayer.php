@@ -178,16 +178,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
 
-    if(isset($aNewOptions['popup_ads'])){
-      unset($aNewOptions['popup_ads']['#fv_popup_dummy_key#']);
+    if(isset($aNewOptions['popups'])){
+      unset($aNewOptions['popups']['#fv_popup_dummy_key#']);
       
-      foreach( $aNewOptions['popup_ads'] AS $key => $value ) {
-        $aNewOptions['popup_ads'][$key]['css'] = stripslashes($value['css']);
-        $aNewOptions['popup_ads'][$key]['html'] = stripslashes($value['html']);
+      foreach( $aNewOptions['popups'] AS $key => $value ) {
+        $aNewOptions['popups'][$key]['css'] = stripslashes($value['css']);
+        $aNewOptions['popups'][$key]['html'] = stripslashes($value['html']);
       }
       
-      update_option('fv_player_popups',$aNewOptions['popup_ads']);
-      unset($aNewOptions['popup_ads']);
+      update_option('fv_player_popups',$aNewOptions['popups']);
+      unset($aNewOptions['popups']);
     }
     
     foreach( $aNewOptions AS $key => $value ) {
