@@ -715,20 +715,21 @@ function fv_flowplayer_admin_popup_ads(){
             <tbody>
             <?php
             $aPopupData = get_option('fv_player_popups');
-            if (empty($aPopupData)) {
-              $aPopupData = array( 1 => array());
-            }else{
+            if( empty($aPopupData) ) {
+              $aPopupData = array( 1 => array() );
+            } else {
               $aPopupData =  array( '#fv_popup_dummy_key#' => array() ) + $aPopupData ;
             }
+
             foreach ($aPopupData AS $key => $aPopup) {
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
                     <td>
                       <table class='fv-player-popup-ad-formats'>
-                        <tr><td>Name:</td><td><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?> ' placeholder='' /></td></tr>
-                        <tr><td>HTML:</td><td><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? stripslashes($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>CSS:</td> <td><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? stripslashes($aPopup['css']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Name:</td><td><input type='text' name='popup_ads[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td></tr>
+                        <tr><td>HTML:</td><td><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td></tr>
+                        <tr><td>CSS:</td> <td><textarea class="large-text code" type='text' name='popup_ads[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td></tr>
                       </table>
                     </td>
                     <td>
