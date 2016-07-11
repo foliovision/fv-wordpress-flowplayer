@@ -37,7 +37,7 @@ jQuery(document).ready( function($) {
     } );
   }
   
-  
+  /* NAV TABS */
   $('.fv-player-tabs-header a').click( function() {
     $('.fv-player-tabs-header a').removeClass('nav-tab-active');
     $(this).addClass('nav-tab-active');
@@ -219,6 +219,12 @@ function fv_wp_flowplayer_init() {
   fv_player_playlist_subtitles_template = jQuery('.fv-fp-subtitle').parent().html();
   
   jQuery('.fv_wp_flowplayer_field_subtitles_lang').val(0);
+  
+  /* TABS */ 
+  jQuery('#fv-player-shortcode-editor .nav-tab:eq(0)').trigger('click');
+  jQuery('#playlist_create').show();
+  jQuery('#playlist_edit').hide();
+  
 }
 
 
@@ -294,8 +300,8 @@ function fv_flowplayer_playlist_show() {
   var video_files = jQuery('.fv-player-tab-video-files table');
   video_files.each( function() {    
     var current = jQuery(this);
-    console.log( 'fv_flowplayer_playlist_show', current.find('#fv_wp_flowplayer_field_src').val() );
     var playlist_row = jQuery('.fv-player-playlist table tbody tr').eq( video_files.index(current) );
+    console.log(current.find('#fv_wp_flowplayer_field_src'));
     playlist_row.find('.fvp_item_video').html( current.find('#fv_wp_flowplayer_field_src').val() );
     playlist_row.find('.fvp_item_splash').html( '<img width="120" src="'+current.find('#fv_wp_flowplayer_field_splash').val()+'" />' );
     playlist_row.find('.fvp_item_caption').html( current.find('#fv_wp_flowplayer_field_caption').val() );
@@ -304,7 +310,6 @@ function fv_flowplayer_playlist_show() {
     
   });
   jQuery('.fv-player-playlist').show();
-  
 }
 
 
@@ -338,7 +343,7 @@ function fv_wp_flowplayer_edit() {
   jQuery("#fv-player-shortcode-editor textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv-player-shortcode-editor select').prop('selectedIndex',0);
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
-  jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Insert' );
+  jQuery("[id=fv_wp_flowplayer_field_insert-button]").attr( 'value', 'Insert' );
   
   if(jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
     if(fv_wp_flowplayer_content.match(/\[/) ) {
@@ -577,7 +582,7 @@ function fv_wp_flowplayer_edit() {
     
     jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, fv_wp_fp_shortcode_remains ] );
   	
-  	jQuery("#fv_wp_flowplayer_field_insert-button").attr( 'value', 'Update' );    
+  	jQuery("[id=fv_wp_flowplayer_field_insert-button]").attr( 'value', 'Update' );    
 	} else {
     fv_wp_fp_shortcode_remains = '';
   }
