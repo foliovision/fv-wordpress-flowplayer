@@ -58,6 +58,9 @@ jQuery(document).ready( function($) {
     jQuery('.fv-player-tab-video-files table').hide();
     jQuery('.fv-player-tab-video-files table').eq(new_index).show();
     
+    jQuery('.fv-player-tab-subtitles table').hide();
+    jQuery('.fv-player-tab-subtitles table').eq(new_index).show();
+    
     fv_wp_flowplayer_dialog_resize();
     
   });  
@@ -156,6 +159,12 @@ jQuery(document).ready( function($) {
       fv_flowplayer_uploader.open();
 
   });
+  
+  fv_player_playlist_item_template = jQuery('.fv-player-playlist table tbody tr').parent().html();
+  fv_player_playlist_video_template = jQuery('.fv-player-tab-video-files table.fv-player-playlist-item').parent().html();
+  fv_player_playlist_subtitles_template = jQuery('.fv-fp-subtitle').parent().html();
+  fv_player_playlist_subtitles_box_template = jQuery('.fv-player-tab-subtitles').html();
+
 });
 
 
@@ -170,6 +179,7 @@ var fv_wp_fp_shortcode_remains;
 var fv_player_playlist_item_template;
 var fv_player_playlist_video_template;
 var fv_player_playlist_subtitles_template;
+var fv_player_playlist_subtitles_box_template;
 var fv_wp_fp_shortcode;
 
 
@@ -209,14 +219,15 @@ function fv_wp_flowplayer_init() {
     jQuery(e).remove();
   } );
   
-  jQuery('.fv-fp-subtitles .fv-fp-subtitle').each( function(i,e) {
+  jQuery('.fv-player-tab-subtitles table tbody tr').each( function(i,e) {
     if( i == 0 ) return;
     jQuery(e).remove();
   } );
   
-  fv_player_playlist_item_template = jQuery('.fv-player-playlist table tbody tr').parent().html();
-  fv_player_playlist_video_template = jQuery('.fv-player-tab-video-files table.fv-player-playlist-item').parent().html();
-  fv_player_playlist_subtitles_template = jQuery('.fv-fp-subtitle').parent().html();
+  jQuery('.fv-fp-subtitles .fv-fp-subtitle').each( function(i,e) {
+    if( i == 0 ) return;
+    jQuery(e).remove();
+  } );
   
   jQuery('.fv_wp_flowplayer_field_subtitles_lang').val(0);
   
@@ -287,6 +298,10 @@ function fv_flowplayer_playlist_add( sInput, sCaption ) {
     }
   }
   
+  jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template).hide();
+  jQuery('.fv-player-tab-subtitles table:last').hide();
+  
+  
   jQuery('#playlist_create').hide();
   jQuery('#playlist_edit').show();
   
@@ -306,10 +321,11 @@ function fv_flowplayer_playlist_show() {
     playlist_row.find('.fvp_item_splash').html( '<img width="120" src="'+current.find('#fv_wp_flowplayer_field_splash').val()+'" />' );
     playlist_row.find('.fvp_item_caption').html( current.find('#fv_wp_flowplayer_field_caption').val() );
     
-    fv_wp_flowplayer_dialog_resize();
+   
     
   });
-  jQuery('.fv-player-playlist').show();
+  jQuery('.fv-player-playlist').show(); 
+  fv_wp_flowplayer_dialog_resize();
 }
 
 
@@ -598,7 +614,7 @@ function fv_wp_flowplayer_edit() {
 
 function fv_wp_flowplayer_dialog_resize() {
   var iContentHeight = parseInt( jQuery('#fv-player-shortcode-editor').css('height') );
-  if( iContentHeight < 150 ) iContentHeight = 150;
+  if( iContentHeight < 50 ) iContentHeight = 50;
   jQuery('#fv-player-shortcode-editor').fv_player_box.resize({width:620, height:(iContentHeight+100)})
 }
 
@@ -681,7 +697,6 @@ function fv_wp_flowplayer_submit() {
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_skip','ad_skip', false, true, ['yes']);
 	fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_width','ad_width','int');  
 		
-  console.log('playlist',jQuery('.fv-player-tab-video-files table'));
 	if( jQuery('.fv-player-tab-video-files table').length > 0 ) {
 		var aPlaylistItems = new Array();
     var aPlaylistCaptions = new Array();
@@ -690,7 +705,7 @@ function fv_wp_flowplayer_submit() {
       
 		  if( i == 0 ) return;  
       var aPlaylistItem = new Array();      
-      jQuery(this).find('input:visible').each( function() {
+      jQuery(this).find('input').each( function() {
         if( jQuery(this).attr('name').match(/fv_wp_flowplayer_field_caption/) ) return;     
         if( jQuery(this).hasClass('fv_wp_flowplayer_field_rtmp') ) return;
         if( jQuery(this).hasClass('extra-field') ) return;
