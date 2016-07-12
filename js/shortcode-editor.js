@@ -298,9 +298,12 @@ function fv_flowplayer_playlist_add( sInput, sCaption ) {
     }
   }
   
-  jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template).hide();
+  jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template);
   jQuery('.fv-player-tab-subtitles table:last').hide();
   
+  //TODO delete - disables subtitles for playlists
+  jQuery('.fv-player-tab-subtitles [name]').attr('readonly',true).attr('disabled',true);
+  jQuery('.fv-player-tab-subtitles .add_media').hide();
   
   jQuery('#playlist_create').hide();
   jQuery('#playlist_edit').show();
@@ -329,19 +332,32 @@ function fv_flowplayer_playlist_show() {
 }
 
 
-function fv_flowplayer_language_add( sInput, sLang ) {
-  
-  jQuery('.fv-fp-subtitles').append( fv_player_playlist_subtitles_template );
-  
-  jQuery('.fv-fp-subtitles .fv-fp-subtitle:last').hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
+function fv_flowplayer_language_add( sInput, sLang ,iTabIndex ) {
+  if(!iTabIndex){
+    iTabIndex = 0;
+  }
+  var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
+  oTab.append( fv_player_playlist_subtitles_template ); 
+  jQuery('.fv-fp-subtitle:last' , oTab).hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
   
   if( sInput ) {
-    jQuery('.fv-fp-subtitles .fv-fp-subtitle:last input.fv_wp_flowplayer_field_subtitles').val(sInput);
+    jQuery('.fv-fp-subtitle:last input.fv_wp_flowplayer_field_subtitles' , oTab ).val(sInput);
   }
   
   if ( sLang ) {
-    jQuery('.fv-fp-subtitles .fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang').val(sLang);
+    jQuery('.fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang' , oTab).val(sLang);
   }
+  
+  jQuery('.fv-fp-subtitle:last .fv-fp-subtitle-remove' , oTab).click(function(){
+    
+    if(jQuery(this).parents('.fv-fp-subtitles').find('.fv-fp-subtitle').length > 1){
+      jQuery(this).parents('.fv-fp-subtitle').remove();
+    }else{
+      jQuery(this).parents('.fv-fp-subtitle').find('[name]').val('');
+    }
+    fv_wp_flowplayer_dialog_resize();
+    
+  })
   
   fv_wp_flowplayer_dialog_resize();
   return false;
@@ -439,7 +455,10 @@ function fv_wp_flowplayer_edit() {
     for( var i in aSubtitles ){
       fv_wp_flowplayer_shortcode_parse_arg( shortcode, aSubtitles[i], false, fv_wp_flowplayer_subtitle_parse_arg );
     }
-
+    if(!aSubtitles){
+      fv_flowplayer_language_add(false, false );
+    }
+    
     var smobile = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'mobile' );
     var sredirect = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'redirect' );
     
