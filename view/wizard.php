@@ -345,6 +345,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             <th>Video</th>
             <th>Splash</th>
             <th>Caption</th>
+            <th></th>
           </tr>  
         </thead>
         <tbody>
@@ -352,6 +353,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             <td class="fvp_item_video">(new video)</td>
             <td class="fvp_item_splash">-</td>
             <td class="fvp_item_caption">-</td>
+            <td class="fvp_item_remove"><a href="#" >x</a></td>
           </tr>  
         </tbody>        
       </table>
