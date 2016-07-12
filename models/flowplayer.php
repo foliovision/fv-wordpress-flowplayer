@@ -101,11 +101,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
+    add_action( 'template_redirect', array( $this, 'template_embed_buffer' ), 999999);
+    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
-    //add_action( 'template_redirect', array( $this, 'template_embed' ) );
-    add_action( 'shutdown', array( $this, 'template_embed' ) );
-    add_action( 'template_redirect', array( $this, 'template_embed_buffer' ) , 999999);
-
   }
   
   
@@ -1232,18 +1230,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   function template_embed() {
-    
-    $content = ob_get_contents();
-//var_dump($content);
-    ob_clean();
-    ob_flush();
-    //ob_get_clean();
-    //phpinfo();
-    die();
-    
-    
-    
+  
     if( get_query_var('fv_player_embed') ) {
+      $content = ob_get_contents();
+      ob_clean();
+      
+      remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
       show_admin_bar(false);
       remove_action('wp_head', '_admin_bar_bump_cb');
       ?>
@@ -1278,6 +1270,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if( stripos($v,$sLink.'"') !== false ) {
           echo substr($v, stripos($v,'<div id="wpfp_') );
           $bFound = true;
+          break;
         }
       }
     }
