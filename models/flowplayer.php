@@ -101,7 +101,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
-    add_action( 'template_redirect', array( $this, 'template_embed' ) );
+    
+    //add_action( 'template_redirect', array( $this, 'template_embed' ) );
+    add_action( 'shutdown', array( $this, 'template_embed' ) );
+    add_action( 'template_redirect', array( $this, 'template_embed_buffer' ) , 999999);
 
   }
   
@@ -1222,8 +1225,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $public_query_vars;
   }
   
+  function template_embed_buffer(){
+    if( get_query_var('fv_player_embed') ) {
+      ob_start();
+    }
+  }
   
   function template_embed() {
+    
+    $content = ob_get_contents();
+//var_dump($content);
+    ob_clean();
+    ob_flush();
+    //ob_get_clean();
+    //phpinfo();
+    die();
+    
+    
+    
     if( get_query_var('fv_player_embed') ) {
       show_admin_bar(false);
       remove_action('wp_head', '_admin_bar_bump_cb');
@@ -1249,8 +1268,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
       $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
     }
-    $content = apply_filters( 'the_content', get_the_content() );
+    //$content = apply_filters( 'the_content', get_the_content() );
     
+    
+            
     $aPlayers = explode( '<!--fv player end-->', $content );
     if( $aPlayers ) {
       foreach( $aPlayers AS $k => $v ) {
