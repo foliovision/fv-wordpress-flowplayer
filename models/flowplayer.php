@@ -101,7 +101,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
-    add_action( 'template_redirect', array( $this, 'template_embed_buffer' ), 999999);
+    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
   }
@@ -1226,6 +1226,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   function template_embed_buffer(){
     if( get_query_var('fv_player_embed') ) {
       ob_start();
+      
     }
   }
   
@@ -1234,21 +1235,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
-            
-      $aHead = explode( '<head', $content );
-      $aHead = explode( '</head', $aHead[1] );
 
       remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
-      show_admin_bar(false);
       remove_action('wp_head', '_admin_bar_bump_cb');
+      show_admin_bar(false);
       ?>
-<!DOCTYPE html>
-<html>
-<head>
-  <title><?php the_title(); ?></title>
-  <?php echo $aHead[0]; //wp_head(); ?>
   <style>
     body { margin: 0; padding: 0; overflow:hidden;}
+    body:before { height: 0px!important;}
+    html {margin-top: 0px !important;}
   </style>
 </head>
 <body>
