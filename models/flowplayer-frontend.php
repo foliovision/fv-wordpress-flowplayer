@@ -433,7 +433,7 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
 					if( $autoplay == true ) {
-						$this->ret['html'] .= ' autoplay';  
+            $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;
 					}
     
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
@@ -1000,8 +1000,8 @@ class flowplayer_frontend extends flowplayer
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
     <li><a class="sharing-twitter" href="https://twitter.com/home?status='.$sTitle.$sPermalink.'" target="_blank">Twitter</a></li>
     <li><a class="sharing-google" href="https://plus.google.com/share?url='.$sPermalink.'" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body='.$sMail.'" target="_blank">Email</a></li>
-    <li><a class="sharing-link" href="'.$sLink.'" target="_blank">Email</a></li></ul>';
+    <li><a class="sharing-email" href="mailto:?body='.$sMail.'" target="_blank">Email</a></li></ul>'
+    . '<div><a class="sharing-link" href="'.$sLink.'" target="_blank">Link</a></div>';
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
