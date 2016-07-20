@@ -419,6 +419,12 @@
 .fvp-share-bar .fvp-sharing a.sharing-email {
 	background-position: 0 -84px;	
 }
+.fvp-share-bar .sharing-link{
+    float: left;
+    color: #fff;
+    padding: 6px 10px;
+    font-weight:bold;
+}
 .flowplayer .fvp-share-bar label{float:left;color:#fff;padding: 6px 10px;}
 .flowplayer .fp-embed{display:none}
 /*.flowplayer.is-mouseover.is-ready .fp-embed-code{display:block}*/
