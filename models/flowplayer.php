@@ -1237,7 +1237,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ob_clean();
 
       remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
-      remove_action('wp_head', '_admin_bar_bump_cb');
+      //remove_action('wp_head', '_admin_bar_bump_cb');
       show_admin_bar(false);
       ?>
   <style>
