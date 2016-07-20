@@ -1234,7 +1234,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
-      
+            
+      $aHead = explode( '<head', $content );
+      $aHead = explode( '</head', $aHead[1] );
+
       remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
       show_admin_bar(false);
       remove_action('wp_head', '_admin_bar_bump_cb');
@@ -1243,7 +1246,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 <html>
 <head>
   <title><?php the_title(); ?></title>
-  <?php wp_head(); ?>
+  <?php echo $aHead[0]; //wp_head(); ?>
   <style>
     body { margin: 0; padding: 0; overflow:hidden;}
   </style>
