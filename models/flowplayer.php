@@ -633,7 +633,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function get_amazon_secure( $media ) {
     
-    if( stripos($media,'X-Amz-Expires') !== false ) return $media;
+    if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
     
     $aArgs = func_get_args();
     $aArgs = $aArgs[1];
