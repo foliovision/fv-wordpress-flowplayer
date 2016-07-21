@@ -272,11 +272,7 @@ class flowplayer_frontend extends flowplayer
 	
 				
 				$attributes = array();
-				$attributes['class'] = 'flowplayer no-brand';
-				
-				if( $autoplay == false && !(isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
-					$attributes['class'] .= ' is-splash';
-				}
+				$attributes['class'] = 'flowplayer no-brand is-splash';
         
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
 					$attributes['class'] .= ' playlist-hidden';
@@ -394,7 +390,6 @@ class flowplayer_frontend extends flowplayer
           $attributes['style'] .= "background-image: url({$splash_img});";
           if( $autoplay ) {
             $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
-            $attributes['class'] .= ' is-splash';
           }
           
 				} else if( !empty($this->aCurArgs['caption']) ) {
@@ -427,7 +422,7 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 
-      if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
+        if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';      
 					if (isset($splash_img) && !empty($splash_img)) {
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
@@ -439,10 +434,9 @@ class flowplayer_frontend extends flowplayer
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
 						$this->ret['html'] .= ' preload';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
-					}	else if ($autoplay == false) {
-						$this->ret['html'] .= ' preload="none"';        
-					}        
-											
+					}
+          
+					$this->ret['html'] .= ' preload="none"';
           
           $scripts_after .= $this->get_chrome_fail_code( $media, $src1, $src2, $attributes_html );
           
