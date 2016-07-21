@@ -760,7 +760,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
         #fv_player_pro_boxCurrent{position:absolute; bottom:-25px; left:58px; font-weight:bold; color:#7C7C7C;}
 
         /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-        #fv_player_pro_boxPrevious, #fv_player_pro_boxNext, #fv_player_pro_boxSlideshow, #fv_player_pro_boxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(img/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;box-shadow:none;-webkit-box-shadow:none;}
+        #fv_player_pro_boxPrevious, #fv_player_pro_boxNext, #fv_player_pro_boxSlideshow, #fv_player_pro_boxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(img/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;box-shadow:none;-webkit-box-shadow:none;-webkit-appearance:none;}
         
         /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
         #fv_player_pro_boxPrevious:active, #fv_player_pro_boxNext:active, #fv_player_pro_boxSlideshow:active, #fv_player_pro_boxClose:active {outline:0;}
