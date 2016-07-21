@@ -386,7 +386,7 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
-          if( $args['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
+          if( $this->aCurArgs['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
             $this->sHTMLAfter .= $playlist_items_external_html;
           }
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
@@ -554,7 +554,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
         }
         
-        if (($args['liststyle'] == 'prevnext' || $args['liststyle'] == 'vertical') && count($aPlaylistItems)) {          
+        if (($this->aCurArgs['liststyle'] == 'prevnext' || $this->aCurArgs['liststyle'] == 'vertical') && count($aPlaylistItems)) {          
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
         }
           
