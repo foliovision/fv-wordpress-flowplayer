@@ -694,6 +694,10 @@ function fv_flowplayer_admin_popups(){
         display: initial;
         text-align: inherit;
       }
+      #fv-player-popups-settings td:nth-child( 1 ) {
+        text-align: center;
+        max-width: 7px;
+      }
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
@@ -727,9 +731,9 @@ function fv_flowplayer_admin_popups(){
                 <td class='id'><?php echo $key ; ?></td>
                     <td>
                       <table class='fv-player-popup-formats'>
-                        <tr><td>Name:</td><td><input type='text' name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td></tr>
+                        <tr><td>Name:</td><td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td></tr>
                         <tr><td>HTML:</td><td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>CSS:</td> <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Custom<br>CSS:</td> <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td></tr>
                       </table>
                     </td>
                     <td>
@@ -1208,7 +1212,7 @@ function fv_flowplayer_admin_checkbox( $name ) {
 /* TABS */
 $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings',         'hash' => 'tab_basic' , 'name' => 'Basic'  ),
-  array('id' => 'fv_flowplayer_settings_popups',  'hash' => 'tab_popups', 'name' => 'Popups' ),
+  array('id' => 'fv_flowplayer_settings_popups',  'hash' => 'tab_popups', 'name' => 'Popups library' ),
   array('id' => 'fv_flowplayer_settings_help',    'hash' => 'tab_help',   'name' => 'Help'   ),
 );
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
