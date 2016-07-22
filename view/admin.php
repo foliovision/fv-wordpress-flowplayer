@@ -964,6 +964,29 @@ function fv_flowplayer_admin_skin() {
       <td></td>
       <td colspan="2"></td>       
     </tr>
+        
+    <tr>              
+      <td><label for="playlistBgColor"><?php _e('Playlist&nbsp;Background', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+    <tr>              
+      <td><label for="playlistSelectedColor"><?php _e('Playlist Active', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+    <tr>              
+      <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistFontColor" name="playlistFontColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+
+
+
+
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
       <td><input class="color small" type="text" name="buttonColor" id="buttonColor" value="<?php //echo $fv_fp->conf['buttonColor']; ?>" /></td>
