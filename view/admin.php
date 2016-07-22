@@ -685,20 +685,6 @@ function fv_flowplayer_admin_select_popups($aArgs){
 function fv_flowplayer_admin_popups(){
   global $fv_fp;
     ?>
-    <style>
-      #fv-player-popups-settings tr.data:nth-child(even) { background-color: #eee; }
-      .fv-player-popup-remove { visibility: hidden; }
-      td:hover > .fv-player-popup-remove { visibility: visible; }
-      table.fv-player-popup-formats td:first-child { width: 72px }
-      #fv_flowplayer_popups .inside label {
-        display: initial;
-        text-align: inherit;
-      }
-      #fv-player-popups-settings td:nth-child( 1 ) {
-        text-align: center;
-        max-width: 7px;
-      }
-    </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td style="width: 150px"><label for="popups_default">Default Popup:</label></td>
@@ -1326,6 +1312,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 				?>
 			</div>
       <?php endforeach;?>
+      <div style="clear: both"></div>
 		</div>
     <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
   </form>
