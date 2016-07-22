@@ -142,7 +142,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
     
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
-    if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = 'inherit';
+    if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '#000000';
     if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#00a7c8';
 
     //
