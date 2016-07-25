@@ -42,7 +42,7 @@
 .fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
 
-.fv-player-interface-form-group td{ width:25%; }
+.fv-player-interface-form-group td { width:25%; }
 
 .flowplayer-wrapper { width: 54%; display: inline-block; float: right;}
 @media only screen and (max-width: 940px) {.flowplayer-wrapper { width: 100%; float: none;} .form-table2.flowplayer-settings {width: 100% !important;}}
