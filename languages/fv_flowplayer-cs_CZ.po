@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-06-23 12:28+0100\n"
-"PO-Revision-Date: 2016-06-23 12:29+0100\n"
+"PO-Revision-Date: 2016-06-28 17:25+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -492,7 +492,7 @@ msgstr "Výchozí hlasitost"
 
 #: ../view/admin.php:230
 msgid "Disable Admin Video Checker:"
-msgstr "Zakázat administrátorský kontrolor videa"
+msgstr "Odepři administrátorskou kontrolu videa:"
 
 #: ../view/admin.php:234
 msgid ""
@@ -877,7 +877,7 @@ msgstr "Playlist"
 
 #: ../view/admin.php:676
 msgid "Playlist captions"
-msgstr "Nadpisy videí v playlistu"
+msgstr "Popisky videí v playlistu"
 
 #: ../view/admin.php:683 ../view/wizard.php:222
 msgid "HTML popup"
@@ -1321,7 +1321,7 @@ msgstr "Přidat další jazyk"
 
 #: ../view/wizard.php:183
 msgid "Caption"
-msgstr "Nadpis"
+msgstr "Popisky"
 
 #: ../view/wizard.php:205
 msgid "Playlist Style"
