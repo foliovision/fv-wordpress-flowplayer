@@ -979,23 +979,37 @@ function fv_flowplayer_admin_skin() {
     </tr>
     <tr>              
       <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv_flowplayer'); ?></label></td>
-      <td><input class="color" id="playlistFontColor" name="playlistFontColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
-        <a id="playlistFontColor-default" href="#">Default</a>
+        <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
+      <td><a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor?'style="display:none;"':''; ?>>Use custom color</a>
+        <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> name="playlistFontColor-proxy" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?>>Inherit color from theme</a>
       </td>
       <td></td>
       <td colspan="2"></td>       
     </tr>
     <script>
-      jQuery('#playlistFontColor-default').click(function(e){
+      jQuery('.playlistFontColor-show').click(function(e){
         e.preventDefault();
-        if(jQuery('#playlistFontColor').css('display') === 'none'){
-          jQuery('#playlistFontColor').show().val(jQuery('#playlistFontColor').data('previous'));
-        }else{
-          jQuery('#playlistFontColor').data('previous',jQuery('#playlistFontColor').hide().val())
-        }
+        jQuery(e.target).hide();
+        jQuery('.playlistFontColor-hide').show();
+        
+        jQuery('#playlistFontColor-proxy').show().val(jQuery('#playlistFontColor-proxy').data('previous'));
+        jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
+      });
+      
+      jQuery('.playlistFontColor-hide').click(function(e){
+        e.preventDefault();
+        jQuery(e.target).hide();
+        jQuery('.playlistFontColor-show').show();
+        
+        jQuery('#playlistFontColor-proxy').data('previous',jQuery('#playlistFontColor-proxy').hide().val()).val('');
+        jQuery('#playlistFontColor').val('');
+      }); 
+      
+      jQuery('#playlistFontColor-proxy').change(function(e){
+        jQuery('#playlistFontColor').val(jQuery(e.target).val());
       })
-    
-    
     </script>
 
 
