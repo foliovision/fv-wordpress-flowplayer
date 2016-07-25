@@ -517,7 +517,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php if (!empty($fv_fp->conf['playlistFontColor'])&& $fv_fp->conf['playlistFontColor'] !=='#'):?>.fp-playlist-external>a{color:<?php echo $fv_fp->conf['playlistFontColor'];?>;}<?php endif; ?>
     .fp-playlist-external>a.is-active>span{border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>;}
     .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>;}
-    </style><?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span{background-image:url(<?php echo $fv_fp->conf['splash']; ?>);}<?php endif; ?>    
+    <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span{background-image:url(<?php echo $fv_fp->conf['splash']; ?>);}<?php endif; ?>    
     
     <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
