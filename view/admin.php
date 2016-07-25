@@ -979,11 +979,24 @@ function fv_flowplayer_admin_skin() {
     </tr>
     <tr>              
       <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv_flowplayer'); ?></label></td>
-      <td><input class="color" id="playlistFontColor" name="playlistFontColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /></td>
+      <td><input class="color" id="playlistFontColor" name="playlistFontColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
+        <a id="playlistFontColor-default" href="#">Default</a>
+      </td>
       <td></td>
       <td colspan="2"></td>       
     </tr>
-
+    <script>
+      jQuery('#playlistFontColor-default').click(function(e){
+        e.preventDefault();
+        if(jQuery('#playlistFontColor').css('display') === 'none'){
+          jQuery('#playlistFontColor').show().val(jQuery('#playlistFontColor').data('previous'));
+        }else{
+          jQuery('#playlistFontColor').data('previous',jQuery('#playlistFontColor').hide().val())
+        }
+      })
+    
+    
+    </script>
 
 
 
