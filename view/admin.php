@@ -900,7 +900,7 @@ function fv_flowplayer_admin_skin() {
     <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.</small>
   </div>
 
-  <table class="form-table2 flowplayer-settings">
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
       <td><label for="durationColor"><?php _e('Border color', 'fv_flowplayer'); ?></label></td>
       <td><input class="color" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
@@ -980,10 +980,11 @@ function fv_flowplayer_admin_skin() {
     <tr>              
       <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv_flowplayer'); ?></label></td>
         <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
-      <td><a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor?'style="display:none;"':''; ?>>Use custom color</a>
+      <td>
         <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
-        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
-        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?>>Inherit color from theme</a>
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
+        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor?'style="display:none;"':''; ?>>Use custom color</a>
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?>>Inherit from theme</a>
       </td>
       <td></td>
       <td colspan="2"></td>       
