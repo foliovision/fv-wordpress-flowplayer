@@ -141,8 +141,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
     
+    
+    //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
-    if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '#000000';
+    if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
     if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#00a7c8';
 
     //
@@ -515,9 +517,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fp-playlist-external>a>span{
       background-color:<?php echo $fv_fp->conf['playlistBgColor'];?>;
     }
+    <?php if (!empty($fv_fp->conf['playlistFontColor'])&& $fv_fp->conf['playlistFontColor'] !=='#'):?>
     .fp-playlist-external>a{
       color:<?php echo $fv_fp->conf['playlistFontColor'];?>;
     }
+    <?php endif; ?>
     .fp-playlist-external>a.is-active>span{      
       border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>;
     }   
