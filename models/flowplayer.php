@@ -96,7 +96,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'post_rewrite_rules', array( $this, 'rewrite_embed' ) );
     add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
@@ -1247,7 +1246,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   </style>
 </head>
 <body>
-  <?php while ( have_posts() ) : the_post(); ?>
+  <div style='background:white;'>
+  <?php if(isset($_GET['fv_player_preview']) && $_GET['fv_player_preview']):
+    $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
+    echo do_shortcode($shortcode);
+  else:
+  ?>
+  <?php while ( have_posts() ) : the_post(); //is this needed? ?>
     <?php
 
     $bFound = false;
@@ -1258,7 +1263,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
       $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
     }
-    //$content = apply_filters( 'the_content', get_the_content() );
     
     
             
@@ -1278,7 +1282,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }    
     
     ?>
-  <?php endwhile; ?>
+  <?php endwhile; 
+  endif;
+  ?>
 </body>
 <?php wp_footer(); ?>
 </html>       
