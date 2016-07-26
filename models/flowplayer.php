@@ -1249,6 +1249,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <div style='background:white;'>
   <?php if(isset($_GET['fv_player_preview']) && $_GET['fv_player_preview']):
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
+    if($shortcode === '[fvplayer]'){
+      $shortcode = '[fvplayer src="http://foliovision.com/videos/example.mp4"]';
+    }
     echo do_shortcode($shortcode);
   else:
   ?>

@@ -366,7 +366,15 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
     </div>
     <div id="fv-player-shortcode-editor-preview">
+      <h2><?php _e('Preview', 'fv_flowplayer'); ?>:</h2>
       <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
     </div>
   </div>
 </div>
+<style>
+  #fv-player-shortcode-editor-preview{
+   
+    height: 270px;
+    margin: 50px 7px 0 0;
+  }
+</style>  
