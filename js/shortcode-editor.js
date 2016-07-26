@@ -368,6 +368,8 @@ function fv_flowplayer_playlist_show() {
    
     
   });
+  jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src','');
+  jQuery('#fv-player-shortcode-editor-preview').hide();
   jQuery('.fv-player-playlist').show(); 
   fv_wp_flowplayer_dialog_resize();
 }
@@ -823,6 +825,7 @@ function fv_wp_flowplayer_submit( preview ) {
   //Preview
   if(preview){
     var url = encodeURIComponent(fv_wp_fp_shortcode);
+    jQuery('#fv-player-shortcode-editor-preview').show();
     jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src','http://localhost/wp451/?fv_player_embed=1&fv_player_preview=' + url);
     return;
   }
