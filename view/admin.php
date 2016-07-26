@@ -1004,6 +1004,87 @@ function fv_flowplayer_admin_pro() {
   <?php
 }
 
+/*
+ * Pro Video Ads Dummy box
+ */
+function fv_flowplayer_admin_video_ads(){
+  ?>
+  <style>
+      #fv-player-pro_video-ads-settings tr.data:nth-child(even) { background-color: #eee; }
+      .fv-player-pro_video-ad-remove { visibility: hidden; }
+      table.fv-player-pro_video-ad-formats td:first-child { width: 132px }
+    </style>
+    <table class="form-table2" style="margin: 5px; ">
+      <tbody><tr>
+          <td style="width: 250px"><label for="pro[video_ads_default]">Default pre-roll ad:</label></td>
+          <td>
+            <p class="description">
+              <select disabled="true" id="pro[video_ads_default]" >
+                <option selected="" value="no">No ad</option>
+                <option value="random">Random</option>
+                <option value="1">1</option>      
+              </select>
+              Set which ad should be played before videos.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 250px"><label for="pro[video_ads_postroll_default]">Default post-roll ad:</label></td>
+          <td>
+            <p class="description">
+              <select disabled="true" id="pro[video_ads_postroll_default]" >
+                <option selected="" value="no">No ad</option>
+                <option value="random">Random</option>
+                <option value="1">1</option>      
+              </select>
+              Set which ad should be played after videos.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 250px"><label for="pro[video_ads_skip]">Default ad skip time:</label></td>
+          <td>
+            <p class="description">
+              <input disabled="true" class="small" id="pro[video_ads_skip]"  title="Enter value in seconds" type="text" value="5">
+              Enter the number of seconds after which an ad can be skipped.
+            </p>
+          </td>
+        </tr>
+      </tbody></table>
+    <table class="form-table2" style="margin: 5px; ">  
+      <tbody><tr>    		
+          <td>
+            <table id="fv-player-pro_video-ads-settings">
+              <thead><tr><td>ID</td><td></td><td>Status</td></tr></thead>
+              <tbody>
+                <tr class="data">
+                  <td class="id">1</td>
+                  <td>
+                    <table class="fv-player-pro_video-ad-formats">
+                      <tbody><tr><td>Name:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Ad name"></td></tr>
+                        <tr><td>Click URL:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Clicking the video ad will open the URL in new window"></td></tr>
+                        <tr><td>Video:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Enter the video URL here"></td></tr>
+                      </tbody></table>
+                  </td>
+                  <td>
+                    <input disabled="true" id="VideoAdDisabled-0" type="checkbox"  value="1"> <label for="VideoAdDisabled-0">Disable</label><br>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>         
+        <tr>    		
+          <td>
+            <input disabled="true" type="button" value="Add more video ads" class="button" id="fv-player-pro_video-ads-add">
+          </td>
+        </tr>         
+      </tbody></table>
+
+
+  <?php
+} 
+
+
 
 function fv_flowplayer_admin_skin() {
 	global $fv_fp;
@@ -1197,27 +1278,40 @@ function fv_flowplayer_admin_checkbox( $name ) {
 
 /* TABS */
 $fv_player_aSettingsTabs = array(
-  array('id' => 'fv_flowplayer_settings',         'hash' => 'tab_basic' , 'name' => 'Basic'  ),
-  array('id' => 'fv_flowplayer_settings_popups',  'hash' => 'tab_popups', 'name' => 'Popups library' ),
-  array('id' => 'fv_flowplayer_settings_help',    'hash' => 'tab_help',   'name' => 'Help'   ),
+  array('id' => 'fv_flowplayer_settings',           'hash' => 'tab_basic' ,    'name' => 'Setup'  ),
+  array('id' => 'fv_flowplayer_settings_skin',      'hash' => 'tab_skin' ,     'name' => 'Skin'  ),
+  array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting' ,  'name' => 'Hosting'  ),
+  array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions' ,  'name' => 'Actions'  ),
+  array('id' => 'fv_flowplayer_settings_video_ads', 'hash' => 'tab_video_ads' ,'name' => 'Video Ads'  ),
+  array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',      'name' => 'Help'   ),
 );
+
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
 
-/* basic tab */
+/* Setup tab */
 add_meta_box( 'fv_flowplayer_description', __('Description', 'fv_flowplayer'), 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv_flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv_flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide Flowplayer Defaults', 'fv_flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv_flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv_flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
-/* popup tab */
-add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_popups', 'normal' );
 
-/* help tab */
+/* Skin Tab */
+add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv_flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
+
+/* Hosting Tab */
+add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings_hosting', 'normal' );
+
+/* Actions Tab */
+add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+
+/* Video Ads Tab */
+if( !class_exists('FV_Player_Pro') ) {
+  add_meta_box( 'fv_flowplayer_ads', __('Video Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
+}
+/* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'low' );
 
 ?>
@@ -1275,7 +1369,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     <div id="fv_flowplayer_admin_notices">
     </div> 
     <div id="fv_flowplayer_admin_tabs">
-      <h2 class="nav-tab-wrapper">
+      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
         <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
         <a href="#<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
         <?php endforeach;?>
@@ -1302,7 +1396,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       </div>
     <?php endif; ?>	
   
-		<div id="dashboard-widgets" class="metabox-holder columns-1">
+		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
       <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style="display:none;"<?php endif; ?>>    
 				<?php

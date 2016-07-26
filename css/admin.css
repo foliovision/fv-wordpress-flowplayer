@@ -61,7 +61,15 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   max-width: 7px;
 }
 
-#wpfp_options #dashboard-widgets {
-  border: 1px solid lightgray;
-  border-top: 0;
+.fv-metabox-holder{
+  padding-top:0!important;
+}
+
+.fv-nav-tab-wrapper{
+  border-bottom: 0px!important;
+  margin-left: 1px!important;
+}
+
+.fv-metabox-holder .postbox.hide-if-js{
+  display:block;
 }
