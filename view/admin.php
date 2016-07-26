@@ -900,7 +900,7 @@ function fv_flowplayer_admin_skin() {
     <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.</small>
   </div>
 
-  <table class="form-table2 flowplayer-settings">
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
       <td><label for="durationColor"><?php _e('Border color', 'fv_flowplayer'); ?></label></td>
       <td><input class="color" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
@@ -964,6 +964,34 @@ function fv_flowplayer_admin_skin() {
       <td></td>
       <td colspan="2"></td>       
     </tr>
+        
+    <tr>              
+      <td><label for="playlistBgColor"><?php _e('Playlist&nbsp;Background', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+    <tr>              
+      <td><label for="playlistSelectedColor"><?php _e('Playlist Active', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+    <tr>              
+      <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv_flowplayer'); ?></label></td>
+        <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
+      <td>
+        <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
+        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor?'style="display:none;"':''; ?>>Use custom color</a>
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?>>Inherit from theme</a>
+      </td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>    
+
+
+
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
       <td><input class="color small" type="text" name="buttonColor" id="buttonColor" value="<?php //echo $fv_fp->conf['buttonColor']; ?>" /></td>
@@ -1301,8 +1329,33 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       } else {
         jQuery(this).html('(&hellip;)');
       }      
-    } );    
-	});
+    } );  
+    
+    /*
+     * Coor Picker Default  
+     */	
+    jQuery('.playlistFontColor-show').click(function(e){
+      e.preventDefault();
+      jQuery(e.target).hide();
+      jQuery('.playlistFontColor-hide').show();
+
+      jQuery('#playlistFontColor-proxy').show().val(jQuery('#playlistFontColor-proxy').data('previous'));
+      jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
+    });
+
+    jQuery('.playlistFontColor-hide').click(function(e){
+      e.preventDefault();
+      jQuery(e.target).hide();
+      jQuery('.playlistFontColor-show').show();
+
+      jQuery('#playlistFontColor-proxy').data('previous',jQuery('#playlistFontColor-proxy').hide().val()).val('');
+      jQuery('#playlistFontColor').val('');
+    }); 
+
+    jQuery('#playlistFontColor-proxy').on('change',function(e){
+      jQuery('#playlistFontColor').val(jQuery(e.target).val());
+    })
+  });
 	//]]>
 </script>
 
