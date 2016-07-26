@@ -73,7 +73,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
 <div style="display: none">
   <div id="fv-player-shortcode-editor">
-    <div id="fv-player-shortcode-editor-left">
+    <div id="fv-player-shortcode-editor-editor">
       <div class="fv-player-tabs-header">
         <h2 class="nav-tab-wrapper hide-if-no-js">
           <a href="#" class="nav-tab nav-tab-active" style="outline: 0px;" rel="fv-player-tab-video-files">Video files</a>
@@ -365,8 +365,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
       </div> 
 
     </div>
-    <div id="fv-player-shortcode-editor-right">
-      <iframe id="fv-player-shortcode-editor-preview"></iframe>
+    <div id="fv-player-shortcode-editor-preview">
+      <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
     </div>
   </div>
 </div>
