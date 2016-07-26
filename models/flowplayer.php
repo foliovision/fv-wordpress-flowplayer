@@ -101,8 +101,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
-    add_action( 'template_redirect', array( $this, 'template_embed' ) );
-
+    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
+    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    
   }
   
   
@@ -633,7 +634,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function get_amazon_secure( $media ) {
     
-    if( stripos($media,'X-Amz-Expires') !== false ) return $media;
+    if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
     
     $aArgs = func_get_args();
     $aArgs = $aArgs[1];
@@ -1222,19 +1223,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $public_query_vars;
   }
   
+  function template_embed_buffer(){
+    if( get_query_var('fv_player_embed') ) {
+      ob_start();
+      
+    }
+  }
   
   function template_embed() {
+  
     if( get_query_var('fv_player_embed') ) {
+      $content = ob_get_contents();
+      ob_clean();
+
+      remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
+      //remove_action('wp_head', '_admin_bar_bump_cb');
       show_admin_bar(false);
-      remove_action('wp_head', '_admin_bar_bump_cb');
       ?>
-<!DOCTYPE html>
-<html>
-<head>
-  <title><?php the_title(); ?></title>
-  <?php wp_head(); ?>
   <style>
     body { margin: 0; padding: 0; overflow:hidden;}
+    body:before { height: 0px!important;}
+    html {margin-top: 0px !important;}
   </style>
 </head>
 <body>
@@ -1249,14 +1258,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
       $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
     }
-    $content = apply_filters( 'the_content', get_the_content() );
+    //$content = apply_filters( 'the_content', get_the_content() );
     
+    
+            
     $aPlayers = explode( '<!--fv player end-->', $content );
     if( $aPlayers ) {
       foreach( $aPlayers AS $k => $v ) {
         if( stripos($v,$sLink.'"') !== false ) {
           echo substr($v, stripos($v,'<div id="wpfp_') );
           $bFound = true;
+          break;
         }
       }
     }
