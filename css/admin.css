@@ -61,15 +61,24 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   max-width: 7px;
 }
 
-.fv-metabox-holder{
+.fv-metabox-holder {
   padding-top:0!important;
 }
 
-.fv-nav-tab-wrapper{
+.fv-nav-tab-wrapper {
   border-bottom: 0px!important;
   margin-left: 1px!important;
 }
 
-.fv-metabox-holder .postbox.hide-if-js{
+.fv-metabox-holder .postbox.hide-if-js {
   display:block;
+}
+
+.fv-metabox-holder .postbox:first-child > .hndle, .fv-metabox-holder .postbox:first-child > .handlediv {
+  display:none;
+}
+
+#fv_flowplayer_admin_tabs .nav-tab-active {
+  background-color: #ffffff;
+  border-bottom: #ffffff;
 }
