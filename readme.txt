@@ -109,14 +109,7 @@ You can check [demo in here](https://foliovision.com/player/demos/align-settings
 
 = 4. How to check my video properties using the built-in checker and how to report video not playing =
 
-* Login to your site as administrator (please use the browser in which the video is not playing for you)
-* Double check Settings -> FV Player -> Sitewide Flowplayer Defaults -> "Disable admin video checker" is not checked
-* Come to any post which was video
-* A message in top left corner of the video should appear saying: "Checking the video file...". The check takes usually 1-2 seconds.
-* Once it's finished, it changes color based on what problem is detected and you can click it to get video details.
-* The dialog also includes our tips on how to resolve the issues found. There is also a button labeled "Send to Foliovision" which sends your video with details straight to our private support tickets.
-
-Note: The checker doesn't work for localhost files, as our service is not able to access them.
+The video checker works automatically when you're logged in as admin. You'll see a text in upper left corner of any video on your site. All the necessary info can be found in [this guide](https://foliovision.com/player/basic-setup/how-to-use-video-checker).
 
 = 5. My video doesn't play in Internet Explorer 9 and 10. =
 
@@ -340,14 +333,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.6 - 2016/07/?? =
-
-* Settings - New settings tabs
-
-= 6.0.5.4 - 2016/07/?? =
+= 6.0.5.5 - 2016/07/?? =
 
 * Settings - Added Tabs
 * Popup Ads - Improved UI for popup ads - Moved to settings screen
+
+= 6.0.5.4 - 2016/07/26 =
+
+* Color settings - added more settings for playlist colors
+* Iframe embedding - compatibility fixes - needed for websites which load FV Player outside of post_content
+* Speed buttons - fix for iPad to not pause after speed change
 
 = 6.0.5.3 - 2016/06/23 =
 

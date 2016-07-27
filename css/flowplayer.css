@@ -469,8 +469,7 @@
 .fp-playlist-external a { width:140px; display:inline-block; vertical-align:top; margin:0 auto 12px auto; border: 0;box-shadow:none !important;text-align:center;font-size:13px;line-height:1.2;}
 .fp-playlist-external a span { display:block;width:120px;height:80px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:2px solid #fff;background:gray;background-size:auto 100px;background-position:center;}
 .fp-playlist-external a:hover span { border-color:#ccc }
-.fp-playlist-external a.is-active span { border-color:#52b9e4; }
-.fp-playlist-external a.is-active { color:#52b9e4;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
+.fp-playlist-external a.is-active { -webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
 #content .fp-playlist-external a { border: 0}
 
 .fp-playlist-vertical { text-align: left; overflow-x: hidden; background: #fff;max-width: 100%; }
@@ -760,7 +759,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
         #fv_player_pro_boxCurrent{position:absolute; bottom:-25px; left:58px; font-weight:bold; color:#7C7C7C;}
 
         /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-        #fv_player_pro_boxPrevious, #fv_player_pro_boxNext, #fv_player_pro_boxSlideshow, #fv_player_pro_boxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(img/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;}
+        #fv_player_pro_boxPrevious, #fv_player_pro_boxNext, #fv_player_pro_boxSlideshow, #fv_player_pro_boxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(img/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;box-shadow:none;-webkit-box-shadow:none;-webkit-appearance:none;}
         
         /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
         #fv_player_pro_boxPrevious:active, #fv_player_pro_boxNext:active, #fv_player_pro_boxSlideshow:active, #fv_player_pro_boxClose:active {outline:0;}

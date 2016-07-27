@@ -101,10 +101,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
-    add_action( 'template_redirect', array( $this, 'template_embed' ) );
-    
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
 
+    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
+    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    
   }
   
   
@@ -124,6 +125,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
     if( !isset( $conf['allowuploads'] ) ) $conf['allowuploads'] = 'true';
     if( !isset( $conf['postthumbnail'] ) ) $conf['postthumbnail'] = 'false';
+    
+    //default colors
     if( !isset( $conf['tgt'] ) ) $conf['tgt'] = 'backgroundcolor';
     if( !isset( $conf['backgroundColor'] ) ) $conf['backgroundColor'] = '#333333';
     if( !isset( $conf['canvas'] ) ) $conf['canvas'] = '#000000';
@@ -138,7 +141,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
-    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';    
+    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
+    
+    
+    //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
+    if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
+    if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
+    if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#00a7c8';
+
+    //
+    
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
     if( !isset( $conf['width'] ) ) $conf['width'] = '720';
     if( !isset( $conf['height'] ) ) $conf['height'] = '480';
@@ -492,8 +504,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
-    .fp-playlist-external a.is-active { color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
-    .fp-playlist-external a.is-active span { border-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
@@ -518,6 +528,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
     .fvfp_admin_error_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
     
+    .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->conf['playlistBgColor'];?>; }
+    <?php if (!empty($fv_fp->conf['playlistFontColor'])&& $fv_fp->conf['playlistFontColor'] !=='#'):?>.fp-playlist-external > a { color:<?php echo $fv_fp->conf['playlistFontColor'];?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
+    .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
+    <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->conf['splash']; ?>); }<?php endif; ?>    
     <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
       if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
@@ -648,7 +663,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function get_amazon_secure( $media ) {
     
-    if( stripos($media,'X-Amz-Expires') !== false ) return $media;
+    if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
     
     $aArgs = func_get_args();
     $aArgs = $aArgs[1];
@@ -1255,19 +1270,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $public_query_vars;
   }
   
+  function template_embed_buffer(){
+    if( get_query_var('fv_player_embed') ) {
+      ob_start();
+      
+    }
+  }
   
   function template_embed() {
+  
     if( get_query_var('fv_player_embed') ) {
+      $content = ob_get_contents();
+      ob_clean();
+
+      remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
+      //remove_action('wp_head', '_admin_bar_bump_cb');
       show_admin_bar(false);
-      remove_action('wp_head', '_admin_bar_bump_cb');
       ?>
-<!DOCTYPE html>
-<html>
-<head>
-  <title><?php the_title(); ?></title>
-  <?php wp_head(); ?>
   <style>
     body { margin: 0; padding: 0; overflow:hidden;}
+    body:before { height: 0px!important;}
+    html {margin-top: 0px !important;}
   </style>
 </head>
 <body>
@@ -1282,14 +1305,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
       $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
     }
-    $content = apply_filters( 'the_content', get_the_content() );
+    //$content = apply_filters( 'the_content', get_the_content() );
     
+    
+            
     $aPlayers = explode( '<!--fv player end-->', $content );
     if( $aPlayers ) {
       foreach( $aPlayers AS $k => $v ) {
         if( stripos($v,$sLink.'"') !== false ) {
           echo substr($v, stripos($v,'<div id="wpfp_') );
           $bFound = true;
+          break;
         }
       }
     }
