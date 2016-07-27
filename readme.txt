@@ -340,6 +340,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.6 - 2016/07/?? =
+
+* Settings - New settings tabs
+
 = 6.0.5.4 - 2016/07/?? =
 
 * Settings - Added Tabs
