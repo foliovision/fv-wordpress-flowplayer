@@ -1411,8 +1411,8 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal' );
-add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
 
