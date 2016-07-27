@@ -1355,6 +1355,12 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',      'name' => 'Help'   ),
 );
 
+//unset video ads tab for Legacy PRO player
+if(version_compare(get_option( 'fv_player_pro_ver' ),'0.7.23') == -1){
+  unset($fv_player_aSettingsTabs[4]);
+  $fv_player_aSettingsTabs = array_merge($fv_player_aSettingsTabs,array());
+}
+
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
 
 /* Setup tab */
