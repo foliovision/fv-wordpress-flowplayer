@@ -502,7 +502,7 @@ function fv_flowplayer_admin_description_skin() {
       <tr>
         <td colspan="4">
           <p>                                 
-            <?php _e('Here You can edit the appearance and color shceme of FV Player.', 'fv_flowplayer'); ?>
+            <?php _e('You can customize the colors of the player to match your website.', 'fv_flowplayer'); ?>
           </p>
         </td>
       </tr>
@@ -519,7 +519,7 @@ function fv_flowplayer_admin_description_hosting() {
     <tr>
       <td colspan="4">
         <p>                                 
-          <?php _e('Here You can enable and configure advanced hosting options.', 'fv_flowplayer'); ?>
+          <?php _e('Here you can enable and configure advanced hosting options.', 'fv_flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -536,7 +536,7 @@ function fv_flowplayer_admin_description_actions() {
     <tr>
       <td colspan="4">
         <p>                                 
-          <?php _e('Here You can configure text advertisements and banners that will be showed in the Video.', 'fv_flowplayer'); ?>
+          <?php _e('Here you can configure ads and banners that will be showed in the video.', 'fv_flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -553,8 +553,14 @@ function fv_flowplayer_admin_description_video_ads() {
     <tr>
       <td colspan="4">
         <p>                                 
-          <?php _e('Purchase <a href="https://foliovision.com/player/download"><b>FV Player Pro Licence</b></a>, and You will be able to configure multiple, clickable Video Ads, that can be played before or after Your videos.<br/>You can configure video ads globally, or on a per video basis.', 'fv_flowplayer'); ?>
+          <?php _e('Purchase <a href="https://foliovision.com/player/download" target="_blank"><b>FV Player Licence</b></a>, and you will be able to configure multiple, clickable Video Ads, that can be played before or after Your videos.', 'fv_flowplayer'); ?>
         </p>
+        <p>
+          <?php _e('You can configure video ads globally, or on a per video basis.', 'fv_flowplayer'); ?>
+        </p>
+        <p>
+          <?php _e('If you are interested in VAST or VPAID ads, then check out <a href="https://foliovision.com/player/vast" target="_blank"><b>FV Player VAST</b></a>.', 'fv_flowplayer'); ?>
+        </p>        
       </td>
     </tr>
   </table>
@@ -1392,7 +1398,7 @@ if(version_compare(get_option( 'fv_player_pro_ver' ),'0.7.23') == -1){
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
 
 /* Setup tab */
-add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv_flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide Flowplayer Defaults', 'fv_flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv_flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
@@ -1401,27 +1407,27 @@ if( !class_exists('FV_Player_Pro') ) {
 }
 
 /* Skin Tab */
-add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv_flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 
 
 /* Hosting Tab */
-add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal' );
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings_hosting', 'normal' );
 
 /* Actions Tab */
-add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
 
 if( !class_exists('FV_Player_Pro') ) {
-  add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
+  add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_video_ads', 'fv_flowplayer_settings_video_ads', 'normal', 'high' );
   add_meta_box( 'fv_flowplayer_ads', __('Video Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
 }
 /* Help tab */
-add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'low' );
+add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
 
 ?>
 
