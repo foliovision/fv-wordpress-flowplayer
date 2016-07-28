@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-07-28 13:45+0100\n"
-"PO-Revision-Date: 2016-07-28 13:45+0100\n"
+"POT-Creation-Date: 2016-07-28 14:48+0100\n"
+"PO-Revision-Date: 2016-07-28 14:48+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -57,7 +57,7 @@ msgstr ""
 "vašeho odkazu: <code>&lt;a href=\"http://cesta.k.vasemu/videu.mp4\" class="
 "\"colorbox\"&gt;Nadpis vašeho odkazu&lt;/a&gt;</code>"
 
-#: ../models/lightbox.php:321 ../view/admin.php:857
+#: ../models/lightbox.php:321
 msgid "Use video lightbox for images as well"
 msgstr "Použít video lightbox také pro obrázky"
 
@@ -346,7 +346,7 @@ msgid "(Hint: put .wpfp_custom_ad_content before your own CSS selectors)"
 msgstr "(Tip: dejte .wpfp_custom_ad_content před vlastní CSS selektori)"
 
 #: ../view/admin.php:74 ../view/admin.php:180 ../view/admin.php:387
-#: ../view/admin.php:653 ../view/admin.php:781 ../view/admin.php:997
+#: ../view/admin.php:653 ../view/admin.php:781 ../view/admin.php:988
 msgid "Save All Changes"
 msgstr "Uložiť všechny změny"
 
@@ -931,11 +931,11 @@ msgstr "Náhledový obrázek na konci"
 msgid "Embed"
 msgstr "Vkládání HTML kódu přehrávače"
 
-#: ../view/admin.php:730 ../view/admin.php:1022 ../view/wizard.php:151
+#: ../view/admin.php:730 ../view/admin.php:1013 ../view/wizard.php:151
 msgid "Subtitles"
 msgstr "Titulky"
 
-#: ../view/admin.php:737 ../view/admin.php:1098
+#: ../view/admin.php:737 ../view/admin.php:1089
 msgid "Ads"
 msgstr "Reklamy"
 
@@ -947,7 +947,7 @@ msgstr "Mobilný video"
 msgid "Align"
 msgstr "Zarovnat"
 
-#: ../view/admin.php:758 ../view/admin.php:936 ../view/wizard.php:284
+#: ../view/admin.php:758 ../view/admin.php:927 ../view/wizard.php:284
 msgid "Controlbar"
 msgstr "Ovládací panel"
 
@@ -1023,25 +1023,21 @@ msgstr "Amazon CloudFront chráněný obsah"
 msgid "Protect your Amazon CDN hosted videos"
 msgstr "Ochraňte vaše videa hostované na Amazon CDN"
 
-#: ../view/admin.php:861
-msgid "Will group images as well as videos into the same lightbox gallery."
-msgstr "Sdruží obrázky stejně jako videa do lightbox galerie."
-
-#: ../view/admin.php:866
+#: ../view/admin.php:857
 msgid "Autoplay just once"
 msgstr "Automatické přehrávání jen jednou"
 
-#: ../view/admin.php:870
+#: ../view/admin.php:861
 msgid "Makes sure each video autoplays only once for each visitor."
 msgstr ""
 "Zabezpečí, že každé video sa přehraje automaticky pouze jednou pro každého "
 "návštěvníka."
 
-#: ../view/admin.php:875
+#: ../view/admin.php:866
 msgid "Enable video ads"
 msgstr "Povolit video reklamy"
 
-#: ../view/admin.php:879
+#: ../view/admin.php:870
 msgid ""
 "Define your own videos ads to play in together with your videos - postroll "
 "or prerool"
@@ -1049,19 +1045,19 @@ msgstr ""
 "Zvolte si vlastní nastavení přehrávání reklam ve videu - na začátku, nebo na "
 "konci"
 
-#: ../view/admin.php:884
+#: ../view/admin.php:875
 msgid "Upcoming pro features"
 msgstr "Připravované profesionální funkce"
 
-#: ../view/admin.php:887
+#: ../view/admin.php:878
 msgid "Enable PayWall"
 msgstr "Povolit PayWall"
 
-#: ../view/admin.php:891
+#: ../view/admin.php:882
 msgid "Monetize the video content on your membership site."
 msgstr "Zpeněžit obsah videa na členských stránkach."
 
-#: ../view/admin.php:906
+#: ../view/admin.php:897
 msgid ""
 "Missing settings? Check <a href=\"#fv_flowplayer_default_options\">Sitewide "
 "Flowplayer Defaults</a> box below."
@@ -1069,219 +1065,219 @@ msgstr ""
 "Chybí Vám nastavení? Níže si prohlédněte sekci <a href="
 "\"#fv_flowplayer_default_options\">globální nastavení Flowplayeru</a>."
 
-#: ../view/admin.php:912
+#: ../view/admin.php:903
 msgid "Border color"
 msgstr "Barva okraje"
 
-#: ../view/admin.php:914
+#: ../view/admin.php:905
 msgid "Border"
 msgstr "Okraj"
 
-#: ../view/admin.php:918
+#: ../view/admin.php:909
 msgid "Buffer"
 msgstr "Vyrovnávací paměť"
 
-#: ../view/admin.php:920
+#: ../view/admin.php:911
 msgid "Bottom Margin"
 msgstr "Spodní odsazení"
 
-#: ../view/admin.php:924
+#: ../view/admin.php:915
 msgid "Canvas"
 msgstr "Plátno"
 
-#: ../view/admin.php:926
+#: ../view/admin.php:917
 msgid "Font Face"
 msgstr "Typ písma"
 
-#: ../view/admin.php:931
+#: ../view/admin.php:922
 msgid "(inherit from template)"
 msgstr "(zdědiť od šablony)"
 
-#: ../view/admin.php:938
+#: ../view/admin.php:929
 msgid "Player position"
 msgstr "Pozice přehrávače"
 
-#: ../view/admin.php:941
+#: ../view/admin.php:932
 msgid "Centered"
 msgstr "Na stred"
 
-#: ../view/admin.php:942
+#: ../view/admin.php:933
 msgid "Left (no text-wrap)"
 msgstr "Doleva (bez zalamování textu)"
 
-#: ../view/admin.php:947
+#: ../view/admin.php:938
 msgid "Progress"
 msgstr "Aktuální pozice"
 
-#: ../view/admin.php:949
+#: ../view/admin.php:940
 msgid "Subtitle Font Size"
 msgstr "Velikost písma titulků"
 
-#: ../view/admin.php:953
+#: ../view/admin.php:944
 msgid "Time"
 msgstr "Čas"
 
-#: ../view/admin.php:963
+#: ../view/admin.php:954
 msgid "Timeline"
 msgstr "Časová osa"
 
-#: ../view/admin.php:969
+#: ../view/admin.php:960
 msgid "Total time"
 msgstr "Celkový čas"
 
-#: ../view/admin.php:1013
+#: ../view/admin.php:1004
 msgid "Illustrated user guides"
 msgstr "Ilustrovaný užívatelský průvodce"
 
-#: ../view/admin.php:1016
+#: ../view/admin.php:1007
 msgid "Inserting videos"
 msgstr "Vlož videa"
 
-#: ../view/admin.php:1017
+#: ../view/admin.php:1008
 msgid "License key and custom logo"
 msgstr "Licenční klíč a vlastní logo"
 
-#: ../view/admin.php:1018
+#: ../view/admin.php:1009
 msgid "How to create a playlist"
 msgstr "Jak vytvoriť playlist"
 
-#: ../view/admin.php:1019
+#: ../view/admin.php:1010
 msgid "Using ads"
 msgstr "Použití reklam"
 
-#: ../view/admin.php:1020
+#: ../view/admin.php:1011
 msgid "Using Google Ads"
 msgstr "Používaní reklám od Googlu"
 
-#: ../view/admin.php:1021
+#: ../view/admin.php:1012
 msgid "RTMP streams"
 msgstr "RTMP streamy"
 
-#: ../view/admin.php:1023
+#: ../view/admin.php:1014
 msgid "Amazon S3 secure content guide"
 msgstr "Amazon S3 průvodce chráneného obsahu"
 
-#: ../view/admin.php:1024
+#: ../view/admin.php:1015
 msgid "How to setup a HLS stream"
 msgstr "Jak nastavit HLS stream"
 
-#: ../view/admin.php:1025
+#: ../view/admin.php:1016
 msgid "Google Analytics support"
 msgstr "Google Analytics podpora"
 
-#: ../view/admin.php:1026
+#: ../view/admin.php:1017
 msgid "Video lightbox"
 msgstr "Video lightbox"
 
-#: ../view/admin.php:1027
+#: ../view/admin.php:1018
 msgid "YouTube integration"
 msgstr "Integrace s YouTube"
 
-#: ../view/admin.php:1028
+#: ../view/admin.php:1019
 msgid "Quality Switching"
 msgstr "Přepínaní kvality"
 
-#: ../view/admin.php:1029
+#: ../view/admin.php:1020
 msgid "Vimeo integration"
 msgstr "Integrace s Vimeom"
 
-#: ../view/admin.php:1030
+#: ../view/admin.php:1021
 msgid "Custom video ads"
 msgstr "Vlastní reklamy vo videu"
 
-#: ../view/admin.php:1031
+#: ../view/admin.php:1022
 msgid "CloudFront CDN - protected video downloads"
 msgstr "CloudFront CDN - chráněné stahování videa"
 
-#: ../view/admin.php:1036
+#: ../view/admin.php:1027
 msgid "Troubleshooting"
 msgstr "Řešení problémů"
 
-#: ../view/admin.php:1039
+#: ../view/admin.php:1030
 msgid "Automated checks"
 msgstr "Automatizované kontroly"
 
-#: ../view/admin.php:1040
+#: ../view/admin.php:1031
 msgid "Video encoding tips"
 msgstr "Tipy pro kódovaní videa"
 
-#: ../view/admin.php:1041
+#: ../view/admin.php:1032
 msgid "Video formats to avoid"
 msgstr "Formáty videí, kterým by ste se měli vyhýbat"
 
-#: ../view/admin.php:1042
+#: ../view/admin.php:1033
 msgid "Fixing mime type on Amazon S3"
 msgstr "Oprava MIME typu na Amazon S3"
 
-#: ../view/admin.php:1043
+#: ../view/admin.php:1034
 msgid "Plugin FAQ"
 msgstr "FAQ pre plugin"
 
-#: ../view/admin.php:1044
+#: ../view/admin.php:1035
 msgid "Support forums"
 msgstr "Podpora fóra"
 
-#: ../view/admin.php:1093
+#: ../view/admin.php:1084
 msgid "Description"
 msgstr "Popis"
 
-#: ../view/admin.php:1094
+#: ../view/admin.php:1085
 msgid "Player Skin"
 msgstr "Vzhled přehrávače"
 
-#: ../view/admin.php:1095
+#: ../view/admin.php:1086
 msgid "Post Interface Options"
 msgstr "Možnosti rozhraní příspěvků"
 
-#: ../view/admin.php:1096
+#: ../view/admin.php:1087
 msgid "Sitewide Flowplayer Defaults"
 msgstr "Globální nastavení Flowplayeru"
 
-#: ../view/admin.php:1097
+#: ../view/admin.php:1088
 msgid "Amazon S3 Protected Content"
 msgstr "Amazon S3 chráněný obsah"
 
-#: ../view/admin.php:1099
+#: ../view/admin.php:1090
 msgid "Integrations/Compatibility"
 msgstr "Integrace/Kompatibilita"
 
-#: ../view/admin.php:1102
+#: ../view/admin.php:1093
 msgid "Pro Features"
 msgstr "Pro Funkce"
 
-#: ../view/admin.php:1104
+#: ../view/admin.php:1095
 msgid "Usage"
 msgstr "Používání"
 
-#: ../view/admin.php:1138
+#: ../view/admin.php:1129
 msgid "Enable the Pro extension"
 msgstr "Aktivovat Pro rozšíření"
 
-#: ../view/admin.php:1140
+#: ../view/admin.php:1131
 msgid "Pro pack installed"
 msgstr "Pro verze je nainstalována"
 
-#: ../view/admin.php:1142
+#: ../view/admin.php:1133
 msgid "Install Pro extension"
 msgstr "Nainstalovat Pro rozšíření"
 
-#: ../view/admin.php:1145
+#: ../view/admin.php:1136
 msgid "Apply Pro upgrade"
 msgstr "Použít Pro aktualizaci"
 
-#: ../view/admin.php:1147
+#: ../view/admin.php:1138
 msgid "Check template"
 msgstr "Zkontroluj šablony"
 
-#: ../view/admin.php:1148
+#: ../view/admin.php:1139
 msgid "Check videos"
 msgstr "Zkontroluj videa"
 
-#: ../view/admin.php:1150
+#: ../view/admin.php:1141
 msgid "Commercial License Key"
 msgstr "Komerčný licenční klíč"
 
-#: ../view/admin.php:1150
+#: ../view/admin.php:1141
 msgid "Click here for license info"
 msgstr "Klikněte zde pro informace ohledně licence"
 
@@ -1441,6 +1437,9 @@ msgstr ""
 #: ../view/wizard.php:328
 msgid "currently not working with playlist"
 msgstr "V současné době nefunguje s playlistem"
+
+#~ msgid "Will group images as well as videos into the same lightbox gallery."
+#~ msgstr "Sdruží obrázky stejně jako videa do lightbox galerie."
 
 #~ msgid "Add FV WP Flowplayer"
 #~ msgstr "Přidej FV WP Flowplayer"

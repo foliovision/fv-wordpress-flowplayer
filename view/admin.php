@@ -852,15 +852,6 @@ function fv_flowplayer_admin_pro() {
           <?php _e('Protect your Amazon CDN hosted videos', 'fv-wordpress-flowplayer'); ?>.
         </p>
       </td>
-    </tr>        
-    <tr>
-      <td><label><?php _e('Use video lightbox for images as well', 'fv-wordpress-flowplayer'); ?>:</label></td>
-      <td>
-        <p class="description">
-          <input type="checkbox" disabled="true" />
-          <?php _e('Will group images as well as videos into the same lightbox gallery.', 'fv-wordpress-flowplayer'); ?>
-        </p>
-      </td>
     </tr>
     <tr>
       <td><label><?php _e('Autoplay just once', 'fv-wordpress-flowplayer'); ?>:</label></td>
