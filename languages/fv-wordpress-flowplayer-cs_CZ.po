@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-07-25 11:06+0100\n"
-"PO-Revision-Date: 2016-07-25 11:09+0100\n"
+"POT-Creation-Date: 2016-07-28 13:45+0100\n"
+"PO-Revision-Date: 2016-07-28 13:45+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -43,6 +43,10 @@ msgstr "Klikni pro sledovaní videa"
 msgid "[This post contains video, click to play]"
 msgstr "[Tenhle příspěvek obsahuje video, klikni pro přehrávání]"
 
+#: ../models/lightbox.php:305 ../view/admin.php:830
+msgid "Enable video lightbox"
+msgstr "\tPovolit video lightbox"
+
 #: ../models/lightbox.php:310
 msgid ""
 "You can also put in <code>&lt;a href=\"http://path.to.your/video.mp4\" class="
@@ -52,6 +56,18 @@ msgstr ""
 "Pro rychlé vložení videa s Lightbox můžete vložit class=\"colorbox\" do "
 "vašeho odkazu: <code>&lt;a href=\"http://cesta.k.vasemu/videu.mp4\" class="
 "\"colorbox\"&gt;Nadpis vašeho odkazu&lt;/a&gt;</code>"
+
+#: ../models/lightbox.php:321 ../view/admin.php:857
+msgid "Use video lightbox for images as well"
+msgstr "Použít video lightbox také pro obrázky"
+
+#: ../models/lightbox.php:326
+msgid ""
+"Will group images as well as videos into the same lightbox gallery. Turn "
+"<strong>off</strong> your lightbox plugin when using this."
+msgstr ""
+"Sdruží obrázky stejně jako videa do lightbox galerie. <strong>Vypněte</"
+"strong> Váš lightbox plugin, když chcete použít tuto možnost."
 
 #: ../models/checker.php:315
 msgid "Every 5 minutes"
@@ -983,10 +999,6 @@ msgstr "Povolit uživatelem definovanu AB slučku"
 msgid "Let your users repeat the parts of the video which they like!"
 msgstr "Nechte svým uživatelům opakovat části videa, která se jim líbí!"
 
-#: ../view/admin.php:830
-msgid "Enable video lightbox"
-msgstr "\tPovolit video lightbox"
-
 #: ../view/admin.php:834
 msgid "Enables Lightbox video gallery to show videos in a lightbox popup!"
 msgstr "Povolit lightbox video galerii pro zobrazení videi v lightbox popup!"
@@ -1010,10 +1022,6 @@ msgstr "Amazon CloudFront chráněný obsah"
 #: ../view/admin.php:852
 msgid "Protect your Amazon CDN hosted videos"
 msgstr "Ochraňte vaše videa hostované na Amazon CDN"
-
-#: ../view/admin.php:857
-msgid "Use video lightbox for images as well"
-msgstr "Použít video lightbox také pro obrázky"
 
 #: ../view/admin.php:861
 msgid "Will group images as well as videos into the same lightbox gallery."

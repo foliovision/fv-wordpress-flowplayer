@@ -302,7 +302,7 @@ class FV_Player_lightbox {
     global $fv_fp;
     ?>
     <tr>
-      <td style="width: 250px"><label for="interface[lightbox]">Enable video lightbox:</label></td>
+      <td style="width: 250px"><label for="interface[lightbox]"><?php _e('Enable video lightbox', 'fv-wordpress-flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="interface[lightbox]" />
@@ -318,12 +318,12 @@ class FV_Player_lightbox {
     global $fv_fp;
     ?>
     <tr>
-      <td style="width: 250px"><label for=""lightbox_images">Use video lightbox for images as well:</label></td>
+      <td style="width: 250px"><label for="lightbox_images"><?php _e('Use video lightbox for images as well', 'fv-wordpress-flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_images" />
           <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true') echo 'checked="checked"'; ?> />
-          Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.
+          <?php _e('Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
