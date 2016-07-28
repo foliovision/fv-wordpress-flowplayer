@@ -469,8 +469,7 @@
 .fp-playlist-external a { width:140px; display:inline-block; vertical-align:top; margin:0 auto 12px auto; border: 0;box-shadow:none !important;text-align:center;font-size:13px;line-height:1.2;}
 .fp-playlist-external a span { display:block;width:120px;height:80px;margin:0 10px;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s;border:2px solid #fff;background:gray;background-size:auto 100px;background-position:center;}
 .fp-playlist-external a:hover span { border-color:#ccc }
-.fp-playlist-external a.is-active span { border-color:#52b9e4; }
-.fp-playlist-external a.is-active { color:#52b9e4;-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
+.fp-playlist-external a.is-active { -webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
 #content .fp-playlist-external a { border: 0}
 
 .fp-playlist-vertical { text-align: left; overflow-x: hidden; background: #fff;max-width: 100%; }

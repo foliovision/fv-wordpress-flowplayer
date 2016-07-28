@@ -600,7 +600,7 @@ class flowplayer_frontend extends flowplayer
 			$this->build_audio_player( $media, $width, $autoplay );
 		}
     
-    if(isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical'){
+    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' && count($aPlaylistItems) ){
       $this->ret['html'] = '<div class="fp-playlist-vertical-wrapper">'.$this->ret['html'].'</div>';
     }
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
@@ -765,33 +765,51 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_popup_code() {
-    if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup']) ) ) {
-      if (isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup'])) {
-        $popup = trim($this->aCurArgs['popup']);
-        if( stripos($popup,'<!--fv_flowplayer_base64_encoded-->') !== false ) {
-          $popup = str_replace('<!--fv_flowplayer_base64_encoded-->','',$popup);
-          $popup = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($popup) ) );
-        } else {
-          $popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
-        }
-      }
-      else {
-        $popup = 'Would you like to replay the video?';
+  function get_popup_code() {   
+    if ( !empty($this->aCurArgs['popup'])) {
+      $popup = trim($this->aCurArgs['popup']);
+    } else {
+      $popup = empty($this->conf['popups_default'])?'no':$this->conf['popups_default'];
+    }
+    if (stripos($popup, '<!--fv_flowplayer_base64_encoded-->') !== false) {
+      $popup = str_replace('<!--fv_flowplayer_base64_encoded-->', '', $popup);
+      $popup = html_entity_decode(str_replace(array('\"', '\[', '\]'), array('"', '[', ']'), base64_decode($popup)));
+    } else {
+      $popup = html_entity_decode(str_replace('&#039;', "'", $popup));
+    }
+    
+    if ($popup === 'no') {
+      return false;
+    } 
+     
+    if($popup === 'random' || is_numeric($popup)  ){
+      $aPopupData = get_option('fv_player_popups');    
+      if ($popup === 'random') {
+        $iPopupIndex = rand(1,count($aPopupData) );
+      } elseif (is_numeric($popup)) {
+        $iPopupIndex = intval($popup);
       }
       
-      $popup = apply_filters( 'fv_flowplayer_popup_html', $popup );
-      if( strlen(trim($popup)) > 0 ) {			
-        $popup_contents = array(
-                             'html' => '<div class="wpfp_custom_popup_content">'.$popup.'</div>'
-                          );
-        return $popup_contents;
+      if(isset($aPopupData[$iPopupIndex])){
+        $popup = $aPopupData[$iPopupIndex]['html']; 
+      }else{
+        return false;
       }
     }
+    
+    $sClass = ' fv_player_popup-'.$iPopupIndex;
+    
+    $popup = apply_filters('fv_flowplayer_popup_html', $popup);
+    if (strlen(trim($popup)) > 0) {
+      $popup_contents = array(
+          'html' => '<div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div>'
+      );
+      return $popup_contents;
+    }
+
     return false;
   }
-  
-  
+
   function get_rtmp_server($rtmp) {
     $rtmp_server = false;
     if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {

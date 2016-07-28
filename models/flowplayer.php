@@ -101,6 +101,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
+    add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
+
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
@@ -123,6 +125,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
     if( !isset( $conf['allowuploads'] ) ) $conf['allowuploads'] = 'true';
     if( !isset( $conf['postthumbnail'] ) ) $conf['postthumbnail'] = 'false';
+    
+    //default colors
     if( !isset( $conf['tgt'] ) ) $conf['tgt'] = 'backgroundcolor';
     if( !isset( $conf['backgroundColor'] ) ) $conf['backgroundColor'] = '#333333';
     if( !isset( $conf['canvas'] ) ) $conf['canvas'] = '#000000';
@@ -137,7 +141,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
-    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';    
+    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
+    
+    
+    //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
+    if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
+    if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
+    if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#00a7c8';
+
+    //
+    
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
     if( !isset( $conf['width'] ) ) $conf['width'] = '720';
     if( !isset( $conf['height'] ) ) $conf['height'] = '480';
@@ -177,6 +190,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
 
+    if(isset($aNewOptions['popups'])){
+      unset($aNewOptions['popups']['#fv_popup_dummy_key#']);
+      
+      foreach( $aNewOptions['popups'] AS $key => $value ) {
+        $aNewOptions['popups'][$key]['css'] = stripslashes($value['css']);
+        $aNewOptions['popups'][$key]['html'] = stripslashes($value['html']);
+      }
+      
+      update_option('fv_player_popups',$aNewOptions['popups']);
+      unset($aNewOptions['popups']);
+    }
+    
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
@@ -479,8 +504,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
-    .fp-playlist-external a.is-active { color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
-    .fp-playlist-external a.is-active span { border-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
@@ -492,7 +515,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }  
-    .wpfp_custom_popup_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
+    .fv_player_popup {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
   
     <?php echo trim($this->conf['ad_css']); ?>
     .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; z-index: 20 !important; }
@@ -505,6 +528,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .fvfp_admin_error a { color: <?php echo trim($fv_fp->conf['durationColor']); ?>; }
     .fvfp_admin_error_content {  background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
     
+    .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->conf['playlistBgColor'];?>; }
+    <?php if (!empty($fv_fp->conf['playlistFontColor'])&& $fv_fp->conf['playlistFontColor'] !=='#'):?>.fp-playlist-external > a { color:<?php echo $fv_fp->conf['playlistFontColor'];?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
+    .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
+    <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->conf['splash']; ?>); }<?php endif; ?>    
     <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
       if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
@@ -519,7 +547,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
-  
+    <?php echo apply_filters('fv_player_custom_css',''); ?>
     <?php if( !$skip_style_tag ) : ?>
       </style>  
     <?php endif;
@@ -619,6 +647,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
       return false;
     }
+    $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
     $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
@@ -1180,6 +1209,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return true;
   }
   
+
+  function popup_css( $css ){
+    $aPopupData = get_option('fv_player_popups');
+    $sNewCss = '';
+    if( is_array($aPopupData) ) {
+      foreach($aPopupData as $key => $val){
+        if( empty($val['css']) ){
+          continue;
+        }
+        $sNewCss .= stripslashes($val['css'])."\n";
+      }
+    }
+    if( strlen($sNewCss) ){
+      $css .= "\n/*custom popup css*/\n".$sNewCss."/*end custom popup css*/\n";
+    }
+    return $css;
+  }  
+    
   
   function rewrite_check( $aRules ) {
     $aRewriteRules = get_option('rewrite_rules');
