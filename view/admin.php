@@ -868,7 +868,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>    		          
 					<tr>          
-						<td><label for="interface[popup]"><?php _e('HTML popup', 'fv_flowplayer'); ?>:</label></td>
+						<td><label for="interface[popup]"><?php _e('End popup', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <input type="hidden" name="interface[popup]" value="false" />
 							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fv_fp->conf['interface']['popup']) && $fv_fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
