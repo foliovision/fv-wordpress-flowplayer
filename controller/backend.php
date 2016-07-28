@@ -75,14 +75,27 @@ function fv_wp_flowplayer_featured_image() {
   $sThumbUrl = str_replace('splash="', '', $sThumbUrl[0]);
 
   $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl, $post->ID);
-  //set_post_thumbnail($post, $thumbnail_id);
-  die();
+  set_post_thumbnail($post->ID, $thumbnail_id);
+  
+}
+
+function fv_wp_flowplayer_construct_filename( $post_id ) {
+  $filename = get_the_title( $post_id );
+  $filename = sanitize_title( $filename, $post_id );
+  $filename = urldecode( $filename );
+  $filename = preg_replace( '/[^a-zA-Z0-9\-]/', '', $filename );
+  $filename = substr( $filename, 0, 32 );
+  $filename = trim( $filename, '-' );
+  if ( $filename == '' ) $filename = (string) $post_id;
+  return $filename;
 }
 
 function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
-
+  
   $error = '';
-  $response = wp_remote_get( $image_url );
+  $response = wp_remote_get( $image_url ,array('timeout' => 120, 'httpversion' => '1.1',));
+  //$response['body'] = file_get_contents($image_url);
+  //var_dump($image_url,$response); die();
   if( is_wp_error( $response ) ) {
     $error = new WP_Error( 'thumbnail_retrieval', sprintf( __( 'Error retrieving a thumbnail from the URL <a href="%1$s">%1$s</a> using <code>wp_remote_get()</code><br />If opening that URL in your web browser returns anything else than an error page, the problem may be related to your web server and might be something your host administrator can solve.', 'video-thumbnails' ), $image_url ) . '<br>' . __( 'Error Details:', 'video-thumbnails' ) . ' ' . $response->get_error_message() );
   } else {
@@ -106,7 +119,7 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
     }
 
     // Construct a file name with extension
-    $new_filename = self::construct_filename( $post_id ) . $image_extension;
+    $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
 
     // Save the image bits using the new filename    
     $upload = wp_upload_bits( $new_filename, null, $image_contents );    
@@ -143,9 +156,7 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 }
 
-function flowplayer_activate() {
-	
-}
+
 
 
 function flowplayer_deactivate() {
