@@ -639,11 +639,11 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>-->
 					<tr>
-						<td><label for="wp_core_video"><?php _e('Use iframe embedding', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td><label for="embed_iframe"><?php _e('Use iframe embedding', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[embed_iframe]" value="false" />
-                <input type="checkbox" name="integrations[embed_iframe]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
+                <input type="checkbox" name="integrations[embed_iframe]" id="embed_iframe" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
                 <?php _e('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer'); ?>
               </p>
 						</td>
