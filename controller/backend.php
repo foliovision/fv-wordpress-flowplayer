@@ -42,8 +42,8 @@ add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' 
 
 add_action( 'after_plugin_row', 'fv_wp_flowplayer_after_plugin_row', 10, 3 );
 
-add_action( 'save_post', 'fv_wp_flowplayer_save_post'/*, 9999*/ );
-add_action( 'save_post', 'fv_wp_flowplayer_featured_image'/*, 9999*/ );
+add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
+add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 9999 );
 
 
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
@@ -62,22 +62,32 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 function fv_wp_flowplayer_featured_image() {
+  if(!isset($_POST['content'])){
+    return;
+  }
+  
+  global $FV_Player_Pro;
+  remove_filter( 'content_save_pre', array($FV_Player_Pro, 'update_vimeo_yt_data'));
+  
   $thumbnail_id = get_post_thumbnail_id();
   if (!empty($thumbnail_id)) {
     return;
   }
-
+  
   $post = get_post();
+  
   $sPost = $post->post_content;
   $sThumbUrl = array();
   if (!preg_match('/(?:splash=")[^"]*.(?:jpg|gif|png)/', $sPost, $sThumbUrl)) {
     return;
   }
   $sThumbUrl = str_replace('splash="', '', $sThumbUrl[0]);
-
   $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl, $post->ID);
-  set_post_thumbnail($post->ID, $thumbnail_id);
+  if($thumbnail_id){
+    set_post_thumbnail($post->ID, $thumbnail_id);
+  }
   
+     
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
@@ -95,17 +105,15 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
   
   $error = '';
   $response = wp_remote_get( $image_url );
-  //$response['body'] = file_get_contents($image_url);
-  //var_dump($image_url,$response); die();
   if( is_wp_error( $response ) ) {
     $error = new WP_Error( 'thumbnail_retrieval', sprintf( __( 'Error retrieving a thumbnail from the URL <a href="%1$s">%1$s</a> using <code>wp_remote_get()</code><br />If opening that URL in your web browser returns anything else than an error page, the problem may be related to your web server and might be something your host administrator can solve.', 'video-thumbnails' ), $image_url ) . '<br>' . __( 'Error Details:', 'video-thumbnails' ) . ' ' . $response->get_error_message() );
   } else {
     $image_contents = $response['body'];
     $image_type = wp_remote_retrieve_header( $response, 'content-type' );
   }
-
-  if ( $error != '' ) {
-    return $error;
+  
+  if ( $error != '' || $image_contents == '' ) {
+    return false;
   } else {
 
     // Translate MIME type into an extension
