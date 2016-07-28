@@ -93,7 +93,7 @@ function fv_wp_flowplayer_construct_filename( $post_id ) {
 function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
   
   $error = '';
-  $response = wp_remote_get( $image_url ,array('timeout' => 120, 'httpversion' => '1.1',));
+  $response = wp_remote_get( $image_url );
   //$response['body'] = file_get_contents($image_url);
   //var_dump($image_url,$response); die();
   if( is_wp_error( $response ) ) {
@@ -156,7 +156,9 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 }
 
+function flowplayer_activate() {
 
+}
 
 
 function flowplayer_deactivate() {
