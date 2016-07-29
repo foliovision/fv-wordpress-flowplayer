@@ -1390,7 +1390,7 @@ $fv_player_aSettingsTabs = array(
 );
 
 //unset video ads tab for Legacy PRO player
-if(version_compare(get_option( 'fv_player_pro_ver' ),'0.7.23') == -1){
+if(version_compare( str_replace( '.beta','',get_option( 'fv_player_pro_ver' ) ),'0.7.23') == -1){
   unset($fv_player_aSettingsTabs[4]);
   $fv_player_aSettingsTabs = array_merge($fv_player_aSettingsTabs,array());
 }
