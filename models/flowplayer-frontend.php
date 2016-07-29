@@ -359,11 +359,11 @@ class flowplayer_frontend extends flowplayer
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
 				}	
-        
-				// What was this check for?
-        // if( count($aPlaylistItems) == 0 ) {
-          list( $attributes['data-rtmp'], $rtmp ) = $this->get_rtmp_server($rtmp);
-        // }
+                
+        list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
+        if( count($aPlaylistItems) == 0 && $rtmp_server) {
+          $attributes['data-rtmp'] = $rtmp_server;
+        }
          				
 				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
     
@@ -813,7 +813,7 @@ class flowplayer_frontend extends flowplayer
 
   function get_rtmp_server($rtmp) {
     $rtmp_server = false;
-    if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {
+    if( !empty($this->aCurArgs['rtmp']) ) {
       $rtmp_server = trim( $this->aCurArgs['rtmp'] );
     } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && !(isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
       if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
@@ -972,7 +972,7 @@ class flowplayer_frontend extends flowplayer
       $this->ajax_count++;
       
       $rtmp_test = false;
-      if( $rtmp && isset($attributes['data-rtmp']) ) {
+      if( $rtmp ) {
         $rtmp_test = parse_url($rtmp);
         $rtmp_test = trailingslashit($attributes['data-rtmp']).ltrim($rtmp_test['path'],'/');
       }
