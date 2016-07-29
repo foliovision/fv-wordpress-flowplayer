@@ -713,11 +713,21 @@ function fv_flowplayer_admin_integrations() {
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[embed_iframe]" value="false" />
-                <input type="checkbox" name="integrations[embed_iframe]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
+                <input type="checkbox" name="integrations[embed_iframe]" id="embed_iframe" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
                 <?php _e('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv_flowplayer'); ?>
               </p>
 						</td>
-					</tr>           
+					</tr>
+          <tr>
+						<td><label for="featured_img">Add featured image automatically</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="integrations[featured_img]" value="false" />
+                <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('FV Player automatically sets the first thumbnail in a post as the thumbnail (featured image) of the post.', 'fv_flowplayer'); ?>
+              </p>
+						</td>
+					</tr>   
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />
