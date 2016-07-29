@@ -179,8 +179,7 @@ jQuery(document).ready( function($) {
   /*
    * Preview
    */
-  //fv_wp_flow  player_submit(true);
-  jQuery('.fv-player-tabs [name]').on('change keyup',function(){
+  jQuery(document).on('change keyup', '.fv-player-tabs [name]' ,function(){
     if(FVFP_oPreviewDebounce){
       clearTimeout(FVFP_oPreviewDebounce);
       FVFP_oPreviewDebounce = setTimeout(function(){
@@ -825,8 +824,10 @@ function fv_wp_flowplayer_submit( preview ) {
   //Preview
   if(preview){
     var url = encodeURIComponent(fv_wp_fp_shortcode);
-    jQuery('#fv-player-shortcode-editor-preview').show();
-    jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src','http://localhost/wp451/?fv_player_embed=1&fv_player_preview=' + url);
+    if(jQuery('.fv-player-tabs').css('display') === 'block'){
+      jQuery('#fv-player-shortcode-editor-preview').show();
+      jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src', fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + url);
+    }
     return;
   }
   
