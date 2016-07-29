@@ -358,11 +358,12 @@ class flowplayer_frontend extends flowplayer
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
-				}			
-				
-        if( count($aPlaylistItems) == 0 ) {
+				}	
+        
+				// What was this check for?
+        // if( count($aPlaylistItems) == 0 ) {
           list( $attributes['data-rtmp'], $rtmp ) = $this->get_rtmp_server($rtmp);
-        }
+        // }
          				
 				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
     
