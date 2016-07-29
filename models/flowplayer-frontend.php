@@ -51,7 +51,7 @@ class flowplayer_frontend extends flowplayer
 	 * @param array $args Array of arguments (name => value).
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
-	function build_min_player($media,$args = array()) {
+	function build_min_player($media,$args = array(),$nested = false) {
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
@@ -169,10 +169,12 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Allow plugins to create custom playlist styles
      */
-    $res = apply_filters( 'fv_flowplayer_playlist_style', false, $this->aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions );
-    if( $res ) {
-      return $res;
-    }  
+    if(!$nested){
+      $res = apply_filters( 'fv_flowplayer_playlist_style', false, $this->aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions );
+      if( $res ) {
+        return $res;
+      } 
+    }
     
     
     /*
