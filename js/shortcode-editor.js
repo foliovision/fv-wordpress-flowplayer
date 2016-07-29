@@ -10,9 +10,9 @@ jQuery(document).ready( function($) {
     $(document).on( 'click', '.fv-wordpress-flowplayer-button', function() {
       $.fv_player_box( {
         top: "100px",
-        initialWidth: 620,
+        initialWidth: 1200,
         initialHeight: 50,
-        width:"620px",
+        width:"1200px",
         height:"100px",
         href: "#fv-player-shortcode-editor",
         inline: true,
@@ -684,7 +684,7 @@ function fv_wp_flowplayer_edit() {
 function fv_wp_flowplayer_dialog_resize() {
   var iContentHeight = parseInt( jQuery('#fv-player-shortcode-editor').css('height') );
   if( iContentHeight < 50 ) iContentHeight = 50;
-  jQuery('#fv-player-shortcode-editor').fv_player_box.resize({width:620, height:(iContentHeight+100)})
+  jQuery('#fv-player-shortcode-editor').fv_player_box.resize({width:1200, height:(iContentHeight+100)})
 }
 
 

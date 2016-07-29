@@ -59,6 +59,19 @@
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
 /*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
+
+fv-player-shortcode-editor{
+  width:1200px;
+}
+#fv-player-shortcode-editor-editor{
+  width: 500px;
+  display:inline-block;
+}
+#fv-player-shortcode-editor-preview{
+  width: 500px;
+  display:inline-block;
+}
+
 </style>
   
 <script>
@@ -74,6 +87,10 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
 <div style="display: none">
   <div id="fv-player-shortcode-editor">
+    <div id="fv-player-shortcode-editor-preview">
+      <h2><?php _e('Preview', 'fv_flowplayer'); ?>:</h2>
+      <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
+    </div>
     <div id="fv-player-shortcode-editor-editor">
       <div class="fv-player-tabs-header">
         <h2 class="nav-tab-wrapper hide-if-no-js">
@@ -365,11 +382,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
       </div> 
 
-    </div>
-    <div id="fv-player-shortcode-editor-preview">
-      <h2><?php _e('Preview', 'fv_flowplayer'); ?>:</h2>
-      <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
-    </div>
+    </div>   
   </div>
 </div>
 <style>
