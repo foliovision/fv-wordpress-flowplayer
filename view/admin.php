@@ -1691,6 +1691,7 @@ jQuery(document).ready(function(){
 });
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   e.preventDefault();
+  window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
