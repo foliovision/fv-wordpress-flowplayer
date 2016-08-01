@@ -106,6 +106,10 @@ fv-player-shortcode-editor{
 .fv-player-tabs-header .nav-tab-wrapper{
   margin:0;
 }
+.fv_player_actions_end-toggle{
+  display:none;
+}
+
 </style>
   
 <script>
@@ -288,15 +292,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         <option><?php _e('Off', 'fv_flowplayer'); ?></option>
                       </select>
                     </td>
-                  </tr>  
-                  <tr>
-                    <th scope="row" class="label">
-                      <label for="fv_wp_flowplayer_field_splashend"><?php _e('Splash end', 'fv_flowplayer'); ?></label>
-                    </th>
-                    <td>
-                      <input type="checkbox" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" /> <?php _e('(show splash image at the end)', 'fv_flowplayer'); ?>
-                    </td> 
-                  </tr>    
+                  </tr>      
                   <tr>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embed" class="alignright"><?php _e('Embedding', 'fv_flowplayer'); ?></label></th>
                     <td class="field">
@@ -361,37 +357,37 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <tr id="fv_wp_flowplayer_actions">
                     <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_actions_end" class="alignright"><?php _e('End of video', 'fv_flowplayer'); ?></label></th>
                     <td class="field" style="width: 50%">
-                      <select id="fv_wp_flowplayer_field_actions_end" name="fv_wp_flowplayer_field_actions_end">
+                      <select id="fv_wp_flowplayer_field_actions_end" >
                         <option value=""><?php _e('Nothing', 'fv_flowplayer'); ?></option>
                         <option value="redirect"><?php _e('Redirect', 'fv_flowplayer'); ?></option> 
                         <option value="loop"><?php _e('Loop', 'fv_flowplayer'); ?></option>
                         <option value="popup"><?php _e('Show popup', 'fv_flowplayer'); ?></option>
-                        <option value="splash"><?php _e('Show splash screen', 'fv_flowplayer'); ?></option>
+                        <option value="splashend"><?php _e('Show splash screen', 'fv_flowplayer'); ?></option>
                       </select>          
                     </td>  				
                   </tr>
                   
-                  <tr>
+                  <input type="hidden" id="fv_wp_flowplayer_field_loop"      name="fv_wp_flowplayer_field_loop"      />
+                  <input type="hidden" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" />
+                  
+                  <tr class="fv_player_actions_end-toggle">
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
                     <td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
-                  </tr> 
-                  
-                  <tr style="display: none">
-                    <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup"  class="alignright"><?php _e('HTML popup', 'fv_flowplayer'); ?></label></th>
-                    <td>
-                      <textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
-                      <p><span class="dashicons dashicons-warning"></span> You are using the legacy popup functionality. Move the popup code <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_target">here</a>, then use the drop down below.</p>
-                    </td>          
                   </tr>
-                  <tr<?php if ($fv_flowplayer_conf["interface"]["popup"] !== 'true') echo ' style="display: none"'; ?>>
+                  
+                  <tr class="fv_player_actions_end-toggle">
                     <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
-                    <td><?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?></td>
+                    <td <?php if ($fv_flowplayer_conf["interface"]["popup"] !== 'true') echo ' style="display: none"'; ?> >
+                      <!-- legacy -->
+                      
+                      <!-- end legacy -->
+                      <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
+                      <div>
+                        <p><span class="dashicons dashicons-warning"></span> You are using the legacy popup functionality. Move the popup code <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_target">here</a>, then use the drop down menu above.</p>
+                        <textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
+                      </div>                      
+                    </td>
                   </tr>
-                  
-                  <tr>
-                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright"><?php _e('Loop', 'fv_flowplayer'); ?></label></th>
-                    <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
-                  </tr> 
                   
                   
                   <tr id="fv_wp_flowplayer_add_format_wrapper">

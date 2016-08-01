@@ -782,7 +782,8 @@ class flowplayer_frontend extends flowplayer
     if ($popup === 'no') {
       return false;
     } 
-     
+    
+    $iPopupIndex = 1;
     if($popup === 'random' || is_numeric($popup)  ){
       $aPopupData = get_option('fv_player_popups');    
       if ($popup === 'random') {
