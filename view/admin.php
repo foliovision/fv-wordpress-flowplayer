@@ -1400,7 +1400,7 @@ $fv_player_aSettingsTabs = array(
 );
 
 //unset video ads tab for Legacy PRO player
-if(version_compare(get_option( 'fv_player_pro_ver' ),'0.7.23') == -1){
+if(version_compare( str_replace( '.beta','',get_option( 'fv_player_pro_ver' ) ),'0.7.23') == -1){
   unset($fv_player_aSettingsTabs[4]);
   $fv_player_aSettingsTabs = array_merge($fv_player_aSettingsTabs,array());
 }
@@ -1496,8 +1496,9 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     <div id="fv_flowplayer_admin_tabs">
       <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
         <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
+        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
         <?php endforeach;?>
+        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
       </h2>
     </div>
     
@@ -1523,7 +1524,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
   
 		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style="display:none;"<?php endif; ?>>    
+      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>    
 				<?php
 				do_meta_boxes($val['id'], 'normal', false );
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
@@ -1686,21 +1687,25 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
 </script>
 
 <script>
+/* TABS */  
 jQuery(document).ready(function(){
+  jQuery('#fv_player_js_warning').hide();
+  
   var anchor = window.location.hash.substring(1);
   if( !anchor || !anchor.match(/tab_/) ) return;
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
-  jQuery('#postbox-container-' + anchor).show();
+  jQuery('#' + anchor).show();
 });
-
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
+  e.preventDefault();
+  window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
-  jQuery('#postbox-container-' + anchor).show();
+  jQuery('#' + anchor).show();
 });  
 </script>
