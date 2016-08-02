@@ -4,6 +4,8 @@ class FV_Player_lightbox {
 
   private $lightboxHtml;
   
+  //private $run = 0;
+  
   public function __construct() {
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
@@ -143,13 +145,19 @@ class FV_Player_lightbox {
     $i = 0;
     $after = '';
     foreach ($aPlaylistItems AS $key => $aSrc) {
+      //if ($this->run ++ == 10)die('END');
+      
+      if(isset($aSrc['sources'][0]['is-cva'])){
+        continue;
+      }      
+      
       $i++;
       unset($aCurArgs['playlist']);
       $aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      $aCurArgs['splash'] = $aSplashScreens[$key];
-      $aCurArgs['caption'] = $aCaptions[$key];
+      $aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:false;
+      $aCurArgs['caption'] =  isset($aCaptions[$key])?$aCaptions[$key]:false;
 
-      $aPlayer = $fv_fp->build_min_player($aCurArgs['src'], $aCurArgs);
+      $aPlayer = $fv_fp->build_min_player($aCurArgs['src'], $aCurArgs , 1);
 
       if ($i == 1) {
         $output['html'] .= $aPlayer['html'];
