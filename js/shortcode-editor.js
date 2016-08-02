@@ -10,9 +10,9 @@ jQuery(document).ready( function($) {
     $(document).on( 'click', '.fv-wordpress-flowplayer-button', function() {
       $.fv_player_box( {
         top: "100px",
-        initialWidth: 1200,
+        initialWidth: 1100,
         initialHeight: 50,
-        width:"1200px",
+        width:"1100px",
         height:"100px",
         href: "#fv-player-shortcode-editor",
         inline: true,
@@ -75,8 +75,9 @@ jQuery(document).ready( function($) {
    * Remove playlist item 
    */
   $(document).on('click','.fv-player-playlist tr .fvp_item_remove a', function() {
-    var index = $(this).parents('tr').index();
-    jQuery(this).parents('tr').remove();
+    var index = $(this).parent('tr').index();
+    console.log(index,$(this));
+    jQuery(this).parents('tr')[0].remove();
     jQuery('.fv-player-tab-video-files table').eq(index).remove();
     jQuery('.fv-player-tab-subtitles table').eq(index).remove();
     fv_wp_flowplayer_dialog_resize();
@@ -737,7 +738,7 @@ function fv_wp_flowplayer_edit() {
 function fv_wp_flowplayer_dialog_resize() {
   var iContentHeight = parseInt( jQuery('#fv-player-shortcode-editor').css('height') );
   if( iContentHeight < 50 ) iContentHeight = 50;
-  jQuery('#fv-player-shortcode-editor').fv_player_box.resize({width:1200, height:(iContentHeight+100)})
+  jQuery('#fv-player-shortcode-editor').fv_player_box.resize({width:1100, height:(iContentHeight+100)})
 }
 
 
