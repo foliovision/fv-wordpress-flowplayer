@@ -357,7 +357,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <tr id="fv_wp_flowplayer_actions">
                     <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_actions_end" class="alignright"><?php _e('End of video', 'fv_flowplayer'); ?></label></th>
                     <td class="field" style="width: 50%">
-                      <select id="fv_wp_flowplayer_field_actions_end" >
+                      <select id="fv_wp_flowplayer_field_actions_end" name="fv_wp_flowplayer_field_actions_end">
                         <option value=""><?php _e('Nothing', 'fv_flowplayer'); ?></option>
                         <option value="redirect"><?php _e('Redirect', 'fv_flowplayer'); ?></option> 
                         <option value="loop"><?php _e('Loop', 'fv_flowplayer'); ?></option>
@@ -366,10 +366,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       </select>          
                     </td>  				
                   </tr>
-                  
-                  <input type="hidden" id="fv_wp_flowplayer_field_loop"      name="fv_wp_flowplayer_field_loop"      />
-                  <input type="hidden" id="fv_wp_flowplayer_field_splashend" name="fv_wp_flowplayer_field_splashend" />
-                  
+                                   
                   <tr class="fv_player_actions_end-toggle">
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
                     <td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
