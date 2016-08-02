@@ -22,7 +22,6 @@
  
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
-
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
 ?>
@@ -723,7 +722,7 @@ function fv_flowplayer_admin_integrations() {
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[featured_img]" value="false" />
-                <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) echo 'checked="checked"'; ?> />
+                <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] == 'true' ) echo 'checked="checked"'; ?> />
                 <?php _e('FV Player automatically sets the first thumbnail in a post as the thumbnail (featured image) of the post.', 'fv_flowplayer'); ?>
               </p>
 						</td>

@@ -62,6 +62,10 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 function fv_wp_flowplayer_featured_image() {
+  global $fv_fp;
+  if(!isset($fv_fp->conf['integrations']['featured_img']) || isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] !== 'true'){
+    return;
+  }
   if(!isset($_POST['content'])){
     return;
   }
