@@ -609,7 +609,15 @@ class flowplayer_frontend extends flowplayer
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
-		return $this->ret;
+    
+    /*
+     * User agent check
+     */
+    if (strpos($_SERVER ['HTTP_USER_AGENT'], 'Chrome') && preg_match('/Android ([123].[\d](.[\d])?|4.[321](.[\d])?)/', $_SERVER ['HTTP_USER_AGENT'])) {
+      $this->ret['html'] .= '<div>For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.</div>';
+    }
+
+    return $this->ret;
 	}
   
   
