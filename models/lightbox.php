@@ -146,8 +146,8 @@ class FV_Player_lightbox {
       $i++;
       unset($aCurArgs['playlist']);
       $aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      $aCurArgs['splash'] = $aSplashScreens[$key];
-      $aCurArgs['caption'] = $aCaptions[$key];
+      $aCurArgs['splash'] = isset($aSplashScreens[$key]) ? $aSplashScreens[$key] : false;
+      $aCurArgs['caption'] = isset($aCaptions[$key]) ? $aCaptions[$key] : false;
 
       $aPlayer = $fv_fp->build_min_player($aCurArgs['src'], $aCurArgs);
 
