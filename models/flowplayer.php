@@ -106,6 +106,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
+    add_action( 'wp_head', array( $this, 'fb_share_tags' ), 0);
+    
   }
   
   
@@ -1334,7 +1336,76 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
   
+  function is_s3($sURL) {
+    global $fv_fp;
+    foreach($fv_fp->conf['amazon_bucket'] as $value ){
+      if (strpos($sURL, '/' . $value . '/') !== false) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function is_cloudfront($sURL) {
+    global $fv_fp;
+    if (isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['cf_domain'])) {
+      return strpos($sURL, $fv_fp->conf['pro']['cf_domain']) !== false;
+    } else {
+      return false;
+    }
+  }
+
+  function is_vimeo( $sURL ) {
+    return preg_match( "~vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)?(\d+)~i", $sURL, $aDynamic );
+  }
   
+  function is_youtube( $sURL ) {
+    global $fv_fp;
+
+    if(
+      (
+        preg_match( "~youtube.com/.*?v=([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
+        preg_match( "~youtu.be/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
+        preg_match( "~youtube.com/embed/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic )
+      ) &&
+      ( !isset($fv_fp->conf['pro']['youtube_disable']) || $fv_fp->conf['pro']['youtube_disable'] != 'true' )
+    ) {
+      $this->bYoutube = true;
+      //var_dump('is_youtube',$sURL,$aDynamic);
+      return $aDynamic;
+    }    
+    return false;
+  }
+  
+  function fb_share_tags(){
+    global $wp_query;
+    //get the page content
+
+    if(!is_singular()) return;
+    $content = $wp_query->post->post_content;
+    $sUrl = array();
+    preg_match('/\[fvplayer[^\]]*src="([^"]*)/', $content, $sUrl);
+    if( !isset($sUrl[1]) || $this->is_vimeo($sUrl[1]) || $this->is_vimeo($sUrl[1]) || $this->is_s3($sUrl[1]) || $this->is_cloudfront($sUrl[1]) ) return;    
+    
+    $sUrl = preg_replace('/https?:\/\/?/','',$sUrl[1]);
+    
+    $httpUrl = 'http://'.$sUrl;
+    $httpsUrl = 'https://'.$sUrl ;
+    
+    ?>
+    <meta property="og:site_name" content="YouTube">
+    <meta property="og:title" content="Walk Among Us - The Misfits">
+    <meta property="og:image" content="https://i.ytimg.com/vi/eje6XG1f5vc/hqdefault.jpg">
+    <meta property="og:description" content="20 Eyes - 0:00 I Turned Into a Martian - 1:48 All Hell Breaks Loose - 3:31 Vampira - 5:18 Nike a Go Go - 6:46 Hatebreeders - 9:02 Mommy, Can I Go Out and Kil...">
+    
+    <meta property="og:type" content="video">
+    <meta property="og:video:url" content="<?php echo $httpUrl; ?>">
+    <meta property="og:video:secure_url" content="<?php echo $httpsUrl; ?>">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="480">
+    <meta property="og:video:height" content="360">
+    <?php
+  }
 }
 
 
