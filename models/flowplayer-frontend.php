@@ -613,7 +613,7 @@ class flowplayer_frontend extends flowplayer
     /*
      * User agent check
      */
-    if (strpos($_SERVER ['HTTP_USER_AGENT'], 'Chrome') && preg_match('/Android ([123].[\d](.[\d])?|4.[321](.[\d])?)/', $_SERVER ['HTTP_USER_AGENT'])) {
+    if (strpos($_SERVER ['HTTP_USER_AGENT'], 'Chrome') === false && preg_match('/Android ([123].[\d](.[\d])?|4.[321](.[\d])?)/', $_SERVER ['HTTP_USER_AGENT'])) {
       $this->ret['html'] .= '<div>For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.</div>';
     }
 
