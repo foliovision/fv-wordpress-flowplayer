@@ -1378,27 +1378,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   function fb_share_tags(){
-    global $wp_query;
-    //get the page content
-
+    global $wp_query, $post;
+    
     if(!is_singular()) return;
     $content = $wp_query->post->post_content;
-    $sUrl = array();
-    preg_match('/\[fvplayer[^\]]*src="([^"]*)/', $content, $sUrl);
-    if( !isset($sUrl[1]) || $this->is_vimeo($sUrl[1]) || $this->is_vimeo($sUrl[1]) || $this->is_s3($sUrl[1]) || $this->is_cloudfront($sUrl[1]) ) return;    
     
-    $sUrl = preg_replace('/https?:\/\/?/','',$sUrl[1]);
+    $matches = array();    
+    if(!preg_match( "/\[fvplayer[^]]*/",$content,$matches)) return;
     
+    $aAtts = shortcode_parse_atts($matches[0].' ]');
+    
+    $sUrl = $aAtts['src'];
+    if( !isset($sUrl) || $this->is_vimeo($sUrl) || $this->is_youtube($sUrl) || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl) ) return;    
+
+    $sUrl = preg_replace('/https?:\/\/?/','',$sUrl);
     $httpUrl = 'http://'.$sUrl;
     $httpsUrl = 'https://'.$sUrl ;
     
-    ?>
-    <meta property="og:site_name" content="YouTube">
-    <meta property="og:title" content="Walk Among Us - The Misfits">
-    <meta property="og:image" content="https://i.ytimg.com/vi/eje6XG1f5vc/hqdefault.jpg">
-    <meta property="og:description" content="20 Eyes - 0:00 I Turned Into a Martian - 1:48 All Hell Breaks Loose - 3:31 Vampira - 5:18 Nike a Go Go - 6:46 Hatebreeders - 9:02 Mommy, Can I Go Out and Kil...">
+    $sName = get_bloginfo('name');
+    $sTitle = $wp_query->post->post_title;    
+    $sSplash = isset($aAtts['splash'])?$aAtts['splash']:'';
+    $sDescription = $wp_query->post->post_excerpt;
     
+    
+    ?>
+    <meta property="og:site_name" content="<?php echo $sName ;?>">
+    <meta property="og:title" content="<?php echo $sTitle ;?>">
+    <meta property="og:image" content="<?php echo $sSplash ;?>">
+    <meta property="og:description" content="<?php echo $sDescription ;?>">
     <meta property="og:type" content="video">
+    
     <meta property="og:video:url" content="<?php echo $httpUrl; ?>">
     <meta property="og:video:secure_url" content="<?php echo $httpsUrl; ?>">
     <meta property="og:video:type" content="video/mp4">
