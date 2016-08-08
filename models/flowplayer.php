@@ -1377,37 +1377,39 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return false;
   }
   
-  function fb_share_tags(){
-    global $wp_query, $post;
-    
-    if(!is_singular()) return;
-    $content = $wp_query->post->post_content;
-    
-    $matches = array();    
-    if(!preg_match( "/\[fvplayer[^]]*/",$content,$matches)) return;
-    
-    $aAtts = shortcode_parse_atts($matches[0].' ]');
-    
-    $sUrl = $aAtts['src'];
-    if( !isset($sUrl) || $this->is_vimeo($sUrl) || $this->is_youtube($sUrl) || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl) ) return;    
+  function fb_share_tags() {
+    global $wp_query, $fv_fp;
 
-    $sUrl = preg_replace('/https?:\/\/?/','',$sUrl);
-    $httpUrl = 'http://'.$sUrl;
-    $httpsUrl = 'https://'.$sUrl ;
-    
+    if (!isset($fv_fp->conf['integrations']['facebook_sharing']) || $fv_fp->conf['integrations']['facebook_sharing'] !== 'true' || !is_singular())
+      return;
+
+    $content = $wp_query->post->post_content;
+
+    $matches = array();
+    if (!preg_match("/\[fvplayer[^]]*/", $content, $matches))
+      return;
+
+    $aAtts = shortcode_parse_atts($matches[0] . ' ]');
+
+    $sUrl = $aAtts['src'];
+    if (!isset($sUrl) || $this->is_vimeo($sUrl) || $this->is_youtube($sUrl) || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl))
+      return;
+
+    $sUrl = preg_replace('/https?:\/\/?/', '', $sUrl);
+    $httpUrl = 'http://' . $sUrl;
+    $httpsUrl = 'https://' . $sUrl;
+
     $sName = get_bloginfo('name');
-    $sTitle = $wp_query->post->post_title;    
-    $sSplash = isset($aAtts['splash'])?$aAtts['splash']:'';
+    $sTitle = $wp_query->post->post_title;
+    $sSplash = isset($aAtts['splash']) ? $aAtts['splash'] : '';
     $sDescription = $wp_query->post->post_excerpt;
-    
-    
     ?>
-    <meta property="og:site_name" content="<?php echo $sName ;?>">
-    <meta property="og:title" content="<?php echo $sTitle ;?>">
-    <meta property="og:image" content="<?php echo $sSplash ;?>">
-    <meta property="og:description" content="<?php echo $sDescription ;?>">
+    <meta property="og:site_name" content="<?php echo $sName; ?>">
+    <meta property="og:title" content="<?php echo $sTitle; ?>">
+    <meta property="og:image" content="<?php echo $sSplash; ?>">
+    <meta property="og:description" content="<?php echo $sDescription; ?>">
     <meta property="og:type" content="video">
-    
+
     <meta property="og:video:url" content="<?php echo $httpUrl; ?>">
     <meta property="og:video:secure_url" content="<?php echo $httpsUrl; ?>">
     <meta property="og:video:type" content="video/mp4">
@@ -1415,10 +1417,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <meta property="og:video:height" content="360">
     <?php
   }
+
 }
-
-
-
 
 function fv_wp_flowplayer_save_post( $post_id ) {
   if( $parent_id = wp_is_post_revision($post_id) ) {

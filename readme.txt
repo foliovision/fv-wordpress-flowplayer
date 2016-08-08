@@ -333,6 +333,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.5.1 - 2016/08/?? =
+
+* Sharing - Added OpenGraph tags for improved video sharing
+
 = 6.0.5.5 - 2016/07/28 =
 
 * Bugfix - div class="fp-playlist-vertical-wrapper" appearing around player when no playlist is used - resulting in bad player width or alignment
