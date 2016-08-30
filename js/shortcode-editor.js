@@ -694,11 +694,11 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
   var rMatch = false;
   if( sShortcode.match(rDoubleQ) ) {
     //rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
-    rMatch = new RegExp(sArg+'="(.*?[^\\\\])"',"g");
-  } else if( sShortcode.match(rSingleQ) ) {
-    rMatch = new RegExp(sArg+"='([^']*?)'","g");
-  } else if( sShortcode.match(rNoQ) ) {
-    rMatch = new RegExp(sArg+"=([^\\]\\s,]+)","g");
+    rMatch = new RegExp('[ "\']' + sArg + '="(.*?[^\\\\])"', "g");
+  } else if (sShortcode.match(rSingleQ)) {
+    rMatch = new RegExp('[ "\']' + sArg + "='([^']*?)'", "g");
+  } else if (sShortcode.match(rNoQ)) {
+    rMatch = new RegExp('[ "\']' + sArg + "=([^\\]\\s,]+)", "g");
   }
 
   if( !rMatch ){
