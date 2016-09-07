@@ -719,8 +719,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
       
       if( $iAWSVersion == 4 ) {
-        $sXAMZDate = date('Ymd\THis\Z');
-        $sDate = date('Ymd');
+        $sXAMZDate = gmdate('Ymd\THis\Z');
+        $sDate = gmdate('Ymd');
         $sCredentialScope = $sDate."/".$fv_fp->conf['amazon_region'][$amazon_key]."/s3/aws4_request"; //  todo: variable
         $sSignedHeaders = "host";
         $sXAMZCredential = urlencode($fv_fp->conf['amazon_key'][$amazon_key].'/'.$sCredentialScope);
