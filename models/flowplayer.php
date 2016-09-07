@@ -1339,6 +1339,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   function is_s3($sURL) {
     global $fv_fp;
     foreach($fv_fp->conf['amazon_bucket'] as $value ){
+      if(empty($value))
+        continue;
       if (strpos($sURL, '/' . $value . '/') !== false) {
         return true;
       }
@@ -1348,7 +1350,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
   function is_cloudfront($sURL) {
     global $fv_fp;
-    if (isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['cf_domain'])) {
+    if (!empty($fv_fp->conf['pro']) && !empty($fv_fp->conf['pro']['cf_domain'])) {
+      
       return strpos($sURL, $fv_fp->conf['pro']['cf_domain']) !== false;
     } else {
       return false;
@@ -1392,7 +1395,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aAtts = shortcode_parse_atts($matches[0] . ' ]');
 
     $sUrl = $aAtts['src'];
-    if (!isset($sUrl) || $this->is_vimeo($sUrl) || $this->is_youtube($sUrl) || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl))
+    if ( empty($sUrl) || $this->is_vimeo($sUrl) || $this->is_youtube($sUrl) || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl))
       return;
 
     $sUrl = preg_replace('/https?:\/\/?/', '', $sUrl);
