@@ -204,14 +204,14 @@ class flowplayer_frontend extends flowplayer
       
         if( is_feed() ) {
           
-          $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
-          /*$this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
-          if( $splash_img ) {
-            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+          if($this->aCurArgs){
+            //HTML RSS
+            $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
+            $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
+          }else{
+            //Iframe RSS
+            $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
           }
-          $this->ret['html'] .= '</a></p>';
-          
-          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );*/
           
           return $this->ret;
         }
