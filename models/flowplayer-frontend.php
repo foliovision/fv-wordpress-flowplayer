@@ -200,19 +200,24 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Video player
      */
-		if( $player_type == 'video' ) {
-        if( is_feed() ) {
-          
-          if(isset($this->conf['integrations']['embed_iframe_rss']) && $this->conf['integrations']['embed_iframe_rss'] === 'true' ){
-             //Iframe RSS
-            $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
-          }else{
-            //HTML RSS
-            $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
-            $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
+		if ($player_type == 'video') {
+      var_dump($this->conf['integrations']['embed_iframe_rss']);
+      if (is_feed()) {
+
+        if (isset($this->conf['integrations']['embed_iframe_rss']) && $this->conf['integrations']['embed_iframe_rss'] === 'true') {
+          //Iframe RSS
+          $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
+        } else {
+          //HTML RSS
+          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="' . get_permalink() . '" title="' . __('Click to watch the video') . '">' . apply_filters('fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]'));
+          if ($splash_img) {
+            $this->ret['html'] .= '<br /><img src="' . $splash_img . '" width="400" />';
           }
-          
-          return $this->ret;
+          $this->ret['html'] .= '</a></p>';
+        }
+        $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
+
+        return $this->ret;
         }
 		
 				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
