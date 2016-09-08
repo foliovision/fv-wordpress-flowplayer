@@ -717,7 +717,17 @@ function fv_flowplayer_admin_integrations() {
                 <?php _e('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv_flowplayer'); ?>
               </p>
 						</td>
-					</tr>           
+					</tr>
+          <tr>
+						<td><label for="embed_iframe">Use iframe embedding in RSS feed:</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="integrations[embed_iframe_rss]" value="false" />
+                <input type="checkbox" name="integrations[embed_iframe_rss]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe_rss']) && $fv_fp->conf['integrations']['embed_iframe_rss'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv_flowplayer'); ?>
+              </p>
+						</td>
+					</tr>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />
