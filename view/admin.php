@@ -723,7 +723,8 @@ function fv_flowplayer_admin_integrations() {
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[embed_iframe_rss]" value="false" />
-                <input type="checkbox" name="integrations[embed_iframe_rss]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe_rss']) && $fv_fp->conf['integrations']['embed_iframe_rss'] == 'true' ) echo 'checked="checked"'; ?> />              <?php _e('Normally it just links to the post on your website to watch the video.','fv_flowplayer'); ?>
+                <input type="checkbox" name="integrations[embed_iframe_rss]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe_rss']) && $fv_fp->conf['integrations']['embed_iframe_rss'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Normally it just links to the post on your website to watch the video.','fv_flowplayer'); ?>
                 <span class="more"><?php _e("RSS feeds don't work with JavaScript, but if you use this option, they will contain iframe embeds of the actual player which should be playable. Usefull if you read your RSS feed in to a mobile phone app.", 'fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
 						</td>
