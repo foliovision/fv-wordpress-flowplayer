@@ -201,7 +201,7 @@ class flowplayer_frontend extends flowplayer
      *  Video player
      */
 		if ($player_type == 'video') {
-      var_dump($this->conf['integrations']['embed_iframe_rss']);
+      
       if (is_feed()) {
 
         if (isset($this->conf['integrations']['embed_iframe_rss']) && $this->conf['integrations']['embed_iframe_rss'] === 'true') {
