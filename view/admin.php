@@ -767,12 +767,12 @@ function fv_flowplayer_admin_popups(){
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="width: 150px"><label for="popups_default">Default Popup:</label></td>
+        <td style="width: 150px"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
           <p class="description">
             <?php $cva_id = isset($fv_fp->conf['popups_default']) ? $fv_fp->conf['popups_default'] : 'no'; ?>
             <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
-            You can set a default popup here and then skip it for individual videos.
+            <?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?>
           </p>
         </td>
       </tr>
@@ -781,7 +781,13 @@ function fv_flowplayer_admin_popups(){
       <tr>    		
         <td>
           <table id="fv-player-popups-settings">
-            <thead><tr><td>ID</td><td></td><td>Status</td></tr></thead>
+            <thead>
+            	<tr>
+            		<td>ID</td>
+            		<td></td>
+          			<td><?php _e('Status', 'fv-wordpress-flowplayer'); ?></td>
+        			</tr>
+      			</thead>
             <tbody>
             <?php
             $aPopupData = get_option('fv_player_popups');
@@ -797,16 +803,25 @@ function fv_flowplayer_admin_popups(){
                 <td class='id'><?php echo $key ; ?></td>
                     <td>
                       <table class='fv-player-popup-formats'>
-                        <tr><td>Name:</td><td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td></tr>
-                        <tr><td>HTML:</td><td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td></tr>
-                        <tr><td>Custom<br>CSS:</td> <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td></tr>
+                        <tr>
+                        	<td><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
+                      	</tr>
+                        <tr>
+                        	<td>HTML:</td>
+                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
+                      	</tr>
+                        <tr>
+                        	<td><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
+                      	</tr>
                       </table>
                     </td>
                     <td>
                       <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
                       <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> /> 
-                      <label for='PopupAdDisabled-<?php echo $key; ?>'>Disable</label><br />
-                      <a class='fv-player-popup-remove' href=''>Remove</a></td>
+                      <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />
+                      <a class='fv-player-popup-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
                   </tr>
               <?php
             }
@@ -817,8 +832,8 @@ function fv_flowplayer_admin_popups(){
       </tr>         
       <tr>    		
         <td>
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
-          <input type="button" value="Add more Popups" class="button" id="fv-player-popups-add" />
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <input type="button" value="<?php _e('Add more Popups', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-popups-add" />
         </td>
       </tr>         
     </table>
@@ -1233,7 +1248,7 @@ function fv_flowplayer_admin_skin() {
     </tr>
         
     <tr>              
-      <td><label for="playlistBgColor"><?php _e('Playlist&nbsp;Background', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="playlistBgColor"><?php _e('Playlist Background', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
       <td></td>
       <td colspan="2"></td>       
@@ -1245,13 +1260,13 @@ function fv_flowplayer_admin_skin() {
       <td colspan="2"></td>       
     </tr>
     <tr>              
-      <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="playlistFontColor-proxy"><?php _e('Playlist Font', 'fv-wordpress-flowplayer'); ?></label></td>
         <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
       <td>
         <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
         <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
-        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor?'style="display:none;"':''; ?>>Use custom color</a>
-        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?>>Inherit from theme</a>
+        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?></a>
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?></a>
       </td>
       <td></td>
       <td colspan="2"></td>       
@@ -1379,12 +1394,12 @@ function fv_flowplayer_admin_checkbox( $name ) {
 
 /* TABS */
 $fv_player_aSettingsTabs = array(
-  array('id' => 'fv_flowplayer_settings',           'hash' => 'tab_basic' ,    'name' => 'Setup'  ),
-  array('id' => 'fv_flowplayer_settings_skin',      'hash' => 'tab_skin' ,     'name' => 'Skin'  ),
-  array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting' ,  'name' => 'Hosting'  ),
-  array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions' ,  'name' => 'Actions'  ),
-  array('id' => 'fv_flowplayer_settings_video_ads', 'hash' => 'tab_video_ads' ,'name' => 'Video Ads'  ),
-  array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',      'name' => 'Help'   ),
+  array('id' => 'fv_flowplayer_settings',           'hash' => 'tab_basic',    	'name' => __('Setup', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_skin',      'hash' => 'tab_skin',     	'name' => __('Skin', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting',  	'name' => __('Hosting', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions',  	'name' => __('Actions', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_video_ads',	'hash' => 'tab_video_ads', 	'name' => __('Video Ads', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') ),
 );
 
 //unset video ads tab for Legacy PRO player
