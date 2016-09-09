@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.5.2
+Tested up to: 4.6
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -333,13 +333,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.5 - 2016/07/26 =
+= 6.0.5.5 - 2016/07/28 =
 
 * Bugfix - div class="fp-playlist-vertical-wrapper" appearing around player when no playlist is used - resulting in bad player width or alignment
 * Popup Ads - improved UI for popup ads - moved to "Actions" tab on settings screen
 * Settings screen - added tabs
 
-= 6.0.5.4 - 2016/07/28 =
+= 6.0.5.4 - 2016/07/26 =
 
 * Color settings - added more settings for playlist colors
 * Iframe embedding - compatibility fixes - needed for websites which load FV Player outside of post_content
