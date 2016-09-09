@@ -145,7 +145,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
     if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';     
     if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';     
-    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;         
+    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;
+    if( !isset( $conf['ad_show_after'] ) ) $conf['ad_show_after'] = 0;         
     if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';            
     if( isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }         
     if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'ads' => false, 'mobile' => false, 'align' => false );        
@@ -223,9 +224,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $salt;
   }
   
-  //  todo: this could be parsin rtmp://host/path/mp4:rtmp_path links as well
+  
+  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption ){
+
+    if(isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical'){
+
+       if( $sSplashImage ) {
+        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+      } else {
+        $sHTML = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
+      }  
+      
+    }else{
+      if( $sSplashImage ) {
+        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+      } else {
+        $sHTML = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
+      }  
+    }
+      
+    return $sHTML;
+  }
+  
+  //  todo: this could be parsing rtmp://host/path/mp4:rtmp_path links as well
   function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
-    
+
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
       $sCaption = isset($aArgs['caption']) ? $aArgs['caption'] : false;
   
@@ -245,7 +268,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $aCaption[$key] = str_replace('<!--amp-->','&',$item);
         }
       } 
-              
+                 
       $aItem = array();      
       $flash_media = array();
       
@@ -295,19 +318,26 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
       
-      $aPlaylistItems[] = array( 'sources' => $aItem );
+      list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
+      
+      $aPlayer = array( 'sources' => $aItem );      
+      if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
+      
+      $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
       $aCaptions[] = $sItemCaption;
 
-      $sHTML = '';
-      if( $sShortcode && count($sItems) > 0 ) {
+      
+      $sHTML = array();
+      
+      if( $sShortcode && count($sItems) > 0) {
+        //var_dump($sItemCaption);
         
-        $sHTML = array();
-        
-        
-        
-        $sHTML[] = "\t\t<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
-        
+        if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
+          $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption );
+        }else{
+          $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
+        }       
             
         foreach( $sItems AS $iKey => $sItem ) {
           $aPlaylist_item = explode( ',', $sItem );
@@ -369,33 +399,52 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             }      
           }
 
-          $aPlaylistItems[] = array( 'sources' => $aItem );
+          $aPlayer = array( 'sources' => $aItem );      
+          if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
+      
+          $aPlaylistItems[] = $aPlayer;
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
-          if( $sSplashImage ) {
-            $sHTML[] = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
-            $aSplashScreens[] = $sSplashImage;
-            $aCaptions[] = $sItemCaption;
-          } else {
-            $sHTML[] = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
-          }
           
+          $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption );
+          if( $sSplashImage ) {
+            $aSplashScreens[] = $sSplashImage;  
+          } 
+          $aCaptions[] = $sItemCaption;
         }
         
-        $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
-  
-        $sHTML = "\t<div class='fp-playlist-external' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
-
-        $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
-        //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
       }
       
+      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'prevnext' ){
+        $sHTML = array();
+      }
+      
+      $sPlaylistClass = '' ;
+      
+      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
+        $sPlaylistClass .= ' fp-playlist-vertical';
+      }
+      //var_dump($aCaptions);
+      if( isset($aArgs['liststyle']) && sizeof($aCaptions) > 0 ){
+        $sPlaylistClass .= ' fp-playlist-has-captions';
+      }
+      
+      if(isset($aArgs['liststyle']) && $aArgs['liststyle'] != 'tabs'){
+        $aPlaylistItems = apply_filters('fv_flowplayer_playlist_items',$aPlaylistItems,$this);
+      }
+    
+      
+      
+      $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
+
+      $sHTML = "\t<div class='fp-playlist-external $sPlaylistClass' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
+
+      $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
+      //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
+     
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  
-  
-  
-  
   
   function css_generate( $skip_style_tag = true ) {
     global $fv_fp;
@@ -429,6 +478,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo trim($fv_fp->conf['bufferColor']); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
+    .fp-playlist-external a.is-active { color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
+    .fp-playlist-external a.is-active span { border-color: <?php echo trim($fv_fp->conf['progressColor']); ?> !important }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo trim($fv_fp->conf['backgroundColor']); ?>!important; } 
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo trim($fv_fp->conf['progressColor']); ?>!important; } 
@@ -581,6 +632,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function get_amazon_secure( $media ) {
+    
+    if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
+    
     $aArgs = func_get_args();
     $aArgs = $aArgs[1];
     global $fv_fp;
@@ -627,7 +681,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
       $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
       $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
-      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);      
+      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
+      $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
           
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
       
@@ -1019,10 +1074,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( $media ) { 
       $mime_type = $this->get_mime_type($media);
-      //do not use https on mobile devices
-      if (strpos($media, 'https') !== false && $aArgs['mobileUserAgent']) {
-        $media = str_replace('https', 'http', $media);
-      }
       $sID = ($aArgs['id']) ? 'id="'.$aArgs['id'].'" ' : '';
   
       if( !$aArgs['suppress_filters'] ) {
@@ -1051,7 +1102,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
         $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
         
-        if( $source_flash_encoded && strcmp($extension,'mp4') == 0 ) {
+        if( $source_flash_encoded && strcmp($mime_type,'video/mp4') == 0 ) {
           $sReturn .= '<source '.$sID.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
         }
         return $sReturn;
@@ -1174,6 +1225,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function template_embed() {
     if( get_query_var('fv_player_embed') ) {
+      show_admin_bar(false);
+      remove_action('wp_head', '_admin_bar_bump_cb');
       ?>
 <!DOCTYPE html>
 <html>
@@ -1181,7 +1234,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <title><?php the_title(); ?></title>
   <?php wp_head(); ?>
   <style>
-    body { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0; overflow:hidden;}
   </style>
 </head>
 <body>

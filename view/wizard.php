@@ -17,7 +17,7 @@
 */ 
 
   global $post;
-  $post_id = $post->ID;
+  $post_id = isset($post->ID) ? $post->ID : 0;
   
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
   $allow_uploads = false;
@@ -179,7 +179,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </td>
           </tr>
           
-          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Caption', 'fv_flowplayer'); ?></label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
           </tr>
@@ -205,8 +205,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Playlist Style', 'fv_flowplayer'); ?></label></th>
           <td class="field" style="width: 50%">
             <select id="fv_wp_flowplayer_field_liststyle" name="fv_wp_flowplayer_field_liststyle">
-              <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-              <option><?php _e('Tabs', 'fv_flowplayer'); ?></option>            
+              <option><?php _e('Default',    'fv_flowplayer'); ?></option>
+              <option><?php _e('Tabs',       'fv_flowplayer'); ?></option> 
+              <option><?php _e('Prev/Next',  'fv_flowplayer'); ?></option>
+              <option><?php _e('Vertical',   'fv_flowplayer'); ?></option>
+              <option><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
             </select>          
             <div id="add_rtmp_wrapper" class="alignright"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div>
           </td>  				
@@ -287,11 +290,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </select>
   				</td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]['live']) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]['speed']) || $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_speed" class="alignright"><?php _e('Speed Buttons', 'fv_flowplayer'); ?></label></th>
   				<td class="field">
             <select id="fv_wp_flowplayer_field_speed" name="fv_wp_flowplayer_field_speed">
