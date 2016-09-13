@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.5
+Tested up to: 4.6
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -109,14 +109,7 @@ You can check [demo in here](https://foliovision.com/player/demos/align-settings
 
 = 4. How to check my video properties using the built-in checker and how to report video not playing =
 
-* Login to your site as administrator (please use the browser in which the video is not playing for you)
-* Double check Settings -> FV Player -> Sitewide Flowplayer Defaults -> "Disable admin video checker" is not checked
-* Come to any post which was video
-* A message in top left corner of the video should appear saying: "Checking the video file...". The check takes usually 1-2 seconds.
-* Once it's finished, it changes color based on what problem is detected and you can click it to get video details.
-* The dialog also includes our tips on how to resolve the issues found. There is also a button labeled "Send to Foliovision" which sends your video with details straight to our private support tickets.
-
-Note: The checker doesn't work for localhost files, as our service is not able to access them.
+The video checker works automatically when you're logged in as admin. You'll see a text in upper left corner of any video on your site. All the necessary info can be found in [this guide](https://foliovision.com/player/basic-setup/how-to-use-video-checker).
 
 = 5. My video doesn't play in Internet Explorer 9 and 10. =
 
@@ -339,6 +332,69 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.0.5.5.1 - 2016/09/?? =
+
+* Lightbox - fix for images with uppercase file extension
+
+= 6.0.5.5 - 2016/07/28 =
+
+* Bugfix - div class="fp-playlist-vertical-wrapper" appearing around player when no playlist is used - resulting in bad player width or alignment
+* Popup Ads - improved UI for popup ads - moved to "Actions" tab on settings screen
+* Settings screen - added tabs
+
+= 6.0.5.4 - 2016/07/26 =
+
+* Color settings - added more settings for playlist colors
+* Iframe embedding - compatibility fixes - needed for websites which load FV Player outside of post_content
+* Speed buttons - fix for iPad to not pause after speed change
+
+= 6.0.5.3 - 2016/06/23 =
+
+* Lightbox - Fix for php warnings
+
+= 6.0.5.2 - 2016/06/21 =
+
+* Lightbox - you can now use <a href="URL" data-colorbox="#ELEMENT" class="colorbox">Link</a> to have a working link in case user has JS disabled or something goes wrong
+* Error message - The error message no longer reveals the URL to users who are not admins or editors
+
+= 6.0.5.1 - 2016/06/20 =
+
+* Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
+
+= 6.0.5 - 2016/06/17 =
+
+* Core - updated to Flowplayer 6.0.5
+
+= 6.0.4.25 - 2016/06/08 =
+
+* Compatibility witch WPBakery Visual Composer tabs
+* Controlbar - FV Player now shows a thin timeline below the video even when using controlbar="no"
+
+= 6.0.4.24 - 2016/06/03 =
+
+* Amazon S3 - fix for signed URLs when using tabbed playlist
+* Logo - fix for display in full-screen
+
+= 6.0.4.22 - 2016/06/01 =
+
+* Lightbox feature - for both your videos and images
+* Popups - support for input and textarea tags added
+* Shortcode editor - new icon (button)
+
+= 6.0.4.21 - 2016/05/23 =
+
+* Volume - Volume is now remembered between page loads and across all instances of the player
+
+= 6.0.4.20 - 2016/05/16 =
+
+* Iframe embedding - fix for responsiveness
+* Video checker - please make sure you upgrade this plugin to continue using it
+
+= 6.0.4.19 - 2016/05/13 =
+
+* Google Analytics - improvement needed for laters FV Player Pro
+
 = 6.0.4.18 - 2016/04/29 =
 
 * Cloudfront - fix http/https problem on mobile devices
@@ -1204,6 +1260,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 6.0.5 =
+
+* Brand new core Flowplayer 6.0.5!
 
 = 6.0.3 =
 

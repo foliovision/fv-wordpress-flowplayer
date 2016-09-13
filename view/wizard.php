@@ -28,7 +28,36 @@
 	} else {
 	  $upload_field_class = '';
 	}
-	
+  
+  function fv_flowplayer_admin_select_popups($aArgs){
+  global $fv_fp;
+  
+  $aPopupData = get_option('fv_player_popups');
+  
+
+  $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
+  $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
+  ?>
+  <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
+    <?php if( $aArgs['show_default'] ) : ?>
+      <option>Use site default</option>
+    <?php endif; ?>
+    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
+    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+    <?php
+    if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
+      foreach( $aPopupData AS $key => $aPopupAd ) {
+        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
+        echo $key;
+        if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
+        if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
+        ?></option><?php
+      }
+    } ?>      
+  </select>
+  <?php
+}
+  
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
 <style>
@@ -179,7 +208,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </td>
           </tr>
           
-          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
+          <tr class="<?php if( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) echo 'playlist_caption'; ?>" <?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] !== 'true' ) echo ' style="display: none"'; ?>>
             <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Caption', 'fv_flowplayer'); ?></label></th>
             <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
           </tr>
@@ -218,9 +247,16 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <th scope="row" width="19%"></th>
           <td style="text-align: left; padding: 10px 0; text-transform: uppercase;"><?php _e('Additional features', 'fv_flowplayer'); ?></td>
         </tr>
+        <tr style="display: none">
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup"  class="alignright"><?php _e('HTML popup', 'fv_flowplayer'); ?></label></th>
+  				<td>
+            <textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
+            <p><span class="dashicons dashicons-warning"></span> You are using the legacy popup functionality. Move the popup code <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_target">here</a>, then use the drop down below.</p>
+          </td>          
+  			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["popup"] !== 'true' ) echo ' style="display: none"'; ?>>
-  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup" class="alignright"><?php _e('HTML popup', 'fv_flowplayer'); ?></label></th>
-  				<td><textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea></td>
+  				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
+  				<td><?php fv_flowplayer_admin_select_popups(array( 'id'=>'fv_wp_flowplayer_field_popup_id', 'show_default' => true ))?></td>
   			</tr>
         <tr<?php if( $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
@@ -290,11 +326,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </select>
   				</td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]['live']) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]['speed']) || $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_speed" class="alignright"><?php _e('Speed Buttons', 'fv_flowplayer'); ?></label></th>
   				<td class="field">
             <select id="fv_wp_flowplayer_field_speed" name="fv_wp_flowplayer_field_speed">
@@ -313,7 +349,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             <?php if( !$allow_uploads && current_user_can('manage_options') ) { ?> 
             <tr>
               <td colspan="2">
-              	<div class="fv-wp-flowplayer-notice"><?php _e('Admin note: Video uploads are currently disabled, set Allow User Uploads to true in', 'fv_flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer"><?php _e('Settings', 'fv_flowplayer'); ?></a></div>
+              	<div class="fv-wp-flowplayer-notice"><?php _e('Admin note: Video uploads are currently disabled, set Allow video uploads to true in', 'fv_flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer"><?php _e('Settings', 'fv_flowplayer'); ?></a></div>
               </td>
             </tr>            
             <?php } ?>

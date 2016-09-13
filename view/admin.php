@@ -106,11 +106,11 @@ function fv_flowplayer_admin_amazon_options() {
 					<tr>
 						<td colspan="2">
 							<p><?php _e('Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly.', 'fv_flowplayer'); ?></p>
-              <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expire Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv_flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Flowplayer guide', 'fv_flowplayer'); ?></a>.</p>
+              <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv_flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Flowplayer guide', 'fv_flowplayer'); ?></a>.</p>
 						</td>
 					</tr>
 					<tr>
-						<td class="first"><label for="amazon_expire"><?php _e('Default Expire Time', 'fv_flowplayer'); ?> [minutes] (<abbr title="<?php _e('Each video duration is stored on post save and then used as the expire time. If the duration is not available, this value is used.', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
+						<td class="first"><label for="amazon_expire"><?php _e('Default Expiration Time', 'fv_flowplayer'); ?> [minutes] (<abbr title="<?php _e('Each video duration is stored on post save and then used as the expire time. If the duration is not available, this value is used.', 'fv_flowplayer'); ?>">?</abbr>):</label></td>
 						<td>
               <input type="text" size="40" name="amazon_expire" id="amazon_expire" value="<?php echo intval($fv_fp->conf['amazon_expire']); ?>" />            
             </td>
@@ -212,9 +212,9 @@ function fv_flowplayer_admin_default_options() {
 							<td><label for="width"><?php _e('Default Video Size', 'fv_flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <label for="width">Width:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval($fv_fp->conf['width']); ?>" />  
-                  <label for="height">Height:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval($fv_fp->conf['height']); ?>" />
-                  Enter values in pixels.
+                  <label for="width"><?php _e('Width', 'fv_flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval($fv_fp->conf['width']); ?>" />  
+                  <label for="height"><?php _e('Height', 'fv_flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval($fv_fp->conf['height']); ?>" />
+                  <?php _e('Enter values in pixels.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
 						</tr>            
@@ -354,7 +354,7 @@ function fv_flowplayer_admin_default_options() {
                     <option value="0.25"  <?php echo ( !isset($fv_fp->conf['ui_speed_increment'])|| $fv_fp->conf['ui_speed_increment'] == 0.25 ) ? ' selected="selected"' : ''?> >0.25</option> 
                     <option value="0.5"   <?php echo ( isset($fv_fp->conf['ui_speed_increment']) && $fv_fp->conf['ui_speed_increment'] == 0.5 )  ? ' selected="selected"' : ''?> >0.5</option>
                   </select>
-                  <?php _e('Speed buttons will increase or decreaese the speed in steps of selected value', 'fv_flowplayer'); ?>
+                  <?php _e('Speed buttons will increase or decrease the speed in steps of selected value', 'fv_flowplayer'); ?>
                 </p>
               </td>
 						</tr>
@@ -372,7 +372,8 @@ function fv_flowplayer_admin_default_options() {
                   <?php _e('Normally you have to hit a button in controlbar to turn on subtitles.', 'fv_flowplayer'); ?>
                 </p>
 							</td>
-						</tr>               
+						</tr>
+            <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
           <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.</small>   
           <table class="form-table2">
@@ -471,25 +472,100 @@ jQuery(document).ready(function($) {
 <?php
 }
 
-
+/*
+ * Setup Tab Description 
+ */
 function fv_flowplayer_admin_description() {
 ?>
-				<table class="form-table">
-					<tr>
-						<td colspan="4">
-                            <p>                                 
-                                <?php _e('FV Player is a free, easy-to-use, and complete solution for embedding', 'fv_flowplayer'); ?>
-                                <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong>, <strong>MOV</strong>
-                                <?php _e('and', 'fv_flowplayer'); ?>
-                                <strong>FLV</strong>
-                                <?php _e('videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; coverage even on mobile devices.', 'fv_flowplayer'); ?>
-                            </p>
-						</td>
-					</tr>
-				</table>
+  <table class="form-table">
+      <tr>
+        <td colspan="4">
+          <p>                                 
+            <?php _e('FV Player is a free, easy-to-use, and complete solution for embedding', 'fv_flowplayer'); ?>
+            <strong>MP4</strong>, <strong>WEBM</strong>, <strong>OGV</strong>, <strong>MOV</strong>
+            <?php _e('and', 'fv_flowplayer'); ?>
+            <strong>FLV</strong>
+            <?php _e('videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; coverage even on mobile devices.', 'fv_flowplayer'); ?>
+          </p>
+        </td>
+      </tr>
+    </table>
 <?php
 }
 
+/*
+ * Skin Tab Description
+ */
+function fv_flowplayer_admin_description_skin() {
+?>
+  <table class="form-table">
+      <tr>
+        <td colspan="4">
+          <p>                                 
+            <?php _e('You can customize the colors of the player to match your website.', 'fv_flowplayer'); ?>
+          </p>
+        </td>
+      </tr>
+    </table>
+<?php
+}
+
+/*
+ * Hosting Tab Description 
+ */
+function fv_flowplayer_admin_description_hosting() {
+?>
+  <table class="form-table">
+    <tr>
+      <td colspan="4">
+        <p>                                 
+          <?php _e('Here you can enable and configure advanced hosting options.', 'fv_flowplayer'); ?>
+        </p>
+      </td>
+    </tr>
+  </table>
+<?php
+}
+
+/*
+ * Actions Tab Description 
+ */
+function fv_flowplayer_admin_description_actions() {
+?>
+  <table class="form-table">
+    <tr>
+      <td colspan="4">
+        <p>                                 
+          <?php _e('Here you can configure ads and banners that will be showed in the video.', 'fv_flowplayer'); ?>
+        </p>
+      </td>
+    </tr>
+  </table>
+<?php
+}
+
+/*
+ * Video Ads Tab Description
+ */
+function fv_flowplayer_admin_description_video_ads() {
+?>
+  <table class="form-table">
+    <tr>
+      <td colspan="4">
+        <p>                                 
+          <?php _e('Purchase <a href="https://foliovision.com/player/download" target="_blank"><b>FV Player Licence</b></a>, and you will be able to configure multiple, clickable Video Ads, that can be played before or after Your videos.', 'fv_flowplayer'); ?>
+        </p>
+        <p>
+          <?php _e('You can configure video ads globally, or on a per video basis.', 'fv_flowplayer'); ?>
+        </p>
+        <p>
+          <?php _e('If you are interested in VAST or VPAID ads, then check out <a href="https://foliovision.com/player/vast" target="_blank"><b>FV Player VAST</b></a>.', 'fv_flowplayer'); ?>
+        </p>        
+      </td>
+    </tr>
+  </table>
+<?php
+}
 
 function fv_flowplayer_admin_integrations() {
 	global $fv_fp;
@@ -536,7 +612,7 @@ function fv_flowplayer_admin_integrations() {
             </td>
           </tr>
 					<tr>
-						<td><label for="wp_core_video"><?php _e('Handle WordPress', 'fv_flowplayer'); ?> <code><small>[video]</small></code> <?php _e('shortcodes', 'fv_flowplayer'); ?>:</label></td>
+						<td><label for="wp_core_video"><?php _e('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[wp_core_video]" value="false" />
@@ -584,6 +660,16 @@ function fv_flowplayer_admin_integrations() {
               </p>
             </td>
           </tr>
+          <tr>
+            <td><label for="rtmp-live-buffer"><?php _e('RTMP bufferTime tweak', 'fv_flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('rtmp-live-buffer'); ?>
+                <?php _e('Use if your live streams are not smooth.','fv_flowplayer'); ?>
+                <span class="more"><?php _e('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>          
           <tr>
 						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv_flowplayer'); ?>:</label></td>
 						<td>
@@ -641,6 +727,119 @@ function fv_flowplayer_admin_integrations() {
 <?php
 }
 
+function fv_flowplayer_admin_select_popups($aArgs){
+  global $fv_fp;
+  
+  $aPopupData = get_option('fv_player_popups');
+  
+
+  $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
+  $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'cva_id'=>'', 'show_default' => false ) );
+  ?>
+  <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
+    <?php if( $aArgs['show_default'] ) : ?>
+      <option>Use site default</option>
+    <?php endif; ?>
+    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
+    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+    <?php
+    if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
+      foreach( $aPopupData AS $key => $aPopupAd ) {
+        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
+        echo $key;
+        if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
+        if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
+        ?></option><?php
+      }
+    } ?>      
+  </select>
+  <?php
+}
+
+
+function fv_flowplayer_admin_popups(){
+  global $fv_fp;
+    ?>
+    <table class="form-table2" style="margin: 5px; ">
+      <tr>
+        <td style="width: 150px"><label for="popups_default">Default Popup:</label></td>
+        <td>
+          <p class="description">
+            <?php $cva_id = isset($fv_fp->conf['popups_default']) ? $fv_fp->conf['popups_default'] : 'no'; ?>
+            <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
+            You can set a default popup here and then skip it for individual videos.
+          </p>
+        </td>
+      </tr>
+      </table>
+      <table class="form-table2" style="margin: 5px; ">  
+      <tr>    		
+        <td>
+          <table id="fv-player-popups-settings">
+            <thead><tr><td>ID</td><td></td><td>Status</td></tr></thead>
+            <tbody>
+            <?php
+            $aPopupData = get_option('fv_player_popups');
+            if( empty($aPopupData) ) {
+              $aPopupData = array( 1 => array() );
+            } else {
+              $aPopupData =  array( '#fv_popup_dummy_key#' => array() ) + $aPopupData ;
+            }
+
+            foreach ($aPopupData AS $key => $aPopup) {
+              ?>
+              <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
+                <td class='id'><?php echo $key ; ?></td>
+                    <td>
+                      <table class='fv-player-popup-formats'>
+                        <tr><td>Name:</td><td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td></tr>
+                        <tr><td>HTML:</td><td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td></tr>
+                        <tr><td>Custom<br>CSS:</td> <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td></tr>
+                      </table>
+                    </td>
+                    <td>
+                      <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
+                      <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> /> 
+                      <label for='PopupAdDisabled-<?php echo $key; ?>'>Disable</label><br />
+                      <a class='fv-player-popup-remove' href=''>Remove</a></td>
+                  </tr>
+              <?php
+            }
+            ?>
+            </tbody>
+          </table>
+        </td>
+      </tr>         
+      <tr>    		
+        <td>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
+          <input type="button" value="Add more Popups" class="button" id="fv-player-popups-add" />
+        </td>
+      </tr>         
+    </table>
+
+    <script>
+    
+    jQuery('#fv-player-popups-add').click( function() {
+      var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
+      jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
+      jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
+      return false;
+    } );
+    
+    jQuery(document).on('click','.fv-player-popup-remove', false, function() {
+      if( confirm('Are you sure you want to remove the popup ad?') ){
+        jQuery(this).parents('.data').remove();
+        if(jQuery('#fv-player-popups-settings .data').length === 1) {
+          jQuery('#fv-player-popups-add').trigger('click');
+        }
+      }      
+      return false;
+    } );
+    </script>
+    <?php
+}
+
 
 function fv_flowplayer_admin_interface_options() {
 	global $fv_fp;
@@ -648,7 +847,7 @@ function fv_flowplayer_admin_interface_options() {
 				<p><?php _e('Which features should be available in shortcode editor?', 'fv_flowplayer'); ?></p>
 				<table class="form-table2">
 					<tr>
-						<td class="first"><label for="allowuploads"><?php _e('Allow User Uploads', 'fv_flowplayer'); ?>:</label></td>
+						<td class="first"><label for="allowuploads"><?php _e('Allow video uploads', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <input type="hidden" name="allowuploads" value="false" />
               <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fv_fp->conf['allowuploads']) && $fv_fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -669,7 +868,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>    		          
 					<tr>          
-						<td><label for="interface[popup]"><?php _e('HTML popup', 'fv_flowplayer'); ?>:</label></td>
+						<td><label for="interface[popup]"><?php _e('End popup', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <input type="hidden" name="interface[popup]" value="false" />
 							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fv_fp->conf['interface']['popup']) && $fv_fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -758,7 +957,8 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[speed]" value="false" />
 							<input type="checkbox" name="interface[speed]" id="interface[speed]" value="true" <?php if( isset($fv_fp->conf['interface']['speed']) && $fv_fp->conf['interface']['speed'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>           
+					</tr> 
+          <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv_flowplayer'); ?>" />
@@ -879,6 +1079,87 @@ function fv_flowplayer_admin_pro() {
   <?php
 }
 
+/*
+ * Pro Video Ads Dummy box
+ */
+function fv_flowplayer_admin_video_ads(){
+  ?>
+  <style>
+      #fv-player-pro_video-ads-settings tr.data:nth-child(even) { background-color: #eee; }
+      .fv-player-pro_video-ad-remove { visibility: hidden; }
+      table.fv-player-pro_video-ad-formats td:first-child { width: 132px }
+    </style>
+    <table class="form-table2" style="margin: 5px; ">
+      <tbody><tr>
+          <td style="width: 250px"><label for="pro[video_ads_default]">Default pre-roll ad:</label></td>
+          <td>
+            <p class="description">
+              <select disabled="true" id="pro[video_ads_default]" >
+                <option selected="" value="no">No ad</option>
+                <option value="random">Random</option>
+                <option value="1">1</option>      
+              </select>
+              Set which ad should be played before videos.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 250px"><label for="pro[video_ads_postroll_default]">Default post-roll ad:</label></td>
+          <td>
+            <p class="description">
+              <select disabled="true" id="pro[video_ads_postroll_default]" >
+                <option selected="" value="no">No ad</option>
+                <option value="random">Random</option>
+                <option value="1">1</option>      
+              </select>
+              Set which ad should be played after videos.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 250px"><label for="pro[video_ads_skip]">Default ad skip time:</label></td>
+          <td>
+            <p class="description">
+              <input disabled="true" class="small" id="pro[video_ads_skip]"  title="Enter value in seconds" type="text" value="5">
+              Enter the number of seconds after which an ad can be skipped.
+            </p>
+          </td>
+        </tr>
+      </tbody></table>
+    <table class="form-table2" style="margin: 5px; ">  
+      <tbody><tr>    		
+          <td>
+            <table id="fv-player-pro_video-ads-settings">
+              <thead><tr><td>ID</td><td></td><td>Status</td></tr></thead>
+              <tbody>
+                <tr class="data">
+                  <td class="id">1</td>
+                  <td>
+                    <table class="fv-player-pro_video-ad-formats">
+                      <tbody><tr><td>Name:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Ad name"></td></tr>
+                        <tr><td>Click URL:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Clicking the video ad will open the URL in new window"></td></tr>
+                        <tr><td>Video:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Enter the video URL here"></td></tr>
+                      </tbody></table>
+                  </td>
+                  <td>
+                    <input disabled="true" id="VideoAdDisabled-0" type="checkbox"  value="1"> <label for="VideoAdDisabled-0">Disable</label><br>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>         
+        <tr>    		
+          <td>
+            <input disabled="true" type="button" value="Add more video ads" class="button" id="fv-player-pro_video-ads-add">
+          </td>
+        </tr>         
+      </tbody></table>
+
+
+  <?php
+} 
+
+
 
 function fv_flowplayer_admin_skin() {
 	global $fv_fp;
@@ -888,7 +1169,7 @@ function fv_flowplayer_admin_skin() {
     <small class="alignright">Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.</small>
   </div>
 
-  <table class="form-table2 flowplayer-settings">
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
       <td><label for="durationColor"><?php _e('Border color', 'fv_flowplayer'); ?></label></td>
       <td><input class="color" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
@@ -952,6 +1233,34 @@ function fv_flowplayer_admin_skin() {
       <td></td>
       <td colspan="2"></td>       
     </tr>
+        
+    <tr>              
+      <td><label for="playlistBgColor"><?php _e('Playlist&nbsp;Background', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+    <tr>              
+      <td><label for="playlistSelectedColor"><?php _e('Playlist Active', 'fv_flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>
+    <tr>              
+      <td><label for="playlistFontColor"><?php _e('Playlist Font', 'fv_flowplayer'); ?></label></td>
+        <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
+      <td>
+        <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
+        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor?'style="display:none;"':''; ?>>Use custom color</a>
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?>>Inherit from theme</a>
+      </td>
+      <td></td>
+      <td colspan="2"></td>       
+    </tr>    
+
+
+
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
       <td><input class="color small" type="text" name="buttonColor" id="buttonColor" value="<?php //echo $fv_fp->conf['buttonColor']; ?>" /></td>
@@ -994,22 +1303,22 @@ function fv_flowplayer_admin_usage() {
 								<p><?php _e('Illustrated user guides', 'fv_flowplayer'); ?>:</p>
 								<div class="clear"></div>
 								<ul>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide"><?php _e('Inserting videos', 'fv_flowplayer'); ?></a>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/user-guide#license"><?php _e('License key and custom logo', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/creating-playlists"><?php _e('How to create a playlist', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/adding-ads"><?php _e('Using ads', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/google-advertising-options"><?php _e('Using Google Ads', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/rtmp-streams"><?php _e('RTMP streams', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/subtitles"><?php _e('Subtitles', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide"><?php _e('Amazon S3 secure content guide', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/hls-stream"><?php _e('How to setup a HLS stream', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/google-analytics-flowplayer"><?php _e('Google Analytics support', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/how-to-use-lightbox"><?php _e('Video lightbox', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/youtube-with-flowplayer"><?php _e('YouTube integration', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/switch-video-quality"><?php _e('Quality Switching', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/how-to-use-vimeo-pro"><?php _e('Vimeo integration', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-roll-post"><?php _e('Custom video ads', 'fv_flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/serving-private-cloudfront"><?php _e('CloudFront CDN - protected video downloads', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide#insert-videos"><?php _e('Inserting videos', 'fv_flowplayer'); ?></a>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide"><?php _e('License key and custom logo', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists"><?php _e('How to create a playlist', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/ads"><?php _e('Using ads', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/ads/incorporating-google-adsense"><?php _e('Using Google Ads', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/rtmp-streams"><?php _e('RTMP streams', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/advanced/subtitles"><?php _e('Subtitles', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide"><?php _e('Amazon S3 secure content guide', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/hls-stream"><?php _e('How to setup a HLS stream', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/advanced/google-analytics-flowplayer"><?php _e('Google Analytics support', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-lightbox"><?php _e('Video lightbox', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player"><?php _e('YouTube integration', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/setting-quality-switching"><?php _e('Quality Switching', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo"><?php _e('Vimeo integration', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/ads/using-preroll-postroll-ads"><?php _e('Custom video ads', 'fv_flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/serving-private-cloudfront"><?php _e('CloudFront CDN - protected video downloads', 'fv_flowplayer'); ?></a></li>
 								</ul>
 							</div>
 							<div class="column">
@@ -1017,13 +1326,12 @@ function fv_flowplayer_admin_usage() {
 								<p><?php _e('Troubleshooting', 'fv_flowplayer'); ?>:</p>
 								<div class="clear"></div>
 								<ul>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation"><?php _e('Automated checks', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding"><?php _e('Video encoding tips', 'fv_flowplayer'); ?></a></li>
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/encoding#flash-only"><?php _e('Video formats to avoid', 'fv_flowplayer'); ?></a></li>		
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/fix-amazon-mime-type"><?php _e('Fixing mime type on Amazon S3', 'fv_flowplayer'); ?></a></li>		
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq"><?php _e('Plugin FAQ', 'fv_flowplayer'); ?></a></li>									
-									<li><a target="_blank" href="http://foliovision.com/support/fv-wordpress-flowplayer/"><?php _e('Support forums', 'fv_flowplayer'); ?></a></li>	
-									<li><a target="_blank" href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/installation/downgrading"><?php _e('Downgrading the plugin', 'fv_flowplayer'); ?></a></li>									
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/installation"><?php _e('Automated checks', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding"><?php _e('Video encoding tips', 'fv_flowplayer'); ?></a></li>
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding#flash-only"><?php _e('Video formats to avoid', 'fv_flowplayer'); ?></a></li>		
+									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide/fix-amazon-mime-type"><?php _e('Fixing mime type on Amazon S3', 'fv_flowplayer'); ?></a></li>		
+									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/faq"><?php _e('Plugin FAQ', 'fv_flowplayer'); ?></a></li>									
+									<li><a target="_blank" href="http://foliovision.com/support/fv-wordpress-flowplayer/"><?php _e('Support forums', 'fv_flowplayer'); ?></a></li>										
 								</ul>
 							</div>
 							<div class="clear"></div>
@@ -1071,19 +1379,55 @@ function fv_flowplayer_admin_checkbox( $name ) {
 <?php
 }
 
+/* TABS */
+$fv_player_aSettingsTabs = array(
+  array('id' => 'fv_flowplayer_settings',           'hash' => 'tab_basic' ,    'name' => 'Setup'  ),
+  array('id' => 'fv_flowplayer_settings_skin',      'hash' => 'tab_skin' ,     'name' => 'Skin'  ),
+  array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting' ,  'name' => 'Hosting'  ),
+  array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions' ,  'name' => 'Actions'  ),
+  array('id' => 'fv_flowplayer_settings_video_ads', 'hash' => 'tab_video_ads' ,'name' => 'Video Ads'  ),
+  array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',      'name' => 'Help'   ),
+);
 
-add_meta_box( 'fv_flowplayer_description', __('Description', 'fv_flowplayer'), 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv_flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings', 'normal' );
+//unset video ads tab for Legacy PRO player
+if(version_compare( str_replace( '.beta','',get_option( 'fv_player_pro_ver' ) ),'0.7.23') == -1){
+  unset($fv_player_aSettingsTabs[4]);
+  $fv_player_aSettingsTabs = array_merge($fv_player_aSettingsTabs,array());
+}
+
+$fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
+
+/* Setup tab */
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv_flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide Flowplayer Defaults', 'fv_flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv_flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
-
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv_flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
-add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings', 'normal', 'low' );
+
+/* Skin Tab */
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
+add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv_flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
+
+
+/* Hosting Tab */
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
+add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv_flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings_hosting', 'normal' );
+
+/* Actions Tab */
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
+add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
+
+/* Video Ads Tab */
+
+if( !class_exists('FV_Player_Pro') ) {
+  add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_video_ads', 'fv_flowplayer_settings_video_ads', 'normal', 'high' );
+  add_meta_box( 'fv_flowplayer_ads', __('Video Ads', 'fv_flowplayer'), 'fv_flowplayer_admin_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
+}
+/* Help tab */
+add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
 
 ?>
 
@@ -1108,6 +1452,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
     $aCheck = get_transient( 'fv_flowplayer_license' );
     $aInstalled = get_option('fv_flowplayer_extension_install');
   }
+  
   ?>
   
   <form id="wpfp_options" method="post" action="">
@@ -1137,7 +1482,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
     </p>
     <div id="fv_flowplayer_admin_notices">
-    </div>  
+    </div> 
+    <div id="fv_flowplayer_admin_tabs">
+      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
+        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv_flowplayer');?></a>
+        <?php endforeach;?>
+        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+      </h2>
+    </div>
     
     <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
@@ -1159,14 +1512,17 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       </div>
     <?php endif; ?>	
   
-		<div id="dashboard-widgets" class="metabox-holder columns-1">
-			<div id='postbox-container-1' class='postbox-container'>    
+		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
+      <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>    
 				<?php
-				do_meta_boxes('fv_flowplayer_settings', 'normal', false );
+				do_meta_boxes($val['id'], 'normal', false );
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
 				?>
 			</div>
+      <?php endforeach;?>
+      <div style="clear: both"></div>
 		</div>
     <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
   </form>
@@ -1290,8 +1646,56 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv_flowplayer'), 'fv_flowplaye
       } else {
         jQuery(this).html('(&hellip;)');
       }      
-    } );    
-	});
+    } );  
+    
+    /*
+     * Coor Picker Default  
+     */	
+    jQuery('.playlistFontColor-show').click(function(e){
+      e.preventDefault();
+      jQuery(e.target).hide();
+      jQuery('.playlistFontColor-hide').show();
+
+      jQuery('#playlistFontColor-proxy').show().val(jQuery('#playlistFontColor-proxy').data('previous'));
+      jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
+    });
+
+    jQuery('.playlistFontColor-hide').click(function(e){
+      e.preventDefault();
+      jQuery(e.target).hide();
+      jQuery('.playlistFontColor-show').show();
+
+      jQuery('#playlistFontColor-proxy').data('previous',jQuery('#playlistFontColor-proxy').hide().val()).val('');
+      jQuery('#playlistFontColor').val('');
+    }); 
+
+    jQuery('#playlistFontColor-proxy').on('change',function(e){
+      jQuery('#playlistFontColor').val(jQuery(e.target).val());
+    })
+  });
 	//]]>
 </script>
 
+<script>
+/* TABS */  
+jQuery(document).ready(function(){
+  jQuery('#fv_player_js_warning').hide();
+  
+  var anchor = window.location.hash.substring(1);
+  if( !anchor || !anchor.match(/tab_/) ) return;
+  
+  jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
+  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('#dashboard-widgets .postbox-container').hide();
+  jQuery('#' + anchor).show();
+});
+jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
+  e.preventDefault();
+  window.location.hash = e.target.hash;
+  var anchor = jQuery(this).attr('href').substring(1);
+  jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
+  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('#dashboard-widgets .postbox-container').hide();
+  jQuery('#' + anchor).show();
+});  
+</script>

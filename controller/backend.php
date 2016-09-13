@@ -28,7 +28,7 @@ add_action('admin_footer', 'flowplayer_admin_footer');
 add_action('admin_print_footer_scripts', 'flowplayer_admin_footer_wp_js_restore', 999999 );
 
 add_action('admin_menu', 'flowplayer_admin');
-add_action('media_buttons', 'flowplayer_add_media_button', 30);
+add_action('media_buttons', 'flowplayer_add_media_button', 10);
 add_action('media_upload_fvplayer_video', '__return_false'); // keep for compatibility!
 
 
@@ -56,6 +56,7 @@ add_action('admin_enqueue_scripts', 'fv_flowplayer_admin_scripts');
 //conversion script via AJAX
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
 add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
+
 
 
 function flowplayer_activate() {
@@ -180,12 +181,11 @@ function flowplayer_add_media_button() {
 		if( stripos($plugin,'foliopress-wysiwyg') !== FALSE )
 			$found = true;
 	}
-	$button_tip = 'Insert a Flash Video Player';
+	$button_tip = 'Insert a video';
 	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
-	$button_src = FV_FP_RELATIVE_PATH.'/images/icon.png';    
-	$img = (!$found) ? '<img src="' . $button_src . '" alt="' . $button_tip . '" />' : '';
+	$icon = '<span> </span>';
 
-	echo '<a title="' . __("Add FV WP Flowplayer", "fv_flowplayer") . '" href="#" class="fv-wordpress-flowplayer-button" >'.$img.'</a>';
+	echo '<a title="' . __("Add FV Player", "fv_flowplayer") . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
 }
 
 
@@ -439,6 +439,8 @@ function fv_wp_flowplayer_admin_init() {
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
+    
+    fv_wp_flowplayer_pro_settings_update_for_lightbox();
     $fv_fp->css_writeout();
     
     fv_wp_flowplayer_delete_extensions_transients();
@@ -518,6 +520,26 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
   }
 }
 
+function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
+  global $fv_fp;
+  if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['interface']['lightbox']) && $fv_fp->conf['pro']['interface']['lightbox'] == true ){
+    $fv_fp->conf['interface']['lightbox'] = true;
+    $fv_fp->conf['pro']['interface']['lightbox'] = false;
+    $options = get_option('fvwpflowplayer');
+    unset($options['pro']['interface']['lightbox']); 
+    $options['interface']['lightbox'] = true;
+    update_option('fvwpflowplayer', $options);
+  }
+  if(isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro']['lightbox_images']) && $fv_fp->conf['pro']['lightbox_images'] == true ){
+    $fv_fp->conf['lightbox_images'] = true;
+    $fv_fp->conf['pro']['lightbox_images'] = false;
+    $options = get_option('fvwpflowplayer');
+    unset($options['pro']['lightbox_images']);
+    $options['lightbox_images'] = true;
+    update_option('fvwpflowplayer', $options);
+  }
+   
+}
 
 function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
   $transient_val = get_transient($transient_name);
@@ -793,7 +815,7 @@ function fv_wp_flowplayer_check_template() {
 			
 
 			//	check jQuery scripts						
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
+			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
 			if( count($jquery_scripts[1]) > 0 ) {   
 				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
 					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
@@ -879,8 +901,7 @@ function fv_wp_flowplayer_array_search_by_item( $find, $in_array, &$found, $like
 function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
 
-  	global $current_user;
-    get_currentuserinfo();
+  	$current_user = wp_get_current_user();    
 
   	$content = '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
   	$content .= '<p>User Agent: '.$_SERVER['HTTP_USER_AGENT']."</p>\n";  	
@@ -1185,3 +1206,5 @@ add_action( 'delete_transient_fv_flowplayer_license', 'fv_player_disable_object_
 add_action( 'set_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
 add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' );
 add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
+
+

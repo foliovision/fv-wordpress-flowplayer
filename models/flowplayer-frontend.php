@@ -358,10 +358,11 @@ class flowplayer_frontend extends flowplayer
 				
 				if (isset($this->conf['googleanalytics']) && $this->conf['googleanalytics'] != 'false' && strlen($this->conf['googleanalytics']) > 0) {
 					$attributes['data-analytics'] = $this->conf['googleanalytics'];
-				}			
-				
-        if( count($aPlaylistItems) == 0 ) {
-          list( $attributes['data-rtmp'], $rtmp ) = $this->get_rtmp_server($rtmp);
+				}	
+                
+        list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
+        if( count($aPlaylistItems) == 0 && $rtmp_server) {
+          $attributes['data-rtmp'] = $rtmp_server;
         }
          				
 				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
@@ -600,10 +601,11 @@ class flowplayer_frontend extends flowplayer
 			$this->build_audio_player( $media, $width, $autoplay );
 		}
     
-    $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
-    if(isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical'){
+    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' && count($aPlaylistItems) ){
       $this->ret['html'] = '<div class="fp-playlist-vertical-wrapper">'.$this->ret['html'].'</div>';
     }
+    $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
+
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
@@ -764,36 +766,54 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_popup_code() {
-    if ( ( ( isset($this->conf['popupbox']) ) && ( $this->conf['popupbox'] == "true" ) ) || ( isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup']) ) ) {
-      if (isset($this->aCurArgs['popup']) && !empty($this->aCurArgs['popup'])) {
-        $popup = trim($this->aCurArgs['popup']);
-        if( stripos($popup,'<!--fv_flowplayer_base64_encoded-->') !== false ) {
-          $popup = str_replace('<!--fv_flowplayer_base64_encoded-->','',$popup);
-          $popup = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($popup) ) );
-        } else {
-          $popup = html_entity_decode( str_replace('&#039;',"'",$popup ) );
-        }
-      }
-      else {
-        $popup = 'Would you like to replay the video?';
+  function get_popup_code() {   
+    if ( !empty($this->aCurArgs['popup'])) {
+      $popup = trim($this->aCurArgs['popup']);
+    } else {
+      $popup = empty($this->conf['popups_default'])?'no':$this->conf['popups_default'];
+    }
+    if (stripos($popup, '<!--fv_flowplayer_base64_encoded-->') !== false) {
+      $popup = str_replace('<!--fv_flowplayer_base64_encoded-->', '', $popup);
+      $popup = html_entity_decode(str_replace(array('\"', '\[', '\]'), array('"', '[', ']'), base64_decode($popup)));
+    } else {
+      $popup = html_entity_decode(str_replace('&#039;', "'", $popup));
+    }
+    
+    if ($popup === 'no') {
+      return false;
+    } 
+     
+    if($popup === 'random' || is_numeric($popup)  ){
+      $aPopupData = get_option('fv_player_popups');    
+      if ($popup === 'random') {
+        $iPopupIndex = rand(1,count($aPopupData) );
+      } elseif (is_numeric($popup)) {
+        $iPopupIndex = intval($popup);
       }
       
-      $popup = apply_filters( 'fv_flowplayer_popup_html', $popup );
-      if( strlen(trim($popup)) > 0 ) {			
-        $popup_contents = array(
-                             'html' => '<div class="wpfp_custom_popup_content">'.$popup.'</div>'
-                          );
-        return $popup_contents;
+      if(isset($aPopupData[$iPopupIndex])){
+        $popup = $aPopupData[$iPopupIndex]['html']; 
+      }else{
+        return false;
       }
     }
+    
+    $sClass = ' fv_player_popup-'.$iPopupIndex;
+    
+    $popup = apply_filters('fv_flowplayer_popup_html', $popup);
+    if (strlen(trim($popup)) > 0) {
+      $popup_contents = array(
+          'html' => '<div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div>'
+      );
+      return $popup_contents;
+    }
+
     return false;
   }
-  
-  
+
   function get_rtmp_server($rtmp) {
     $rtmp_server = false;
-    if( isset($this->aCurArgs['rtmp']) && !empty($this->aCurArgs['rtmp']) ) {
+    if( !empty($this->aCurArgs['rtmp']) ) {
       $rtmp_server = trim( $this->aCurArgs['rtmp'] );
     } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && !(isset($this->conf['rtmp']) && $this->conf['rtmp'] != 'false' && stripos($rtmp,$this->conf['rtmp']) !== false ) ) {
       if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
@@ -952,7 +972,7 @@ class flowplayer_frontend extends flowplayer
       $this->ajax_count++;
       
       $rtmp_test = false;
-      if( $rtmp && isset($attributes['data-rtmp']) ) {
+      if( $rtmp ) {
         $rtmp_test = parse_url($rtmp);
         $rtmp_test = trailingslashit($attributes['data-rtmp']).ltrim($rtmp_test['path'],'/');
       }
@@ -994,7 +1014,7 @@ class flowplayer_frontend extends flowplayer
       $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
     }
 					
-    $sHTMLSharing = '<label>Share the video</label><ul class="fvp-sharing">
+    $sHTMLSharing = '<ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
     <li><a class="sharing-twitter" href="https://twitter.com/home?status='.$sTitle.$sPermalink.'" target="_blank">Twitter</a></li>
     <li><a class="sharing-google" href="https://plus.google.com/share?url='.$sPermalink.'" target="_blank">Google+</a></li>

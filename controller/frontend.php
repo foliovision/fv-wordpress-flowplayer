@@ -296,7 +296,8 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     (isset($fv_fp->conf['js-everywhere']) && strcmp($fv_fp->conf['js-everywhere'],'true') == 0 ) ||
+     (isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) ||
+     (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) ||
      isset($_GET['fv_wp_flowplayer_check_template'])
   ) {
     
@@ -319,6 +320,16 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
+    if( !empty($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) {
+      $aConf['lightbox_images'] = true;
+    } else {
+      $aConf['lightbox_images'] = false;
+    }
+    
+    if( !empty($fv_fp->conf['rtmp-live-buffer']) && $fv_fp->conf['rtmp-live-buffer'] == 'true' ) {
+      $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
+    }
+
     if( !empty($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) {
       $aConf['embed'] = false;
     } else {
@@ -353,6 +364,9 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
     }
+    if( current_user_can('edit_posts') ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_user_edit', array(true) );     
+    }
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
@@ -364,7 +378,7 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
     }    
 
-    if( count($GLOBALS['fv_fp_scripts']) > 0 ) {
+    if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
