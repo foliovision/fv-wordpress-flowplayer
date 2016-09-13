@@ -209,7 +209,7 @@ class FV_Player_lightbox {
   }
   
   function lightbox_add_callback($matches) {
-    if (!preg_match('~href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]~', $matches[1]))
+    if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
     if (stripos($matches[1], 'class=') === false) {
