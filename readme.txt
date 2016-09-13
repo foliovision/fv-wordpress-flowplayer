@@ -335,7 +335,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.5.1 - 2016/09/?? =
 
-* Lightbox - fixed lightbox for images not registering uppercase file extensions
+* Lightbox - fix for images with uppercase file extension
 
 = 6.0.5.5 - 2016/07/28 =
 
