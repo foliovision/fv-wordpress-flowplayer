@@ -387,11 +387,18 @@ class FV_Player_Checker {
     $header = substr($data, 0, $header_size);
     $body = substr($data, $header_size);
   
-    if( $file ) {
-      if( gettype($file === 'resource')){
-        fwrite($file, $body);
-      }else{
-        file_put_contents( $file, $body);
+    if ($file) {
+      if (gettype($file === 'resource')) {
+        $size = strlen($body);
+        for ($written = 0; $written < $size; $written += $fwrite) {
+          $fwrite = fwrite($file, substr($body, $written ,1024*512));
+          //echo $fwrite + $written." of $size <br>";
+          if ($fwrite == 0) {
+            break;
+          }
+        }
+      } else {
+        file_put_contents($file, $body);
       }
     }
     $sError = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : false;
