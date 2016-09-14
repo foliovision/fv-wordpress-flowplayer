@@ -183,7 +183,7 @@ class FV_Player_Checker {
               $out = @fopen( $localtempfilename,'wb' );
            
               if( $out ) {
-                $aArgs = array( 'file' => $localtempfilename );
+                $aArgs = array( 'file' => $out );
                 if( !$this->is_cron ) {
                   $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
                 }
@@ -388,7 +388,11 @@ class FV_Player_Checker {
     $body = substr($data, $header_size);
   
     if( $file ) {
-      file_put_contents( $file, $body);
+      if( gettype($file === 'resource')){
+        fwrite($file, $body);
+      }else{
+        file_put_contents( $file, $body);
+      }
     }
     $sError = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : false;
     if( curl_errno($ch) == 28 ) {
