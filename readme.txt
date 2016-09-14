@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.5.2
+Tested up to: 4.6
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -35,7 +35,7 @@ Back to school special 25% off pro licenses until end of September.
 
 **Additional Technical information**
 
-* Core video engine: open source Flowplayer 6. 
+* Core video engine: open source Flowplayer 6.
 * Supported video formats are FLV, H.264, and MP4 ([read about HTML5 video formats](https://foliovision.com/player/encoding)). Multiple videos can be displayed in one post or page.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with WordPress Flowplayer plugin, there are several improvements:
@@ -53,7 +53,7 @@ Back to school special 25% off pro licenses until end of September.
 [Support](https://foliovision.com/support/fv-wordpress-flowplayer/) |
 [Change Log](https://foliovision.com/player/changelog) |
 [Installation](https://foliovision.com/player/installation)|
-[User Guide](https://foliovision.com/player/user-guide) | 
+[User Guide](https://foliovision.com/player/user-guide) |
 [Detailed FAQ](https://foliovision.com/player/faq)
 
 == Installation ==
@@ -65,7 +65,7 @@ There aren't any special requirements for FV Player to work, and you don't need 
    3. Go into WordPress plugins setup in WordPress administration interface and activate FV Player plugin.
    4. If you want to embed videos denoted just by their filename, you can create the /videos/ directory located directly in the root of your domain and place your videos there(you use complete URL of video files).
    5. Go to plugin Settings screen and click both "Check template" and "Check videos" buttons to check your template and videos mime type.
-   
+
 Visit [our site](https://foliovision.com/player/installation) for a fully featured guide with **screenshots** and more!
 
 == Frequently Asked Questions ==
@@ -130,18 +130,18 @@ AddType video/mp2t            .ts`
 
 If you use Microsoft IIS, add following into web.config (one should be in your root website folder) into configuration/system.webServer/staticContent section:
 
-`<remove fileExtension=".mp4" />  
+`<remove fileExtension=".mp4" />
 <mimeMap fileExtension=".mp4" mimeType="video/mp4" />
-<remove fileExtension=".webm" />  
+<remove fileExtension=".webm" />
 <mimeMap fileExtension=".webm" mimeType="video/webm" />
-<remove fileExtension=".ogg" />  
+<remove fileExtension=".ogg" />
 <mimeMap fileExtension=".ogg" mimeType="video/ogg" />
-<remove fileExtension=".m4v" />  
+<remove fileExtension=".m4v" />
 <mimeMap fileExtension=".m4v" mimeType="video/x-m4v" />
-<remove fileExtension=".ts" />  
+<remove fileExtension=".ts" />
 <mimeMap fileExtension=".ts" mimeType="video/mp2t" />`
 
-This can be also done in the Apache configuration. If you are on Microsoft IIS, you need to use the IIS manager. 
+This can be also done in the Apache configuration. If you are on Microsoft IIS, you need to use the IIS manager.
 
 **If you host videos on Amazon AWS:**
 
@@ -153,7 +153,7 @@ Also for Internet Explorer, it's not recommended to use MPEG-4 Visual or MPEG-4 
 
 = 6. How do I fix the bad metadata (moov) position? =
 
-This means that the video information (such as what codecs are used) is not stored at the beginning of the file. In our experience, video with bad meta data position might be slow to load in Flash engine (check some browser which doesn't play MP4 format in Flash - like Opera) and Firefox. Although Safary and iOS (iPAd, iPhone) may play it just fine. 
+This means that the video information (such as what codecs are used) is not stored at the beginning of the file. In our experience, video with bad meta data position might be slow to load in Flash engine (check some browser which doesn't play MP4 format in Flash - like Opera) and Firefox. Although Safary and iOS (iPAd, iPhone) may play it just fine.
 
 In general we recommend you to re-encode your video as [per our instructions](https://foliovision.com/player/encoding#encoding-samples), but here are some quick tools:
 
@@ -190,7 +190,7 @@ There is also a workaround - on each page what is using one of the OptimizePress
 
 = 10. I'm using OptimizePress version 2 template. =
 
-FV Flowplayer will handle all the videos inserted by the Live Edit. 
+FV Flowplayer will handle all the videos inserted by the Live Edit.
 
 = 11. Does this plugin support Shoutcast?. =
 
@@ -198,7 +198,7 @@ Unfortunatelly HTML5 does not support live broadcasting. Please read about it he
 
 = 12. I get an error message like this when activating the plugin: Parse error: parse error, unexpected T_STRING, expecting T_OLD_FUNCTION or T_FUNCTION or T_VAR or '}' in /wp-content/plugins/fv-wordpress-flowplayer/models/flowplayer.php on line 4. =
 
-You need to use at least PHP 5, your site is probably still running on old PHP 4. 
+You need to use at least PHP 5, your site is probably still running on old PHP 4.
 
 = 13. I get "Can't create temporary file for video analysis" in admin video checker. =
 
@@ -333,8 +333,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.5.1 - 2016/08/?? =
+= 6.0.5.5.1 - 2016/09/?? =
 
+* Lightbox - fix for images with uppercase file extension
 * Google Analytics - improvements for compatibility with Pro Plugin
 
 = 6.0.5.5 - 2016/07/28 =
@@ -747,7 +748,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 2.2.14 - 2014/06/24 =
 
 * Bugfix - important fix for Chrome - share bar embed button was triggering video loading on background and thus causing extra traffic to the server
-* Bugfix - some PHP and admin JS warnings 
+* Bugfix - some PHP and admin JS warnings
 
 = 2.2.13 - 2014/06/23 =
 
@@ -886,8 +887,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 2.1.45 - 2013/10/31 =
 
-* Feature - Vimeo support - for now just a basic iframe embed - enter your Vimeo URL or ID as the video source 
-* Feature - Youtube support - for now just a basic iframe embed - enter your Youtube URL or ID as the video source 
+* Feature - Vimeo support - for now just a basic iframe embed - enter your Vimeo URL or ID as the video source
+* Feature - Youtube support - for now just a basic iframe embed - enter your Youtube URL or ID as the video source
 
 = 2.1.44 - 2013/10/22 =
 * Bugfix - playlist (beta) - fix for splash image sizing
@@ -912,7 +913,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - RTMP parsing
 
 = 2.1.39 - 2013/09/30 =
-* Bugfix - Google Chrome preload disabler fix 
+* Bugfix - Google Chrome preload disabler fix
 * Bugfix - Amazon S3 signed URLs - fix for + symbols in the URL
 
 = 2.1.38 - 2013/09/26 =
@@ -923,7 +924,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - Amazon S3 protected video length checking was interfering with some of the post saves in some cases
 
 = 2.1.36 - 2013/09/23 =
-* Bugfix - Amazon S3 secure link generator was suddenly failing for links without the bucket name in path part of URL 
+* Bugfix - Amazon S3 secure link generator was suddenly failing for links without the bucket name in path part of URL
 * Bugfix - typo in OGV video parsing resulting in bad video type
 * Bugfix - shortcode parsing when using oggtheora
 
@@ -946,7 +947,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - better use of WordPress filters - for programmers. Read the guide here: https://foliovision.com/player/api-programming
 * Feature - support for Amazon S3 secured URLs!
 * Fix - controlbar hides after 2 seconds of no mouse movement, it was 5 seconds before
-* Fix - new structure of the Settings screen 
+* Fix - new structure of the Settings screen
 * Fix - options and settings screen layout revised - engine preference, fixed player size and video checker preference changed to simple checkboxes
 * Bugfix - autobuffering now works only for first 2 videos also in HTML5
 * Bugfix - autoplay now works only for the first video on the page (use fv_flowplayer_autoplay_limit filter)
@@ -968,7 +969,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - splashend function in Flash player fixed* Bugfix - splashend function in Flash player fixed
 * Bugfix - fix for rare occurrences of decimal numbers when fetching the video size in insert video dialog
 
-= 2.1.29 - 2013/08/02 = 
+= 2.1.29 - 2013/08/02 =
 * Bugfix - two boxes below each video removed - result of alpha version of playlist feature in our plugin. Sorry about the inconvenience.
 * Bugfix - Chrome check breaking the plugin JS
 
@@ -1073,7 +1074,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Fix - Update to Flowplayer 5.4.2
 * Bugfix - more improvements and bugfixes for RTMP handling
 * Bugfix - for popup and redirection in Flash version of the player
-* Bugfix - for admin front-end check of the videos 
+* Bugfix - for admin front-end check of the videos
 
 = 2.1.9 - 2013/05/27 =
 * improvements and bugfixes for RTMP handling
@@ -1134,7 +1135,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 1.2.14 =
 * Fixed Sharing permalink
- 
+
 = 1.2.14 =
 * Option in settings to prevent doubling the link in the popup box, default option is set to false (do not double)
 
