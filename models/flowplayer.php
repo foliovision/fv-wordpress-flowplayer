@@ -860,7 +860,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       
       $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
-      return http_build_url($sURL, $url_parts);
+      return fv_http_build_url($sURL, $url_parts);
     /*} else {
       return $sURL;
     }*/    
