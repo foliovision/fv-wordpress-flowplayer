@@ -180,45 +180,48 @@ class FV_Player_Checker {
               $upload_dir = wp_upload_dir();      
               $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
 
-              $aArgs = array('file' => $localtempfilename);
-              if (!$this->is_cron) {
-                $aArgs['quick_check'] = apply_filters('fv_flowplayer_checker_timeout_quick', 2);
+              $aArgs = array( 'file' => $localtempfilename );
+              if( !$this->is_cron ) {
+                $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
               }
-              list( $header, $sHTTPError ) = $this->http_request($remotefilename_encoded, $aArgs);
+              list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
 
               $video_errors = array();
-              if ($sHTTPError) {
+              if( $sHTTPError ) {
                 $video_errors[] = $sHTTPError;
                 $bValidFile = false;
               }
-              
+  
+              if( !$headers ) {
+                $headers = WP_Http::processHeaders( $header );            
 
-              if (!$headers) {
-                $headers = WP_Http::processHeaders($header);
-
-                list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers($headers, $remotefilename, $random);
-                if ($bFatal) {
+                list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
+                if( $bFatal ) {
                   $bValidFile = false;
                 }
 
-                if ($aVideoErrors) {
-                  $video_errors = array_merge($video_errors, $aVideoErrors);
+                if( $aVideoErrors ) {
+                  $video_errors = array_merge( $video_errors, $aVideoErrors );
                 }
-
-                if (isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403') {
+          
+                if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
                   $error = new SimpleXMLElement($body);
-
-                  if (stripos($error->Message, 'Request has expired') !== false) {
-                    $video_errors[] = '<p><strong>Amazon S3</strong>: Your secure link is expired, there might be problem with your Amazon S3 plugin. Please test if the above URL opens in your browser.</p>';
+                  
+                  if( stripos( $error->Message, 'Request has expired' ) !== false ) {
+                    $video_errors[] = '<p><strong>Amazon S3</strong>: Your secure link is expired, there might be problem with your Amazon S3 plugin. Please test if the above URL opens in your browser.</p>';       
                   } else {
-                    $video_errors[] = '<p><strong>Amazon S3</strong>: ' . $error->Message . '</p>';
+                    $video_errors[] = '<p><strong>Amazon S3</strong>: '.$error->Message.'</p>';               
                   }
                 }
               }
 
-              if ($bValidFile) {
-                $ThisFileInfo = $getID3->analyze($localtempfilename);
+              if( $bValidFile ) {
+                $ThisFileInfo = $getID3->analyze( $localtempfilename );
               }
+              if( !@unlink($localtempfilename) ) {
+                $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
+              }      
+
               if (!@unlink($localtempfilename)) {
                 $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>' . $localtempfilename . '</tt>!';
               }
