@@ -847,7 +847,7 @@ function fv_flowplayer_admin_interface_options() {
 				<p><?php _e('Which features should be available in shortcode editor?', 'fv_flowplayer'); ?></p>
 				<table class="form-table2">
 					<tr>
-						<td class="first"><label for="allowuploads"><?php _e('Allow User Uploads', 'fv_flowplayer'); ?>:</label></td>
+						<td class="first"><label for="allowuploads"><?php _e('Allow video uploads', 'fv_flowplayer'); ?>:</label></td>
 						<td>
               <input type="hidden" name="allowuploads" value="false" />
               <input type="checkbox" name="allowuploads" id="allowuploads" value="true" <?php if( isset($fv_fp->conf['allowuploads']) && $fv_fp->conf['allowuploads'] == 'true' ) echo 'checked="checked"'; ?> />
