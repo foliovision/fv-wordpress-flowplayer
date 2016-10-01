@@ -134,11 +134,20 @@ class FV_Player_lightbox {
       return $output;
     }
 
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro->bVideoAdsStatus['preroll']) && $FV_Player_Pro->bVideoAdsStatus['preroll'] || isset($FV_Player_Pro->bVideoAdsStatus['postroll']) && $FV_Player_Pro->bVideoAdsStatus['postroll'] ) return $output;
 
     global $fv_fp;
     $output = array();
     $output['html'] = '';
     $output['script'] = '';
+    
+    if( isset($FV_Player_Pro->bVideoAdsStatus['preroll']) && $FV_Player_Pro->bVideoAdsStatus['preroll'] ) {
+      //unset($aPlaylistItems[0]);
+      //$aCurArgs['ads'] = '1';
+    }
+    
+    //var_dump($aPlaylistItems);die();
 
     $i = 0;
     $after = '';
