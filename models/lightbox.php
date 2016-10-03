@@ -141,13 +141,6 @@ class FV_Player_lightbox {
     $output = array();
     $output['html'] = '';
     $output['script'] = '';
-    
-    if( isset($FV_Player_Pro->bVideoAdsStatus['preroll']) && $FV_Player_Pro->bVideoAdsStatus['preroll'] ) {
-      //unset($aPlaylistItems[0]);
-      //$aCurArgs['ads'] = '1';
-    }
-    
-    //var_dump($aPlaylistItems);die();
 
     $i = 0;
     $after = '';
