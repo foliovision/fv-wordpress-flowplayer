@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2016-09-16 08:54+0100\n"
-"PO-Revision-Date: 2016-09-16 09:05+0100\n"
+"POT-Creation-Date: 2016-10-05 16:28+0100\n"
+"PO-Revision-Date: 2016-10-05 16:36+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -723,15 +723,19 @@ msgstr ""
 #: ../view/admin.php:510
 msgid "You can customize the colors of the player to match your website."
 msgstr ""
+"Sie können die Farben des Spielers anpassen dass er mit Ihre Website passt."
 
 #: ../view/admin.php:527
 msgid "Here you can enable and configure advanced hosting options."
 msgstr ""
+"Hier können Sie aktivieren und erweiterte Hosting-Optionen zu konfigurieren."
 
 #: ../view/admin.php:544
 msgid ""
 "Here you can configure ads and banners that will be showed in the video."
 msgstr ""
+"Hier können Sie Anzeigen und Banner konfigurieren, die in dem Video gezeigt "
+"werden."
 
 #: ../view/admin.php:561
 msgid ""
@@ -739,16 +743,25 @@ msgid ""
 "\"><b>FV Player Licence</b></a>, and you will be able to configure multiple, "
 "clickable Video Ads, that can be played before or after Your videos."
 msgstr ""
+"Kaufen Sie <a href=\"https://foliovision.com/fv-flowplayer-dokumentation/"
+"herunterladen\" target=\"_blank\"><b>FV Player Lizenz</b></a>, und Sie "
+"werden in der Lage mehrere anklickbaren Video Ads konfigurieren, die vor "
+"oder nach Ihre Videos abgespielt werden können."
 
 #: ../view/admin.php:564
 msgid "You can configure video ads globally, or on a per video basis."
 msgstr ""
+"Sie können Video-Anzeigen global oder auf einer pro Video Basis "
+"konfigurieren."
 
 #: ../view/admin.php:567
 msgid ""
 "If you are interested in VAST or VPAID ads, then check out <a href=\"https://"
 "foliovision.com/player/vast\" target=\"_blank\"><b>FV Player VAST</b></a>."
 msgstr ""
+"Wenn Sie Interesse an VAST oder VPAID Anzeigen haben, dann schauen Sie sich "
+"<a href=\"https://foliovision.com/fv-flowplayer-dokumentation/fv-player-vast"
+"\" target=\"_blank\"><b>FV Player VAST</b></a>."
 
 #: ../view/admin.php:578
 msgid "Following options are suitable for web developers and programmers."
@@ -951,6 +964,8 @@ msgstr "Standard Pop-up"
 msgid ""
 "You can set a default popup here and then skip it for individual videos."
 msgstr ""
+"Sie können einen Standard Pop-up hier setzen und es dann für einzelne Videos "
+"überspringen."
 
 #: ../view/admin.php:788
 msgid "Status"
