@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-09-09 18:19+0100\n"
-"PO-Revision-Date: 2016-09-09 18:22+0100\n"
+"PO-Revision-Date: 2016-09-16 08:59+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: Czech\n"
@@ -1209,7 +1209,7 @@ msgstr "Playlist je aktivní"
 
 #: ../view/admin.php:1263
 msgid "Playlist Font"
-msgstr "Typ písmaPlaylist "
+msgstr "Typ písma playlistu"
 
 #: ../view/admin.php:1268
 msgid "Use custom color"
