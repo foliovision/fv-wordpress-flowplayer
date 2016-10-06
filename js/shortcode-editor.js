@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
         height:"600px",
         href: "#fv-wordpress-flowplayer-popup",
         inline: true,
-        title: 'Add FV WP Flowplayer',
+        title: 'Add FV Player',
         onComplete : fv_wp_flowplayer_edit,
         onClosed : fv_wp_flowplayer_on_close,
         onOpen: function(){
