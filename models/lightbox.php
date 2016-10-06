@@ -146,8 +146,8 @@ class FV_Player_lightbox {
       $i++;
       unset($aCurArgs['playlist']);
       $aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      $aCurArgs['splash'] = $aSplashScreens[$key];
-      $aCurArgs['caption'] = $aCaptions[$key];
+      $aCurArgs['splash'] = isset($aSplashScreens[$key]) ? $aSplashScreens[$key] : false;
+      $aCurArgs['caption'] = isset($aCaptions[$key]) ? $aCaptions[$key] : false;
 
       $aPlayer = $fv_fp->build_min_player($aCurArgs['src'], $aCurArgs);
 
@@ -209,7 +209,7 @@ class FV_Player_lightbox {
   }
   
   function lightbox_add_callback($matches) {
-    if (!preg_match('~href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]~', $matches[1]))
+    if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
     if (stripos($matches[1], 'class=') === false) {
