@@ -1695,7 +1695,9 @@ jQuery(document).ready(function(){
   jQuery('#fv_player_js_warning').hide();
   
   var anchor = window.location.hash.substring(1);
-  if( !anchor || !anchor.match(/tab_/) ) return;
+  if( !anchor || !anchor.match(/tab_/) ) {
+    anchor = 'postbox-container-tab_basic';
+  }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
