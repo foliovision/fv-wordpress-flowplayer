@@ -324,7 +324,6 @@ function fv_wp_flowplayer_edit() {
   if(typeof(shortcode) == 'undefined'){
     var shortcode = content.match( fv_wp_flowplayer_re_edit );  
   }
-  console.log(shortcode);
  
   if( shortcode != null ) { 
     shortcode = shortcode.join('');
