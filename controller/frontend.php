@@ -502,3 +502,29 @@ function fv_flowplayer_amp_post_template_footer() {
 }
 
 
+add_filter( 'comment_text', 'fv_player_comment_text', 0 );
+
+function fv_player_comment_text( $comment_text ) {
+  if( is_admin() ) return $comment_text;
+
+	global $fv_fp;
+	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
+		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
+             . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
+             . '(?:'                 #  Group host alternatives:
+             .   'youtu\.be/'        #    Either youtu.be,
+             .   '|youtube\.com/'    #    or youtube.com
+             .     '(?:'             #    Group path alternatives:
+             .       'embed/'        #      Either /embed/,
+             .       '|v/'           #      or /v/,
+             .       '|watch\?v='    #      or /watch?v=,
+             .       '|watch\?.+&v=' #      or /watch?other_param&v=
+             .     ')'               #    End path alternatives.
+             . ')'                   #  End host alternatives.
+             . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
+             . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
+		$comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
+	}
+	return $comment_text;
+}
+
