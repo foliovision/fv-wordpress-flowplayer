@@ -333,6 +333,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.7 - 2016/10/17 =
+
+* Shortcode editor - fix for the "Text" tab of WP editor
+* Shortcode editor - fix for the scroll position changing when it gets opened
+
 = 6.0.5.6 - 2016/10/06 =
 
 * Lightbox - fix for images with uppercase file extension

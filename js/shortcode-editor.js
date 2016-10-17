@@ -5,7 +5,8 @@ var FVFP_sWidgetId;
 
 jQuery(document).ready(function($){ 
   if( jQuery().fv_player_box ) {     
-    $(document).on( 'click', '.fv-wordpress-flowplayer-button', function() {
+    $(document).on( 'click', '.fv-wordpress-flowplayer-button', function(e) {
+      e.preventDefault();
       $.fv_player_box( {
         width:"620px",
         height:"600px",
