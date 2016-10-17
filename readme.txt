@@ -335,8 +335,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.7 - 2016/10/17 =
 
+* CSS - disabling text selection highlight for the player
+* Integrations - option to automatically convert Vimeo and YouTube links in comments to players
 * Shortcode editor - fix for the "Text" tab of WP editor
 * Shortcode editor - fix for the scroll position changing when it gets opened
+* Video checker - fix to RTMP checking in playlist
 
 = 6.0.5.6 - 2016/10/06 =
 
