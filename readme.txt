@@ -337,6 +337,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * CSS - disabling text selection highlight for the player
 * Integrations - option to automatically convert Vimeo and YouTube links in comments to players
+* Lightbox - fix for single videos when no FV Player Pro
 * Shortcode editor - fix for the "Text" tab of WP editor
 * Shortcode editor - fix for the scroll position changing when it gets opened
 * Video checker - fix to RTMP checking in playlist
