@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Shortcode editor - fix for the "Text" tab of WP editor
 * Shortcode editor - fix for the scroll position changing when it gets opened
 * Video checker - fix to RTMP checking in playlist
+* YouTube - making sure the basic iframe embedding uses protocol independent URLs
 
 = 6.0.5.6 - 2016/10/06 =
 
