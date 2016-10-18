@@ -310,7 +310,12 @@ It simply adds a class "play-button" to the player DIV element and then it knows
 no-time
 no-volume`
 
-= 31. What if the FV Player doesn't work for me? =
+
+= 31. Minify plugins are interfering with FV Player =
+
+Read our guide [Using FV Player with Minify Plugins](https://foliovision.com/player/advanced/player-minify-plugins). There you'll find how to set up plugins such as Autoptimize or WP Rocket so they work properly with the FV Player.
+
+= 32. What if the FV Player doesn't work for me? =
 
 No worries.
 
