@@ -338,6 +338,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.8 - 2016/10/19 =
+
+* iPhone iOS 10 - improved support, the device doesn't require use of native fullscreen
+
 = 6.0.5.7 - 2016/10/17 =
 
 * CSS - disabling text selection highlight for the player
