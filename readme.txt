@@ -4,7 +4,7 @@ Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
 Tested up to: 4.6
-Stable tag: trunk
+Stable tag: 6.0.5.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
