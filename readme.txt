@@ -310,7 +310,12 @@ It simply adds a class "play-button" to the player DIV element and then it knows
 no-time
 no-volume`
 
-= 31. What if the FV Player doesn't work for me? =
+
+= 31. Minify plugins are interfering with FV Player =
+
+Read our guide [Using FV Player with Minify Plugins](https://foliovision.com/player/advanced/player-minify-plugins). There you'll find how to set up plugins such as Autoptimize or WP Rocket so they work properly with the FV Player.
+
+= 32. What if the FV Player doesn't work for me? =
 
 No worries.
 
@@ -332,6 +337,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.0.5.7 - 2016/10/17 =
+
+* CSS - disabling text selection highlight for the player
+* Integrations - option to automatically convert Vimeo and YouTube links in comments to players
+* Lightbox - fix for single videos when no FV Player Pro
+* Shortcode editor - fix for the "Text" tab of WP editor
+* Shortcode editor - fix for the scroll position changing when it gets opened
+* Video checker - fix to RTMP checking in playlist
+* YouTube - making sure the basic iframe embedding uses protocol independent URLs
 
 = 6.0.5.6 - 2016/10/06 =
 

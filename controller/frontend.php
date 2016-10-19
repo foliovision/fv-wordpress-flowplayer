@@ -509,21 +509,30 @@ function fv_player_comment_text( $comment_text ) {
 
 	global $fv_fp;
 	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
-		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
-             . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
-             . '(?:'                 #  Group host alternatives:
-             .   'youtu\.be/'        #    Either youtu.be,
-             .   '|youtube\.com/'    #    or youtube.com
-             .     '(?:'             #    Group path alternatives:
-             .       'embed/'        #      Either /embed/,
-             .       '|v/'           #      or /v/,
-             .       '|watch\?v='    #      or /watch?v=,
-             .       '|watch\?.+&v=' #      or /watch?other_param&v=
-             .     ')'               #    End path alternatives.
-             . ')'                   #  End host alternatives.
-             . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
-             . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
-		$comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
+    add_filter('comment_text', 'do_shortcode');
+
+    if( stripos($comment_text,'youtube.com') !== false || stripos($comment_text,'youtu.be') !== false ) {
+  		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
+               . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
+               . '(?:'                 #  Group host alternatives:
+               .   'youtu\.be/'        #    Either youtu.be,
+               .   '|youtube\.com/'    #    or youtube.com
+               .     '(?:'             #    Group path alternatives:
+               .       'embed/'        #      Either /embed/,
+               .       '|v/'           #      or /v/,
+               .       '|watch\?v='    #      or /watch?v=,
+               .       '|watch\?.+&v=' #      or /watch?other_param&v=
+               .     ')'               #    End path alternatives.
+               . ')'                   #  End host alternatives.
+               . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
+               . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
+  		$comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
+    }
+
+    if( stripos($comment_text,'vimeo.com') !== false ) {
+      $pattern = '#(?:https?://)?(?:www.)?(?:player.)?vimeo.com/(?:[/a-z]*/)*([0-9]{6,11})[?]?.*#';
+      $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
+    }
 	}
 	return $comment_text;
 }

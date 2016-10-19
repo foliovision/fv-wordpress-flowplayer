@@ -652,7 +652,7 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('parse_comments'); ?>
                 <?php _e('Automatically convert Vimeo and YouTube links in comments to players.','fv-wordpress-flowplayer'); ?>
-                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
             </td>
           </tr>					
