@@ -609,6 +609,11 @@ class flowplayer_frontend extends flowplayer
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
+    
+    /* * 
+    *  User agent check
+    */
+    $this->ret['html'] .= '<div class="fv-player-warning" id="wpfp_iphone_subs_warning_' . $this->hash.'">This video has subtitles, that are not supported on this device.</div>';
 		return $this->ret;
 	}
   
