@@ -333,9 +333,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.5.1 - 2016/09/?? =
+= 6.0.5.6 - 2016/10/06 =
 
 * Lightbox - fix for images with uppercase file extension
+* Lightbox - fix for videos with video ads (Pro)
+* Compatibility - Improved compatibility with Elasticpress plugin.
+* Compatibility - fix for PHP memory warnings when checking video length on post save
+* Compatibility - fix for Pods plugin (there were issues in some cases)
+* Playlist - setting active element before video starts playing
+* Shortcode editor - shortcode parsing fix
+* Translations - changing language domain to fv-wordpress-flowplayer
 
 = 6.0.5.5 - 2016/07/28 =
 

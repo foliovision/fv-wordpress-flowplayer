@@ -878,3 +878,21 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 		background-size: 100%;
 	}
 }
+
+
+.flowplayer {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.fv_wp_fp_notice_content {
+  -webkit-touch-callout: auto;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}

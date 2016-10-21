@@ -11,7 +11,7 @@ jQuery(document).ready(function($){
         height:"600px",
         href: "#fv-wordpress-flowplayer-popup",
         inline: true,
-        title: 'Add FV WP Flowplayer',
+        title: 'Add FV Player',
         onComplete : fv_wp_flowplayer_edit,
         onClosed : fv_wp_flowplayer_on_close,
         onOpen: function(){
@@ -694,11 +694,11 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
   var rMatch = false;
   if( sShortcode.match(rDoubleQ) ) {
     //rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
-    rMatch = new RegExp(sArg+'="(.*?[^\\\\])"',"g");
-  } else if( sShortcode.match(rSingleQ) ) {
-    rMatch = new RegExp(sArg+"='([^']*?)'","g");
-  } else if( sShortcode.match(rNoQ) ) {
-    rMatch = new RegExp(sArg+"=([^\\]\\s,]+)","g");
+    rMatch = new RegExp('[ "\']' + sArg + '="(.*?[^\\\\])"', "g");
+  } else if (sShortcode.match(rSingleQ)) {
+    rMatch = new RegExp('[ "\']' + sArg + "='([^']*?)'", "g");
+  } else if (sShortcode.match(rNoQ)) {
+    rMatch = new RegExp('[ "\']' + sArg + "=([^\\]\\s,]+)", "g");
   }
 
   if( !rMatch ){
