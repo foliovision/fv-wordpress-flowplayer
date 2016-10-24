@@ -4,10 +4,10 @@ var FVFP_sStoreRTMP = 0;
 var FVFP_sWidgetId;
 
 var FVFP_oPreviewDebounce;
-
-jQuery(document).ready( function($) {
-  if( jQuery().fv_player_box ) {
-    $(document).on( 'click', '.fv-wordpress-flowplayer-button', function() {
+jQuery(document).ready(function($){ 
+  if( jQuery().fv_player_box ) {     
+    $(document).on( 'click', '.fv-wordpress-flowplayer-button', function(e) {
+      e.preventDefault();
       $.fv_player_box( {
         top: "100px",
         initialWidth: 1100,
@@ -27,15 +27,6 @@ jQuery(document).ready( function($) {
       FVFP_sWidgetId = $(this).data().number;
     });
     
-    // why 2 separate onclicks async?
-    jQuery(".fv-wordpress-flowplayer-button").click( function(e) {
-      FVFP_sWidgetId = jQuery(e.target).data().number;
-      if( jQuery('#wp-content-wrap').hasClass('html-active') && typeof(FCKeditorAPI) != "object" ) {
-        jQuery(".fv-wordpress-flowplayer-button").after( ' <strong class="fv-wordpress-flowplayer-error">Please use the Visual editor</strong>' );
-        jQuery(".fv-wordpress-flowplayer-error").delay(2000).fadeOut( 500,function() { jQuery(this).remove(); } );
-        return false;
-      }
-    } );
   }
   
   /* 
@@ -250,11 +241,13 @@ function fv_wp_flowplayer_init() {
   
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val();
+  }else if(jQuery('#content:not([aria-hidden=true])').length){
+    fv_wp_flowplayer_content = jQuery('#content:not([aria-hidden=true])').val();
   } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
     fv_wp_flowplayer_hTinyMCE = tinymce.activeEditor;
   } else if( typeof tinyMCE !== 'undefined' ) {
     fv_wp_flowplayer_hTinyMCE = tinyMCE.getInstanceById('content');
-  } else{
+  } else if(typeof(FCKeditorAPI) !== 'undefined' ){
     fv_wp_flowplayer_oEditor = FCKeditorAPI.GetInstance('content');    
   }
   
@@ -301,7 +294,10 @@ function fv_wp_flowplayer_init() {
  * Sends new shortcode to editor
  */
 function fv_wp_flowplayer_insert( shortcode ) {
-  if( fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_edit ) ) {
+  if( jQuery('#content:not([aria-hidden=true])').length ) {
+    fv_wp_flowplayer_content = fv_wp_flowplayer_content .replace(/#fvp_placeholder#/,shortcode);
+    fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );
+  }else if( fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_edit ) ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_edit, shortcode )
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );
   }
@@ -454,6 +450,31 @@ function fv_wp_flowplayer_edit() {
     } else {
       fv_wp_flowplayer_content =   '<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+'';
     }
+    
+  }else if(jQuery('#content:not([aria-hidden=true])').length){    
+    var bFound = false;
+    var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
+    for(var start = position; start--; start >= 0){
+      if( fv_wp_flowplayer_content[start] == '['){
+        bFound = true; break;
+      }else if(fv_wp_flowplayer_content[start] == ']'){
+        break
+      }
+    }
+    var shortcode = [];
+   
+    if(bFound){    
+      var temp = fv_wp_flowplayer_content.slice(start);
+      temp = temp.match(/^\[fvplayer[^\[\]]*]?/);
+      if(temp){
+        shortcode = temp;
+        fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, start) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(start).replace(/^\[[^\[\]]*]?/, '');
+      }else{
+        fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, position) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(position);
+      }
+    }else{
+      fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, position) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(position);
+    }   
   }else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {  
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
@@ -484,10 +505,11 @@ function fv_wp_flowplayer_edit() {
 	}
 	
   
-  var content = fv_wp_flowplayer_content.replace(/\n/g, '\uffff');        
-
-  var shortcode = content.match( fv_wp_flowplayer_re_edit );  
-
+  var content = fv_wp_flowplayer_content.replace(/\n/g, '\uffff');          
+  if(typeof(shortcode) == 'undefined'){
+    var shortcode = content.match( fv_wp_flowplayer_re_edit );  
+  }
+ 
   if( shortcode != null ) { 
     shortcode = shortcode.join('');
     shortcode = shortcode.replace(/^\[|\]+$/gm,'');
@@ -752,7 +774,8 @@ function fv_wp_flowplayer_set_html( html ) {
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val(html);      
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
-    
+  }else if( jQuery('#content:not([aria-hidden=true])').length ){
+    jQuery('#content:not([aria-hidden=true])').val(html); 
   }else if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_oEditor.SetHTML( html );      
   }
@@ -945,11 +968,11 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
   var rMatch = false;
   if( sShortcode.match(rDoubleQ) ) {
     //rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
-    rMatch = new RegExp(sArg+'="(.*?[^\\\\])"',"g");
-  } else if( sShortcode.match(rSingleQ) ) {
-    rMatch = new RegExp(sArg+"='([^']*?)'","g");
-  } else if( sShortcode.match(rNoQ) ) {
-    rMatch = new RegExp(sArg+"=([^\\]\\s,]+)","g");
+    rMatch = new RegExp('[ "\']' + sArg + '="(.*?[^\\\\])"', "g");
+  } else if (sShortcode.match(rSingleQ)) {
+    rMatch = new RegExp('[ "\']' + sArg + "='([^']*?)'", "g");
+  } else if (sShortcode.match(rNoQ)) {
+    rMatch = new RegExp('[ "\']' + sArg + "=([^\\]\\s,]+)", "g");
   }
 
   if( !rMatch ){

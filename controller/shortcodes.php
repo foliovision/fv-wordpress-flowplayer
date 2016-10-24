@@ -28,7 +28,8 @@ add_shortcode('fv_time','fv_player_time');
 
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
-	
+  if( !$fv_fp ) return false;	
+  
   if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {
     
     if( !isset( $atts['src'] ) ) {     

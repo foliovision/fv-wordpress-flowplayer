@@ -124,7 +124,6 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 </script>
 
 <div style="display: none">
-
   <div id="fv-player-shortcode-editor">
     <div id="fv-player-shortcode-editor-editor">
       <table>
