@@ -905,10 +905,13 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>    
 					<tr>          
-						<td><label for="interface[redirect]"><?php _e('Redirect', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td><label for="interface[actions]"><?php _e('Video Actions', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
-              <input type="hidden" name="interface[redirect]" value="false" />
-							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( isset($fv_fp->conf['interface']['redirect']) && $fv_fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
+              <p>
+                <input type="hidden" name="interface[end_actions]" value="false" />
+                <input type="checkbox" name="interface[end_actions]" id="interface[end_actions]" value="true" <?php if( isset($fv_fp->conf['interface']['end_actions']) && $fv_fp->conf['interface']['end_actions'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Enbles end of video actions like <code>Loop, Redirect, Show popup and Show splash screen</code>', 'fv-wordpress-flowplayer'); ?>
+              </p>  
 						</td>
 					</tr>                        
 					<tr>          
@@ -916,13 +919,6 @@ function fv_flowplayer_admin_interface_options() {
 						<td>
               <input type="hidden" name="interface[autoplay]" value="false" />
 							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fv_fp->conf['interface']['autoplay']) && $fv_fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
-						</td>
-					</tr>
-					<tr>          
-						<td><label for="interface[loop]"><?php _e('Loop', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td>
-              <input type="hidden" name="interface[loop]" value="false" />
-							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( isset($fv_fp->conf['interface']['loop']) && $fv_fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>
 					<tr>          

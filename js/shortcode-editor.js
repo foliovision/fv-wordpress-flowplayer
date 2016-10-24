@@ -35,8 +35,8 @@ jQuery(document).ready(function($){
   $('.fv-player-tabs-header a').click( function() {
     $('.fv-player-tabs-header a').removeClass('nav-tab-active');
     $(this).addClass('nav-tab-active');
-    $( '.fv-player-tabs > div' ).hide();
-    $( '.'+$(this).attr('rel') ).show();
+    $( '.fv-player-tabs > .fv-player-tab' ).hide();
+    $( '.' + $(this).data('tab') ).show();
     
     fv_wp_flowplayer_dialog_resize();
   });
@@ -288,11 +288,15 @@ function fv_wp_flowplayer_init() {
   jQuery('#playlist_create').show();
   jQuery('#playlist_edit').hide(); 
   jQuery('.nav-tab').show;
-  jQuery('#fv-player-shortcode-editor-editor .fv-player-tabs>div').each(function(){
-    if(! jQuery(this).find('tr:not(.fv_player_interface_hide)').length ){
-      jQuery('.nav-tab').eq(jQuery(this).index()).hide();
+  jQuery('#fv-player-shortcode-editor-editor .fv-player-tabs>.fv-player-tab').each(function(){
+    if(! jQuery(this).find('tr:not(.fv_player_interface_hide):not(.fv_player_actions_end-toggle)').length ){
+      console.log(this)
+      jQuery('.nav-tab').eq(jQuery(this).index()).addClass('fv_player_interface_hide');
     }
   })
+  if(jQuery('.nav-tab:not(.fv_player_interface_hide)').length <=1 ){
+    jQuery('.nav-tab:not(.fv_player_interface_hide)').addClass('fv_player_interface_hide');
+  }
 }
 
 /*
