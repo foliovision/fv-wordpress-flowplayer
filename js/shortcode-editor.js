@@ -287,7 +287,12 @@ function fv_wp_flowplayer_init() {
   jQuery('#fv-player-shortcode-editor .nav-tab:eq(0)').trigger('click');
   jQuery('#playlist_create').show();
   jQuery('#playlist_edit').hide(); 
-
+  jQuery('.nav-tab').show;
+  jQuery('#fv-player-shortcode-editor-editor .fv-player-tabs>div').each(function(){
+    if(! jQuery(this).find('tr:not(.fv_player_interface_hide)').length ){
+      jQuery('.nav-tab').eq(jQuery(this).index()).hide();
+    }
+  })
 }
 
 /*

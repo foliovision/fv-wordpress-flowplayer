@@ -1294,7 +1294,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 </head>
 <body>
   <div style='background:white;'>
-  <?php if(isset($_GET['fv_player_preview']) && $_GET['fv_player_preview']):
+  <?php if(isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview'])):
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
     ?><div style="height:100vh;background:lightgray;"><?php
     if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
