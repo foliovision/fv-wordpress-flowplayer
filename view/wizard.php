@@ -134,6 +134,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
           <td>
             <div id="fv-player-shortcode-editor-preview">
+              <div id="fv-player-shortcode-editor-preview-spinner">Fancy loading GIF</div>
               <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
             </div>
           </td>

@@ -928,8 +928,16 @@ function fv_wp_flowplayer_submit( preview ) {
   //Preview
   if(preview){
     var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + encodeURIComponent(fv_wp_fp_shortcode);
-    if(url !== jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src') ){
-      jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src', url);
+    var iFrame = jQuery('#fv-player-shortcode-editor-preview-iframe');
+    var spinner = jQuery('#fv-player-shortcode-editor-preview-spinner');
+    if(url !== iFrame.attr('src') ){
+      iFrame.attr('src', url);
+      iFrame.hide();
+      spinner.show();
+      iFrame.one('load',function(){
+        iFrame.show();
+        spinner.hide();
+      })
     }
     return;
   }
