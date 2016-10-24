@@ -920,14 +920,7 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[autoplay]" value="false" />
 							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fv_fp->conf['interface']['autoplay']) && $fv_fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>
-					<tr>          
-						<td><label for="interface[splashend]"><?php _e('Splash end', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td>
-              <input type="hidden" name="interface[splashend]" value="false" />
-							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( isset($fv_fp->conf['interface']['splashend']) && $fv_fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
-						</td>
-					</tr>     
+					</tr>   
 					<tr>          
 						<td><label for="interface[embed]"><?php _e('Embed', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
