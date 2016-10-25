@@ -182,7 +182,7 @@ jQuery(document).ready(function($){
               } );
             
           }
-          
+          fv_wp_flowplayer_submit(true);
       });
 
       //Open the uploader dialog
@@ -199,7 +199,7 @@ jQuery(document).ready(function($){
   /*
    * Preview
    */
-  jQuery(document).on('change keyup', '.fv-player-tabs [name]' ,function(){
+  jQuery(document).on('input', '.fv-player-tabs [name]' ,function(){
     if(FVFP_oPreviewDebounce){
       clearTimeout(FVFP_oPreviewDebounce);
       FVFP_oPreviewDebounce = setTimeout(function(){

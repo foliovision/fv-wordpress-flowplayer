@@ -114,7 +114,7 @@ fv-player-shortcode-editor{
 }
 #fv-player-shortcode-editor-preview-spinner{
   background-image: url(http://wp.knet.sk/wp-includes/images/wpspin-2x.gif);
-  background-color: rgba(255,255,255,0.5);  
+  background-color: black;  
   background-repeat: no-repeat;  
   background-position: center;
   position:absolute;
