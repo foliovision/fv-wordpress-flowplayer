@@ -232,7 +232,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
                     <?php do_action('fv_flowplayer_shortcode_editor_item_after'); ?>
 
-                    <tr>
+                    <tr <?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                       <th></th><td>* - <?php _e('currently not working with playlist', 'fv_flowplayer'); ?> </td>
                     </tr>            
 

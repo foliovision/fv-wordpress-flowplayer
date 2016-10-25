@@ -1300,7 +1300,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
       echo do_shortcode($shortcode);
     }else { ?>
-      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No preview.</h1>  
+      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>  
     <?php }
     ?></div><?php
   else:

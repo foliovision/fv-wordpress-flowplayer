@@ -932,10 +932,8 @@ function fv_wp_flowplayer_submit( preview ) {
     var spinner = jQuery('#fv-player-shortcode-editor-preview-spinner');
     if(url !== iFrame.attr('src') ){
       iFrame.attr('src', url);
-      iFrame.hide();
       spinner.show();
       iFrame.one('load',function(){
-        iFrame.show();
         spinner.hide();
       })
     }
