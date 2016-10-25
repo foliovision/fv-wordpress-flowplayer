@@ -896,22 +896,15 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[playlist_captions]" value="false" />
 							<input type="checkbox" name="interface[playlist_captions]" id="interface[playlist_captions]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_captions']) && $fv_fp->conf['interface']['playlist_captions'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>    		          
-					<tr>
-						<td><label for="interface[popup]"><?php _e('End popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td>
-              <input type="hidden" name="interface[popup]" value="false" />
-							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fv_fp->conf['interface']['popup']) && $fv_fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
-						</td>
-					</tr>    
+					</tr>    		              
 					<tr>          
 						<td><label for="interface[actions]"><?php _e('Video Actions', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
-              <p>
+              <p class="description">
                 <input type="hidden" name="interface[end_actions]" value="false" />
                 <input type="checkbox" name="interface[end_actions]" id="interface[end_actions]" value="true" <?php if( isset($fv_fp->conf['interface']['end_actions']) && $fv_fp->conf['interface']['end_actions'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('Enbles end of video actions like <code>Loop, Redirect, Show popup and Show splash screen</code>', 'fv-wordpress-flowplayer'); ?>
-              </p>  
+                <?php _e('Enables end of video actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer'); ?>
+              </p>
 						</td>
 					</tr>                        
 					<tr>          

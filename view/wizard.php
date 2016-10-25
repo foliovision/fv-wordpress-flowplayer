@@ -112,6 +112,16 @@ fv-player-shortcode-editor{
 .fv_player_interface_hide{
   display:none;
 }
+#fv-player-shortcode-editor-preview-spinner{
+  background-image: url(http://wp.knet.sk/wp-includes/images/wpspin-2x.gif);
+  background-color: rgba(255,255,255,0.5);  
+  background-repeat: no-repeat;  
+  background-position: center;
+  position:absolute;
+  z-index: 2;
+  height: 300px;
+  width: 460px;
+}
 
 </style>
   
@@ -134,7 +144,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
           <td>
             <div id="fv-player-shortcode-editor-preview">
-              <div id="fv-player-shortcode-editor-preview-spinner">Fancy loading GIF</div>
+              <div id="fv-player-shortcode-editor-preview-spinner"></div>
               <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
             </div>
           </td>
@@ -193,9 +203,9 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                     </tr>
 
                     <tr class="fv_wp_flowplayer_field_rtmp_wrapper">
-                      <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright"><?php _e('RTMP Server', 'fv_flowplayer'); ?></label> <?php if (!empty($fv_flowplayer_conf["rtmp"])) : ?>(<abbr title="<?php _e('Leave empty to use Flash streaming server from plugin settings', 'fv_flowplayer'); ?>">?</abbr>)<?php endif; ?></th>
+                      <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_rtmp" class="alignright"><?php _e('RTMP Server', 'fv_flowplayer'); ?></label> <?php if (!empty($fv_flowplayer_conf["rtmp"]) && $fv_flowplayer_conf["rtmp"]!= 'false') : ?>(<abbr title="<?php _e('Leave empty to use Flash streaming server from plugin settings', 'fv_flowplayer'); ?>">?</abbr>)<?php endif; ?></th>
                       <td colspan="2" class="field">
-                        <input type="text" class="text fv_wp_flowplayer_field_rtmp" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" placeholder="<?php if (!empty($fv_flowplayer_conf["rtmp"])) echo $fv_flowplayer_conf["rtmp"]; ?>" />
+                        <input type="text" class="text fv_wp_flowplayer_field_rtmp" id="fv_wp_flowplayer_field_rtmp" name="fv_wp_flowplayer_field_rtmp" value="" style="width: 40%" placeholder="<?php if (!empty($fv_flowplayer_conf["rtmp"]) && $fv_flowplayer_conf["rtmp"]!= 'false') echo $fv_flowplayer_conf["rtmp"]; ?>" />
                         &nbsp;<label for="fv_wp_flowplayer_field_rtmp_path"><strong><?php _e('RTMP Path', 'fv_flowplayer'); ?></strong></label>
                         <input type="text" class="text fv_wp_flowplayer_field_rtmp_path" id="fv_wp_flowplayer_field_rtmp_path" name="fv_wp_flowplayer_field_rtmp_path" value="" style="width: 37%" />
                       </td> 
@@ -377,7 +387,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   
                   <tr class="fv_player_actions_end-toggle">
                     <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
-                    <td <?php if ($fv_flowplayer_conf["interface"]["popup"] !== 'true') echo ' class="fv_player_interface_hide"'; ?> >
+                    <td>
                       <!-- legacy -->
                       
                       <!-- end legacy -->
@@ -423,6 +433,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <table class="slidetoggle describe fv-player-playlist-item" width="100%">
                 <thead>
                   <tr>
+                    <th></th>
                     <th>Video</th>
                     <th>Splash</th>
                     <th>Caption</th>
@@ -431,6 +442,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 </thead>
                 <tbody>
                   <tr>
+                    <td class="fvp_item_sort">...</td>
                     <td class="fvp_item_video">(new video)</td>
                     <td class="fvp_item_splash">-</td>
                     <td class="fvp_item_caption">-</td>
