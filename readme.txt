@@ -340,7 +340,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.9 - 2016/10/27 =
 
-* Compatibility - fix for Gravity Forms Partial Submissions when video starts playing on background
+* Compatibility - fix for Gravity Forms Partial Entries when video starts playing on background
 
 = 6.0.5.8 - 2016/10/19 =
 
