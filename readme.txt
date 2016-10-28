@@ -310,7 +310,12 @@ It simply adds a class "play-button" to the player DIV element and then it knows
 no-time
 no-volume`
 
-= 31. What if the FV Player doesn't work for me? =
+
+= 31. Minify plugins are interfering with FV Player =
+
+Read our guide [Using FV Player with Minify Plugins](https://foliovision.com/player/advanced/player-minify-plugins). There you'll find how to set up plugins such as Autoptimize or WP Rocket so they work properly with the FV Player.
+
+= 32. What if the FV Player doesn't work for me? =
 
 No worries.
 
@@ -333,10 +338,30 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.5.1 - 2016/09/?? =
+= 6.0.5.8 - 2016/10/19 =
+
+* iPhone iOS 10 - improved support, the device doesn't require use of native fullscreen
+
+= 6.0.5.7 - 2016/10/17 =
+
+* CSS - disabling text selection highlight for the player
+* Integrations - option to automatically convert Vimeo and YouTube links in comments to players
+* Lightbox - fix for single videos when no FV Player Pro
+* Shortcode editor - fix for the "Text" tab of WP editor
+* Shortcode editor - fix for the scroll position changing when it gets opened
+* Video checker - fix to RTMP checking in playlist
+* YouTube - making sure the basic iframe embedding uses protocol independent URLs
+
+= 6.0.5.6 - 2016/10/06 =
 
 * Lightbox - fix for images with uppercase file extension
+* Lightbox - fix for videos with video ads (Pro)
 * Compatibility - Improved compatibility with Elasticpress plugin.
+* Compatibility - fix for PHP memory warnings when checking video length on post save
+* Compatibility - fix for Pods plugin (there were issues in some cases)
+* Playlist - setting active element before video starts playing
+* Shortcode editor - shortcode parsing fix
+* Translations - changing language domain to fv-wordpress-flowplayer
 
 = 6.0.5.5 - 2016/07/28 =
 

@@ -134,6 +134,8 @@ class FV_Player_lightbox {
       return $output;
     }
 
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro->bVideoAdsStatus['preroll']) && $FV_Player_Pro->bVideoAdsStatus['preroll'] || isset($FV_Player_Pro->bVideoAdsStatus['postroll']) && $FV_Player_Pro->bVideoAdsStatus['postroll'] ) return $output;
 
     global $fv_fp;
     $output = array();
@@ -329,8 +331,8 @@ class FV_Player_lightbox {
     </tr>
     <script>
       jQuery(document).ready(function(){
-        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
-        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
+        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p><?php _e('Setting <a href="#interface[live]">moved</a>', 'fv-wordpress-flowplayer'); ?></p></td>');
+        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p><?php _e('Setting <a href="#subtitleOn">moved</a>', 'fv-wordpress-flowplayer'); ?></p></td>');
       })   
     </script>
     <?php

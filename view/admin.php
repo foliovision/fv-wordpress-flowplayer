@@ -35,10 +35,12 @@ function fv_flowplayer_admin_ads() {
 						</tr>
 						<tr>
 							<td colspan="2"><label for="ad_width"><?php _e('Default set size', 'fv-wordpress-flowplayer');?> [px]:</label> 
-								<label for="ad_width">W:</label>&nbsp; <input type="text" name="ad_width" id="ad_width" value="<?php echo intval($fv_fp->conf['ad_width']); ?>" class="small" /> 
-								<label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval($fv_fp->conf['ad_height']); ?>" class="small"  />
-								<label for="adTextColor"><?php _e('Ad text', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo esc_attr($fv_fp->conf['adTextColor']); ?>" /> 
-								<label for="adLinksColor"><?php _e('Ad links', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo esc_attr($fv_fp->conf['adLinksColor']); ?>" /> 
+								<label for="ad_width">W:</label>&nbsp; <input type="text" name="ad_width" id="ad_width" value="<?php echo intval($fv_fp->conf['ad_width']); ?>" class="small" />
+								<label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval($fv_fp->conf['ad_height']); ?>" class="small" />
+								<br />
+								<label for="adTextColor"><?php _e('Ad text', 'fv-wordpress-flowplayer');?></label><input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo esc_attr($fv_fp->conf['adTextColor']); ?>" />
+								<br />
+								<label for="adLinksColor"><?php _e('Ad links', 'fv-wordpress-flowplayer');?></label><input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo esc_attr($fv_fp->conf['adLinksColor']); ?>" />
 							</td>			
 						</tr> 
             <tr>
@@ -646,6 +648,16 @@ function fv_flowplayer_admin_integrations() {
               </p>
             </td>
           </tr>
+					<tr>
+            <td><label for="parse_comments"><?php _e('Parse Vimeo and YouTube links in comments', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('parse_comments'); ?>
+                <?php _e('Automatically convert Vimeo and YouTube links in comments to players.','fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>					
           <tr>
             <td><label for="postthumbnail"><?php _e('Post Thumbnail', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
@@ -745,8 +757,8 @@ function fv_flowplayer_admin_select_popups($aArgs){
     <?php if( $aArgs['show_default'] ) : ?>
       <option>Use site default</option>
     <?php endif; ?>
-    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
-    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no"><?php _e('None', 'fv-wordpress-flowplayer'); ?></option>
+    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random"><?php _e('Random', 'fv-wordpress-flowplayer'); ?></option>
     <?php
     if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
       foreach( $aPopupData AS $key => $aPopupAd ) {
@@ -1430,7 +1442,7 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_popups', __('Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
@@ -1487,7 +1499,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php _e('Check template', 'fv-wordpress-flowplayer'); ?>" /> 
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php _e('Check videos', 'fv-wordpress-flowplayer'); ?>" />
       
-      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv-wordpress-flowplayer'); ?>" value="<?php if( $fv_fp->conf['key'] !== "false" ) echo esc_attr($fv_fp->conf['key']); ?>" /> <a title="<?php _e('Click here for license info', 'fv-wordpress-flowplayer'); ?>" target="_blank" href="<?php _e('https://foliovision.com/player/download', 'fv-wordpress-flowplayer'); ?>"><span class="dashicons dashicons-editor-help"></span></a>
+      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv-wordpress-flowplayer'); ?>" value="<?php if( $fv_fp->conf['key'] !== "false" ) echo esc_attr($fv_fp->conf['key']); ?>" /> <a title="<?php _e('Click here for license info', 'fv-wordpress-flowplayer'); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
       
       <img class="fv_wp_flowplayer_check_license-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
       <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
@@ -1695,7 +1707,9 @@ jQuery(document).ready(function(){
   jQuery('#fv_player_js_warning').hide();
   
   var anchor = window.location.hash.substring(1);
-  if( !anchor || !anchor.match(/tab_/) ) return;
+  if( !anchor || !anchor.match(/tab_/) ) {
+    anchor = 'postbox-container-tab_basic';
+  }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
