@@ -42,8 +42,8 @@ add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
   
-  $aStrings = Array(
-  0 => __('', 'flowplayer'),
+  $aStrings = array(
+  0 => '',
   1 => __('Video loading aborted', 'fv-wordpress-flowplayer'),
   2 => __('Network error', 'fv-wordpress-flowplayer'),
   3 => __('Video not properly encoded', 'fv-wordpress-flowplayer'),
