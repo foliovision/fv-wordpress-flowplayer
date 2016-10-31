@@ -613,8 +613,12 @@ class flowplayer_frontend extends flowplayer
     /* * 
     *  User agent check
     */
-    $this->ret['html'] .= '<div class="fv-player-warning" id="wpfp_iphone_subs_warning_' . $this->hash.'">This video has subtitles, that are not supported on this device.</div>';
-		return $this->ret;
+      if(isset($aSubtitles) && count($aSubtitles)){
+        $this->ret['html'] .= '<div class="fv-player-warning" id="fv_player_iphone_subs_warning_' . $this->hash.'">This video has subtitles, that are not supported on your device.</div>';
+      }
+      
+      
+      return $this->ret;
 	}
   
   
