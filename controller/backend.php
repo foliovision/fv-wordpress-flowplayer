@@ -466,7 +466,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 		'timeout' => 20,
 		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
 	);
-	$resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
+	$resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
 
   if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
     return $data;
