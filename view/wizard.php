@@ -105,6 +105,7 @@ fv-player-shortcode-editor{
 }
 .fv-player-tabs-header .nav-tab-wrapper{
   margin:0;
+  display:inline-block;
 }
 .fv_player_actions_end-toggle{
   display:none;
@@ -132,9 +133,8 @@ fv-player-shortcode-editor{
   width: 460px;
 }
 .fv-player-playlist-item-title{
-  position: absolute;
-  top: 0px;
-  right: 40px;
+  display:inline-block;
+  margin: 0;
 }
 
 
@@ -165,6 +165,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           </td>
           <td>
             <div class="fv-player-tabs-header">
+              <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active" style="display:none;"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-playlist">Playlist</a>
                 <a href="#" class="nav-tab nav-tab-active" style="outline: 0px;" data-tab="fv-player-tab-video-files">Video</a>
@@ -172,7 +173,6 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-extras">Extras</a>
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-actions">Actions</a>
               </h2>
-              <h2 class="fv-player-playlist-item-title"></h2>
             </div>
             <div class="fv-player-tabs">
               
