@@ -57,9 +57,6 @@ jQuery(document).ready(function($){
     
     fv_wp_flowplayer_submit(true);
     fv_wp_flowplayer_dialog_resize();
-    
-    
-    
   });  
   
   /* 
