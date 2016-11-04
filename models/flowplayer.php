@@ -866,7 +866,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function get_languages() {
+  public static function get_languages() {
     $aLangs = array(
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
