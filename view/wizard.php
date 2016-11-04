@@ -132,10 +132,40 @@ fv-player-shortcode-editor{
   height: 300px;
   width: 460px;
 }
-.fv-player-playlist-item-title{
-  display:inline-block;
+.fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{
   margin: 0;
+  border: 0px;
+  background: transparent;
 }
+
+/*playlist title*/
+.fv-player-playlist-item-title{
+ display:none; 
+}
+.is-playlist .fv-player-playlist-item-title{
+ display:block; 
+}
+/*insert button*/
+.is-playlist .fv_player_field_insert-button{
+  display:none;
+}
+
+.is-singular .fv-player-tab-subtitles .fv_player_field_insert-button,.is-singular .fv-player-tab-video-files .fv_player_field_insert-button{
+  display:block;
+}
+
+.is-playlist-active .fv_player_field_insert-button{
+  display:block;
+}
+/*playlist edit button*/
+.playlist_edit{
+  display:block;
+}
+
+.is-playlist-active .playlist_edit{
+  display:none;
+}
+
 
 
 </style>
@@ -165,7 +195,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           </td>
           <td>
             <div class="fv-player-tabs-header">
-              <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active" style="display:none;"></h2>
+              <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-playlist">Playlist</a>
                 <a href="#" class="nav-tab nav-tab-active" style="outline: 0px;" data-tab="fv-player-tab-video-files">Video</a>
@@ -194,12 +224,12 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <td class="fvp_item_splash">-</td>
                       <td class="fvp_item_caption">-</td>
                       <td class="fvp_item_remove"><a style="display:none;" href="#" >x</a></td>
-                    </tr>  
+                    </tr> 
                   </tbody>        
                 </table>
 
                 <div id="playlist_add_item" class="alignleft"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add()" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div>
-
+                <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
               </div>
               
               <div class="fv-player-tab fv-player-tab-video-files">
@@ -297,6 +327,12 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         </td>
                       </tr>            
                     <?php endif; ?>
+                    <tr>
+                      <td></td>
+                      <td>
+                        <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
+                      </td>
+                    </tr>
 
                   </tbody>
                 </table>      
@@ -334,7 +370,13 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                     <td>
                       <a style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
                     </td>
-                  </tr>          
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
+                    </td>
+                  </tr>
                 </table>
               </div>
 
@@ -405,7 +447,13 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         <option><?php _e('No', 'fv_flowplayer'); ?></option>
                       </select>
                     </td>
-                  </tr>             
+                  </tr>    
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
+                    </td>
+                  </tr>
                 </table>
               </div>
 
@@ -458,16 +506,21 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   </tr>
 
                   <?php do_action('fv_flowplayer_shortcode_editor_after'); ?>
-
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
+                    </td>
+                  </tr>
+                  
                 </table>
               </div>
 
               <div <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                <span id="playlist_edit" class="alignleft" ><a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="partial-underline" href="#" 
-                data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a></span>
+                <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button-primary" href="#" 
+                data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
               </div>
               
-              <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignright" onclick="fv_wp_flowplayer_submit();" />    
             </div>
             
           </td>
