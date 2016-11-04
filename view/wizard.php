@@ -112,6 +112,15 @@ fv-player-shortcode-editor{
 .fv_player_interface_hide{
   display:none;
 }
+.fv_player_interface_temp_hide{
+  display:none;
+}
+#fv_player_boxTitle{
+    display:none!important;
+}
+#fv_player_boxLoadedContent{
+  margin-top:0;
+}
 #fv-player-shortcode-editor-preview-spinner{
   background-image: url(http://wp.knet.sk/wp-includes/images/wpspin-2x.gif);
   background-color: black;  
@@ -122,6 +131,12 @@ fv-player-shortcode-editor{
   height: 300px;
   width: 460px;
 }
+.fv-player-playlist-item-title{
+  position: absolute;
+  top: 0px;
+  right: 40px;
+}
+
 
 </style>
   
@@ -151,13 +166,42 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <td>
             <div class="fv-player-tabs-header">
               <h2 class="nav-tab-wrapper hide-if-no-js">
+                <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-playlist">Playlist</a>
                 <a href="#" class="nav-tab nav-tab-active" style="outline: 0px;" data-tab="fv-player-tab-video-files">Video</a>
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-subtitles">Subtitles</a>
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-extras">Extras</a>
                 <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-actions">Actions</a>
               </h2>
+              <h2 class="fv-player-playlist-item-title"></h2>
             </div>
             <div class="fv-player-tabs">
+              
+              <div class="fv-player-tab fv-player-tab-playlist" style="">
+                <table class="slidetoggle describe fv-player-playlist-item" width="100%">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Video</th>
+                      <th>Splash</th>
+                      <th>Caption</th>
+                      <th></th>
+                    </tr>  
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="fvp_item_sort">...</td>
+                      <td class="fvp_item_video">(new video)</td>
+                      <td class="fvp_item_splash">-</td>
+                      <td class="fvp_item_caption">-</td>
+                      <td class="fvp_item_remove"><a style="display:none;" href="#" >x</a></td>
+                    </tr>  
+                  </tbody>        
+                </table>
+
+                <div id="playlist_add_item" class="alignleft"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add()" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div>
+
+              </div>
+              
               <div class="fv-player-tab fv-player-tab-video-files">
                 <table class="slidetoggle describe fv-player-playlist-item" width="100%">
                   <tbody>
@@ -417,46 +461,14 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
                 </table>
               </div>
-               
+
               <div <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                <span id="playlist_edit" class="alignleft" style="display: none;"><a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="partial-underline" href="#"><?php _e('Edit Playlist', 'fv_flowplayer'); ?></a></span>
-                <span id="playlist_create" class="alignleft"><a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="partial-underline" href="#"><?php _e('Create Playlist', 'fv_flowplayer'); ?></a></span>
+                <span id="playlist_edit" class="alignleft" ><a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="partial-underline" href="#" 
+                data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a></span>
               </div>
               
               <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignright" onclick="fv_wp_flowplayer_submit();" />    
             </div>
-            
-            
-            
-            
-            <div class="fv-player-playlist" style="display: none">
-              <table class="slidetoggle describe fv-player-playlist-item" width="100%">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Video</th>
-                    <th>Splash</th>
-                    <th>Caption</th>
-                    <th></th>
-                  </tr>  
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="fvp_item_sort">...</td>
-                    <td class="fvp_item_video">(new video)</td>
-                    <td class="fvp_item_splash">-</td>
-                    <td class="fvp_item_caption">-</td>
-                    <td class="fvp_item_remove"><a style="display:none;" href="#" >x</a></td>
-                  </tr>  
-                </tbody>        
-              </table>
-
-              <div id="playlist_add_item" class="alignleft"><a style="outline: 0" onclick="return fv_flowplayer_playlist_add()" class="partial-underline" href="#"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add Playlist Item', 'fv_flowplayer'); ?></a></div>
-              <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" id="fv_wp_flowplayer_field_insert-button" class="button-primary alignright" onclick="fv_wp_flowplayer_submit();" />
-
-            </div>
-            
-            
             
           </td>
         </tr>
