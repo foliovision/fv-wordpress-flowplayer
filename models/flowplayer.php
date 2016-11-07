@@ -1296,13 +1296,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <div style='background:white;'>
   <?php if(isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview'])):
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
-    ?><div style="height:100vh;background:lightgray;"><?php
+    ?><div id="wrapper" style="background:white;"><?php
     if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
       echo do_shortcode($shortcode);
     }else { ?>
-      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>  
+      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
     <?php }
-    ?></div><?php
+    ?>
+      <script>
+      jQuery(document).ready(function(){
+        jQuery(window.parent.document).find('#fv-player-shortcode-editor-preview-iframe').height(jQuery('#wrapper').height());
+      })
+      </script>
+    </div><?php
   else:
   ?>
   <?php while ( have_posts() ) : the_post(); //is this needed? ?>

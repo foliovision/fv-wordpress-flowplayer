@@ -97,7 +97,6 @@ fv-player-shortcode-editor{
   
 }
 #fv-player-shortcode-editor-preview{
-  height: 300px;
   width: 460px;
   position:relative;
 }
@@ -125,7 +124,7 @@ fv-player-shortcode-editor{
 }
 #fv-player-shortcode-editor-preview-spinner{
   background-image: url(<?php echo site_url(); ?>/wp-includes/images/wpspin-2x.gif);
-  background-color: black;  
+  background-color: white;  
   background-repeat: no-repeat;  
   background-position: center;
   position:absolute;
@@ -179,6 +178,7 @@ fv-player-shortcode-editor{
   background-color:white;
   padding:3px 5px;
   height:50px;
+  cursor:pointer;
 }
 .fv-player-tab-playlist .fv-player-playlist-item tbody td img{
   height:50px;
@@ -187,6 +187,7 @@ fv-player-shortcode-editor{
 .fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{
   cursor:n-resize;
 }
+
 .fvp_item_remove > div{
   background-image:url(<?php echo site_url(); ?>/wp-includes/images/xit-2x.gif);
   background-repeat:no-repeat;
@@ -198,6 +199,10 @@ fv-player-shortcode-editor{
 
 .fvp_item_remove:hover > div{
   background-position:-20px;
+}
+
+#fv_player_boxLoadedContent iframe{
+  height:auto;
 }
 
 
@@ -224,6 +229,9 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
           <td>
             <div id="fv-player-shortcode-editor-preview">
               <div id="fv-player-shortcode-editor-preview-spinner"></div>
+              <div id="fv-player-shortcode-editor-preview-no">
+                <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
+              </div>
               <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
             </div>
           </td>
@@ -247,7 +255,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <th></th>
                       <th>Video</th>
                       <th>Caption</th>
-                      <th>Dimenstion</th>
+                      <th>Dimension</th>
                       <th>Time</th>
                       <th></th>
                     </tr>  
