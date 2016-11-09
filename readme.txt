@@ -338,6 +338,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.10 - 2016/11/?? =
+
+* Shortcode editor - fix for Foliopress WYSIWYG
+
 = 6.0.5.9 - 2016/11/02 =
 
 * Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
