@@ -1303,11 +1303,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
     <?php }
     ?>
-      <script>
-      jQuery(document).ready(function(){
-        jQuery(window.parent.document).find('#fv-player-shortcode-editor-preview-iframe').height(jQuery('#wrapper').height());
-      })
-      </script>
     </div><?php
   else:
   ?>
@@ -1346,6 +1341,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   ?>
 </body>
 <?php wp_footer(); ?>
+
+<?php if(isset($_GET['fv_player_previewDISABLED']) && !empty($_GET['fv_player_previewDISABLED'])): ?>
+  <script>
+  flowplayer( function(api,root) {
+    api.bind('unload', function() {
+      console.log('Im in iframe and my height is 1: '+jQuery('#wrapper').height());
+      console.log('Im in iframe and my height is 2: '+jQuery(root).height());
+      jQuery(window.parent.document).find('#fv-player-shortcode-editor-preview-iframe').height(jQuery('#wrapper').height());
+      window.parent.fv_wp_flowplayer_dialog_resize();
+    });
+  });
+  </script>
+<?php endif; ?>
+
 </html>       
       <?php
       exit();  
