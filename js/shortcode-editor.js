@@ -67,18 +67,16 @@ jQuery(document).ready(function($){
       
       jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular');
     }
-    
-    $(document).on('input','.fv_wp_flowplayer_field_width', function(e) {
-      $('.fv_wp_flowplayer_field_width').val(e.target.value);
-    })
-    
-    $(document).on('input','.fv_wp_flowplayer_field_height', function(e) {
-      $('.fv_wp_flowplayer_field_height').val(e.target.value);
-    })
-    
 
     fv_wp_flowplayer_submit(true);
-  });  
+  });
+  $(document).on('input','.fv_wp_flowplayer_field_width', function(e) {
+    $('.fv_wp_flowplayer_field_width').val(e.target.value);
+  })
+
+  $(document).on('input','.fv_wp_flowplayer_field_height', function(e) {
+    $('.fv_wp_flowplayer_field_height').val(e.target.value);
+  })
   
   /* 
    * Remove playlist item 
@@ -98,7 +96,7 @@ jQuery(document).ready(function($){
       FVFP_iStoreHeight = jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_height').val();	  
       FVFP_sStoreRTMP = jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val();
     },
-    stop: function( event, ui ) {    
+    update: function( event, ui ) {    
       var items = []; 
       $('.fv-player-tab-playlist table tbody tr').each(function(){
         var index = $(this).data('index');
@@ -418,10 +416,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption ) {
   
   jQuery('.fv-player-tab-video-files table:last').attr('data-index', newIndex);
   
-  fv_wp_flowplayer_dialog_resize();
-  
-  fv_wp_flowplayer_submit(true);
-  
+  fv_wp_flowplayer_dialog_resize(); 
   return false;
 }
 
