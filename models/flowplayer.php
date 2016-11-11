@@ -644,7 +644,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     ob_start();
     $this->css_generate(true);
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
-    if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
       return false;
     }
     $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
@@ -717,8 +717,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
       
       if( $iAWSVersion == 4 ) {
-        $sXAMZDate = date('Ymd\THis\Z');
-        $sDate = date('Ymd');
+        $sXAMZDate = gmdate('Ymd\THis\Z');
+        $sDate = gmdate('Ymd');
         $sCredentialScope = $sDate."/".$fv_fp->conf['amazon_region'][$amazon_key]."/s3/aws4_request"; //  todo: variable
         $sSignedHeaders = "host";
         $sXAMZCredential = urlencode($fv_fp->conf['amazon_key'][$amazon_key].'/'.$sCredentialScope);
@@ -860,14 +860,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       
       $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
-      return http_build_url($sURL, $url_parts);
+      return fv_http_build_url($sURL, $url_parts);
     /*} else {
       return $sURL;
     }*/    
   }
   
   
-  function get_languages() {
+  public static function get_languages() {
     $aLangs = array(
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
