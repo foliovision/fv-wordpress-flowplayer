@@ -1299,6 +1299,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     ?><div id="wrapper" style="background:white;"><?php
     if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
       echo do_shortcode($shortcode);
+      ?><script>
+        jQuery(document).ready( function(){  
+          if( typeof(flowplayer) != "undefined" ) {
+            flowplayer( function(api,root) {
+              window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
+            })
+          }else{
+            window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
+          }
+        })
+      </script><?
     }else { ?>
       <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
     <?php }

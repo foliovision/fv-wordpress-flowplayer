@@ -44,7 +44,7 @@ jQuery(document).ready(function($){
   /* 
    * Select playlist item 
    */
-  $(document).on('click','.fv-player-tab-playlist tr td:not(:last-child)', function(e) {
+  $(document).on('click','.fv-player-tab-playlist tr td', function(e) {
     var new_index = $(this).parents('tr').index();
     jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);    
    
@@ -57,7 +57,7 @@ jQuery(document).ready(function($){
     $('.fv-player-tab-subtitles table').eq(new_index).show();
     
     
-    if($(e.target).parents('table.fv-player-playlist-item').find('tr[data-index]').length > 1){
+    if($('.fv-player-tab-playlist [data-index]').length > 1){
       $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
       $('.playlist_edit').html($('.playlist_edit').data('edit'));
       
@@ -83,7 +83,8 @@ jQuery(document).ready(function($){
   /* 
    * Remove playlist item 
    */
-  $(document).on('click','.fv-player-tab-playlist tr .fvp_item_remove div', function(e) {
+  $(document).on('click','.fv-player-tab-playlist tr .fvp_item_remove', function(e) {
+    e.stopPropagation();
     var index = $(e.target).parents('[data-index]').attr('data-index');
     $(e.target).parents('[data-index]').remove();
     jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').remove();
@@ -378,7 +379,7 @@ function fv_wp_flowplayer_playlist_remove(link) {
  */
 function fv_flowplayer_playlist_add( sInput, sCaption ) {
   jQuery('.fv-player-tab-playlist table tbody').append(fv_player_playlist_item_template);
-  var ids = jQuery('.fv-player-playlist-item [data-index]').map(function() {
+  var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
     return parseInt(jQuery(this).attr('data-index'), 10);
   }).get();  
   var newIndex = Math.max.apply(Math, ids) + 1;
@@ -1012,8 +1013,8 @@ function fv_wp_flowplayer_submit( preview ) {
     var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + encodeURIComponent(fv_wp_fp_shortcode);
     var iFrame = jQuery('#fv-player-shortcode-editor-preview-iframe');
     if(url !== iFrame.attr('src') ){
-      iFrame.attr('src', url);
-      iFrame.one('load',function(){
+      //iFrame load event was not firing reliably
+      jQuery(document).on('fvp-preview-complete',function(){
         jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
         setTimeout(function(){
           jQuery(iFrame).height( jQuery(iFrame).contents().find('#wrapper').height() );
@@ -1023,6 +1024,7 @@ function fv_wp_flowplayer_submit( preview ) {
           },100);
         },0);
       });
+      iFrame.attr('src', url);
     }
     return;
   }
