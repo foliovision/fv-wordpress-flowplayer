@@ -136,7 +136,7 @@ var fv_wp_fp_shortcode;
 function fv_wp_flowplayer_init() {
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val();
-  }else if(jQuery('#content:not([aria-hidden=true])').length){
+  } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
     fv_wp_flowplayer_content = jQuery('#content:not([aria-hidden=true])').val();
   } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
     fv_wp_flowplayer_hTinyMCE = tinymce.activeEditor;
@@ -171,7 +171,7 @@ function fv_wp_flowplayer_init() {
 
 
 function fv_wp_flowplayer_insert( shortcode ) {
-  if( jQuery('#content:not([aria-hidden=true])').length ) {
+  if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_content .replace(/#fvp_placeholder#/,shortcode);
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );
   }else if( fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_edit ) ) {
@@ -267,7 +267,7 @@ function fv_wp_flowplayer_edit() {
       fv_wp_flowplayer_content =   '<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+'';
     }
     
-  }else if(jQuery('#content:not([aria-hidden=true])').length){    
+  }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){    
     var bFound = false;
     var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
     for(var start = position; start--; start >= 0){
@@ -551,7 +551,7 @@ function fv_wp_flowplayer_set_html( html ) {
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val(html);      
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
-  }else if( jQuery('#content:not([aria-hidden=true])').length ){
+  }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
     jQuery('#content:not([aria-hidden=true])').val(html); 
   }else if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_oEditor.SetHTML( html );      
