@@ -428,8 +428,12 @@ function fv_wp_flowplayer_admin_init() {
       }
       delete_option('fv_wordpress_flowplayer_persistent_notices');
     }
-  }  
-}   
+
+    if( isset($aCheck->expired) && $aCheck->expired && stripos( implode(get_option('active_plugins')), 'fv-player-pro' ) !== false ) {
+      add_filter( 'site_transient_update_plugins', 'fv_player_remove_update' );
+    }
+  }
+}
 
 
 function fv_wp_flowplayer_admin_key_update() {
@@ -1163,3 +1167,16 @@ add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' )
 add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
 
 
+
+
+function fv_player_remove_update( $objUpdates ) {
+  if( !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
+
+  foreach( $objUpdates->response AS $key => $objUpdate ) {
+    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
+      unset($objUpdates->response[$key]);      
+    }
+  }
+  
+  return $objUpdates;
+}
