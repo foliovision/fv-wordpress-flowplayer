@@ -383,6 +383,10 @@ function flowplayer_prepare_scripts() {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
+    
+    if( $fv_fp->load_dash ) {
+      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
   }
 }
 

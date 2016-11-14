@@ -54,7 +54,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
   
-  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
+  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+  
+  public $load_dash = false;
   
 
   public function __construct() {
@@ -1028,6 +1030,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       if ($extension == 'm3u8' || $extension == 'm3u') {
         $output = 'x-mpegurl';
       } else if ($extension == 'mpd') {
+        global $fv_fp;
+        $fv_fp->load_dash = true;
         $output = 'dash+xml';
       } else if ($extension == 'm4v') {
         $output = 'mp4';
@@ -1053,6 +1057,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$no_video ) {
       switch($extension)  {
         case 'dash+xml' :
+        case 'mpd' :
           $output = 'application/'.$output;
           break;
         case 'x-mpegurl' :
@@ -1146,7 +1151,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( strpos($media,'rtmp://') !== false ) {
       return null;
     }
-    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
+    if( strpos($media,'http://') !== 0 && strpos($media,'https://') !== 0 && strpos($media,'//') !== 0 ) {
       $http = is_ssl() ? 'https://' : 'http://';
       // strip the first / from $media
       if($media[0]=='/') $media = substr($media, 1);
