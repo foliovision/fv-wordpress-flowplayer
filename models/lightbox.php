@@ -24,6 +24,10 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
+
+    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
+      add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
+    }
   }
 
   function remove_pro_hooks() {
@@ -39,6 +43,13 @@ class FV_Player_lightbox {
       
    
     }
+  }
+
+  function improve_galleries( $args ) {
+    if( !$args['link'] ) {
+      $args['link'] = 'file';
+    }
+    return $args;
   }
 
   function lightbox_enable($sType) {
@@ -325,7 +336,7 @@ class FV_Player_lightbox {
         <p class="description">
           <input type="hidden" value="false" name="lightbox_images" />
           <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-wordpress-flowplayer'); ?> <span class="more"><?php _e('Also works with WordPress <code>[gallery]</code> galleries - these are automatically switched to link to image URLs rather than the attachment pages.'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
     </tr>

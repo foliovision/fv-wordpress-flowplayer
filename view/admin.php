@@ -903,7 +903,7 @@ function fv_flowplayer_admin_interface_options() {
               <p class="description">
                 <input type="hidden" name="interface[end_actions]" value="false" />
                 <input type="checkbox" name="interface[end_actions]" id="interface[end_actions]" value="true" <?php if( isset($fv_fp->conf['interface']['end_actions']) && $fv_fp->conf['interface']['end_actions'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('Enables end of video actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer'); ?>
+                <?php _e('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer'); ?>
               </p>
 						</td>
 					</tr>                        
@@ -1488,7 +1488,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     </p>
     <div id="fv_flowplayer_admin_notices">
     </div> 
-
+    <div id="fv_flowplayer_admin_tabs">
+      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
+        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
+        <?php endforeach;?>
+        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+      </h2>
+    </div>
+    
     <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
       <div id="fv_flowplayer_ad">
@@ -1500,23 +1508,14 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <li>Or remove the logo completely</li>
             <li>The best video plugin for Wordpress</li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Halloween sale!</strong><br />All Licenses 20% Off</a></p>
+              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
             <img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
           </div>
       </div>
-    <?php endif; ?> 
-    
-    <div id="fv_flowplayer_admin_tabs">
-      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
-        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
-        <?php endforeach;?>
-        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
-      </h2>
-    </div>
+    <?php endif; ?>	
   
 		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>

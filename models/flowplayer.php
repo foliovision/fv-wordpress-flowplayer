@@ -1296,13 +1296,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <div style='background:white;'>
   <?php if(isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview'])):
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
-    ?><div style="height:100vh;background:lightgray;"><?php
+    ?><div id="wrapper" style="background:white;"><?php
     if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
       echo do_shortcode($shortcode);
+      ?><script>
+        jQuery(document).ready( function(){  
+          if( typeof(flowplayer) != "undefined" ) {
+            flowplayer( function(api,root) {
+              window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
+            })
+          }else{
+            window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
+          }
+        })
+      </script><?
     }else { ?>
-      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>  
+      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
     <?php }
-    ?></div><?php
+    ?>
+    </div><?php
   else:
   ?>
   <?php while ( have_posts() ) : the_post(); //is this needed? ?>
@@ -1340,6 +1352,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   ?>
 </body>
 <?php wp_footer(); ?>
+
+<?php if(isset($_GET['fv_player_previewDISABLED']) && !empty($_GET['fv_player_previewDISABLED'])): ?>
+  <script>
+  flowplayer( function(api,root) {
+    api.bind('unload', function() {
+      console.log('Im in iframe and my height is 1: '+jQuery('#wrapper').height());
+      console.log('Im in iframe and my height is 2: '+jQuery(root).height());
+      jQuery(window.parent.document).find('#fv-player-shortcode-editor-preview-iframe').height(jQuery('#wrapper').height());
+      window.parent.fv_wp_flowplayer_dialog_resize();
+    });
+  });
+  </script>
+<?php endif; ?>
+
 </html>       
       <?php
       exit();  
