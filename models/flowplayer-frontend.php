@@ -490,7 +490,7 @@ class flowplayer_frontend extends flowplayer
 					}  
 					
 					if (isset($aSubtitles) && !empty($aSubtitles)) {
-            $aLangs = $this->get_languages();
+            $aLangs = self::get_languages();
             $countSubtitles = 0;
             foreach( $aSubtitles AS $key => $subtitles ) {
               if( $key == 'subtitles' ) {                   
