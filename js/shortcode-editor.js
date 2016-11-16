@@ -68,7 +68,7 @@ jQuery(document).ready(function($){
       jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular');
     }
 
-    fv_wp_flowplayer_submit(true);
+    //fv_wp_flowplayer_submit(true);
   });
   $(document).on('input','.fv_wp_flowplayer_field_width', function(e) {
     $('.fv_wp_flowplayer_field_width').val(e.target.value);
@@ -217,7 +217,7 @@ jQuery(document).ready(function($){
   /*
    * Preview
    */
-  jQuery(document).on('input', '.fv-player-tabs [name]' ,function(){
+  jQuery(document).on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
     if(FVFP_oPreviewDebounce){
       clearTimeout(FVFP_oPreviewDebounce);
       FVFP_oPreviewDebounce = setTimeout(function(){
@@ -245,6 +245,9 @@ jQuery(document).ready(function($){
       case 'popup':
         jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
         jQuery('#fv_wp_flowplayer_field_' + value + '_id').parents('tr').show();
+        break;
+      default:
+        fv_wp_flowplayer_submit(true);
         break;
     }
   });
@@ -996,7 +999,7 @@ function fv_wp_flowplayer_submit( preview ) {
 	fv_wp_fp_shortcode += ']';
 	
   //Preview
-  if(preview){  
+  if(preview){
     //jQuery('#fv-player-tabs-debug').html(fv_wp_fp_shortcode);
     if( ! fv_wp_fp_shortcode.match(/src=/) ){
       jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-no'); 

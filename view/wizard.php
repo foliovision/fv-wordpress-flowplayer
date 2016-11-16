@@ -240,7 +240,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <div id="fv-player-shortcode-editor-preview-no">
                 <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
               </div>
-              <iframe id="fv-player-shortcode-editor-preview-iframe"></iframe>
+              <iframe id="fv-player-shortcode-editor-preview-iframe" allowfullscreen></iframe>
             </div>
           </td>
           <td>
@@ -528,7 +528,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["end_actions"]) || $fv_flowplayer_conf["interface"]["end_actions"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_actions_end" class="alignright"><?php _e('End of playlist', 'fv_flowplayer'); ?></label></th>
                     <td class="field" style="width: 50%">
-                      <select id="fv_wp_flowplayer_field_actions_end" name="fv_wp_flowplayer_field_actions_end">
+                      <select id="fv_wp_flowplayer_field_actions_end" name="fv_wp_flowplayer_field_actions_end" data-live-update="false">
                         <option value=""><?php _e('Nothing', 'fv_flowplayer'); ?></option>
                         <option value="redirect"><?php _e('Redirect', 'fv_flowplayer'); ?></option> 
                         <option value="loop"><?php _e('Loop', 'fv_flowplayer'); ?></option>
