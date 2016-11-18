@@ -883,6 +883,12 @@ function fv_wp_flowplayer_submit( preview ) {
     fv_wp_fp_shortcode = '[' + shorttag;
   }
 	
+  jQuery('.preview-disabled').removeClass('preview-disabled');
+  if(preview){
+    jQuery('.fv-player-playlist-item[style="display: none;"] [name]:not(.extra-field)').each(function(){
+      jQuery(this).addClass('preview-disabled');
+    })
+  }
 	
    
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_src','src');
@@ -1121,6 +1127,8 @@ function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, a
     return false;
   }
   
+  if(jQuery(element).hasClass('preview-disabled'))
+    return false;
   var sValue = false;
   if( bCheckbox ) {
     if( element.checked ){
