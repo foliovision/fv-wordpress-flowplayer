@@ -1293,61 +1293,66 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   </style>
 </head>
 <body>
-  <div style='background:white;'>
-  <?php if(isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview'])):
+  <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
-    ?><div id="wrapper" style="background:white;"><?php
-    if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
-      echo do_shortcode($shortcode);
-      ?><script>
-        jQuery(document).ready( function(){  
-          if( typeof(flowplayer) != "undefined" ) {
-            flowplayer( function(api,root) {
-              window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
-            })
-          }else{
-            window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
-          }
-        })
-      </script><?
-    }else { ?>
-      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
-    <?php }
     ?>
-    </div><?php
-  else:
-  ?>
-  <?php while ( have_posts() ) : the_post(); //is this needed? ?>
-    <?php
-
-    $bFound = false;
-    $rewrite = get_option('rewrite_rules');
-    if( empty($rewrite) ) {
-      $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
-    } else {
-      $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
-      $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
-    }
-    
-    
-            
-    $aPlayers = explode( '<!--fv player end-->', $content );
-    if( $aPlayers ) {
-      foreach( $aPlayers AS $k => $v ) {
-        if( stripos($v,$sLink.'"') !== false ) {
-          echo substr($v, stripos($v,'<div id="wpfp_') );
-          $bFound = true;
-          break;
+    <div style="background:white;">
+      <div id="wrapper" style="background:white;">
+        <?php
+        if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+          echo do_shortcode($shortcode);
+          ?><script>
+            jQuery(document).ready( function(){  
+              if( typeof(flowplayer) != "undefined" ) {
+                flowplayer( function(api,root) {
+                  window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
+                })
+              }else{
+                window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
+              }
+            })
+          </script>
+          <?
+        } else { ?>
+          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
+          <?php
+        }
+        ?>
+      </div>
+    </div>
+  <?php else : ?>
+    <?php while ( have_posts() ) : the_post(); //is this needed? ?>
+      <?php
+  
+      $bFound = false;
+      $rewrite = get_option('rewrite_rules');
+      if( empty($rewrite) ) {
+        $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
+      } else {
+        $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
+        $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
+      }
+      //$content = apply_filters( 'the_content', get_the_content() );
+      
+      
+              
+      $aPlayers = explode( '<!--fv player end-->', $content );
+      if( $aPlayers ) {
+        foreach( $aPlayers AS $k => $v ) {
+          if( stripos($v,$sLink.'"') !== false ) {
+            echo substr($v, stripos($v,'<div id="wpfp_') );
+            $bFound = true;
+            break;
+          }
         }
       }
-    }
-    
-    if( !$bFound ) {
-      echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
-    }    
-    
-    ?>
-  <?php endwhile; 
+      
+      if( !$bFound ) {
+        echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
+      }    
+      
+      ?>
+    <?php endwhile; 
   endif;
   ?>
 </body>
