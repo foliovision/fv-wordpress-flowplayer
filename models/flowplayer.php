@@ -98,7 +98,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'post_rewrite_rules', array( $this, 'rewrite_embed' ) );
     add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
@@ -1309,7 +1308,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   </style>
 </head>
 <body>
-  <?php while ( have_posts() ) : the_post(); ?>
+  <div style='background:white;'>
+  <?php if(isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview'])):
+    $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
+    ?><div id="wrapper" style="background:white;"><?php
+    if(preg_match('/src="[^"][^"]*"/i',$shortcode)){
+      echo do_shortcode($shortcode);
+      ?><script>
+        jQuery(document).ready( function(){  
+          if( typeof(flowplayer) != "undefined" ) {
+            flowplayer( function(api,root) {
+              window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
+            })
+          }else{
+            window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
+          }
+        })
+      </script><?
+    }else { ?>
+      <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
+    <?php }
+    ?>
+    </div><?php
+  else:
+  ?>
+  <?php while ( have_posts() ) : the_post(); //is this needed? ?>
     <?php
 
     $bFound = false;
@@ -1340,7 +1363,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }    
     
     ?>
-  <?php endwhile; ?>
+  <?php endwhile; 
+  endif;
+  ?>
 </body>
 <?php wp_footer(); ?>
 </html>       
