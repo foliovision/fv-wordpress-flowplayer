@@ -557,7 +557,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function css_enqueue() {
-    if( is_admin() && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+    
+    if( is_admin() && !did_action('admin_footer') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
       return;
     }
     
@@ -582,15 +583,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
     }
     
-    wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
-    
-    if( current_user_can('manage_options') ) {
-      wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
-    }
-    
-    if( $this->bCSSInline ) {
-      add_action( 'wp_head', array( $this, 'css_generate' ) );
-      add_action( 'admin_head', array( $this, 'css_generate' ) );
+    if( is_admin() &&  did_action('admin_footer') ) {
+      echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
+      if( current_user_can('manage_options') ) {
+        echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";        
+      }      
+      
+    } else {
+      wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
+      
+      if( current_user_can('manage_options') ) {
+        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      }
+      
+      if( $this->bCSSInline ) {
+        add_action( 'wp_head', array( $this, 'css_generate' ) );
+        add_action( 'admin_head', array( $this, 'css_generate' ) );
+      }
+      
     }
     
   }

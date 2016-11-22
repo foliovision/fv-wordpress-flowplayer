@@ -51,22 +51,13 @@ class FV_Player_Custom_Videos {
     
     $html = '';
     if( $this->have_videos() ) {
-      foreach( $this->get_videos() AS $sURL ) {
-        
-        if( $args['kind'] == 'td' ) {
-          $html .= '<tr><th></th>';
-        }
-        
+      foreach( $this->get_videos() AS $sURL ) {  
         $html .= '<'.$args['kind'].'>';
-        if( !is_admin() ) $html .= do_shortcode('[fvplayer src="'.$sURL.'"]');
+        $html .= do_shortcode('[fvplayer src="'.$sURL.'"]');
         if( $args['edit'] ) {
           $html .= '<input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" value="'.esc_attr($sURL).'" /> <a class="fv-player-custom-video-remove" href="#">Remove</a>';
         }
         $html .= '</'.$args['kind'].'>'."\n";
-        
-        if( $args['kind'] == 'td' ) {
-          $html .= '</tr>';
-        }
         
       }
       
@@ -140,14 +131,35 @@ class FV_Player_Custom_Videos_Master {
     
   }
   
-  function user_profile( $show_password_fields, $profileuser ) {
+  function user_profile( $show_password_fields, $profileuser ) {        
     if( $profileuser->ID > 0 ) {
+      $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
+      
+      if( $objUploader->have_videos() ) {
+        global $FV_Player_Pro;
+        if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+          //  todo: there should be a better way than this
+          add_filter( 'fv_flowplayer_splash', array( $FV_Player_Pro, 'get__cached_splash' ) );
+          add_filter( 'fv_flowplayer_playlist_splash', array( $FV_Player_Pro, 'get__cached_splash' ), 10, 3 );      
+          add_filter( 'fv_flowplayer_splash', array( $FV_Player_Pro, 'youtube_splash' ) );
+          add_filter( 'fv_flowplayer_playlist_splash', array( $FV_Player_Pro, 'youtube_splash' ), 10, 3 );
+      
+          add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
+          add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
+        }
+        
+        global $fv_fp;
+        add_action('admin_footer', array( $fv_fp, 'css_enqueue' ) );
+        add_action('admin_footer','flowplayer_prepare_scripts');        
+        
+      }
+      
       ?>
-      <tr class="user-profile-picture">
+      <tr class="user-videos">
         <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
         <td>
           <?php
-          $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
+          
           echo $objUploader->get_form( array( 'kind' => 'div' ) );
           ?>
           <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?></p>
