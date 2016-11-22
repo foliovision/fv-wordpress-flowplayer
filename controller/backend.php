@@ -777,17 +777,8 @@ function fv_wp_flowplayer_check_template() {
 			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
 			if( count($jquery_scripts[1]) > 0 ) {   
 				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
-					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
-					if( $check == - 1 ) {
-						$errors[] = "jQuery library <code>$jquery_script</code> is old version and might not be compatible with Flowplayer.";
-					} else if( $check == 1 ) {
-            $ok[] = __('jQuery library 1.7.1+ found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
-						$jquery_pos = strpos( $response['body'], $jquery_script );
-					} else if( $check == 2 ) {
-						//	nothing
-					}	else {
-						$errors[] = "jQuery library <code>$jquery_script</code> found, but unable to check version, please make sure it's at least 1.7.1.";
-					}
+          $ok[] = __('jQuery library found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
+					$jquery_pos = strpos( $response['body'], $jquery_script );
 				}
       
 				if( count($jquery_scripts[1]) > 1 ) {
