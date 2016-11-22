@@ -35,13 +35,7 @@ class FV_Player_Custom_Videos {
     $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."]' value='".esc_attr($this->id)."' />";
     $html .= "<input type='hidden' name='fv-player-custom-videos-entity-type[".$this->meta."]' value='".esc_attr($this->type)."' />";
     
-    if( $args['kind'] == 'td' ) {
-      $html .= '<tr><th></th><td>';
-    }
     $html .= "<input class='fv_player_custom_video regular-text' placeholder='Add another video' type='text' name='fv_player_videos[".$this->meta."][]' />\n";
-    if( $args['kind'] == 'td' ) {
-      $html .= '</td></tr>';
-    }    
     
     if( !is_admin() ) {      
       $html .= "<input type='hidden' name='action' value='fv-player-custom-videos-save' />";
@@ -122,9 +116,8 @@ class FV_Player_Custom_Videos_Master {
   
   function __construct() {
     add_action( 'init', array( $this, 'save' ) );
-    
-    add_action( 'edit_user_profile', array( $this, 'user_profile' ) );
-    add_action( 'show_user_profile', array( $this, 'user_profile' ) );
+
+    add_filter( 'show_password_fields', array( $this, 'user_profile' ), 10, 2 );
   }
   
   function save() {
@@ -147,12 +140,23 @@ class FV_Player_Custom_Videos_Master {
     
   }
   
-  function user_profile( $objUser ) {
-    if( $objUser->ID > 0 ) {
-      echo "<h2>User Videos</h2>";
-      $objUploader = new FV_Player_Custom_Videos( array( 'id' => $objUser->ID ) );
-      echo "<table class='form-table'>".$objUploader->get_form( array( 'kind' => 'td' ) )."</table>";
+  function user_profile( $show_password_fields, $profileuser ) {
+    if( $profileuser->ID > 0 ) {
+      ?>
+      <tr class="user-profile-picture">
+        <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
+        <td>
+          <?php
+          $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
+          echo $objUploader->get_form( array( 'kind' => 'div' ) );
+          ?>
+          <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?></p>
+        </td>
+      </tr>
+      <?php
     }
+    
+    return $show_password_fields;
   }
 
 }
