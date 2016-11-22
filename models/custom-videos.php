@@ -28,20 +28,38 @@ class FV_Player_Custom_Videos {
     
     $html = '';
     
+    if( $args['kind'] != 'li' ) {
+      $html .= '<div class="fv-player-custom-video-list">';
+    }
+    
     if( !is_admin() ) $html .= "<form method='POST'>";
     
     $html .= $this->get_html( $args );
 
-    $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."]' value='".esc_attr($this->id)."' />";
-    $html .= "<input type='hidden' name='fv-player-custom-videos-entity-type[".$this->meta."]' value='".esc_attr($this->type)."' />";
+    $html .= '<'.$args['kind'].' class="fv-player-custom-video">';
+      
+      $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."]' value='".esc_attr($this->id)."' />";
+      $html .= "<input type='hidden' name='fv-player-custom-videos-entity-type[".$this->meta."]' value='".esc_attr($this->type)."' />";
+      
+      $sPlaceholderVideo = $this->have_videos() ? 'Add another video' : 'Add your video';
+      $sPlaceholderTitle = $this->have_videos() ? 'Another video title' : 'Add video title';
+      
+      $html .= "<input class='fv_player_custom_video regular-text' placeholder='".$sPlaceholderVideo."' type='text' name='fv_player_videos[".$this->meta."][]' />\n";
+      $html .= "<input class='fv_player_custom_video regular-text' placeholder='".$sPlaceholderTitle."' type='text' name='fv_player_videos_titles[".$this->meta."][]' />\n";
+      $html .= "<a class='fv-player-custom-video-add' href='#'>One more</a>\n";
     
-    $html .= "<input class='fv_player_custom_video regular-text' placeholder='Add another video' type='text' name='fv_player_videos[".$this->meta."][]' />\n";
+    $html .= '</'.$args['kind'].'>';
     
     if( !is_admin() ) {      
       $html .= "<input type='hidden' name='action' value='fv-player-custom-videos-save' />";
       $html .= "<input type='submit' value='Save Videos' />"; //  todo: don't show when in post form
       $html .= "</form>";
     }
+    
+    if( $args['kind'] != 'li' ) {
+      $html .= '</div>';
+    }
+    
     return $html;
   }
 
@@ -51,11 +69,19 @@ class FV_Player_Custom_Videos {
     
     $html = '';
     if( $this->have_videos() ) {
-      foreach( $this->get_videos() AS $sURL ) {  
-        $html .= '<'.$args['kind'].'>';
-        $html .= do_shortcode('[fvplayer src="'.$sURL.'"]');
+      foreach( $this->get_videos() AS $aVideo ) {  
+        $html .= '<'.$args['kind'].' class="fv-player-custom-video">';
+        
         if( $args['edit'] ) {
-          $html .= '<input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" value="'.esc_attr($sURL).'" /> <a class="fv-player-custom-video-remove" href="#">Remove</a>';
+          $html .= do_shortcode('[fvplayer src="'.$aVideo['url'].'"]');
+        } else {
+          $html .= do_shortcode('[fvplayer src="'.$aVideo['url'].'" caption="'.$aVideo['title'].'"]');
+        }
+        
+        if( $args['edit'] ) {
+          $html .= '<input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" value="'.esc_attr($aVideo['url']).'" />';
+          $html .= ' <input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos_titles['.$this->meta.'][]" value="'.esc_attr($aVideo['title']).'" placeholder="Video title" />';
+          $html .= ' <a class="fv-player-custom-video-remove" href="#">Remove</a>';
         }
         $html .= '</'.$args['kind'].'>'."\n";
         
@@ -93,6 +119,13 @@ class FV_Player_Custom_Videos {
         jQuery(this).siblings('input.fv_player_custom_video').remove();
         jQuery(this).remove();
       });
+      jQuery(document).on('click','.fv-player-custom-video-add', function(e) {
+        e.preventDefault();
+
+        jQuery(this).parents('.fv-player-custom-video').parent().append( jQuery(this).parents('.fv-player-custom-video').clone() );
+        jQuery(this).parents('.fv-player-custom-video').parent().find('.fv-player-custom-video:last').find('input[type=text]').val('');
+        jQuery(this).remove();
+      });      
     </script>
     <?php
   }
@@ -121,10 +154,13 @@ class FV_Player_Custom_Videos_Master {
     foreach( $_POST['fv_player_videos'] AS $meta => $aValues ) {
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'user' ) {
         delete_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta );
-        foreach( $aValues AS $value ) {
-          $value =  trim(strip_tags($value));
+        foreach( $aValues AS $key => $value ) {
           if( strlen($value) == 0 ) continue;
-          add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $value );
+          $aVideo = array(
+                          'url' => trim(strip_tags($value)),
+                          'title' => trim(htmlspecialchars($_POST['fv_player_videos_titles'][$meta][$key]))
+                          );          
+          add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $aVideo );
         }
       }
     }
