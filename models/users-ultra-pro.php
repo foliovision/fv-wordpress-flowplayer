@@ -31,7 +31,7 @@ class FV_Player_UUP {
     
     $objFinder = new DomXPath($objHTML);
     
-    $objUploader = new FV_Player_Custom_Videos( array( 'id' => get_current_user_id() ) );
+    $objUploader = new FV_Player_Custom_Videos( array( 'id' => get_current_user_id(), 'type' => 'user' ) );
     
     $aNodes = $objFinder->query("//*[contains(@class, 'add-new-video')]");
     if( $aNodes ) {
@@ -58,8 +58,11 @@ class FV_Player_UUP {
     
     if( !isset($post->post_content) || stripos($post->post_content,'[usersultra_my_account') === false || !isset($_GET['module']) || $_GET['module'] != 'posts' ) return $content;
     
-    $objUploader = new FV_Player_Custom_Videos();
-    $content = str_replace( '<p>Description:</p>', $objUploader->get_form().'<p>Description:</p>', $content );
+    $args = array( 'meta' => 'videos', 'type' => 'post' );
+    if( isset($_GET['act']) && $_GET['act'] == 'edit' && isset($_GET['post_id']) ) $args['id'] = intval($_GET['post_id']);
+    
+    $objUploader = new FV_Player_Custom_Videos( $args );
+    $content = str_replace( '<p>Description:</p>', $objUploader->get_form( array('limit' => 1, 'no_form' => true) ).'<p>Description:</p>', $content );
     
     return $content;
   }  
@@ -81,7 +84,7 @@ class FV_Player_UUP {
       }
     }
 
-    $objVideos = new FV_Player_Custom_Videos( array( 'id' => $user_id ) );
+    $objVideos = new FV_Player_Custom_Videos( array( 'id' => $user_id, 'type' => 'user' ) );
     if( !$objVideos->have_videos() ) return $content;
     
     $content = preg_replace( '~(<p class="cat"><a href="\?my_videos">VIDEOS</a></p>\s*?<p class="number")>\d+(</p>)~', '$1>'.count($objVideos->get_videos()).'$2', $content ); //  todo: would be better as a UUP filter 
@@ -101,7 +104,7 @@ class FV_Player_UUP {
             
             $objChild = $objHTML->createElement('ul');
             $fragment = $objHTML->createDocumentFragment();
-            $fragment->appendXML( $objVideos->get_html() );
+            $fragment->appendXML( $objVideos->get_html( array('kind' => 'li' ) ) );
             $objChild->appendChild( $fragment);
         
             $objParent->insertBefore($objChild, $objNode);

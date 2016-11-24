@@ -86,11 +86,11 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 .wp-admin .user-videos .fv-player-custom-video {
   margin-bottom: 10px;
 }
-.wp-admin .user-videos .flowplayer {
+.wp-admin .user-videos .flowplayer, .postbox-container .fv-player-custom-video .flowplayer {
   max-width: 432px !important;
   margin: 2px;
 }
-.wp-admin .user-videos .fv-player-custom-video >  iframe {
+.wp-admin .user-videos .fv-player-custom-video >  iframe, .postbox-container .fv-player-custom-video >  iframe {
   display: block;
   overflow: hidden;
   width: 432px;
