@@ -22,6 +22,11 @@ class FV_Player_Custom_Videos {
     return $data;
   }
   
+  private function esc_shortcode( $arg ) {
+    $arg = str_replace( array('[',']'), array('&#91;','&#93;'), $arg );
+    return $arg;
+  }
+  
   public function get_form( $args = array() ) {
     
     $args = wp_parse_args( $args, array( 'kind' => 'div', 'edit' => true ) );
@@ -78,9 +83,9 @@ class FV_Player_Custom_Videos {
         $html .= '<'.$args['kind'].' class="fv-player-custom-video">';
         
         if( $args['edit'] ) {
-          $html .= do_shortcode('[fvplayer src="'.$aVideo['url'].'"]');
+          $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'"]');
         } else {
-          $html .= do_shortcode('[fvplayer src="'.$aVideo['url'].'" caption="'.$aVideo['title'].'"]');
+          $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]');
         }
         
         if( $args['edit'] ) {

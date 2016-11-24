@@ -1,11 +1,21 @@
 <?php
 
-class FV_Player_UUP {
+class FV_Player_UUP {  
   
   public function __construct() {
+    add_action( 'init', array( $this, 'init') );
+  }
+  
+  
+  function init() {
+    global $xoouserultra;
+    if( !isset($xoouserultra) ) return;
+    
     add_filter( 'the_content', array( $this, 'account' ), 999 );
 
-    add_filter( 'the_content', array( $this, 'profile' ), 999 );
+    add_filter( 'the_content', array( $this, 'post_editor' ), 999 );
+    
+    add_filter( 'the_content', array( $this, 'profile' ), 999 );    
   }
   
   
@@ -21,7 +31,7 @@ class FV_Player_UUP {
     
     $objFinder = new DomXPath($objHTML);
     
-    $objUploader = new FV_Player_Custom_Videos( array( 'id' => 1 ) );
+    $objUploader = new FV_Player_Custom_Videos( array( 'id' => get_current_user_id() ) );
     
     $aNodes = $objFinder->query("//*[contains(@class, 'add-new-video')]");
     if( $aNodes ) {
@@ -42,39 +52,65 @@ class FV_Player_UUP {
     return $content;
   }
   
+  
+  function post_editor( $content ) {
+    global $post;
+    
+    if( !isset($post->post_content) || stripos($post->post_content,'[usersultra_my_account') === false || !isset($_GET['module']) || $_GET['module'] != 'posts' ) return $content;
+    
+    $objUploader = new FV_Player_Custom_Videos();
+    $content = str_replace( '<p>Description:</p>', $objUploader->get_form().'<p>Description:</p>', $content );
+    
+    return $content;
+  }  
+  
 
   function profile( $content ) {
     global $post;
     
-    if( !isset($post->post_content) || stripos($post->post_content,'[usersultra_profile') === false || !isset($_GET['my_videos']) ) return $content;
+    if( !isset($post->post_content) || stripos($post->post_content,'[usersultra_profile') === false ) return $content;
     
-    $objVideos = new FV_Player_Custom_Videos( array( 'id' => 1 ) );
+    $user_id = get_current_user_id();
+    
+    global $xoouserultra;
+    if( isset($xoouserultra) && isset($xoouserultra->userpanel) && method_exists($xoouserultra->userpanel,'get_user_data_by_uri') ) {
+      $current_user = $xoouserultra->userpanel->get_user_data_by_uri();
+      
+      if( isset($current_user->ID) ) {
+        $user_id = $current_user->ID;				
+      }
+    }
+
+    $objVideos = new FV_Player_Custom_Videos( array( 'id' => $user_id ) );
     if( !$objVideos->have_videos() ) return $content;
     
-    //var_dump($objVideos->get_html());die();
+    $content = preg_replace( '~(<p class="cat"><a href="\?my_videos">VIDEOS</a></p>\s*?<p class="number")>\d+(</p>)~', '$1>'.count($objVideos->get_videos()).'$2', $content ); //  todo: would be better as a UUP filter 
 
-    $objHTML = new DOMDocument();
-    libxml_use_internal_errors(true);
-    $objHTML->loadHTML($content);
-    libxml_use_internal_errors(false);
-    
-    $objFinder = new DomXPath($objHTML);
-    
-    $aNodes = $objFinder->query("//*[contains(@class, 'videolist')]/ul");
-    if( $aNodes ) {
-      foreach ($aNodes as $objNode) {
-          $objParent = $objNode->parentNode;
-          
-          $objChild = $objHTML->createElement('ul');
-          $fragment = $objHTML->createDocumentFragment();
-          $fragment->appendXML( $objVideos->get_html() );
-          $objChild->appendChild( $fragment);
+    if( isset($_GET['my_videos']) ) {
+      $objHTML = new DOMDocument();
+      libxml_use_internal_errors(true);
+      $objHTML->loadHTML($content);
+      libxml_use_internal_errors(false);
       
-          $objParent->insertBefore($objChild, $objNode);
-          $objParent->removeChild($objNode);
+      $objFinder = new DomXPath($objHTML);
+      
+      $aNodes = $objFinder->query("//*[contains(@class, 'videolist')]/ul");
+      if( $aNodes ) {
+        foreach ($aNodes as $objNode) {
+            $objParent = $objNode->parentNode;
+            
+            $objChild = $objHTML->createElement('ul');
+            $fragment = $objHTML->createDocumentFragment();
+            $fragment->appendXML( $objVideos->get_html() );
+            $objChild->appendChild( $fragment);
+        
+            $objParent->insertBefore($objChild, $objNode);
+            $objParent->removeChild($objNode);
+        }
+        
+        $content = $objHTML->saveHTML();
       }
       
-      $content = $objHTML->saveHTML();
     }
     
     return $content;
