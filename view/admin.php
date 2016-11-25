@@ -146,7 +146,8 @@ function fv_flowplayer_admin_amazon_options() {
                 <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>><?php _e('Ireland', 'fv-wordpress-flowplayer'); ?></option>                              
                 <option value="us-west-1"<?php if( $sRegion == 'us-west-1' ) echo " selected"; ?>><?php _e('Northern California', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="us-west-2"<?php if( $sRegion == 'us-west-2' ) echo " selected"; ?>><?php _e('Oregon', 'fv-wordpress-flowplayer'); ?></option>
-                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>          
+                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>
+                <option value="ap-northeast-2"<?php if( $sRegion == 'ap-northeast-2' ) echo " selected"; ?>><?php _e('Seoul', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-1"<?php if( $sRegion == 'ap-southeast-1' ) echo " selected"; ?>><?php _e('Singapore', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-2"<?php if( $sRegion == 'ap-southeast-2' ) echo " selected"; ?>><?php _e('Sydney', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-northeast-1"<?php if( $sRegion == 'ap-northeast-1' ) echo " selected"; ?>><?php _e('Tokyo', 'fv-wordpress-flowplayer'); ?></option>
