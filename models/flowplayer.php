@@ -1312,14 +1312,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
           echo do_shortcode($shortcode);
           ?><script>
-            jQuery(document).ready( function(){  
-              if( typeof(flowplayer) != "undefined" ) {
-                flowplayer( function(api,root) {
-                  window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
-                })
-              }else{
-                window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
+            jQuery(document).ready( function(){
+              var parent = window.parent.jQuery(window.parent.document);
+              if( jQuery('.flowplayer').length > 0 ){
+                if( typeof(flowplayer) != "undefined" ) {
+                  flowplayer( function(api,root) {
+                    parent.trigger('fvp-preview-complete');
+                  })
+                }else{
+                  parent.trigger('fvp-preview-error');
+                }
+              } else {
+                parent.trigger('fvp-preview-complete');
               }
+
             })
           </script>
           <?
