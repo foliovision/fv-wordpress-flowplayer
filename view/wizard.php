@@ -196,9 +196,9 @@ fv-player-shortcode-editor{
  display:block;
 }
 
-.fvp_item_video img{
-  max-width: 100px;
-  max-height: 100px;
+.fvp_item_video-thumbnail img{
+  max-width: 95px;
+  max-height: 95px;
 }
 
 .fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{
@@ -214,6 +214,31 @@ fv-player-shortcode-editor{
 #fv_player_boxLoadedContent{
   background-color:white;
 }
+.fvp_item_video-side-by-side{
+  display:inline-block;
+  vertical-align:top;
+}
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1){
+  width:300px;
+}
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){
+  width:300px;
+}
+.fv-player-tab-playlist > table > tbody{
+  display:block;
+  overflow:auto;
+  max-height:calc(100vh - 250px);
+}
+.fv-player-tab-playlist > table > thead{
+  display:block;
+}
+.fv-player-tab-playlist.hide-thumbnails .fvp_item_video-thumbnail{
+  display:none;
+}
+#fv-player-list-thumb-toggle > .active{
+  font-weight:bold;
+}
+
 
 
 </style>
@@ -257,6 +282,10 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             <div class="fv-player-tabs">
               
               <div class="fv-player-tab fv-player-tab-playlist" style="">
+                <div id="fv-player-list-thumb-toggle">
+                  <a href="#" id="fv-player-list-list-view" >List view</a>
+                  <a href="#" id="fv-player-list-thumb-view" class="active">Thumbnail View</a>
+                </div>
                 <table class="wp-list-table widefat fixed striped media" width="100%">
                   <thead>
                     <tr>
@@ -273,13 +302,12 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <!--<td class="fvp_item_sort">&nbsp;&nbsp;&nbsp;</td>-->
                       <!--<td class="fvp_item_video"><strong class="has-media-icon">(new video)</strong></td>-->
                       <td class="title column-title" data-colname="File">		
-                        <strong class="has-media-icon">
-                            <a class="fvp_item_video"></a>
-                        </strong>
-                        <div class="">
-                          <span class="delete">
-                            <a class="fvp_item_remove" role="button">Delete</a>
-                          </span>
+                        <div class="fvp_item_video-side-by-side">
+                          <a class="fvp_item_video-thumbnail"></a>
+                        </div>
+                        <div class="fvp_item_video-side-by-side">
+                          <a class="fvp_item_video-filename"></a><br>
+                          <a class="fvp_item_remove" role="button">Delete</a>
                         </div>
                       </td>
                       
