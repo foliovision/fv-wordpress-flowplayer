@@ -26,7 +26,7 @@ class FV_Player_Custom_Videos {
   }
   
   private function esc_shortcode( $arg ) {
-    $arg = str_replace( array('[',']'), array('&#91;','&#93;'), $arg );
+    $arg = str_replace( array('[',']','"'), array('&#91;','&#93;','&quote;'), $arg );
     return $arg;
   }
   
@@ -43,11 +43,11 @@ class FV_Player_Custom_Videos {
     
     $this->did_form = true;
     
-    $args = wp_parse_args( $args, array( 'kind' => 'div', 'edit' => true, 'limit' => 1000, 'no_form' => false ) );
+    $args = wp_parse_args( $args, array( 'wrapper' => 'div', 'edit' => true, 'limit' => 1000, 'no_form' => false ) );
     
     $html = '';
     
-    if( $args['kind'] != 'li' ) {
+    if( $args['wrapper'] != 'li' ) {
       $html .= '<div class="fv-player-custom-video-list">';
     }
     
@@ -86,7 +86,7 @@ class FV_Player_Custom_Videos {
       $html .= "</form>";
     }
     
-    if( $args['kind'] != 'li' ) {
+    if( $args['wrapper'] != 'li' ) {
       $html .= '</div>';
     }
     
@@ -103,19 +103,27 @@ class FV_Player_Custom_Videos {
 
   public function get_html( $args = array() ) {
     
-    $args = wp_parse_args( $args, array( 'kind' => 'div', 'edit' => false, 'limit' => 1000 ) );
+    $args = wp_parse_args( $args, array( 'wrapper' => 'div', 'edit' => false, 'limit' => 1000, 'shortcode' => false ) );
     
     $html = '';
     $count = 0;
     if( $this->have_videos() ) {
       foreach( $this->get_videos() AS $aVideo ) {
         $count++;
-        $html .= '<'.$args['kind'].' class="fv-player-custom-video">';
+        
+        if( $args['wrapper'] ) $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
         
         if( $args['edit'] ) {
           $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" autoplay="false"]');
         } else {
-          $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]');
+          
+          $sExtra = '';
+          if( count($args['shortcode']) ) {
+            foreach( $args['shortcode'] AS $key => $value ) {
+              $sExtra .= ' '.$this->esc_shortcode($key).'="'.$this->esc_shortcode($value).'"';
+            }
+          }
+          $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"'.$sExtra.']');
         }
         
         if( $args['edit'] ) {
@@ -125,18 +133,19 @@ class FV_Player_Custom_Videos {
           $html .= '<a class="fv-player-custom-video-remove" href="#">Remove</a> ';
                     
         }
-        $html .= '</'.$args['kind'].'>'."\n";
+        
+        if( $args['wrapper'] ) $html .= '</'.$args['wrapper'].'>'."\n";
         
       }
       
     } else if( $args['edit'] ) {
-      $html .= '<'.$args['kind'].' class="fv-player-custom-video">';
+      $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
 
         $html .= "<input class='fv_player_custom_video fv_player_custom_video_url regular-text' placeholder='URL' type='text' name='fv_player_videos[".$this->meta."][]' /><br />\n";
         $html .= "<input class='fv_player_custom_video regular-text' placeholder='Title' type='text' name='fv_player_videos_titles[".$this->meta."][]' /><br />\n";
         if( 1 < $args['limit'] ) $html .= "<a class='fv-player-custom-video-add' href='#'>Add more</a>\n";
       
-      $html .= '</'.$args['kind'].'>';      
+      $html .= '</'.$args['wrapper'].'>';      
     }
     
     $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."]' value='".esc_attr($this->id)."' />";
@@ -237,6 +246,7 @@ class FV_Player_Custom_Videos_Master {
     add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 999, 2 );
     
     add_filter( 'the_content', array( $this, 'show' ) );
+    add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
   }
   
   function add_meta_boxes() {
@@ -335,6 +345,17 @@ class FV_Player_Custom_Videos_Master {
     return $content;
   }
   
+  function show_bio( $content, $user_id ) {
+    global $post;    
+
+    $objVideos = new FV_Player_Custom_Videos( array('id' => $user_id, 'type' => 'user' ) );
+    $html = $objVideos->get_html( array( 'wrapper' => false, 'shortcode' => array( 'width' => 272, 'height' => 153, 'align' => 'left' ) ) );
+    if( $html ) {
+      $content .= $html."<div style='clear:both'></div>";
+    }    
+    return $content;
+  }  
+  
   function user_profile( $show_password_fields, $profileuser ) {        
     if( $profileuser->ID > 0 ) {
       $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
@@ -344,9 +365,9 @@ class FV_Player_Custom_Videos_Master {
         <td>
           <?php
           
-          echo $objUploader->get_form( array( 'kind' => 'div' ) );
+          echo $objUploader->get_form( array( 'wrapper' => 'div' ) );
           ?>
-          <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?></p>
+          <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?> <abbr title="<?php _e( 'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-wordpress-flowplayer' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
         </td>
       </tr>
       <?php

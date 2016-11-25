@@ -606,7 +606,18 @@ function fv_flowplayer_admin_integrations() {
                 <span class="more"><?php _e('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
 						</td>
-					</tr> 
+					</tr>
+          <tr>
+						<td><label for="css_disable"><?php _e('Disable profile videos', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="profile_videos_disable_bio" value="false" />
+                <input type="checkbox" name="profile_videos_disable_bio" id="profile_videos_disable_bio" value="true" <?php if( isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Videos attached to the user profile are normally showing as a part of the user bio.', 'fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('Get ready for more features!','fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+						</td>
+					</tr>           
           <tr>
             <td><label for="scaling"><?php _e('Fit scaling', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>

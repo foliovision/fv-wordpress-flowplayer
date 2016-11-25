@@ -104,7 +104,7 @@ class FV_Player_UUP {
             
             $objChild = $objHTML->createElement('ul');
             $fragment = $objHTML->createDocumentFragment();
-            $fragment->appendXML( $objVideos->get_html( array('kind' => 'li' ) ) );
+            $fragment->appendXML( $objVideos->get_html( array('wrapper' => 'li' ) ) );
             $objChild->appendChild( $fragment);
         
             $objParent->insertBefore($objChild, $objNode);
