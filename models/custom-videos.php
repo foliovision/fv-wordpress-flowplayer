@@ -11,7 +11,7 @@ class FV_Player_Custom_Videos {
     
     $args = wp_parse_args( $args, array(
                                         'id' => isset($post) && isset($post->ID) ? $post->ID : false,
-                                        'meta' => '_fv_player_user_video',                                        
+                                        'meta' => '_fv_player_user_video',
                                         'type' => isset($post->ID) ? 'post' : 'user'
                                         ) );
     
@@ -113,7 +113,7 @@ class FV_Player_Custom_Videos {
         $html .= '<'.$args['kind'].' class="fv-player-custom-video">';
         
         if( $args['edit'] ) {
-          $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'"]');
+          $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" autoplay="false"]');
         } else {
           $html .= do_shortcode('[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]');
         }
@@ -134,7 +134,7 @@ class FV_Player_Custom_Videos {
 
         $html .= "<input class='fv_player_custom_video fv_player_custom_video_url regular-text' placeholder='URL' type='text' name='fv_player_videos[".$this->meta."][]' /><br />\n";
         $html .= "<input class='fv_player_custom_video regular-text' placeholder='Title' type='text' name='fv_player_videos_titles[".$this->meta."][]' /><br />\n";
-        $html .= "<a class='fv-player-custom-video-add' href='#'>Add more</a>\n";
+        if( 1 < $args['limit'] ) $html .= "<a class='fv-player-custom-video-add' href='#'>Add more</a>\n";
       
       $html .= '</'.$args['kind'].'>';      
     }

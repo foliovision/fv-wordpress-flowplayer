@@ -434,11 +434,11 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
 					if( $autoplay == true ) {
-						$this->ret['html'] .= ' autoplay';  
+						$this->ret['html'] .= ' autoplay="autoplay"';  
 					}
     
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
-						$this->ret['html'] .= ' preload';
+						$this->ret['html'] .= ' preload="preload"';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
 					}	else if ($autoplay == false) {
 						$this->ret['html'] .= ' preload="none"';        

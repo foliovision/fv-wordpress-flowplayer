@@ -62,7 +62,7 @@ class FV_Player_UUP {
     if( isset($_GET['act']) && $_GET['act'] == 'edit' && isset($_GET['post_id']) ) $args['id'] = intval($_GET['post_id']);
     
     $objUploader = new FV_Player_Custom_Videos( $args );
-    $content = str_replace( '<p>Description:</p>', $objUploader->get_form( array('limit' => 1, 'no_form' => true) ).'<p>Description:</p>', $content );
+    $content = str_replace( '<p>Description:</p>', '<div class="field_row"><p>Post Videos:</p></div>'.$objUploader->get_form( array('limit' => 1, 'no_form' => true) ).'<p>Description:</p>', $content );
     
     return $content;
   }  
