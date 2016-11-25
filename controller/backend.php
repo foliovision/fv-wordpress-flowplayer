@@ -428,8 +428,12 @@ function fv_wp_flowplayer_admin_init() {
       }
       delete_option('fv_wordpress_flowplayer_persistent_notices');
     }
-  }  
-}   
+
+    if( isset($aCheck->expired) && $aCheck->expired && stripos( implode(get_option('active_plugins')), 'fv-player-pro' ) !== false ) {
+      add_filter( 'site_transient_update_plugins', 'fv_player_remove_update' );
+    }
+  }
+}
 
 
 function fv_wp_flowplayer_admin_key_update() {
@@ -466,7 +470,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 		'timeout' => 20,
 		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
 	);
-	$resp = wp_remote_post( 'http://foliovision.com/?fv_remote=true', $args );
+	$resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
 
   if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
     return $data;
@@ -558,7 +562,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Christmas sale!
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Halloween sale!
 		</div>
 	</td>
 </tr>
@@ -773,17 +777,8 @@ function fv_wp_flowplayer_check_template() {
 			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
 			if( count($jquery_scripts[1]) > 0 ) {   
 				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
-					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
-					if( $check == - 1 ) {
-						$errors[] = "jQuery library <code>$jquery_script</code> is old version and might not be compatible with Flowplayer.";
-					} else if( $check == 1 ) {
-            $ok[] = __('jQuery library 1.7.1+ found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
-						$jquery_pos = strpos( $response['body'], $jquery_script );
-					} else if( $check == 2 ) {
-						//	nothing
-					}	else {
-						$errors[] = "jQuery library <code>$jquery_script</code> found, but unable to check version, please make sure it's at least 1.7.1.";
-					}
+          $ok[] = __('jQuery library found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
+					$jquery_pos = strpos( $response['body'], $jquery_script );
 				}
       
 				if( count($jquery_scripts[1]) > 1 ) {
@@ -1163,3 +1158,16 @@ add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' )
 add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
 
 
+
+
+function fv_player_remove_update( $objUpdates ) {
+  if( !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
+
+  foreach( $objUpdates->response AS $key => $objUpdate ) {
+    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
+      unset($objUpdates->response[$key]);      
+    }
+  }
+  
+  return $objUpdates;
+}

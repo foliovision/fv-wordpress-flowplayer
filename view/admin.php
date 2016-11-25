@@ -146,7 +146,8 @@ function fv_flowplayer_admin_amazon_options() {
                 <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>><?php _e('Ireland', 'fv-wordpress-flowplayer'); ?></option>                              
                 <option value="us-west-1"<?php if( $sRegion == 'us-west-1' ) echo " selected"; ?>><?php _e('Northern California', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="us-west-2"<?php if( $sRegion == 'us-west-2' ) echo " selected"; ?>><?php _e('Oregon', 'fv-wordpress-flowplayer'); ?></option>
-                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>          
+                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>
+                <option value="ap-northeast-2"<?php if( $sRegion == 'ap-northeast-2' ) echo " selected"; ?>><?php _e('Seoul', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-1"<?php if( $sRegion == 'ap-southeast-1' ) echo " selected"; ?>><?php _e('Singapore', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-2"<?php if( $sRegion == 'ap-southeast-2' ) echo " selected"; ?>><?php _e('Sydney', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-northeast-1"<?php if( $sRegion == 'ap-northeast-1' ) echo " selected"; ?>><?php _e('Tokyo', 'fv-wordpress-flowplayer'); ?></option>
@@ -646,6 +647,16 @@ function fv_flowplayer_admin_integrations() {
               </p>
             </td>
           </tr>
+					<tr>
+            <td><label for="parse_comments"><?php _e('Parse Vimeo and YouTube links in comments', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('parse_comments'); ?>
+                <?php _e('Automatically convert Vimeo and YouTube links in comments to players.','fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>					
           <tr>
             <td><label for="postthumbnail"><?php _e('Post Thumbnail', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
@@ -1496,15 +1507,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     </p>
     <div id="fv_flowplayer_admin_notices">
     </div> 
-    <div id="fv_flowplayer_admin_tabs">
-      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
-        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
-        <?php endforeach;?>
-        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
-      </h2>
-    </div>
-    
+
     <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
       <div id="fv_flowplayer_ad">
@@ -1516,14 +1519,23 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <li>Or remove the logo completely</li>
             <li>The best video plugin for Wordpress</li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
+              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Halloween sale!</strong><br />All Licenses 20% Off</a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
             <img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
           </div>
       </div>
-    <?php endif; ?>	
+    <?php endif; ?> 
+    
+    <div id="fv_flowplayer_admin_tabs">
+      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
+        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
+        <?php endforeach;?>
+        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+      </h2>
+    </div>
   
 		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>

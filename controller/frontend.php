@@ -42,8 +42,8 @@ add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
   
-  $aStrings = Array(
-  0 => __('', 'flowplayer'),
+  $aStrings = array(
+  0 => '',
   1 => __('Video loading aborted', 'fv-wordpress-flowplayer'),
   2 => __('Network error', 'fv-wordpress-flowplayer'),
   3 => __('Video not properly encoded', 'fv-wordpress-flowplayer'),
@@ -383,6 +383,10 @@ function flowplayer_prepare_scripts() {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
+    
+    if( $fv_fp->load_dash ) {
+      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
   }
 }
 
@@ -484,21 +488,38 @@ add_filter( 'fv_player_caption', 'fv_player_caption' );
 
 
 
-add_action('amp_post_template_css','fv_flowplayer_amp_post_template_css');
+add_filter( 'comment_text', 'fv_player_comment_text', 0 );
 
-function fv_flowplayer_amp_post_template_css() {
-  global $fv_fp;
-  $fv_fp->css_enqueue();
+function fv_player_comment_text( $comment_text ) {
+  if( is_admin() ) return $comment_text;
+
+	global $fv_fp;
+	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
+    add_filter('comment_text', 'do_shortcode');
+
+    if( stripos($comment_text,'youtube.com') !== false || stripos($comment_text,'youtu.be') !== false ) {
+  		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
+               . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
+               . '(?:'                 #  Group host alternatives:
+               .   'youtu\.be/'        #    Either youtu.be,
+               .   '|youtube\.com/'    #    or youtube.com
+               .     '(?:'             #    Group path alternatives:
+               .       'embed/'        #      Either /embed/,
+               .       '|v/'           #      or /v/,
+               .       '|watch\?v='    #      or /watch?v=,
+               .       '|watch\?.+&v=' #      or /watch?other_param&v=
+               .     ')'               #    End path alternatives.
+               . ')'                   #  End host alternatives.
+               . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
+               . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
+  		$comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
+    }
+
+    if( stripos($comment_text,'vimeo.com') !== false ) {
+      $pattern = '#(?:https?://)?(?:www.)?(?:player.)?vimeo.com/(?:[/a-z]*/)*([0-9]{6,11})[?]?.*#';
+      $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
+    }
+	}
+	return $comment_text;
 }
-
-
-
-
-add_action('amp_post_template_footer','fv_flowplayer_amp_post_template_footer',9);
-
-function fv_flowplayer_amp_post_template_footer() {
-  flowplayer_prepare_scripts();
-  do_action( 'wp_print_footer_scripts' );
-}
-
 

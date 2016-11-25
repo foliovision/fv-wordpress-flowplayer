@@ -44,6 +44,8 @@ class flowplayer_frontend extends flowplayer
   
   var $count_tabs = 0;
   
+  var $aAMP = array();
+  
 
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
@@ -52,6 +54,7 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
+    
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
@@ -85,6 +88,16 @@ class flowplayer_frontend extends flowplayer
     
     
     $splash_img = $this->get_splash();
+    
+    if( function_exists('is_amp_endpoint') && is_amp_endpoint() ) {
+      
+      if( !isset($this->aAMP[$post->ID]) ) $this->aAMP[$post->ID] = 1;
+      $link = user_trailingslashit( trailingslashit( get_permalink() ).'fvp'.$this->aAMP[$post->ID] );      
+      $this->aAMP[$post->ID]++;
+      
+      $amp = '<iframe width="500" height="281" layout="responsive" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen frameborder="0" src="'.$link.'"></iframe>';
+      return array( 'html' => $amp );
+    }    
     
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -361,7 +374,7 @@ class flowplayer_frontend extends flowplayer
 				}	
                 
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
-        if( count($aPlaylistItems) == 0 && $rtmp_server) {
+        if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
           $attributes['data-rtmp'] = $rtmp_server;
         }
          				
@@ -490,7 +503,7 @@ class flowplayer_frontend extends flowplayer
 					}  
 					
 					if (isset($aSubtitles) && !empty($aSubtitles)) {
-            $aLangs = $this->get_languages();
+            $aLangs = self::get_languages();
             $countSubtitles = 0;
             foreach( $aSubtitles AS $key => $subtitles ) {
               if( $key == 'subtitles' ) {                   
@@ -578,7 +591,7 @@ class flowplayer_frontend extends flowplayer
 				
 			$sAutoplay = ($autoplay) ? 'autoplay=1&amp;' : '';
 			$this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
-	  src='http://www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
+	  src='//www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
 			
 		}
     
@@ -964,7 +977,7 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_video_checker_media($attributes, $media, $src1, $src2, $rtmp) {
-    
+
     if(
       current_user_can('manage_options') && $this->ajax_count < 100 && $this->conf['disable_videochecker'] != 'true' &&
       ( !empty($this->conf['video_checker_agreement']) && $this->conf['video_checker_agreement'] == 'true' || !empty($this->conf['key_automatic']) && $this->conf['key_automatic'] == 'true' )
@@ -972,7 +985,7 @@ class flowplayer_frontend extends flowplayer
       $this->ajax_count++;
       
       $rtmp_test = false;
-      if( $rtmp ) {
+      if( isset($attributes['data-rtmp']) && $rtmp ) {
         $rtmp_test = parse_url($rtmp);
         $rtmp_test = trailingslashit($attributes['data-rtmp']).ltrim($rtmp_test['path'],'/');
       }

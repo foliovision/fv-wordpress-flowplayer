@@ -258,7 +258,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
   				<th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv-wordpress-flowplayer'); ?></label></th>
   				<td><?php fv_flowplayer_admin_select_popups(array( 'id'=>'fv_wp_flowplayer_field_popup_id', 'show_default' => true ))?></td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]["redirect"]) || $fv_flowplayer_conf["interface"]["redirect"] !== 'true' ) echo ' style="display: none"'; ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv-wordpress-flowplayer'); ?></label></th>
   				<td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
   			</tr>
@@ -272,11 +272,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </select>
           </td>
   			</tr>
-        <tr<?php if( $fv_flowplayer_conf["interface"]["loop"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]["loop"]) || $fv_flowplayer_conf["interface"]["loop"] !== 'true' ) { echo ' style="display: none"'; } ?>>
   				<th scope="row" class="label"><label for="fv_wp_flowplayer_field_loop" class="alignright"><?php _e('Loop', 'fv-wordpress-flowplayer'); ?></label></th>
   				<td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_loop" name="fv_wp_flowplayer_field_loop" /></td>
   			</tr>   
-        <tr<?php if( $fv_flowplayer_conf["interface"]["splashend"] !== 'true' ) { echo ' style="display: none"'; } ?>>
+        <tr<?php if( !isset($fv_flowplayer_conf["interface"]["splashend"]) || $fv_flowplayer_conf["interface"]["splashend"] !== 'true' ) { echo ' style="display: none"'; } ?>>
           <th scope="row" class="label">
             <label for="fv_wp_flowplayer_field_splashend"><?php _e('Splash end', 'fv-wordpress-flowplayer'); ?></label>
           </th>
