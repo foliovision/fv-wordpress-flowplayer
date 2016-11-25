@@ -266,7 +266,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
               </div>
               <iframe id="fv-player-shortcode-editor-preview-iframe" allowfullscreen></iframe>
-              <span class="button"  id="fv-player-shortcode-editor-preview-iframe-refresh" /><?php _e('Refresh preview', 'fv_flowplayer'); ?></span>
+              <input type="button" value="<?php _e('Refresh preview', 'fv_flowplayer'); ?>"  class="button extra-field"  id="fv-player-shortcode-editor-preview-iframe-refresh" disabled/>
             </div>
           </td>
           <td>

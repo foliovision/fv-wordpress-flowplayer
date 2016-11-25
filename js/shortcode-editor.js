@@ -239,10 +239,10 @@ jQuery(document).ready(function($){
    * Preview
    */
   jQuery(document).on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
-    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').attr('class','button-primary');
+    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').attr('disabled',false);
   });
   jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click(function(){
-    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').attr('class','button');
+    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').attr('disabled',true);
     fv_wp_flowplayer_submit(true);
   });
   
@@ -351,6 +351,7 @@ function fv_wp_flowplayer_init() {
   jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-video-files]').trigger('click');
   jQuery('.nav-tab').show;
   //hide empy tabs
+  
   jQuery('#fv-player-shortcode-editor-editor .fv-player-tabs > .fv-player-tab').each(function(){
     if( !jQuery(this).find('tr:not(.fv_player_interface_hide):not(.fv_player_actions_end-toggle):not(.submit-button-wrapper)').length ){
       jQuery('.nav-tab-wrapper > .nav-tab').eq(jQuery(this).index()).addClass('fv_player_interface_hide');
@@ -544,7 +545,7 @@ function fv_wp_flowplayer_edit() {
   
   fv_wp_flowplayer_init();
   
-  jQuery("#fv-player-shortcode-editor input").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
+  jQuery("#fv-player-shortcode-editor input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
   jQuery("#fv-player-shortcode-editor textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv-player-shortcode-editor select').prop('selectedIndex',0);
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
