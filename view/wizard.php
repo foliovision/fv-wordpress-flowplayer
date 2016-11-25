@@ -149,7 +149,7 @@ fv-player-shortcode-editor{
 .is-playlist .fv_player_field_insert-button{
   display:none;
 }
-.is-singular .fv-player-tab-playlist{
+.is-singular [data-tab=fv-player-tab-playlist]{
   display:none;
 }
 .is-singular .fv_player_field_insert-button, 
@@ -227,7 +227,7 @@ fv-player-shortcode-editor{
 .fv-player-tab-playlist > table > tbody{
   display:block;
   overflow:auto;
-  max-height:calc(100vh - 250px);
+  max-height:calc(100vh - 270px);
 }
 .fv-player-tab-playlist > table > thead{
   display:block;
@@ -266,6 +266,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
               </div>
               <iframe id="fv-player-shortcode-editor-preview-iframe" allowfullscreen></iframe>
+              <span class="button"  id="fv-player-shortcode-editor-preview-iframe-refresh" /><?php _e('Refresh preview', 'fv_flowplayer'); ?></span>
             </div>
           </td>
           <td>
@@ -419,7 +420,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         </td>
                       </tr>            
                     <?php endif; ?>
-                    <tr>
+                    <tr class="submit-button-wrapper">
                       <td></td>
                       <td>
                         <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
@@ -456,14 +457,14 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="submit-button-wrapper">
                     <td colspan="2">
                     </td>              
                     <td>
                       <a style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="submit-button-wrapper">
                     <td></td>
                     <td>
                       <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
@@ -541,7 +542,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       </select>
                     </td>
                   </tr>    
-                  <tr>
+                  <tr class="submit-button-wrapper">
                     <td></td>
                     <td>
                       <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
@@ -600,7 +601,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   </tr>
 
                   <?php do_action('fv_flowplayer_shortcode_editor_after'); ?>
-                  <tr>
+                  <tr class="submit-button-wrapper">
                     <td></td>
                     <td>
                       <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    

@@ -1292,7 +1292,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       show_admin_bar(false);
       ?>
   <style>
-    body { margin: 0; padding: 0; overflow:hidden;}
+    body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
     html {margin-top: 0px !important;}
   </style>
@@ -1300,9 +1300,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 <body>
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
+    $matches = null;
+    $width ='';
+    $height ='';
+    if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
+      $width = 'width:'.$matches[1].'px;';
+    }
+    if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+      $height = 'min-height:'.$matches[1].'px;';
+    }
+    
     ?>
     <div style="background:white;">
-      <div id="wrapper" style="background:white;">
+      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>">
         <?php
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
           echo do_shortcode($shortcode);
