@@ -346,10 +346,12 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function show_bio( $content, $user_id ) {
+    if( is_single() ) return $content;
+    
     global $post;    
 
     $objVideos = new FV_Player_Custom_Videos( array('id' => $user_id, 'type' => 'user' ) );
-    $html = $objVideos->get_html( array( 'wrapper' => false, 'shortcode' => array( 'width' => 272, 'height' => 153, 'align' => 'left' ) ) );
+    $html = $objVideos->get_html( array( 'wrapper' => false, 'shortcode' => array( 'width' => 272, 'height' => 153 ) ) );
     if( $html ) {
       $content .= $html."<div style='clear:both'></div>";
     }    
