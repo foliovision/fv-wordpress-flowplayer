@@ -333,10 +333,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.6.1 - 2016/10/?? =
-
-* Iframe - iframe embedded players now responsively resize.
-
 = 6.0.5.6 - 2016/10/06 =
 
 * Lightbox - fix for images with uppercase file extension
