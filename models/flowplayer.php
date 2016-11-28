@@ -1299,6 +1299,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 </head>
 <body>
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+    
+    if(!current_user_can('edit_posts')){
+      ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
+      wp_die('Please log in.');
+    }
+  
     $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
     $matches = null;
     $width ='';
@@ -1323,7 +1329,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
                   window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
                 })
               }else{
-                window.parent.jQuery(window.parent.document).trigger('fvp-preview-error');
+                window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
               }
             })
           </script>

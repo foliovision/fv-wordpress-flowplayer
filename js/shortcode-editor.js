@@ -700,10 +700,7 @@ function fv_wp_flowplayer_edit() {
     }
       
 
-    
-    
-  	if( iheight != null && iheight[1] != null ) jQuery(".fv_wp_flowplayer_field_height").val(iheight[1]);
-  	if( iwidth != null && iwidth[1] != null ) jQuery(".fv_wp_flowplayer_field_width").val(iwidth[1]);
+   
   	if( sautoplay != null && sautoplay[1] != null ) {
   		if (sautoplay[1] == 'true') 
         document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex = 1;
@@ -839,6 +836,10 @@ function fv_wp_flowplayer_edit() {
 			}
 
     }
+     
+  	if( iheight != null && iheight[1] != null ) jQuery(".fv_wp_flowplayer_field_height").val(iheight[1]);
+  	if( iwidth != null && iwidth[1] != null ) jQuery(".fv_wp_flowplayer_field_width").val(iwidth[1]);
+    
     
     if( jQuery('.fv-fp-subtitles .fv-fp-subtitle:first input.fv_wp_flowplayer_field_subtitles').val() == '' ) {
       jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
@@ -949,11 +950,9 @@ function fv_wp_flowplayer_submit( preview ) {
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_width','width','int');
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_height','height','int');
   }else{
-    var width = jQuery('#fv_wp_flowplayer_field_width').val();
-    width = width ? parseInt(width) : 460;
+    var width = parseInt(jQuery('#fv_wp_flowplayer_field_width').val()) || 460;
     fv_wp_fp_shortcode += ' width="' + width + '" '
-    var height = jQuery('#fv_wp_flowplayer_field_height').val();
-    height = height ? parseInt(height) : 300;
+    var height = parseInt(jQuery('#fv_wp_flowplayer_field_height').val()) || 300;
     fv_wp_fp_shortcode += ' height="' + height + '" '
   }
   
@@ -1090,7 +1089,7 @@ function fv_wp_flowplayer_submit( preview ) {
 
 function fv_player_open_preview_window(url){
   if(fv_player_preview_window == null || fv_player_preview_window.self == null){
-    fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no width=460 height=720, resizable=yes');
+    fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes');
   }else{
     fv_player_preview_window.location.assign(url);
     fv_player_preview_window.focus();
