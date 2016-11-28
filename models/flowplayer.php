@@ -54,7 +54,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
   
-  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";  
+  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+  
+  public $load_dash = false;
   
 
   public function __construct() {
@@ -644,7 +646,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     ob_start();
     $this->css_generate(true);
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
-    if( !$sCSSCurrent = $wp_filesystem->get_contents( self::get_plugin_url().'/css/flowplayer.css' ) ) {
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
       return false;
     }
     $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
@@ -860,14 +862,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       
       $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
-      return http_build_url($sURL, $url_parts);
+      return fv_http_build_url($sURL, $url_parts);
     /*} else {
       return $sURL;
     }*/    
   }
   
   
-  function get_languages() {
+  public static function get_languages() {
     $aLangs = array(
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
@@ -1028,6 +1030,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       if ($extension == 'm3u8' || $extension == 'm3u') {
         $output = 'x-mpegurl';
       } else if ($extension == 'mpd') {
+        global $fv_fp;
+        $fv_fp->load_dash = true;
         $output = 'dash+xml';
       } else if ($extension == 'm4v') {
         $output = 'mp4';
@@ -1053,6 +1057,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$no_video ) {
       switch($extension)  {
         case 'dash+xml' :
+        case 'mpd' :
           $output = 'application/'.$output;
           break;
         case 'x-mpegurl' :
@@ -1146,7 +1151,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( strpos($media,'rtmp://') !== false ) {
       return null;
     }
-    if( strpos($media,'http://') === false && strpos($media,'https://') === false ) {
+    if( strpos($media,'http://') !== 0 && strpos($media,'https://') !== 0 && strpos($media,'//') !== 0 ) {
       $http = is_ssl() ? 'https://' : 'http://';
       // strip the first / from $media
       if($media[0]=='/') $media = substr($media, 1);

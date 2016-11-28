@@ -24,6 +24,10 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
+
+    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
+      add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
+    }
   }
 
   function remove_pro_hooks() {
@@ -39,6 +43,13 @@ class FV_Player_lightbox {
       
    
     }
+  }
+
+  function improve_galleries( $args ) {
+    if( !$args['link'] ) {
+      $args['link'] = 'file';
+    }
+    return $args;
   }
 
   function lightbox_enable($sType) {
@@ -134,6 +145,8 @@ class FV_Player_lightbox {
       return $output;
     }
 
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro->bVideoAdsStatus['preroll']) && $FV_Player_Pro->bVideoAdsStatus['preroll'] || isset($FV_Player_Pro->bVideoAdsStatus['postroll']) && $FV_Player_Pro->bVideoAdsStatus['postroll'] ) return $output;
 
     global $fv_fp;
     $output = array();
@@ -302,12 +315,12 @@ class FV_Player_lightbox {
     global $fv_fp;
     ?>
     <tr>
-      <td style="width: 250px"><label for="interface[lightbox]">Enable video lightbox:</label></td>
+      <td style="width: 250px"><label for="interface[lightbox]"><?php _e('Enable video lightbox', 'fv-wordpress-flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="interface[lightbox]" />
           <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv_flowplayer'); ?>
+          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -318,12 +331,12 @@ class FV_Player_lightbox {
     global $fv_fp;
     ?>
     <tr>
-      <td style="width: 250px"><label for=""lightbox_images">Use video lightbox for images as well:</label></td>
+      <td style="width: 250px"><label for="lightbox_images"><?php _e('Use video lightbox for images as well', 'fv-wordpress-flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_images" />
           <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true') echo 'checked="checked"'; ?> />
-          Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.
+          <?php _e('Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-wordpress-flowplayer'); ?> <span class="more"><?php _e('Also works with WordPress <code>[gallery]</code> galleries - these are automatically switched to link to image URLs rather than the attachment pages.'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
     </tr>
