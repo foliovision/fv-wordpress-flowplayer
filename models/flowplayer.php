@@ -1294,7 +1294,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <style>
     body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
-    html {margin-top: 0px !important;}
+    html {margin-top: 0px !important;overflow-y: auto;}
   </style>
 </head>
 <body>

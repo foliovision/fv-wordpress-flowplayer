@@ -186,12 +186,14 @@ fv-player-shortcode-editor{
 #fv_player_boxLoadedContent iframe{
   height:auto;
 }
-#fv-player-shortcode-editor-preview div,#fv-player-shortcode-editor-preview iframe{
+#fv-player-shortcode-editor-preview div,
+#fv-player-shortcode-editor-preview iframe{
   display:none;
 }
 #fv-player-shortcode-editor-preview.preview-loading #fv-player-shortcode-editor-preview-spinner,
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-no,
-#fv-player-shortcode-editor-preview.preview-show #fv-player-shortcode-editor-preview-iframe
+#fv-player-shortcode-editor-preview.preview-show #fv-player-shortcode-editor-preview-iframe,
+#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab
 {
  display:block;
 }
@@ -265,8 +267,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <div id="fv-player-shortcode-editor-preview-no">
                 <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;" >No video.</h1>
               </div>
+              <div id="fv-player-shortcode-editor-preview-new-tab">
+                <a  href="" target="_blank">Preview here</a>
+              </div>
               <iframe id="fv-player-shortcode-editor-preview-iframe" allowfullscreen></iframe>
-              <input type="button" value="<?php _e('Refresh preview', 'fv_flowplayer'); ?>"  class="button extra-field"  id="fv-player-shortcode-editor-preview-iframe-refresh" disabled/>
+              <input type="button" value="<?php _e('Refresh preview', 'fv_flowplayer'); ?>"  class="button extra-field"  style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh" />
             </div>
           </td>
           <td>
