@@ -44,6 +44,8 @@ class flowplayer_frontend extends flowplayer
   
   var $count_tabs = 0;
   
+  var $aAMP = array();
+  
 
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
@@ -52,6 +54,7 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
+    
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
@@ -85,6 +88,16 @@ class flowplayer_frontend extends flowplayer
     
     
     $splash_img = $this->get_splash();
+    
+    if( function_exists('is_amp_endpoint') && is_amp_endpoint() ) {
+      
+      if( !isset($this->aAMP[$post->ID]) ) $this->aAMP[$post->ID] = 1;
+      $link = user_trailingslashit( trailingslashit( get_permalink() ).'fvp'.$this->aAMP[$post->ID] );      
+      $this->aAMP[$post->ID]++;
+      
+      $amp = '<iframe width="500" height="281" layout="responsive" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen frameborder="0" src="'.$link.'"></iframe>';
+      return array( 'html' => $amp );
+    }    
     
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
