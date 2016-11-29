@@ -247,6 +247,7 @@ class FV_Player_Custom_Videos_Master {
     
     add_filter( 'the_content', array( $this, 'show' ) );
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
+    
   }
   
   function add_meta_boxes() {
@@ -346,7 +347,8 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function show_bio( $content, $user_id ) {
-    if( is_single() ) return $content;
+    global $fv_fp;
+    if( is_single() || isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) return $content;
     
     global $post;    
 
@@ -358,7 +360,10 @@ class FV_Player_Custom_Videos_Master {
     return $content;
   }  
   
-  function user_profile( $show_password_fields, $profileuser ) {        
+  function user_profile( $show_password_fields, $profileuser ) {
+    global $fv_fp;
+    if( isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) return $show_password_fields;
+    
     if( $profileuser->ID > 0 ) {
       $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
       ?>

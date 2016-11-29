@@ -610,12 +610,34 @@ function fv_flowplayer_admin_integrations() {
           <tr>
 						<td><label for="css_disable"><?php _e('Disable profile videos', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
-              <p class="description">
-                <input type="hidden" name="profile_videos_disable_bio" value="false" />
-                <input type="checkbox" name="profile_videos_disable_bio" id="profile_videos_disable_bio" value="true" <?php if( isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('Videos attached to the user profile are normally showing as a part of the user bio.', 'fv-wordpress-flowplayer'); ?>
-                <span class="more"><?php _e('Get ready for more features!','fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
-              </p>
+              <div class="description">                
+                <p>
+                  <input type="hidden" name="profile_videos_disable_bio" value="false" />
+                  <input type="checkbox" name="profile_videos_disable_bio" id="profile_videos_disable_bio" value="true" <?php if( isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) echo 'checked="checked"'; ?> />
+                  <?php _e('Videos attached to the user profile are normally showing as a part of the user bio.', 'fv-wordpress-flowplayer'); ?> <a href="#" class="show-more">(&hellip;)</a>
+                </p>
+                <div class="more">
+                  <p><?php _e('This feature is designed for YouTube and Vimeo videos and works best for our licensed users who get these videos playing without YouTube or Vimeo branding.','fv-wordpress-flowplayer'); ?></p>
+                  <p><?php _e('Some themes show author bio on the author post archive automatically (Genesis framework and others). Or you can also just put this code into your theme archive.php template, right before <code>while ( have_posts() )</code> is called:','fv-wordpress-flowplayer'); ?></p>
+                  <blockquote>
+<pre>
+&lt;?php if ( is_author() &amp;&amp; get_the_author_meta( 'description' ) ) : ?&gt;  
+  &lt;div class=&quot;author-info&quot;&gt;
+    &lt;div class=&quot;author-avatar&quot;&gt;
+      &lt;?php echo get_avatar( get_the_author_meta( 'user_email' ) ); ?&gt;
+    &lt;/div&gt;
+  
+    &lt;div class=&quot;author-description&quot;&gt;
+      &lt;?php the_author_meta( 'description' ); ?&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;?php endif; ?&gt;
+</pre>
+                  </blockquote>
+                  <p><?php _e('We will be adding integration for it for popular user profile plugins.','fv-wordpress-flowplayer'); ?></p>
+                  
+                </div>                
+              </div>
 						</td>
 					</tr>           
           <tr>
@@ -1674,9 +1696,11 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     jQuery('.show-more').click( function(e) {
       e.preventDefault();
       
-      jQuery('.more', jQuery(this).parent() ).toggle();
+      var more = jQuery('.more', jQuery(this).parent() ).length ? jQuery('.more', jQuery(this).parent() ) : jQuery(this).parent().siblings('.more');
       
-      if( jQuery('.more:visible', jQuery(this).parent() ).length > 0 ) {
+      more.toggle();
+      
+      if( jQuery(':visible', more ).length > 0 ) {
         jQuery(this).html('(hide)');
       } else {
         jQuery(this).html('(&hellip;)');
