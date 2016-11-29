@@ -58,6 +58,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $load_dash = false;
   
+  public $load_hlsjs = false;
+  
 
   public function __construct() {
     //load conf data into stack
@@ -1028,6 +1030,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $output = $default;
     } else {
       if ($extension == 'm3u8' || $extension == 'm3u') {
+        global $fv_fp;
+        $fv_fp->load_hlsjs = true;        
         $output = 'x-mpegurl';
       } else if ($extension == 'mpd') {
         global $fv_fp;
