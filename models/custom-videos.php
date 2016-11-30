@@ -118,7 +118,7 @@ class FV_Player_Custom_Videos {
         } else {
           
           $sExtra = '';
-          if( count($args['shortcode']) ) {
+          if( is_array($args['shortcode']) && count($args['shortcode']) ) {
             foreach( $args['shortcode'] AS $key => $value ) {
               $sExtra .= ' '.$this->esc_shortcode($key).'="'.$this->esc_shortcode($value).'"';
             }
