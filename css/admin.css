@@ -82,3 +82,17 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   background-color: #ffffff;
   border-bottom: #ffffff;
 }
+
+.wp-admin .user-videos .fv-player-custom-video {
+  margin-bottom: 10px;
+}
+.wp-admin .user-videos .flowplayer, .postbox-container .fv-player-custom-video .flowplayer, .usersultra-dahsboard-center .fv-player-custom-video .flowplayer {
+  max-width: 432px !important;
+  margin: 2px;
+}
+.wp-admin .user-videos .fv-player-custom-video >  iframe, .postbox-container .fv-player-custom-video >  iframe, .usersultra-dahsboard-center .fv-player-custom-video > iframe {
+  display: block;
+  overflow: hidden;
+  width: 432px;
+  height: 243px;
+}

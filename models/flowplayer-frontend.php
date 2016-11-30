@@ -478,11 +478,11 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
 					if( $autoplay == true ) {
-						$this->ret['html'] .= ' autoplay';  
+						$this->ret['html'] .= ' autoplay="autoplay"';  
 					}
     
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
-						$this->ret['html'] .= ' preload';
+						$this->ret['html'] .= ' preload="preload"';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
 					}	else if ($autoplay == false) {
 						$this->ret['html'] .= ' preload="none"';        
@@ -1101,7 +1101,7 @@ class flowplayer_frontend extends flowplayer
     </div>
     <div class="support-{$this->hash}">
       <textarea style="width: 98%; height: 150px" onclick="if( this.value == 'Enter your comment' ) this.value = ''" class="wpfp_message_field" id="wpfp_support_{$this->hash}">Enter your comment</textarea>
-      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p></div>
+      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}" /> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false" /></p></div>
     <div class="more-{$this->hash} mail-content-details" style="display: none; ">
       <p>Plugin version: {$fv_wp_flowplayer_ver}</p>
       <div class="fv-wp-flowplayer-notice-parsed level-0"></div></div>

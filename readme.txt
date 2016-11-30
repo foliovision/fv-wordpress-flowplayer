@@ -343,10 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Amazon S3 - support for the new region Seoul, thanks to mods2003
 * AMP - disabling the custom integration as it was breaking the AMP validation
 * AMP - putting in new code which uses bare <video> tag for AMP if possible (no playlist and the video has to be on https://)
+* Beta - User Profile Videos added
+* Beta - Users Ultra integration
 * Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
 * MPEG-DASH support
 * Shortcode editor - fix for Foliopress WYSIWYG
-* Pro - Beta - User AB loop - improved keyboard controls
 
 = 6.0.5.8 - 2016/10/19 =
 
