@@ -202,32 +202,7 @@ class flowplayer_frontend extends flowplayer
      */
 		if( $player_type == 'video' ) {
       
-        if( is_feed() ) {
-          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
-          if( $splash_img ) {
-            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
-          }
-          $this->ret['html'] .= '</a></p>';
-          
-          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
-          
-          return $this->ret;
-        }
-		
-				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-					//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-					
-					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
-						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
-					}
-          
-					if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
-						$this->ret['script']['fv_flowplayer_browser_chrome_mp4'][$this->hash] = true;
-					}				
-					
-				}    
-				
-				if (!empty($media)) {
+      	if (!empty($media)) {
 					$media = $this->get_video_url($media);
 				}
 				if (!empty($src1)) {
@@ -240,6 +215,75 @@ class flowplayer_frontend extends flowplayer
 				if (!empty($mobile)) {
 					$mobile = $this->get_video_url($mobile);
 				}			
+      
+        if( is_feed() ) {
+          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
+          if( $splash_img ) {
+            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+          }
+          $this->ret['html'] .= '</a></p>';
+          
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
+          
+          return $this->ret;
+        }
+        
+        $bHTTPs = false;
+        foreach( apply_filters( 'fv_player_media', array( $mobile, $media, $src1, $src2), $this ) AS $media_item ) {
+          if( stripos($media_item,'https://') === 0 ) {
+            $bHTTPs = true;
+          }
+        }
+        
+        
+        if( !$bHTTPs || count($aPlaylistItems) && function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
+          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains advanced video player, click to open the original website]') );
+          if( $splash_img ) {
+            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+          }
+          $this->ret['html'] .= '</a></p>';
+          
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_amp_link', $this->ret['html'], $this );
+          
+          return $this->ret;
+        
+        } else if( function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
+					$this->ret['html'] .= "\t".'<video controls';      
+					if (isset($splash_img) && !empty($splash_img)) {
+						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
+					} 
+					if( $autoplay == true ) {
+						$this->ret['html'] .= ' autoplay';  
+					}
+					$this->ret['html'] .= ">\n";
+					
+					if (!empty($mobile)) {
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => true ) );
+					} else {
+             foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
+              $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => true ) );
+            }
+          }
+					
+					$this->ret['html'] .= "\t".'</video>';
+          
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_amp', $this->ret['html'], $this );
+          
+          return $this->ret;
+        }    
+		
+				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+					//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
+					
+					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
+						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
+					}
+          
+					if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
+						$this->ret['script']['fv_flowplayer_browser_chrome_mp4'][$this->hash] = true;
+					}
+					
+				}
 				
 				$popup = '';
 				
