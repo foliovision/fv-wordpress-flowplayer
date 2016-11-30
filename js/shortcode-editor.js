@@ -44,7 +44,8 @@ jQuery(document).ready(function($){
   /* 
    * NAV TABS 
    */
-  $('.fv-player-tabs-header a').click( function() {
+  $('.fv-player-tabs-header a').click( function(e) {
+    e.preventDefault();
     $('.fv-player-tabs-header a').removeClass('nav-tab-active');
     $(this).addClass('nav-tab-active').show();
     $( '.fv-player-tabs > .fv-player-tab' ).hide();

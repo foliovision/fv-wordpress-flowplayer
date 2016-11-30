@@ -194,7 +194,12 @@ fv-player-shortcode-editor{ width:1000px; }
   font-weight:bold;
 }
 
-
+.first-item-only {
+  display: none;
+}
+.fv-player-playlist-item[data-index="0"] .first-item-only {
+  display: table-row;
+}
 
 </style>
   
@@ -284,7 +289,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               </div>
               
               <div class="fv-player-tab fv-player-tab-video-files">
-                <table class="slidetoggle describe fv-player-playlist-item" width="100%">
+                <table class="slidetoggle describe fv-player-playlist-item" width="100%" data-index="0">
                   <tbody>
                     <?php do_action('fv_flowplayer_shortcode_editor_before'); ?>
                     <tr>
@@ -342,7 +347,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <td class="field"><div id="add_rtmp_wrapper"><a href="#" class="partial-underline" onclick="fv_wp_flowplayer_add_rtmp(); return false" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add RTMP', 'fv_flowplayer'); ?></a></div></td>  				
                     </tr>      
 
-                    <tr <?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                    <tr <?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?> class="first-item-only">
                       <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright"><?php _e('Mobile video', 'fv_flowplayer'); ?>*</label></th>
                       <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" placeholder="<?php _e('Put low-bandwidth video here or leave blank', 'fv_flowplayer'); ?>" />
                         <?php if ($allow_uploads == 'true') { ?>
@@ -367,9 +372,9 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
                     <?php do_action('fv_flowplayer_shortcode_editor_item_after'); ?>
 
-                    <tr <?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                    <tr class="first-item-only <?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo 'fv_player_interface_hide'; ?>">
                       <th></th><td>* - <?php _e('currently not working with playlist', 'fv_flowplayer'); ?> </td>
-                    </tr>            
+                    </tr>         
 
                     <?php if (!$allow_uploads && current_user_can('manage_options')) : ?> 
                       <tr>
