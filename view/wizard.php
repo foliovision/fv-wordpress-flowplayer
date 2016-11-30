@@ -66,13 +66,14 @@
 .fv-wp-flowplayer-notice.fv-wp-flowplayer-note { background-color: #F8F8F8; border-color: #E0E0E0; } 
 .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; } 
 .fv_wp_flowplayer_playlist_remove { display: none; }
+.fv-player-tabs-header { padding:6px 0 12px; }
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-player-shortcode-editor table input[type=text], #fv-flowplayer-playlist table input[type=text].with-button { width: 93%; }
 #fv-player-shortcode-editor table input[type=text].half-field { width: 46%; }
 #fv-player-shortcode-editor table/*:first-child*/ input.with-button { width: 70%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
-#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%; }
+#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
@@ -89,39 +90,16 @@
 /*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
 
-fv-player-shortcode-editor{
-  width:1000px;
-}
-#fv-player-shortcode-editor-editor{
-  top:0px;
-  
-}
-#fv-player-shortcode-editor-preview{
-  width: 460px;
-  position:relative;
-}
-#fv-player-shortcode-editor td{
-  vertical-align: top;
-}
-.fv-player-tabs-header .nav-tab-wrapper{
-  margin:0;
-  display:inline-block;
-}
-.fv_player_actions_end-toggle{
-  display:none;
-}
-.fv_player_interface_hide{
-  display:none;
-}
-.fv_player_interface_temp_hide{
-  display:none;
-}
-#fv_player_boxTitle{
-    display:none!important;
-}
-#fv_player_boxLoadedContent{
-  margin-top:0;
-}
+fv-player-shortcode-editor{ width:1000px; }
+#fv-player-shortcode-editor-editor{ top:0; }
+#fv-player-shortcode-editor-editor > table{ width:100%; }
+#fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
+#fv-player-shortcode-editor td{ vertical-align: top; }
+.fv-player-tab table{ margin-bottom: 10px; }
+.fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
+.fv_player_actions_end-toggle,.fv_player_interface_hide,.fv_player_interface_temp_hide,.fv-player-playlist-item-title{ display:none; }
+#fv_player_boxTitle{ display:none!important; }
+#fv_player_boxLoadedContent{ margin-top:0; }
 #fv-player-shortcode-editor-preview-spinner{
   background-image: url(<?php echo site_url(); ?>/wp-includes/images/wpspin-2x.gif);
   background-color: white;  
@@ -132,52 +110,28 @@ fv-player-shortcode-editor{
   height: 200px;
   width: 100%;
 }
-.fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{
-  margin: 0;
-  border: 0px;
-  background: transparent;
-}
+.fv-player-shortcode-editor-left{ width:40%; }
+.fv-player-shortcode-editor-right{ width:60%; }
+.fv-player-tab{position:relative;}
+.fv-player-tabs #fv-player-list-thumb-toggle{ position:absolute;right:10px;text-align:right;top:9px; }
+#fv-player-list-thumb-toggle a{ text-decoration:none;margin-left:6px;color:#b4b9be; }
+#fv-player-list-thumb-toggle a.active{ color:#0073aa; }
+.fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
 
 /*playlist title*/
-.fv-player-playlist-item-title{
- display:none; 
-}
-.is-playlist .fv-player-playlist-item-title{
- display:block; 
-}
+.is-playlist .fv-player-playlist-item-title{ display:block;padding:0 10px 12px; }
+
 /*insert button*/
-.is-playlist .fv_player_field_insert-button{
-  display:none;
-}
-.is-singular [data-tab=fv-player-tab-playlist]{
-  display:none;
-}
-.is-singular .fv_player_field_insert-button, 
-.is-playlist-active .fv_player_field_insert-button{
-  display:inline;
-}
+.is-playlist .fv_player_field_insert-button,.is-singular [data-tab=fv-player-tab-playlist]{ display:none; }
+.is-singular .fv_player_field_insert-button,.is-playlist-active .fv_player_field_insert-button{ display:inline; }
+
 /*playlist edit button*/
-.playlist_edit{
-  display:block;
-}
+.playlist_edit{ display:block; }
 
-.is-playlist-active .playlist_edit, .is-playlist-active a[data-tab=fv-player-tab-video-files], .is-playlist-active a[data-tab=fv-player-tab-subtitles]{
-  display:none;
-}
-/* tabs */
-.is-playlist a[data-tab=fv-player-tab-playlist],.is-playlist a[data-tab=fv-player-tab-extras],.is-playlist a[data-tab=fv-player-tab-actions]{
-  display:none;
-}
+.is-playlist-active .playlist_edit, .is-playlist-active a[data-tab=fv-player-tab-video-files], .is-playlist-active a[data-tab=fv-player-tab-subtitles],.is-playlist a[data-tab=fv-player-tab-playlist],.is-playlist a[data-tab=fv-player-tab-extras],.is-playlist a[data-tab=fv-player-tab-actions]{ display:none; }
+.fv-player-tab-playlist .fv-player-playlist-item{ border-spacing: 0 2px; }
 
-.fv-player-tab-playlist .fv-player-playlist-item{
-  border-spacing: 0 2px;
-}
-
-.fv-player-tab-playlist .fv-player-playlist-item tbody td{
-  padding:3px 5px;
-  height:50px;
-  cursor:pointer;
-}
+.fv-player-tab-playlist .fv-player-playlist-item tbody td{ padding:3px 5px;height:50px;cursor:pointer; }
   
 .fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{
   cursor:n-resize;
@@ -220,13 +174,12 @@ fv-player-shortcode-editor{
   display:inline-block;
   vertical-align:top;
 }
-.fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1){
-  width:300px;
-}
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){
   width:300px;
 }
-.fv-player-tab-playlist > table > tbody{
+.fv-player-tab-playlist > table > tbody,
+.fv-player-tab-actions > table > tbody{
   display:block;
   overflow:auto;
   max-height:calc(100vh - 270px);
@@ -261,7 +214,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
     <div id="fv-player-shortcode-editor-editor">
       <table>
         <tr>
-          <td>
+          <td class="fv-player-shortcode-editor-left">
             <div id="fv-player-shortcode-editor-preview">
               <div id="fv-player-shortcode-editor-preview-spinner"></div>
               <div id="fv-player-shortcode-editor-preview-no">
@@ -274,23 +227,23 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <input type="button" value="<?php _e('Refresh preview', 'fv_flowplayer'); ?>"  class="button extra-field"  style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh" />
             </div>
           </td>
-          <td>
+          <td class="fv-player-shortcode-editor-right">
             <div class="fv-player-tabs-header">
               <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
-                <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-playlist">Playlist</a>
-                <a href="#" class="nav-tab nav-tab-active" style="outline: 0px;" data-tab="fv-player-tab-video-files">Video</a>
-                <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-subtitles">Subtitles</a>
-                <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-extras">Extras</a>
-                <a href="#" class="nav-tab" style="outline: 0px;" data-tab="fv-player-tab-actions">Actions</a>
+                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-playlist">Playlist</a>
+                <a href="#" class="nav-tab nav-tab-active" style="outline: 0;" data-tab="fv-player-tab-video-files">Video</a>
+                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-subtitles">Subtitles</a>
+                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-extras">Extras</a>
+                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-actions">Actions</a>
               </h2>
             </div>
             <div class="fv-player-tabs">
               
               <div class="fv-player-tab fv-player-tab-playlist" style="">
                 <div id="fv-player-list-thumb-toggle">
-                  <a href="#" id="fv-player-list-list-view" >List view</a>
-                  <a href="#" id="fv-player-list-thumb-view" class="active">Thumbnail View</a>
+                  <a href="#" id="fv-player-list-list-view" ><span class="dashicons dashicons-list-view"><span class="screen-reader-text">List view</span></span></a>
+                  <a href="#" id="fv-player-list-thumb-view" class="active"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
                 </div>
                 <table class="wp-list-table widefat fixed striped media" width="100%">
                   <thead>
@@ -335,7 +288,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <tbody>
                     <?php do_action('fv_flowplayer_shortcode_editor_before'); ?>
                     <tr>
-                      <th scope="row" class="label" style="width: 19%">
+                      <th scope="row" class="label" style="width: 19%;vertical-align:middle;">
                         <a class="alignleft fv_wp_flowplayer_playlist_remove" href="#" onclick="return fv_wp_flowplayer_playlist_remove(this)"><?php _e('(remove)', 'fv_flowplayer'); ?></a>
                         <label for="fv_wp_flowplayer_field_src" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?></label>
                       </th>
