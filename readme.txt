@@ -338,6 +338,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.10 - 2016/12/01 =
+
+* Bugfix for strange videos appearing in posts on some sites
+
 = 6.0.5.9 - 2016/11/30 =
 
 * Amazon S3 - support for the new region Seoul, thanks to mods2003
