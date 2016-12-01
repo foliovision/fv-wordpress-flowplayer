@@ -338,9 +338,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.9 - 2016/11/?? =
+= 6.0.5.9 - 2016/11/30 =
 
 * Amazon S3 - support for the new region Seoul, thanks to mods2003
+* AMP - disabling the custom integration as it was breaking the AMP validation
+* AMP - putting in new code which uses bare <video> tag for AMP if possible (no playlist and the video has to be on https://)
+* Beta - User Profile Videos added, use Integrations/Compatbility -> Enable profile videos
+* Beta - Users Ultra integration, use Integrations/Compatbility -> Enable profile videos
 * Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
 * MPEG-DASH support
 * Shortcode editor - fix for Foliopress WYSIWYG
@@ -348,6 +352,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.5.8 - 2016/10/19 =
 
 * iPhone iOS 10 - improved support, the device doesn't require use of native fullscreen
+* Pro - Beta - Video transcript feature - shows VTT subtitles below the video in a clickable form with highlight
 
 = 6.0.5.7 - 2016/10/17 =
 
@@ -358,6 +363,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Shortcode editor - fix for the scroll position changing when it gets opened
 * Video checker - fix to RTMP checking in playlist
 * YouTube - making sure the basic iframe embedding uses protocol independent URLs
+* Pro - Beta - YouTube improvements for iPhone
 
 = 6.0.5.6 - 2016/10/06 =
 
@@ -369,18 +375,22 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Playlist - setting active element before video starts playing
 * Shortcode editor - shortcode parsing fix
 * Translations - changing language domain to fv-wordpress-flowplayer
+* Pro - Video ads - making it work again when using video lightbox
+* Pro - Video ads - support for Google Analytics added
 
 = 6.0.5.5 - 2016/07/28 =
 
 * Bugfix - div class="fp-playlist-vertical-wrapper" appearing around player when no playlist is used - resulting in bad player width or alignment
 * Popup Ads - improved UI for popup ads - moved to "Actions" tab on settings screen
 * Settings screen - added tabs
+* Pro - Beta - YouTube and Vimeo splash screen URLs and captions are now getting stored in the shortcodes
 
 = 6.0.5.4 - 2016/07/26 =
 
 * Color settings - added more settings for playlist colors
 * Iframe embedding - compatibility fixes - needed for websites which load FV Player outside of post_content
 * Speed buttons - fix for iPad to not pause after speed change
+* Pro - Beta - Encrypted HLS
 
 = 6.0.5.3 - 2016/06/23 =
 
@@ -394,10 +404,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.5.1 - 2016/06/20 =
 
 * Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
+* Pro - Version switching - you can now easily switch FV Player Pro to its latest beta version
 
 = 6.0.5 - 2016/06/17 =
 
 * Core - updated to Flowplayer 6.0.5
+* Pro - Beta - improved YouTube loading for mobile (single click)
 
 = 6.0.4.25 - 2016/06/08 =
 
@@ -418,6 +430,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.4.21 - 2016/05/23 =
 
 * Volume - Volume is now remembered between page loads and across all instances of the player
+* Pro - YouTube - fix for mobile when playing HTML5 video after a YouTube video in playlist
 
 = 6.0.4.20 - 2016/05/16 =
 
@@ -439,10 +452,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.4.16 - 2016/04/26 =
 
 * Speed Buttons - added option to chose steps of 0.1 0.25 0.5 seconds, see Sitewide Flowplayer Defaults -> Speed Step
+* Pro - Vimeo - integration rewritten from scratch
+* Pro - Vimeo - support for both local and Vimeo subtitles added
+* Pro - CloudFront - integration rewritten from scratch
 
 = 6.0.4.15 - 2016/04/22 =
 
 * Wordpress 4.5 - fix for malfunction of shortcode editor
+* Pro - Horizontal flip button - Lefty view
 
 = 6.0.4.14 - 2016/04/05 =
 
@@ -481,15 +498,19 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.4.8 - 2016/02/05 =
 
 * Iframe embedding - fixing stray debug code appearing in the iframe embeds
+* Pro - VTT Chapters - added support for AB looping
 
 = 6.0.4.7 - 2016/01/27 =
 
 * Playlist - Allow plugins to create custom playlist styles
 * Bugfix - Improving file extension parsing for URLs with http:// in query argument
+* Pro - Lightbox - playlist items now show up in lightbox as separate items
+* Pro - Vimeo - access token check added
 
 = 6.0.4.6 - 2016/01/22 =
 
 * Controlbar - appearance fixes when controlbar set to always on
+* Pro - Speed buttons - now working with YouTube videos
 
 = 6.0.4.5 - 2016/01/12 =
 
@@ -508,10 +529,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Flash engine - fix for URLs with %2A and %2F in them
 * Playlist tabs - fix for autoplay not working.
+* Pro - Vimeo - support for Full HD resolution added
 
 = 6.0.4.1 - 2015/12/09 =
 
 * Beta - iframe embedding fixes
+* Pro - Lightbox for images - adding compatibility with WP galleries and shortcodes
 
 = 6.0.4 - 2015/12/07 =
 
@@ -545,6 +568,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Making the license field more prominent
 * Bugfix - FV Flowplayer 5 -> 6 update process
+* Pro - Feature - Vimeo and YouTube embed code converter
 
 = 6.0.3.4 - 2015/08/28 =
 
@@ -603,6 +627,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - Amazon S3 signed URLs - AWS signature version 4 fixes
 * Bugfix - playlist loading improvements
 * Bugfix - styling fixes (for FV Player Pro)
+* Pro - Vimeo channel support added
+* Pro - Custom Video Ads now show remaining time and a skip button
 
 = 2.3.15 - 2015/04/24 =
 
@@ -641,6 +667,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Fix - code revisions, code optimizations for wp-admin
 * Fix - src attribute parsing when fv_flowplayer_shortcode filter is used
 * Fix - touch devices now use the device native fullscreen playback due to the inperfections in the browser fullscreen modes in different mobile browsers
+* Pro - Fix for Vimeo video names in Google Analytics stats
 
 = 2.3.9 - 2015/01/07 =
 

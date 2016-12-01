@@ -44,8 +44,6 @@ class flowplayer_frontend extends flowplayer
   
   var $count_tabs = 0;
   
-  var $aAMP = array();
-  
 
 	/**
 	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
@@ -54,7 +52,6 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
-    
 		global $post;
 						
 		$this->hash = md5($media.$this->_salt()); //  unique player id
@@ -88,16 +85,6 @@ class flowplayer_frontend extends flowplayer
     
     
     $splash_img = $this->get_splash();
-    
-    if( function_exists('is_amp_endpoint') && is_amp_endpoint() ) {
-      
-      if( !isset($this->aAMP[$post->ID]) ) $this->aAMP[$post->ID] = 1;
-      $link = user_trailingslashit( trailingslashit( get_permalink() ).'fvp'.$this->aAMP[$post->ID] );      
-      $this->aAMP[$post->ID]++;
-      
-      $amp = '<iframe width="500" height="281" layout="responsive" sandbox="allow-scripts allow-same-origin allow-popups" allowfullscreen frameborder="0" src="'.$link.'"></iframe>';
-      return array( 'html' => $amp );
-    }    
     
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -215,32 +202,7 @@ class flowplayer_frontend extends flowplayer
      */
 		if( $player_type == 'video' ) {
       
-        if( is_feed() ) {
-          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
-          if( $splash_img ) {
-            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
-          }
-          $this->ret['html'] .= '</a></p>';
-          
-          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
-          
-          return $this->ret;
-        }
-		
-				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-					//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-					
-					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
-						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
-					}
-          
-					if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
-						$this->ret['script']['fv_flowplayer_browser_chrome_mp4'][$this->hash] = true;
-					}				
-					
-				}    
-				
-				if (!empty($media)) {
+      	if (!empty($media)) {
 					$media = $this->get_video_url($media);
 				}
 				if (!empty($src1)) {
@@ -253,6 +215,75 @@ class flowplayer_frontend extends flowplayer
 				if (!empty($mobile)) {
 					$mobile = $this->get_video_url($mobile);
 				}			
+      
+        if( is_feed() ) {
+          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
+          if( $splash_img ) {
+            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+          }
+          $this->ret['html'] .= '</a></p>';
+          
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_rss', $this->ret['html'], $this );
+          
+          return $this->ret;
+        }
+        
+        $bHTTPs = false;
+        foreach( apply_filters( 'fv_player_media', array( $mobile, $media, $src1, $src2), $this ) AS $media_item ) {
+          if( stripos($media_item,'https://') === 0 ) {
+            $bHTTPs = true;
+          }
+        }
+        
+        
+        if( !$bHTTPs && function_exists('is_amp_endpoint') && is_amp_endpoint() || count($aPlaylistItems) && function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
+          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains advanced video player, click to open the original website]') );
+          if( $splash_img ) {
+            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+          }
+          $this->ret['html'] .= '</a></p>';
+          
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_amp_link', $this->ret['html'], $this );
+          
+          return $this->ret;
+        
+        } else if( function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
+					$this->ret['html'] .= "\t".'<video controls';      
+					if (isset($splash_img) && !empty($splash_img)) {
+						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
+					} 
+					if( $autoplay == true ) {
+						$this->ret['html'] .= ' autoplay';  
+					}
+					$this->ret['html'] .= ">\n";
+					
+					if (!empty($mobile)) {
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => true ) );
+					} else {
+             foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
+              $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => true ) );
+            }
+          }
+					
+					$this->ret['html'] .= "\t".'</video>';
+          
+          $this->ret['html'] = apply_filters( 'fv_flowplayer_amp', $this->ret['html'], $this );
+          
+          return $this->ret;
+        }    
+		
+				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+					//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
+					
+					if( $this->conf['engine'] == 'false' && stripos( $media_item, '.m4v' ) !== false ) {
+						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
+					}
+          
+					if( $this->conf['engine'] == 'false' && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
+						$this->ret['script']['fv_flowplayer_browser_chrome_mp4'][$this->hash] = true;
+					}
+					
+				}
 				
 				$popup = '';
 				
@@ -447,11 +478,11 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
 					if( $autoplay == true ) {
-						$this->ret['html'] .= ' autoplay';  
+						$this->ret['html'] .= ' autoplay="autoplay"';  
 					}
     
 					if( isset($this->conf['auto_buffering']) && $this->conf['auto_buffering'] == 'trueDISABLED' && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
-						$this->ret['html'] .= ' preload';
+						$this->ret['html'] .= ' preload="preload"';
 						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
 					}	else if ($autoplay == false) {
 						$this->ret['html'] .= ' preload="none"';        
@@ -1071,7 +1102,7 @@ class flowplayer_frontend extends flowplayer
     </div>
     <div class="support-{$this->hash}">
       <textarea style="width: 98%; height: 150px" onclick="if( this.value == 'Enter your comment' ) this.value = ''" class="wpfp_message_field" id="wpfp_support_{$this->hash}">Enter your comment</textarea>
-      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}"> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false"></p></div>
+      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}" /> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false" /></p></div>
     <div class="more-{$this->hash} mail-content-details" style="display: none; ">
       <p>Plugin version: {$fv_wp_flowplayer_ver}</p>
       <div class="fv-wp-flowplayer-notice-parsed level-0"></div></div>

@@ -486,8 +486,6 @@ function fv_player_caption( $caption ) {
 add_filter( 'fv_player_caption', 'fv_player_caption' );
 
 
-
-
 add_filter( 'comment_text', 'fv_player_comment_text', 0 );
 
 function fv_player_comment_text( $comment_text ) {

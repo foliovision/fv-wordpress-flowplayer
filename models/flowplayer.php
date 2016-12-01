@@ -556,7 +556,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function css_enqueue() {
-    if( is_admin() && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+    
+    if( is_admin() && !did_action('admin_footer') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
       return;
     }
     
@@ -581,15 +582,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
     }
     
-    wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
-    
-    if( current_user_can('manage_options') ) {
+    if( is_admin() &&  did_action('admin_footer') ) {
+      echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
+      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
+      
+    } else {
+      wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
       wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
-    }
-    
-    if( $this->bCSSInline ) {
-      add_action( 'wp_head', array( $this, 'css_generate' ) );
-      add_action( 'admin_head', array( $this, 'css_generate' ) );
+      
+      if( $this->bCSSInline ) {
+        add_action( 'wp_head', array( $this, 'css_generate' ) );
+        add_action( 'admin_head', array( $this, 'css_generate' ) );
+      }
+      
     }
     
   }
@@ -1300,7 +1305,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 <body>
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
-    if(!current_user_can('edit_posts')){
+    if( !is_user_logged_in() ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
       wp_die('Please log in.');
     }
@@ -1323,15 +1328,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
           echo do_shortcode($shortcode);
           ?><script>
-            jQuery(document).ready( function(){  
-              if( typeof(flowplayer) != "undefined" ) {
-                flowplayer( function(api,root) {
-                  window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
-                })
-              }else{
-                window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');
+            jQuery(document).ready( function(){
+              var parent = window.parent.jQuery(window.parent.document);
+              if( jQuery('.flowplayer').length > 0 ){
+                if( typeof(flowplayer) != "undefined" ) {
+                  flowplayer( function(api,root) {
+                    parent.trigger('fvp-preview-complete');
+                  })
+                }else{
+                  parent.trigger('fvp-preview-error');
+                }
+              } else {
+                parent.trigger('fvp-preview-complete');
               }
-            })
+
+            });
           </script>
           <?
         } else { ?>
