@@ -173,6 +173,16 @@ fv-player-shortcode-editor{ width:1000px; }
 .fvp_item_video-side-by-side{
   display:inline-block;
   vertical-align:top;
+  float: left;
+  margin-right: 1%;
+}
+.fvp_item_video-filename {
+  word-wrap: break-word;
+  display: inline-block;
+  max-width: 180px;
+}
+.hide-thumbnails .fvp_item_video-filename {
+  max-width: 100%;
 }
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){
