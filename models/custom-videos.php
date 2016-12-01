@@ -348,36 +348,35 @@ class FV_Player_Custom_Videos_Master {
   
   function show_bio( $content, $user_id ) {
     global $fv_fp;
-    if( is_single() || isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) return $content;
-    
-    global $post;    
-
-    $objVideos = new FV_Player_Custom_Videos( array('id' => $user_id, 'type' => 'user' ) );
-    $html = $objVideos->get_html( array( 'wrapper' => false, 'shortcode' => array( 'width' => 272, 'height' => 153 ) ) );
-    if( $html ) {
-      $content .= $html."<div style='clear:both'></div>";
-    }    
+    if( !is_single() && isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {
+      global $post;    
+      $objVideos = new FV_Player_Custom_Videos( array('id' => $user_id, 'type' => 'user' ) );
+      $html = $objVideos->get_html( array( 'wrapper' => false, 'shortcode' => array( 'width' => 272, 'height' => 153 ) ) );
+      if( $html ) {
+        $content .= $html."<div style='clear:both'></div>";
+      }
+    }
     return $content;
   }  
   
   function user_profile( $show_password_fields, $profileuser ) {
     global $fv_fp;
-    if( isset($fv_fp->conf['profile_videos_disable_bio']) && $fv_fp->conf['profile_videos_disable_bio'] == 'true' ) return $show_password_fields;
-    
-    if( $profileuser->ID > 0 ) {
-      $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
-      ?>
-      <tr class="user-videos">
-        <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
-        <td>
-          <?php
-          
-          echo $objUploader->get_form( array( 'wrapper' => 'div' ) );
-          ?>
-          <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?> <abbr title="<?php _e( 'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-wordpress-flowplayer' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
-        </td>
-      </tr>
-      <?php
+    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {    
+      if( $profileuser->ID > 0 ) {
+        $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
+        ?>
+        <tr class="user-videos">
+          <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
+          <td>
+            <?php
+            
+            echo $objUploader->get_form( array( 'wrapper' => 'div' ) );
+            ?>
+            <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?> <abbr title="<?php _e( 'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-wordpress-flowplayer' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
+          </td>
+        </tr>
+        <?php
+      }
     }
     
     return $show_password_fields;

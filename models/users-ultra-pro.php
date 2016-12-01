@@ -11,11 +11,12 @@ class FV_Player_UUP {
     global $xoouserultra;
     if( !isset($xoouserultra) ) return;
     
-    add_filter( 'the_content', array( $this, 'account' ), 999 );
-
-    add_filter( 'the_content', array( $this, 'post_editor' ), 999 );
-    
-    add_filter( 'the_content', array( $this, 'profile' ), 999 );    
+    global $fv_fp;
+    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {      
+      add_filter( 'the_content', array( $this, 'account' ), 999 );
+      add_filter( 'the_content', array( $this, 'post_editor' ), 999 );    
+      add_filter( 'the_content', array( $this, 'profile' ), 999 );
+    }
   }
   
   
