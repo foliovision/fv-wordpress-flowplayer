@@ -265,6 +265,7 @@
 .flowplayer.fixed-controls .fp-volume{display:block}
 .flowplayer.fixed-controls .fp-controls{bottom:-30px;}
 .is-fullscreen.flowplayer.fixed-controls .fp-controls{bottom:0}
+.is-fullscreen.flowplayer.fixed-controls.has-abloop .fp-controls{bottom:28px}
 .flowplayer.fixed-controls .fp-time em{bottom:-20px;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100);}
 .is-fullscreen.flowplayer.fixed-controls .fp-time em{bottom:10px}
 .flowplayer.is-disabled .fp-progress{background-color:#999}
@@ -589,6 +590,9 @@ p.fp-caption { text-align: center; }
 }
 .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-left, .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-right, .flowplayer.fixed-controls.is-fullscreen .fv-player-buttons-center {
   bottom: 30px;
+}
+.flowplayer.fixed-controls.is-fullscreen.has-abloop .fv-player-buttons-left, .flowplayer.fixed-controls.is-fullscreen.has-abloop .fv-player-buttons-right, .flowplayer.fixed-controls.is-fullscreen.has-abloop .fv-player-buttons-center {
+  bottom: 60px;
 }
 .flowplayer .fv-player-buttons-left > ul {  
   left: 0;
