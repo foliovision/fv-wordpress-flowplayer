@@ -331,7 +331,7 @@ class FV_Player_Custom_Videos_Master {
   
   function show( $content ) {
     global $post;    
-    if( isset($post->ID) ) {
+    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' && isset($post->ID) ) {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
         foreach( $aMeta AS $key => $aMetas ) {
