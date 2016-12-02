@@ -45,7 +45,7 @@ jQuery(document).ready(function($){
   $('.fv-player-tabs-header a').click( function(e) {
     e.preventDefault();
     $('.fv-player-tabs-header a').removeClass('nav-tab-active');
-    $(this).addClass('nav-tab-active').show();
+    $(this).addClass('nav-tab-active')
     $( '.fv-player-tabs > .fv-player-tab' ).hide();
     $( '.' + $(this).data('tab') ).show();
     
@@ -74,14 +74,12 @@ jQuery(document).ready(function($){
     if($('.fv-player-tab-playlist [data-index]').length > 1){
       $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
       $('.playlist_edit').html($('.playlist_edit').data('edit')).removeClass('button').addClass('button-primary');
-      
       jQuery('#fv-player-shortcode-editor-editor').attr('class','is-playlist');
     }else{
       $('.playlist_edit').html($('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
-      
       jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular');
     }
-
+    fv_player_refresh_tabs();
     fv_wp_flowplayer_submit(true);
   });
 
@@ -355,23 +353,13 @@ function fv_wp_flowplayer_init() {
   jQuery('.nav-tab').show;
   //hide empy tabs
   
-  jQuery('#fv-player-shortcode-editor-editor .fv-player-tabs > .fv-player-tab').each(function(){
-    if( !jQuery(this).find('tr:not(.fv_player_interface_hide):not(.fv_player_actions_end-toggle):not(.submit-button-wrapper)').length ){
-      jQuery('.nav-tab-wrapper > .nav-tab').eq(jQuery(this).index()).addClass('fv_player_interface_hide');
-    }
-     
-  })
-  if(jQuery('.nav-tab:not(.fv_player_interface_hide)').length <=1 ){
-    jQuery('.nav-tab:not(.fv_player_interface_hide)').addClass('fv_player_interface_hide');
-  }
-  
   jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular');
   jQuery('.fv-player-tab-playlist').hide();
   jQuery('.fv-player-playlist-item-title').html('');
   jQuery('.fv-player-tab-video-files table').show();
   
   jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
-  
+  fv_player_refresh_tabs();
 }
 
 /*
@@ -495,7 +483,7 @@ function fv_flowplayer_playlist_show() {
   jQuery('.fv-player-tab-playlist').show(); 
   
   fv_wp_flowplayer_dialog_resize();
-  
+  fv_player_refresh_tabs();
   fv_wp_flowplayer_submit(true);
 }
 
@@ -863,8 +851,10 @@ function fv_wp_flowplayer_edit() {
     fv_flowplayer_playlist_show();
   }
   //initial preview
+  fv_player_refresh_tabs();
   fv_wp_flowplayer_submit(true);
 }
+
 
 
 function fv_wp_flowplayer_dialog_resize() {
@@ -953,12 +943,13 @@ function fv_wp_flowplayer_submit( preview ) {
     //  todo: how to handle RTMP server here?
   }
   
+  var width , height;
   if(!preview){
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_width','width','int');
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_height','height','int');
   }else{
-    var width = parseInt(jQuery('#fv_wp_flowplayer_field_width').val()) || 460;
-    var height = parseInt(jQuery('#fv_wp_flowplayer_field_height').val()) || 300;
+    width = parseInt(jQuery('#fv_wp_flowplayer_field_width').val()) || 460;
+    height = parseInt(jQuery('#fv_wp_flowplayer_field_height').val()) || 300;
     if( iFrame.width() < width ) {
       height = height * ( iFrame.width()/width );
       width = iFrame.width();      
@@ -1076,7 +1067,7 @@ function fv_wp_flowplayer_submit( preview ) {
     if(fv_player_preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 9){
       jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-new-tab');
       jQuery('#fv-player-shortcode-editor-preview-new-tab > a').unbind('click').on('click',function(e){
-        fv_player_open_preview_window( url );
+        fv_player_open_preview_window( url, width, height + Math.ceil( (jQuery('.fv-player-tab-video-files table').length / 3)) * 155 );
         return false;
       });
       
@@ -1097,12 +1088,47 @@ function fv_wp_flowplayer_submit( preview ) {
 	fv_wp_flowplayer_insert( fv_wp_fp_shortcode );  
 }
 
-function fv_player_open_preview_window(url){
+function fv_player_open_preview_window(url, width, height){
+  height = Math.min(window.screen.availHeight * 0.80, height + 25);
+  width = Math.min(window.screen.availWidth * 0.66, width + 100);
   if(fv_player_preview_window == null || fv_player_preview_window.self == null){
-    fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes');
+    fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes width=' + width + ' height=' + height);
   }else{
     fv_player_preview_window.location.assign(url);
     fv_player_preview_window.focus();
+  }
+  
+}
+
+
+function fv_player_refresh_tabs(){
+  var visibleTabs = 0;
+  jQuery('#fv-player-shortcode-editor-editor a[data-tab]').removeClass('fv_player_interface_hide');
+  jQuery('#fv-player-shortcode-editor-editor .fv-player-tabs > .fv-player-tab').each(function(){   
+    var bHideTab = true
+    jQuery(this).find('tr:not(.fv_player_actions_end-toggle):not(.submit-button-wrapper)').each(function(){
+      if(jQuery(this).css('display') === 'table-row'){
+        bHideTab = false;
+        return false;
+      }
+    });
+    var tab;
+    var data = jQuery(this).attr('class').match(/fv-player-tab-[^ ]*/);
+      if(data[0]){
+      tab =  jQuery('#fv-player-shortcode-editor-editor a[data-tab=' + data[0] + ']');
+      }
+    if(bHideTab){
+      tab.addClass('fv_player_interface_hide')
+    }else{
+      tab.removeClass('fv_player_interface_hide');
+      if(tab.css('display')==='block')
+        visibleTabs++
+      
+    }
+  });
+  
+  if(visibleTabs<=1){
+    jQuery('#fv-player-shortcode-editor-editor .nav-tab').addClass('fv_player_interface_hide');
   }
   
 }

@@ -34,7 +34,7 @@
 #fv-player-shortcode-editor td{ vertical-align: top; }
 .fv-player-tab table{ margin-bottom: 10px; }
 .fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
-.fv_player_actions_end-toggle,.fv_player_interface_hide,.fv_player_interface_temp_hide,.fv-player-playlist-item-title{ display:none; }
+.fv_player_actions_end-toggle,.fv_player_interface_hide,.fv-player-playlist-item-title{ display:none; }
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
 
@@ -61,7 +61,7 @@
 .fv-player-tab-playlist a{cursor:pointer;}
 
 .fv-player-tab-playlist .fv-player-playlist-item{ border-spacing: 0 2px; }
-.fv-player-tab-playlist .fv-player-playlist-item tbody td{ padding:3px 5px;height:50px;cursor:pointer; }
+.fv-player-tab-playlist tbody td{ padding:3px 5px;height:50px;cursor:pointer; }
 .fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{cursor:n-resize;}
 
 .fvp_item_video-side-by-side{display:inline-block;vertical-align:top;float: left;margin-right: 1%;}
@@ -86,8 +86,8 @@
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab{display:block;}
 #fv-player-shortcode-editor-preview-spinner{background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center; position:absolute; z-index: 2; height: 200px; width: 100%;}
 .fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
-#fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
-
+#fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
+#fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}
 
 .first-item-only {
   display: none;

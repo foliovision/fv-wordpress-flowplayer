@@ -1323,7 +1323,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     ?>
     <div style="background:white;">
-      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>">
+      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
           echo do_shortcode($shortcode);
@@ -1341,7 +1341,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               } else {
                 parent.trigger('fvp-preview-complete');
               }
-
+              if (window.top===window.self)
+              {
+                jQuery('#wrapper').css('margin','25px 50px 0 50px');
+              } 
             });
           </script>
           <?
