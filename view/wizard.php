@@ -61,6 +61,8 @@
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
 <style>
+#fv_player_boxLoadedContent iframe{ height:auto; }
+#fv_player_boxLoadedContent{ background-color:white; }
 #fv-player-shortcode-editor { background-color: white; }
 .fv-wp-flowplayer-notice { background-color: #FFFFE0; border-color: #E6DB55; margin: 5px 0 15px; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; } 
 .fv-wp-flowplayer-notice.fv-wp-flowplayer-note { background-color: #F8F8F8; border-color: #E0E0E0; } 
@@ -90,26 +92,16 @@
 /*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
 
-fv-player-shortcode-editor{ width:1000px; }
+#fv-player-shortcode-editor{ width:1000px; }
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
-#fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
 #fv-player-shortcode-editor td{ vertical-align: top; }
 .fv-player-tab table{ margin-bottom: 10px; }
 .fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
 .fv_player_actions_end-toggle,.fv_player_interface_hide,.fv_player_interface_temp_hide,.fv-player-playlist-item-title{ display:none; }
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
-#fv-player-shortcode-editor-preview-spinner{
-  background-image: url(<?php echo site_url(); ?>/wp-includes/images/wpspin-2x.gif);
-  background-color: white;  
-  background-repeat: no-repeat;  
-  background-position: center;
-  position:absolute;
-  z-index: 2;
-  height: 200px;
-  width: 100%;
-}
+
 .fv-player-shortcode-editor-left{ width:40%; }
 .fv-player-shortcode-editor-right{ width:60%; }
 .fv-player-tab{position:relative;}
@@ -118,91 +110,47 @@ fv-player-shortcode-editor{ width:1000px; }
 #fv-player-list-thumb-toggle a.active{ color:#0073aa; }
 .fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
 
-/*playlist title*/
+/*Playlist view*/
 .is-playlist .fv-player-playlist-item-title{ display:block;padding:0 10px 12px; }
+.is-playlist .fv_player_field_insert-button{ display:none; }
+.is-playlist-active .playlist_edit{ display:none; }
 
-/*insert button*/
-.is-playlist .fv_player_field_insert-button,.is-singular [data-tab=fv-player-tab-playlist]{ display:none; }
-.is-singular .fv_player_field_insert-button,.is-playlist-active .fv_player_field_insert-button{ display:inline; }
+.is-playlist .hide-if-playlist{display:none;}
+.is-singular .hide-if-singular{display:none;}
+.is-playlist-active .hide-if-playlist-active{display:none;}
 
-/*playlist edit button*/
 .playlist_edit{ display:block; }
+.fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{visibility: hidden;}
+.fv-player-tab-playlist tr:hover .fvp_item_remove{visibility: visible;color: #a00;}
+.fv-player-tab-playlist a{cursor:pointer;}
 
-.is-playlist-active .playlist_edit, .is-playlist-active a[data-tab=fv-player-tab-video-files], .is-playlist-active a[data-tab=fv-player-tab-subtitles],.is-playlist a[data-tab=fv-player-tab-playlist],.is-playlist a[data-tab=fv-player-tab-extras],.is-playlist a[data-tab=fv-player-tab-actions]{ display:none; }
 .fv-player-tab-playlist .fv-player-playlist-item{ border-spacing: 0 2px; }
-
 .fv-player-tab-playlist .fv-player-playlist-item tbody td{ padding:3px 5px;height:50px;cursor:pointer; }
-  
-.fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{
-  cursor:n-resize;
-}
+.fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{cursor:n-resize;}
 
-#fv_player_boxLoadedContent iframe{
-  height:auto;
-}
+.fvp_item_video-side-by-side{display:inline-block;vertical-align:top;float: left;margin-right: 1%;}
+.fvp_item_video-filename {word-wrap: break-word;display: inline-block; max-width: 180px;}
+.hide-thumbnails .fvp_item_video-filename {max-width: 100%;}
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){ width:300px; }
+.fv-player-tab-playlist > table > tbody,
+.fv-player-tab-playlist > table > thead{display:block;}
+.fv-player-tab-playlist.hide-thumbnails .fvp_item_video-thumbnail{display:none;}
+.fv-player-tab-actions > table > tbody{display:block;overflow:auto;max-height:calc(100vh - 270px);}
+#fv-player-list-thumb-toggle > .active{font-weight:bold;}
+
+
+/*Preview iframe*/
+#fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
 #fv-player-shortcode-editor-preview div,
-#fv-player-shortcode-editor-preview iframe{
-  display:none;
-}
+#fv-player-shortcode-editor-preview iframe{display:none;}
 #fv-player-shortcode-editor-preview.preview-loading #fv-player-shortcode-editor-preview-spinner,
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-no,
 #fv-player-shortcode-editor-preview.preview-show #fv-player-shortcode-editor-preview-iframe,
-#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab
-{
- display:block;
-}
+#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab{display:block;}
+#fv-player-shortcode-editor-preview-spinner{background-image: url(<?php echo site_url(); ?>/wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center; position:absolute; z-index: 2; height: 200px; width: 100%;}
+.fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
 
-.fvp_item_video-thumbnail img{
-  max-width: 95px;
-  max-height: 95px;
-}
-
-.fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{
-  visibility: hidden;
-}
-.fv-player-tab-playlist tr:hover .fvp_item_remove{
-  visibility: visible;
-  color: #a00;
-}
-.fv-player-tab-playlist a{
-  cursor:pointer;
-}
-#fv_player_boxLoadedContent{
-  background-color:white;
-}
-.fvp_item_video-side-by-side{
-  display:inline-block;
-  vertical-align:top;
-  float: left;
-  margin-right: 1%;
-}
-.fvp_item_video-filename {
-  word-wrap: break-word;
-  display: inline-block;
-  max-width: 180px;
-}
-.hide-thumbnails .fvp_item_video-filename {
-  max-width: 100%;
-}
-.fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
-.fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){
-  width:300px;
-}
-.fv-player-tab-playlist > table > tbody,
-.fv-player-tab-actions > table > tbody{
-  display:block;
-  overflow:auto;
-  max-height:calc(100vh - 270px);
-}
-.fv-player-tab-playlist > table > thead{
-  display:block;
-}
-.fv-player-tab-playlist.hide-thumbnails .fvp_item_video-thumbnail{
-  display:none;
-}
-#fv-player-list-thumb-toggle > .active{
-  font-weight:bold;
-}
 
 .first-item-only {
   display: none;
@@ -246,11 +194,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             <div class="fv-player-tabs-header">
               <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
-                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-playlist">Playlist</a>
-                <a href="#" class="nav-tab nav-tab-active" style="outline: 0;" data-tab="fv-player-tab-video-files">Video</a>
-                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-subtitles">Subtitles</a>
-                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-extras">Extras</a>
-                <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-actions">Actions</a>
+                <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist">Playlist</a>
+                <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files">Video</a>
+                <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles">Subtitles</a>
+                <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options">Options</a>
+                <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions">Actions</a>
               </h2>
             </div>
             <div class="fv-player-tabs">
@@ -320,9 +268,6 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         <?php _e('File size', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_size"></span>
                       </td>
                     </tr>
-                    <tr class="video-size"><th></th>
-                      <td class="field" colspan="2"><label for="fv_wp_flowplayer_field_width"><?php _e('Width', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_height"><?php _e('Height', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value=""/></td>
-                    </tr>
 
                     <tr style="display: none;" class="fv_wp_flowplayer_field_src_1_wrapper">
                       <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_src_1" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?> <small><?php _e('(another format)', 'fv_flowplayer'); ?></small></label></th>
@@ -340,6 +285,16 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                           <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                         <?php }; //allow uplads video ?>
                       </td>    			
+                    </tr>
+                    
+                    <tr class="hide-if-playlist">
+                      <th>
+                        <label for="fv_wp_flowplayer_field_width" class="alignright"><?php _e('Size', 'fv_flowplayer'); ?></label> 
+                      </th>
+                      <td class="field" colspan="2">
+                        <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
+                        <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
+                      </td>
                     </tr>
 
                     <tr class="fv_wp_flowplayer_field_rtmp_wrapper">
@@ -447,8 +402,17 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 </table>
               </div>
 
-              <div class="fv-player-tab fv-player-tab-extras" style="display: none">
+              <div class="fv-player-tab fv-player-tab-options" style="display: none">
                 <table width="100%">
+                  <tr class="hide-if-singular">
+                    <th>
+                      <label for="fv_wp_flowplayer_field_width" class="alignright"><?php _e('Size', 'fv_flowplayer'); ?> <small>(px)</small></label> 
+                    </th>
+                    <td class="field" colspan="2">
+                      <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
+                      <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
+                    </td>
+                  </tr>
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["autoplay"]) || $fv_flowplayer_conf["interface"]["autoplay"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_autoplay" class="alignright"><?php _e('Autoplay', 'fv_flowplayer'); ?></label></th>
                     <td class="field">
@@ -468,19 +432,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         <option><?php _e('Off', 'fv_flowplayer'); ?></option>
                       </select>
                     </td>
-                  </tr>           
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th rowspan="2" valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
-                    <td>
-                      <textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
-                    </td>
-                  </tr> 
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <td class="field" <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                      <label for="fv_wp_flowplayer_field_ad_width"><?php _e('Width', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value=""/> <label for="fv_wp_flowplayer_field_ad_height"><?php _e('Height', 'fv_flowplayer'); ?> <small>(px)</small></label> <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%" value=""/><br />
-                      <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
-                    </td>
-                  </tr>			
+                  </tr>           			
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["align"]) || $fv_flowplayer_conf["interface"]["align"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_align" class="alignright"><?php _e('Align', 'fv_flowplayer'); ?></label></th>
                     <td>
@@ -571,6 +523,21 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                         <option><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
                       </select>          
                     </td>  				
+                  </tr>
+                  
+                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                    <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
+                    <td>
+                      <textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
+                    </td>
+                  </tr> 
+                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                    <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Ad Size', 'fv_flowplayer'); ?></label></th>
+                    <td class="field" <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                      <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
+                      <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%; margin-right: 25px;" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
+                      <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
+                    </td>
                   </tr>
 
                   <?php do_action('fv_flowplayer_shortcode_editor_after'); ?>
