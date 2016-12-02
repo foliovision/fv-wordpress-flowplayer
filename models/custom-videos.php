@@ -251,21 +251,23 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function add_meta_boxes() {
-    global $post;
-    $aMeta = get_post_custom($post->ID);
-    if( $aMeta ) {
-      foreach( $aMeta AS $key => $aMetas ) {
-        $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
-        if( $objVideos->have_videos() ) {
-          add_meta_box( 'fv_player_custom_videos-field_'.$key,
-                      ucfirst(str_replace( array('_','-'),' ',$key)),
-                      array( $this, 'meta_box' ),
-                      null,
-                      'normal',
-                      'high',
-                      $objVideos );
+    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {    
+      global $post;
+      $aMeta = get_post_custom($post->ID);
+      if( $aMeta ) {
+        foreach( $aMeta AS $key => $aMetas ) {
+          $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
+          if( $objVideos->have_videos() ) {
+            add_meta_box( 'fv_player_custom_videos-field_'.$key,
+                        ucfirst(str_replace( array('_','-'),' ',$key)),
+                        array( $this, 'meta_box' ),
+                        null,
+                        'normal',
+                        'high',
+                        $objVideos );
+          }
+                      
         }
-                    
       }
     }
     
