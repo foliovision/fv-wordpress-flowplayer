@@ -252,6 +252,12 @@ jQuery(document).ready(function($){
       jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').show();
     }
   });
+  jQuery(document).on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
+    fv_wp_flowplayer_submit(true);
+  });
+  jQuery(document).on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
+    if(e.key === 'Enter')fv_wp_flowplayer_submit(true);
+  });
   jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click(function(){
     jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').hide();
     fv_wp_flowplayer_submit(true);
