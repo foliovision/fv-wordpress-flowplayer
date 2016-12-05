@@ -338,11 +338,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.11 - 2016/12/02 =
+
+* Bugfix for strange videos appearing in posts on some sites
+
+= 6.0.5.10 - 2016/12/01 =
+
+* Bugfix for strange videos appearing in posts on some sites
+
 = 6.0.5.9 - 2016/11/30 =
 
 * Amazon S3 - support for the new region Seoul, thanks to mods2003
 * AMP - disabling the custom integration as it was breaking the AMP validation
 * AMP - putting in new code which uses bare <video> tag for AMP if possible (no playlist and the video has to be on https://)
+* Beta - User Profile Videos added, use Integrations/Compatbility -> Enable profile videos
+* Beta - Users Ultra integration, use Integrations/Compatbility -> Enable profile videos
 * Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
 * MPEG-DASH support
 * Shortcode editor - fix for Foliopress WYSIWYG
