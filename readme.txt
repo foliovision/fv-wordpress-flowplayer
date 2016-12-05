@@ -338,40 +338,45 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.12 - 2016/12/?? =
+
+* Feature - Google Analytics - added tracking of playback errors
+* Feature - HLS.js - added code for HLS playback using JavaScript without need for Flash - for all modern desktop browsers. Check the "Enable HLS.js" option
+
 = 6.0.5.11 - 2016/12/02 =
 
-* Bugfix for strange videos appearing in posts on some sites
+* Fix - strange videos appearing in posts on some sites due to PHP incompatibilites
 
 = 6.0.5.10 - 2016/12/01 =
 
-* Bugfix for strange videos appearing in posts on some sites
+* Fix - strange videos appearing in posts on some sites due to PHP incompatibilites
 
 = 6.0.5.9 - 2016/11/30 =
 
-* Amazon S3 - support for the new region Seoul, thanks to mods2003
-* AMP - disabling the custom integration as it was breaking the AMP validation
-* AMP - putting in new code which uses bare <video> tag for AMP if possible (no playlist and the video has to be on https://)
-* Beta - User Profile Videos added, use Integrations/Compatbility -> Enable profile videos
-* Beta - Users Ultra integration, use Integrations/Compatbility -> Enable profile videos
-* Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
-* MPEG-DASH support
-* Shortcode editor - fix for Foliopress WYSIWYG
+* Feature - Amazon S3 - support for the new region Seoul, thanks to mods2003
+* Feature - Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
+* Feature - MPEG-DASH support
+* Beta feature - User Profile Videos added, use Integrations/Compatbility -> Enable profile videos
+* Beta feature - Users Ultra integration, use Integrations/Compatbility -> Enable profile videos
+* Fix - AMP - disabling the custom integration as it was breaking the AMP validation
+* Fix - AMP - putting in new code which uses bare <video> tag for AMP if possible (no playlist and the video has to be on https://)
+* Fix - Shortcode editor - fix for Foliopress WYSIWYG
 * Pro - Beta - User AB loop - improved keyboard controls
 
 = 6.0.5.8 - 2016/10/19 =
 
-* iPhone iOS 10 - improved support, the device doesn't require use of native fullscreen
+* Feature - iPhone iOS 10 - improved support, the device doesn't require use of native fullscreen
 * Pro - Beta - Video transcript feature - shows VTT subtitles below the video in a clickable form with highlight
 
 = 6.0.5.7 - 2016/10/17 =
 
 * CSS - disabling text selection highlight for the player
 * Integrations - option to automatically convert Vimeo and YouTube links in comments to players
-* Lightbox - fix for single videos when no FV Player Pro
-* Shortcode editor - fix for the "Text" tab of WP editor
-* Shortcode editor - fix for the scroll position changing when it gets opened
-* Video checker - fix to RTMP checking in playlist
-* YouTube - making sure the basic iframe embedding uses protocol independent URLs
+* Fix - Lightbox - fix for single videos when no FV Player Pro
+* Fix - Shortcode editor - making it work with the "Text" tab of WP editor
+* Fix - Shortcode editor - fix for scroll position changing when it gets opened
+* Fix - Video checker - RTMP checking in playlist
+* Fix - YouTube - making sure the basic iframe embedding uses protocol independent URLs
 * Pro - Beta - YouTube improvements for iPhone
 
 = 6.0.5.6 - 2016/10/06 =
@@ -389,16 +394,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.5 - 2016/07/28 =
 
-* Bugfix - div class="fp-playlist-vertical-wrapper" appearing around player when no playlist is used - resulting in bad player width or alignment
-* Popup Ads - improved UI for popup ads - moved to "Actions" tab on settings screen
-* Settings screen - added tabs
+* Feature - Settings screen - added tabs
+* Feature - Popup Ads - improved UI for popup ads - moved to "Actions" tab on settings screen
+* Fix - div class="fp-playlist-vertical-wrapper" appearing around player when no playlist is used - resulting in bad player width or alignment
 * Pro - Beta - YouTube and Vimeo splash screen URLs and captions are now getting stored in the shortcodes
 
 = 6.0.5.4 - 2016/07/26 =
 
-* Color settings - added more settings for playlist colors
-* Iframe embedding - compatibility fixes - needed for websites which load FV Player outside of post_content
-* Speed buttons - fix for iPad to not pause after speed change
+* Feature - Color settings - added more settings for playlist colors
+* Fix - Iframe embedding - compatibility fixes - needed for websites which load FV Player outside of post_content
+* Fix - Speed buttons - fix for iPad to not pause after speed change
 * Pro - Beta - Encrypted HLS
 
 = 6.0.5.3 - 2016/06/23 =
@@ -407,12 +412,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.2 - 2016/06/21 =
 
-* Lightbox - you can now use <a href="URL" data-colorbox="#ELEMENT" class="colorbox">Link</a> to have a working link in case user has JS disabled or something goes wrong
-* Error message - The error message no longer reveals the URL to users who are not admins or editors
+* Fix - Lightbox - you can now use <a href="URL" data-colorbox="#ELEMENT" class="colorbox">Link</a> to have a working link in case user has JS disabled or something goes wrong
+* Fix - Video error messages - The error message no longer reveals the URL to users who are not admins or editors
 
 = 6.0.5.1 - 2016/06/20 =
 
-* Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
+* Feature - Live streams - if your RTMP streams are not smooth, make sure you enable Integrations/Compatibility -> RTMP bufferTime tweak.
 * Pro - Version switching - you can now easily switch FV Player Pro to its latest beta version
 
 = 6.0.5 - 2016/06/17 =
@@ -422,13 +427,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.4.25 - 2016/06/08 =
 
-* Compatibility witch WPBakery Visual Composer tabs
-* Controlbar - FV Player now shows a thin timeline below the video even when using controlbar="no"
+* Feature - Controlbar - FV Player now shows a thin timeline below the video even when using controlbar="no"
+* Fix - Compatibility witch WPBakery Visual Composer tabs
 
 = 6.0.4.24 - 2016/06/03 =
 
-* Amazon S3 - fix for signed URLs when using tabbed playlist
-* Logo - fix for display in full-screen
+* Fix - Amazon S3 - fix for signed URLs when using tabbed playlist
+* Fix - Logo - fix for display in full-screen
 
 = 6.0.4.22 - 2016/06/01 =
 
@@ -438,51 +443,51 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.4.21 - 2016/05/23 =
 
-* Volume - Volume is now remembered between page loads and across all instances of the player
+* Feature - Volume - Volume is now remembered between page loads and across all instances of the player
 * Pro - YouTube - fix for mobile when playing HTML5 video after a YouTube video in playlist
 
 = 6.0.4.20 - 2016/05/16 =
 
-* Iframe embedding - fix for responsiveness
+* Fix - Iframe embedding - fix for responsiveness
 * Video checker - please make sure you upgrade this plugin to continue using it
 
 = 6.0.4.19 - 2016/05/13 =
 
-* Google Analytics - improvement needed for laters FV Player Pro
+* Feature - Google Analytics - improvement needed for laters FV Player Pro
 
 = 6.0.4.18 - 2016/04/29 =
 
-* Cloudfront - fix http/https problem on mobile devices
+* Fix - Cloudfront - http/https problem on mobile devices
 
 = 6.0.4.17 - 2016/04/26 =
 
-* fix for PHP errors - greater compatibility
+* Fix - PHP errors - greater compatibility
 
 = 6.0.4.16 - 2016/04/26 =
 
-* Speed Buttons - added option to chose steps of 0.1 0.25 0.5 seconds, see Sitewide Flowplayer Defaults -> Speed Step
+* Feature - Speed Buttons - added option to chose steps of 0.1 0.25 0.5 seconds, see Sitewide Flowplayer Defaults -> Speed Step
 * Pro - Vimeo - integration rewritten from scratch
 * Pro - Vimeo - support for both local and Vimeo subtitles added
 * Pro - CloudFront - integration rewritten from scratch
 
 = 6.0.4.15 - 2016/04/22 =
 
-* Wordpress 4.5 - fix for malfunction of shortcode editor
+* Fix - Wordpress 4.5 - malfunctions of shortcode editor
 * Pro - Horizontal flip button - Lefty view
 
 = 6.0.4.14 - 2016/04/05 =
 
-* Ads - setting to show the ad after X seconds
-* Amazon S3 - fix for ' symbol in signed URLs
-* Iframe embedding - fixed admin bar and style
+* Feature - Ads - setting to show the ad after X seconds
+* Fix - Amazon S3 - fix for ' symbol in signed URLs
+* Fix - Iframe embedding - fixed admin bar and style
 
 = 6.0.4.13 - 2016/03/23 =
 
 * Plugin name changed to FV Player
-* Added FV Player widget to allow inserting player into sidebar easily
-* AMP - support for the WordPress AMP plugin
-* Playlist style vertical added (beta)
-* Translation fixes
+* Feature - Added FV Player widget to allow inserting player into sidebar easily
+* Feature - AMP - support for the WordPress AMP plugin
+* Feature - Playlist style vertical added (beta)
+* Translations - fixes
 
 = 6.0.4.12 - 2016/02/26 =
 
@@ -496,53 +501,53 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.4.10 - 2016/02/10 =
 
-* Added Czech translation
-* Added German translation
-* Added Spanish translation
+* Translations - Added Czech language
+* Translations - Added German language
+* Translations - Added Spanish language
 
 = 6.0.4.9 - 2016/02/08 =
 
-* Playlist - fix for autoplay
+* Fix - Playlist - autoplay
 
 = 6.0.4.8 - 2016/02/05 =
 
-* Iframe embedding - fixing stray debug code appearing in the iframe embeds
+* Fix - Iframe embedding - fixing stray debug code appearing in the iframe embeds
 * Pro - VTT Chapters - added support for AB looping
 
 = 6.0.4.7 - 2016/01/27 =
 
-* Playlist - Allow plugins to create custom playlist styles
-* Bugfix - Improving file extension parsing for URLs with http:// in query argument
+* Feature - Playlist - Allow plugins to create custom playlist styles
+* Fix - Improving file extension parsing for URLs with http:// in query argument
 * Pro - Lightbox - playlist items now show up in lightbox as separate items
 * Pro - Vimeo - access token check added
 
 = 6.0.4.6 - 2016/01/22 =
 
-* Controlbar - appearance fixes when controlbar set to always on
+* Fix - Controlbar - appearance when controlbar set to always on
 * Pro - Speed buttons - now working with YouTube videos
 
 = 6.0.4.5 - 2016/01/12 =
 
-* Subtitles - multilingual subtitles support added!
+* Feature - Subtitles - multilingual subtitles support added!
 
 = 6.0.4.4 - 2016/01/05 =
 
-* Bugfix - PHP warnings for websites without permalinks fixed
+* Fix - PHP warnings for websites without permalinks fixed
 
 = 6.0.4.3 - 2015/12/23 =
 
-* Subtitles - added "Subtitles On By Default" setting
-* Subtitles - the subtitles button now uses your language name (as set in WordPress)
+* Feature - Subtitles - added "Subtitles On By Default" setting
+* Feature - Subtitles - the subtitles button now uses your language name (as set in WordPress)
 
 = 6.0.4.2 - 2015/12/15 =
 
-* Flash engine - fix for URLs with %2A and %2F in them
-* Playlist tabs - fix for autoplay not working.
+* Compatibility - Flash engine - fix for URLs with %2A and %2F in them
+* Fix - Playlist tabs - autoplay not working.
 * Pro - Vimeo - support for Full HD resolution added
 
 = 6.0.4.1 - 2015/12/09 =
 
-* Beta - iframe embedding fixes
+* Beta feature - iframe embedding fixes
 * Pro - Lightbox for images - adding compatibility with WP galleries and shortcodes
 
 = 6.0.4 - 2015/12/07 =

@@ -609,7 +609,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
           <tr>
-            <td><label for="engine"><?php _e('Enable HLSJS', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td><label for="engine"><?php _e('Enable HLS.js', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('hlsjs'); ?>
