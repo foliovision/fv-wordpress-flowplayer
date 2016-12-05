@@ -107,7 +107,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <div class="fv-player-tab fv-player-tab-playlist" style="">
                 <div id="fv-player-list-thumb-toggle">
                   <a href="#" id="fv-player-list-list-view" ><span class="dashicons dashicons-list-view"><span class="screen-reader-text">List view</span></span></a>
-                  <a href="#" id="fv-player-list-thumb-view" class="active"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
+                  <a href="#" id="fv-player-list-thumb-view" class="active" data-title="<?php _e('Add splash images to enable thumbnail view', 'fv_flowplayer');?>"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
                 </div>
                 <table class="wp-list-table widefat fixed striped media" width="100%">
                   <thead>

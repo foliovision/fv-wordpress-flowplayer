@@ -95,6 +95,7 @@ jQuery(document).ready(function($){
   $('#fv-player-list-thumb-toggle > a').click(function(e){
     e.preventDefault();
     var button = $(e.currentTarget);
+    if(button.hasClass('disabled')) return;
     $('#fv-player-list-thumb-toggle > a').removeClass('active');
     if(button.attr('id') === 'fv-player-list-list-view'){      
       $('.fv-player-tab-playlist').addClass('hide-thumbnails');
@@ -479,6 +480,16 @@ function fv_flowplayer_playlist_show() {
   jQuery('.fv-player-tab.fv-player-tab-subtitles table').each(function(){
     jQuery(this).attr('data-index', jQuery(this).index() );
   })
+  
+  if(!jQuery('.fvp_item_video-thumbnail>img').length){
+    jQuery('#fv-player-list-list-view').click();
+    jQuery('#fv-player-list-thumb-view').addClass('disabled');
+    jQuery('#fv-player-list-thumb-view').attr('title',jQuery('#fv-player-list-thumb-view').data('title'));
+  }else{
+    jQuery('#fv-player-list-thumb-view').click();
+    jQuery('#fv-player-list-thumb-view').removeClass('disabled');
+    jQuery('#fv-player-list-thumb-view').removeAttr('title');
+  }
   
   jQuery('.fv-player-tab-playlist').show(); 
   
