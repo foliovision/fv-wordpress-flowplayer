@@ -356,6 +356,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Lightbox - added support for WP [gallery] galleries - these will automatically link the items to media files rather than attachment pages when "Use video lightbox for images as well" option is enabled.
 * MPEG-DASH support
 * Shortcode editor - fix for Foliopress WYSIWYG
+* Pro - Beta - User AB loop - improved keyboard controls
 
 = 6.0.5.8 - 2016/10/19 =
 

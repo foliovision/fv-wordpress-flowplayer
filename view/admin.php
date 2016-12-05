@@ -609,6 +609,16 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
           <tr>
+            <td><label for="engine"><?php _e('Enable HLSJS', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('hlsjs'); ?>
+                <?php _e('Beta version, allows HLS playback in all modern browsers.','fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash.','fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
 						<td><label for="css_disable"><?php _e('Enable profile videos (beta)', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
               <div class="description">                
