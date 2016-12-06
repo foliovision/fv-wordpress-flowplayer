@@ -342,6 +342,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Feature - Google Analytics - added tracking of playback errors
 * Feature - HLS.js - added code for HLS playback using JavaScript without need for Flash - for all modern desktop browsers. Check the "Enable HLS.js" option
+* Feature - Lightbox can now be disabled for WP galleries - check the "Use video lightbox for WP Galleries" setting
 
 = 6.0.5.11 - 2016/12/02 =
 
