@@ -283,6 +283,12 @@ function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   
   wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery'), $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
+  if( !isset($_GET['seold']) ) {
+    wp_enqueue_script('fvwpflowplayer-shortcode-editor');
+  } else {
+    wp_enqueue_script('fvwpflowplayer-shortcode-editor-old');
+  }
    
   wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');    
@@ -535,6 +541,11 @@ function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
 
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
+  if( !isset($_GET['seold']) ) {
+    include dirname( __FILE__ ) . '/../view/wizard.php';
+  } else {
+    include dirname( __FILE__ ) . '/../view/wizard.old.php';
+  }
 }
 
 
