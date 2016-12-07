@@ -251,9 +251,10 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function add_meta_boxes() {
-    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {    
+    global $fv_fp;
+    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {
       global $post;
-      $aMeta = get_post_custom($post->ID);
+      $aMeta = get_post_custom($post->ID);      
       if( $aMeta ) {
         foreach( $aMeta AS $key => $aMetas ) {
           $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
@@ -332,7 +333,7 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function show( $content ) {
-    global $post;    
+    global $post, $fv_fp;
     if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' && isset($post->ID) ) {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
