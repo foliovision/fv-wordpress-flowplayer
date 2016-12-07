@@ -1330,28 +1330,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
-          echo do_shortcode($shortcode);
-          ?><script>
-            jQuery(document).ready( function(){
-              var parent = window.parent.jQuery(window.parent.document);
-              if( jQuery('.flowplayer').length > 0 ){
-                if( typeof(flowplayer) != "undefined" ) {
-                  flowplayer( function(api,root) {
-                    parent.trigger('fvp-preview-complete');
-                  })
-                }else{
-                  parent.trigger('fvp-preview-error');
-                }
-              } else {
-                parent.trigger('fvp-preview-complete');
-              }
-              if (window.top===window.self)
-              {
-                jQuery('#wrapper').css('margin','25px 50px 0 50px');
-              } 
-            });
-          </script>
-          <?
+          echo do_shortcode($shortcode);          
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php
@@ -1359,6 +1338,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         ?>
       </div>
     </div>
+    
   <?php else : ?>
     <?php while ( have_posts() ) : the_post(); //is this needed? ?>
       <?php
@@ -1395,18 +1375,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   endif;
   ?>
 </body>
+
 <?php wp_footer(); ?>
 
-<?php if(isset($_GET['fv_player_previewDISABLED']) && !empty($_GET['fv_player_previewDISABLED'])): ?>
+<?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
+  
   <script>
-  flowplayer( function(api,root) {
-    api.bind('unload', function() {
-      console.log('Im in iframe and my height is 1: '+jQuery('#wrapper').height());
-      console.log('Im in iframe and my height is 2: '+jQuery(root).height());
-      jQuery(window.parent.document).find('#fv-player-shortcode-editor-preview-iframe').height(jQuery('#wrapper').height());
-      window.parent.fv_wp_flowplayer_dialog_resize();
-    });
+  jQuery(document).ready( function(){
+    var parent = window.parent.jQuery(window.parent.document);
+    if( typeof(flowplayer) != "undefined" ) {      
+      parent.trigger('fvp-preview-complete');      
+    } else {
+      parent.trigger('fvp-preview-error');
+    }
+  
   });
+  
+  if (window.top===window.self) {
+    jQuery('#wrapper').css('margin','25px 50px 0 50px');
+  } 
   </script>
 <?php endif; ?>
 
