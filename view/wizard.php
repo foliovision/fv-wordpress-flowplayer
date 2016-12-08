@@ -1,6 +1,6 @@
 <?php
 /*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
-    Copyright (C) 2013  Foliovision
+    Copyright (C) 2016  Foliovision
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,34 +29,75 @@
 	  $upload_field_class = '';
 	}
   
-  function fv_flowplayer_admin_select_popups($aArgs){
-  global $fv_fp;
+  function fv_flowplayer_admin_select_popups($aArgs) {
+    global $fv_fp;
+    
+    $aPopupData = get_option('fv_player_popups');
+    
   
-  $aPopupData = get_option('fv_player_popups');
-  
-
-  $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
-  $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
-  ?>
-  <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
-    <?php if( $aArgs['show_default'] ) : ?>
-      <option>Use site default</option>
-    <?php endif; ?>
-    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
-    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+    $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
+    $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
+    ?>
+    <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
+      <?php if( $aArgs['show_default'] ) : ?>
+        <option>Use site default</option>
+      <?php endif; ?>
+      <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
+      <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+      <?php
+      if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
+        foreach( $aPopupData AS $key => $aPopupAd ) {
+          ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
+          echo $key;
+          if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
+          if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
+          ?></option><?php
+        }
+      } ?>      
+    </select>
     <?php
-    if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
-      foreach( $aPopupData AS $key => $aPopupAd ) {
-        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
-        echo $key;
-        if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
-        if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
-        ?></option><?php
-      }
-    } ?>      
-  </select>
-  <?php
-}
+  }
+  
+  function fv_player_shortcode_row( $args ) {
+    $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
+    $args = wp_parse_args( $args, array(
+                          'class' => false,
+                          'dropdown' => array( 'Default', 'On', 'Off' ),
+                          'id' => false,
+                          'label' => '',
+                          'live' => true,
+                          'name' => ''                          
+                         ) );
+    extract($args);
+    
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }    
+    
+    $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
+    if( $class ) {
+      $class = ' class="'.$class.'"';
+    }
+    
+    $live = !$live ? ' data-live-update="false"' : '';
+    
+    ?>
+      <tr<?php echo $id.$class; ?>>
+        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright"><?php _e( $label, 'fv_flowplayer'); ?></label></th>
+        <td class="field">
+          <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?>>
+            <?php foreach( $dropdown AS $option ) : ?>
+              <?php if( is_array($option) ) : ?>
+                <option value="<?php echo $option[0]; ?>"><?php _e( $option[1], 'fv_flowplayer' ); ?></option>
+              <?php else : ?>
+                <option><?php _e( $option, 'fv_flowplayer' ); ?></option>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </select>
+        </td>
+      </tr>
+    <?php
+  }
   
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
@@ -301,6 +342,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
               <div class="fv-player-tab fv-player-tab-options" style="display: none">
                 <table width="100%">
+                  
                   <tr class="hide-if-singular">
                     <th>
                       <label for="fv_wp_flowplayer_field_width" class="alignright"><?php _e('Size', 'fv_flowplayer'); ?></label> 
@@ -310,72 +352,19 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
                     </td>
                   </tr>
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["autoplay"]) || $fv_flowplayer_conf["interface"]["autoplay"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_autoplay" class="alignright"><?php _e('Autoplay', 'fv_flowplayer'); ?></label></th>
-                    <td class="field">
-                      <select id="fv_wp_flowplayer_field_autoplay" name="fv_wp_flowplayer_field_autoplay">
-                        <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('On', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Off', 'fv_flowplayer'); ?></option>
-                      </select>
-                    </td>
-                  </tr>      
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["embed"]) || $fv_flowplayer_conf["interface"]["embed"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embed" class="alignright"><?php _e('Embedding', 'fv_flowplayer'); ?></label></th>
-                    <td class="field">
-                      <select id="fv_wp_flowplayer_field_embed" name="fv_wp_flowplayer_field_embed">
-                        <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('On', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Off', 'fv_flowplayer'); ?></option>
-                      </select>
-                    </td>
-                  </tr>           			
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["align"]) || $fv_flowplayer_conf["interface"]["align"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_align" class="alignright"><?php _e('Align', 'fv_flowplayer'); ?></label></th>
-                    <td>
-                      <select id="fv_wp_flowplayer_field_align" name="fv_wp_flowplayer_field_align">
-                        <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Left', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Right', 'fv_flowplayer'); ?></option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["controlbar"]) || $fv_flowplayer_conf["interface"]["controlbar"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>> 
-                    <th valign="top" scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_controlbar" class="alignright"><?php _e('Controlbar', 'fv_flowplayer'); ?></label></th>
-                    <td>
-                      <select id="fv_wp_flowplayer_field_controlbar" name="fv_wp_flowplayer_field_controlbar">
-                        <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Yes', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('No', 'fv_flowplayer'); ?></option>
-                      </select>
-                    </td>
-                  </tr>
+                  
+                  <?php fv_player_shortcode_row( array( 'label' => 'Autoplay', 'name' => 'autoplay' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
+                  
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["live"]) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
                     <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
                   </tr>
-                  <tr class="hide-if-singular<?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide"'; ?>" id="fv_wp_flowplayer_add_format_wrapper">
-                    <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Playlist Style', 'fv_flowplayer'); ?></label></th>
-                    <td class="field" style="width: 50%">
-                      <select id="fv_wp_flowplayer_field_liststyle" name="fv_wp_flowplayer_field_liststyle">
-                        <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Tabs', 'fv_flowplayer'); ?></option> 
-                        <option><?php _e('Prev/Next', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Vertical', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Horizontal', 'fv_flowplayer'); ?></option>
-                      </select>          
-                    </td>  				
-                  </tr>                  
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["speed"]) || $fv_flowplayer_conf["interface"]["speed"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_speed" class="alignright"><?php _e('Speed Buttons', 'fv_flowplayer'); ?></label></th>
-                    <td class="field">
-                      <select id="fv_wp_flowplayer_field_speed" name="fv_wp_flowplayer_field_speed">
-                        <option><?php _e('Default', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('Yes', 'fv_flowplayer'); ?></option>
-                        <option><?php _e('No', 'fv_flowplayer'); ?></option>
-                      </select>
-                    </td>
-                  </tr>
+                  
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>
                   
@@ -391,18 +380,10 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
               <div class="fv-player-tab fv-player-tab-actions" style="display: none">
                 <table width="100%">
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["end_actions"]) || $fv_flowplayer_conf["interface"]["end_actions"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th scope="row" class="label" style="width: 19%"><label for="fv_wp_flowplayer_field_actions_end" class="alignright"><?php _e('End of playlist', 'fv_flowplayer'); ?></label></th>
-                    <td class="field" style="width: 50%">
-                      <select id="fv_wp_flowplayer_field_actions_end" name="fv_wp_flowplayer_field_actions_end" data-live-update="false">
-                        <option value=""><?php _e('Nothing', 'fv_flowplayer'); ?></option>
-                        <option value="redirect"><?php _e('Redirect', 'fv_flowplayer'); ?></option> 
-                        <option value="loop"><?php _e('Loop', 'fv_flowplayer'); ?></option>
-                        <option value="popup"><?php _e('Show popup', 'fv_flowplayer'); ?></option>
-                        <option value="splashend"><?php _e('Show splash screen', 'fv_flowplayer'); ?></option>
-                      </select>          
-                    </td>  				
-                  </tr>
+                  <?php fv_player_shortcode_row( array('label' => 'End of playlist',
+                                                       'name' => 'end_actions',
+                                                       'dropdown' => array( array('', 'Nothing'), array('redirect', 'Redirect'), array('loop', 'Loop'), array('popup','Show popup'), array('splashend','Show splash screen') ),
+                                                       'live' => false ) ); ?>
                                    
                   <tr class="fv_player_actions_end-toggle">
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
