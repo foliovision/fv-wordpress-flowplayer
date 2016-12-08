@@ -928,7 +928,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>   
 					<tr>          
-						<td><label for="interface[playlist]"><?php _e('Playlist', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td><label for="interface[playlist]"><?php _e('Playlist Style', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
               <input type="hidden" name="interface[playlist]" value="false" />
 							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -1015,6 +1015,16 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr> 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
+					<tr>          
+						<td><label for="interface[shortcode_editor_old]"><?php _e('Enable old interface', 'fv-wordpress-flowplayer'); ?>: </label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="interface[shortcode_editor_old]" value="false" />
+                <input type="checkbox" name="interface[shortcode_editor_old]" id="interface[shortcode_editor_old]" value="true" <?php if( isset($fv_fp->conf['interface']['shortcode_editor_old']) && $fv_fp->conf['interface']['shortcode_editor_old'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Not recommended', 'fv-wordpress-flowplayer'); ?>
+              </p>
+						</td>
+					</tr>           
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />

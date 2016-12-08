@@ -254,16 +254,31 @@ jQuery(document).ready(function($){
       jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').show();
     }
   });
+  
+  var fv_player_shortcode_click_element = null;
+  jQuery(document).mousedown(function(e) {
+      fv_player_shortcode_click_element = jQuery(e.target);
+  });
+  
+  jQuery(document).mouseup(function(e) {
+      fv_player_shortcode_click_element = null;
+  });
+  
   jQuery(document).on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
+    if( fv_player_shortcode_click_element && fv_player_shortcode_click_element.hasClass('button-primary') ) {
+      return;
+    }
     console.log('fv_wp_flowplayer_submit 5');
     fv_wp_flowplayer_submit(true);
   });
+  
   jQuery(document).on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
     if(e.key === 'Enter') {
       console.log('fv_wp_flowplayer_submit 6');
       fv_wp_flowplayer_submit(true);
     }
   });
+  
   jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click(function(){
     jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').hide();
     console.log('fv_wp_flowplayer_submit 7');
@@ -485,7 +500,7 @@ function fv_flowplayer_playlist_show() {
     playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? '<img src="' + video_preview + '" />':'');
     playlist_row.find('.fvp_item_video-filename').html( currentUrl.split("/").pop() );
     
-    playlist_row.find('.fvp_item_caption').html( current.find('#fv_wp_flowplayer_field_caption').val() );
+    playlist_row.find('.fvp_item_caption div').html( current.find('#fv_wp_flowplayer_field_caption').val() );
   });
   //initial indexing
   jQuery('.fv-player-tab.fv-player-tab-subtitles table').each(function(){
@@ -508,6 +523,8 @@ function fv_flowplayer_playlist_show() {
   fv_player_refresh_tabs();
   console.log('fv_wp_flowplayer_submit 9');
   fv_wp_flowplayer_submit(true);
+  
+  return false;
 }
 
 /*
@@ -836,7 +853,7 @@ function fv_wp_flowplayer_edit() {
       
       var caption = aCaptions.shift();
       jQuery('[name=fv_wp_flowplayer_field_caption]',jQuery('.fv-player-playlist-item').eq(0)).val( caption );
-      playlist_row.find('.fvp_item_caption').html( caption );
+      playlist_row.find('.fvp_item_caption div').html( caption );
     }
     
     if( sPlaylist ) {    	
@@ -918,12 +935,13 @@ function fv_wp_flowplayer_set_html( html ) {
 
 
 function fv_wp_flowplayer_submit( preview ) {
-  if( typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
-    console.log('fv_wp_flowplayer_submit skip...');
+  if( preview && typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
+    console.log('fv_wp_flowplayer_submit skip...',fv_player_shortcode_preview);
     return;
   }
   
   fv_player_shortcode_preview = true;
+  console.log('fv_player_shortcode_preview = true');
   
   fv_wp_fp_shortcode = '';
   var shorttag = 'fvplayer';
@@ -1087,7 +1105,7 @@ function fv_wp_flowplayer_submit( preview ) {
     //jQuery('#fv-player-tabs-debug').html(fv_wp_fp_shortcode);
     if( ! fv_wp_fp_shortcode.match(/src=/) ){
       jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-no');
-      fv_player_shortcode_preview = false;
+      fv_player_shortcode_preview = false;console.log('fv_player_shortcode_preview = false');
       fv_wp_flowplayer_dialog_resize();
       return;
     }
@@ -1098,7 +1116,7 @@ function fv_wp_flowplayer_submit( preview ) {
     
     if(fv_player_preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 9){
       jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-new-tab');
-      fv_player_shortcode_preview = false;
+      fv_player_shortcode_preview = false;console.log('fv_player_shortcode_preview = false');
       jQuery('#fv-player-shortcode-editor-preview-new-tab > a').unbind('click').on('click',function(e){
         fv_player_open_preview_window( url, width, height + Math.ceil( (jQuery('.fv-player-tab-video-files table').length / 3)) * 155 );
         return false;

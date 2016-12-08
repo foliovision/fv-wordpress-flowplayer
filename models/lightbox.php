@@ -18,7 +18,7 @@ class FV_Player_lightbox {
     add_filter('the_content', array($this, 'lightbox_add'));
     add_filter('the_content', array($this, 'lightbox_add_post'), 999);  //  moved after the shortcodes are parsed to work for galleries
 
-    add_action('fv_flowplayer_shortcode_editor_after', array($this, 'shortcode_editor'), 8);
+    add_action('fv_flowplayer_shortcode_editor_tab_options', array($this, 'shortcode_editor'), 8);
 
     add_action('fv_flowplayer_admin_default_options_after', array( $this, 'lightbox_admin_default_options_html' ) );
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
