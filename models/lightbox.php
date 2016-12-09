@@ -25,7 +25,9 @@ class FV_Player_lightbox {
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
 
-    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
+    $conf = get_option('fvwpflowplayer');
+    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
+      (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
       add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     }
   }
@@ -340,10 +342,32 @@ class FV_Player_lightbox {
         </p>
       </td>
     </tr>
+    <tr id="lightbox-wp-galleries">
+      <td style="width: 250px"><label for="lightbox_images"><?php _e('Use video lightbox for WP Galleries', 'fv-wordpress-flowplayer'); ?>:</label></td>
+      <td>
+        <p class="description">
+          <input type="hidden" value="false" name="lightbox_improve_galleries" />
+          <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if (!isset($fv_fp->conf['lightbox_improve_galleries']) || isset($fv_fp->conf['lightbox_improve_galleries']) && $fv_fp->conf['lightbox_improve_galleries'] == 'true') echo 'checked="checked"'; ?> />
+          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?></a>
+        </p>
+      </td>
+    </tr>
     <script>
       jQuery(document).ready(function(){
         jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
         jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
+        if(jQuery('#lightbox_images').attr('checked')){
+            jQuery('#lightbox-wp-galleries').show();
+          }else{
+            jQuery('#lightbox-wp-galleries').hide();
+          }
+        jQuery('#lightbox_images').on('click',function(){
+          if(jQuery(this).attr('checked')){
+            jQuery('#lightbox-wp-galleries').show();
+          }else{
+            jQuery('#lightbox-wp-galleries').hide();
+          }
+        })
       })   
     </script>
     <?php

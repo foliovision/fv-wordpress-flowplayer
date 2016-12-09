@@ -146,7 +146,8 @@ function fv_flowplayer_admin_amazon_options() {
                 <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>><?php _e('Ireland', 'fv-wordpress-flowplayer'); ?></option>                              
                 <option value="us-west-1"<?php if( $sRegion == 'us-west-1' ) echo " selected"; ?>><?php _e('Northern California', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="us-west-2"<?php if( $sRegion == 'us-west-2' ) echo " selected"; ?>><?php _e('Oregon', 'fv-wordpress-flowplayer'); ?></option>
-                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>          
+                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>
+                <option value="ap-northeast-2"<?php if( $sRegion == 'ap-northeast-2' ) echo " selected"; ?>><?php _e('Seoul', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-1"<?php if( $sRegion == 'ap-southeast-1' ) echo " selected"; ?>><?php _e('Singapore', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-2"<?php if( $sRegion == 'ap-southeast-2' ) echo " selected"; ?>><?php _e('Sydney', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-northeast-1"<?php if( $sRegion == 'ap-northeast-1' ) echo " selected"; ?>><?php _e('Tokyo', 'fv-wordpress-flowplayer'); ?></option>
@@ -606,7 +607,50 @@ function fv_flowplayer_admin_integrations() {
                 <span class="more"><?php _e('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
 						</td>
-					</tr> 
+					</tr>
+          <tr>
+            <td><label for="engine"><?php _e('Enable HLS.js', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td>
+              <p class="description">
+                <?php fv_flowplayer_admin_checkbox('hlsjs'); ?>
+                <?php _e('Beta version, allows HLS playback in all modern browsers.','fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+						<td><label for="css_disable"><?php _e('Enable profile videos (beta)', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td>
+              <div class="description">                
+                <p>
+                  <input type="hidden" name="profile_videos_enable_bio" value="false" />
+                  <input type="checkbox" name="profile_videos_enable_bio" id="profile_videos_enable_bio" value="true" <?php if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) echo 'checked="checked"'; ?> />
+                  <?php _e('Check your site carefully after enabling. Videos attached to the user profile will be showing as a part of the user bio.', 'fv-wordpress-flowplayer'); ?> <a href="#" class="show-more">(&hellip;)</a>
+                </p>
+                <div class="more">
+                  <p><?php _e('This feature is designed for YouTube and Vimeo videos and works best for our licensed users who get these videos playing without YouTube or Vimeo branding.','fv-wordpress-flowplayer'); ?></p>
+                  <p><?php _e('Some themes show author bio on the author post archive automatically (Genesis framework and others). Or you can also just put this code into your theme archive.php template, right before <code>while ( have_posts() )</code> is called:','fv-wordpress-flowplayer'); ?></p>
+                  <blockquote>
+<pre>
+&lt;?php if ( is_author() &amp;&amp; get_the_author_meta( 'description' ) ) : ?&gt;  
+  &lt;div class=&quot;author-info&quot;&gt;
+    &lt;div class=&quot;author-avatar&quot;&gt;
+      &lt;?php echo get_avatar( get_the_author_meta( 'user_email' ) ); ?&gt;
+    &lt;/div&gt;
+  
+    &lt;div class=&quot;author-description&quot;&gt;
+      &lt;?php the_author_meta( 'description' ); ?&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;?php endif; ?&gt;
+</pre>
+                  </blockquote>
+                  <p><?php _e('We will be adding integration for it for popular user profile plugins.','fv-wordpress-flowplayer'); ?></p>
+                  
+                </div>                
+              </div>
+						</td>
+					</tr>           
           <tr>
             <td><label for="scaling"><?php _e('Fit scaling', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
@@ -1673,9 +1717,11 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     jQuery('.show-more').click( function(e) {
       e.preventDefault();
       
-      jQuery('.more', jQuery(this).parent() ).toggle();
+      var more = jQuery('.more', jQuery(this).parent() ).length ? jQuery('.more', jQuery(this).parent() ) : jQuery(this).parent().siblings('.more');
       
-      if( jQuery('.more:visible', jQuery(this).parent() ).length > 0 ) {
+      more.toggle();
+      
+      if( jQuery(':visible', more ).length > 0 ) {
         jQuery(this).html('(hide)');
       } else {
         jQuery(this).html('(&hellip;)');
