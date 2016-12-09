@@ -28,6 +28,7 @@
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
 /*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
+.fv-fp-subtitle select{ height:27px; }
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
@@ -70,10 +71,9 @@
 .hide-thumbnails .fvp_item_video-filename {max-width: 100%;}
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){ width:300px; }
-.fv-player-tab-playlist > table > tbody,
 .fv-player-tab-playlist > table > thead{ display:block; }
 .fv-player-tab-playlist.hide-thumbnails .fvp_item_video-thumbnail{ display:none; }
-.fv-player-tab-actions > table > tbody{ display:block;overflow:auto;max-height:calc(100vh - 270px); }
+.fv-player-tab-playlist > table > tbody{ display:block;overflow:auto;max-height:calc(100vh - 270px); }
 #fv-player-list-thumb-toggle > .active{ font-weight:bold; }
 #fv-player-list-thumb-toggle > a{ box-shadow:none; }
 
