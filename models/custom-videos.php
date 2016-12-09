@@ -164,7 +164,7 @@ class FV_Player_Custom_Videos {
     $aVideos = array();
     if( $aMeta ) {
       foreach( $aMeta AS $aVideo ) {
-        if( isset($aVideo['url']) && isset($aVideo['title']) ) $aVideos[] = $aVideo;
+        if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) $aVideos[] = $aVideo;
       }
     }
     
@@ -333,7 +333,7 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function show( $content ) {
-    global $post, $fv_fp;    
+    global $post, $fv_fp;
     if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' && isset($post->ID) ) {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
