@@ -380,7 +380,7 @@ function fv_flowplayer_admin_default_options() {
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
           <small class="alignright">
-          	<?php _e('Missing settings? Check <a href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.', 'fv-wordpress-flowplayer'); ?>
+          	<?php _e('Missing settings? Check <a class="fv-settings-anchor" href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.', 'fv-wordpress-flowplayer'); ?>
           </small>   
           <table class="form-table2">
 						<tr>    		
@@ -1562,7 +1562,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <li>Or remove the logo completely</li>
             <li>The best video plugin for Wordpress</li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Halloween sale!</strong><br />All Licenses 20% Off</a></p>
+              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Christmas sale!</strong><br />All Licenses 20% Off</a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
@@ -1770,4 +1770,20 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });  
+
+
+jQuery('a.fv-settings-anchor').on('click',function(e){
+  var id = jQuery(this).attr('href');
+  if( id.match(/^#./) ){
+    var el = jQuery(id);
+    if(el.length){
+      var tab = el.parents('.postbox-container').attr('id');
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+    }
+  }
+})
+
+
+
+
 </script>
