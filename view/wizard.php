@@ -320,6 +320,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                           <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
                           <a class="fv-fp-subtitle-remove" href="#" style="display: none">X</a>
                         <?php }; ?>
+                        <div style="clear:both"></div>
                       </div>
                     </td>
                   </tr>

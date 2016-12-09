@@ -28,7 +28,6 @@
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
 /*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
-.fv-fp-subtitle select{ height:27px; }
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
