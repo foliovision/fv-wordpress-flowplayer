@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.6
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -338,11 +338,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.12 - 2016/12/?? =
+= 6.0.5.12 - 2016/12/08 =
 
 * Feature - Google Analytics - added tracking of playback errors
 * Feature - HLS.js - added code for HLS playback using JavaScript without need for Flash - for all modern desktop browsers. Check the "Enable HLS.js" option
 * Feature - Lightbox can now be disabled for WP galleries - check the "Use video lightbox for WP Galleries" setting
+* Pro - Beta - Vimeo MPEG-DASH playback option
 
 = 6.0.5.11 - 2016/12/02 =
 
