@@ -54,6 +54,7 @@ jQuery(document).ready(function($){
   
   /* 
    * Select playlist item 
+   * keywords: select item
    */
   $(document).on('click','.fv-player-tab-playlist tr td', function(e) {
     var new_index = $(this).parents('tr').index();
@@ -87,6 +88,11 @@ jQuery(document).ready(function($){
       $('.fv_wp_flowplayer_field_rtmp_wrapper',video_tab).show();
       $('.add_rtmp_wrapper',video_tab).hide();
     }
+    if(new_index > 1){
+      $('.fv_wp_flowplayer_field_rtmp',video_tab).val($('.fv_wp_flowplayer_field_rtmp',$('.fv-player-tab-video-files table').eq(0)).val());
+      $('.fv_wp_flowplayer_field_rtmp',video_tab).attr('readonly',true);
+    }
+     
     
     
     
