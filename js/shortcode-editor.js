@@ -1197,7 +1197,7 @@ function fv_player_refresh_tabs(){
       tab.addClass('fv_player_interface_hide')
     }else{
       tab.removeClass('fv_player_interface_hide');
-      if(tab.css('display')==='block')
+      if(tab.css('display')!=='none')
         visibleTabs++
       
     }
