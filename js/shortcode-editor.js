@@ -1136,7 +1136,7 @@ function fv_wp_flowplayer_submit( preview ) {
     }
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-loading');
 
-    var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + encodeURIComponent(fv_wp_fp_shortcode);
+    var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(fv_wp_fp_shortcode);
     
     
     if(fv_player_preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 9){
@@ -1163,6 +1163,13 @@ function fv_wp_flowplayer_submit( preview ) {
   
 	fv_wp_flowplayer_insert( fv_wp_fp_shortcode );  
 }
+
+function b64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
+}
+
 
 function fv_player_open_preview_window(url, width, height){
   height = Math.min(window.screen.availHeight * 0.80, height + 25);
