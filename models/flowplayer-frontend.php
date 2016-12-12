@@ -605,7 +605,11 @@ class flowplayer_frontend extends flowplayer
         
 				$this->ret['html'] .= '</div>'."\n";
         
-				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after."<!--fv player end-->";
+				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+        
+                 if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
+                   $this->ret['html'] .= "<!--fv player end-->";
+                 }
         
 				//  change engine for IE9 and 10
 				if( $this->aCurArgs['engine'] == 'false' ) {
