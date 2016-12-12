@@ -120,7 +120,9 @@ function fv_flowplayer_admin_amazon_options() {
 						<td>             
               <?php fv_flowplayer_admin_checkbox('amazon_expire_force'); ?>              
             </td>
-					</tr>		          
+					</tr>
+          
+          <?php do_action('fv_player_admin_amazon_options'); ?>
 <?php
 			if( !isset($fv_fp->conf['amazon_bucket']) ) {
 				$fv_fp->conf['amazon_bucket'] = array('');
