@@ -20,7 +20,7 @@ require_once dirname( __FILE__ ) . '/../models/flowplayer.php';
 if (!class_exists('flowplayer_frontend')) 
   require_once dirname( __FILE__ ) . '/../models/flowplayer-frontend.php';
 
-add_action( 'plugins_loaded', 'fvp_overtake_shortode' );
+add_action( 'plugins_loaded', 'fvp_overtake_shortodes' );
 
 add_shortcode('flowplayer','flowplayer_content_handle');
 
@@ -524,11 +524,15 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
 }
 
 
-function fvp_overtake_shortode(){
+function fvp_overtake_shortodes(){
+  global $fv_fp;
   
-  add_shortcode('wp_lightbox_embed_protected_s3_video','fv_flowplayer_shortcode_ultimate_lightbox_video');
-  add_shortcode('wp_lightbox_protected_s3_video','fv_flowplayer_shortcode_ultimate_lightbox_video');
-
+  
+  if(isset($fv_fp->conf['integrations']['wp_lightbox_video'])  && $fv_fp->conf['integrations']['wp_lightbox_video'] === 'true' ){
+    add_shortcode('wp_lightbox_embed_protected_s3_video','fv_flowplayer_shortcode_ultimate_lightbox_video');
+    add_shortcode('wp_lightbox_protected_s3_video','fv_flowplayer_shortcode_ultimate_lightbox_video');
+  }
+  
 }
 
 
