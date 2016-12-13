@@ -338,6 +338,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.13 - 2016/12/13 =
+
+* Feature - WP Lightbox Ultimate support - check "Integrations/Compatibility"
+
 = 6.0.5.12 - 2016/12/08 =
 
 * Feature - Google Analytics - added tracking of playback errors
