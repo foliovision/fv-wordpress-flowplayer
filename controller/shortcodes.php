@@ -20,6 +20,8 @@ require_once dirname( __FILE__ ) . '/../models/flowplayer.php';
 if (!class_exists('flowplayer_frontend')) 
   require_once dirname( __FILE__ ) . '/../models/flowplayer-frontend.php';
 
+add_action( 'plugins_loaded', 'fvp_overtake_shortodes' );
+
 add_shortcode('flowplayer','flowplayer_content_handle');
 
 add_shortcode('fvplayer','flowplayer_content_handle');
@@ -519,6 +521,53 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   }
   
   add_filter( 'post_playlist', 'fv_flowplayer_shortcode_playlist', 10, 2 );
+}
+
+
+function fvp_overtake_shortodes(){
+  global $fv_fp;
+  
+  
+  if(isset($fv_fp->conf['integrations']['wp_lightbox_video'])  && $fv_fp->conf['integrations']['wp_lightbox_video'] === 'true' ){
+    add_shortcode('wp_lightbox_embed_protected_s3_video','fv_flowplayer_shortcode_ultimate_lightbox_video');
+    add_shortcode('wp_lightbox_protected_s3_video','fv_flowplayer_shortcode_ultimate_lightbox_video');
+  }
+  
+}
+
+
+
+function fv_flowplayer_shortcode_ultimate_lightbox_video( $atts ) {  
+  global $fv_fp;  
+  
+  $bridge_atts = array();
+  if( isset($atts['name']) ) {
+    $region = $fv_fp->conf['amazon_region'][0] === 'us-east-1' ? '' : '.' . $fv_fp->conf['amazon_region'][0] ;
+    $bridge_atts['src'] = 'https://s3' . $region . '.amazonaws.com/' . $fv_fp->conf['amazon_bucket'][0] . '/' . $atts['name'];
+  }
+  
+  if( isset($atts['width']) ) {    
+    $bridge_atts['width'] = $atts['width'];
+  }
+  
+  if( isset($atts['height']) ) {    
+    $bridge_atts['height'] = $atts['height'];
+  }
+  
+  if( isset($atts['source']) ) {    
+    $bridge_atts['splash'] = $atts['source'];
+  }
+  
+  $shortcode = func_get_args();  
+  
+  switch($shortcode[2]){
+    case 'wp_lightbox_protected_s3_video' :  
+      $bridge_atts['lightbox'] = 'true;';
+      break;
+  }
+
+
+  return flowplayer_content_handle( $bridge_atts, false, 'video' );
 }
 
 

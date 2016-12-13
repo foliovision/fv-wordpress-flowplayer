@@ -672,6 +672,17 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>          
           <tr>
+						<td><label for="wp_lightbox_video"><?php _e('Handle WP Lightbox Ultimate shortcodes', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="integrations[wp_lightbox_video]" value="false" />
+                <input type="checkbox" name="integrations[wp_lightbox_video]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['wp_lightbox_video']) && $fv_fp->conf['integrations']['wp_lightbox_video'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Handles the <code><small>[wp_lightbox_embed_protected_s3_video]</small></code> and <code><small>[wp_lightbox_protected_s3_video]</small></code> shortcodes.', 'fv-wordpress-flowplayer'); ?>
+                
+              </p>
+						</td>
+					</tr> 
+          <tr>
 						<td class="first"><label for="js-everywhere"><?php _e('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
               <p class="description">
