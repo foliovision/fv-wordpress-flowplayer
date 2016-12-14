@@ -1057,6 +1057,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $output = 'mp4';
       } else if( $extension == '3gp' ) {
         $output = 'mp4';      
+      } else if( $extension == 'mkv' ) {
+        $output = 'mp4';      
       } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
         $output = $default;  
       } else {
