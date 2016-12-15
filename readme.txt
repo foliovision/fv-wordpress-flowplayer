@@ -338,6 +338,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.13 - 2016/12/13 =
+
+* New Shortcode Editor! Better looking, with improved workflow and video preview functionality.
+
 = 6.0.5.12 - 2016/12/08 =
 
 * Feature - Google Analytics - added tracking of playback errors
@@ -1336,6 +1340,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 6.0.5.13 =
+
+* New Shortcode Editor! Better looking, with improved workflow and video preview functionality.
 
 = 6.0.5 =
 

@@ -41,7 +41,6 @@
 .fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
 .fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
-
 .fv-player-interface-form-group td { width:25%; }
 
 .flowplayer-wrapper { width: 54%; display: inline-block; float: right;}
@@ -96,3 +95,5 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   width: 432px;
   height: 243px;
 }
+
+#fv_flowplayer_interface_options p.description { line-height: 1.5; margin-bottom: 0; margin-top: 0; }

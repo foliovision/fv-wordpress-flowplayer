@@ -930,7 +930,7 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr>   
 					<tr>          
-						<td><label for="interface[playlist]"><?php _e('Playlist', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td><label for="interface[playlist]"><?php _e('Playlist Style', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
               <input type="hidden" name="interface[playlist]" value="false" />
 							<input type="checkbox" name="interface[playlist]" id="interface[playlist]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist']) && $fv_fp->conf['interface']['playlist'] == 'true' ) echo 'checked="checked"'; ?> />
@@ -942,19 +942,15 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[playlist_captions]" value="false" />
 							<input type="checkbox" name="interface[playlist_captions]" id="interface[playlist_captions]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_captions']) && $fv_fp->conf['interface']['playlist_captions'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>    		          
-					<tr>
-						<td><label for="interface[popup]"><?php _e('End popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td>
-              <input type="hidden" name="interface[popup]" value="false" />
-							<input type="checkbox" name="interface[popup]" id="interface[popup]" value="true" <?php if( isset($fv_fp->conf['interface']['popup']) && $fv_fp->conf['interface']['popup'] == 'true' ) echo 'checked="checked"'; ?> />
-						</td>
-					</tr>    
+					</tr>    		              
 					<tr>          
-						<td><label for="interface[redirect]"><?php _e('Redirect', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td><label for="interface[actions]"><?php _e('Video Actions', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
-              <input type="hidden" name="interface[redirect]" value="false" />
-							<input type="checkbox" name="interface[redirect]" id="interface[redirect]" value="true" <?php if( isset($fv_fp->conf['interface']['redirect']) && $fv_fp->conf['interface']['redirect'] == 'true' ) echo 'checked="checked"'; ?> />
+              <p class="description">
+                <input type="hidden" name="interface[end_actions]" value="false" />
+                <input type="checkbox" name="interface[end_actions]" id="interface[end_actions]" value="true" <?php if( isset($fv_fp->conf['interface']['end_actions']) && $fv_fp->conf['interface']['end_actions'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer'); ?>
+              </p>
 						</td>
 					</tr>                        
 					<tr>          
@@ -963,21 +959,7 @@ function fv_flowplayer_admin_interface_options() {
               <input type="hidden" name="interface[autoplay]" value="false" />
 							<input type="checkbox" name="interface[autoplay]" id="interface[autoplay]" value="true" <?php if( isset($fv_fp->conf['interface']['autoplay']) && $fv_fp->conf['interface']['autoplay'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>
-					<tr>          
-						<td><label for="interface[loop]"><?php _e('Loop', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td>
-              <input type="hidden" name="interface[loop]" value="false" />
-							<input type="checkbox" name="interface[loop]" id="interface[loop]" value="true" <?php if( isset($fv_fp->conf['interface']['loop']) && $fv_fp->conf['interface']['loop'] == 'true' ) echo 'checked="checked"'; ?> />
-						</td>
-					</tr>
-					<tr>          
-						<td><label for="interface[splashend]"><?php _e('Splash end', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td>
-              <input type="hidden" name="interface[splashend]" value="false" />
-							<input type="checkbox" name="interface[splashend]" id="interface[splashend]" value="true" <?php if( isset($fv_fp->conf['interface']['splashend']) && $fv_fp->conf['interface']['splashend'] == 'true' ) echo 'checked="checked"'; ?> />
-						</td>
-					</tr>     
+					</tr>   
 					<tr>          
 						<td><label for="interface[embed]"><?php _e('Embed', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
@@ -1035,6 +1017,16 @@ function fv_flowplayer_admin_interface_options() {
 						</td>
 					</tr> 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
+					<tr>          
+						<td><label for="interface[shortcode_editor_old]"><?php _e('Enable old interface', 'fv-wordpress-flowplayer'); ?>: </label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="interface[shortcode_editor_old]" value="false" />
+                <input type="checkbox" name="interface[shortcode_editor_old]" id="interface[shortcode_editor_old]" value="true" <?php if( isset($fv_fp->conf['interface']['shortcode_editor_old']) && $fv_fp->conf['interface']['shortcode_editor_old'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('Not recommended', 'fv-wordpress-flowplayer'); ?>
+              </p>
+						</td>
+					</tr>           
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -1552,7 +1544,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     </p>
     <div id="fv_flowplayer_admin_notices">
     </div> 
-
+    <div id="fv_flowplayer_admin_tabs">
+      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
+        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
+        <?php endforeach;?>
+        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+      </h2>
+    </div>
+    
     <?php if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
       <div id="fv_flowplayer_ad">
@@ -1571,16 +1571,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
           </div>
       </div>
-    <?php endif; ?> 
-    
-    <div id="fv_flowplayer_admin_tabs">
-      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
-        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
-        <?php endforeach;?>
-        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
-      </h2>
-    </div>
+    <?php endif; ?>	
   
 		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>

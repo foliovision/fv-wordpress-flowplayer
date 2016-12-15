@@ -282,9 +282,16 @@ function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery'), $fv_wp_flowplayer_ver );  
-  wp_enqueue_script('fvwpflowplayer-shortcode-editor');  
-   
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery'), $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
+  
+  global $fv_fp;
+  if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
+    wp_enqueue_script('fvwpflowplayer-shortcode-editor-old');
+  } else {
+    wp_enqueue_script('fvwpflowplayer-shortcode-editor');
+  }
+  
   wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');    
 }
@@ -536,7 +543,12 @@ function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
 
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
-  include dirname( __FILE__ ) . '/../view/wizard.php';
+  global $fv_fp;
+  if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
+    include dirname( __FILE__ ) . '/../view/wizard.old.php';
+  } else {
+    include dirname( __FILE__ ) . '/../view/wizard.php';
+  }
 }
 
 
@@ -562,7 +574,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Halloween sale!
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Christmas sale!
 		</div>
 	</td>
 </tr>

@@ -1305,43 +1305,35 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       show_admin_bar(false);
       ?>
   <style>
-    body { margin: 0; padding: 0; overflow:hidden;}
+    body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
-    html {margin-top: 0px !important;}
+    html {margin-top: 0px !important;overflow-y: auto;}
   </style>
 </head>
 <body>
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+    
     if( !is_user_logged_in() ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
       wp_die('Please log in.');
     }
+    $shortcode = base64_decode($_GET['fv_player_preview']);
+    $matches = null;
+    $width ='';
+    $height ='';
+    if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
+      $width = 'width:'.$matches[1].'px;';
+    }
+    if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+      $height = 'min-height:'.$matches[1].'px;';
+    }
     
-    $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
     ?>
     <div style="background:white;">
-      <div id="wrapper" style="background:white;">
+      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
-          echo do_shortcode($shortcode);
-          ?><script>
-            jQuery(document).ready( function(){
-              var parent = window.parent.jQuery(window.parent.document);
-              if( jQuery('.flowplayer').length > 0 ){
-                if( typeof(flowplayer) != "undefined" ) {
-                  flowplayer( function(api,root) {
-                    parent.trigger('fvp-preview-complete');
-                  })
-                }else{
-                  parent.trigger('fvp-preview-error');
-                }
-              } else {
-                parent.trigger('fvp-preview-complete');
-              }
-
-            })
-          </script>
-          <?
+          echo do_shortcode($shortcode);          
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php
@@ -1349,6 +1341,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         ?>
       </div>
     </div>
+    
   <?php else : ?>
     <?php while ( have_posts() ) : the_post(); //is this needed? ?>
       <?php
@@ -1385,7 +1378,28 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   endif;
   ?>
 </body>
+
 <?php wp_footer(); ?>
+
+<?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
+  
+  <script>
+  jQuery(document).ready( function(){
+    var parent = window.parent.jQuery(window.parent.document);
+    if( typeof(flowplayer) != "undefined" ) {      
+      parent.trigger('fvp-preview-complete');      
+    } else {
+      parent.trigger('fvp-preview-error');
+    }
+  
+  });
+  
+  if (window.top===window.self) {
+    jQuery('#wrapper').css('margin','25px 50px 0 50px');
+  } 
+  </script>
+<?php endif; ?>
+
 </html>       
       <?php
       exit();  
