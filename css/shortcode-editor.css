@@ -96,3 +96,5 @@
 .fv-player-playlist-item[data-index="0"] .first-item-only {
   display: table-row;
 }
+
+.fv-player-tabs th { width: 21% }
