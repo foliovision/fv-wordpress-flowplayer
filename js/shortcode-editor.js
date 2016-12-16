@@ -1214,6 +1214,12 @@ function fv_player_refresh_tabs(){
     jQuery('#fv-player-shortcode-editor-editor .nav-tab').addClass('fv_player_interface_hide');
   }
   
+  if(jQuery('#fv-player-shortcode-editor-editor').hasClass('is-playlist-active')){
+    jQuery('label[for=fv_wp_flowplayer_field_end_actions]').html(jQuery('label[for=fv_wp_flowplayer_field_end_actions]').data('alternate-label'))
+  }else{
+    jQuery('label[for=fv_wp_flowplayer_field_end_actions]').html(jQuery('label[for=fv_wp_flowplayer_field_end_actions]').data('original-label'))
+  }
+  
 }
 
 function fv_wp_flowplayer_add_format() {
