@@ -241,22 +241,6 @@ class FV_Player_Checker {
                 $time = $ThisFileInfo['playtime_seconds'];    	
               }
                        
-              /*
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/Loader/LoaderInterface.php';
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/Loader/Loader.php';
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/Parser.php';
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/M3u8.php';
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/Playlist.php';
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/MediaSegment/MediaSegmentInterface.php';
-              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/MediaSegment/MediaSegment.php';
-              
-              
-              
-              $loader = new Chrisyue\PhpM3u8\Loader\Loader();
-              $parser = new Chrisyue\PhpM3u8\Parser();
-              
-              $parser->setLoader($loader);
-              $result = $parser->parseFromUri($meta_original);*/
               
               
               if(preg_match('/.m3u8(\?.*)?$/i', $meta_original)){
