@@ -240,9 +240,68 @@ class FV_Player_Checker {
               if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
                 $time = $ThisFileInfo['playtime_seconds'];    	
               }
+                       
+              /*
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/Loader/LoaderInterface.php';
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/Loader/Loader.php';
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/Parser.php';
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/M3u8.php';
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/Playlist.php';
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/MediaSegment/MediaSegmentInterface.php';
+              require_once dirname( __FILE__ ) . '/../includes/php-m3u8/M3u8/MediaSegment/MediaSegment.php';
+              
+              
+              
+              $loader = new Chrisyue\PhpM3u8\Loader\Loader();
+              $parser = new Chrisyue\PhpM3u8\Parser();
+              
+              $parser->setLoader($loader);
+              $result = $parser->parseFromUri($meta_original);*/
+              
+              
+              if(preg_match('/.m3u8(\?.*)?$/i', $meta_original)){
+                $request = wp_remote_get($meta_original);
+                $response = wp_remote_retrieve_body( $request );
+                $respo2 = file_get_contents($meta_original);
+                //var_dump($meta_original, $response,$respo2 ) ;
+
+                $playlist = false;
+                $duration = 0;
+                $segments = false;
+
+                if(!preg_match_all('/^[^#].*\.m3u8/im', $respo2,$playlist)){
+                  if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $respo2,$segments)){
+                    foreach($segments[1] as $segment_item){
+                      $duration += $segment_item;
+                    }  
+                  }
+                }else{
+                  foreach($playlist[0] as $item){
+                    $playlist_item = file_get_contents(preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $meta_original));
+                    if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
+                      foreach($segments[1] as $segment_item){
+                        $duration += $segment_item;
+                      }  
+                    }
+                    if($duration > 0)
+                      break;
+                  }
+                }
+
+                $time = $duration;
+              }
+              
+              
+              
+              
+              
+              
+              
+              
+              
               
               $time = apply_filters( 'fv_flowplayer_checker_time', $time, $meta_original );
-
+              
               global $post;
               $fv_flowplayer_meta = get_post_meta( $post->ID, flowplayer::get_video_key($meta_original), true );
               $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
