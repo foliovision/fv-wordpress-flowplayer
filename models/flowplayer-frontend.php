@@ -603,6 +603,15 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
         }
         
+        if( $args['liststyle'] == 'prevnext' && count($aPlaylistItems) ) {
+          if( isset($this->conf['playlist_advance']) && $this->conf['playlist_advance'] === 'false' ) {
+            if( isset($this->aCurArgs['advance']) && $this->aCurArgs['advance'] === 'false' || !isset($this->aCurArgs['advance']) ) {
+              $attributes['data-advance'] = 'false';
+            }
+          }
+        }
+          
+        
 				$this->ret['html'] .= '</div>'."\n";
         
 				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
