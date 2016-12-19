@@ -235,6 +235,7 @@ class FV_Player_Checker {
             /*
             Only check file length
             */
+            
             if( isset($meta_action) && $meta_action == 'check_time' ) {
               $time = false;
               if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
@@ -242,26 +243,29 @@ class FV_Player_Checker {
               }
                        
               
-              
+          
               if(preg_match('/.m3u8(\?.*)?$/i', $meta_original)){
+                
+                remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
+                
                 $request = wp_remote_get($meta_original);
                 $response = wp_remote_retrieve_body( $request );
-                $respo2 = file_get_contents($meta_original);
-                //var_dump($meta_original, $response,$respo2 ) ;
 
                 $playlist = false;
                 $duration = 0;
                 $segments = false;
 
-                if(!preg_match_all('/^[^#].*\.m3u8/im', $respo2,$playlist)){
-                  if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $respo2,$segments)){
+                if(!preg_match_all('/^[^#].*\.m3u8(\?.*)?$/im', $response,$playlist)){
+                  if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
                     foreach($segments[1] as $segment_item){
                       $duration += $segment_item;
                     }  
                   }
                 }else{
                   foreach($playlist[0] as $item){
-                    $playlist_item = file_get_contents(preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $meta_original));
+                    $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $meta_original);
+                    $request = wp_remote_get($item_url);
+                    $playlist_item = wp_remote_retrieve_body( $request );
                     if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
                       foreach($segments[1] as $segment_item){
                         $duration += $segment_item;
@@ -274,15 +278,6 @@ class FV_Player_Checker {
 
                 $time = $duration;
               }
-              
-              
-              
-              
-              
-              
-              
-              
-              
               
               $time = apply_filters( 'fv_flowplayer_checker_time', $time, $meta_original );
               
