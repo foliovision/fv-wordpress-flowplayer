@@ -697,8 +697,8 @@ function fv_flowplayer_admin_integrations() {
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('parse_comments'); ?>
-                <?php _e('Affects comments and BuddyPress. These links will be displayed as videos.','fv-wordpress-flowplayer'); ?>
-                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                <?php _e('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.','fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
             </td>
           </tr>					
