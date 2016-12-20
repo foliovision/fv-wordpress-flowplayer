@@ -492,10 +492,11 @@ add_filter( 'fv_player_caption', 'fv_player_caption' );
 
 
 add_filter( 'comment_text', 'fv_player_comment_text', 0 );
+add_filter( 'bp_get_activity_content_body', 'fv_player_comment_text', 6 );
 
 function fv_player_comment_text( $comment_text ) {
   if( is_admin() ) return $comment_text;
-
+  
 	global $fv_fp;
 	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
     add_filter('comment_text', 'do_shortcode');
@@ -523,6 +524,7 @@ function fv_player_comment_text( $comment_text ) {
       $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
     }
 	}
+  
 	return $comment_text;
 }
 
