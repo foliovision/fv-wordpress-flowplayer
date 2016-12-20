@@ -379,6 +379,16 @@ function fv_flowplayer_admin_default_options() {
                 </p>
 							</td>
 						</tr>
+            <tr>
+              <td style="width: 250px"><label for="playlist_advance"><?php _e('Auto advance playlist', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td>
+                <p class="description">
+                  <input type="hidden" value="false" name="playlist_advance" />
+                  <input type="checkbox" value="true" name="playlist_advance" id="playlist_advance" <?php if (!isset($fv_fp->conf['playlist_advance']) || isset($fv_fp->conf['playlist_advance']) && $fv_fp->conf['playlist_advance'] == 'true') echo 'checked="checked"'; ?> />
+                  <?php _e('After a video from a playlsit finishes, the next video starts playling automatically.', 'fv-wordpress-flowplayer'); ?></a>
+                </p>
+              </td>
+            </tr>
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
           <small class="alignright">
@@ -1016,6 +1026,15 @@ function fv_flowplayer_admin_interface_options() {
 							<input type="checkbox" name="interface[speed]" id="interface[speed]" value="true" <?php if( isset($fv_fp->conf['interface']['speed']) && $fv_fp->conf['interface']['speed'] == 'true' ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr> 
+          <tr>          
+						<td><label for="interface[playlist_advance]"><?php _e('Playlist auto advance', 'fv-wordpress-flowplayer'); ?>: </label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="interface[playlist_advance]" value="false" />
+                <input type="checkbox" name="interface[playlist_advance]" id="interface[shortcode_editor_old]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_advance']) && $fv_fp->conf['interface']['playlist_advance'] == 'true' ) echo 'checked="checked"'; ?> />
+              </p>
+						</td>
+					</tr>
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
 					<tr>          
 						<td><label for="interface[shortcode_editor_old]"><?php _e('Enable old interface', 'fv-wordpress-flowplayer'); ?>: </label></td>
@@ -1026,7 +1045,7 @@ function fv_flowplayer_admin_interface_options() {
                 <?php _e('Not recommended', 'fv-wordpress-flowplayer'); ?>
               </p>
 						</td>
-					</tr>           
+					</tr>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />

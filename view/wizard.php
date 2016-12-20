@@ -420,6 +420,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                     </td>
                   </tr>
                   
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advnace', 'name' => 'playlist_advance' ) ); ?>
+                  
                   <?php do_action('fv_flowplayer_shortcode_editor_after'); ?>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_actions'); ?>
