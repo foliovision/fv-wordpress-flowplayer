@@ -338,6 +338,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.14 - 2016/12/?? =
+
+* Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
+
 = 6.0.5.13 - 2016/12/13 =
 
 * New Shortcode Editor! Better looking, with improved workflow and video preview functionality.
