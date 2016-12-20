@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /*
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
