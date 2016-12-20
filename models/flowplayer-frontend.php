@@ -465,10 +465,12 @@ class flowplayer_frontend extends flowplayer
         }
         
         if( count($aPlaylistItems) ) {
-          if( isset($this->aCurArgs['advance']) && $this->aCurArgs['advance'] === 'false' ){
+          if( isset($this->aCurArgs['playlist_advance']) && $this->aCurArgs['playlist_advance'] === 'false' ){
+            
             $attributes['data-advance'] = 'false';
-          }elseif(!isset($this->aCurArgs['advance']) ) {
+          }elseif(!isset($this->aCurArgs['playlist_advance']) ) {
             if( isset($this->conf['playlist_advance']) && $this->conf['playlist_advance'] === 'false' ) {
+              
               $attributes['data-advance'] = 'false';
             }
           }
