@@ -341,6 +341,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.5.14 - 2016/12/?? =
 
 * Feature - "Parse Vimeo and YouTube links" option now affects BuddyPress as well
+* Bugfix - HLS - fix for HLS.js fallback to Flash HLS in playlists
 * Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
 
 = 6.0.5.13 - 2016/12/13 =
