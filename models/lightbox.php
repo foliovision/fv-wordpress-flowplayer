@@ -219,11 +219,11 @@ class FV_Player_lightbox {
       return $content;    
     }
 
-    $content = preg_replace_callback('~(<a.*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
     return $content;
   }
   
-  function lightbox_add_callback($matches) {
+  function lightbox_add_callback($matches) {    
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
