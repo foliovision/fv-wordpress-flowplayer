@@ -472,16 +472,17 @@
 .fp-playlist-external a.is-active { -webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s; }
 #content .fp-playlist-external a { border: 0}
 
-.fp-playlist-vertical { text-align: left; overflow-x: hidden; background: #fff;max-width: 100%; }
-.fp-playlist-vertical-player{ float: left!important; max-width:calc( 100% - 156px)!important;}
-.fp-playlist-vertical-wrapper { margin-bottom: 24px; }
-.fp-playlist-vertical-wrapper:before,.fp-playlist-vertical-wrapper:after { content:"";display:table; }
-.fp-playlist-vertical-wrapper:after { clear: both; }
-	.fp-playlist-vertical-wrapper .flowplayer { width:65%;float:left;margin-bottom:0;margin-top:2px; }
-	.fp-playlist-vertical-wrapper .fp-playlist-vertical { width:34%;float:right;margin-bottom:0; }
-	.fp-playlist-vertical-wrapper .fp-playlist-vertical a { display:block; }
-	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video { min-height: 0 !important; height: 100% !important; }
-
+@media screen and (min-width: 480px) {
+  .fp-playlist-vertical { text-align: left; overflow-x: hidden; background: #fff;max-width: 100%; }
+  .fp-playlist-vertical-player{ float: left!important; max-width:calc( 100% - 156px)!important;}
+  .fp-playlist-vertical-wrapper { margin-bottom: 24px; }
+  .fp-playlist-vertical-wrapper:before,.fp-playlist-vertical-wrapper:after { content:"";display:table; }
+  .fp-playlist-vertical-wrapper:after { clear: both; }
+  .fp-playlist-vertical-wrapper .flowplayer { width:65%;float:left;margin-bottom:0;margin-top:2px; }
+  .fp-playlist-vertical-wrapper .fp-playlist-vertical { width:34%;float:right;margin-bottom:0; }
+  .fp-playlist-vertical-wrapper .fp-playlist-vertical a { display:block; }
+  .css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video { min-height: 0 !important; height: 100% !important; }
+}
 .add_media span.wp-media-buttons-icon {
 	background: url("img/media-button.png") no-repeat scroll left top;
     display: inline-block;
