@@ -1139,6 +1139,7 @@ function fv_wp_flowplayer_submit( preview ) {
     
     var supported = window.navigator.userAgent.match(/(vivaldi|chromium|chrome|firefox|[6789]\.[0-9]+\.[0-9]+ safari)/i);
     if(!supported){
+      jQuery('#fv-player-shortcode-editor-preview-new-tab > a').attr('title','Live preview unstable in Your browser. Use the latest Chromium, Opera, Firefox or Safari(6+)').html('Open live preview in a new window');
     }
     if(fv_player_preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 9 || !supported){
       jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-new-tab');
