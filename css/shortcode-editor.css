@@ -90,6 +90,8 @@
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
 #fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}
 
+#fv-player-shortcode-editor-preview div.notice { display: block }
+
 .first-item-only {
   display: none;
 }
