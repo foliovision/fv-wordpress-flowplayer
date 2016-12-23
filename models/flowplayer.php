@@ -100,7 +100,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
+    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
