@@ -215,7 +215,7 @@ class FV_Player_Custom_Videos {
         
         jQuery(this).siblings('.flowplayer').remove();
         
-        var url = '<?php echo home_url('/'); ?>?fv_player_embed=1&fv_player_preview=' + encodeURIComponent('[fvplayer src="'+jQuery(this).val()+'" embed="false"]');
+        var url = '<?php echo home_url('/'); ?>?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode('[fvplayer src="'+jQuery(this).val()+'" embed="false"]');
         jQuery(this).siblings('iframe').attr('src',url).hide();
         jQuery(this).siblings('.loading-preview').show();
         
@@ -225,6 +225,12 @@ class FV_Player_Custom_Videos {
         jQuery('.fv_player_custom_video_preview').show();
         jQuery('.loading-preview').hide();
       });
+      
+      function b64EncodeUnicode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+            return String.fromCharCode('0x' + p1);
+        }));
+      }
     </script>
     <?php
   }

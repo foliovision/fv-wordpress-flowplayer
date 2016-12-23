@@ -46,6 +46,8 @@ include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
 
 include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
+include_once(dirname( __FILE__ ) . '/models/users-buddypress.php');
+
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
 $fv_fp = new flowplayer_frontend();
