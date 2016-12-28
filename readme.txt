@@ -339,6 +339,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+<<<<<<< HEAD
+= 6.0.5.5.1 - 2016/08/?? =
+
+* Compatibility - added a warning for unstable Android versions
+=======
 = 6.0.5.14 - 2016/12/23 =
 
 * Feature - "Parse Vimeo and YouTube links" option now affects BuddyPress as well
@@ -407,6 +412,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Translations - changing language domain to fv-wordpress-flowplayer
 * Pro - Video ads - making it work again when using video lightbox
 * Pro - Video ads - support for Google Analytics added
+>>>>>>> refs/remotes/origin/master
 
 = 6.0.5.5 - 2016/07/28 =
 

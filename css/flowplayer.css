@@ -878,7 +878,9 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 		background-size: 100%;
 	}
 }
-
+.fv-unstable-android-warning{
+  display:none;
+}
 
 .flowplayer {
   -webkit-touch-callout: none;

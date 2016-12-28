@@ -657,7 +657,14 @@ class flowplayer_frontend extends flowplayer
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
-		return $this->ret;
+    
+    /*
+     * User agent check
+     */
+    $this->ret['html'] .= '<div class="fv-unstable-android-warning">For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.</div>';
+    
+
+    return $this->ret;
 	}
   
   
