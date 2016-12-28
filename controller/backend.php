@@ -61,37 +61,34 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 
-function fv_wp_flowplayer_featured_image() {
-  global $fv_fp;
+function fv_wp_flowplayer_featured_image($post_id) {
+  global $fv_fp,$post;
+  
+  $post = get_post($post_id);
+  $sPost = $post->post_content;
+  
   if(!isset($fv_fp->conf['integrations']['featured_img']) || isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] !== 'true'){
     return;
   }
-  if(!isset($_POST['content'])){
+  
+  if(empty($sPost)){
     return;
   }
-  
-  global $FV_Player_Pro;
-  remove_filter( 'content_save_pre', array($FV_Player_Pro, 'update_vimeo_yt_data'));
   
   $thumbnail_id = get_post_thumbnail_id();
   if (!empty($thumbnail_id)) {
     return;
   }
   
-  $post = get_post();
-  
-  $sPost = $post->post_content;
   $sThumbUrl = array();
-  if (!preg_match('/(?:splash=")[^"]*.(?:jpg|gif|png)/', $sPost, $sThumbUrl)) {
+  if (!preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $sPost, $sThumbUrl) || empty($sThumbUrl[1])) {
     return;
   }
-  $sThumbUrl = str_replace('splash="', '', $sThumbUrl[0]);
-  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl, $post->ID);
-  if($thumbnail_id){
-    set_post_thumbnail($post->ID, $thumbnail_id);
-  }
   
-     
+  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl[1], $post_id);
+  if($thumbnail_id){
+    set_post_thumbnail($post_id, $thumbnail_id);
+  }
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
