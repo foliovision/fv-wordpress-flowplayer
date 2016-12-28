@@ -41,7 +41,6 @@
 .fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
 .fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
-
 .fv-player-interface-form-group td { width:25%; }
 
 .flowplayer-wrapper { width: 54%; display: inline-block; float: right;}
@@ -82,3 +81,19 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   background-color: #ffffff;
   border-bottom: #ffffff;
 }
+
+.wp-admin .user-videos .fv-player-custom-video {
+  margin-bottom: 10px;
+}
+.wp-admin .user-videos .flowplayer, .postbox-container .fv-player-custom-video .flowplayer, .usersultra-dahsboard-center .fv-player-custom-video .flowplayer {
+  max-width: 432px !important;
+  margin: 2px;
+}
+.wp-admin .user-videos .fv-player-custom-video >  iframe, .postbox-container .fv-player-custom-video >  iframe, .usersultra-dahsboard-center .fv-player-custom-video > iframe {
+  display: block;
+  overflow: hidden;
+  width: 432px;
+  height: 243px;
+}
+
+#fv_flowplayer_interface_options p.description { line-height: 1.5; margin-bottom: 0; margin-top: 0; }

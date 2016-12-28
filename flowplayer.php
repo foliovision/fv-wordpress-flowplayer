@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 /*  FV Player - HTML5 video player with Flash fallback  
-	Copyright (C) 2015  Foliovision
+	Copyright (C) 2016  Foliovision
 		
 	This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,6 +41,10 @@ include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
 include_once(dirname( __FILE__ ) . '/models/flowplayer-frontend.php');
 
 include_once(dirname( __FILE__ ) . '/models/lightbox.php');
+
+include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
+
+include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
