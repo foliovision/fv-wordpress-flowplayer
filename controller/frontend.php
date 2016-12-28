@@ -383,6 +383,15 @@ function flowplayer_prepare_scripts() {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
+    
+    if( $fv_fp->load_dash ) {
+      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+    
+    if( $fv_fp->load_hlsjs && isset($fv_fp->conf['hlsjs']) && $fv_fp->conf['hlsjs'] == 'true'  ) {
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+    
   }
 }
 
@@ -482,34 +491,19 @@ function fv_player_caption( $caption ) {
 add_filter( 'fv_player_caption', 'fv_player_caption' );
 
 
-
-
-add_action('amp_post_template_css','fv_flowplayer_amp_post_template_css');
-
-function fv_flowplayer_amp_post_template_css() {
-  global $fv_fp;
-  $fv_fp->css_enqueue();
-}
-
-
-
-
-add_action('amp_post_template_footer','fv_flowplayer_amp_post_template_footer',9);
-
-function fv_flowplayer_amp_post_template_footer() {
-  flowplayer_prepare_scripts();
-  do_action( 'wp_print_footer_scripts' );
-}
-
-
 add_filter( 'comment_text', 'fv_player_comment_text', 0 );
+add_filter( 'bp_get_activity_content_body', 'fv_player_comment_text', 6 );
+add_filter( 'bbp_get_topic_content', 'fv_player_comment_text', 0 );
+add_filter( 'bbp_get_reply_content', 'fv_player_comment_text', 0 );
 
 function fv_player_comment_text( $comment_text ) {
   if( is_admin() ) return $comment_text;
-
+  
 	global $fv_fp;
 	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
     add_filter('comment_text', 'do_shortcode');
+    add_filter('bbp_get_topic_content', 'do_shortcode', 11);
+    add_filter('bbp_get_reply_content', 'do_shortcode', 11);
 
     if( stripos($comment_text,'youtube.com') !== false || stripos($comment_text,'youtu.be') !== false ) {
   		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
@@ -534,6 +528,7 @@ function fv_player_comment_text( $comment_text ) {
       $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
     }
 	}
+  
 	return $comment_text;
 }
 

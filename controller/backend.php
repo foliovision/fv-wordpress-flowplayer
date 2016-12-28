@@ -392,9 +392,16 @@ function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery'), $fv_wp_flowplayer_ver );  
-  wp_enqueue_script('fvwpflowplayer-shortcode-editor');  
-   
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery'), $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
+  
+  global $fv_fp;
+  if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
+    wp_enqueue_script('fvwpflowplayer-shortcode-editor-old');
+  } else {
+    wp_enqueue_script('fvwpflowplayer-shortcode-editor');
+  }
+  
   wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');    
 }
@@ -538,8 +545,12 @@ function fv_wp_flowplayer_admin_init() {
       }
       delete_option('fv_wordpress_flowplayer_persistent_notices');
     }
-  }  
-}   
+
+    if( isset($aCheck->expired) && $aCheck->expired && stripos( implode(get_option('active_plugins')), 'fv-player-pro' ) !== false ) {
+      add_filter( 'site_transient_update_plugins', 'fv_player_remove_update' );
+    }
+  }
+}
 
 
 function fv_wp_flowplayer_admin_key_update() {
@@ -642,7 +653,12 @@ function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
 
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
-  include dirname( __FILE__ ) . '/../view/wizard.php';
+  global $fv_fp;
+  if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
+    include dirname( __FILE__ ) . '/../view/wizard.old.php';
+  } else {
+    include dirname( __FILE__ ) . '/../view/wizard.php';
+  }
 }
 
 
@@ -668,7 +684,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
 	<td class="plugin-update colspanchange" colspan="3">
 		<div class="update-message">
-			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Halloween sale!
+			<a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Christmas sale!
 		</div>
 	</td>
 </tr>
@@ -883,17 +899,8 @@ function fv_wp_flowplayer_check_template() {
 			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
 			if( count($jquery_scripts[1]) > 0 ) {   
 				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
-					$check = fv_wp_flowplayer_check_jquery_version( $jquery_script, $jquery_scripts[1], $jkey );
-					if( $check == - 1 ) {
-						$errors[] = "jQuery library <code>$jquery_script</code> is old version and might not be compatible with Flowplayer.";
-					} else if( $check == 1 ) {
-            $ok[] = __('jQuery library 1.7.1+ found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
-						$jquery_pos = strpos( $response['body'], $jquery_script );
-					} else if( $check == 2 ) {
-						//	nothing
-					}	else {
-						$errors[] = "jQuery library <code>$jquery_script</code> found, but unable to check version, please make sure it's at least 1.7.1.";
-					}
+          $ok[] = __('jQuery library found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
+					$jquery_pos = strpos( $response['body'], $jquery_script );
 				}
       
 				if( count($jquery_scripts[1]) > 1 ) {
@@ -1273,3 +1280,16 @@ add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' )
 add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
 
 
+
+
+function fv_player_remove_update( $objUpdates ) {
+  if( !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
+
+  foreach( $objUpdates->response AS $key => $objUpdate ) {
+    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
+      unset($objUpdates->response[$key]);      
+    }
+  }
+  
+  return $objUpdates;
+}
