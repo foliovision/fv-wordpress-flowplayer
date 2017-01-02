@@ -36,7 +36,8 @@ Back to school special 25% off pro licenses until end of September.
 **Additional Technical information**
 
 * Core video engine: open source Flowplayer 6. 
-* Supported video formats are FLV, H.264, and MP4 ([read about HTML5 video formats](https://foliovision.com/player/encoding)). Multiple videos can be displayed in one post or page.
+* Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
+* Supported video streaming formats are HLS (Flash and JavaScript fallback available for incompatible devices), MPEG DASH and RTMP.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with WordPress Flowplayer plugin, there are several improvements:
 
@@ -322,6 +323,10 @@ No worries.
 1. You can always downgrade to version the Flash version ([delete the plugin then grab older version here and install from the ZIP file](https://wordpress.org/plugins/fv-wordpress-flowplayer/developers/)). If you downgrade to version 1.x you do lose a lot of mobile and iOS capability but you didn't have it in the first place.
 1. Contact us via [support](https://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
 
+= 33. I can't see overlay ads on my videos =
+
+The problem is probably in AdBlock. If it's active, the overlay ads will be blocked. Once AdBlock is deactivated for the particular domain where the video is played, the overlay ads will be displayed (page refresh needed).
+
 FV Player Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
 
 Thank you for being part of the HMTL 5 mobile video revolution!
@@ -338,9 +343,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.14 - 2016/12/?? =
+= 6.0.5.14 - 2016/12/23 =
 
+* Feature - "Parse Vimeo and YouTube links" option now affects BuddyPress as well
+* Bugfix - HLS - fix for HLS.js fallback to Flash HLS in playlists
+* Bugfix - Iframe embedding - not working for posts
 * Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
+* Bugfix - Lightbox - for for images regex to pick the right anchor tag
+* Bubfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
 
 = 6.0.5.13 - 2016/12/13 =
 
