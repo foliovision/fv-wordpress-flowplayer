@@ -201,12 +201,22 @@ class FV_Player_Custom_Videos {
         fv_player_custom_video_add(this);
       });
       
+      var fv_player_preview = false;
+      var fv_player_shortcode_preview_unsupported = false;
+      jQuery(document).ready(function(){
+        var ua = window.navigator.userAgent;
+        fv_player_shortcode_preview_unsupported = ua.match(/edge/i) || ua.match(/safari/i) && !ua.match(/chrome/i) ;
+      })
+     
       jQuery(document).on('change', '.fv_player_custom_video_url', function() {
         if( !jQuery(this).val().match(/^(https?:)?\/\//) ){
           jQuery(this).siblings('iframe').remove();
           return;
         }
-        
+        if(fv_player_preview || fv_player_shortcode_preview_unsupported){
+          return;
+        }
+        fv_player_preview = true;
         
         if( jQuery(this).siblings('iframe').length == 0 ) {
           jQuery(this).before('<iframe allowfullscreen class="fv_player_custom_video_preview" scrolling="no"></iframe>');
@@ -230,6 +240,7 @@ class FV_Player_Custom_Videos {
       jQuery(document).on('fvp-preview-complete', function() {
         jQuery('.fv_player_custom_video_preview').show();
         jQuery('.loading-preview').hide();
+        fv_player_preview = false;
       });
     </script>
     <?php
