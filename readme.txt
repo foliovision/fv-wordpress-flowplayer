@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.15 - 2017/01/?? =
+
+* Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
+
 = 6.0.5.14 - 2016/12/23 =
 
 * Feature - "Parse Vimeo and YouTube links" option now affects BuddyPress as well
