@@ -405,6 +405,11 @@ class FV_Player_Custom_Videos_Master {
   }
   
   public function EDD_profile_editor(){ 
+    global $fv_fp;
+    
+    if( !isset($fv_fp->conf['profile_videos_enable_bio']) || $fv_fp->conf['profile_videos_enable_bio'] !== 'true' ) 
+      return;
+    
     $user = new FV_Player_Custom_Videos(array( 'id' => get_current_user_id(), 'type' => 'user' ));
     echo $user->get_form(array('no_form' => true));
   }
