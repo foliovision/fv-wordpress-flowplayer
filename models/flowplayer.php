@@ -58,6 +58,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $load_dash = false;
   
+  public $load_hlsjs = false;
+  
 
   public function __construct() {
     //load conf data into stack
@@ -98,8 +100,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'post_rewrite_rules', array( $this, 'rewrite_embed' ) );
-    add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
+    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
@@ -493,6 +494,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
     .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
     .flowplayer.fixed-controls { margin: 0 auto <?php echo $iMarginBottom+30; ?>px auto; display: block; }
+    .flowplayer.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo trim($fv_fp->conf['durationColor']); ?> !important; background-color: <?php echo trim($fv_fp->conf['backgroundColor']); ?> !important; }
     .flowplayer { background-color: <?php echo trim($fv_fp->conf['canvas']); ?> !important; }
@@ -557,7 +560,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function css_enqueue() {
-    if( is_admin() && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+    
+    if( is_admin() && !did_action('admin_footer') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
       return;
     }
     
@@ -582,15 +586,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
     }
     
-    wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
-    
-    if( current_user_can('manage_options') ) {
+    if( is_admin() &&  did_action('admin_footer') ) {
+      echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
+      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
+      
+    } else {
+      wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
       wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
-    }
-    
-    if( $this->bCSSInline ) {
-      add_action( 'wp_head', array( $this, 'css_generate' ) );
-      add_action( 'admin_head', array( $this, 'css_generate' ) );
+      
+      if( $this->bCSSInline ) {
+        add_action( 'wp_head', array( $this, 'css_generate' ) );
+        add_action( 'admin_head', array( $this, 'css_generate' ) );
+      }
+      
     }
     
   }
@@ -1028,6 +1036,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $output = $default;
     } else {
       if ($extension == 'm3u8' || $extension == 'm3u') {
+        global $fv_fp;
+        $fv_fp->load_hlsjs = true;        
         $output = 'x-mpegurl';
       } else if ($extension == 'mpd') {
         global $fv_fp;
@@ -1046,6 +1056,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else if( $extension == 'mov' ) {
         $output = 'mp4';
       } else if( $extension == '3gp' ) {
+        $output = 'mp4';      
+      } else if( $extension == 'mkv' ) {
         $output = 'mp4';      
       } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
         $output = $default;  
@@ -1293,46 +1305,101 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       show_admin_bar(false);
       ?>
   <style>
-    body { margin: 0; padding: 0; overflow:hidden;}
+    body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
-    html {margin-top: 0px !important;}
+    html {margin-top: 0px !important;overflow-y: auto;}
   </style>
 </head>
 <body>
-  <?php while ( have_posts() ) : the_post(); ?>
-    <?php
-
-    $bFound = false;
-    $rewrite = get_option('rewrite_rules');
-    if( empty($rewrite) ) {
-      $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
-    } else {
-      $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
-      $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
+  <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+    
+    if( !is_user_logged_in() ){
+      ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
+      wp_die('Please log in.');
     }
-    //$content = apply_filters( 'the_content', get_the_content() );
-    
-    
-            
-    $aPlayers = explode( '<!--fv player end-->', $content );
-    if( $aPlayers ) {
-      foreach( $aPlayers AS $k => $v ) {
-        if( stripos($v,$sLink.'"') !== false ) {
-          echo substr($v, stripos($v,'<div id="wpfp_') );
-          $bFound = true;
-          break;
-        }
-      }
+    $shortcode = base64_decode($_GET['fv_player_preview']);
+    $matches = null;
+    $width ='';
+    $height ='';
+    if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
+      $width = 'width:'.$matches[1].'px;';
     }
-    
-    if( !$bFound ) {
-      echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
-    }    
+    if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+      $height = 'min-height:'.$matches[1].'px;';
+    }
     
     ?>
-  <?php endwhile; ?>
+    <div style="background:white;">
+      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+        <?php
+        if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+          echo do_shortcode($shortcode);          
+        } else { ?>
+          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
+          <?php
+        }
+        ?>
+      </div>
+    </div>
+    
+  <?php else : ?>
+    <?php while ( have_posts() ) : the_post(); //is this needed? ?>
+      <?php
+  
+      $bFound = false;
+      $rewrite = get_option('rewrite_rules');
+      if( empty($rewrite) ) {
+        $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
+      } else {
+        $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
+        $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
+      }
+      //$content = apply_filters( 'the_content', get_the_content() );
+      
+      
+              
+      $aPlayers = explode( '<!--fv player end-->', $content );
+      if( $aPlayers ) {
+        foreach( $aPlayers AS $k => $v ) {
+          if( stripos($v,$sLink.'"') !== false ) {
+            echo substr($v, stripos($v,'<div id="wpfp_') );
+            $bFound = true;
+            break;
+          }
+        }
+      }
+      
+      if( !$bFound ) {
+        echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
+      }    
+      
+      ?>
+    <?php endwhile; 
+  endif;
+  ?>
 </body>
+
 <?php wp_footer(); ?>
+
+<?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
+  
+  <script>
+  jQuery(document).ready( function(){
+    var parent = window.parent.jQuery(window.parent.document);
+    if( typeof(flowplayer) != "undefined" ) {      
+      parent.trigger('fvp-preview-complete');      
+    } else {
+      parent.trigger('fvp-preview-error');
+    }
+  
+  });
+  
+  if (window.top===window.self) {
+    jQuery('#wrapper').css('margin','25px 50px 0 50px');
+  } 
+  </script>
+<?php endif; ?>
+
 </html>       
       <?php
       exit();  
