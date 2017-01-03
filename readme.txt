@@ -345,6 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.15 - 2017/01/?? =
 
+* "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
 * Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
 
 = 6.0.5.14 - 2016/12/23 =
