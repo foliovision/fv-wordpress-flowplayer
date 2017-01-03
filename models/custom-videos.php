@@ -265,6 +265,8 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'the_content', array( $this, 'show' ) );
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
+    add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor'));
+    add_action('edd_pre_update_user_profile', array($this, 'save'));
   }
   
   function add_meta_boxes() {
@@ -401,9 +403,13 @@ class FV_Player_Custom_Videos_Master {
     
     return $show_password_fields;
   }
+  
+  public function EDD_profile_editor(){ 
+    $user = new FV_Player_Custom_Videos(array( 'id' => get_current_user_id(), 'type' => 'user' ));
+    echo $user->get_form(array('no_form' => true));
+  }
 
 }
 
 
 $FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
-
