@@ -136,7 +136,7 @@ class FV_Player_lightbox {
         /* $html = preg_replace( '~max-width: \d+px;~', 'max-width: '.$iWidth.'px;', $html );
           $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
 
-        $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter-free is-splash$sClass' $sStyle><div class='fp-ui'></div></div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $html . "</div>";
+        $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div></div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $html . "</div>";
       }
     }
     return $html;
