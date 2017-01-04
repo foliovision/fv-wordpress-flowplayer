@@ -106,7 +106,7 @@ class FV_Player_lightbox {
       if ($bUseAnchor) {
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
-        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' href='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
@@ -173,7 +173,7 @@ class FV_Player_lightbox {
 
       $aPlayerParts = explode("<div class='fv_player_lightbox_hidden'", $aPlayer['html']);
       $id = $i == 1 ? "fv_flowplayer_" . $fv_fp->hash . "_2_lightbox" : "fv_flowplayer_" . $fv_fp->hash . "_lightbox";
-      $output['html'] .= "<a id='" . $id . "' href='#wpfp_" . $fv_fp->hash . "'><span style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></span>" . $fv_fp->aCurArgs['caption'] . "</a>";
+      $output['html'] .= "<a id='" . $id . "' href=\"#\" data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><span style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></span>" . $fv_fp->aCurArgs['caption'] . "</a>";
 
       if ($i > 1) {
         $after .= "<div class='fv_player_lightbox_hidden'" . $aPlayerParts[1];
