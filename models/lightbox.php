@@ -197,15 +197,15 @@ class FV_Player_lightbox {
 
     //  todo: disabling the option should turn this off
     if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace('~<a[^>]*?data-fv-lightbox=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg))[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1"  lightbox="true;text" caption="$2"]', $content);
+      $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg))[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1"  lightbox="true;text" caption="$2"]', $content);
     }
 
     if (stripos($content, 'colorbox') !== false) {
       $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?data-fv-lightbox=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-      $content = preg_replace('~<a[^>]*?data-fv-lightbox=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
+      $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
 
       $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?data-fv-lightbox=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-      $content = preg_replace('~<a[^>]*?data-fv-lightbox=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
+      $content = preg_replace('~<a[^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
     }
 
     return $content;
@@ -224,7 +224,7 @@ class FV_Player_lightbox {
   }
   
   function lightbox_add_callback($matches) {    
-    if (!preg_match('/data-fv-lightbox=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
+    if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
     if (stripos($matches[1], 'class=') === false) {
@@ -322,7 +322,7 @@ class FV_Player_lightbox {
         <p class="description">
           <input type="hidden" value="false" name="interface[lightbox]" />
           <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('You can also put in <code>&lt;a href="#" data-fv-lightbox="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
