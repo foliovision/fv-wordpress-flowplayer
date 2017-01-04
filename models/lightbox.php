@@ -201,10 +201,10 @@ class FV_Player_lightbox {
     }
 
     if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?data-fv-lightbox=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
+      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
       $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
 
-      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?data-fv-lightbox=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
+      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
       $content = preg_replace('~<a[^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
     }
 
