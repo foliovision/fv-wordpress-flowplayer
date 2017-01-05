@@ -172,8 +172,8 @@ class FV_Player_lightbox {
       }
 
       $aPlayerParts = explode("<div class='fv_player_lightbox_hidden'", $aPlayer['html']);
-      $id = $i == 1 ? "fv_flowplayer_" . $fv_fp->hash . "_2_lightbox_starter" : "fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter";
-      $output['html'] .= "<a id='" . $id . "' href='#wpfp_" . $fv_fp->hash . "'><span style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></span>" . $fv_fp->aCurArgs['caption'] . "</a>";
+      $id = $i == 1 ? "_2_lightbox_starter" : "_lightbox_starter";
+      $output['html'] .= "<a id='fv_flowplayer_" . $fv_fp->hash. $id . "' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><span style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></span>" . $fv_fp->aCurArgs['caption'] . "</a>";
 
       if ($i > 1) {
         $after .= "<div class='fv_player_lightbox_hidden'" . $aPlayerParts[1];
