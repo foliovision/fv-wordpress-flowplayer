@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.16 - 2017/01/?? =
+
+* Fix - Iframe embedding scrollbars appearing
+
 = 6.0.5.15 - 2017/01/05 =
 
 * "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
