@@ -11,7 +11,7 @@ Avoid changing this area to maintain compatability with future versions of Color
 #fv_player_boxContent{position:relative; overflow:hidden;}
 #fv_player_boxLoadedContent{overflow:auto;}
 #fv_player_boxLoadedContent iframe{display:block; width:100%; height:100%; border:0; background-color: white;}
-.fv-flowplayer-shortcode-editor #fv_player_boxTitle{margin:5px; text-align: left; bottom: auto }
+.fv-flowplayer-shortcode-editor #fv_player_boxTitle{margin:5px; text-align: left; bottom: auto;}
 #fv_player_boxLoadingOverlay, #fv_player_boxLoadingGraphic{position:absolute; top:0; left:0; width:100%;}
 #fv_player_boxPrevious, #fv_player_boxNext, #fv_player_boxClose, #fv_player_boxSlideshow{cursor:pointer;}
 
@@ -23,13 +23,13 @@ order/nesting of the generated HTML, so that the structure easier to understand.
 #fv_player_boxOverlay{background:#111;}
 
 #colorBox{}
-    #fv_player_boxContent{background:#fff; padding: 5px;background:url(loading.gif) 50% 50% no-repeat #fff; }
+    #fv_player_boxContent{background:#fff; padding: 5px;background:url(loading.gif) 50% 50% no-repeat #fff;}
         #fv_player_boxLoadedContent{margin-top:35px;}
-        #fv_player_boxTitle{position:absolute; top:0px; left:0; padding: 8px 0 8px 18.5%; width:100%; color:#9D1A28; font-size: 14px;}
-        #fv_player_boxCurrent{position:absolute; bottom:0px; left:100px; color:#999;}
-        #fv_player_boxSlideshow{position:absolute; bottom:0px; right:42px; color:#444;}
-        #fv_player_boxPrevious{position:absolute; bottom:0px; left:0; color:#444;}
-        #fv_player_boxNext{position:absolute; bottom:0px; left:63px; color:#444;}
+        #fv_player_boxTitle{position:absolute; top:0; left:0; padding: 8px 0 8px 18.5%; width:100%; color:#9D1A28; font-size: 14px;}
+        #fv_player_boxCurrent{position:absolute; bottom:0; left:100px; color:#999;}
+        #fv_player_boxSlideshow{position:absolute; bottom:0; right:42px; color:#444;}
+        #fv_player_boxPrevious{position:absolute; bottom:0; left:0; color:#444;}
+        #fv_player_boxNext{position:absolute; bottom:0; left:63px; color:#444;}
         /*#fv_player_boxLoadingOverlay{ text-align: center; background:url(loading.gif) 5px 5px no-repeat #fff;}*/
         #fv_player_boxClose{position:absolute; top:2px; right:2px; display:block; color:#444; height: 16px; width: 16px; overflow: hidden; text-indent: 25px; background: url("img/uploader-icons.png") -98px 0 no-repeat transparent; border: 0; }
         #fv_player_boxClose:hover { background-position: -98px 0; }
