@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.5.16 - 2017/01/?? =
 
 * Fix - Iframe embedding scrollbars appearing
+* Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
 
 = 6.0.5.15 - 2017/01/05 =
 

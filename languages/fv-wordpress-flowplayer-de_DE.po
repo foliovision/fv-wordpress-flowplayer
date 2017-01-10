@@ -37,15 +37,16 @@ msgstr "Bearbeiten"
 
 #: ../models/flowplayer-frontend.php:206 ../controller/frontend.php:57
 msgid "Click to watch the video"
-msgstr "Klicken Sie hier um das Video zu sehen"
+msgstr "Klicken Sie hier, um das Video zu sehen"
 
 #: ../models/flowplayer-frontend.php:206 ../controller/frontend.php:58
 msgid "[This post contains video, click to play]"
-msgstr "[Dieser Beitrag enthält Video, klicken Sie auf um zu spielen]"
+msgstr ""
+"[Dieser Beitrag enthält ein Video, klicke, um die Wiedergabe zu starten]"
 
 #: ../models/lightbox.php:305 ../view/admin.php:1033
 msgid "Enable video lightbox"
-msgstr "Aktiviere Video Lightbox"
+msgstr "Video Lightbox aktivieren"
 
 #: ../models/lightbox.php:310
 msgid ""
@@ -53,9 +54,9 @@ msgid ""
 "\"colorbox\"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed "
 "video."
 msgstr ""
-"Sie können nur class=\"colorbox\" ins ihr Link eingeben für schnelle "
-"eingebung des Lightbox ins Video: <code>&lt;a href=\"http://pfad.zu.Ihrem/"
-"Video.mp4\" class=\"colorbox\"&gt;Ihr Link Titel&lt;/a&gt;</code>"
+"Sie können auch <code>&lt;a href=\"http://path.to.your/video.mp4\" class="
+"\"colorbox\"&gt;Your link title&lt;/a&gt;</code> verwenden, um ein Video "
+"unkompliziert in einer Lightbox darzustellen."
 
 #: ../models/lightbox.php:321
 msgid "Use video lightbox for images as well"
@@ -66,9 +67,8 @@ msgid ""
 "Will group images as well as videos into the same lightbox gallery. Turn "
 "<strong>off</strong> your lightbox plugin when using this."
 msgstr ""
-"Will gruppieren Bilder so wie Videos in der gleichen lightbox Galerie. "
-"Schalten Sie Ihr lightbox plugin <strong>aus</strong> wenn Sie diese "
-"möglichkeit nutzen."
+"Gruppiert Bilder sowie Videos in derselben Lightbox Galerie. Schalten Sie "
+"Ihren Lightbox Plugin <strong>aus</strong>, wenn Sie ihn benutzen."
 
 #: ../models/checker.php:315
 msgid "Every 5 minutes"
@@ -76,7 +76,7 @@ msgstr "Alle 5 Minuten"
 
 #: ../controller/frontend.php:47
 msgid "Video loading aborted"
-msgstr "Video laden abgebrochen"
+msgstr "Laden des Videos abgebrochen"
 
 #: ../controller/frontend.php:48
 msgid "Network error"
@@ -84,15 +84,15 @@ msgstr "Netzwerkfehler"
 
 #: ../controller/frontend.php:49
 msgid "Video not properly encoded"
-msgstr "Video is nicht richtig kodiert"
+msgstr "Das Video ist nicht korrekt codiert"
 
 #: ../controller/frontend.php:50
 msgid "Video file not found"
-msgstr "Die Datei war nicht gefunden"
+msgstr "Video Datei nicht gefunden"
 
 #: ../controller/frontend.php:51
 msgid "Unsupported video"
-msgstr "Nicht unterstützt Video"
+msgstr "Nicht unterstütztes Video"
 
 #: ../controller/frontend.php:52
 msgid "Skin not found"
@@ -118,62 +118,63 @@ msgstr "Nicht unterstütztes Videoformat. Installieren Sie Adobe Flash."
 msgid ""
 "<h2>Video file expired.<br />Please reload the page and play it again.</h2>"
 msgstr ""
-"<h2>Video Datei war abgelaufen.<br />Bitte laden Sie die Seite und spielen "
-"Sie es nochmal.</h2>"
+"<h2>Die Video-Datei ist abgelaufen.<br>Bitte die Seite neu laden und erneut "
+"abspielen.</h2>"
 
 #: ../controller/frontend.php:60
 msgid ""
 "<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>"
 msgstr ""
-"<h2>Video Format is nicht unterstützt .<br />Bitte benutzen Sie ein Flash-"
-"kompatiblen Gerät.</h2>"
+"<h2>Nicht unterstütztes Videoformat.<br>Bitte benutze ein Flash-kompatibles "
+"Gerät.</h2>"
 
 #: ../controller/frontend.php:61
 msgid "Mobile browser detected, serving low bandwidth video."
-msgstr "Mobile Browser entdeckt, Video wird mit niedrigen Bandbreite geladen"
+msgstr ""
+"Mobiler Browser erkannt, Video wird mit geringer Bandbreite abgespielt."
 
 #: ../controller/frontend.php:62
 msgid "Click here"
-msgstr "Klicken Sie hier"
+msgstr "Hier klicken"
 
 #: ../controller/frontend.php:63
 msgid "for full quality."
-msgstr "für die volle Qualität."
+msgstr "für hohe Qualität."
 
 #: ../controller/frontend.php:64 ../controller/frontend.php:65
 msgid ""
 "<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the "
 "stream is currently offline.</h3>"
 msgstr ""
-"<h2>Live Sendung hat Nicht gelungen</h2><h3>Bitte versuchen Sie es später "
-"noch einmal, vielleicht ist die Sendung gerade offline</h3>"
+"<h2>Live-Stream fehlgeschlagen.</h2><h3>Bitte versuche es später noch "
+"einmal, vielleicht ist der Stream zurzeit offline.</h3>"
 
 #: ../controller/frontend.php:66
 msgid "Please tell us what is wrong :"
-msgstr "Bitte mitteilen Sie uns, was ist Falsch :"
+msgstr "Bitte sage uns, was falsch ist:"
 
 #: ../controller/frontend.php:67
 msgid ""
 "Please give us more information (a full sentence) so we can help you better"
 msgstr ""
-"Bitte geben Sie uns weitere Informationen (mit ganzen Satz), damit können "
-"wir Ihnen besser helfen"
+"Bitte geben Sie uns weitere Informationen (in ganzen Sätzen), damit wir "
+"Ihnen besser helfen können."
 
 #: ../controller/frontend.php:68
 msgid "Admin: Error parsing JSON"
-msgstr "Verwalter: Fehler mit parsing JSON"
+msgstr "Admin: Fehler beim Parsen von JSON"
 
 #: ../controller/frontend.php:69
 msgid "Admin: Video checker doesn't support IE 9."
-msgstr "Verwalter: Video Kontroller ist nich unterstüt in IE9."
+msgstr "Admin: Video-Controller wird in IE9 nicht unterstützt."
 
 #: ../controller/frontend.php:70
 msgid "Admin: Check failed."
-msgstr "Verwalter: Prüfung versagt"
+msgstr "Admin: Prüfung fehlgeschlagen."
 
 #: ../controller/frontend.php:71
 msgid "Video Issues"
-msgstr "Problem mit Video "
+msgstr "Video Probleme"
 
 #: ../controller/frontend.php:465
 #, php-format
@@ -182,7 +183,7 @@ msgstr "Beiträge von dem %s"
 
 #: ../controller/backend.php:188
 msgid "Add FV Player"
-msgstr "FV Player Hinzufügen"
+msgstr "FV Player hinzufügen"
 
 #: ../controller/backend.php:244
 #, php-format
@@ -190,8 +191,8 @@ msgid ""
 "FV Wordpress Flowplayer has found old shortcodes in the content of your "
 "posts. <a href=\"%1$s\">Run the conversion script.</a>"
 msgstr ""
-"FV Wordpress Flowplayer hat alte shortcode in den Inhalt Ihrer Beiträge "
-"gefunden. <a href=\"%1$s\">Schalten sie das konvertierungs Skript.</a>"
+"FV Wordpress Flowplayer hat alte Shortcodes im Inhalt Deiner Beiträge "
+"gefunden. <a href=\"%1$s\">Führe das Konvertierungs-Skript aus.</a>"
 
 #: ../controller/backend.php:259
 msgid ""
@@ -205,7 +206,7 @@ msgstr ""
 
 #: ../controller/backend.php:348
 msgid "FV Player Video Checker"
-msgstr "FV Player Video Kontroller"
+msgstr "FV Player Video Checker"
 
 #: ../controller/backend.php:349
 msgid ""
@@ -214,11 +215,10 @@ msgid ""
 "work its magic, our video checker must contact our server.</p><p>Would you "
 "like to enable the video encoding checker?</p>"
 msgstr ""
-"<p>FV-Player enthält einen kostenlosen Video Kontroller, der wird Ihre "
-"Videos für Codierungsfehler zu überprüfen und hilft sicherzustellen, "
-"ruckelfreie Wiedergabe für all Ihrer Videos. Wenn Sie seine Magie benutzen "
-"wollen, müsst unserer Video Kontroller mit unserem Server in verbindung "
-"sein. </ P><p>Wollen Sie, der Video codierung Kontroller aktivieren?</p>"
+"<p>FV-Player enthält einen kostenlosen Video-Checker, der Deine Videos auf "
+"Codierungs-Fehler überprüft und für eine reibungslose Wiedergabe Deiner "
+"Videos sorgt. Um sauber zu arbeiten, muss unser Video-Checker unseren Server "
+"kontaktieren.</p><p>Möchtest Du den Video-Checker aktivieren?</p>"
 
 #: ../controller/backend.php:351
 msgid "Allow"
@@ -258,7 +258,7 @@ msgstr "FV Flowplayer Lizenz ist abgelaufen"
 
 #: ../controller/backend.php:386
 msgid "Hide this notice"
-msgstr "Verstecke die Anmerkung"
+msgstr "Diese Nachricht ausblenden"
 
 #: ../controller/backend.php:387
 msgid "I'll check this later"
@@ -269,9 +269,9 @@ msgid ""
 "Template checker has changed. Just open any of your videos on your site and "
 "see if you get a red warning message about JavaScript not working."
 msgstr ""
-"Thema Kontroller war geändert . Öffnen Sie einfach alle Ihre Videos auf "
-"Ihrer Website und sehen Sie, ob Sie ein rotes Warnmeldung bekommen über dass "
-"das JavaScript arbeiten nicht."
+"Theme-controller wurde geändert. Öffnen Sie ein beliebiges Videos auf Ihrer "
+"Website und sehen Sie, ob Sie eine rote Warnmeldung bekommen, die darauf "
+"hinweist, dass JavaScript nicht funktioniert."
 
 #: ../controller/backend.php:763
 msgid "FV Flowplayer script found: "
@@ -283,7 +283,7 @@ msgstr "jQuery Bibliothek 1.7.1+ gefunden: "
 
 #: ../controller/backend.php:814
 msgid "License key acquired successfully. <a href=\"\">Reload</a>"
-msgstr "Lizenzschlüssel war erfolgreich erworben. <a href=\"\">neu laden</a>"
+msgstr "Lizenz-Schlüssel erfolgreich erworben. <a href=\"\">Neu laden</a>"
 
 #: ../controller/backend.php:1010
 msgid "FV Flowplayer Pro extension installed - check the new "
@@ -313,11 +313,11 @@ msgstr "Standard eingestellte Größe"
 
 #: ../view/admin.php:40
 msgid "Ad text"
-msgstr "Werbung text"
+msgstr "Werbung Text"
 
 #: ../view/admin.php:41
 msgid "Ad links"
-msgstr "Werbung Linken"
+msgstr "Werbung Link"
 
 #: ../view/admin.php:46
 msgid "Show After"
@@ -333,7 +333,7 @@ msgstr "Zeige die Styling Möglichkeiten"
 
 #: ../view/admin.php:55
 msgid "Select your preset"
-msgstr "Wählen Sie euere Vorauswahl"
+msgstr "Wählen Sie Ihre Vorgabe"
 
 #: ../view/admin.php:56
 msgid "Default (white, centered above the control bar)"
@@ -346,7 +346,7 @@ msgstr "Weiß, zentriert auf dem unteren Rand des Video "
 #: ../view/admin.php:61
 msgid "(Hint: put .wpfp_custom_ad_content before your own CSS selectors)"
 msgstr ""
-"(Rat: stellen Sie .wpfp_custom_ad_content bevor Ihre eigenen CSS-Selektoren)"
+"(Tipp: stellen Sie .wpfp_custom_ad_content vor Ihre eigenen CSS-Selektoren)"
 
 #: ../view/admin.php:74 ../view/admin.php:180 ../view/admin.php:387
 #: ../view/admin.php:728 ../view/admin.php:835 ../view/admin.php:984
@@ -360,11 +360,10 @@ msgid ""
 "We check the video length and make sure the link expiration time is big "
 "enough for the video to buffer properly."
 msgstr ""
-"Sichere Amazon S3 URLs sind empfohlen für Websites mit bezahlten Inhalt für "
-"logged Benutzer. Wir überprüfen die Videolänge und stellen sich sicher, dass "
-"die Verbindung ablaufzeit ist groß genug für das Video, um richtig zu "
-"Puffern.Sichere Amazon S3-URL für Websites mit Paid Content für registrierte "
-"Benutzer empfohlen."
+"Sichere Amazon S3 URLs werden für Websites mit bezahlten Inhalten für "
+"angemeldete Benutzer empfohlen. Wir überprüfen die Videolänge und stellen "
+"sicher, dass die Verbindungsablaufzeit lang genug für das Video ist, um "
+"richtig zu puffern."
 
 #: ../view/admin.php:109
 msgid ""
@@ -375,36 +374,36 @@ msgid ""
 "in your cached pages won't expire. Read more in the"
 msgstr ""
 "Wenn Sie einen Cache-plugin (wie Hyper Cache, WP Super Cache oder W3 Total "
-"Cache) benutzen, wir empfehlen Ihnen zu stellen den  \"Standard ablauf Zeit"
-"\" um doppelt so viel wie Sie Ihren Cache-timeout ist und schalten Sie ein "
-"\"Erzwinge die Standard ablauf Zeit\". Auf diese Weise die Videolänge wird "
-"nicht berücksichtigt und die Videoquelle URLs in Ihre zwischengespeicherten "
-"Seiten verfallen nicht. Lesen Sie mehr in der"
+"Cache) benutzen, empfehlen wir Ihnen, die   \"Standard-Ablauf-Zeit\" doppelt "
+"so lang wie ihren Cache-timeout zu machen und auch die \"Erzwinge Standard-"
+"Ablauf-Zeit\" zu überprüfen. Auf diese Weise wird die Videolänge nicht "
+"berücksichtigt und die Video URLs in Ihren zwischengespeicherten Seiten "
+"verfallen nicht. Lesen Sie mehr in der"
 
 #: ../view/admin.php:109
 msgid "Using Amazon S3 secure content in FV Flowplayer guide"
-msgstr "Einsatz von Amazon S3 sicherer Inhalt in FV Flowplayer Handbuch"
+msgstr "Amazon S3 gesicherte Inhalte in FV Flowplayer benutzen"
 
 #: ../view/admin.php:113
 msgid "Default Expiration Time [minutes]"
-msgstr "Standard ablauf Zeit [in Minuten]"
+msgstr "Standard Ablaufzeit [in Minuten]"
 
 #: ../view/admin.php:113
 msgid ""
 "Each video duration is stored on post save and then used as the expire time. "
 "If the duration is not available, this value is used."
 msgstr ""
-"Jede Video Dauer ist speichert bei speicherung der Beitrag und dann als "
-"ablauf Zeit angewandte. Wenn die Dauer ist unerhältlich, wird der Wert "
-"angewandte."
+"Jede Videolänge wird beim Speichern des Beitrags gespeichert und als "
+"Verfallszeit benutzt. Wenn die Videolänge nicht verfügbar ist, wird dieser "
+"Wert benutzt."
 
 #: ../view/admin.php:119
 msgid "Force the default expiration time"
-msgstr "Erzwinge die Standard ablauf Zeit"
+msgstr "Erzwingt die Standard-Ablauf-Zeit"
 
 #: ../view/admin.php:137
 msgid "Amazon Bucket"
-msgstr "Amazon bucket"
+msgstr "Amazon Bucket"
 
 #: ../view/admin.php:137
 msgid ""
@@ -412,9 +411,9 @@ msgid ""
 "bucket and enter its name here. All matching videos will use the protected "
 "URLs."
 msgstr ""
-"Wir empfehlen Ihnen einfach alle Ihre geschützten Videos in einen bucket "
-"stellen und geben ihm den Namen. Alle passenden Videos werden die "
-"geschützten URLs nutzen."
+"Wir empfehlen Ihnen, alle Ihre geschützten Videos in einen einzigen bucket "
+"zu stellen und den Namen hier einzugeben. Alle passenden Videos werden die "
+"geschützten URLs benutzen."
 
 #: ../view/admin.php:141
 msgid "Region"
@@ -466,7 +465,7 @@ msgstr "ID der Zugriffsschlüssel"
 
 #: ../view/admin.php:162
 msgid "Secret Access Key"
-msgstr "Geheimnis Zugriffsschlüssel"
+msgstr "Geheimer AWS-Zugangsschlüssel"
 
 #: ../view/admin.php:168
 msgid "remove"
@@ -474,7 +473,7 @@ msgstr "entfernen"
 
 #: ../view/admin.php:181
 msgid "Add more Amazon S3 secure buckets"
-msgstr "Hinzufüge mehr Amazon S3 geschützter buckets"
+msgstr "Weitere gesicherte Amazon S3 Buckets hinzufügen"
 
 #: ../view/admin.php:197 ../view/admin.php:905 ../view/wizard.php:266
 msgid "Autoplay"
@@ -485,9 +484,9 @@ msgid ""
 "We make sure only one video per page autoplays. Note that mobile devices "
 "don't support autoplay."
 msgstr ""
-"Wir sicherstellen, dass nur eins Video pro Seite wird automatisch gespielt. "
-"Vergessen Sie nicht, dass mobile Geräte unterstützen nicht die automatische "
-"Wiedergabe."
+"Wir stellen sicher, dass nur ein Video pro Seite automatisch abgespielt "
+"wird. Vergessen Sie nicht, dass mobile Geräte unterstützen die automatische "
+"Wiedergabe nicht unterstützen."
 
 #: ../view/admin.php:206
 msgid "Auto Buffering"
@@ -496,8 +495,8 @@ msgstr "Automatisches Puffern"
 #: ../view/admin.php:210
 msgid "Works for first 2 videos on the page only, to preserve your bandwidth."
 msgstr ""
-"Funktioniert nur für die erste 2 Videos auf der Seite, um Ihre Bandbreite zu "
-"behalten."
+"Funktioniert nur für die ersten 2 Videos auf der Seite, um Bandbreite zu "
+"schonen."
 
 #: ../view/admin.php:215
 msgid "Default Video Size"
@@ -521,33 +520,31 @@ msgstr "Standard Volumen"
 
 #: ../view/admin.php:233
 msgid "Disable Admin Video Checker:"
-msgstr "Deaktiviere Verwalter Video Kontroller"
+msgstr "Admin Video Controller deaktivieren"
 
 #: ../view/admin.php:237
 msgid ""
 "Checks your video encoding when you open a post with video as admin. "
 "Notifies you about possible playback issues."
 msgstr ""
-"Überprüft Ihre Video-Encoding, wenn Sie einen Beitrag mit Video als Admin "
+"Überprüft Ihr Video-Encoding, wenn Sie einen Beitrag mit Video als Admin "
 "öffnen. Informiert Sie über mögliche Probleme bei der Wiedergabe."
 
 #: ../view/admin.php:242
 msgid "Disable Embed Button"
-msgstr "Deaktiviere den einbinden Taste"
+msgstr "Deaktiviere Einbetten Schaltfläche"
 
 #: ../view/admin.php:246
 msgid "Removes embed button from top bar."
-msgstr ""
-"Entfernt die Taste, um den HTML-Code des Video Spielers von die obige Leiste "
-"bekommen."
+msgstr "Entfernt die 'Einbetten' Schaltfläche von der Leiste oben."
 
 #: ../view/admin.php:251
 msgid "Disable Sharing"
-msgstr "Deaktiviere teilung"
+msgstr "Sharing deaktivieren"
 
 #: ../view/admin.php:255
 msgid "Removes sharing buttons from top bar."
-msgstr "Entfernt Teilung Schaltflächen von oben bar."
+msgstr "Entfernt 'Sharing' Schaltflächen von der Leiste oben."
 
 #: ../view/admin.php:260
 msgid "Flash Streaming Server"
@@ -564,7 +561,7 @@ msgstr "Schaltfläche für Vollbild"
 
 #: ../view/admin.php:272
 msgid "Adds fullscreen button to player top bar."
-msgstr "Fügt Vollbild Schaltfläche, in die obere Leiste den Videospieler."
+msgstr "Fügt Vollbild Schaltfläche in die obere Leiste des Videospieler ein"
 
 #: ../view/admin.php:277
 msgid "Google Analytics ID"
@@ -577,11 +574,12 @@ msgstr "Wird automatisch geladen, wenn ein Video abgespielt wird."
 #: ../view/admin.php:293
 msgid "You have a valid FV Flowplayer license, you can put up your logo here"
 msgstr ""
-"Sie haben eine gültige FV Flowplayer Lizenz, Sie können Ihr Logo hier setzen"
+"Sie haben eine gültige FV Flowplayer Lizenz; Sie können Ihr Logo hier "
+"einbinden."
 
 #: ../view/admin.php:295
 msgid "You need to have a FV Flowplayer license to use it"
-msgstr "Um das Logo zu verwenden, brauchen Sie FV Flowplayer Lizenz"
+msgstr "Um das Logo zu verwenden, brauchen Sie eine FV Flowplayer Lizenz"
 
 #: ../view/admin.php:299 ../view/admin.php:368
 msgid "Upload Image"
@@ -589,7 +587,7 @@ msgstr "Bild hochladen"
 
 #: ../view/admin.php:302
 msgid "Position"
-msgstr "Stellung"
+msgstr "Position"
 
 #: ../view/admin.php:303
 msgid "Bottom-left"
@@ -613,7 +611,7 @@ msgstr "Play Taste"
 
 #: ../view/admin.php:315
 msgid "Adds play button to player controlbar."
-msgstr "Fügt die Play-Taste, in die Player Kontrollleiste."
+msgstr "Fügt die Play-Taste in die Player Kontrollleiste ein."
 
 #: ../view/admin.php:320
 msgid "Playlist style"
@@ -637,7 +635,7 @@ msgstr "Vertikal"
 
 #: ../view/admin.php:329
 msgid "Enter your default playlist style here"
-msgstr "Eingeben Sie Ihrer standard Playlist Stil hier"
+msgstr "Geben Sie Ihren Playlist Standardstil hier ein"
 
 #: ../view/admin.php:334
 msgid "Popup Box"
@@ -681,7 +679,8 @@ msgstr " Beitragsbild"
 #: ../view/admin.php:367
 msgid "Default which will be used for any player without its own splash image."
 msgstr ""
-"Standard die für jeden Video Player ohne eigenes Beitragsbild verwendet wird."
+"Standard, der  fürjeden Video Player ohne eigenes Beitragsbild verwendet "
+"wird."
 
 #: ../view/admin.php:371
 msgid "Subtitles On By Default"
@@ -690,7 +689,7 @@ msgstr "Untertitel automatisch anzeigen"
 #: ../view/admin.php:375
 msgid "Normally you have to hit a button in controlbar to turn on subtitles."
 msgstr ""
-"Normalerweise müssen Sie auf die Schaltfläche in Controlbar klicken um "
+"Normalerweise müssen Sie auf die Schaltfläche in der Controlbar klicken, um "
 "Untertitel aktivieren."
 
 #: ../view/admin.php:382
@@ -723,7 +722,8 @@ msgstr ""
 #: ../view/admin.php:510
 msgid "You can customize the colors of the player to match your website."
 msgstr ""
-"Sie können die Farben des Spielers anpassen dass er mit Ihre Website passt."
+"Sie können die Farben des Players anpassen, um ihn optisch an Ihre Webseite "
+"anzupassen."
 
 #: ../view/admin.php:527
 msgid "Here you can enable and configure advanced hosting options."
@@ -751,7 +751,7 @@ msgstr ""
 #: ../view/admin.php:564
 msgid "You can configure video ads globally, or on a per video basis."
 msgstr ""
-"Sie können Video-Anzeigen global oder auf einer pro Video Basis "
+"Sie können Video-Anzeigen global oder auf einer per-Video Basis "
 "konfigurieren."
 
 #: ../view/admin.php:567
@@ -769,7 +769,7 @@ msgstr "Folgende Optionen sind passend für Web-entwickler und Programmierer."
 
 #: ../view/admin.php:581
 msgid "Always use fixed size player"
-msgstr "Immer benutze festgesetzt Format des Video Player"
+msgstr "Immer die feste Spielergröße verwenden"
 
 #: ../view/admin.php:585
 msgid "Enable to force video size at cost of loosing the video responsiveness."
@@ -786,19 +786,20 @@ msgid ""
 "Enable if your theme is using colorbox lightbox to show content and clones "
 "the HTML content into it."
 msgstr ""
-"Aktivieren Sie, wenn Ihr Thema benutzt colorbox lightbox und Klone der HTML-"
-"Inhalt darein."
+"Aktivieren, wenn Ihr Theme colorbox lightbox  benutzt, um Inhalte anzuzeigen "
+"und den HTML Inhalt dort hinein kopiert."
 
 #: ../view/admin.php:600
 msgid "Disable saving of color settings into a static file"
-msgstr "Deaktiviere speichern von Farben einstellungen in eine statische Datei"
+msgstr ""
+"Speichern von Farben-Einstellungen in eine statische Datei deaktivieren"
 
 #: ../view/admin.php:605
 msgid ""
 "Normally the player CSS configuration is stored in wp-content/fv-player-"
 "custom/style-{blog_id}.css."
 msgstr ""
-"Normalerweise ist die Player CSS Konfiguration in wp-content/fv-player-"
+"Normalerweise wird die Player CSS Konfiguration in wp-content/fv-player-"
 "custom/style-{blog_id}.css gespeichert."
 
 #: ../view/admin.php:606
@@ -807,9 +808,9 @@ msgid ""
 "this file though, as it will be overwritten by plugin update or saving its "
 "options!"
 msgstr ""
-"Wir tun dies, zu vermeiden Ausdrucken das CSS-Code in Ihre <head> Website. "
-"Bearbeiten Sie nicht diese Datei, da es durch Plugin-Update oder bei "
-"Speichern die Optionen überschrieben wird!"
+"Wir tun dies, um zu vermeiden, dass CSS-Code in den <head> Teil der Webseite "
+"ausgegeben wird. Bearbeiten Sie nicht diese Datei, da sie durch Plugin-"
+"Updates oder beim Speichern der Einstellungen überschrieben wird!"
 
 #: ../view/admin.php:611
 msgid "Fit scaling"
@@ -820,8 +821,8 @@ msgid ""
 "Original aspect ratio of the video will be used to display the video - for "
 "troubleshooting of fullscreen issues."
 msgstr ""
-"Original Aspektverhältnis des Videos wird das Video angezeigt werden - für "
-"die Fehlerbehebung von Vollbild Fragen."
+"Urprüngliches Seitenverhältnis des Videos wird für die Anzeige verwendet - "
+"für die Fehlerbehebung von Vollbildanzeigeproblemen."
 
 #: ../view/admin.php:620
 msgid "Handle WordPress <code><small>[video]</small></code> shortcodes"
@@ -829,13 +830,13 @@ msgstr "WordPress <code><small>[video]</small></code> shortcodes bearbeiten"
 
 #: ../view/admin.php:629
 msgid "Load FV Flowplayer JS everywhere"
-msgstr "Laden Sie FV Flowplayer JS überall"
+msgstr "FV Flowplayer JS überall laden"
 
 #: ../view/admin.php:634
 msgid ""
 "If you use some special JavaScript integration you might prefer this option."
 msgstr ""
-"Wenn Sie ein speziell JavaScript verwenden um unseren Spieler einfügen, "
+"Wenn Sie spezielles JavaScript verwenden, um unseren Spieler einfügen, "
 "können Sie diese Option verwenden."
 
 #: ../view/admin.php:635
@@ -848,14 +849,14 @@ msgstr ""
 
 #: ../view/admin.php:640
 msgid "Parse old shortcodes with commas"
-msgstr "Alten shortcodes mit Komma bearbeiten"
+msgstr "Alte Shortcodes mit Komma einfügen"
 
 #: ../view/admin.php:644
 msgid ""
 "Older versions of this plugin used commas to sepparate shortcode parameters."
 msgstr ""
-"Ältere Versionen dieses Plugins verwendet Kommas um den shortcode Parameter "
-"zu trennen."
+"Ältere Versionen dieses Plugins verwenden Kommasm, um den shortcode "
+"Parameter zu trennen."
 
 #: ../view/admin.php:645
 msgid ""
@@ -864,7 +865,7 @@ msgid ""
 msgstr ""
 "Diese Option wird sicherstellen, dass es mit der aktuellen Version "
 "funktionieren wird. Schalten Sie diese Option aus, wenn Sie Problemen mit "
-"dem Anzeige haben oder mit andere Plugins, die die shortcodes benutzen."
+"dem Anzeige haben oder mit anderen Plugins, die shortcodes benutzen."
 
 #: ../view/admin.php:650
 msgid "Post Thumbnail"
@@ -880,7 +881,7 @@ msgstr ""
 
 #: ../view/admin.php:659
 msgid "Prefer Flash player by default"
-msgstr "Bevorzugen Flash Player Standardmäßig"
+msgstr "Flash-Player standardmäßig bevorzugen"
 
 #: ../view/admin.php:663
 msgid "Provides greater compatibility."
@@ -900,7 +901,7 @@ msgstr "RTMP bufferTime Verbeserung"
 
 #: ../view/admin.php:673
 msgid "Use if your live streams are not smooth."
-msgstr "Verwenden Sie, wenn sind Ihre Live-Streams nicht glatt."
+msgstr "Aktivieren, wenn die Live Streams ruckeln"
 
 #: ../view/admin.php:674
 msgid ""
@@ -921,12 +922,12 @@ msgstr "Video Dauer feststellen"
 #: ../view/admin.php:684
 msgid "Beta version, turn off if you experience issues when saving posts!"
 msgstr ""
-"Beta Version, schalten Sie aus wenn Sie Probleme mit Speichern der Beiträge "
-"haben."
+"Beta Version. Ausschalten, wenn Sie Probleme mit dem Speichern von Beiträgen "
+"haben!"
 
 #: ../view/admin.php:685
 msgid "Turn on to enable video duration scanning."
-msgstr "Schalten Sie an um das Video Dauer scannen ermöglichen."
+msgstr "Anschalten, um es zu ermöglichen, die Video Dauer zu ermitteln."
 
 #: ../view/admin.php:698
 #, php-format
@@ -946,7 +947,7 @@ msgstr "Aktuell %s Beiträge in der Warteschlange."
 
 #: ../view/admin.php:717
 msgid "Use iframe embedding"
-msgstr "Verwende  iFrame Einbettung"
+msgstr "Iframe Einbettung verwenden"
 
 #: ../view/admin.php:722
 msgid ""
@@ -964,12 +965,12 @@ msgstr "Standard Pop-up"
 msgid ""
 "You can set a default popup here and then skip it for individual videos."
 msgstr ""
-"Sie können einen Standard Pop-up hier setzen und es dann für einzelne Videos "
+"Sie können eine Pop-up Vorgabe definieren und sie dann für einzelne Videos "
 "überspringen."
 
 #: ../view/admin.php:788
 msgid "Status"
-msgstr "Zustand"
+msgstr "Status"
 
 #: ../view/admin.php:807
 msgid "Name"
@@ -997,7 +998,7 @@ msgstr "Welche funktionen sollten in shortcode editor verfügbar sein?"
 
 #: ../view/admin.php:870
 msgid "Allow User Uploads"
-msgstr "Erlauben Einfügung aus Mediathek"
+msgstr "Benutzer-Uploads ermöglichen"
 
 #: ../view/admin.php:877
 msgid "Playlist"
@@ -1025,7 +1026,7 @@ msgstr "Beitragsbild am Ende"
 
 #: ../view/admin.php:926
 msgid "Embed"
-msgstr "Einfügung HTML Code des Video Player"
+msgstr "Einbetten"
 
 #: ../view/admin.php:933 ../view/admin.php:1325 ../view/wizard.php:180
 msgid "Subtitles"
@@ -1033,11 +1034,11 @@ msgstr "Untertitel"
 
 #: ../view/admin.php:940 ../view/admin.php:1434
 msgid "Ads"
-msgstr "Werbungs"
+msgstr "Werbeanzeigen"
 
 #: ../view/admin.php:947 ../view/wizard.php:164
 msgid "Mobile video"
-msgstr "Mobile Video"
+msgstr "Mobiles Video"
 
 #: ../view/admin.php:954 ../view/wizard.php:310
 msgid "Align"
@@ -1049,15 +1050,15 @@ msgstr "Controlbar"
 
 #: ../view/admin.php:968 ../view/wizard.php:330
 msgid "Live stream"
-msgstr "Live-Übertrag"
+msgstr "Live-Stream"
 
 #: ../view/admin.php:1000
 msgid ""
 "Valid license found, click the button at the top of the screen to install FV "
 "Player Pro!"
 msgstr ""
-"Valid Lizenz gefunden, klicken Sie auf der Taste am ober der Bildschirms zu "
-"installieren FV Player Pro!"
+"Gültige Lizenz gefunden, klicken Sie auf die Schaltfläche am oberen "
+"Bildschirmrand, um FV Player Pro zu installieren!"
 
 #: ../view/admin.php:1002
 msgid "Purchase FV Flowplayer license"
@@ -1065,36 +1066,35 @@ msgstr "Kaufen Sie Ihre FV Flowplayer Lizenz"
 
 #: ../view/admin.php:1002
 msgid "to enable Pro features!"
-msgstr "zu ermöglichen die Pro-Funktionen"
+msgstr "die Pro-Funktionen zu aktivieren!"
 
 #: ../view/admin.php:1006
 msgid "Advanced Vimeo embeding"
-msgstr "Fortgeschritten Vimeo einfügung"
+msgstr "Vimeo Embedding (Fortgeschritten)"
 
 #: ../view/admin.php:1010
 msgid "Use Vimeo as your video host and use all of FV Flowplayer features."
 msgstr ""
-"Verwenden Sie Vimeo, wie Ihr Video-Host und benutzen Sie alle FV Flowplayer "
-"Funktionen."
+"Vimeo als Video-Host benutzen und alle FV Flowplayer Funktionen verwenden."
 
 #: ../view/admin.php:1015
 msgid "Advanced YouTube embeding"
-msgstr "Fortschrittliche YouTube einfügung"
+msgstr "YouTube Embedding (Fortgeschritten)"
 
 #: ../view/admin.php:1019
 msgid "Use YouTube as your video host and use all of FV Flowplayer features."
 msgstr ""
-"Verwenden Sie Youtube als Video Host und benutzen Sie alle FV Flowplayer "
-"Funktionen."
+"YouTube als Video Host benutzen und alle FV Flowplayer Funktionen verwenden"
 
 #: ../view/admin.php:1024
 msgid "Enable user defined AB loop"
-msgstr "Aktiviere Benutzer definiert AB schleife"
+msgstr "Benutzerdefinierter AB Schleife aktivieren"
 
 #: ../view/admin.php:1028
 msgid "Let your users repeat the parts of the video which they like!"
 msgstr ""
-"Lassen Sie Ihre Benutzer die Teile von des Videos wiederholen die Sie mögen!"
+"Erlauben Sie es dem Anwender, Teile des Videos, die ihm gefallen haben, "
+"erneut abzuspielen!"
 
 #: ../view/admin.php:1037
 msgid "Enables Lightbox video gallery to show videos in a lightbox popup!"
@@ -1103,15 +1103,15 @@ msgstr ""
 
 #: ../view/admin.php:1042
 msgid "Enable quality switching"
-msgstr "Aktiviere der Quality Schalter"
+msgstr "Qualitätsumschaltung aktivieren"
 
 #: ../view/admin.php:1046
 msgid ""
 "Upload your videos in multiple quality for best user experience with YouTube-"
 "like quality switching!"
 msgstr ""
-"Laden Sie Ihre Videos in mehreren Qualität für beste Benutzererfahrung mit "
-"YouTube-ähnlicher Qualität Schalt!"
+"Laden Sie Ihre Videos für die beste Benutzererfahrung in verschiedenen "
+"Qualitäten hoch - mit YouTube-ähnlicher Qualitätsumschaltung!"
 
 #: ../view/admin.php:1051
 msgid "Amazon CloudFront protected content"
@@ -1119,7 +1119,7 @@ msgstr "Amazon CloudFront geschützter Inhalt"
 
 #: ../view/admin.php:1055
 msgid "Protect your Amazon CDN hosted videos"
-msgstr "Schütze Ihre Amazon CDN gehosteten Videos"
+msgstr "Schützt Ihre Amazon CDN-hosted Videos"
 
 #: ../view/admin.php:1060
 msgid "Autoplay just once"
@@ -1128,11 +1128,12 @@ msgstr "Autoplay nur einmal"
 #: ../view/admin.php:1064
 msgid "Makes sure each video autoplays only once for each visitor."
 msgstr ""
-"Stellt sich sicher, dass jedes Video autoplays nur einmal für jeden Besucher."
+"Stellt sicher, dass jedes Video nur einmal für jeden Besucher automatisch "
+"abgespielt wird."
 
 #: ../view/admin.php:1069
 msgid "Enable video ads"
-msgstr "Aktiviere Video Werbungen"
+msgstr "Video Ads aktivieren"
 
 #: ../view/admin.php:1073
 msgid ""
@@ -1144,15 +1145,15 @@ msgstr ""
 
 #: ../view/admin.php:1078
 msgid "Upcoming pro features"
-msgstr "Die kommende Pro-Funktionen"
+msgstr "Zukünftige Pro-Funktionen"
 
 #: ../view/admin.php:1081
 msgid "Enable PayWall"
-msgstr "Aktiviere PayWall"
+msgstr "PayWall aktivieren"
 
 #: ../view/admin.php:1085
 msgid "Monetize the video content on your membership site."
-msgstr "Monetarisieren die Video-Inhalte auf Ihrer Mitgliedschaft Website."
+msgstr "Monetarisieren die Video-Inhalte auf Ihrer Mitglieder-Website."
 
 #: ../view/admin.php:1181
 msgid ""
@@ -1173,7 +1174,7 @@ msgstr "Rahmen"
 
 #: ../view/admin.php:1193
 msgid "Buffer"
-msgstr "Pufferung"
+msgstr "Puffer"
 
 #: ../view/admin.php:1195
 msgid "Bottom Margin"
@@ -1189,7 +1190,7 @@ msgstr "Schriftart"
 
 #: ../view/admin.php:1206
 msgid "(inherit from template)"
-msgstr "(erben von Thema)"
+msgstr "(Von der Vorlage übernehmen)"
 
 #: ../view/admin.php:1213
 msgid "Player position"
@@ -1205,7 +1206,7 @@ msgstr "Links (kein Textumbruch)"
 
 #: ../view/admin.php:1222
 msgid "Progress"
-msgstr "Fortschrittsbalken"
+msgstr "Fortschritt"
 
 #: ../view/admin.php:1224
 msgid "Subtitle Font Size"
@@ -1217,7 +1218,7 @@ msgstr "Zeit"
 
 #: ../view/admin.php:1238
 msgid "Timeline"
-msgstr "Zeitlinie"
+msgstr "Zeitleiste"
 
 #: ../view/admin.php:1244
 msgid "Total time"
@@ -1237,19 +1238,19 @@ msgstr "Playlist Schriftart"
 
 #: ../view/admin.php:1268
 msgid "Use custom color"
-msgstr "Verwenden benutzerdefinierte Farb"
+msgstr "Benutzerdefinierte Farbe verwenden"
 
 #: ../view/admin.php:1269
 msgid "Inherit from theme"
-msgstr "Erben von Thema"
+msgstr "Von Theme übernehmen"
 
 #: ../view/admin.php:1316
 msgid "Illustrated user guides"
-msgstr "Illustriert Benutzerhandbücher"
+msgstr "Illustrierte Benutzerhandbücher"
 
 #: ../view/admin.php:1319
 msgid "Inserting videos"
-msgstr "Einfügen Videos"
+msgstr "Videos einfügen"
 
 #: ../view/admin.php:1320
 msgid "License key and custom logo"
@@ -1261,11 +1262,11 @@ msgstr "Wie man ein Playlist erstellen"
 
 #: ../view/admin.php:1322
 msgid "Using ads"
-msgstr "Einsatz der Werbung"
+msgstr "Werbung benutzen"
 
 #: ../view/admin.php:1323
 msgid "Using Google Ads"
-msgstr "Einsatz der Google Werbung"
+msgstr "Google Werbung benutzen"
 
 #: ../view/admin.php:1324
 msgid "RTMP streams"
@@ -1277,31 +1278,31 @@ msgstr "Amazon S3 geschützter Inhalt Handbuch"
 
 #: ../view/admin.php:1327
 msgid "How to setup a HLS stream"
-msgstr "Wie ein HLS stream konfigurieren"
+msgstr "HLS Stream konfigurieren"
 
 #: ../view/admin.php:1328
 msgid "Google Analytics support"
-msgstr "Google Analytics hilfe"
+msgstr "Google Analytics Support"
 
 #: ../view/admin.php:1329
 msgid "Video lightbox"
-msgstr "Video lightbox"
+msgstr "Video Lightbox"
 
 #: ../view/admin.php:1330
 msgid "YouTube integration"
-msgstr "YouTube integration"
+msgstr "YouTube-Integration"
 
 #: ../view/admin.php:1331
 msgid "Quality Switching"
-msgstr "Quality Schalter"
+msgstr "Qualitätsumschaltung"
 
 #: ../view/admin.php:1332
 msgid "Vimeo integration"
-msgstr "Vimeo integration"
+msgstr "Vimeo Integration"
 
 #: ../view/admin.php:1333
 msgid "Custom video ads"
-msgstr "Eigene Video Werbunge"
+msgstr "Eigene Video Ads"
 
 #: ../view/admin.php:1334
 msgid "CloudFront CDN - protected video downloads"
@@ -1313,7 +1314,7 @@ msgstr "Fehlerbehebung"
 
 #: ../view/admin.php:1342
 msgid "Automated checks"
-msgstr "Automatisiert überprüfungen"
+msgstr "Automatisierte Prüfungen"
 
 #: ../view/admin.php:1343
 msgid "Video encoding tips"
@@ -1321,11 +1322,11 @@ msgstr "Video Codierung Tips"
 
 #: ../view/admin.php:1344
 msgid "Video formats to avoid"
-msgstr "Videoformate welche sollten sie vermeiden"
+msgstr "Video Formate zu vermeiden"
 
 #: ../view/admin.php:1345
 msgid "Fixing mime type on Amazon S3"
-msgstr "Reparieren den MIME-Typ auf Amazon S3"
+msgstr "Den MIME-Typ auf Amazon S3 reparieren"
 
 #: ../view/admin.php:1346
 msgid "Plugin FAQ"
@@ -1333,7 +1334,7 @@ msgstr "Plugin FAQ"
 
 #: ../view/admin.php:1347
 msgid "Support forums"
-msgstr "Support Forums"
+msgstr "Support-Foren"
 
 #: ../view/admin.php:1397
 msgid "Setup"
@@ -1341,7 +1342,7 @@ msgstr "Konfiguration"
 
 #: ../view/admin.php:1398
 msgid "Skin"
-msgstr "Ansehen"
+msgstr "Skin"
 
 #: ../view/admin.php:1399
 msgid "Hosting"
@@ -1393,7 +1394,7 @@ msgstr "Verwendung"
 
 #: ../view/admin.php:1478
 msgid "Enable the Pro extension"
-msgstr "Aktivieren  die Pro Erweiterung"
+msgstr "Pro Erweiterung aktivieren"
 
 #: ../view/admin.php:1480
 msgid "Pro pack installed"
@@ -1401,19 +1402,19 @@ msgstr "Pro Version installiert"
 
 #: ../view/admin.php:1482
 msgid "Install Pro extension"
-msgstr "Die Pro Erweiterung Installieren"
+msgstr "Die Pro-Erweiterung Installieren"
 
 #: ../view/admin.php:1485
 msgid "Apply Pro upgrade"
-msgstr "Aktivieren das Pro Upgrade"
+msgstr "Pro Upgrade aktivieren"
 
 #: ../view/admin.php:1487
 msgid "Check template"
-msgstr "Prüfen das Thema"
+msgstr "Theme prüfen"
 
 #: ../view/admin.php:1488
 msgid "Check videos"
-msgstr "Prüfen das Video"
+msgstr "Videos prüfen"
 
 #: ../view/admin.php:1490
 msgid "Commercial License Key"
@@ -1421,11 +1422,11 @@ msgstr "Gewerbliche Lizenzschlüssel"
 
 #: ../view/admin.php:1490
 msgid "Click here for license info"
-msgstr "Klicken Sie hier für Lizenz info"
+msgstr "Klicken Sie hier für Lizenzinformationen"
 
 #: ../view/wizard.php:110
 msgid "(remove)"
-msgstr "(auslöschen)"
+msgstr "(entfernen)"
 
 #: ../view/wizard.php:111 ../view/wizard.php:131 ../view/wizard.php:140
 msgid "Video"
@@ -1434,11 +1435,11 @@ msgstr "Video"
 #: ../view/wizard.php:115 ../view/wizard.php:134 ../view/wizard.php:143
 #: ../view/wizard.php:167
 msgid "Add Video"
-msgstr "Hinzufügen"
+msgstr "Video hinzufügen"
 
 #: ../view/wizard.php:122
 msgid "Video Duration"
-msgstr "Dauerung der Video"
+msgstr "Video Länge"
 
 #: ../view/wizard.php:123
 msgid "File size"
@@ -1455,7 +1456,7 @@ msgstr "RTMP Server"
 #: ../view/wizard.php:149
 msgid "Leave empty to use Flash streaming server from plugin settings"
 msgstr ""
-"Lassen sie leer, um die Flash streaming Server Einstellungen von dem Plugin "
+"Leer lassen, um die Plugin-Einstellungen für den Flash-Streaming-Server zu "
 "verwenden"
 
 #: ../view/wizard.php:152
@@ -1464,7 +1465,7 @@ msgstr "RTMP Pfad"
 
 #: ../view/wizard.php:159
 msgid "Add another format"
-msgstr "hzfg. anderes Format"
+msgstr "Anderes Format hinzufügen"
 
 #: ../view/wizard.php:159
 msgid "(i.e. WebM, OGV)"
@@ -1472,7 +1473,7 @@ msgstr "(z.B. WebM, OGV)"
 
 #: ../view/wizard.php:160
 msgid "Add RTMP"
-msgstr "Hinzufügen RTMP"
+msgstr "RTMP hinzufügen"
 
 #: ../view/wizard.php:165
 msgid "Put low-bandwidth video here or leave blank"
@@ -1480,15 +1481,15 @@ msgstr "Geben Sie hier Video mit niedrige Bandbreite oder lassen Sie leer"
 
 #: ../view/wizard.php:175
 msgid "Add Image"
-msgstr "Hinzufügen Bild"
+msgstr "Bild hinzufügen"
 
 #: ../view/wizard.php:197
 msgid "Add Subtitles"
-msgstr "Hinzufügen"
+msgstr "Untertitel hinzufügen"
 
 #: ../view/wizard.php:207
 msgid "Add Another Language"
-msgstr "hzfg. andere Sprache"
+msgstr "Weitere Sprache hinzufügen"
 
 #: ../view/wizard.php:212
 msgid "Caption"
@@ -1505,15 +1506,15 @@ msgstr "Standard"
 
 #: ../view/wizard.php:243
 msgid "Add Playlist Item"
-msgstr "hzfg. Element zum Playlist"
+msgstr "Element zur Playliste hinzufügen"
 
 #: ../view/wizard.php:248
 msgid "Additional features"
-msgstr "ZUSATZFUNKTIONEN"
+msgstr "Zusätzliche Features"
 
 #: ../view/wizard.php:251
 msgid "HTML popup"
-msgstr "HTML Popup-meldung"
+msgstr "HTML Popup"
 
 #: ../view/wizard.php:262
 msgid "Redirect to"
@@ -1521,7 +1522,7 @@ msgstr "Umleiten zum"
 
 #: ../view/wizard.php:270 ../view/wizard.php:292
 msgid "On"
-msgstr "Ein"
+msgstr "An"
 
 #: ../view/wizard.php:271 ../view/wizard.php:293
 msgid "Off"
@@ -1541,7 +1542,7 @@ msgstr "Werbung Code"
 
 #: ../view/wizard.php:306
 msgid "Skip global ad in this video"
-msgstr "Überspringe dem globalen Werbung in diesem Video"
+msgstr "Standard-Ad-Anzeige in diesem Video überspringen"
 
 #: ../view/wizard.php:314
 msgid "Left"
@@ -1549,7 +1550,7 @@ msgstr "Links"
 
 #: ../view/wizard.php:315
 msgid "Right"
-msgstr "Recht"
+msgstr "Rechts"
 
 #: ../view/wizard.php:324 ../view/wizard.php:338
 msgid "Yes"
@@ -1568,8 +1569,8 @@ msgid ""
 "Admin note: Video uploads are currently disabled, set Allow User Uploads to "
 "true in"
 msgstr ""
-"Verwalter Anmerkung: Hochladen Video ist gegenwärtig deaktiviert, aktivieren "
-"sie die Möglichkeit \"Erlauben Einfügung aus Mediathek\" ein"
+"Admin-Hinweis: Video-Uploads sind zurzeit deaktiviert, aktiviere Benutzer-"
+"Uploads erlauben in den"
 
 #: ../view/wizard.php:352 ../view/wizard.php:359
 msgid "Settings"
@@ -1578,12 +1579,12 @@ msgstr "Einstellungen"
 #: ../view/wizard.php:359
 msgid "Admin note: Enable more per video features in Interface options in"
 msgstr ""
-"Verwalter Anmerkung: Aktivieren mehr pro Video-Einstellungen in "
-"Schnittstellenoptionen in"
+"Admin-Hinweis: Aktiviere weitere Video-Funktionen in Interface Einstellungen "
+"in"
 
 #: ../view/wizard.php:364
 msgid "currently not working with playlist"
-msgstr "Zur Zeit funktioniert nicht mit Playlist"
+msgstr "arbeitet zurzeit nicht mit Playlisten"
 
 #~ msgid "Description"
 #~ msgstr "Beschreibung"
