@@ -63,7 +63,7 @@
 .is-help.flowplayer .fp-help{left:0;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer .fp-help .fp-help-section{margin:3%;direction:ltr}
 .flowplayer .fp-help .fp-help-basics{margin-top:6%}
-.flowplayer .fp-help p{color:#eee;margin:.5em 0;font-size:14px;line-height:1.5;display:inline-block;margin:1% 2%}
+.flowplayer .fp-help p{color:#eee;font-size:14px;line-height:1.5;display:inline-block;margin:1% 2%}
 .flowplayer .fp-help em{background:#eee;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em;margin-right:.4em;padding:.3em .6em;color:#333}
 .flowplayer .fp-help small{font-size:90%;color:#aaa}
 .flowplayer .fp-help .fp-close{display:block}
@@ -121,7 +121,7 @@
 .flowplayer .fp-logo img{width:100%}
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
-.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close{position:absolute;top:10px;left:auto;right:10px;display:block;width:30px;height:23px;text-align:center;cursor:pointer;height:30px;width:30px;}
+.flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close{position:absolute;top:10px;left:auto;right:10px;display:block;text-align:center;cursor:pointer;height:30px;width:30px;}
 .is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-close{right:auto;left:10px}
 .flowplayer .fp-unload,.flowplayer .fp-close{display:none}
 .flowplayer .fp-play{display:none;height:30px !important;position:absolute;bottom:0;left:0;text-align:center;}
@@ -130,7 +130,7 @@
 .flowplayer .fp-menu{display:none;position:absolute;bottom:0;z-index:21;right:10px;}
 .is-rtl.flowplayer .fp-menu{right:auto;left:10px}
 .has-menu.flowplayer .fp-menu{display:block}
-.flowplayer .fp-menu .fp-dropdown{z-index:12;display:none;left:-42.5px;line-height:auto;width:149px;-webkit-transform:none;-moz-transform:none;transform:none;}
+.flowplayer .fp-menu .fp-dropdown{z-index:12;display:none;left:-42.5px;width:149px;-webkit-transform:none;-moz-transform:none;transform:none;}
 .is-rtl.flowplayer .fp-menu .fp-dropdown{left:-10px}
 .flowplayer .fp-menu.dropdown-open .fp-dropdown{display:block}
 .flowplayer.is-ready.is-closeable .fp-unload{display:block}
@@ -140,7 +140,7 @@
 .flowplayer.is-ready.is-closeable.is-rtl .fp-fullscreen{right:auto;left:50px}
 .flowplayer.is-fullscreen .fp-fullscreen{display:block !important;}
 .flowplayer.is-fullscreen .fp-fullscreen:before{content:"\e601"}
-.flowplayer .fp-timeline{height:3px;position:relative;overflow:hidden;top:10px;height:10px;margin:0 225px 0 55px;}
+.flowplayer .fp-timeline{position:relative;overflow:hidden;top:10px;height:10px;margin:0 225px 0 55px;}
 .no-brand.flowplayer .fp-timeline{margin-right:160px;}
 .has-menu.no-brand.flowplayer .fp-timeline{margin-right:187px}
 .no-volume.no-brand.flowplayer .fp-timeline{margin-right:95px}
@@ -243,7 +243,7 @@
 .flowplayer.is-seeking .fp-waiting{display:block}
 .flowplayer.is-playing{background-image:none !important;background-color:#333;}
 .flowplayer.is-playing.hls-fix.is-finished .fp-engine{position:absolute;top:-9999em}
-.flowplayer.is-fullscreen{top:0 !important;left:0 !important;border:0 !important;margin:0 !important;width:100% !important;height:100% !important;max-width:100% !important;z-index:99999 !important;-webkit-box-shadow:0 !important;-moz-box-shadow:0 !important;box-shadow:0 !important;background-image:none !important;background-color:#333;}
+.flowplayer.is-fullscreen{top:0 !important;left:0 !important;border:0 !important;margin:0 !important;width:100% !important;height:100% !important;max-width:100% !important;z-index:99999 !important;-webkit-box-shadow:none !important;-moz-box-shadow:none !important;box-shadow:none !important;background-image:none !important;background-color:#333;}
 .is-rtl.flowplayer.is-fullscreen{left:auto !important;right:0 !important}
 .flowplayer.is-fullscreen .fp-player{background-color:#333}
 .flowplayer.is-error{border:1px solid #909090;background:#fdfdfd !important;}
@@ -278,7 +278,7 @@
 .flowplayer .fp-embed-code:before{content:'';width:0;height:0;position:absolute;top:2px;right:-10px;border:5px solid transparent;border-left-color:#333}
 .is-rtl.flowplayer .fp-embed-code{right:auto;left:67px;}
 .is-rtl.flowplayer .fp-embed-code:before{right:auto;left:-10px;border-left-color:transparent;border-right-color:#333}
-.flowplayer .fp-embed-code textarea{width:400px;height:16px;font-family:monaco,"courier new",verdana;color:#777;white-space:nowrap;resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc}
+.flowplayer .fp-embed-code textarea{width:400px;height:16px;font-family:monaco,"courier new",verdana;white-space:nowrap;resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc}
 .flowplayer .fp-embed-code label{display:block;color:#999}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fp-embed-code{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.no-time .fp-embed{left:10px !important;}
@@ -334,7 +334,7 @@
 .flowplayer .fp-embed-code{display:none;}
 .flowplayer .fvp-share-bar{opacity:0;display:none;position:absolute;top:0;left:0;background-color:rgba(0, 0, 0, 0.3);font-size:12px;width:100%}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
-.flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
+.flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; white-space:nowrap; resize:none;overflow:hidden;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 
 .flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
@@ -373,7 +373,6 @@
 }
 .fvp-share-bar .fvp-sharing li {
 	float: left;
-	display: inline-block;
 	margin: 0 5px !important;
 	padding: 0 !important;
 	border: none !important;
@@ -525,7 +524,7 @@ a #add-format, a #add-rtmp {
 .flowplayer.video1, .flowplayer.video2, .flowplayer.video3, .flowplayer.video4, .flowplayer.video5, .flowplayer.video6, .flowplayer.video7, .flowplayer.video8, .flowplayer.video9, .flowplayer.video10, .flowplayer.video11, .flowplayer.video12, .flowplayer.video13, .flowplayer.video14, .flowplayer.video15, .flowplayer.video16 { background-image: none !important; }
 
 .flowplayer .fp-volume { text-align: left; }
-#content .flowplayer a, .flowplayer a, .flowplayer a:hover { text-decoration: none; border-bottom: none; -wekbit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; border-bottom: 0 !important; text-decoration: none !important; }
+#content .flowplayer a, .flowplayer a, .flowplayer a:hover { -wekbit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; border-bottom: 0 !important; text-decoration: none !important; }
 
 .flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }  	
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
@@ -535,7 +534,7 @@ a #add-format, a #add-rtmp {
 .fv_fp_close { position: absolute; right: 2px; top: 2px; z-index: 20; }
 .fv_fp_close a { display: block; width: 16px; height: 16px; background: url(img/exit_btn.png) }
 
-.wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, 	.wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
+.wpfp_custom_ad_content h1, .wpfp_custom_ad_content h2, .wpfp_custom_ad_content h3, .wpfp_custom_ad_content h4, .wpfp_custom_ad_content h5, .wpfp_custom_ad_content p { padding: 0 5px 2px 5px; margin: 0 5px 2px 5px; }
 
 .flowplayer.alignleft { margin-left: 10px; margin-bottom: 10px;  }
 .flowplayer.alignright { margin-right: 10px; margin-bottom: 10px; }
@@ -600,13 +599,11 @@ p.fp-caption { text-align: center; }
   transition: opacity .15s ease .3s;
 }
 .flowplayer .fv-player-buttons li {
-  display: inline-block;
   float: left;
   margin: 0 0.3em;
   padding: 0;
 }
 .flowplayer .fv-player-buttons a {
-  display: inline-block;
   float: left;  
   padding: 0.4ex 0.6ex;
   margin: 0.5ex 0;
