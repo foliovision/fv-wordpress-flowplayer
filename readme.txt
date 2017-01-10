@@ -345,6 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.16 - 2017/01/?? =
 
+* Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
 * Fix - Iframe embedding scrollbars appearing
 * Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
 

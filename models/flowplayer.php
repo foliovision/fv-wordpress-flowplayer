@@ -879,6 +879,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public static function get_languages() {
     $aLangs = array(
+      'SDH' => 'SDH',
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
       'AF' => 'Afrikaans',
