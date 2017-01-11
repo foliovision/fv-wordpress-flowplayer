@@ -127,8 +127,8 @@ class FV_Player_Custom_Videos {
         }
         
         if( $args['edit'] ) {
-          $html .= '<input class="fv_player_custom_video fv_player_custom_video_url regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" placeholder="Video URL" value="'.esc_attr($aVideo['url']).'" /><br />'."\n";
-          $html .= ' <input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos_titles['.$this->meta.'][]" value="'.esc_attr($aVideo['title']).'" placeholder="Video title" /><br />'."\n";
+          $html .= '<p><input class="fv_player_custom_video fv_player_custom_video_url regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" placeholder="Video URL" value="'.esc_attr($aVideo['url']).'" /></p>'."\n";
+          $html .= '<p><input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos_titles['.$this->meta.'][]" value="'.esc_attr($aVideo['title']).'" placeholder="Video title" /></p>'."\n";
           if( count($this->get_videos()) == $count && $count < $args['limit'] ) $html .= '<a class="fv-player-custom-video-add" href="#">Add more</a> ';
           $html .= '<a class="fv-player-custom-video-remove" href="#">Remove</a> ';
                     
