@@ -411,7 +411,12 @@ class FV_Player_Custom_Videos_Master {
       return;
     
     $user = new FV_Player_Custom_Videos(array( 'id' => get_current_user_id(), 'type' => 'user' ));
-    echo $user->get_form(array('no_form' => true));
+    ?>
+        <p>
+          <label for="edd_email"><?php _e( 'Profile Videos', 'fv-wordpress-flowplayer' ); ?></label>
+            <?php echo $user->get_form(array('no_form' => true));?>
+        </p>
+    <?php
   }
 
 }
