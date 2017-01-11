@@ -36,39 +36,39 @@ add_filter( 'run_ngg_resource_manager', '__return_false' ); //  Nextgen Gallery 
 
 function fv_flowplayer_ap_action_init(){
   // Localization
-  load_plugin_textdomain('fv_flowplayer', false, dirname(dirname(plugin_basename(__FILE__))) . "/languages");
+  load_plugin_textdomain('fv-wordpress-flowplayer', false, dirname(dirname(plugin_basename(__FILE__))) . "/languages");
 }
 add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
   
-  $aStrings = Array(
-  0 => __('', 'flowplayer'),
-  1 => __('Video loading aborted', 'fv_flowplayer'),
-  2 => __('Network error', 'fv_flowplayer'),
-  3 => __('Video not properly encoded', 'fv_flowplayer'),
-  4 => __('Video file not found', 'fv_flowplayer'),
-  5 => __('Unsupported video', 'fv_flowplayer'),
-  6 => __('Skin not found', 'fv_flowplayer'),
-  7 => __('SWF file not found', 'fv_flowplayer'),
-  8 => __('Subtitles not found', 'fv_flowplayer'),
-  9 => __('Invalid RTMP URL', 'fv_flowplayer'),
-  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv_flowplayer'),  
-  11 => __('Click to watch the video', 'fv_flowplayer'),
-  12 => __('[This post contains video, click to play]', 'fv_flowplayer'),
-  'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv_flowplayer'),
-  'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv_flowplayer'),
-  'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv_flowplayer'),
-  'mobile_browser_detected_2' => __('Click here','fv_flowplayer'),
-  'mobile_browser_detected_3' => __('for full quality.','fv_flowplayer'),
-  'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
-  'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv_flowplayer'),
-  'what_is_wrong' => __('Please tell us what is wrong :','fv_flowplayer'),
-  'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv_flowplayer'),
-  'error_JSON' =>__('Admin: Error parsing JSON','fv_flowplayer'),
-  'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv_flowplayer'),
-  'check_failed' =>__('Admin: Check failed.','fv_flowplayer'),
-  'video_issues' =>__('Video Issues','fv_flowplayer'),
+  $aStrings = array(
+  0 => '',
+  1 => __('Video loading aborted', 'fv-wordpress-flowplayer'),
+  2 => __('Network error', 'fv-wordpress-flowplayer'),
+  3 => __('Video not properly encoded', 'fv-wordpress-flowplayer'),
+  4 => __('Video file not found', 'fv-wordpress-flowplayer'),
+  5 => __('Unsupported video', 'fv-wordpress-flowplayer'),
+  6 => __('Skin not found', 'fv-wordpress-flowplayer'),
+  7 => __('SWF file not found', 'fv-wordpress-flowplayer'),
+  8 => __('Subtitles not found', 'fv-wordpress-flowplayer'),
+  9 => __('Invalid RTMP URL', 'fv-wordpress-flowplayer'),
+  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv-wordpress-flowplayer'),  
+  11 => __('Click to watch the video', 'fv-wordpress-flowplayer'),
+  12 => __('[This post contains video, click to play]', 'fv-wordpress-flowplayer'),
+  'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
+  'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv-wordpress-flowplayer'),
+  'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv-wordpress-flowplayer'),
+  'mobile_browser_detected_2' => __('Click here','fv-wordpress-flowplayer'),
+  'mobile_browser_detected_3' => __('for full quality.','fv-wordpress-flowplayer'),
+  'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
+  'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
+  'what_is_wrong' => __('Please tell us what is wrong :','fv-wordpress-flowplayer'),
+  'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv-wordpress-flowplayer'),
+  'error_JSON' =>__('Admin: Error parsing JSON','fv-wordpress-flowplayer'),
+  'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
+  'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
+  'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   );
   
   return $aStrings;
@@ -383,6 +383,15 @@ function flowplayer_prepare_scripts() {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
+    
+    if( $fv_fp->load_dash ) {
+      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+    
+    if( $fv_fp->load_hlsjs && isset($fv_fp->conf['hlsjs']) && $fv_fp->conf['hlsjs'] == 'true'  ) {
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+    
   }
 }
 
@@ -482,23 +491,44 @@ function fv_player_caption( $caption ) {
 add_filter( 'fv_player_caption', 'fv_player_caption' );
 
 
+add_filter( 'comment_text', 'fv_player_comment_text', 0 );
+add_filter( 'bp_get_activity_content_body', 'fv_player_comment_text', 6 );
+add_filter( 'bbp_get_topic_content', 'fv_player_comment_text', 0 );
+add_filter( 'bbp_get_reply_content', 'fv_player_comment_text', 0 );
 
+function fv_player_comment_text( $comment_text ) {
+  if( is_admin() ) return $comment_text;
+  
+	global $fv_fp;
+	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
+    add_filter('comment_text', 'do_shortcode');
+    add_filter('bbp_get_topic_content', 'do_shortcode', 11);
+    add_filter('bbp_get_reply_content', 'do_shortcode', 11);
 
-add_action('amp_post_template_css','fv_flowplayer_amp_post_template_css');
+    if( stripos($comment_text,'youtube.com') !== false || stripos($comment_text,'youtu.be') !== false ) {
+  		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
+               . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
+               . '(?:'                 #  Group host alternatives:
+               .   'youtu\.be/'        #    Either youtu.be,
+               .   '|youtube\.com/'    #    or youtube.com
+               .     '(?:'             #    Group path alternatives:
+               .       'embed/'        #      Either /embed/,
+               .       '|v/'           #      or /v/,
+               .       '|watch\?v='    #      or /watch?v=,
+               .       '|watch\?.+&v=' #      or /watch?other_param&v=
+               .     ')'               #    End path alternatives.
+               . ')'                   #  End host alternatives.
+               . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
+               . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
+  		$comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
+    }
 
-function fv_flowplayer_amp_post_template_css() {
-  global $fv_fp;
-  $fv_fp->css_enqueue();
+    if( stripos($comment_text,'vimeo.com') !== false ) {
+      $pattern = '#(?:https?://)?(?:www.)?(?:player.)?vimeo.com/(?:[/a-z]*/)*([0-9]{6,11})[?]?.*#';
+      $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
+    }
+	}
+  
+	return $comment_text;
 }
-
-
-
-
-add_action('amp_post_template_footer','fv_flowplayer_amp_post_template_footer',9);
-
-function fv_flowplayer_amp_post_template_footer() {
-  flowplayer_prepare_scripts();
-  do_action( 'wp_print_footer_scripts' );
-}
-
 

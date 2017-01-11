@@ -168,7 +168,6 @@ class FV_Wordpress_Flowplayer_Plugin
             if (preg_match('~==\s*Upgrade Notice\s*==\s*=\s*[0-9.]+\s*=(.*)(=\s*[0-9.]+\s*=|$)~Uis', $data, $matches)) {
                 $changelog = (array) preg_split('~[\r\n]+~', trim($matches[1]));
 
-                echo '<div style="color: #b51212;"">';
                 $ul = false;
                 
                 foreach ($changelog as $index => $line) {
@@ -185,7 +184,7 @@ class FV_Wordpress_Flowplayer_Plugin
                             $ul = false;
                         }
                         $line = preg_replace('~^\s*\*\s*~', '', htmlspecialchars($line));
-                        echo '<p style="margin: 5px 0;">' . htmlspecialchars($line) . '</p>';
+                        echo '<br /><br />' . htmlspecialchars($line)."\n";
                     }
                 }
                 
@@ -193,7 +192,6 @@ class FV_Wordpress_Flowplayer_Plugin
                     //echo '</ul><div style="clear: left;"></div>';
                 }
                 
-                echo '</div>';
             }
         }
       }

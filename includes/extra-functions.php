@@ -17,18 +17,40 @@
 */ 
 
 
-if( !function_exists('http_build_url') ) :
-    define('HTTP_URL_REPLACE', 1);          // Replace every part of the first URL when there's one of the second URL
-    define('HTTP_URL_JOIN_PATH', 2);        // Join relative paths
-    define('HTTP_URL_JOIN_QUERY', 4);       // Join query strings
-    define('HTTP_URL_STRIP_USER', 8);       // Strip any user authentication information
-    define('HTTP_URL_STRIP_PASS', 16);      // Strip any password authentication information
-    define('HTTP_URL_STRIP_AUTH', 32);      // Strip any authentication information
-    define('HTTP_URL_STRIP_PORT', 64);      // Strip explicit port numbers
-    define('HTTP_URL_STRIP_PATH', 128);     // Strip complete path
-    define('HTTP_URL_STRIP_QUERY', 256);    // Strip query string
-    define('HTTP_URL_STRIP_FRAGMENT', 512); // Strip any fragments (#identifier)
-    define('HTTP_URL_STRIP_ALL', 1024);     // Strip anything but scheme and host
+
+    if (!defined('HTTP_URL_REPLACE')) {
+      define('HTTP_URL_REPLACE', 1);
+    }
+    if (!defined('HTTP_URL_JOIN_PATH')) {
+      define('HTTP_URL_JOIN_PATH', 2);
+    }
+    if (!defined('HTTP_URL_JOIN_QUERY')) {
+      define('HTTP_URL_JOIN_QUERY', 4);
+    }
+    if (!defined('HTTP_URL_STRIP_USER')) {
+      define('HTTP_URL_STRIP_USER', 8);
+    }
+    if (!defined('HTTP_URL_STRIP_PASS')) {
+      define('HTTP_URL_STRIP_PASS', 16);
+    }
+    if (!defined('HTTP_URL_STRIP_AUTH')) {
+      define('HTTP_URL_STRIP_AUTH', 32);
+    }
+    if (!defined('HTTP_URL_STRIP_PORT')) {
+      define('HTTP_URL_STRIP_PORT', 64);
+    }
+    if (!defined('HTTP_URL_STRIP_PATH')) {
+      define('HTTP_URL_STRIP_PATH', 128);
+    }
+    if (!defined('HTTP_URL_STRIP_QUERY')) {
+      define('HTTP_URL_STRIP_QUERY', 256);
+    }
+    if (!defined('HTTP_URL_STRIP_FRAGMENT')) {
+      define('HTTP_URL_STRIP_FRAGMENT', 512);
+    }
+    if (!defined('HTTP_URL_STRIP_ALL')) {
+      define('HTTP_URL_STRIP_ALL', 1024);
+    }
     
     // Build an URL
     // The parts of the second URL will be merged into the first according to the flags argument. 
@@ -37,7 +59,7 @@ if( !function_exists('http_build_url') ) :
     // @param  mixed      Same as the first argument
     // @param  int        A bitmask of binary or'ed HTTP_URL constants (Optional)HTTP_URL_REPLACE is the default
     // @param  array      If set, it will be filled with the parts of the composed url like parse_url() would return 
-    function http_build_url($url, $parts=array(), $flags=HTTP_URL_REPLACE, &$new_url=false)
+    function fv_http_build_url($url, $parts=array(), $flags=HTTP_URL_REPLACE, &$new_url=false)
     {
       $keys = array('user','pass','port','path','query','fragment');
       
@@ -119,7 +141,7 @@ if( !function_exists('http_build_url') ) :
       ;
     }
 
-endif; 
+
 
 
 if( !function_exists('is_utf8') && function_exists('mb_strlen') ) :
