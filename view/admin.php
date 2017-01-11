@@ -858,15 +858,15 @@ function fv_flowplayer_admin_popups(){
                     <td>
                       <table class='fv-player-popup-formats'>
                         <tr>
-                        	<td><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
                         	<td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
                       	</tr>
                         <tr>
-                        	<td>HTML:</td>
+                        	<td><label>HTML:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                       	</tr>
                         <tr>
-                        	<td><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                       	</tr>
                       </table>
