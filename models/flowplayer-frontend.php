@@ -202,38 +202,38 @@ class flowplayer_frontend extends flowplayer
      */
 		if ($player_type == 'video') {
       
-      if (!empty($media)) {
-        $media = $this->get_video_url($media);
-      }
-      if (!empty($src1)) {
-        $src1 = $this->get_video_url($src1);
-      }
-      if (!empty($src2)) {
-        $src2 = $this->get_video_url($src2);
-      }
-      $mobile = ( isset($this->aCurArgs['mobile']) && !empty($this->aCurArgs['mobile']) ) ? trim($this->aCurArgs['mobile']) : false;
-      if (!empty($mobile)) {
-        $mobile = $this->get_video_url($mobile);
-      }
-
-
-      if (is_feed()) {
-
-        if (isset($this->conf['integrations']['embed_iframe_rss']) && $this->conf['integrations']['embed_iframe_rss'] === 'true') {
-          //Iframe RSS
-          $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
-        } else {
-          //HTML RSS
-          $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="' . get_permalink() . '" title="' . __('Click to watch the video') . '">' . apply_filters('fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]'));
-          if ($splash_img) {
-            $this->ret['html'] .= '<br /><img src="' . $splash_img . '" width="400" />';
-          }
-          $this->ret['html'] .= '</a></p>';
+        if (!empty($media)) {
+          $media = $this->get_video_url($media);
         }
-        $this->ret['html'] = apply_filters('fv_flowplayer_rss', $this->ret['html'], $this);
+        if (!empty($src1)) {
+          $src1 = $this->get_video_url($src1);
+        }
+        if (!empty($src2)) {
+          $src2 = $this->get_video_url($src2);
+        }
+        $mobile = ( isset($this->aCurArgs['mobile']) && !empty($this->aCurArgs['mobile']) ) ? trim($this->aCurArgs['mobile']) : false;
+        if (!empty($mobile)) {
+          $mobile = $this->get_video_url($mobile);
+        }
 
-        return $this->ret;
-      }
+
+        if ( is_feed() ) {
+
+          if (isset($this->conf['integrations']['embed_iframe_rss']) && $this->conf['integrations']['embed_iframe_rss'] === 'true') {
+            //Iframe RSS
+            $this->ret['html'] .= "<iframe id='fv_fp_{$this->hash}' src='{$this->get_embed_url()}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
+          } else {
+            //HTML RSS
+            $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="' . get_permalink() . '" title="' . __('Click to watch the video') . '">' . apply_filters('fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]'));
+            if ($splash_img) {
+              $this->ret['html'] .= '<br /><img src="' . $splash_img . '" width="400" />';
+            }
+            $this->ret['html'] .= '</a></p>';
+          }
+          $this->ret['html'] = apply_filters('fv_flowplayer_rss', $this->ret['html'], $this);
+
+          return $this->ret;
+        }
 
         $bHTTPs = false;
         foreach( apply_filters( 'fv_player_media', array( $mobile, $media, $src1, $src2), $this ) AS $media_item ) {
