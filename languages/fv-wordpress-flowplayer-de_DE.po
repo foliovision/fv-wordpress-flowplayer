@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-10-05 16:28+0100\n"
-"PO-Revision-Date: 2016-10-05 16:36+0100\n"
+"PO-Revision-Date: 2017-01-10 16:59+0200\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -37,7 +37,7 @@ msgstr "Bearbeiten"
 
 #: ../models/flowplayer-frontend.php:206 ../controller/frontend.php:57
 msgid "Click to watch the video"
-msgstr "Klicken Sie hier, um das Video zu sehen"
+msgstr "Klicken Sie hier, um das Video anzuschauen"
 
 #: ../models/flowplayer-frontend.php:206 ../controller/frontend.php:58
 msgid "[This post contains video, click to play]"
@@ -96,7 +96,7 @@ msgstr "Nicht unterstütztes Video"
 
 #: ../controller/frontend.php:52
 msgid "Skin not found"
-msgstr "Skin war nicht gefunden"
+msgstr "Skin nicht gefunden"
 
 #: ../controller/frontend.php:53
 msgid "SWF file not found"
@@ -151,7 +151,7 @@ msgstr ""
 
 #: ../controller/frontend.php:66
 msgid "Please tell us what is wrong :"
-msgstr "Bitte sage uns, was falsch ist:"
+msgstr "Bitte sagen Sie uns, was falsch läuft:"
 
 #: ../controller/frontend.php:67
 msgid ""
@@ -230,7 +230,7 @@ msgstr "Deaktiviere den Video Controller"
 
 #: ../controller/backend.php:364
 msgid "FV Flowplayer License Update"
-msgstr "FV Flowplayer Lizenz aktualisieren"
+msgstr "FV Flowplayer Lizenz Aktualisierung"
 
 #: ../controller/backend.php:365
 msgid ""
@@ -254,7 +254,7 @@ msgstr "Ich werde es manuell aktualisieren"
 
 #: ../controller/backend.php:383
 msgid "FV Flowplayer License Expired"
-msgstr "FV Flowplayer Lizenz ist abgelaufen"
+msgstr "FV Flowplayer Lizenz abgelaufen"
 
 #: ../controller/backend.php:386
 msgid "Hide this notice"
@@ -269,7 +269,7 @@ msgid ""
 "Template checker has changed. Just open any of your videos on your site and "
 "see if you get a red warning message about JavaScript not working."
 msgstr ""
-"Theme-controller wurde geändert. Öffnen Sie ein beliebiges Videos auf Ihrer "
+"Theme-Controller wurde geändert. Öffnen Sie ein beliebiges Videos auf Ihrer "
 "Website und sehen Sie, ob Sie eine rote Warnmeldung bekommen, die darauf "
 "hinweist, dass JavaScript nicht funktioniert."
 
@@ -287,9 +287,7 @@ msgstr "Lizenz-Schlüssel erfolgreich erworben. <a href=\"\">Neu laden</a>"
 
 #: ../controller/backend.php:1010
 msgid "FV Flowplayer Pro extension installed - check the new "
-msgstr ""
-"FV Flowplayer Pro Erweiterung war erfolgreich installiert - überprüfen Sie "
-"die neue "
+msgstr "FV Flowplayer Pro Erweiterung installiert - überprüfen Sie die neue"
 
 #: ../controller/backend.php:1010
 msgid "Pro features"
@@ -301,7 +299,7 @@ msgstr "FV Flowplayer Pro Erweiterung Installation fehlgeschlagen - "
 
 #: ../controller/backend.php:1036
 msgid "FV Flowplayer Pro extension upgraded successfully!"
-msgstr "FV Flowplayer Pro Erweiterung war erfolgreich aktualisiert!"
+msgstr "FV Flowplayer Pro Erweiterung wurde erfolgreich aktualisiert!"
 
 #: ../view/admin.php:32
 msgid "Default Ad Code"
@@ -373,12 +371,12 @@ msgid ""
 "\". That way the video length won't be accounted and the video source URLs "
 "in your cached pages won't expire. Read more in the"
 msgstr ""
-"Wenn Sie einen Cache-plugin (wie Hyper Cache, WP Super Cache oder W3 Total "
-"Cache) benutzen, empfehlen wir Ihnen, die   \"Standard-Ablauf-Zeit\" doppelt "
-"so lang wie ihren Cache-timeout zu machen und auch die \"Erzwinge Standard-"
-"Ablauf-Zeit\" zu überprüfen. Auf diese Weise wird die Videolänge nicht "
+"Wenn Sie einen Cache-Plugin (wie Hyper Cache, WP Super Cache oder W3 Total "
+"Cache) benutzen, empfehlen wir, die   \"Standard-Ablaufzeit\" doppelt so "
+"lang wie ihren Cache-Timeout zu machen und auch die \"Erzwinge Standard-"
+"Ablaufzeit\" zu aktivieren. Auf diese Weise wird die Videolänge nicht "
 "berücksichtigt und die Video URLs in Ihren zwischengespeicherten Seiten "
-"verfallen nicht. Lesen Sie mehr in der"
+"verfallen nicht. Mehr unter: "
 
 #: ../view/admin.php:109
 msgid "Using Amazon S3 secure content in FV Flowplayer guide"
@@ -399,7 +397,7 @@ msgstr ""
 
 #: ../view/admin.php:119
 msgid "Force the default expiration time"
-msgstr "Erzwingt die Standard-Ablauf-Zeit"
+msgstr "Erzwingt die Standard-Ablaufzeit"
 
 #: ../view/admin.php:137
 msgid "Amazon Bucket"
@@ -417,7 +415,7 @@ msgstr ""
 
 #: ../view/admin.php:141
 msgid "Region"
-msgstr "Land"
+msgstr "Region"
 
 #: ../view/admin.php:144
 msgid "Select the region"
@@ -461,7 +459,7 @@ msgstr "US-Standard"
 
 #: ../view/admin.php:158
 msgid "Access Key ID"
-msgstr "ID der Zugriffsschlüssel"
+msgstr "AWS Zugangsschlüssel ID"
 
 #: ../view/admin.php:162
 msgid "Secret Access Key"
@@ -512,7 +510,7 @@ msgstr "Höhe"
 
 #: ../view/admin.php:220
 msgid "Enter values in pixels."
-msgstr "Geben Sie die Werte in Pixel."
+msgstr "Geben Sie die Werte in Pixeln ein."
 
 #: ../view/admin.php:225
 msgid "Default Volume"
@@ -651,7 +649,7 @@ msgstr ""
 
 #: ../view/admin.php:343 ../view/admin.php:975 ../view/wizard.php:334
 msgid "Speed Buttons"
-msgstr "Tasten für die Drehzahlregelung "
+msgstr "Geschwindigkeit-Tasten"
 
 #: ../view/admin.php:347
 msgid ""
@@ -674,7 +672,7 @@ msgstr ""
 
 #: ../view/admin.php:365 ../view/wizard.php:172
 msgid "Splash Image"
-msgstr " Beitragsbild"
+msgstr "Beitragsbild"
 
 #: ../view/admin.php:367
 msgid "Default which will be used for any player without its own splash image."
@@ -689,8 +687,8 @@ msgstr "Untertitel automatisch anzeigen"
 #: ../view/admin.php:375
 msgid "Normally you have to hit a button in controlbar to turn on subtitles."
 msgstr ""
-"Normalerweise müssen Sie auf die Schaltfläche in der Controlbar klicken, um "
-"Untertitel aktivieren."
+"Normalerweise müssen Sie auf die Schaltfläche in der Kontrollleiste klicken, "
+"um Untertitel aktivieren."
 
 #: ../view/admin.php:382
 msgid ""
@@ -704,8 +702,8 @@ msgstr ""
 #: ../view/admin.php:489
 msgid "FV Player is a free, easy-to-use, and complete solution for embedding"
 msgstr ""
-"FV Player ist kostenlos, benutzerfreundlich und vollständiges Lösung für die "
-"Einbettung"
+"FV Player ist eine kostenlose, benutzerfreundliche und vollständige Lösung "
+"für die Einbettung von Videos"
 
 #: ../view/admin.php:491
 msgid "and"
@@ -728,13 +726,13 @@ msgstr ""
 #: ../view/admin.php:527
 msgid "Here you can enable and configure advanced hosting options."
 msgstr ""
-"Hier können Sie aktivieren und erweiterte Hosting-Optionen zu konfigurieren."
+"Hier können Sie erweiterte Hosting-Optionen aktivieren und konfigurieren."
 
 #: ../view/admin.php:544
 msgid ""
 "Here you can configure ads and banners that will be showed in the video."
 msgstr ""
-"Hier können Sie Anzeigen und Banner konfigurieren, die in dem Video gezeigt "
+"Hier können Sie Anzeigen und Banner konfigurieren, die im Video gezeigt "
 "werden."
 
 #: ../view/admin.php:561
@@ -765,7 +763,7 @@ msgstr ""
 
 #: ../view/admin.php:578
 msgid "Following options are suitable for web developers and programmers."
-msgstr "Folgende Optionen sind passend für Web-entwickler und Programmierer."
+msgstr "Folgende Optionen sind passend für Webseitenentwickler und Programmierer."
 
 #: ../view/admin.php:581
 msgid "Always use fixed size player"
@@ -774,8 +772,7 @@ msgstr "Immer die feste Spielergröße verwenden"
 #: ../view/admin.php:585
 msgid "Enable to force video size at cost of loosing the video responsiveness."
 msgstr ""
-"Schalten Sie an um die Videogröße zwingen zum Preis verlierung "
-"Ansprechbarkeit des Thema."
+"Aktivieren, um die Videogröße zu Lasten der Video Reaktionszeit zu forcieren."
 
 #: ../view/admin.php:590
 msgid "Colorbox Compatibility"
@@ -855,8 +852,8 @@ msgstr "Alte Shortcodes mit Komma einfügen"
 msgid ""
 "Older versions of this plugin used commas to sepparate shortcode parameters."
 msgstr ""
-"Ältere Versionen dieses Plugins verwenden Kommasm, um den shortcode "
-"Parameter zu trennen."
+"Ältere Versionen dieses Plugins verwenden Kommas, um den shortcode Parameter "
+"voneinander zu trennen."
 
 #: ../view/admin.php:645
 msgid ""
@@ -869,15 +866,15 @@ msgstr ""
 
 #: ../view/admin.php:650
 msgid "Post Thumbnail"
-msgstr "Miniaturansicht für Beitrag"
+msgstr "Beitrags-Bild"
 
 #: ../view/admin.php:654
 msgid ""
 "Setting a video splash screen from the media library will automatically make "
 "it the splash image if there is none."
 msgstr ""
-"Wenn ist das Vorschaubild aus der Medienbibliothek gesetzt, dann wird dieses "
-"Vorschaubild  automatisch verwendet, wenn kein anderes gewählt ist."
+"Ein Video-Begrüßungsbildschirm aus der Medienbibliothek Einstellung wird es "
+"automatisch den Splash-Bild machen, wenn es keine gibt."
 
 #: ../view/admin.php:659
 msgid "Prefer Flash player by default"
@@ -917,7 +914,7 @@ msgstr ""
 
 #: ../view/admin.php:679
 msgid "Scan video length"
-msgstr "Video Dauer feststellen"
+msgstr "Videolauflänge abrufen"
 
 #: ../view/admin.php:684
 msgid "Beta version, turn off if you experience issues when saving posts!"
@@ -947,7 +944,7 @@ msgstr "Aktuell %s Beiträge in der Warteschlange."
 
 #: ../view/admin.php:717
 msgid "Use iframe embedding"
-msgstr "Iframe Einbettung verwenden"
+msgstr "Iframe embed verwenden"
 
 #: ../view/admin.php:722
 msgid ""
@@ -990,11 +987,11 @@ msgstr "Entfernen"
 
 #: ../view/admin.php:836
 msgid "Add more Popups"
-msgstr "Fügen mehr Pop-ups"
+msgstr "Zusätzliche Pop-ups hinzufügen"
 
 #: ../view/admin.php:867
 msgid "Which features should be available in shortcode editor?"
-msgstr "Welche funktionen sollten in shortcode editor verfügbar sein?"
+msgstr "Welche Funktionen sollten im Shortcode-Editor verfügbar sein?"
 
 #: ../view/admin.php:870
 msgid "Allow User Uploads"
@@ -1046,7 +1043,7 @@ msgstr "Ausrichtung"
 
 #: ../view/admin.php:961 ../view/admin.php:1211 ../view/wizard.php:320
 msgid "Controlbar"
-msgstr "Controlbar"
+msgstr "Kontrollleiste"
 
 #: ../view/admin.php:968 ../view/wizard.php:330
 msgid "Live stream"
@@ -1062,7 +1059,7 @@ msgstr ""
 
 #: ../view/admin.php:1002
 msgid "Purchase FV Flowplayer license"
-msgstr "Kaufen Sie Ihre FV Flowplayer Lizenz"
+msgstr "FV Flowplayer Lizenz erwerben"
 
 #: ../view/admin.php:1002
 msgid "to enable Pro features!"
@@ -1123,7 +1120,7 @@ msgstr "Schützt Ihre Amazon CDN-hosted Videos"
 
 #: ../view/admin.php:1060
 msgid "Autoplay just once"
-msgstr "Autoplay nur einmal"
+msgstr "Automatische Wiedergabe nur einmal"
 
 #: ../view/admin.php:1064
 msgid "Makes sure each video autoplays only once for each visitor."
@@ -1133,7 +1130,7 @@ msgstr ""
 
 #: ../view/admin.php:1069
 msgid "Enable video ads"
-msgstr "Video Ads aktivieren"
+msgstr "Video Werbung aktivieren"
 
 #: ../view/admin.php:1073
 msgid ""
@@ -1178,7 +1175,7 @@ msgstr "Puffer"
 
 #: ../view/admin.php:1195
 msgid "Bottom Margin"
-msgstr "Unten Außenabstand"
+msgstr "Außenabstand Unten"
 
 #: ../view/admin.php:1199
 msgid "Canvas"
@@ -1306,7 +1303,7 @@ msgstr "Eigene Video Ads"
 
 #: ../view/admin.php:1334
 msgid "CloudFront CDN - protected video downloads"
-msgstr "Cloudfront CDN - geschützten Video herunterladen"
+msgstr "Cloudfront CDN - geschützte Video Downloads"
 
 #: ../view/admin.php:1339
 msgid "Troubleshooting"
@@ -1322,7 +1319,7 @@ msgstr "Video Codierung Tips"
 
 #: ../view/admin.php:1344
 msgid "Video formats to avoid"
-msgstr "Video Formate zu vermeiden"
+msgstr "Zu vermeidende Video Formate"
 
 #: ../view/admin.php:1345
 msgid "Fixing mime type on Amazon S3"
@@ -1354,7 +1351,7 @@ msgstr "Aktionen"
 
 #: ../view/admin.php:1401 ../view/admin.php:1439
 msgid "Video Ads"
-msgstr "Video Anzeigen"
+msgstr "Video-Werbung"
 
 #: ../view/admin.php:1402
 msgid "Help"
@@ -1477,7 +1474,7 @@ msgstr "RTMP hinzufügen"
 
 #: ../view/wizard.php:165
 msgid "Put low-bandwidth video here or leave blank"
-msgstr "Geben Sie hier Video mit niedrige Bandbreite oder lassen Sie leer"
+msgstr "Geben Sie hier das Video mit niedriger Bandbreite ein oder lassen Sie es leer"
 
 #: ../view/wizard.php:175
 msgid "Add Image"
@@ -1506,7 +1503,7 @@ msgstr "Standard"
 
 #: ../view/wizard.php:243
 msgid "Add Playlist Item"
-msgstr "Element zur Playliste hinzufügen"
+msgstr "Playlisten-Element hinzufügen"
 
 #: ../view/wizard.php:248
 msgid "Additional features"
@@ -1542,7 +1539,7 @@ msgstr "Werbung Code"
 
 #: ../view/wizard.php:306
 msgid "Skip global ad in this video"
-msgstr "Standard-Ad-Anzeige in diesem Video überspringen"
+msgstr "Standard-Werbeanzeige in diesem Video überspringen"
 
 #: ../view/wizard.php:314
 msgid "Left"
