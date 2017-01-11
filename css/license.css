@@ -143,8 +143,7 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   text-align: right;
 }
 
-#wpfp_options .inside #fv-player-pro_video-ads-settings label,
-#wpfp_options .inside #fv-player-popups-settings label {
+#wpfp_options .inside input + label {
 	display: inline-block;	
 }
 
