@@ -879,6 +879,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public static function get_languages() {
     $aLangs = array(
+      'SDH' => 'SDH',
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
       'AF' => 'Afrikaans',
@@ -1307,7 +1308,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <style>
     body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
-    html {margin-top: 0px !important;overflow-y: auto;}
+    html {margin-top: 0px !important;}
   </style>
 </head>
 <body>
@@ -1328,7 +1329,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $height = 'min-height:'.$matches[1].'px;';
     }
     
-    ?>
+    ?>    
+    <style>
+      html {overflow-y: auto;}
+    </style>    
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
