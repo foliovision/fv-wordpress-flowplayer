@@ -845,38 +845,79 @@ function fv_flowplayer_admin_popups(){
             <tbody>
             <?php
             $aPopupData = get_option('fv_player_popups');
+            $aPopupCss = get_option('fv_player_popups_css', array());
+            
+            $cssTextDefault = '.fv-player-popup-css-class{
+  color:awesome;
+}';
+            $cssClassDefault = 'css-class';
+            
             if( empty($aPopupData) ) {
               $aPopupData = array( 1 => array() );
             } else {
               $aPopupData =  array( '#fv_popup_dummy_key#' => array() ) + $aPopupData ;
             }
-
             foreach ($aPopupData AS $key => $aPopup) {
+              
+              if(empty($aPopup['source']) && empty($aPopup['css']) || isset($aPopup['source']) && $aPopup['source'] === 'default'){
+                $aPopup['source'] =  'default';
+              }elseif( isset($aPopupCss[$aPopup['source']])){
+                $aPopup['source'] = $aPopup['css'];
+                $aPopup['csstext'] = $aPopupCss[$aPopup['css']];
+              }else{
+                $aPopup['source'] = 'old';
+                $aPopup['csstext'] = $aPopup['css'];
+              }
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
-                    <td>
-                      <table class='fv-player-popup-formats'>
-                        <tr>
-                        	<td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                        	<td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
-                      	</tr>
-                        <tr>
-                        	<td><label>HTML:</label></td>
-                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
-                      	</tr>
-                        <tr>
-                        	<td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
-                      	</tr>
-                      </table>
-                    </td>
-                    <td>
-                      <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
-                      <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> /> 
-                      <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />
-                      <a class='fv-player-popup-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
-                  </tr>
+                <td>
+                  <table class='fv-player-popup-formats'>
+                    <tr>
+                      <td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
+                    </tr>
+                    <tr>
+                      <td><label>HTML:</label></td>
+                      <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
+                    </tr>
+                    <tr>
+                      <td><label><?php _e('CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td>
+                        <select class="fv-player-popup-css-source" name="popups[<?php echo $key; ?>][source]">
+                          <option value="default"<?php if (isset($aPopup['css']) && 'default' === $aPopup['css']) echo ' selected'; ?>>Default</option>
+                          <option value="tw"<?php if (isset($aPopup['css']) && 'tw' === $aPopup['css']) echo ' selected'; ?>>TW</option>
+                          <?php
+                          foreach ($aPopupCss AS $key => $val) {
+                            ?><option value="<?php echo $val['class']; ?>"<?php if (isset($aPopup['class']) && isset($aPopup['css']) && $val['class'] === $aPopup['css']) echo ' selected'; ?>><?php echo $val['class']; ?></option>
+                            <?php
+                          }
+                          ?>
+                          <option value="new">New</option>
+                          <?php if ('new' == $aPopup['css']){?>
+                          <option value="old" selected>Old</option>
+                          <?php }?>
+                        </select> 
+                      </td>                    
+                    </tr>
+                    <tr class="fv-player-popup-css-new-name">
+                      <td><label><?php _e('Custom<br/>Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo isset($aPopup['name']) ? $aPopup['name'] : $cssClassDefault; ?>' placeholder='' /></td>
+                    </tr>
+                    <tr class="fv-player-popup-css-new-css">
+                      <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'>
+<?php echo isset($aPopup['csstext']) ? $aPopup['csstext'] : $cssTextDefault; ?>
+                        </textarea></td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
+                  <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> /> 
+                  <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />
+                  <a class='fv-player-popup-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
+              </tr>
               <?php
             }
             ?>
@@ -891,27 +932,54 @@ function fv_flowplayer_admin_popups(){
         </td>
       </tr>         
     </table>
-
     <script>
-    
-    jQuery('#fv-player-popups-add').click( function() {
-      var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
-      jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
-      jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
-      return false;
-    } );
-    
-    jQuery(document).on('click','.fv-player-popup-remove', false, function() {
-      if( confirm('Are you sure you want to remove the popup ad?') ){
-        jQuery(this).parents('.data').remove();
-        if(jQuery('#fv-player-popups-settings .data').length === 1) {
-          jQuery('#fv-player-popups-add').trigger('click');
-        }
-      }      
-      return false;
-    } );
+      (function($){  
+        ('use strict');
+        $('#fv-player-popups-add').click( function() {
+          var fv_player_popup_index  = (parseInt( $('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
+          $('#fv-player-popups-settings').append($('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
+          $('#fv-player-popup-item-' + fv_player_popup_index).show();
+          return false;
+        } );
+
+        $(document).on('click','.fv-player-popup-remove', false, function() {
+          if( confirm('Are you sure you want to remove the popup ad?') ){
+            $(this).parents('.data').remove();
+            if($('#fv-player-popups-settings .data').length === 1) {
+              $('#fv-player-popups-add').trigger('click');
+            }
+          }      
+          return false;
+        } );
+
+        $(document).on('change','.fv-player-popup-css-file',function(){
+          var parent = $(this).parents('.fv-player-popup-formats');
+          if($(this).val() === 'new'){
+            $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).show();
+          }else{
+            $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).hide();
+          }
+        });
+
+        
+        $(document).on('input','.fv-player-popup-css-new-name > td > input',function(e){
+          var parent = $(this).parents('.fv-player-popup-formats');
+          
+          var selector = $(this).val().replace(/[!""#$%&'()\*\+,\./:;<=>\?@\[\\\]^`{\|}~ ]/ig,'');
+
+          var oldClass = $(this).data('old');
+          console.log($('.fv-player-popup-css-new-css > td > textarea',parent));
+          var text = $('.fv-player-popup-css-new-css > td > textarea',parent).val().replace(new RegExp('^.fv-player-popup-' + oldClass), '.fv-player-popup-' + selector);
+          
+          $('.fv-player-popup-css-new-css > td > textarea',parent).val(text);
+          
+          $(this).data('old',selector);
+        });
+
+
+      }(jQuery))   
     </script>
-    <?php
+<?php
 }
 
 

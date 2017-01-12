@@ -194,14 +194,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sKey = $aNewOptions['key'];
 
     if(isset($aNewOptions['popups'])){
-      unset($aNewOptions['popups']['#fv_popup_dummy_key#']);
-      
-      foreach( $aNewOptions['popups'] AS $key => $value ) {
-        $aNewOptions['popups'][$key]['css'] = stripslashes($value['css']);
-        $aNewOptions['popups'][$key]['html'] = stripslashes($value['html']);
-      }
-      
-      update_option('fv_player_popups',$aNewOptions['popups']);
+      $this->popup_settings($aNewOptions['popups']);
       unset($aNewOptions['popups']);
     }
     
@@ -244,6 +237,35 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
            
     return true;  
   }
+  
+  private function popup_settings($options) {
+      unset($options['#fv_popup_dummy_key#']);
+      $aPopupCss = get_option('fv_player_popups_css',array());
+      
+      foreach( $options AS $key => $value ) {
+        //TODO:this
+        //$options[$key]['css'] = stripslashes($value['css']);
+        //$options[$key]['html'] = stripslashes($value['html']);
+        var_dump($value);
+        if($value['source'] === 'new'){          
+          $aPopupCss[] = array(
+              'class' => $value['name'],
+              'css' => $value['css'],
+          );
+          update_option('fv_player_popups_css',$aPopupCss);
+          $keys = array_keys($aPopupCss);
+          $options['source'] = end($keys);          
+          
+        }else if(empty($value['source']) || $value['source'] === 'default' || $value['source'] === 'old' || isset($aPopupCss[$value['source']])){
+        
+          
+        }
+        
+      }
+      
+      update_option('fv_player_popups',$options);
+    
+  }
   /**
    * Salt function - returns pseudorandom string hash.
    * @return Pseudorandom string hash.
@@ -253,7 +275,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $salt;
   }
   
-  
+//  public static function get_unique_key($key, $array_keys){
+//    if(is_array($array_keys) && isset($array_keys[$key])){
+//      $count = 1;
+//      if(preg_match('/-([0-9]*)$/',$key,$matches)){
+//        $count = intval($matches[1]) + 1;
+//      }
+//      $key .= '-' . $count;
+//    }
+//    return $key;
+//  }
+//  
   private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption ){
 
     if(isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical'){
