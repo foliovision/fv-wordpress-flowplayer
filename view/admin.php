@@ -846,7 +846,6 @@ function fv_flowplayer_admin_popups(){
             <?php
             $aPopupData = get_option('fv_player_popups');
             $aPopupCss = get_option('fv_player_popups_css', array());
-            
             $cssTextDefault = '.fv-player-popup-css-class{
   color:awesome;
 }';
@@ -857,16 +856,14 @@ function fv_flowplayer_admin_popups(){
             } else {
               $aPopupData =  array( '#fv_popup_dummy_key#' => array() ) + $aPopupData ;
             }
+            var_dump($aPopupData);
             foreach ($aPopupData AS $key => $aPopup) {
-              
-              if(empty($aPopup['source']) && empty($aPopup['css']) || isset($aPopup['source']) && $aPopup['source'] === 'default'){
-                $aPopup['source'] =  'default';
-              }elseif( isset($aPopupCss[$aPopup['source']])){
-                $aPopup['source'] = $aPopup['css'];
-                $aPopup['csstext'] = $aPopupCss[$aPopup['css']];
-              }else{
-                $aPopup['source'] = 'old';
-                $aPopup['csstext'] = $aPopup['css'];
+              if(empty($aPopup['linked_css']) && empty($aPopup['css']) || isset($aPopup['linked_css']) && $aPopup['linked_css'] === 'default'){
+                $aPopup['linked_css'] =  'default';
+              }elseif(!isset($aPopup['linked_css'])){
+                
+              }elseif( isset($aPopupCss[$aPopup['linked_css']])){                
+                $aPopup['css'] = $aPopupCss[$aPopup['linked_css']]['css'];
               }
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
@@ -884,17 +881,18 @@ function fv_flowplayer_admin_popups(){
                     <tr>
                       <td><label><?php _e('CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td>
-                        <select class="fv-player-popup-css-source" name="popups[<?php echo $key; ?>][source]">
-                          <option value="default"<?php if (isset($aPopup['css']) && 'default' === $aPopup['css']) echo ' selected'; ?>>Default</option>
-                          <option value="tw"<?php if (isset($aPopup['css']) && 'tw' === $aPopup['css']) echo ' selected'; ?>>TW</option>
+                        <select class="fv-player-popup-css-linked_css" name="popups[<?php echo $key; ?>][linked_css]">
+                          <option value="default"<?php if (isset($aPopup['linked_css']) && 'default' === $aPopup['linked_css']) echo ' selected'; ?>>Default</option>
+                          <option value="tw"<?php if (isset($aPopup['linked_css']) && 'tw' === $aPopup['linked_css']) echo ' selected'; ?>>TW</option>
                           <?php
-                          foreach ($aPopupCss AS $key => $val) {
-                            ?><option value="<?php echo $val['class']; ?>"<?php if (isset($aPopup['class']) && isset($aPopup['css']) && $val['class'] === $aPopup['css']) echo ' selected'; ?>><?php echo $val['class']; ?></option>
+                          foreach ($aPopupCss AS $popupCsskey => $val) {
+                            ?>
+                          <option value="<?php echo $popupCsskey; ?>"<?php if (isset($aPopup['linked_css']) && $popupCsskey == $aPopup['linked_css']) echo ' selected'; ?> data-css='<?php echo json_encode($val); ?>'><?php echo $val['class']; ?></option>
                             <?php
                           }
                           ?>
                           <option value="new">New</option>
-                          <?php if ('new' == $aPopup['css']){?>
+                          <?php if (!isset($aPopup['linked_css'])){?>
                           <option value="old" selected>Old</option>
                           <?php }?>
                         </select> 
@@ -902,12 +900,12 @@ function fv_flowplayer_admin_popups(){
                     </tr>
                     <tr class="fv-player-popup-css-new-name">
                       <td><label><?php _e('Custom<br/>Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo isset($aPopup['name']) ? $aPopup['name'] : $cssClassDefault; ?>' placeholder='' /></td>
+                      <td><input class="fv-player-popup-css-name"type='text' maxlength="40" name='popups[<?php echo $key; ?>][css_class]' value='<?php echo isset($aPopup['css_class']) ? $aPopup['css_class'] : $cssClassDefault; ?>' placeholder='' /></td>
                     </tr>
                     <tr class="fv-player-popup-css-new-css">
                       <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'>
-<?php echo isset($aPopup['csstext']) ? $aPopup['csstext'] : $cssTextDefault; ?>
+                      <td><textarea class="fv-player-popup-css-css" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'>
+<?php echo isset($aPopup['css']) ? $aPopup['css'] : $cssTextDefault; ?>
                         </textarea></td>
                     </tr>
                   </table>
@@ -935,48 +933,58 @@ function fv_flowplayer_admin_popups(){
     <script>
       (function($){  
         ('use strict');
-        $('#fv-player-popups-add').click( function() {
-          var fv_player_popup_index  = (parseInt( $('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
-          $('#fv-player-popups-settings').append($('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
-          $('#fv-player-popup-item-' + fv_player_popup_index).show();
-          return false;
-        } );
+        $(document).ready(function(){
+          
+          $('#fv-player-popups-add').click( function() {
+            var fv_player_popup_index  = (parseInt( $('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
+            $('#fv-player-popups-settings').append($('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
+            $('#fv-player-popup-item-' + fv_player_popup_index).show();
+            return false;
+          } );
 
-        $(document).on('click','.fv-player-popup-remove', false, function() {
-          if( confirm('Are you sure you want to remove the popup ad?') ){
-            $(this).parents('.data').remove();
-            if($('#fv-player-popups-settings .data').length === 1) {
-              $('#fv-player-popups-add').trigger('click');
+          $(document).on('click','.fv-player-popup-remove', false, function() {
+            if( confirm('Are you sure you want to remove the popup ad?') ){
+              $(this).parents('.data').remove();
+              if($('#fv-player-popups-settings .data').length === 1) {
+                $('#fv-player-popups-add').trigger('click');
+              }
+            }      
+            return false;
+          } );
+
+          $(document).on('change','.fv-player-popup-css-linked_css',function(){
+            var parent = $(this).parents('.fv-player-popup-formats');
+            if($(this).val() !== 'default' && $(this).val() !== 'tw'){
+              $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).show();
+            }else{
+              $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).hide();
             }
-          }      
-          return false;
-        } );
+            var data = $(this).find('option[value=' + $(this).val() + ']').data('css');
+            //data = JSON.parse(data);
+            if(typeof(data) !== 'undefined'){
+              $('.fv-player-popup-css-css',parent).html(data.css);
+              $('.fv-player-popup-css-name',parent).val(data.class);
+            }
 
-        $(document).on('change','.fv-player-popup-css-file',function(){
-          var parent = $(this).parents('.fv-player-popup-formats');
-          if($(this).val() === 'new'){
-            $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).show();
-          }else{
-            $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).hide();
-          }
+          });
+          $('.fv-player-popup-css-linked_css').trigger('change');
+
+
+          $(document).on('input','.fv-player-popup-css-new-name > td > input',function(e){
+            var parent = $(this).parents('.fv-player-popup-formats');
+
+            var selector = $(this).val().replace(/[!""#$%&'()\*\+,\./:;<=>\?@\[\\\]^`{\|}~ ]/ig,'');
+
+            var oldClass = $(this).data('old');
+            
+            var text = $('.fv-player-popup-css-new-css > td > textarea',parent).val().replace(new RegExp('^.fv-player-popup-' + oldClass), '.fv-player-popup-' + selector);
+
+            $('.fv-player-popup-css-new-css > td > textarea',parent).val(text);
+
+            $(this).data('old',selector);
+          });
+
         });
-
-        
-        $(document).on('input','.fv-player-popup-css-new-name > td > input',function(e){
-          var parent = $(this).parents('.fv-player-popup-formats');
-          
-          var selector = $(this).val().replace(/[!""#$%&'()\*\+,\./:;<=>\?@\[\\\]^`{\|}~ ]/ig,'');
-
-          var oldClass = $(this).data('old');
-          console.log($('.fv-player-popup-css-new-css > td > textarea',parent));
-          var text = $('.fv-player-popup-css-new-css > td > textarea',parent).val().replace(new RegExp('^.fv-player-popup-' + oldClass), '.fv-player-popup-' + selector);
-          
-          $('.fv-player-popup-css-new-css > td > textarea',parent).val(text);
-          
-          $(this).data('old',selector);
-        });
-
-
       }(jQuery))   
     </script>
 <?php

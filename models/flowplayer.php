@@ -243,22 +243,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $aPopupCss = get_option('fv_player_popups_css',array());
       
       foreach( $options AS $key => $value ) {
-        //TODO:this
-        //$options[$key]['css'] = stripslashes($value['css']);
-        //$options[$key]['html'] = stripslashes($value['html']);
-        var_dump($value);
-        if($value['source'] === 'new'){          
+        //unset( $options[$key]['css_class']);
+        if(in_array($value['linked_css'], array('default','tw'))){
+          $options['css'] = '';
+          continue;
+        }
+        
+        
+        if($value['linked_css'] === 'new'){
           $aPopupCss[] = array(
-              'class' => $value['name'],
+              'class' => $value['css_class'],
+              'css' => $value['css'],
+          );
+          
+          $keys = array_keys($aPopupCss);
+          $options['linked_css'] = end($keys);  
+          update_option('fv_player_popups_css',$aPopupCss);
+          
+        }else if(isset($value['linked_css']) && isset($aPopupCss[$value['linked_css']])){
+          $aPopupCss[] = array(
+              'class' => $value['css_class'],
               'css' => $value['css'],
           );
           update_option('fv_player_popups_css',$aPopupCss);
-          $keys = array_keys($aPopupCss);
-          $options['source'] = end($keys);          
-          
-        }else if(empty($value['source']) || $value['source'] === 'default' || $value['source'] === 'old' || isset($aPopupCss[$value['source']])){
-        
-          
         }
         
       }
