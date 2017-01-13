@@ -851,7 +851,7 @@ function fv_flowplayer_admin_popups(){
             $cssTextDefault = '.fv-player-popup-css-class{
   color:awesome;
 }';
-            $cssClassDefault = 'css-class';
+            $cssClassDefault = 'My Cusom Style';
             
             
             
@@ -862,7 +862,7 @@ function fv_flowplayer_admin_popups(){
             }
             
             foreach ($aPopupData AS $key => $aPopup) {
-              $bShowOld = empty($aPopup['css_preset']) && !empty($aPopup['css']);
+              $bShowLegacy = empty($aPopup['css_preset']) && !empty($aPopup['css']);
           
               
                 
@@ -885,12 +885,12 @@ function fv_flowplayer_admin_popups(){
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                     </tr>
                     <!--LEGACY CSS-->
-                    <tr <?php echo $bShowOld?'':'style="display:none;"';?>>
+                    <tr <?php echo $bShowLegacy?'':'style="display:none;"';?> class="fv-player-popup-css-legacy">
                       <td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                     </tr>
                     <!--NEW CSS-->
-                    <tr>
+                    <tr <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
                       <td><label><?php _e('CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td>
                         <input type="hidden" >
@@ -904,18 +904,18 @@ function fv_flowplayer_admin_popups(){
                             <?php
                           }
                           ?>
-                          <option value="new" data-css='<?php echo json_encode(array('class' => $cssClassDefault,'css' => $cssTextDefault)); ?>' >New</option>
-                          <?php if ($bShowOld){?>
-                          <option value="old" selected data-css='<?php echo json_encode($val); ?>'>Old</option>
+                          <option value="new" data-css='<?php echo json_encode(array('name' => $cssClassDefault,'content' => $cssTextDefault)); ?>' >New</option>
+                          <?php if ($bShowLegacy){?>
+                          <option value="legacy" selected data-css='<?php echo json_encode($val); ?>'>Legacy</option>
                           <?php }?>
                         </select> 
                       </td>                    
                     </tr>
-                    <tr class="fv-player-popup-css-new-name">
+                    <tr class="fv-player-popup-css-new-name"  <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
                       <td><label><?php _e('Custom<br/>Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><input class="fv-player-popup-css-name" type='text' maxlength="" name='popups[<?php echo $key; ?>][css_preset_name]' value="" placeholder='' /></td>
                     </tr>
-                    <tr class="fv-player-popup-css-new-css">
+                    <tr class="fv-player-popup-css-new-css"  <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
                       <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><textarea class="fv-player-popup-css-css" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css_preset_content]' ></textarea></td>
                     </tr>
@@ -973,11 +973,18 @@ function fv_flowplayer_admin_popups(){
 
           $(document).on('change','.fv-player-popup-css-css_preset',function(){
             var parent = $(this).parents('.fv-player-popup-formats');
-            if($(this).val() !== 'default' && $(this).val() !== 'tw'){
+            if($(this).val() !== 'default' && $(this).val() !== 'tw' && $(this).val() !== 'legacy'){
               $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).show();
             }else{
               $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).hide();
             }
+            
+            if($(this).val() !== 'legacy'){
+              $('.fv-player-popup-css-legacy',parent).hide();
+            }else{
+              $('.fv-player-popup-css-legacy',parent).show();
+            }
+            
             if($(this).val() === 'new'){
               $(this).find('option[value=new]').attr('value', ++maxIndex);
             }
