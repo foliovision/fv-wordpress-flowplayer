@@ -881,14 +881,9 @@ function fv_flowplayer_admin_popups(){
                     <tr>
                       <td><label>HTML:</label></td>
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
-                    </tr>
-                    <!--LEGACY CSS-->
-                    <tr <?php echo $bShowLegacy ? '' : 'style="display:none;"';?> class="fv-player-popup-css-legacy">
-                      <td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
-                    </tr>
+                    </tr>                
                     <!--NEW CSS-->
-                    <tr <?php echo !$bShowLegacy ? '' : 'style="display:none;"'; ?>>
+                    <tr>
                       <td><label><?php _e('CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td>
                         <input type="hidden" >
@@ -916,6 +911,12 @@ function fv_flowplayer_admin_popups(){
                     <tr class="fv-player-popup-css-new-css"  <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
                       <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><textarea class="fv-player-popup-css-css" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css_preset_content]' ></textarea></td>
+                    </tr>
+                    
+                     <!--LEGACY CSS-->
+                    <tr <?php echo $bShowLegacy ? '' : 'style="display:none;"';?> class="fv-player-popup-css-legacy">
+                      <td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                     </tr>
                   </table>
                 </td>
