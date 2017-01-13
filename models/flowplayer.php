@@ -238,39 +238,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return true;  
   }
   
-  private function popup_settings($options) {
-      unset($options['#fv_popup_dummy_key#']);
+  private function popup_settings($aPopups) {
+      unset($aPopups['#fv_popup_dummy_key#']);
       $aPopupCss = get_option('fv_player_popups_css',array());
       
-      foreach( $options AS $key => $value ) {
-        //unset( $options[$key]['css_class']);
-        if(in_array($value['linked_css'], array('default','tw'))){
-          $options['css'] = '';
+      foreach( $aPopups AS $key => $aPopupData ) {
+
+        //unset( $aPopups[$key]['css_preset_name']);
+        $aPopups[$key]['css'] = stripslashes($aPopupData['css']);
+        $aPopups[$key]['html'] = stripslashes($aPopupData['html']);
+        
+        if(in_array($aPopupData['css_preset'], array('default','tw'))){
+          $aPopups[$key]['css'] = '';
           continue;
         }
-        
-        
-        if($value['linked_css'] === 'new'){
-          $aPopupCss[] = array(
-              'class' => $value['css_class'],
-              'css' => $value['css'],
-          );
+
+
+        if(isset($aPopupData['css_preset']) && is_numeric($aPopupData['css_preset'])){
           
-          $keys = array_keys($aPopupCss);
-          $options['linked_css'] = end($keys);  
-          update_option('fv_player_popups_css',$aPopupCss);
-          
-        }else if(isset($value['linked_css']) && isset($aPopupCss[$value['linked_css']])){
-          $aPopupCss[] = array(
-              'class' => $value['css_class'],
-              'css' => $value['css'],
+          $aPopupCss[$aPopupData['css_preset']] = array(
+            'name' => $aPopupData['css_preset_name'],
+            'content' => trim($aPopupData['css_preset_content']),
           );
+          $aPopups[$key]['css_preset'] = $aPopupData['css_preset'];
           update_option('fv_player_popups_css',$aPopupCss);
         }
-        
+  
+       
       }
-      
-      update_option('fv_player_popups',$options);
+     
+      update_option('fv_player_popups',$aPopups);
     
   }
   /**

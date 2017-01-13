@@ -846,25 +846,31 @@ function fv_flowplayer_admin_popups(){
             <?php
             $aPopupData = get_option('fv_player_popups');
             $aPopupCss = get_option('fv_player_popups_css', array());
+           
+            
             $cssTextDefault = '.fv-player-popup-css-class{
   color:awesome;
 }';
             $cssClassDefault = 'css-class';
+            
+            
             
             if( empty($aPopupData) ) {
               $aPopupData = array( 1 => array() );
             } else {
               $aPopupData =  array( '#fv_popup_dummy_key#' => array() ) + $aPopupData ;
             }
-            var_dump($aPopupData);
+            
             foreach ($aPopupData AS $key => $aPopup) {
-              if(empty($aPopup['linked_css']) && empty($aPopup['css']) || isset($aPopup['linked_css']) && $aPopup['linked_css'] === 'default'){
-                $aPopup['linked_css'] =  'default';
-              }elseif(!isset($aPopup['linked_css'])){
+              $bShowOld = empty($aPopup['css_preset']) && !empty($aPopup['css']);
+          
+              
                 
-              }elseif( isset($aPopupCss[$aPopup['linked_css']])){                
-                $aPopup['css'] = $aPopupCss[$aPopup['linked_css']]['css'];
+              if(isset($aPopup['css_preset']) && isset($aPopupCss[$aPopup['css_preset']])){                
+                $aPopup['css_preset_content'] = $aPopupCss[$aPopup['css_preset']]['content'];
+                $aPopup['css_preset_name'] = $aPopupCss[$aPopup['css_preset']]['name'];
               }
+              var_dump($aPopup);
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
@@ -878,35 +884,40 @@ function fv_flowplayer_admin_popups(){
                       <td><label>HTML:</label></td>
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                     </tr>
+                    <!--LEGACY CSS-->
+                    <tr <?php echo $bShowOld?'':'style="display:none;"';?>>
+                      <td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
+                    </tr>
+                    <!--NEW CSS-->
                     <tr>
                       <td><label><?php _e('CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td>
-                        <select class="fv-player-popup-css-linked_css" name="popups[<?php echo $key; ?>][linked_css]">
-                          <option value="default"<?php if (isset($aPopup['linked_css']) && 'default' === $aPopup['linked_css']) echo ' selected'; ?>>Default</option>
-                          <option value="tw"<?php if (isset($aPopup['linked_css']) && 'tw' === $aPopup['linked_css']) echo ' selected'; ?>>TW</option>
+                        <input type="hidden" >
+                        <select class="fv-player-popup-css-css_preset" name="popups[<?php echo $key; ?>][css_preset]">
+                          <option value="default"<?php if (isset($aPopup['css_preset']) && 'default' === $aPopup['css_preset']) echo ' selected'; ?>>Default</option>
+                          <option value="tw"<?php if (isset($aPopup['css_preset']) && 'tw' === $aPopup['css_preset']) echo ' selected'; ?>>TW</option>
                           <?php
                           foreach ($aPopupCss AS $popupCsskey => $val) {
                             ?>
-                          <option value="<?php echo $popupCsskey; ?>"<?php if (isset($aPopup['linked_css']) && $popupCsskey == $aPopup['linked_css']) echo ' selected'; ?> data-css='<?php echo json_encode($val); ?>'><?php echo $val['class']; ?></option>
+                          <option value="<?php echo $popupCsskey; ?>"<?php if (isset($aPopup['css_preset']) && is_numeric($aPopup['css_preset']) && $popupCsskey == $aPopup['css_preset']) echo ' selected'; ?> data-css='<?php echo json_encode($val); ?>'><?php echo isset($val['name']) ? $val['name'] : ''; ?></option>
                             <?php
                           }
                           ?>
-                          <option value="new">New</option>
-                          <?php if (!isset($aPopup['linked_css'])){?>
-                          <option value="old" selected>Old</option>
+                          <option value="new" data-css='<?php echo json_encode(array('class' => $cssClassDefault,'css' => $cssTextDefault)); ?>' >New</option>
+                          <?php if ($bShowOld){?>
+                          <option value="old" selected data-css='<?php echo json_encode($val); ?>'>Old</option>
                           <?php }?>
                         </select> 
                       </td>                    
                     </tr>
                     <tr class="fv-player-popup-css-new-name">
                       <td><label><?php _e('Custom<br/>Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><input class="fv-player-popup-css-name"type='text' maxlength="40" name='popups[<?php echo $key; ?>][css_class]' value='<?php echo isset($aPopup['css_class']) ? $aPopup['css_class'] : $cssClassDefault; ?>' placeholder='' /></td>
+                      <td><input class="fv-player-popup-css-name" type='text' maxlength="" name='popups[<?php echo $key; ?>][css_preset_name]' value="" placeholder='' /></td>
                     </tr>
                     <tr class="fv-player-popup-css-new-css">
                       <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><textarea class="fv-player-popup-css-css" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'>
-<?php echo isset($aPopup['css']) ? $aPopup['css'] : $cssTextDefault; ?>
-                        </textarea></td>
+                      <td><textarea class="fv-player-popup-css-css" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css_preset_content]' ></textarea></td>
                     </tr>
                   </table>
                 </td>
@@ -935,6 +946,14 @@ function fv_flowplayer_admin_popups(){
         ('use strict');
         $(document).ready(function(){
           
+          var maxIndex = 0; 
+          $('.fv-player-popup-css-css_preset>option').each(function(){
+            var tmp = $(this).val();
+            if(!$.isNumeric(tmp))
+              return;
+            maxIndex = Math.max(tmp,maxIndex);
+          })
+          
           $('#fv-player-popups-add').click( function() {
             var fv_player_popup_index  = (parseInt( $('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
             $('#fv-player-popups-settings').append($('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
@@ -952,37 +971,26 @@ function fv_flowplayer_admin_popups(){
             return false;
           } );
 
-          $(document).on('change','.fv-player-popup-css-linked_css',function(){
+          $(document).on('change','.fv-player-popup-css-css_preset',function(){
             var parent = $(this).parents('.fv-player-popup-formats');
             if($(this).val() !== 'default' && $(this).val() !== 'tw'){
               $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).show();
             }else{
               $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).hide();
             }
+            if($(this).val() === 'new'){
+              $(this).find('option[value=new]').attr('value', ++maxIndex);
+            }
+            
             var data = $(this).find('option[value=' + $(this).val() + ']').data('css');
             //data = JSON.parse(data);
             if(typeof(data) !== 'undefined'){
-              $('.fv-player-popup-css-css',parent).html(data.css);
-              $('.fv-player-popup-css-name',parent).val(data.class);
+              $('.fv-player-popup-css-css',parent).html(data.content);
+              $('.fv-player-popup-css-name',parent).val(data.name);
             }
 
           });
-          $('.fv-player-popup-css-linked_css').trigger('change');
-
-
-          $(document).on('input','.fv-player-popup-css-new-name > td > input',function(e){
-            var parent = $(this).parents('.fv-player-popup-formats');
-
-            var selector = $(this).val().replace(/[!""#$%&'()\*\+,\./:;<=>\?@\[\\\]^`{\|}~ ]/ig,'');
-
-            var oldClass = $(this).data('old');
-            
-            var text = $('.fv-player-popup-css-new-css > td > textarea',parent).val().replace(new RegExp('^.fv-player-popup-' + oldClass), '.fv-player-popup-' + selector);
-
-            $('.fv-player-popup-css-new-css > td > textarea',parent).val(text);
-
-            $(this).data('old',selector);
-          });
+          $('.fv-player-popup-css-css_preset').trigger('change');
 
         });
       }(jQuery))   
