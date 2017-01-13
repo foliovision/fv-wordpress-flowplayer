@@ -343,8 +343,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.15 - 2017/01/?? =
+= 6.0.5.16 - 2017/01/?? =
 
+* Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
+* Fix - Iframe embedding scrollbars appearing
+* Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
+
+= 6.0.5.15 - 2017/01/05 =
+
+* "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
+* Fix - Chrome 55 adds download button for the video player which appears for fullscreen mode on mobile - hiding this button
 * Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
 
 = 6.0.5.14 - 2016/12/23 =

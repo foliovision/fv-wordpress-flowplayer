@@ -896,3 +896,16 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   -ms-user-select: auto;
   user-select: auto;
 }
+
+
+.flowplayer.chrome55fix video::-internal-media-controls-download-button {
+  display:none;
+}
+
+.flowplayer.chrome55fix video::-webkit-media-controls-enclosure {
+  overflow:hidden;
+}
+
+.flowplayer.chrome55fix video::-webkit-media-controls-panel {
+  width: calc(100% + 48px);
+}
