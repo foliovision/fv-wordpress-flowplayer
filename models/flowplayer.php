@@ -549,10 +549,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fvplayer .me-cannotplay span { padding: 5px; }
     #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo trim($fv_fp->conf['font-face']); ?>; }
   
-    .wpfp_custom_background { display: none; }  
-    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
-    .is-finished .wpfp_custom_background { display: block; }  
-    .fv_player_popup {  background: <?php echo trim($fv_fp->conf['backgroundColor']) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
+    .wpfp_custom_background { display: none; }      
+    .is-finished .wpfp_custom_background { display: block; }      
   
     <?php echo trim($this->conf['ad_css']); ?>
     .wpfp_custom_ad { color: <?php echo trim($fv_fp->conf['adTextColor']); ?>; z-index: 20 !important; }

@@ -847,12 +847,12 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    $sClass = ' fv_player_popup-'.$iPopupIndex;
+    $sClass = ' fv_player_popup-id_'.$iPopupIndex;
     
     $popup = apply_filters('fv_flowplayer_popup_html', $popup);
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
-          'html' => '<div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div>'
+          'html' => '<div id="'.$this->hash.'_custom_popup" class="wpfp_custom_popup fv-player-popup-default"><div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div></div>'
       );
       return $popup_contents;
     }

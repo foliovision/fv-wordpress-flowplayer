@@ -909,3 +909,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.chrome55fix video::-webkit-media-controls-panel {
   width: calc(100% + 48px);
 }
+
+
+
+.fv-player-popup-default { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
+.fv-player-popup-default .fv_player_popup_content {  background: #555555; padding: 1% 5%; width: 65%; margin: 0 auto; }
