@@ -343,10 +343,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.16 - 2017/01/?? =
+= 6.0.5.16 - 2017/01/13 =
 
 * Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
 * Fix - Iframe embedding scrollbars appearing
+* Fix - Iframe embedding for Youtube and Vimeo is now responsive
+* Fix - Lightbox - no longer using href attribute to increase theme compatibility
 * Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
 
 = 6.0.5.15 - 2017/01/05 =
