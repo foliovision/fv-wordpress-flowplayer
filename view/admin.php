@@ -848,10 +848,10 @@ function fv_flowplayer_admin_popups(){
             $aPopupCss = get_option('fv_player_popups_css', array());
            
             
-            $cssTextDefault = '.fv-player-popup-css-class{
-  color:awesome;
+$cssTextDefault = '.fv-player-popup-#fv_popup_dummy_key#{
+  color:red;
 }';
-            $cssClassDefault = 'My Cusom Style';
+$cssClassDefault = 'My Cusom Style';
             
             
             
@@ -995,7 +995,7 @@ function fv_flowplayer_admin_popups(){
             //data = JSON.parse(data);
             var className = '.fv-player-popup-' + $(this).val();
             if(typeof(data) !== 'undefined'){
-              $('.fv-player-popup-css-css',parent).html(data.content);
+              $('.fv-player-popup-css-css',parent).html(data.content.replace('#fv_popup_dummy_key#',$(this).val()));
               $('.fv-player-popup-css-name',parent).val(data.name);
               $('.fv-player-popup-css-class',parent).val(className);
             }
