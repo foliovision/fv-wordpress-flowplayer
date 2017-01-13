@@ -862,15 +862,13 @@ function fv_flowplayer_admin_popups(){
             }
             
             foreach ($aPopupData AS $key => $aPopup) {
-              $bShowLegacy = empty($aPopup['css_preset']) && !empty($aPopup['css']);
-          
-              
+              $bShowLegacy =  isset($aPopup['css_preset']) && $aPopup['css_preset'] === 'legacy' || empty($aPopup['css_preset']) && !empty($aPopup['css']);
                 
               if(isset($aPopup['css_preset']) && isset($aPopupCss[$aPopup['css_preset']])){                
                 $aPopup['css_preset_content'] = $aPopupCss[$aPopup['css_preset']]['content'];
                 $aPopup['css_preset_name'] = $aPopupCss[$aPopup['css_preset']]['name'];
               }
-              var_dump($aPopup);
+              //var_dump($bShowLegacy);
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
@@ -885,12 +883,12 @@ function fv_flowplayer_admin_popups(){
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                     </tr>
                     <!--LEGACY CSS-->
-                    <tr <?php echo $bShowLegacy?'':'style="display:none;"';?> class="fv-player-popup-css-legacy">
+                    <tr <?php echo $bShowLegacy ? '' : 'style="display:none;"';?> class="fv-player-popup-css-legacy">
                       <td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                     </tr>
                     <!--NEW CSS-->
-                    <tr <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
+                    <tr <?php echo !$bShowLegacy ? '' : 'style="display:none;"'; ?>>
                       <td><label><?php _e('CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td>
                         <input type="hidden" >

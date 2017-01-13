@@ -248,8 +248,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aPopups[$key]['css'] = stripslashes($aPopupData['css']);
         $aPopups[$key]['html'] = stripslashes($aPopupData['html']);
         
-        if(in_array($aPopupData['css_preset'], array('default','tw'))){
+        if(in_array($aPopupData['css_preset'], array('default','tw','legacy'))){
           $aPopups[$key]['css'] = '';
+          $aPopups[$key]['css_preset_name'] = '';
+          $aPopups[$key]['css_preset_content'] = '';
           continue;
         }
 
@@ -263,10 +265,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $aPopups[$key]['css_preset'] = $aPopupData['css_preset'];
           update_option('fv_player_popups_css',$aPopupCss);
         }
-  
+        
+
        
       }
-     
       update_option('fv_player_popups',$aPopups);
     
   }
@@ -279,17 +281,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $salt;
   }
   
-//  public static function get_unique_key($key, $array_keys){
-//    if(is_array($array_keys) && isset($array_keys[$key])){
-//      $count = 1;
-//      if(preg_match('/-([0-9]*)$/',$key,$matches)){
-//        $count = intval($matches[1]) + 1;
-//      }
-//      $key .= '-' . $count;
-//    }
-//    return $key;
-//  }
-//  
+
   private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption ){
 
     if(isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical'){
