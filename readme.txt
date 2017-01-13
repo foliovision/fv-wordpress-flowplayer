@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.17 - 2017/01/?? =
+
+* Fix - Lightbox - moving into a separate file for faster loading if using for images
+
 = 6.0.5.16 - 2017/01/13 =
 
 * Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)

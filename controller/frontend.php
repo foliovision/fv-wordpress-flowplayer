@@ -296,8 +296,7 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     (isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) ||
-     (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) ||
+     (isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) ||     
      isset($_GET['fv_wp_flowplayer_check_template'])
   ) {
     
@@ -319,12 +318,6 @@ function flowplayer_prepare_scripts() {
     }
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
-    
-    if( !empty($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) {
-      $aConf['lightbox_images'] = true;
-    } else {
-      $aConf['lightbox_images'] = false;
-    }
     
     if( !empty($fv_fp->conf['rtmp-live-buffer']) && $fv_fp->conf['rtmp-live-buffer'] == 'true' ) {
       $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
@@ -393,6 +386,17 @@ function flowplayer_prepare_scripts() {
     }
     
   }
+  
+  global $FV_Player_lightbox;
+  if( $FV_Player_lightbox->bLoad || isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) {
+    $aConf = array();
+    $aConf['lightbox_images'] = !empty($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ? true : false;
+    
+    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/lightbox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
+    
+  }
+  
 }
 
 /**
