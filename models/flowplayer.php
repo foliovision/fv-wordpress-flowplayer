@@ -248,8 +248,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aPopups[$key]['css'] = stripslashes($aPopupData['css']);
         $aPopups[$key]['html'] = stripslashes($aPopupData['html']);
         
-        if(in_array($aPopupData['css_preset'], array('default','tw','legacy'))){
+        if(in_array($aPopupData['css_preset'], array('default','tw'))){
           $aPopups[$key]['css'] = '';
+          $aPopups[$key]['css_preset_name'] = '';
+          $aPopups[$key]['css_preset_content'] = '';
+          continue;
+        }else if($aPopupData['css_preset'] === 'legacy'){
           $aPopups[$key]['css_preset_name'] = '';
           $aPopups[$key]['css_preset_content'] = '';
           continue;

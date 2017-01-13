@@ -868,7 +868,6 @@ function fv_flowplayer_admin_popups(){
                 $aPopup['css_preset_content'] = $aPopupCss[$aPopup['css_preset']]['content'];
                 $aPopup['css_preset_name'] = $aPopupCss[$aPopup['css_preset']]['name'];
               }
-              //var_dump($bShowLegacy);
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
