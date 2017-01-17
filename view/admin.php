@@ -847,12 +847,13 @@ function fv_flowplayer_admin_popups(){
             $aPopupData = get_option('fv_player_popups');
             $aPopupCss = get_option('fv_player_popups_css', array());
            
-            
-$cssTextDefault = '.fv-player-popup-#fv_popup_dummy_key#{
-  color:red;
-}';
-$cssClassDefault = 'My Cusom Style';
-            
+            //  put default popup CSS here!
+            $cssTextDefault = <<< CSS
+.fv-player-popup-#fv_popup_dummy_key# { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
+.fv-player-popup-#fv_popup_dummy_key# .fv_player_popup_content {  background: #555555; padding: 1% 5%; width: 65%; margin: 0 auto; }
+CSS;
+            $cssClassDefault = 'My Custom Style';
+                        
             
             
             if( empty($aPopupData) ) {
@@ -904,11 +905,11 @@ $cssClassDefault = 'My Cusom Style';
                       </td>                    
                     </tr>
                     <tr class="fv-player-popup-css-new-name">
-                      <td><label><?php _e('Custom<br/>Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><input class="fv-player-popup-css-name" type='text' name='popups[<?php echo $key; ?>][css_preset_name]' value="" /></td>
                     </tr>
                     <tr class="fv-player-popup-css-new-name">
-                      <td><label><?php _e('Use this class', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><label><?php _e('Class', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><input class="fv-player-popup-css-class" type='text' readonly value="" /></td>
                     </tr>
                     <tr class="fv-player-popup-css-new-css">
@@ -995,7 +996,7 @@ $cssClassDefault = 'My Cusom Style';
             //data = JSON.parse(data);
             var className = '.fv-player-popup-' + $(this).val();
             if(typeof(data) !== 'undefined'){
-              $('.fv-player-popup-css-css',parent).html(data.content.replace('#fv_popup_dummy_key#',$(this).val()));
+              $('.fv-player-popup-css-css',parent).html(data.content.replace(/#fv_popup_dummy_key#/g,$(this).val()));
               $('.fv-player-popup-css-name',parent).val(data.name);
               $('.fv-player-popup-css-class',parent).val(className);
             }

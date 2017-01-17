@@ -853,7 +853,7 @@ class flowplayer_frontend extends flowplayer
     $popup = apply_filters('fv_flowplayer_popup_html', $popup);
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
-          'html' => '<div id="'.$this->hash.'_custom_popup" class="wpfp_custom_popup fv-player-popup-'.$sStyle.'"><div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div></div>'
+          'html' => '<div id="'.$this->hash.'_custom_popup" class="wpfp_custom_popup fv-player-popup-'.$sStyle.'"><div class="fv_player_popup_content'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div></div>'
       );
       return $popup_contents;
     }
