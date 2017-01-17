@@ -848,10 +848,10 @@ function fv_flowplayer_admin_popups(){
             $aPopupCss = get_option('fv_player_popups_css', array());
            
             
-            $cssTextDefault = '.fv-player-popup-css-class{
-  color:awesome;
+$cssTextDefault = '.fv-player-popup-#fv_popup_dummy_key#{
+  color:red;
 }';
-            $cssClassDefault = 'My Cusom Style';
+$cssClassDefault = 'My Cusom Style';
             
             
             
@@ -903,13 +903,17 @@ function fv_flowplayer_admin_popups(){
                         </select> 
                       </td>                    
                     </tr>
-                    <tr class="fv-player-popup-css-new-name"  <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
+                    <tr class="fv-player-popup-css-new-name">
                       <td><label><?php _e('Custom<br/>Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><input class="fv-player-popup-css-name" type='text' maxlength="" name='popups[<?php echo $key; ?>][css_preset_name]' value="" placeholder='' /></td>
+                      <td><input class="fv-player-popup-css-name" type='text' name='popups[<?php echo $key; ?>][css_preset_name]' value="" /></td>
                     </tr>
-                    <tr class="fv-player-popup-css-new-css"  <?php echo $bShowLegacy? '' : 'style="display:none;"'; ?>>
+                    <tr class="fv-player-popup-css-new-name">
+                      <td><label><?php _e('Use this class', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                      <td><input class="fv-player-popup-css-class" type='text' readonly value="" /></td>
+                    </tr>
+                    <tr class="fv-player-popup-css-new-css">
                       <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                      <td><textarea class="fv-player-popup-css-css" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css_preset_content]' ></textarea></td>
+                      <td><textarea class="fv-player-popup-css-css large-text" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css_preset_content]' ></textarea></td>
                     </tr>
                     
                      <!--LEGACY CSS-->
@@ -989,10 +993,13 @@ function fv_flowplayer_admin_popups(){
             
             var data = $(this).find('option[value=' + $(this).val() + ']').data('css');
             //data = JSON.parse(data);
+            var className = '.fv-player-popup-' + $(this).val();
             if(typeof(data) !== 'undefined'){
-              $('.fv-player-popup-css-css',parent).html(data.content);
+              $('.fv-player-popup-css-css',parent).html(data.content.replace('#fv_popup_dummy_key#',$(this).val()));
               $('.fv-player-popup-css-name',parent).val(data.name);
+              $('.fv-player-popup-css-class',parent).val(className);
             }
+
 
           });
           $('.fv-player-popup-css-css_preset').trigger('change');

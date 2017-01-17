@@ -4,6 +4,8 @@ class FV_Player_lightbox {
 
   private $lightboxHtml;
   
+  public $bLoad = false;
+  
   public function __construct() {
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
@@ -85,6 +87,8 @@ class FV_Player_lightbox {
     $aArgs = func_get_args();
 
     if (isset($aArgs[1]) && isset($aArgs[1]->aCurArgs['lightbox'])) {
+      $this->bLoad = true;
+      
       global $fv_fp;
 
       $iConfWidth = intval($fv_fp->conf['width']);

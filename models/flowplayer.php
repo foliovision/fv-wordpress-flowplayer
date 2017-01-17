@@ -1259,16 +1259,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
 
   function popup_css( $css ){
-    $aPopupData = get_option('fv_player_popups');
+    $aPopupData = get_option('fv_player_popups',array());
     $sNewCss = '';
-    if( is_array($aPopupData) ) {
-      foreach($aPopupData as $key => $val){
-        if( empty($val['css']) ){
-          continue;
-        }
-        $sNewCss .= stripslashes($val['css'])."\n";
+    foreach($aPopupData as $key => $val){       
+      if( empty($val['css']) ){
+        continue;
       }
+      $sNewCss .= stripslashes($val['css'])."\n";
     }
+    
+    $aPopupData = get_option('fv_player_popups_css',array());
+    foreach($aPopupData as $key => $val){       
+      if( empty($val['content']) ){
+        continue;
+      }
+      $sNewCss .= stripslashes($val['content'])."\n";
+    }
+    
     if( strlen($sNewCss) ){
       $css .= "\n/*custom popup css*/\n".$sNewCss."/*end custom popup css*/\n";
     }
