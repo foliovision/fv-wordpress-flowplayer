@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.5.17 - 2017/01/?? =
 
 * Fix - Lightbox - moving into a separate file for faster loading if using for images
+* Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
 
 = 6.0.5.16 - 2017/01/13 =
 
