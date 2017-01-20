@@ -907,6 +907,7 @@ function fv_wp_flowplayer_edit() {
   	
   	jQuery(".fv_player_field_insert-button").attr( 'value', 'Update' );    
 	} else {
+    jQuery(document).trigger('fv_flowplayer_shortcode_new');
     fv_wp_fp_shortcode_remains = '';
   }
   

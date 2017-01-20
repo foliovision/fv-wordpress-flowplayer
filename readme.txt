@@ -343,8 +343,23 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.15 - 2017/01/?? =
+= 6.0.5.17 - 2017/01/?? =
 
+* Fix - Lightbox - moving into a separate file for faster loading if using for images
+* Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
+
+= 6.0.5.16 - 2017/01/13 =
+
+* Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
+* Fix - Iframe embedding scrollbars appearing
+* Fix - Iframe embedding for Youtube and Vimeo is now responsive
+* Fix - Lightbox - no longer using href attribute to increase theme compatibility
+* Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
+
+= 6.0.5.15 - 2017/01/05 =
+
+* "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
+* Fix - Chrome 55 adds download button for the video player which appears for fullscreen mode on mobile - hiding this button
 * Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
 
 = 6.0.5.14 - 2016/12/23 =
