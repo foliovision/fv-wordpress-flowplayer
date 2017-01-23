@@ -1284,7 +1284,7 @@ function fv_flowplayer_admin_skin() {
       <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timeColor']); ?>" /></td>
       <!--<td><label for="ui_fixed_controlbar">Fixed Controlbar</label></td>
       <td><?php fv_flowplayer_admin_checkbox('ui_fixed_controlbar'); ?></td>-->
-      <td><label for="subtitleBgAlpha"><?php _e('Subtitle Bg Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="subtitleBgAlpha"><?php _e('Subtitle Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" /></td>
     </tr>
     <tr>
