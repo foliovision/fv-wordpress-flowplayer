@@ -42,7 +42,7 @@ add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' 
 
 add_action( 'after_plugin_row', 'fv_wp_flowplayer_after_plugin_row', 10, 3 );
 
-add_action( 'save_post', 'fv_wp_flowplayer_save_post', 9999 );
+add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
 add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
 
 
