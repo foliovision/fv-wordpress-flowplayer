@@ -784,10 +784,10 @@ function fv_flowplayer_admin_integrations() {
               <p class="description">
                 <input type="hidden" name="integrations[featured_img]" value="false" />
                 <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('FV Player automatically sets the first thumbnail in a post as the thumbnail (featured image) of the post.', 'fv_flowplayer'); ?>
+                <?php _e('If the featured image is not set, splash image of the first player will be used.', 'fv_flowplayer'); ?>
               </p>
 						</td>
-					</tr>   
+					</tr>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />

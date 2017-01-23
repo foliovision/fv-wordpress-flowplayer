@@ -42,8 +42,8 @@ add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' 
 
 add_action( 'after_plugin_row', 'fv_wp_flowplayer_after_plugin_row', 10, 3 );
 
-add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
-add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 9999 );
+add_action( 'save_post', 'fv_wp_flowplayer_save_post', 9999 );
+add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
 
 
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
@@ -62,26 +62,27 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 function fv_wp_flowplayer_featured_image($post_id) {
-  global $fv_fp,$post;
+  if( $parent_id = wp_is_post_revision($post_id) ) {
+    $post_id = $parent_id;
+  }
+  
+  global $fv_fp;
+  if( !isset($fv_fp->conf['integrations']['featured_img']) || $fv_fp->conf['integrations']['featured_img'] != 'true' ){
+    return;
+  }
+  
+  $thumbnail_id = get_post_thumbnail_id($post_id);
+  if( $thumbnail_id != 0 ) {
+    return;
+  }
   
   $post = get_post($post_id);
-  $sPost = $post->post_content;
-  
-  if(!isset($fv_fp->conf['integrations']['featured_img']) || isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] !== 'true'){
-    return;
-  }
-  
-  if(empty($sPost)){
-    return;
-  }
-  
-  $thumbnail_id = get_post_thumbnail_id();
-  if (!empty($thumbnail_id)) {
+  if( !$post || empty($post->post_content) ){
     return;
   }
   
   $sThumbUrl = array();
-  if (!preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $sPost, $sThumbUrl) || empty($sThumbUrl[1])) {
+  if (!preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $sThumbUrl) || empty($sThumbUrl[1])) {
     return;
   }
   
@@ -89,6 +90,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if($thumbnail_id){
     set_post_thumbnail($post_id, $thumbnail_id);
   }
+  
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
