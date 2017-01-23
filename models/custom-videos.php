@@ -127,8 +127,8 @@ class FV_Player_Custom_Videos {
         }
         
         if( $args['edit'] ) {
-          $html .= '<input class="fv_player_custom_video fv_player_custom_video_url regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" placeholder="Video URL" value="'.esc_attr($aVideo['url']).'" /><br />'."\n";
-          $html .= ' <input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos_titles['.$this->meta.'][]" value="'.esc_attr($aVideo['title']).'" placeholder="Video title" /><br />'."\n";
+          $html .= '<p><input class="fv_player_custom_video fv_player_custom_video_url regular-text" type="text" name="fv_player_videos['.$this->meta.'][]" placeholder="Video URL" value="'.esc_attr($aVideo['url']).'" /></p>'."\n";
+          $html .= '<p><input class="fv_player_custom_video regular-text" type="text" name="fv_player_videos_titles['.$this->meta.'][]" value="'.esc_attr($aVideo['title']).'" placeholder="Video title" /></p>'."\n";
           if( count($this->get_videos()) == $count && $count < $args['limit'] ) $html .= '<a class="fv-player-custom-video-add" href="#">Add more</a> ';
           $html .= '<a class="fv-player-custom-video-remove" href="#">Remove</a> ';
                     
@@ -201,12 +201,22 @@ class FV_Player_Custom_Videos {
         fv_player_custom_video_add(this);
       });
       
+      var fv_player_preview = false;
+      var fv_player_shortcode_preview_unsupported = false;
+      jQuery(document).ready(function(){
+        var ua = window.navigator.userAgent;
+        fv_player_shortcode_preview_unsupported = ua.match(/edge/i) || ua.match(/safari/i) && !ua.match(/chrome/i) ;
+      })
+     
       jQuery(document).on('change', '.fv_player_custom_video_url', function() {
         if( !jQuery(this).val().match(/^(https?:)?\/\//) ){
           jQuery(this).siblings('iframe').remove();
           return;
         }
-        
+        if(fv_player_preview || fv_player_shortcode_preview_unsupported){
+          return;
+        }
+        fv_player_preview = true;
         
         if( jQuery(this).siblings('iframe').length == 0 ) {
           jQuery(this).before('<iframe allowfullscreen class="fv_player_custom_video_preview" scrolling="no"></iframe>');
@@ -230,6 +240,7 @@ class FV_Player_Custom_Videos {
       jQuery(document).on('fvp-preview-complete', function() {
         jQuery('.fv_player_custom_video_preview').show();
         jQuery('.loading-preview').hide();
+        fv_player_preview = false;
       });
     </script>
     <?php
@@ -254,6 +265,13 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'the_content', array( $this, 'show' ) );
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
+    //  EDD
+    add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor'));
+    add_action('edd_pre_update_user_profile', array($this, 'save'));
+    
+    //  bbPress
+    add_filter( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10, 2 );
+    add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
   }
   
   function add_meta_boxes() {
@@ -278,6 +296,43 @@ class FV_Player_Custom_Videos_Master {
       }
     }
     
+  }
+  
+  function bbpress_edit() {
+    ?>
+    </fieldset>
+    
+    <h2 class="entry-title"><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></h2>
+
+    <fieldset class="bbp-form">
+      
+      <div>
+        <?php
+        $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('id'), 'type' => 'user' ));
+        echo $objVideos->get_form( array('no_form' => true) );
+        ?>
+      </div>
+  
+    <?php
+  }
+  
+  function bbpress_profile() {
+    global $fv_fp;
+    
+    if( !isset($fv_fp->conf['profile_videos_enable_bio']) || $fv_fp->conf['profile_videos_enable_bio'] !== 'true' ) 
+      return;
+    
+    $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('id'), 'type' => 'user' ));
+    if( $objVideos->have_videos() ) : ?>
+      <div id="bbp-user-profile" class="bbp-user-profile">
+        <h2 class="entry-title"><?php _e( 'Videos', 'bbpress' ); ?></h2>
+        <div class="bbp-user-section">
+    
+          <?php echo $objVideos->get_html(); ?>
+    
+        </div>
+      </div><!-- #bbp-author-topics-started -->
+    <?php endif;
   }
   
   function meta_box( $aPosts, $args ) {
@@ -390,9 +445,23 @@ class FV_Player_Custom_Videos_Master {
     
     return $show_password_fields;
   }
+  
+  public function EDD_profile_editor(){ 
+    global $fv_fp;
+    
+    if( !isset($fv_fp->conf['profile_videos_enable_bio']) || $fv_fp->conf['profile_videos_enable_bio'] !== 'true' ) 
+      return;
+    
+    $user = new FV_Player_Custom_Videos(array( 'id' => get_current_user_id(), 'type' => 'user' ));
+    ?>
+        <p>
+          <label for="edd_email"><?php _e( 'Profile Videos', 'fv-wordpress-flowplayer' ); ?></label>
+            <?php echo $user->get_form(array('no_form' => true));?>
+        </p>
+    <?php
+  }
 
 }
 
 
 $FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
-

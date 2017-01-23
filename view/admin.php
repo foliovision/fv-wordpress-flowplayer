@@ -832,13 +832,11 @@ function fv_flowplayer_admin_popups(){
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="width: 150px"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <p class="description">
-            <?php $cva_id = isset($fv_fp->conf['popups_default']) ? $fv_fp->conf['popups_default'] : 'no'; ?>
+	<?php $cva_id = isset($fv_fp->conf['popups_default']) ? $fv_fp->conf['popups_default'] : 'no'; ?>
             <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
-            <?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?>
-          </p>
+          <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
       </table>
@@ -869,15 +867,15 @@ function fv_flowplayer_admin_popups(){
                     <td>
                       <table class='fv-player-popup-formats'>
                         <tr>
-                        	<td><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
                         	<td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
                       	</tr>
                         <tr>
-                        	<td>HTML:</td>
+                        	<td><label>HTML:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                       	</tr>
                         <tr>
-                        	<td><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                       	</tr>
                       </table>

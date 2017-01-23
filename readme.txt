@@ -323,6 +323,10 @@ No worries.
 1. You can always downgrade to version the Flash version ([delete the plugin then grab older version here and install from the ZIP file](https://wordpress.org/plugins/fv-wordpress-flowplayer/developers/)). If you downgrade to version 1.x you do lose a lot of mobile and iOS capability but you didn't have it in the first place.
 1. Contact us via [support](https://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
 
+= 33. I can't see overlay ads on my videos =
+
+The problem is probably in AdBlock. If it's active, the overlay ads will be blocked. Once AdBlock is deactivated for the particular domain where the video is played, the overlay ads will be displayed (page refresh needed).
+
 FV Player Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
 
 Thank you for being part of the HMTL 5 mobile video revolution!
@@ -338,6 +342,26 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.0.5.17 - 2017/01/?? =
+
+* Feature - HLS - video duration check now works with m3u8 files
+* Fix - Lightbox - moving into a separate file for faster loading if using for images
+* Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
+
+= 6.0.5.16 - 2017/01/13 =
+
+* Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
+* Fix - Iframe embedding scrollbars appearing
+* Fix - Iframe embedding for Youtube and Vimeo is now responsive
+* Fix - Lightbox - no longer using href attribute to increase theme compatibility
+* Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
+
+= 6.0.5.15 - 2017/01/05 =
+
+* "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
+* Fix - Chrome 55 adds download button for the video player which appears for fullscreen mode on mobile - hiding this button
+* Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
 
 = 6.0.5.14 - 2016/12/23 =
 
