@@ -898,6 +898,9 @@ function fv_wp_flowplayer_edit() {
 
     }
     
+    var slogo = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'logo' );
+    if( slogo != null && slogo[1] != null )
+  		document.getElementById("fv_wp_flowplayer_field_logo").value = slogo[1];
     
     if( jQuery('.fv-fp-subtitles .fv-fp-subtitle:first input.fv_wp_flowplayer_field_subtitles').val() == '' ) {
       jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
@@ -1045,6 +1048,7 @@ function fv_wp_flowplayer_submit( preview ) {
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_controlbar', 'controlbar', false, false, ['yes', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_speed', 'speed', false, false, ['buttons', 'no'] );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_logo', 'logo', false, false );
   
 
   

@@ -483,10 +483,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
-    
-    if ( isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0 && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0 ) : ?>    
-      .flowplayer .fp-logo { display: block; opacity: 1; }                                              
-    <?php endif;
   
     if( isset($fv_fp->conf['hasBorder']) && $fv_fp->conf['hasBorder'] == "true" ) : ?>
       .flowplayer { border: 1px solid <?php echo trim($fv_fp->conf['borderColor']); ?> !important; }

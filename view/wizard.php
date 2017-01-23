@@ -371,6 +371,14 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
                   
+                  <tr>
+                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_logo" class="alignright"><?php _e('Logo', 'fv_flowplayer'); ?></label></th>
+                    <td class="field" colspan="2"><input type="text" class="text fv_wp_flowplayer_field_logo<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_logo" name="fv_wp_flowplayer_field_splash" value=""/>
+                      <?php if ($allow_uploads == 'true') { ?>
+                        <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Image', 'fv_flowplayer'); ?></a>
+                      <?php }; //allow uploads logo ?></td>
+                  </tr>
+                  
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>
                   
                   <tr class="submit-button-wrapper">
@@ -380,6 +388,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button-primary <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
                     </td>
                   </tr>
+                  
                 </table>
               </div>
 
