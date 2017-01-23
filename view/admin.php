@@ -1285,7 +1285,7 @@ function fv_flowplayer_admin_skin() {
       <!--<td><label for="ui_fixed_controlbar">Fixed Controlbar</label></td>
       <td><?php fv_flowplayer_admin_checkbox('ui_fixed_controlbar'); ?></td>-->
       <td><label for="subtitleBgAlpha"><?php _e('Subtitle Background Transparency', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" title="Enter value in pixels" type="text" value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : "100"; ?>" /></td>
+      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" title="Chose value between 0 and 1" type="text" value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : "1"; ?>" /></td>
     </tr>
     <tr>
       <td><label for="timelineColor"><?php _e('Timeline', 'fv-wordpress-flowplayer'); ?></label></td>
