@@ -42,7 +42,9 @@ add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' 
 
 add_action( 'after_plugin_row', 'fv_wp_flowplayer_after_plugin_row', 10, 3 );
 
-add_action( 'save_post', 'fv_wp_flowplayer_save_post'/*, 9999*/ );
+add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
+add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
+
 
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
 
@@ -59,8 +61,115 @@ add_action('admin_notices', 'fv_wp_flowplayer_admin_notice');
 
 
 
+function fv_wp_flowplayer_featured_image($post_id) {
+  if( $parent_id = wp_is_post_revision($post_id) ) {
+    $post_id = $parent_id;
+  }
+  
+  global $fv_fp;
+  if( !isset($fv_fp->conf['integrations']['featured_img']) || $fv_fp->conf['integrations']['featured_img'] != 'true' ){
+    return;
+  }
+  
+  $thumbnail_id = get_post_thumbnail_id($post_id);
+  if( $thumbnail_id != 0 ) {
+    return;
+  }
+  
+  $post = get_post($post_id);
+  if( !$post || empty($post->post_content) ){
+    return;
+  }
+  
+  $sThumbUrl = array();
+  if (!preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $sThumbUrl) || empty($sThumbUrl[1])) {
+    return;
+  }
+  
+  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl[1], $post_id);
+  if($thumbnail_id){
+    set_post_thumbnail($post_id, $thumbnail_id);
+  }
+  
+}
+
+function fv_wp_flowplayer_construct_filename( $post_id ) {
+  $filename = get_the_title( $post_id );
+  $filename = sanitize_title( $filename, $post_id );
+  $filename = urldecode( $filename );
+  $filename = preg_replace( '/[^a-zA-Z0-9\-]/', '', $filename );
+  $filename = substr( $filename, 0, 32 );
+  $filename = trim( $filename, '-' );
+  if ( $filename == '' ) $filename = (string) $post_id;
+  return $filename;
+}
+
+function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
+  
+  $error = '';
+  $response = wp_remote_get( $image_url );
+  if( is_wp_error( $response ) ) {
+    $error = new WP_Error( 'thumbnail_retrieval', sprintf( __( 'Error retrieving a thumbnail from the URL <a href="%1$s">%1$s</a> using <code>wp_remote_get()</code><br />If opening that URL in your web browser returns anything else than an error page, the problem may be related to your web server and might be something your host administrator can solve.', 'video-thumbnails' ), $image_url ) . '<br>' . __( 'Error Details:', 'video-thumbnails' ) . ' ' . $response->get_error_message() );
+  } else {
+    $image_contents = $response['body'];
+    $image_type = wp_remote_retrieve_header( $response, 'content-type' );
+  }
+  
+  if ( $error != '' || $image_contents == '' ) {
+    return false;
+  } else {
+
+    // Translate MIME type into an extension
+    if ( $image_type == 'image/jpeg' ) {
+      $image_extension = '.jpg';
+    } elseif ( $image_type == 'image/png' ) {
+      $image_extension = '.png';
+    } elseif ( $image_type == 'image/gif' ) {
+      $image_extension = '.gif';
+    } else {
+      return new WP_Error( 'thumbnail_upload', __( 'Unsupported MIME type:', 'video-thumbnails' ) . ' ' . $image_type );
+    }
+
+    // Construct a file name with extension
+    $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+
+    // Save the image bits using the new filename    
+    $upload = wp_upload_bits( $new_filename, null, $image_contents );    
+
+    // Stop for any errors while saving the data or else continue adding the image to the media library
+    if ( $upload['error'] ) {
+      $error = new WP_Error( 'thumbnail_upload', __( 'Error uploading image data:', 'video-thumbnails' ) . ' ' . $upload['error'] );
+      return $error;
+    } else {
+
+      $wp_filetype = wp_check_filetype( basename( $upload['file'] ), null );
+
+      $upload = apply_filters( 'wp_handle_upload', array(
+        'file' => $upload['file'],
+        'url'  => $upload['url'],
+        'type' => $wp_filetype['type']
+      ), 'sideload' );
+
+      // Contstruct the attachment array
+      $attachment = array(
+        'post_mime_type'	=> $upload['type'],
+        'post_title'		=> get_the_title( $post_id ),
+        'post_content'		=> '',
+        'post_status'		=> 'inherit'
+      );
+      // Insert the attachment
+      $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
+
+    }
+
+  }
+
+  return $attach_id;
+
+}
+
 function flowplayer_activate() {
-	
+
 }
 
 

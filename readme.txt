@@ -345,6 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.17 - 2017/01/?? =
 
+* Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
 * Feature - HLS - video duration check now works with m3u8 files
 * Fix - Lightbox - moving into a separate file for faster loading if using for images
 * Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
