@@ -22,7 +22,6 @@
  
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
-
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
 ?>
@@ -778,7 +777,17 @@ function fv_flowplayer_admin_integrations() {
                 <?php _e('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer'); ?>
               </p>
 						</td>
-					</tr>           
+					</tr>
+          <tr>
+						<td><label for="featured_img">Add featured image automatically</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="integrations[featured_img]" value="false" />
+                <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('If the featured image is not set, splash image of the first player will be used.', 'fv_flowplayer'); ?>
+              </p>
+						</td>
+					</tr>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />

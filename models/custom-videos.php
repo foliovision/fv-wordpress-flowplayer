@@ -265,8 +265,13 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'the_content', array( $this, 'show' ) );
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
+    //  EDD
     add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor'));
     add_action('edd_pre_update_user_profile', array($this, 'save'));
+    
+    //  bbPress
+    add_filter( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10, 2 );
+    add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
   }
   
   function add_meta_boxes() {
@@ -291,6 +296,43 @@ class FV_Player_Custom_Videos_Master {
       }
     }
     
+  }
+  
+  function bbpress_edit() {
+    ?>
+    </fieldset>
+    
+    <h2 class="entry-title"><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></h2>
+
+    <fieldset class="bbp-form">
+      
+      <div>
+        <?php
+        $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('id'), 'type' => 'user' ));
+        echo $objVideos->get_form( array('no_form' => true) );
+        ?>
+      </div>
+  
+    <?php
+  }
+  
+  function bbpress_profile() {
+    global $fv_fp;
+    
+    if( !isset($fv_fp->conf['profile_videos_enable_bio']) || $fv_fp->conf['profile_videos_enable_bio'] !== 'true' ) 
+      return;
+    
+    $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('id'), 'type' => 'user' ));
+    if( $objVideos->have_videos() ) : ?>
+      <div id="bbp-user-profile" class="bbp-user-profile">
+        <h2 class="entry-title"><?php _e( 'Videos', 'bbpress' ); ?></h2>
+        <div class="bbp-user-section">
+    
+          <?php echo $objVideos->get_html(); ?>
+    
+        </div>
+      </div><!-- #bbp-author-topics-started -->
+    <?php endif;
   }
   
   function meta_box( $aPosts, $args ) {
