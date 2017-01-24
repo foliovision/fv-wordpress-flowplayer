@@ -839,8 +839,8 @@ function fv_flowplayer_admin_popups(){
           <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
-      </table>
-      <table class="form-table2" style="margin: 5px; ">  
+    </table>
+    <table class="form-table2" style="margin: 5px; ">  
       <tr>    		
         <td>
           <table id="fv-player-popups-settings">
@@ -911,23 +911,24 @@ CSS;
                           <option value="legacy" selected data-css='<?php echo json_encode($val); ?>'>Legacy</option>
                           <?php }?>
                         </select> 
+                        <input type="button" class="fv-player-popup-css-edit button hide-if-popups-legacy hide-if-popups-preset hide-if-popups-editing" value="Edit" />
                       </td>                    
                     </tr>
-                    <tr class="fv-player-popup-css-new-name">
+                    <tr class="hide-if-popups-editable hide-if-popups-legacy hide-if-popups-preset">
                       <td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><input class="fv-player-popup-css-name" type='text' name='popups[<?php echo $key; ?>][css_preset_name]' value="" /></td>
                     </tr>
-                    <tr class="fv-player-popup-css-new-name">
+                    <tr class="hide-if-popups-editable hide-if-popups-legacy hide-if-popups-preset">
                       <td><label><?php _e('Class', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><input class="fv-player-popup-css-class" type='text' readonly value="" /></td>
                     </tr>
-                    <tr class="fv-player-popup-css-new-css">
+                    <tr class="hide-if-popups-editable hide-if-popups-legacy hide-if-popups-preset ">
                       <td><label><?php _e('Custom<br/>CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><textarea class="fv-player-popup-css-css large-text" class="large-text code" type='text' name='popups[<?php echo $key; ?>][css_preset_content]' ></textarea></td>
                     </tr>
                     
                      <!--LEGACY CSS-->
-                    <tr <?php echo $bShowLegacy ? '' : 'style="display:none;"';?> class="fv-player-popup-css-legacy">
+                    <tr <?php echo $bShowLegacy ? '' : 'style="display:none;"';?> class="hide-if-popups-editable hide-if-popups-editing hide-if-popups-preset">
                       <td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                       <td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                     </tr>
@@ -964,7 +965,7 @@ CSS;
             if(!$.isNumeric(tmp))
               return;
             maxIndex = Math.max(tmp,maxIndex);
-          })
+          });
           
           $('#fv-player-popups-add').click( function() {
             var fv_player_popup_index  = (parseInt( $('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
@@ -982,26 +983,39 @@ CSS;
             }      
             return false;
           } );
+          
+          $(document).on('click','.fv-player-popup-css-edit', false, function() {
+            $('.fv-player-popups-editing').removeClass('fv-player-popups-editing').addClass('fv-player-popups-editable');
+            var parent = $(this).parents('.fv-player-popup-formats');
+            parent.attr('class','fv-player-popup-formats');
+            parent.addClass('fv-player-popups-editing');
+          } );
+          
+          
 
           $(document).on('change','.fv-player-popup-css-css_preset',function(){
+           
             var parent = $(this).parents('.fv-player-popup-formats');
-            if($(this).val() !== 'default' && $(this).val() !== 'tw' && $(this).val() !== 'legacy'){
-              $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).show();
-            }else{
-              $('.fv-player-popup-css-new-css,.fv-player-popup-css-new-name',parent).hide();
-            }
+            parent.attr('class','fv-player-popup-formats');
+            //.fv-player-popups-editable
+            //.fv-player-popups-editing
+            //.fv-player-popups-legacy
+            //.fv-player-popups-preset
+            console.log($(this).val() === 'new',$(this).val());
             
-            if($(this).val() !== 'legacy'){
-              $('.fv-player-popup-css-legacy',parent).hide();
-            }else{
-              $('.fv-player-popup-css-legacy',parent).show();
-            }
-            
-            if($(this).val() === 'new'){
+            if($(this).val() === 'legacy'){
+              parent.addClass('fv-player-popups-legacy');
+            }else if($(this).val() === 'new' || $(this).find('option[value=' + $(this).val() + ']').data('new') ){
+              parent.addClass('fv-player-popups-editing');
               $(this).find('option[value=new]').attr('value', ++maxIndex);
+            }else if($(this).val() === 'default' || $(this).val() === 'tw' ){
+              parent.addClass('fv-player-popups-preset');
+            }else{
+              parent.addClass('fv-player-popups-editable');
             }
             
             var data = $(this).find('option[value=' + $(this).val() + ']').data('css');
+            $(this).find('option[value=' + $(this).val() + ']').data('new',true);
             //data = JSON.parse(data);
             var className = '.fv-player-popup-' + $(this).val();
             if(typeof(data) !== 'undefined'){

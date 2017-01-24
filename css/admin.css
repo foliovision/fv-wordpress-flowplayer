@@ -46,19 +46,25 @@
 .flowplayer-wrapper { width: 54%; display: inline-block; float: right;}
 @media only screen and (max-width: 940px) {.flowplayer-wrapper { width: 100%; float: none;} .form-table2.flowplayer-settings {width: 100% !important;}}
 
-
+/* POPUPS */
 #fv-player-popups-settings tr.data:nth-child(even) { background-color: #eee; }
 .fv-player-popup-remove { visibility: hidden; }
 td:hover > .fv-player-popup-remove { visibility: visible; }
 table.fv-player-popup-formats td:first-child { width: 72px }
-#fv_flowplayer_popups .inside label {
-  display: initial;
-  text-align: inherit;
+#fv_flowplayer_popups .inside label {display: initial;text-align: inherit;}
+#fv-player-popups-settings > tbody > tr > td:nth-child( 1 ) {text-align: center;max-width: 7px;}
+
+.fv-player-popups-editable .hide-if-popups-editable,
+.fv-player-popups-editing .hide-if-popups-editing,
+.fv-player-popups-legacy .hide-if-popups-legacy,
+.fv-player-popups-preset .hide-if-popups-preset{
+  display:none;
 }
-#fv-player-popups-settings > tbody > tr > td:nth-child( 1 ) {
-  text-align: center;
-  max-width: 7px;
-}
+.fv-player-popup-css-edit{margin-top: 0!important;}
+
+
+
+
 
 .fv-metabox-holder {
   padding-top:0!important;
