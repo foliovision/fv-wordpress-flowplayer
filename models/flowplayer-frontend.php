@@ -472,11 +472,9 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
         
-        if( isset($_GET['martinv_ratio']) ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
-        }
+        $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
 
-      if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
+        if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';
           if( isset($_GET['martinv_ratio']) ) {
             $this->ret['html'] .= ' class="fp-engine"';
