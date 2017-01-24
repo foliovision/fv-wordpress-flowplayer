@@ -22,7 +22,6 @@
  
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
-
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
 ?>
@@ -787,6 +786,16 @@ function fv_flowplayer_admin_integrations() {
                 <input type="checkbox" name="integrations[embed_iframe_rss]" id="wp_core_video" value="true" <?php if( isset($fv_fp->conf['integrations']['embed_iframe_rss']) && $fv_fp->conf['integrations']['embed_iframe_rss'] == 'true' ) echo 'checked="checked"'; ?> />
                 <?php _e('Normally it just links to the post on your website to watch the video.','fv_flowplayer'); ?>
                 <span class="more"><?php _e("RSS feeds don't work with JavaScript, but if you use this option, they will contain iframe embeds of the actual player which should be playable. Usefull if you read your RSS feed in to a mobile phone app.", 'fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+						  </p>
+						</td>
+					</tr>
+					<tr> 
+            <td><label for="featured_img">Add featured image automatically</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="integrations[featured_img]" value="false" />
+                <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('If the featured image is not set, splash image of the first player will be used.', 'fv_flowplayer'); ?>
               </p>
 						</td>
 					</tr>

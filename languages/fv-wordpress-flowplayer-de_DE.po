@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
 "POT-Creation-Date: 2016-10-05 16:28+0100\n"
-"PO-Revision-Date: 2017-01-10 16:59+0200\n"
+"PO-Revision-Date: 2017-01-11 16:53+0200\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: German\n"
@@ -483,8 +483,8 @@ msgid ""
 "don't support autoplay."
 msgstr ""
 "Wir stellen sicher, dass nur ein Video pro Seite automatisch abgespielt "
-"wird. Vergessen Sie nicht, dass mobile Geräte unterstützen die automatische "
-"Wiedergabe nicht unterstützen."
+"wird. Vergessen Sie nicht, dass mobile Geräte die automatische Wiedergabe "
+"nicht unterstützen."
 
 #: ../view/admin.php:206
 msgid "Auto Buffering"
@@ -551,7 +551,8 @@ msgstr "Flash Streaming Server"
 #: ../view/admin.php:263
 msgid "Enter your default RTMP streaming server (Amazon CloudFront domain)."
 msgstr ""
-"Eingeben Sie Ihren Standard RTMP Streaming Server (Amazon CloudFront domain)"
+"Geben Sie Ihren Standard RTMP Streaming Server (Amazon CloudFront domain) "
+"ein."
 
 #: ../view/admin.php:268
 msgid "Fullscreen Button"
@@ -571,9 +572,7 @@ msgstr "Wird automatisch geladen, wenn ein Video abgespielt wird."
 
 #: ../view/admin.php:293
 msgid "You have a valid FV Flowplayer license, you can put up your logo here"
-msgstr ""
-"Sie haben eine gültige FV Flowplayer Lizenz; Sie können Ihr Logo hier "
-"einbinden."
+msgstr "FV Flowplayer Lizenz gültig; Sie können Ihr Logo hier einbinden."
 
 #: ../view/admin.php:295
 msgid "You need to have a FV Flowplayer license to use it"
@@ -677,7 +676,7 @@ msgstr "Beitragsbild"
 #: ../view/admin.php:367
 msgid "Default which will be used for any player without its own splash image."
 msgstr ""
-"Standard, der  fürjeden Video Player ohne eigenes Beitragsbild verwendet "
+"Standard, der für jeden Video Player ohne eigenes Beitragsbild verwendet "
 "wird."
 
 #: ../view/admin.php:371
@@ -1255,7 +1254,7 @@ msgstr "Lizenzschlüssel und Individuelles Logo"
 
 #: ../view/admin.php:1321
 msgid "How to create a playlist"
-msgstr "Wie man ein Playlist erstellen"
+msgstr "Wie man eine Playlist erstellt"
 
 #: ../view/admin.php:1322
 msgid "Using ads"
