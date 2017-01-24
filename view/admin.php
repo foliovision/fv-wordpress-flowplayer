@@ -1001,12 +1001,12 @@ CSS;
             //.fv-player-popups-editing
             //.fv-player-popups-legacy
             //.fv-player-popups-preset
-            console.log($(this).val() === 'new',$(this).val());
             
             if($(this).val() === 'legacy'){
               parent.addClass('fv-player-popups-legacy');
             }else if($(this).val() === 'new' || $(this).find('option[value=' + $(this).val() + ']').data('new') ){
               parent.addClass('fv-player-popups-editing');
+              $(this).find('option[value=' + $(this).val() + ']').data('new',true);
               $(this).find('option[value=new]').attr('value', ++maxIndex);
             }else if($(this).val() === 'default' || $(this).val() === 'tw' ){
               parent.addClass('fv-player-popups-preset');
@@ -1015,8 +1015,6 @@ CSS;
             }
             
             var data = $(this).find('option[value=' + $(this).val() + ']').data('css');
-            $(this).find('option[value=' + $(this).val() + ']').data('new',true);
-            //data = JSON.parse(data);
             var className = '.fv-player-popup-' + $(this).val();
             if(typeof(data) !== 'undefined'){
               $('.fv-player-popup-css-css',parent).html(data.content.replace(/#fv_popup_dummy_key#/g,$(this).val()));
