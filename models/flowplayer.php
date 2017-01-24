@@ -552,7 +552,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
     <?php if( isset($fv_fp->conf['subtitleBgAlpha']) && is_numeric($fv_fp->conf['subtitleBgAlpha']) ) : ?>.flowplayer .fp-subtitle p { background-color: rgba(0,0,0,<?php echo $fv_fp->conf['subtitleBgAlpha']; ?>); }<?php endif; ?>
-    <?php if( isset($fv_fp->conf['subtitleBgRound']) && $fv_fp->conf['subtitleBgRound'] === 'true' ) : ?>.flowplayer .fp-subtitle p { border-radius: 5px; }<?php endif; ?>
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>

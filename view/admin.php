@@ -1288,12 +1288,6 @@ function fv_flowplayer_admin_skin() {
       <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" /></td>
     </tr>
     <tr>
-      <td><label for="timelineColor"><?php _e('Timeline', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="timelineColor" name="timelineColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timelineColor']); ?>" /></td>
-      <td><label for="subtitleBgRound"><?php _e('Subtitle Rounded Borders', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><?php fv_flowplayer_admin_checkbox('subtitleBgRound'); ?></td>
-    </tr>
-    <tr>
       <td><label for="durationColor"><?php _e('Total time', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" /></td>
       <td></td>
