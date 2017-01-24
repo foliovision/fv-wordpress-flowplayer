@@ -11,7 +11,8 @@ Avoid changing this area to maintain compatability with future versions of Color
 #fv_player_boxContent{position:relative; overflow:hidden;}
 #fv_player_boxLoadedContent{overflow:auto;}
 #fv_player_boxLoadedContent iframe{display:block; width:100%; height:100%; border:0; background-color: white;}
-.fv-flowplayer-shortcode-editor #fv_player_boxTitle{margin:5px; text-align: left; bottom: auto }
+.fv-flowplayer-shortcode-editor #fv_player_boxTitle{margin:5px; text-align: left; bottom: auto;}
+.fv-flowplayer-shortcode-editor #fv_player_boxClose{top:8px;right:8px;}
 #fv_player_boxLoadingOverlay, #fv_player_boxLoadingGraphic{position:absolute; top:0; left:0; width:100%;}
 #fv_player_boxPrevious, #fv_player_boxNext, #fv_player_boxClose, #fv_player_boxSlideshow{cursor:pointer;}
 

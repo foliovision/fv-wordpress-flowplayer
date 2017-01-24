@@ -4,6 +4,8 @@ class FV_Player_lightbox {
 
   private $lightboxHtml;
   
+  public $bLoad = false;
+  
   public function __construct() {
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
@@ -18,14 +20,16 @@ class FV_Player_lightbox {
     add_filter('the_content', array($this, 'lightbox_add'));
     add_filter('the_content', array($this, 'lightbox_add_post'), 999);  //  moved after the shortcodes are parsed to work for galleries
 
-    add_action('fv_flowplayer_shortcode_editor_after', array($this, 'shortcode_editor'), 8);
+    add_action('fv_flowplayer_shortcode_editor_tab_options', array($this, 'shortcode_editor'), 8);
 
     add_action('fv_flowplayer_admin_default_options_after', array( $this, 'lightbox_admin_default_options_html' ) );
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
 
-    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
+    $conf = get_option('fvwpflowplayer');
+    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
+      (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
       add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     }
   }
@@ -83,6 +87,8 @@ class FV_Player_lightbox {
     $aArgs = func_get_args();
 
     if (isset($aArgs[1]) && isset($aArgs[1]->aCurArgs['lightbox'])) {
+      $this->bLoad = true;
+      
       global $fv_fp;
 
       $iConfWidth = intval($fv_fp->conf['width']);
@@ -104,7 +110,7 @@ class FV_Player_lightbox {
       if ($bUseAnchor) {
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
-        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' href='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
@@ -134,7 +140,7 @@ class FV_Player_lightbox {
         /* $html = preg_replace( '~max-width: \d+px;~', 'max-width: '.$iWidth.'px;', $html );
           $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
 
-        $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div></div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $html . "</div>";
+        $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div></div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $html . "</div>";
       }
     }
     return $html;
@@ -170,8 +176,8 @@ class FV_Player_lightbox {
       }
 
       $aPlayerParts = explode("<div class='fv_player_lightbox_hidden'", $aPlayer['html']);
-      $id = $i == 1 ? "fv_flowplayer_" . $fv_fp->hash . "_2_lightbox" : "fv_flowplayer_" . $fv_fp->hash . "_lightbox";
-      $output['html'] .= "<a id='" . $id . "' href='#wpfp_" . $fv_fp->hash . "'><span style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></span>" . $fv_fp->aCurArgs['caption'] . "</a>";
+      $id = $i == 1 ? "_2_lightbox_starter" : "_lightbox_starter";
+      $output['html'] .= "<a id='fv_flowplayer_" . $fv_fp->hash. $id . "' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><span style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></span>" . $fv_fp->aCurArgs['caption'] . "</a>";
 
       if ($i > 1) {
         $after .= "<div class='fv_player_lightbox_hidden'" . $aPlayerParts[1];
@@ -217,11 +223,11 @@ class FV_Player_lightbox {
       return $content;    
     }
 
-    $content = preg_replace_callback('~(<a.*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
     return $content;
   }
   
-  function lightbox_add_callback($matches) {
+  function lightbox_add_callback($matches) {    
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
@@ -340,10 +346,32 @@ class FV_Player_lightbox {
         </p>
       </td>
     </tr>
+    <tr id="lightbox-wp-galleries">
+      <td style="width: 250px"><label for="lightbox_images"><?php _e('Use video lightbox for WP Galleries', 'fv-wordpress-flowplayer'); ?>:</label></td>
+      <td>
+        <p class="description">
+          <input type="hidden" value="false" name="lightbox_improve_galleries" />
+          <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if (!isset($fv_fp->conf['lightbox_improve_galleries']) || isset($fv_fp->conf['lightbox_improve_galleries']) && $fv_fp->conf['lightbox_improve_galleries'] == 'true') echo 'checked="checked"'; ?> />
+          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?></a>
+        </p>
+      </td>
+    </tr>
     <script>
       jQuery(document).ready(function(){
         jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
         jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
+        if(jQuery('#lightbox_images').attr('checked')){
+            jQuery('#lightbox-wp-galleries').show();
+          }else{
+            jQuery('#lightbox-wp-galleries').hide();
+          }
+        jQuery('#lightbox_images').on('click',function(){
+          if(jQuery(this).attr('checked')){
+            jQuery('#lightbox-wp-galleries').show();
+          }else{
+            jQuery('#lightbox-wp-galleries').hide();
+          }
+        })
       })   
     </script>
     <?php

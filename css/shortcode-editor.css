@@ -1,0 +1,102 @@
+#fv_player_boxLoadedContent iframe{ height:auto; }
+#fv_player_boxLoadedContent{ background-color:white; }
+#fv-player-shortcode-editor { background-color: white; }
+.fv-wp-flowplayer-notice { background-color: #FFFFE0; border-color: #E6DB55; margin: 5px 0 15px; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; } 
+.fv-wp-flowplayer-notice.fv-wp-flowplayer-note { background-color: #F8F8F8; border-color: #E0E0E0; } 
+.fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; } 
+.fv_wp_flowplayer_playlist_remove { display: none; }
+.fv-player-tabs-header { padding:6px 0 12px; }
+#fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
+#fv-player-shortcode-editor table input[type=text], #fv-flowplayer-playlist table input[type=text].with-button { width: 93%; }
+#fv-player-shortcode-editor table input[type=text].half-field { width: 46%; }
+#fv-player-shortcode-editor table/*:first-child*/ input.with-button { width: 70%; }
+#fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
+#fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
+#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; }
+#fv-flowplayer-playlist table tr.video-size { display: none; }
+#fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
+#fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
+#fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp { visibility: hidden; }
+#fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: hidden; }
+#fv-flowplayer-playlist table .hint { display: none; }
+/*#fv-flowplayer-playlist table .button { display: none; }*/
+#fv-flowplayer-playlist table:first-child tr.video-size { display: table-row; }
+#fv-flowplayer-playlist table:first-child .hint { display: inline; }
+#fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_add_format_wrapper { display: table-row; }
+#fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_file_info { display: none; }
+#fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
+#fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
+/*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
+/*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
+
+#fv-player-shortcode-editor-editor{ top:0; }
+#fv-player-shortcode-editor-editor > table{ width:100%; }
+#fv-player-shortcode-editor td{ vertical-align: top; }
+.fv-player-tab table{ margin-bottom: 10px; }
+.fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
+.fv_player_actions_end-toggle,.fv_player_interface_hide,.fv-player-playlist-item-title{ display:none; }
+#fv_player_boxTitle{ display:none!important; }
+#fv_player_boxLoadedContent{ margin-top:0; }
+
+.fv-player-shortcode-editor-left{ width:40%; }
+.fv-player-shortcode-editor-right{ width:60%; }
+.fv-player-tab{position:relative;}
+.fv-player-tabs #fv-player-list-thumb-toggle{ position:absolute;right:10px;text-align:right;top:9px; }
+#fv-player-list-thumb-toggle a{ text-decoration:none;margin-left:6px;color:#b4b9be; }
+#fv-player-list-thumb-toggle a.active{ color:#0073aa; }
+#fv-player-list-thumb-toggle a.disabled{ cursor:default; }
+.fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
+
+/*Playlist view*/
+.is-playlist .fv-player-playlist-item-title{ display:block;padding:0 10px 12px; }
+.is-playlist .fv_player_field_insert-button{ display:none; }
+.is-playlist-active .playlist_edit{ display:none; }
+
+.is-playlist .hide-if-playlist{display:none;}
+.is-singular .hide-if-singular{display:none;}
+.is-playlist-active .hide-if-playlist-active{display:none;}
+
+.playlist_edit{ display:block; }
+.fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{visibility: hidden;}
+.fv-player-tab-playlist tr:hover .fvp_item_remove{visibility: visible;color: #a00;}
+.fv-player-tab-playlist a{cursor:pointer;}
+
+.fv-player-tab-playlist .fv-player-playlist-item{ border-spacing: 0 2px; }
+.fv-player-tab-playlist tbody td{ padding:3px 5px;height:50px;cursor:pointer; }
+.fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{cursor:n-resize;}
+
+.fvp_item_video-side-by-side{display:inline-block;vertical-align:top;float: left;margin-right: 1%;}
+.fvp_item_video-filename {word-wrap: break-word;display: inline-block; max-width: 180px;}
+.hide-thumbnails .fvp_item_video-filename {max-width: 100%;}
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){ width:300px; }
+.fv-player-tab-playlist > table > thead{ display:block; }
+.fv-player-tab-playlist.hide-thumbnails .fvp_item_video-thumbnail{ display:none; }
+.fv-player-tab-playlist > table > tbody{ display:block;overflow:auto;max-height:calc(100vh - 270px); }
+#fv-player-list-thumb-toggle > .active{ font-weight:bold; }
+#fv-player-list-thumb-toggle > a{ box-shadow:none; }
+
+
+/*Preview iframe*/
+#fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
+#fv-player-shortcode-editor-preview div,
+#fv-player-shortcode-editor-preview iframe{display:none;}
+#fv-player-shortcode-editor-preview.preview-loading #fv-player-shortcode-editor-preview-spinner,
+#fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-no,
+#fv-player-shortcode-editor-preview.preview-show #fv-player-shortcode-editor-preview-iframe,
+#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab{display:block;}
+#fv-player-shortcode-editor-preview-spinner{background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center; position:absolute; z-index: 2; height: 200px; width: 100%;}
+.fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
+#fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
+#fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}
+
+#fv-player-shortcode-editor-preview div.notice { display: block }
+
+.first-item-only {
+  display: none;
+}
+.fv-player-playlist-item[data-index="0"] .first-item-only {
+  display: table-row;
+}
+
+.fv-player-tabs th { width: 21%; text-align: right; }
