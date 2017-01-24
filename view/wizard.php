@@ -374,11 +374,13 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <tr>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_logo" class="alignright"><?php _e('Logo', 'fv_flowplayer'); ?></label></th>
                     <td class="field" colspan="2">
-                      <input type="text" class="text fv_wp_flowplayer_field_logo<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_logo" name="fv_wp_flowplayer_field_splash" value=""/>
-                      <label> none: <input type="checkbox" id="fv_wp_flowplayer_field_logo_none" name="fv_wp_flowplayer_field_logo" value="none"/></label>
+                      <input type="text" class="text fv_wp_flowplayer_field_logo<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_logo" name="fv_wp_flowplayer_field_splash" value="" placeholder="<?php _e('Default', 'fv_flowplayer'); ?>"/>
+                      <a id="fv_wp_flowplayer_field_logo_none" class="button" href="#"><?php _e('None', 'fv_flowplayer'); ?></a>
                       <?php if ($allow_uploads == 'true') { ?>
-                        <a id="fv_wp_flowplayer_field_logo_media" class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Image', 'fv_flowplayer'); ?></a>
-                      <?php }; //allow uploads logo ?></td>
+                        <a id="fv_wp_flowplayer_field_logo_media" class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add', 'fv_flowplayer'); ?></a>
+                      <?php } //allow uploads logo ?>
+                      <a id="fv_wp_flowplayer_field_logo_default" class="button" href="#"><?php _e('Default', 'fv_flowplayer'); ?></a>
+                    </td>
                   </tr>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>

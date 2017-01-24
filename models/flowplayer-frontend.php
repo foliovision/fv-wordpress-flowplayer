@@ -385,8 +385,7 @@ class flowplayer_frontend extends flowplayer
             $attributes['data-embed'] = 'false';
           } 
         }
-
-        if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
+        if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] && isset($this->conf['key']) && $this->conf['key'] != 'false' && strlen($this->conf['key']) > 0) {
 					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
 				}
 				

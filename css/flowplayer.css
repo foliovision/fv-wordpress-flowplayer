@@ -67,7 +67,6 @@
 .flowplayer .fp-help em{background:#eee;-webkit-border-radius:.3em;-moz-border-radius:.3em;border-radius:.3em;margin-right:.4em;padding:.3em .6em;color:#333}
 .flowplayer .fp-help small{font-size:90%;color:#aaa}
 .flowplayer .fp-help .fp-close{display:block}
-.flowplayer .fp-logo { display: block; opacity: 1; }
 @media (max-width: 600px){
 .flowplayer .fp-help p{font-size:9px;}
 .flowplayer .fp-logo{max-width: 130px;}
@@ -118,7 +117,7 @@
 .has-menu.no-volume.no-mute.flowplayer .fp-brand{right:47px}
 .no-volume.flowplayer .fp-brand{right:50px}
 .no-mute.flowplayer .fp-brand{right:95px}
-.flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:40px;cursor:pointer;display:none;z-index:100;}
+.flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:40px;cursor:pointer;z-index:100;}
 .flowplayer .fp-logo img{width:100%}
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
