@@ -476,9 +476,7 @@ class flowplayer_frontend extends flowplayer
 
         if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video';
-          if( isset($_GET['martinv_ratio']) ) {
-            $this->ret['html'] .= ' class="fp-engine"';
-          }
+          $this->ret['html'] .= ' class="fp-engine"';
 					if (isset($splash_img) && !empty($splash_img)) {
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
