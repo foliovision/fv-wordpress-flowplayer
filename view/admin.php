@@ -1231,7 +1231,7 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
   <div class="flowplayer-wrapper">
-    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg" autoplay="false" preroll="no" postroll="no"]'); ?>
+    <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no"]'); ?>
     <small class="alignright">
     	<?php _e('Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.', 'fv-wordpress-flowplayer'); ?>
     </small>
