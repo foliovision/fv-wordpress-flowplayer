@@ -1232,9 +1232,6 @@ function fv_flowplayer_admin_skin() {
 ?>
   <div class="flowplayer-wrapper">
     <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'"]'); ?>
-    <small class="alignright">
-    	<?php _e('Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.', 'fv-wordpress-flowplayer'); ?>
-    </small>
   </div>
 
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
@@ -1256,9 +1253,9 @@ function fv_flowplayer_admin_skin() {
       <td><label for="font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="font-face" name="font-face">
-          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
-          <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
           <option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit from template)', 'fv-wordpress-flowplayer'); ?></option>
+          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+          <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
         </select>
       </td>
     </tr>
@@ -1356,10 +1353,27 @@ function fv_flowplayer_admin_skin_subtitles() {
 ?>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
+      <td><label for="subtitle-font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <select id="subtitle-font-face" name="subtitleFontFace">
+          <option value="inherit"<?php if( isset($fv_fp->conf['subtitleFontFace']) && $fv_fp->conf['subtitleFontFace'] == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit)', 'fv-wordpress-flowplayer'); ?></option>          
+          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( isset($fv_fp->conf['subtitleFontFace']) && $fv_fp->conf['subtitleFontFace'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+          <option value="Tahoma, Geneva, sans-serif"<?php if( isset($fv_fp->conf['subtitleFontFace']) &&  $fv_fp->conf['subtitleFontFace'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
+        </select>
+      </td>
+      <td colspan="2"></td>      
+    </tr>    
+    <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
       <td colspan="2"></td>
     </tr>
+    <tr>
+      <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo isset($fv_fp->conf['subtitleBgColor']) ? esc_attr($fv_fp->conf['subtitleBgColor']) : '#000000'; ?>" /></td>
+      <td></td>
+      <td colspan="2"></td>
+    </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" /></td>
