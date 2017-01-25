@@ -1276,16 +1276,14 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="progressColor"><?php _e('Progress', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr($fv_fp->conf['progressColor']); ?>" /></td>
-      <td><label for="subtitleSize"><?php _e('Subtitle Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
+      <td colspan="2"></td>
     </tr>
     <tr>
       <td><label for="timeColor"><?php _e('Time', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timeColor']); ?>" /></td>
       <!--<td><label for="ui_fixed_controlbar">Fixed Controlbar</label></td>
       <td><?php fv_flowplayer_admin_checkbox('ui_fixed_controlbar'); ?></td>-->
-      <td><label for="subtitleBgAlpha"><?php _e('Subtitle Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" /></td>
+      <td colspan="2"></td>
     </tr>
     <tr>
       <td><label for="durationColor"><?php _e('Total time', 'fv-wordpress-flowplayer'); ?></label></td>
@@ -1341,6 +1339,31 @@ function fv_flowplayer_admin_skin() {
       <td></td>
       <td><label for="ui_play_button"></label></td>
       <td colspan="2"></td>   
+    </tr>
+    <tr>    		
+      <td colspan="4">
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
+
+
+function fv_flowplayer_admin_skin_subtitles() {
+	global $fv_fp;
+?>
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <tr>
+      <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
+      <td colspan="2"></td>
+    </tr>
+    <tr>
+      <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" /></td>
+      <td colspan="2"></td>
     </tr>
     <tr>    		
       <td colspan="4">
@@ -1470,6 +1493,7 @@ if( !class_exists('FV_Player_Pro') ) {
 /* Skin Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
 
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
