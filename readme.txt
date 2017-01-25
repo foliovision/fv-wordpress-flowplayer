@@ -348,6 +348,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
 * Feature - HLS - video duration check now works with m3u8 files
 * Fix - Lightbox - moving into a separate file for faster loading if using for images
+* Fix - Splash screen ascept ratio incorrect during pageloads if not matching the player size
+* Fix - Splash screen showing with black border if ascept ratio not matching player aspect ratio in Chrome
 * Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
 
 = 6.0.5.16 - 2017/01/13 =
