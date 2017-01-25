@@ -897,15 +897,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   user-select: auto;
 }
 
-.fv-player-warning-wrapper{
-  display:none;
-  border:1px solid red;
-}
-
-.fv-player-warning{
-  display:none;
-  color: red;
-} 
+.fv-player-warning-wrapper{border:1px solid red;color: red;}
 
 .flowplayer.chrome55fix video::-internal-media-controls-download-button {
   display:none;

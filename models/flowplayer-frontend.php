@@ -660,24 +660,6 @@ class flowplayer_frontend extends flowplayer
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
-    
-    /* * 
-    *  WARNINGS
-    */
-    $this->ret['html'] .= 
-      '<div id="fp_warnings_' . $this->hash.'" class="fv-player-warning-wrapper">'
-      //ihone subs
-      . '<div class="fv-player-warning fv-player-warning-iphone-subs">'
-      .__('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer')
-      .'</div>'
-
-      //unstable andorid
-      . '<div class="fv-player-warning fv-player-warning-unstable-android">'
-      . __('For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.','fv-wordpress-flowplayer')
-      . '</div>'
-
-      . '</div>';
-      
       
       return $this->ret;
 	}

@@ -65,10 +65,12 @@ function fv_flowplayer_get_js_translations() {
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv-wordpress-flowplayer'),
   'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv-wordpress-flowplayer'),
-  'error_JSON' =>__('Admin: Error parsing JSON','fv-wordpress-flowplayer'),
-  'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
-  'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
-  'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
+  'error_JSON' => __('Admin: Error parsing JSON','fv-wordpress-flowplayer'),
+  'no_support_IE9' => __('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
+  'check_failed' => __('Admin: Check failed.','fv-wordpress-flowplayer'),
+  'video_issues' => __('Video Issues','fv-wordpress-flowplayer'),
+  'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
+  'warning_unstable_android' => __('For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.','fv-wordpress-flowplayer'),
   );
   
   return $aStrings;
