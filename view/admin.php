@@ -1236,20 +1236,30 @@ function fv_flowplayer_admin_skin() {
 
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
-      <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
       <td><label for="hasBorder"><?php _e('Border', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
-    </tr>    
+    </tr>       
+    <tr>
+      <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
+    </tr>
+    <tr>
+      <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="<?php echo esc_attr($fv_fp->conf['marginBottom']); ?>" /></td>      
+    </tr>
     <tr>
       <td><label for="bufferColor"><?php _e('Buffer', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="bufferColor" name="bufferColor" type="text" value="<?php echo esc_attr($fv_fp->conf['bufferColor']); ?>" /></td>
-      <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="<?php echo esc_attr($fv_fp->conf['marginBottom']); ?>" /></td>
     </tr>
     <tr>
       <td><label for="canvas"><?php _e('Canvas', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="canvas" name="canvas" type="text" value="<?php echo esc_attr($fv_fp->conf['canvas']); ?>" /></td>
+    </tr>
+    <tr>
+      <td><label for="backgroundColor"><?php _e('Controlbar', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo esc_attr($fv_fp->conf['backgroundColor']); ?>" /></td>
+    </tr>
+    <tr>
       <td><label for="font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="font-face" name="font-face">
@@ -1257,64 +1267,31 @@ function fv_flowplayer_admin_skin() {
           <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
           <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
         </select>
-      </td>
+      </td>      
     </tr>
     <tr>
-      <td><label for="backgroundColor"><?php _e('Controlbar', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo esc_attr($fv_fp->conf['backgroundColor']); ?>" /></td>
       <td class="second-column"><label for="player-position"><?php _e('Player position', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="player-position" name="player-position">
           <option value=""<?php if( $fv_fp->conf['player-position'] == "" ) echo ' selected="selected"'; ?>><?php _e('Centered', 'fv-wordpress-flowplayer'); ?></option>
           <option value="left"<?php if( $fv_fp->conf['player-position'] == 'left'  ) echo ' selected="selected"'; ?>><?php _e('Left (no text-wrap)', 'fv-wordpress-flowplayer'); ?></option>
         </select>
-      </td>
+      </td>      
     </tr>
     <tr>
       <td><label for="progressColor"><?php _e('Progress', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr($fv_fp->conf['progressColor']); ?>" /></td>
-      <td colspan="2"></td>
     </tr>
     <tr>
       <td><label for="timeColor"><?php _e('Time', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timeColor']); ?>" /></td>
       <!--<td><label for="ui_fixed_controlbar">Fixed Controlbar</label></td>
       <td><?php fv_flowplayer_admin_checkbox('ui_fixed_controlbar'); ?></td>-->
-      <td colspan="2"></td>
     </tr>
     <tr>
       <td><label for="durationColor"><?php _e('Total time', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>
     </tr>
-
-    <tr>
-      <td><label for="playlistBgColor"><?php _e('Playlist Background', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>
-    </tr>
-    <tr>
-      <td><label for="playlistSelectedColor"><?php _e('Playlist Active', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>
-    </tr>
-    <tr>              
-      <td><label for="playlistFontColor-proxy"><?php _e('Playlist Font', 'fv-wordpress-flowplayer'); ?></label></td>
-        <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
-      <td>
-        <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
-        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
-        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?></a>
-        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?></a>
-      </td>
-      <td></td>
-      <td colspan="2"></td>       
-    </tr>    
-
-
 
     <!--<tr>
       <td><label for="buttonColor">Buttons</label></td>
@@ -1323,22 +1300,45 @@ function fv_flowplayer_admin_skin() {
       <td><input class="color small" type="text" name="buttonOverColor" id="buttonOverColor" value="<?php //echo $fv_fp->conf['buttonOverColor']; ?>" /></td>
     <tr>-->
 
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td colspan="2"></td>        
-      <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
-      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->       
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td><label for="ui_play_button"></label></td>
-      <td colspan="2"></td>   
-    </tr>
+    <!--<tr>     
+      <td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
+      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>
+    </tr>-->
     <tr>    		
-      <td colspan="4">
+      <td colspan="2">
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
+
+
+function fv_flowplayer_admin_skin_playlist() {
+	global $fv_fp;
+?>
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <tr>
+      <td><label for="playlistBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
+    </tr>
+    <tr>
+      <td><label for="playlistSelectedColor"><?php _e('Active Item', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" /></td>
+    </tr>
+    <tr>              
+      <td><label for="playlistFontColor-proxy"><?php _e('Font Color', 'fv-wordpress-flowplayer'); ?></label></td>
+        <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
+      <td>
+        <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
+        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?></a>
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?></a>
+      </td>      
+    </tr>    
+    <tr>    		
+      <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
       </td>
     </tr>
@@ -1360,27 +1360,22 @@ function fv_flowplayer_admin_skin_subtitles() {
           <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( isset($fv_fp->conf['subtitleFontFace']) && $fv_fp->conf['subtitleFontFace'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
           <option value="Tahoma, Geneva, sans-serif"<?php if( isset($fv_fp->conf['subtitleFontFace']) &&  $fv_fp->conf['subtitleFontFace'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
         </select>
-      </td>
-      <td colspan="2"></td>      
+      </td>   
     </tr>    
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>
-      <td colspan="2"></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo isset($fv_fp->conf['subtitleBgColor']) ? esc_attr($fv_fp->conf['subtitleBgColor']) : '#000000'; ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>
     </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" /></td>
-      <td colspan="2"></td>
     </tr>
     <tr>    		
-      <td colspan="4">
+      <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
       </td>
     </tr>
@@ -1507,6 +1502,7 @@ if( !class_exists('FV_Player_Pro') ) {
 /* Skin Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
 
 /* Hosting Tab */
