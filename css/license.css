@@ -120,13 +120,15 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   background: #ff6;
 }
 
-#flowplayer-wrapper label {
+#flowplayer-wrapper label,
+#fv_flowplayer_skin_subtitles label {
   display: block;
   text-align: right;
   width: 110px;  
 }
 
-#flowplayer-wrapper input[type=text], #flowplayer-wrapper select {
+#flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
+#fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select {
   width: 95%;
 }
 
@@ -134,7 +136,8 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   float: right;
 }
 
-#wpfp_options #flowplayer-wrapper .button-primary {
+#wpfp_options #flowplayer-wrapper .button-primary,
+#wpfp_options #fv_flowplayer_skin_subtitles .button-primary {
   float: none;
 }
 
