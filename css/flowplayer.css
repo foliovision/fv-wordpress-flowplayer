@@ -106,6 +106,7 @@
 .is-rtl.is-splash.flowplayer .fp-ui,.is-rtl.is-paused.flowplayer .fp-ui{background:url(img/play_white_rtl.png) center no-repeat;background-size:11%}
 @media (-webkit-min-device-pixel-ratio: 2),(min-resolution: 2dppx){.is-splash.flowplayer .fp-ui,.is-paused.flowplayer .fp-ui{background:url(img/play_white-x2.png) center no-repeat;background-size:11%}
 .is-rtl.is-splash.flowplayer .fp-ui,.is-rtl.is-paused.flowplayer .fp-ui{background:url(img/play_white_rtl-x2.png) center no-repeat;background-size:11%}
+.flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
 }.is-fullscreen.flowplayer .fp-ui{background-size:auto}
 .is-seeking.flowplayer .fp-ui,.is-loading.flowplayer .fp-ui{background-image:none}
 .flowplayer .fp-brand{color:#fff !important;position:absolute;right:115px;font-weight:normal !important;font-family:'myriad pro',Helvetica,Arial,sans-serif !important;text-decoration:none !important;line-height:15px !important;font-size:11px !important;height:15px;width:55px;bottom:9px;box-sizing:border-box;text-align:center;padding:1px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;}
