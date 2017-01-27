@@ -1202,9 +1202,9 @@ function fv_flowplayer_admin_video_ads(){
                   <td class="id">1</td>
                   <td>
                     <table class="fv-player-pro_video-ad-formats">
-                      <tbody><tr><td>Name:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Ad name"></td></tr>
-                        <tr><td>Click URL:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Clicking the video ad will open the URL in new window"></td></tr>
-                        <tr><td>Video:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Enter the video URL here"></td></tr>
+                      <tbody><tr><td><label>Name:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Ad name"></td></tr>
+                        <tr><td><label>Click URL:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Clicking the video ad will open the URL in new window"></td></tr>
+                        <tr><td><label>Video:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Enter the video URL here"></td></tr>
                       </tbody></table>
                   </td>
                   <td>
