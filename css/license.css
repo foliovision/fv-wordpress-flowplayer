@@ -125,9 +125,10 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
 #fv_flowplayer_skin_subtitles label {
   display: block;
   text-align: right;
-  width: 110px;  
 }
-
+#postbox-container-tab_skin .button-primary {
+	margin-left: 51%;
+}
 #flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
 #fv_flowplayer_skin_playlist input[type=text], #fv_flowplayer_skin_playlist select,
 #fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select {
