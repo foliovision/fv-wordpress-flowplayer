@@ -1432,7 +1432,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   function is_cloudfront($sURL) {
     global $fv_fp;
     if (!empty($fv_fp->conf['pro']) && !empty($fv_fp->conf['pro']['cf_domain'])) {
-      
       return strpos($sURL, $fv_fp->conf['pro']['cf_domain']) !== false;
     } else {
       return false;
@@ -1441,12 +1440,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
   
   function fb_share_tags() {
-    global $wp_query, $fv_fp;
-
+    global  $fv_fp, $post;
     if (!isset($fv_fp->conf['integrations']['facebook_sharing']) || $fv_fp->conf['integrations']['facebook_sharing'] !== 'true' || !is_singular())
       return;
 
-    $content = $wp_query->post->post_content;
+    $content = $post->post_content;
 
     $matches = array();
     if (!preg_match("/\[fvplayer[^]]*/", $content, $matches))
@@ -1463,9 +1461,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $httpsUrl = 'https://' . $sUrl;
 
     $sName = get_bloginfo('name');
-    $sTitle = $wp_query->post->post_title;
+    $sTitle = $post->post_title;
     $sSplash = isset($aAtts['splash']) ? $aAtts['splash'] : '';
-    $sDescription = $wp_query->post->post_excerpt;
+    $sDescription = $post->post_excerpt;
     ?>
     <meta property="og:site_name" content="<?php echo $sName; ?>">
     <meta property="og:title" content="<?php echo $sTitle; ?>">
