@@ -1439,27 +1439,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
 
-  function is_vimeo( $sURL ) {
-    return preg_match( "~vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)?(\d+)~i", $sURL, $aDynamic );
-  }
-  
-  function is_youtube( $sURL ) {
-    global $fv_fp;
-
-    if(
-      (
-        preg_match( "~youtube.com/.*?v=([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
-        preg_match( "~youtu.be/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
-        preg_match( "~youtube.com/embed/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic )
-      ) &&
-      ( !isset($fv_fp->conf['pro']['youtube_disable']) || $fv_fp->conf['pro']['youtube_disable'] != 'true' )
-    ) {
-      $this->bYoutube = true;
-      //var_dump('is_youtube',$sURL,$aDynamic);
-      return $aDynamic;
-    }    
-    return false;
-  }
   
   function fb_share_tags() {
     global $wp_query, $fv_fp;
@@ -1476,7 +1455,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aAtts = shortcode_parse_atts($matches[0] . ' ]');
 
     $sUrl = $aAtts['src'];
-    if ( empty($sUrl) || $this->is_vimeo($sUrl) || $this->is_youtube($sUrl) || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl))
+    if ( empty($sUrl) || strpos($sUrl,'.mp4') === null || $this->is_s3($sUrl) || $this->is_cloudfront($sUrl))
       return;
 
     $sUrl = preg_replace('/https?:\/\/?/', '', $sUrl);
