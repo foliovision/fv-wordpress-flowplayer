@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+  global $fv_wp_flowplayer_ver;
   global $post;
   $post_id = isset($post->ID) ? $post->ID : 0;
   
