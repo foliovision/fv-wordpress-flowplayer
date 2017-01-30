@@ -100,7 +100,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
+    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
@@ -157,8 +157,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     //
     
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
-    if( !isset( $conf['width'] ) ) $conf['width'] = '720';
-    if( !isset( $conf['height'] ) ) $conf['height'] = '480';
+    if( !isset( $conf['width'] ) ) $conf['width'] = '640';
+    if( !isset( $conf['height'] ) ) $conf['height'] = '360';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
     if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
@@ -210,7 +210,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -482,6 +482,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $iMarginBottom = (isset($fv_fp->conf['marginBottom']) && intval($fv_fp->conf['marginBottom']) > -1 ) ? intval($fv_fp->conf['marginBottom']) : '28';
     
+    $sSubtitleBgColor = isset($fv_fp->conf['subtitleBgColor']) ? $fv_fp->conf['subtitleBgColor'] : '#000000';
+    
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
@@ -541,6 +543,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->conf['splash']; ?>); }<?php endif; ?>    
     <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleFontFace']) ) : ?>.flowplayer .fp-subtitle p { font-family: <?php echo trim($fv_fp->conf['subtitleFontFace']); ?>; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
       if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
         $sCSS = "bottom: 30px; left: 15px";
@@ -552,6 +555,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      
+    .flowplayer .fp-subtitle p { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? $fv_fp->conf['subtitleBgAlpha'] : 0.5; ?>); }
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
@@ -881,6 +886,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public static function get_languages() {
     $aLangs = array(
+      'SDH' => 'SDH',
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
       'AF' => 'Afrikaans',
@@ -1058,6 +1064,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else if( $extension == 'mov' ) {
         $output = 'mp4';
       } else if( $extension == '3gp' ) {
+        $output = 'mp4';      
+      } else if( $extension == 'mkv' ) {
         $output = 'mp4';      
       } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
         $output = $default;  
@@ -1305,43 +1313,38 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       show_admin_bar(false);
       ?>
   <style>
-    body { margin: 0; padding: 0; overflow:hidden;}
+    body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
     html {margin-top: 0px !important;}
   </style>
 </head>
 <body>
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+    
     if( !is_user_logged_in() ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
       wp_die('Please log in.');
     }
+    $shortcode = base64_decode($_GET['fv_player_preview']);
+    $matches = null;
+    $width ='';
+    $height ='';
+    if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
+      $width = 'width:'.$matches[1].'px;';
+    }
+    if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+      $height = 'min-height:'.$matches[1].'px;';
+    }
     
-    $shortcode = urldecode(str_replace('\"','"',$_GET['fv_player_preview']));
-    ?>
+    ?>    
+    <style>
+      html {overflow-y: auto;}
+    </style>    
     <div style="background:white;">
-      <div id="wrapper" style="background:white;">
+      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
-          echo do_shortcode($shortcode);
-          ?><script>
-            jQuery(document).ready( function(){
-              var parent = window.parent.jQuery(window.parent.document);
-              if( jQuery('.flowplayer').length > 0 ){
-                if( typeof(flowplayer) != "undefined" ) {
-                  flowplayer( function(api,root) {
-                    parent.trigger('fvp-preview-complete');
-                  })
-                }else{
-                  parent.trigger('fvp-preview-error');
-                }
-              } else {
-                parent.trigger('fvp-preview-complete');
-              }
-
-            })
-          </script>
-          <?
+          echo do_shortcode($shortcode);          
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php
@@ -1349,6 +1352,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         ?>
       </div>
     </div>
+    
   <?php else : ?>
     <?php while ( have_posts() ) : the_post(); //is this needed? ?>
       <?php
@@ -1385,7 +1389,28 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   endif;
   ?>
 </body>
+
 <?php wp_footer(); ?>
+
+<?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
+  
+  <script>
+  jQuery(document).ready( function(){
+    var parent = window.parent.jQuery(window.parent.document);
+    if( typeof(flowplayer) != "undefined" ) {      
+      parent.trigger('fvp-preview-complete');      
+    } else {
+      parent.trigger('fvp-preview-error');
+    }
+  
+  });
+  
+  if (window.top===window.self) {
+    jQuery('#wrapper').css('margin','25px 50px 0 50px');
+  } 
+  </script>
+<?php endif; ?>
+
 </html>       
       <?php
       exit();  

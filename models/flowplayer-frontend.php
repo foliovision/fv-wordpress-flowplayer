@@ -471,9 +471,12 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
+        
+        $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
 
-      if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
-					$this->ret['html'] .= "\t".'<video';      
+        if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
+					$this->ret['html'] .= "\t".'<video';
+          $this->ret['html'] .= ' class="fp-engine"';
 					if (isset($splash_img) && !empty($splash_img)) {
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
@@ -493,15 +496,7 @@ class flowplayer_frontend extends flowplayer
           
 					 
 					$this->ret['html'] .= ">\n";
-									          
-          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
-          }
-					if (!empty($mobile)) {
-						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
-					}			
-			
+
 					if( isset($rtmp) && !empty($rtmp) ) {
             
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
@@ -531,7 +526,15 @@ class flowplayer_frontend extends flowplayer
 
               $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
             }
-					}  
+					}          
+					
+          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
+            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
+          }
+					if (!empty($mobile)) {
+						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
+					}			
 					
 					if (isset($aSubtitles) && !empty($aSubtitles)) {
             $aLangs = self::get_languages();
@@ -830,7 +833,8 @@ class flowplayer_frontend extends flowplayer
     if ($popup === 'no') {
       return false;
     } 
-     
+    
+    $iPopupIndex = 1;
     if($popup === 'random' || is_numeric($popup)  ){
       $aPopupData = get_option('fv_player_popups');    
       if ($popup === 'random') {

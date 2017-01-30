@@ -36,7 +36,8 @@ Back to school special 25% off pro licenses until end of September.
 **Additional Technical information**
 
 * Core video engine: open source Flowplayer 6. 
-* Supported video formats are FLV, H.264, and MP4 ([read about HTML5 video formats](https://foliovision.com/player/encoding)). Multiple videos can be displayed in one post or page.
+* Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
+* Supported video streaming formats are HLS (Flash and JavaScript fallback available for incompatible devices), MPEG DASH and RTMP.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with WordPress Flowplayer plugin, there are several improvements:
 
@@ -322,6 +323,10 @@ No worries.
 1. You can always downgrade to version the Flash version ([delete the plugin then grab older version here and install from the ZIP file](https://wordpress.org/plugins/fv-wordpress-flowplayer/developers/)). If you downgrade to version 1.x you do lose a lot of mobile and iOS capability but you didn't have it in the first place.
 1. Contact us via [support](https://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
 
+= 33. I can't see overlay ads on my videos =
+
+The problem is probably in AdBlock. If it's active, the overlay ads will be blocked. Once AdBlock is deactivated for the particular domain where the video is played, the overlay ads will be displayed (page refresh needed).
+
 FV Player Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
 
 Thank you for being part of the HMTL 5 mobile video revolution!
@@ -338,15 +343,45 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-<<<<<<< HEAD
-= 6.0.5.? - 2016/08/?? =
+= 6.0.5.17 - 2017/01/30 =
 
-* Sharing - Added OpenGraph tags for improved video sharing
+* Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
+* Feature - HLS - video duration check now works with m3u8 files
+* Feature - Subtitles - added settings for font face, backgroud opacity and color
+* Fix - Lightbox - moving into a separate file for faster loading if using for images
+* Fix - Splash screen ascept ratio incorrect during pageloads if not matching the player size
+* Fix - Splash screen showing with black border if ascept ratio not matching player aspect ratio in Chrome
+* CSS - fix for splash screen appearing behind the video when aspect ratios don't match and the video is paused
+* Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
 
-= 6.0.5.10 - 2016/11/?? =
-=======
+= 6.0.5.16 - 2017/01/13 =
+
+* Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
+* Fix - Iframe embedding scrollbars appearing
+* Fix - Iframe embedding for Youtube and Vimeo is now responsive
+* Fix - Lightbox - no longer using href attribute to increase theme compatibility
+* Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
+
+= 6.0.5.15 - 2017/01/05 =
+
+* "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
+* Fix - Chrome 55 adds download button for the video player which appears for fullscreen mode on mobile - hiding this button
+* Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
+
+= 6.0.5.14 - 2016/12/23 =
+
+* Feature - "Parse Vimeo and YouTube links" option now affects BuddyPress as well
+* Bugfix - HLS - fix for HLS.js fallback to Flash HLS in playlists
+* Bugfix - Iframe embedding - not working for posts
+* Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
+* Bugfix - Lightbox - for for images regex to pick the right anchor tag
+* Bubfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
+
+= 6.0.5.13 - 2016/12/13 =
+
+* New Shortcode Editor! Better looking, with improved workflow and video preview functionality.
+
 = 6.0.5.12 - 2016/12/08 =
->>>>>>> refs/remotes/origin/master
 
 * Feature - Google Analytics - added tracking of playback errors
 * Feature - HLS.js - added code for HLS playback using JavaScript without need for Flash - for all modern desktop browsers. Check the "Enable HLS.js" option
@@ -1344,6 +1379,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 6.0.5.13 =
+
+* New Shortcode Editor! Better looking, with improved workflow and video preview functionality.
 
 = 6.0.5 =
 

@@ -79,7 +79,7 @@ a.red-button {
 #wpfp_options #fv_player_pro table td.first { width: 278px }
 #wpfp_options #fv_flowplayer_integrations table td.first { width: 310px }
 #wpfp_options #fv_flowplayer_integrations table tr > td:first-child { padding-top: 4px; vertical-align: top; }
-#wpfp_options table.flowplayer-settings { width: 46%; }
+#wpfp_options table.flowplayer-settings { width: 29%; }
 
 div.clear { clear: both }  
 div.column { float: left; width: 49% }  
@@ -120,13 +120,18 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   background: #ff6;
 }
 
-#flowplayer-wrapper label {
+#flowplayer-wrapper label,
+#fv_flowplayer_skin_playlist label,
+#fv_flowplayer_skin_subtitles label {
   display: block;
   text-align: right;
-  width: 110px;  
 }
-
-#flowplayer-wrapper input[type=text], #flowplayer-wrapper select {
+#postbox-container-tab_skin .button-primary {
+	margin-left: 51%;
+}
+#flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
+#fv_flowplayer_skin_playlist input[type=text], #fv_flowplayer_skin_playlist select,
+#fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select {
   width: 95%;
 }
 
@@ -134,7 +139,9 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   float: right;
 }
 
-#wpfp_options #flowplayer-wrapper .button-primary {
+#wpfp_options #flowplayer-wrapper .button-primary,
+#wpfp_options #fv_flowplayer_skin_playlist .button-primary,
+#wpfp_options #fv_flowplayer_skin_subtitles .button-primary {
   float: none;
 }
 
@@ -143,7 +150,15 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   text-align: right;
 }
 
-#fv_flowplayer_ads .inside label, #fv_player_pro_video_ads .inside label, #fv_player_pro_vimeo .inside label, #wpfp_options .inside .description label {
+#wpfp_options .inside input + label {
+	display: inline-block;	
+}
+
+#fv-player-popups-settings th {
+	text-align: right;
+}
+
+#fv_flowplayer_ads .inside label, #fv_player_pro_video_ads .inside label, #wpfp_options .inside .description label {
   display: initial;
   text-align: inherit;
 }
