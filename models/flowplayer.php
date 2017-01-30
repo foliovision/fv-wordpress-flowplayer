@@ -109,7 +109,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
-    add_action( 'wp_head', array( $this, 'fb_share_tags' ), 0);
+    
     
   }
   
@@ -1429,45 +1429,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return false;
   }
 
-  
-  function fb_share_tags() {
-    global  $fv_fp, $post,$FV_Player_Pro;
-    if (!isset($fv_fp->conf['integrations']['facebook_sharing']) || $fv_fp->conf['integrations']['facebook_sharing'] !== 'true' || !is_singular())
-      return;
-
-    $content = $post->post_content;
-
-    $matches = array();
-    if (!preg_match("/\[fvplayer[^]]*/", $content, $matches))
-      return;
-
-    $aAtts = shortcode_parse_atts($matches[0] . ' ]');
-    $sUrl = $aAtts['src'];
-    if ( empty($sUrl) || strpos($sUrl,'.mp4') === null || $this->is_s3($sUrl) || isset ($FV_Player_Pro) && method_exists($FV_Player_Pro,'is_dynamic_item') && $FV_Player_Pro->is_dynamic_item($sUrl))
-      return;
-
-    $sUrl = preg_replace('/https?:\/\/?/', '', $sUrl);
-    $httpUrl = 'http://' . $sUrl;
-    $httpsUrl = 'https://' . $sUrl;
-
-    $sName = get_bloginfo('name');
-    $sTitle = $post->post_title;
-    $sSplash = isset($aAtts['splash']) ? $aAtts['splash'] : '';
-    $sDescription = $post->post_excerpt;
-    ?>
-    <meta property="og:site_name" content="<?php echo $sName; ?>">
-    <meta property="og:title" content="<?php echo $sTitle; ?>">
-    <meta property="og:image" content="<?php echo $sSplash; ?>">
-    <meta property="og:description" content="<?php echo $sDescription; ?>">
-    <meta property="og:type" content="video">
-
-    <meta property="og:video:url" content="<?php echo $httpUrl; ?>">
-    <meta property="og:video:secure_url" content="<?php echo $httpsUrl; ?>">
-    <meta property="og:video:type" content="video/mp4">
-    <meta property="og:video:width" content="480">
-    <meta property="og:video:height" content="360">
-    <?php
-  }
 
 }
 

@@ -41,6 +41,7 @@ include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
 include_once(dirname( __FILE__ ) . '/models/flowplayer-frontend.php');
 
 include_once(dirname( __FILE__ ) . '/models/lightbox.php');
+include_once(dirname( __FILE__ ) . '/models/facebook-share.php');
 
 include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
 

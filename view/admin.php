@@ -778,16 +778,6 @@ function fv_flowplayer_admin_integrations() {
               </p>
 						</td>
 					</tr>
-          <tr>
-						<td><label for="facebook_sharing">Facebook Video Sharing:</label></td>
-						<td>
-              <p class="description">
-                <input type="hidden" name="integrations[facebook_sharing]" value="false" />
-                <input type="checkbox" name="integrations[facebook_sharing]" id="facebook_sharing" value="true" <?php if( isset($fv_fp->conf['integrations']['facebook_sharing']) && $fv_fp->conf['integrations']['facebook_sharing'] == 'true' ) echo 'checked="checked"'; ?> />
-                <?php _e('New kind of sharing for Facebook', 'fv_flowplayer'); ?>
-              </p>
-						</td>
-					</tr>
 					<tr>    		
             <td><label for="featured_img">Add featured image automatically</label></td>
 						<td>
@@ -798,6 +788,7 @@ function fv_flowplayer_admin_integrations() {
               </p>
 						</td>
 					</tr>
+          <?php do_action('fv_player_admin_integrations'); ?>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
