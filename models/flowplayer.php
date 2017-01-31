@@ -109,6 +109,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
+    
+    
   }
   
   
@@ -1415,11 +1417,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
   
-  
+
 }
-
-
-
 
 function fv_wp_flowplayer_save_post( $post_id ) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
