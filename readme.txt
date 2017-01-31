@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.18 - 2017/02/?? =
+
+* CSS - renaming the play-button class to fvp-play-button to prevent conflicts with some themes
+
 = 6.0.5.17 - 2017/01/30 =
 
 * Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
