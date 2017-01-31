@@ -321,15 +321,15 @@
 .flowplayer.is-closeable.is-ready .fp-embed{right:64px}
 .is-rtl.flowplayer.is-closeable.is-ready .fp-fullscreen{right:auto;left:32px}
 .is-rtl.flowplayer.is-closeable.is-ready .fp-embed{right:auto;left:64px}
-.flowplayer.play-button .fp-play{display:block}
-.flowplayer.play-button .fp-elapsed{left:27px;}
-.is-rtl.flowplayer.play-button .fp-elapsed{right:27px}
-.flowplayer.play-button .fp-timeline{margin-left:72px;}
-.is-rtl.flowplayer.play-button .fp-timeline{margin-right:72px}
-.is-long.flowplayer.play-button .fp-timeline{margin-left:102px;}
-.is-rtl.is-long.flowplayer.play-button .fp-timeline{margin-right:102px}
-.no-time.flowplayer.play-button .fp-timeline,.aside-time.flowplayer.play-button .fp-timeline{margin-left:27px;}
-.is-rtl.no-time.flowplayer.play-button .fp-timeline,.is-rtl.aside-time.flowplayer.play-button .fp-timeline{margin-right:27px}
+.flowplayer.fvp-play-button .fp-play{display:block}
+.flowplayer.fvp-play-button .fp-elapsed{left:27px;}
+.is-rtl.flowplayer.fvp-play-button .fp-elapsed{right:27px}
+.flowplayer.fvp-play-button .fp-timeline{margin-left:72px;}
+.is-rtl.flowplayer.fvp-play-button .fp-timeline{margin-right:72px}
+.is-long.flowplayer.fvp-play-button .fp-timeline{margin-left:102px;}
+.is-rtl.is-long.flowplayer.fvp-play-button .fp-timeline{margin-right:102px}
+.no-time.flowplayer.fvp-play-button .fp-timeline,.aside-time.flowplayer.fvp-play-button .fp-timeline{margin-left:27px;}
+.is-rtl.no-time.flowplayer.fvp-play-button .fp-timeline,.is-rtl.aside-time.flowplayer.fvp-play-button .fp-timeline{margin-right:27px}
 
 .flowplayer .fp-waiting em { opacity: 1 !important; }
 
@@ -548,7 +548,7 @@ a #add-format, a #add-rtmp {
 .flowplayer.no-controlbar .fp-controls a,.flowplayer.no-controlbar .fp-controls .fp-volume,.flowplayer.no-controlbar .fp-time {display:none;}
 .flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.fixed-controls.no-controlbar .fp-controls {height:auto;}
 .flowplayer.is-mouseover.no-controlbar .fp-timeline {height:4px;top:0;}
-.has-menu.no-brand.flowplayer.no-controlbar .fp-timeline,.flowplayer.play-button.no-controlbar .fp-timeline {margin:0;}
+.has-menu.no-brand.flowplayer.no-controlbar .fp-timeline,.flowplayer.fvp-play-button.no-controlbar .fp-timeline {margin:0;}
 .flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.is-mouseover.no-controlbar .fp-mute, .flowplayer.is-mouseover.no-controlbar .fp-title {height:0;}
 .flowplayer.no-controlbar .fp-buffer, .flowplayer.no-controlbar .fp-progress, .flowplayer.no-controlbar .fp-timeline  { cursor: auto; }
 .flowplayer.no-controlbar .fp-timeline:hover+.fp-timeline-tooltip { display: none; }

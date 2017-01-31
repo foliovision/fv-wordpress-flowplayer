@@ -355,7 +355,7 @@ class flowplayer_frontend extends flowplayer
           }
         }
         if( $bPlayButton ) {
-          $attributes['class'] .= ' play-button';
+          $attributes['class'] .= ' fvp-play-button';
         }
 				
         //  Align
