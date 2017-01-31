@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.18 - 2017/02/?? =
+
+* Feature - Facebook Video Sharing - when enabled the first MP4 video in the post will be shared directly rather than the post excerpt.
+
 = 6.0.5.17 - 2017/01/30 =
 
 * Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
