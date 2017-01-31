@@ -1417,18 +1417,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
   
-  function is_s3($sURL) {
-    global $fv_fp;
-    foreach($fv_fp->conf['amazon_bucket'] as $value ){
-      if(empty($value))
-        continue;
-      if (strpos($sURL, '/' . $value . '/') !== false) {
-        return true;
-      }
-    }
-    return false;
-  }
-
 
 }
 

@@ -788,7 +788,7 @@ function fv_flowplayer_admin_integrations() {
               </p>
 						</td>
 					</tr>
-          <?php do_action('fv_player_admin_integrations'); ?>
+          <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
