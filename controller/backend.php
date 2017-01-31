@@ -381,11 +381,16 @@ function fv_wp_flowplayer_admin_notice() {
 
 
 function fv_wp_flowplayer_admin_enqueue_scripts( $page ) {
+  global $fv_wp_flowplayer_ver;
+  wp_register_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_script('fv-player-admin');
+  
   if( $page !== 'post.php' && $page !== 'post-new.php' ) {
     return;
   }
   
   global $fv_wp_flowplayer_ver;
+  
   
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
   wp_enqueue_script('fvwpflowplayer-domwindow');  
