@@ -345,6 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.18 - 2017/02/?? =
 
+* Feature - Facebook Video Sharing - when enabled the first MP4 video in the post will be shared directly rather than the post excerpt.
 * CSS - renaming the play-button class to fvp-play-button to prevent conflicts with some themes
 
 = 6.0.5.17 - 2017/01/30 =
