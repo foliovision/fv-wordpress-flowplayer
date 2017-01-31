@@ -779,8 +779,8 @@ function fv_flowplayer_admin_integrations() {
               </p>
 						</td>
 					</tr>
-          <tr>
-						<td><label for="featured_img">Add featured image automatically</label></td>
+					<tr>    		
+            <td><label for="featured_img">Add featured image automatically</label></td>
 						<td>
               <p class="description">
                 <input type="hidden" name="integrations[featured_img]" value="false" />
@@ -789,6 +789,7 @@ function fv_flowplayer_admin_integrations() {
               </p>
 						</td>
 					</tr>
+          <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
