@@ -28,7 +28,13 @@
           var replacement = hexToRgb($(this).val());
           replacement.push($('#subtitleBgAlpha').val());
           style += $(this).data('fv-preview').replace(/%val%/g, replacement.join(', '));
-        
+        }else if($(this).attr('name')=== 'hasBorder'){
+          if($(this).prop('checked')){
+            style += $(this).data('fv-preview').replace(/%val%/g, '1');
+          }else{
+            style += $(this).data('fv-preview').replace(/%val%/g, '0');
+          }
+            
         } else {
           style += $(this).data('fv-preview').replace(/%val%/g, $(this).val());
         }

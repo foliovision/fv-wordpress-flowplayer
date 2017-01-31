@@ -1238,7 +1238,11 @@ function fv_flowplayer_admin_skin() {
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
       <td><label for="hasBorder"><?php _e('Border', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>
+      <td><input type="hidden" name="hasBorder" value="false" />
+          <input type="checkbox" name="hasBorder" id="hasBorder" value="true" <?php if( isset($fv_fp->conf['hasBorder']) && $fv_fp->conf['hasBorder'] == 'true' ) echo 'checked="checked"'; ?> 
+                 data-fv-preview=".flowplayer{border:%val%px solid!important;}"/>
+      </td>
+      
     </tr>       
     <tr>
       <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
