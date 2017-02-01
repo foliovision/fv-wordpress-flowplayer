@@ -298,11 +298,11 @@
 @media (max-width: 40em){
 .flowplayer .fp-help p{font-size:9px;}
 .flowplayer .fp-logo{max-width: 130px;}
-.flowplayer .fp-subtitle p{font-size:15px !important;line-height:24px !important;padding:0 0.4em}
+.flowplayer .fp-subtitle p{font-size:14px !important;line-height:24px !important;padding:0 0.4em}
 }
 @media (max-width: 30em) {
 .flowplayer .fp-subtitle{bottom:4px}
-.flowplayer .fp-subtitle p{font-size:13px !important;}
+.flowplayer .fp-subtitle p{font-size:12px !important;}
 }
 @media (max-width: 22.5em) {
 .flowplayer .fp-logo{max-width: 90px;}
