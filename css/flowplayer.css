@@ -80,7 +80,7 @@
 .is-touch.flowplayer .fp-timeline:hover+.fp-timeline-tooltip{display:none}
 .flowplayer .fp-subtitle{position:absolute;bottom:5px;left:-99999em;z-index:10;text-align:center;width:100%;opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .3s;-moz-transition:opacity .3s;transition:opacity .3s;}
 .flowplayer.is-mouseover .fp-subtitle{bottom:34px;}
-.flowplayer.is-mouseout .fp-subtitle{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
+.flowplayer.is-mouseout .fp-subtitle{line-height:normal;-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
 .flowplayer .fp-subtitle .fp-subtitle-line{display:inline-block;background-color:#000;color:#eee;padding:.1em .4em;font-size:16px;line-height:normal;border-radius: 5px;}
 .flowplayer .fp-subtitle br{display:none}
 .flowplayer .fp-subtitle .fp-subtitle-line:after{content:'';clear:both}
