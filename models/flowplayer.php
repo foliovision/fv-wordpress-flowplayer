@@ -542,8 +542,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->conf['splash']; ?>); }<?php endif; ?>    
-    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
-    <?php if( isset($fv_fp->conf['subtitleFontFace']) ) : ?>.flowplayer .fp-subtitle p { font-family: <?php echo trim($fv_fp->conf['subtitleFontFace']); ?>; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleFontFace']) ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo trim($fv_fp->conf['subtitleFontFace']); ?>; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
       if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
         $sCSS = "bottom: 30px; left: 15px";
@@ -556,7 +556,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-subtitle p { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? $fv_fp->conf['subtitleBgAlpha'] : 0.5; ?>); }
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? $fv_fp->conf['subtitleBgAlpha'] : 0.5; ?>); }
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
