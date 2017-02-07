@@ -1235,6 +1235,7 @@ function fv_flowplayer_admin_skin() {
 <style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
     <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'"]'); ?>
+    <p><?php _e('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer'); ?></p>
   </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
@@ -1315,7 +1316,7 @@ function fv_flowplayer_admin_skin() {
                  data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }"/></td>
     </tr>
     <tr>    		
-      <td colspan="2">
+      <td colspan="2">        
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
       </td>
     </tr>
