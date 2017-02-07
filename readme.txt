@@ -348,6 +348,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - Facebook Video Sharing - when enabled the first MP4 video in the post will be shared directly rather than the post excerpt.
 * Feature - Lightbox - now you can use HTML like <a class="colorbox" href="video.mp4"><img src="image.jpg" /></a> to make clicking that image open a video
 * CSS - renaming the play-button class to fvp-play-button to prevent conflicts with some themes
+* Bugfix - PHP 5.2 compatilibty fix for FV Player widget
 
 = 6.0.5.17 - 2017/01/30 =
 
