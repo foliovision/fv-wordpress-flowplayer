@@ -599,7 +599,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
     } else {
       wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
-      wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      
+      if(is_user_logged_in()){
+        //TODO: is this needed?
+        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      }
+      
       
       if( $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate' ) );

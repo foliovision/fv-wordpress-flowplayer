@@ -16,9 +16,11 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_playlist_style', array($this, 'lightbox_playlist'), 10, 5);
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
+    
+    add_filter('fv_flowplayer_args', array($this, 'parse_html_caption'), 0);
 
-    add_filter('the_content', array($this, 'lightbox_add'));
-    add_filter('the_content', array($this, 'lightbox_add_post'), 999);  //  moved after the shortcodes are parsed to work for galleries
+    add_filter('the_content', array($this, 'html_to_lightbox_videos'));
+    add_filter('the_content', array($this, 'html_lightbox_images'), 999);  //  moved after the shortcodes are parsed to work for galleries
 
     add_action('fv_flowplayer_shortcode_editor_tab_options', array($this, 'shortcode_editor'), 8);
 
@@ -197,25 +199,46 @@ class FV_Player_lightbox {
     return $output;
   }
 
-  function lightbox_add($content) {
+  function html_to_lightbox_videos($content) {
 
     //  todo: disabling the option should turn this off
-    if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg))[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1"  lightbox="true;text" caption="$2"]', $content);
-    }
-
-    if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-      $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-
-      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-      $content = preg_replace('~<a[^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
+    if (stripos($content, 'colorbox') !== false) {  
+      $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
+      return $content;
     }
 
     return $content;
   }
+  
+  function html_to_lightbox_videos_callback($matches) {
+    $html = $matches[0];
+    $caption = trim($matches[1]);
+    if( stripos($html,'.mp4') !== false &&
+       stripos($html,'.webm') !== false &&
+       stripos($html,'.m4v') !== false &&
+       stripos($html,'.mov') !== false &&
+       stripos($html,'.ogv') !== false &&
+       stripos($html,'.ogg') !== false &&
+       stripos($html,'.m3u8') !== false &&
+       stripos($html,'youtube.com/') !== false &&
+       stripos($html,'youtu.be/') !== false &&
+       stripos($html,'vimeo.com/') !== false
+       ) {
+      return $html;  
+    }
+    
+    if( preg_match( '~href=[\'"](.*?(?:mp4|webm|m4v|mov|ogv|ogg|m3u8|youtube\.com|youtu\.be|vimeo.com).*?)[\'"]~', $html, $href ) ) {
+      if( stripos($caption,'<img') === 0 ) {
+        return '[fvplayer src="'.esc_attr($href[1]).'" lightbox="true;text" caption_html="'.base64_encode($caption).'"]';
+      } else {
+        return '[fvplayer src="'.esc_attr($href[1]).'" lightbox="true;text" caption="'.esc_attr($caption).'"]';
+      }
+    }
+    
+    return $html;
+  }  
 
-  function lightbox_add_post($content) {
+  function html_lightbox_images($content) {
     global $fv_fp;
     //TODO IMAGES
  
@@ -223,11 +246,11 @@ class FV_Player_lightbox {
       return $content;    
     }
 
-    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content);
     return $content;
   }
   
-  function lightbox_add_callback($matches) {    
+  function html_lightbox_images_callback($matches) {    
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
@@ -242,6 +265,14 @@ class FV_Player_lightbox {
   function disable_autoplay($aArgs) {
     if (isset($aArgs['lightbox'])) {
       $aArgs['autoplay'] = 'false';
+    }
+    return $aArgs;
+  }
+  
+  function parse_html_caption( $aArgs ) {
+    if( isset($aArgs['caption_html']) && $aArgs['caption_html'] ) {
+      $aArgs['caption'] = base64_decode($aArgs['caption_html']);
+      unset($aArgs['caption_html']);
     }
     return $aArgs;
   }
