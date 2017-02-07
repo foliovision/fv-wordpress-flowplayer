@@ -349,6 +349,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - Lightbox - now you can use HTML like <a class="colorbox" href="video.mp4"><img src="image.jpg" /></a> to make clicking that image open a video
 * Feature - Skin settings - now you can see the changes you are doing live if you play the video
 * CSS - renaming the play-button class to fvp-play-button to prevent conflicts with some themes
+* CSS - subtitle styling improvements
 * Bugfix - PHP 5.2 compatilibty fix for FV Player widget
 
 = 6.0.5.17 - 2017/01/30 =
