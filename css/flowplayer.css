@@ -81,7 +81,7 @@
 .flowplayer .fp-subtitle{position:absolute;bottom:5px;left:-99999em;z-index:10;text-align:center;width:100%;opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .3s;-moz-transition:opacity .3s;transition:opacity .3s;}
 .flowplayer.is-mouseover .fp-subtitle{bottom:34px;}
 .flowplayer.is-mouseout .fp-subtitle{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
-.flowplayer .fp-subtitle .fp-subtitle-line{display:inline-block;background-color:#000;color:#eee;padding:.1em .4em;font-size:16px;line-height:normal;border-radius: 5px;}
+.flowplayer .fp-subtitle .fp-subtitle-line{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px;}
 .flowplayer .fp-subtitle br{display:none}
 .flowplayer .fp-subtitle .fp-subtitle-line:after{content:'';clear:both}
 .flowplayer .fp-subtitle .fp-subtitle-line:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
@@ -297,7 +297,7 @@
 .flowplayer .fp-help p{font-size:9px;}
 .flowplayer .fp-logo{max-width: 130px;}
 .flowplayer .fp-subtitle{line-height:14px !important}
-.flowplayer .fp-subtitle .fp-subtitle-line{font-size:14px !important;line-height:20px !important;padding:0 0.4em}
+.flowplayer .fp-subtitle .fp-subtitle-line{font-size:14px !important;line-height:20px !important}
 }
 @media (max-width: 30em) {
 .flowplayer .fp-subtitle{bottom:4px;line-height:12px !important}
