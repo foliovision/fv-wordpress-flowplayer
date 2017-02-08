@@ -183,6 +183,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
+    if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = '';
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -210,7 +211,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -219,6 +220,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
       }
     }
+    
     $aNewOptions['key'] = trim($sKey);
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -234,10 +236,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset($aOldOptions['pro']) || !is_array($aOldOptions['pro']) ) {
       $aOldOptions['pro'] = array();
     }    
- 
     
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);
+    
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->conf = $aNewOptions;    
