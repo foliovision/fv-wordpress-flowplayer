@@ -34,7 +34,7 @@
     global $fv_fp;
     
     $aPopupData = get_option('fv_player_popups');
-    
+
   
     $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
     $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
@@ -45,7 +45,10 @@
       <?php endif; ?>
       <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
       <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+      <?php if($fv_fp->conf['mailchimp_use']==='true'){?>
+        <option <?php if( $aArgs['item_id'] === 'mailchimp' ) echo 'selected '; ?>value="mailchimp">MailChimp</option>
       <?php
+      }
       if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
         foreach( $aPopupData AS $key => $aPopupAd ) {
           ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php

@@ -183,7 +183,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
-
+    
+//    if( !isset( $conf['mailchimp_use'] ) ) $conf['mailchimp_use'] = 'false';
+//    if( !isset( $conf['mailchimp_api'] ) ) $conf['mailchimp_api'] = '';
+//    if( !isset( $conf['mailchimp_list'] ) ) $conf['mailchimp_list'] = '';
+    
+    $conf += apply_filters('fv_player_settings_default', array());
+    
+    
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
     return true;   

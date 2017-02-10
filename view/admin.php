@@ -118,7 +118,7 @@ function fv_flowplayer_admin_amazon_options() {
 					<tr>
 						<td class="first"><label for="amazon_expire_force"><?php _e('Force the default expiration time', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>             
-              <?php fv_flowplayer_admin_checkbox('amazon_expire_force'); ?>              
+              <?php fv_flowplayer_admin_checkbox('amazon_expire_force'); ?>
             </td>
 					</tr>
           

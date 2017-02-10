@@ -843,7 +843,7 @@ function fv_wp_flowplayer_edit() {
       spopup = spopup.replace(/&amp;/g,'&');
       
       jQuery("#fv_wp_flowplayer_field_popup_id").parents('tr').show();
-      if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random') {
+      if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random' || spopup === 'mailchimp') {
         jQuery("#fv_wp_flowplayer_field_popup_id").val(spopup)
       } else {
         jQuery("#fv_wp_flowplayer_field_popup").val(spopup).parent().show();
@@ -1063,7 +1063,7 @@ function fv_wp_flowplayer_submit( preview ) {
       if( jQuery('[name=fv_wp_flowplayer_field_popup]').val() !== ''){
         fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
       }else{
-        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
+        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','mailchimp','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
       }
     break;
   }

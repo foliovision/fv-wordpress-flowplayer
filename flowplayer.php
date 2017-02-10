@@ -48,6 +48,10 @@ include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
 include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
+if (version_compare(phpversion(),'5.3.0') >= 0){
+  include_once(dirname( __FILE__ ) . '/models/collect-emails.php');
+}
+
 
 $fv_fp = new flowplayer_frontend();
 
