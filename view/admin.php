@@ -1406,6 +1406,32 @@ function fv_flowplayer_admin_skin_subtitles() {
       </td>
     </tr>
   </table>
+  <div id="fp-previw-wrapper">
+    <div class="flowplayer"id="preview"> 
+      <span class="fp-subtitle fp-active">
+        <p>
+          The quick brown fox jumps over the lazy dog
+        </p>
+      </span>
+    </div>
+  </div>
+    <style>
+      #fp-previw-wrapper{
+        height:360px;
+        width:420px;
+        position:absolute;
+        top:0px;
+        right:0px;
+      }
+      #fp-previw-wrapper>.flowplayer{
+        position:relative;
+       height:160px;
+       background-color: #fff !important;
+      }
+      #fp-previw-wrapper .fp-subtitle{
+        height:50px;
+      }
+    </style>
   <div style="clear: both"></div>
 <?php
 }
