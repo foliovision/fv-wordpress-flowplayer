@@ -371,6 +371,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   
                   <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
+                                    
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advnace', 'name' => 'playlist_advance' ) ); ?>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>
                   
@@ -425,8 +427,6 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
                     </td>
                   </tr>
-                  
-                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advnace', 'name' => 'playlist_advance' ) ); ?>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_after'); ?>
                   
