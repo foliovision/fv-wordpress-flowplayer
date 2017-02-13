@@ -88,7 +88,9 @@ class FV_Player_Collect_Emails {
       $popup .= '<form class="mailchimp-form">'
               . '<input type="email" placeholder="e-mail" name="MERGE0"/>';
       foreach ($aLists[$id]['fields'] as $field) {
-        $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '"/>';
+        if ($field['required']) {
+          $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
+        }
       }
       $popup .= '<input type="submit" value="submit"/></form>';
     }
@@ -149,26 +151,44 @@ class FV_Player_Collect_Emails {
   public function mailchimp_register() {
     global $fv_fp;
     $MailChimp = new MailChimp($fv_fp->conf['mailchimp_api']);
-    $result = $MailChimp->post('lists');
-
 
     $list_id = $fv_fp->conf['mailchimp_list'];
     $merge_fields = array();
     foreach ($_POST as $key => $val) {
-      if ($key === 'action'||$key === 'MERGE0' )
+      if ($key === 'action' || $key === 'MERGE0')
         continue;
       $merge_fields[$key] = addslashes($val);
     }
 
-    $result = $MailChimp->post("lists/$list_id/members", array(
+    $result_data = $MailChimp->post("lists/$list_id/members", array(
         'email_address' => 'a2' . $_POST['MERGE0'],
         'status' => 'subscribed',
-        'merge_fields' => $merge_fields
-            )
-    );
+        'merge_fields' => $merge_fields));
 
-    var_dump($MailChimp->getLastResponse());
-    die;
+
+    if ($result_data['status'] === 'subscribed') {
+      $result = array(
+          'status' => 'OK',
+          'text' => 'OK');
+    } elseif ($result_data['status'] === 400) {
+      if ($result_data['title'] === 'Member Exists') {
+        $result = array(
+            'status' => 'ERROR',
+            'text' => __('e-mail address already subscribed', 'fv-wordpress-flowplayer'),
+        );
+      } elseif ($result_data['title'] === 'Invalid Resource') {
+        $result = array(
+            'status' => 'ERROR',
+            'text' => $result_data['detail'],
+        );
+      }else{
+        $result = array(
+            'status' => 'ERROR',
+            'text' => 'unknown error',
+        );
+      }
+    }
+    die(json_encode($result));
   }
 
 }

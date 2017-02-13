@@ -33,8 +33,6 @@
   global $fv_fp;
   
   $aPopupData = get_option('fv_player_popups');
-  var_dump($aPopupData);
-  die;
 
   $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
   $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
