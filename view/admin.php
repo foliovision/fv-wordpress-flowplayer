@@ -388,12 +388,12 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
             <tr>
-              <td style="width: 250px"><label for="playlist_advance"><?php _e('Auto advance playlist', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td style="width: 250px"><label for="playlist_advance"><?php _e('Disable Playlist Autoadvance', 'fv-wordpress-flowplayer'); ?>:</label></td>
               <td>
                 <p class="description">
-                  <input type="hidden" value="false" name="playlist_advance" />
-                  <input type="checkbox" value="true" name="playlist_advance" id="playlist_advance" <?php if (!isset($fv_fp->conf['playlist_advance']) || isset($fv_fp->conf['playlist_advance']) && $fv_fp->conf['playlist_advance'] == 'true') echo 'checked="checked"'; ?> />
-                  <?php _e('After a video from a playlsit finishes, the next video starts playling automatically.', 'fv-wordpress-flowplayer'); ?></a>
+                  <input type="hidden" value="true" name="playlist_advance" />
+                  <input type="checkbox" value="false" name="playlist_advance" id="playlist_advance" <?php if (!isset($fv_fp->conf['playlist_advance']) || isset($fv_fp->conf['playlist_advance']) && $fv_fp->conf['playlist_advance'] == 'true') echo 'checked="checked"'; ?> />
+                  <?php _e('After a video from a playlsit finishes, the next video will not start automatically.', 'fv-wordpress-flowplayer'); ?></a>
                 </p>
               </td>
             </tr>
@@ -1048,7 +1048,7 @@ function fv_flowplayer_admin_interface_options() {
 						<td>
               <p class="description">
                 <input type="hidden" name="interface[playlist_advance]" value="false" />
-                <input type="checkbox" name="interface[playlist_advance]" id="interface[shortcode_editor_old]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_advance']) && $fv_fp->conf['interface']['playlist_advance'] == 'true' ) echo 'checked="checked"'; ?> />
+                <input type="checkbox" name="interface[playlist_advance]" id="interface[playlist_advance]" value="true" <?php if( isset($fv_fp->conf['interface']['playlist_advance']) && $fv_fp->conf['interface']['playlist_advance'] == 'true' ) echo 'checked="checked"'; ?> />
               </p>
 						</td>
 					</tr>
