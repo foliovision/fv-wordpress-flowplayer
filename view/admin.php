@@ -342,6 +342,14 @@ function fv_flowplayer_admin_default_options() {
                 </p>
 							</td>
 						</tr>
+            <tr>
+              <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td>
+                <p class="description">
+                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php if (isset($fv_fp->conf['sharing_email_text'])) echo $fv_fp->conf['sharing_email_text']; ?>" placeholder="<?php _e('Check the amazing video here', 'fv-wordpress-flowplayer'); ?>" />
+                </p>
+              </td>
+            </tr>            
 						<tr>
 							<td><label for="ui_speed"><?php _e('Speed Buttons', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
@@ -379,14 +387,6 @@ function fv_flowplayer_admin_default_options() {
                 </p>
 							</td>
 						</tr>
-            <tr>
-              <td><label for="subtitleOn"><?php _e('Email Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
-              <td>
-                <p class="description">
-                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php if (isset($fv_fp->conf['sharing_email_text'])) echo $fv_fp->conf['sharing_email_text']; ?>" placeholder="<?php _e('Check the amazing video here', 'fv-wordpress-flowplayer'); ?>" />
-                </p>
-              </td>
-            </tr>
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
           <small class="alignright">
@@ -619,7 +619,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
           <tr>
-            <td><label for="engine"><?php _e('Enable HLS.js', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td><label for="hlsjs"><?php _e('Enable HLS.js', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('hlsjs'); ?>
