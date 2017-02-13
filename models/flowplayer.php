@@ -183,11 +183,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
-<<<<<<< HEAD
-    if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = '';
-=======
+    if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
     if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = '';
->>>>>>> master
+    
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;

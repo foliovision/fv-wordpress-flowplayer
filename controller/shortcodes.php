@@ -205,7 +205,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'post' => '',
       'speed' => '',
       'liststyle' => '',
-      'playlist_advance' => '',
+      'playlist_advance' => ''
 		), $atts );
 	}
   
