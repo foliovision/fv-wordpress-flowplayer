@@ -345,7 +345,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.20 - 2017/02/?? =
 
-* Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
+* Feature - Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
+* Feature - Sharing text "Check the amazing video here" can now be customized
 
 = 6.0.5.19 - 2017/02/09 =
 
