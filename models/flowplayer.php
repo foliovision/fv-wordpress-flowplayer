@@ -1306,6 +1306,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       ob_start();
       
+      global $fvseo;
+      if( isset($_REQUEST['fv_player_preview']) ) {
+        global $fvseo;
+        if( isset($fvseo) ) remove_action('wp_footer', array($fvseo, 'script_footer_content'), 999999 );
+        
+        global $objTracker;
+        if( isset($objTracker) ) remove_action( 'wp_footer', array( $objTracker, 'OutputFooter' ) );
+      }
     }
   }
   

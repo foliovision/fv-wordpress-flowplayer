@@ -343,7 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.19 - 2017/02/?? =
+= 6.0.5.20 - 2017/02/?? =
+
+* Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
+
+= 6.0.5.19 - 2017/02/09 =
 
 * Mobile - using the native fullscreen only on older devices - iPad with iOS < 7 and Android < 4.4. This takes care of the Google Chrome video download button
 
