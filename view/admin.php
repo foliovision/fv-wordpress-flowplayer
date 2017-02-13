@@ -19,9 +19,9 @@
 /**
  * Displays administrator backend.
  */
+
  
 delete_option('fv_wordpress_flowplayer_deferred_notices');
-
 
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
@@ -342,6 +342,14 @@ function fv_flowplayer_admin_default_options() {
                 </p>
 							</td>
 						</tr>
+            <tr>
+              <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td>
+                <p class="description">
+                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php if (isset($fv_fp->conf['sharing_email_text'])) echo $fv_fp->conf['sharing_email_text']; ?>" placeholder="<?php _e('Check the amazing video here', 'fv-wordpress-flowplayer'); ?>" />
+                </p>
+              </td>
+            </tr>            
 						<tr>
 							<td><label for="ui_speed"><?php _e('Speed Buttons', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
@@ -621,7 +629,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
           <tr>
-            <td><label for="engine"><?php _e('Enable HLS.js', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td><label for="hlsjs"><?php _e('Enable HLS.js', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('hlsjs'); ?>
@@ -703,12 +711,12 @@ function fv_flowplayer_admin_integrations() {
             </td>
           </tr>
 					<tr>
-            <td><label for="parse_comments"><?php _e('Parse Vimeo and YouTube links in comments', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td><label for="parse_comments"><?php _e('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'); ?>:</label></td>
             <td>
               <p class="description">
                 <?php fv_flowplayer_admin_checkbox('parse_comments'); ?>
-                <?php _e('Automatically convert Vimeo and YouTube links in comments to players.','fv-wordpress-flowplayer'); ?>
-                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                <?php _e('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.','fv-wordpress-flowplayer'); ?>
+                <span class="more"><?php _e('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.','fv_flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
             </td>
           </tr>					
@@ -788,7 +796,18 @@ function fv_flowplayer_admin_integrations() {
                 <?php _e('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer'); ?>
               </p>
 						</td>
-					</tr>           
+					</tr>
+					<tr>    		
+            <td><label for="featured_img">Add featured image automatically</label></td>
+						<td>
+              <p class="description">
+                <input type="hidden" name="integrations[featured_img]" value="false" />
+                <input type="checkbox" name="integrations[featured_img]" id="featured_img" value="true" <?php if( isset($fv_fp->conf['integrations']['featured_img']) && $fv_fp->conf['integrations']['featured_img'] == 'true' ) echo 'checked="checked"'; ?> />
+                <?php _e('If the featured image is not set, splash image of the first player will be used.', 'fv_flowplayer'); ?>
+              </p>
+						</td>
+					</tr>
+          <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>    		
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -833,13 +852,11 @@ function fv_flowplayer_admin_popups(){
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="width: 150px"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <p class="description">
-            <?php $cva_id = isset($fv_fp->conf['popups_default']) ? $fv_fp->conf['popups_default'] : 'no'; ?>
+	<?php $cva_id = isset($fv_fp->conf['popups_default']) ? $fv_fp->conf['popups_default'] : 'no'; ?>
             <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
-            <?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?>
-          </p>
+          <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
       </table>
@@ -870,15 +887,15 @@ function fv_flowplayer_admin_popups(){
                     <td>
                       <table class='fv-player-popup-formats'>
                         <tr>
-                        	<td><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td>
                         	<td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
                       	</tr>
                         <tr>
-                        	<td>HTML:</td>
+                        	<td><label>HTML:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                       	</tr>
                         <tr>
-                        	<td><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</td>
+                        	<td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
                       	</tr>
                       </table>
@@ -1214,9 +1231,9 @@ function fv_flowplayer_admin_video_ads(){
                   <td class="id">1</td>
                   <td>
                     <table class="fv-player-pro_video-ad-formats">
-                      <tbody><tr><td>Name:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Ad name"></td></tr>
-                        <tr><td>Click URL:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Clicking the video ad will open the URL in new window"></td></tr>
-                        <tr><td>Video:</td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Enter the video URL here"></td></tr>
+                      <tbody><tr><td><label>Name:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Ad name"></td></tr>
+                        <tr><td><label>Click URL:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Clicking the video ad will open the URL in new window"></td></tr>
+                        <tr><td><label>Video:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="Enter the video URL here"></td></tr>
                       </tbody></table>
                   </td>
                   <td>
@@ -1242,128 +1259,168 @@ function fv_flowplayer_admin_video_ads(){
 function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
+<style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
-    <?php echo do_shortcode('[fvplayer src="http://foliovision.com/videos/example.mp4" splash="http://foliovision.com/videos/example.jpg" autoplay="false" preroll="no" postroll="no"]'); ?>
-    <small class="alignright">
-    	<?php _e('Missing settings? Check <a href="#fv_flowplayer_default_options">Sitewide Flowplayer Defaults</a> box below.', 'fv-wordpress-flowplayer'); ?>
-    </small>
+    <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'"]'); ?>
+    <p><?php _e('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer'); ?></p>
   </div>
-
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
-      <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="borderColor" name="borderColor" type="text" value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" /></td>
       <td><label for="hasBorder"><?php _e('Border', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><?php fv_flowplayer_admin_checkbox('hasBorder'); ?></td>     
-    </tr>    
+      <td><input type="hidden" name="hasBorder" value="false" />
+          <input type="checkbox" name="hasBorder" id="hasBorder" value="true" <?php if( isset($fv_fp->conf['hasBorder']) && $fv_fp->conf['hasBorder'] == 'true' ) echo 'checked="checked"'; ?> 
+                 data-fv-preview=".flowplayer{border:%val%px solid!important;}"/>
+      </td>
+      
+    </tr>       
+    <tr>
+      <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="borderColor" name="borderColor" type="text"  value="<?php echo esc_attr($fv_fp->conf['borderColor']); ?>" 
+                 data-fv-preview=".flowplayer{border-color:#%val%!important;}"/></td>
+    </tr>
+    <tr>
+      <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="<?php echo esc_attr($fv_fp->conf['marginBottom']); ?>" 
+                 data-fv-preview=".flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
+    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
+    .flowplayer.has-abloop { margin-bottom: %val%px!important; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }"/></td>      
+    </tr>
     <tr>
       <td><label for="bufferColor"><?php _e('Buffer', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="bufferColor" name="bufferColor" type="text" value="<?php echo esc_attr($fv_fp->conf['bufferColor']); ?>" /></td>
-      <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="<?php echo esc_attr($fv_fp->conf['marginBottom']); ?>" /></td>    
+      <td><input class="color" id="bufferColor" name="bufferColor" type="text" value="<?php echo esc_attr($fv_fp->conf['bufferColor']); ?>" 
+                 data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" /></td>
     </tr>
     <tr>
       <td><label for="canvas"><?php _e('Canvas', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="canvas" name="canvas" type="text" value="<?php echo esc_attr($fv_fp->conf['canvas']); ?>" /></td>
-      <td><label for="font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td>
-        <select id="font-face" name="font-face">
-          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
-          <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
-          <option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit from template)', 'fv-wordpress-flowplayer'); ?></option>
-        </select>
-      </td>           
-    </tr>            
+      <td><input class="color" id="canvas" name="canvas" type="text" value="<?php echo esc_attr($fv_fp->conf['canvas']); ?>" 
+                 data-fv-preview=".flowplayer { background-color: #%val%!important; }"/></td>
+    </tr>
     <tr>
       <td><label for="backgroundColor"><?php _e('Controlbar', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo esc_attr($fv_fp->conf['backgroundColor']); ?>" /></td>
+      <td><input class="color" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo esc_attr($fv_fp->conf['backgroundColor']); ?>" 
+                 data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
+                 .fv_player_popup {  background: #%val%!important;}
+                 .fvfp_admin_error_content {  background: #%val%!important; }
+                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }"/></td>
+    </tr>
+    <tr>
+      <td><label for="font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <select id="font-face" name="font-face" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }">
+          <option value="inherit"<?php if( $fv_fp->conf['font-face'] == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit from template)', 'fv-wordpress-flowplayer'); ?></option>
+          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->conf['font-face'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+          <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->conf['font-face'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
+        </select>
+      </td>      
+    </tr>
+    <tr>
       <td class="second-column"><label for="player-position"><?php _e('Player position', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
-        <select id="player-position" name="player-position">
-          <option value=""<?php if( $fv_fp->conf['player-position'] == "" ) echo ' selected="selected"'; ?>><?php _e('Centered', 'fv-wordpress-flowplayer'); ?></option>										  
+        <select id="player-position" name="player-position" data-fv-preview=".flowplayer { margin-left: 0; }">
+          <option value=""<?php if( $fv_fp->conf['player-position'] == "" ) echo ' selected="selected"'; ?>><?php _e('Centered', 'fv-wordpress-flowplayer'); ?></option>
           <option value="left"<?php if( $fv_fp->conf['player-position'] == 'left'  ) echo ' selected="selected"'; ?>><?php _e('Left (no text-wrap)', 'fv-wordpress-flowplayer'); ?></option>
         </select>
-      </td>
+      </td>      
     </tr>
     <tr>
       <td><label for="progressColor"><?php _e('Progress', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr($fv_fp->conf['progressColor']); ?>" /></td>
-      <td><label for="subtitleSize"><?php _e('Subtitle Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" /></td>   
-    </tr>        
+      <td><input class="color" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr($fv_fp->conf['progressColor']); ?>" 
+           data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val%!important; }  
+          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }"/></td>
+    </tr>
     <tr>
       <td><label for="timeColor"><?php _e('Time', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timeColor']); ?>" /></td>
-      <!--<td><label for="ui_fixed_controlbar">Fixed Controlbar</label></td>
-      <td><?php fv_flowplayer_admin_checkbox('ui_fixed_controlbar'); ?></td>-->
-      <td></td>
-      <td>
-         							
-      </td>       
-    </tr>            
+      <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timeColor']); ?>" 
+                 data-fv-preview=".flowplayer .fp-elapsed { color: #%val% !important; } 
+                 .fv-wp-flowplayer-notice-small { color: #%val% !important; }"/></td>
+    </tr>
     <tr>
-      <td><label for="timelineColor"><?php _e('Timeline', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="timelineColor" name="timelineColor" type="text" value="<?php echo esc_attr($fv_fp->conf['timelineColor']); ?>" /></td>
-      <td></td>
-      <td></td>
-    </tr>		
-    <tr>              
       <td><label for="durationColor"><?php _e('Total time', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>       
+      <td><input class="color" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr($fv_fp->conf['durationColor']); ?>" 
+                 data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }"/></td>
     </tr>
-        
-    <tr>              
-      <td><label for="playlistBgColor"><?php _e('Playlist Background', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>       
+    <tr>    		
+      <td colspan="2">        
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
+
+
+function fv_flowplayer_admin_skin_playlist() {
+	global $fv_fp;
+?>
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <tr>
+      <td><label for="playlistBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistBgColor']); ?>" 
+                 data-fv-preview=".fp-playlist-external > a > span { background-color:#%val%; }"/></td>
+    </tr>
+    <tr>
+      <td><label for="playlistSelectedColor"><?php _e('Active Item', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" 
+                 data-fv-preview=".fp-playlist-external > a.is-active > span { border-color:#%val%; }
+    .fp-playlist-external a.is-active { color:#%val%; }"/></td>
     </tr>
     <tr>              
-      <td><label for="playlistSelectedColor"><?php _e('Playlist Active', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr($fv_fp->conf['playlistSelectedColor']); ?>" /></td>
-      <td></td>
-      <td colspan="2"></td>       
-    </tr>
-    <tr>              
-      <td><label for="playlistFontColor-proxy"><?php _e('Playlist Font', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="playlistFontColor-proxy"><?php _e('Font Color', 'fv-wordpress-flowplayer'); ?></label></td>
         <?php $bShowPlaylistFontColor = (!empty($fv_fp->conf['playlistFontColor']) && $fv_fp->conf['playlistFontColor'] !== '#' ); ?>
       <td>
         <input class="color" id="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" />
-        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" /> 
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr($fv_fp->conf['playlistFontColor']); ?>" 
+               data-fv-preview=".fp-playlist-external > a { color:#%val%; }"/> 
         <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?></a>
         <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?></a>
-      </td>
-      <td></td>
-      <td colspan="2"></td>       
+      </td>      
     </tr>    
+    <tr>    		
+      <td colspan="2">
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
 
 
-
-    <!--<tr>
-      <td><label for="buttonColor">Buttons</label></td>
-      <td><input class="color small" type="text" name="buttonColor" id="buttonColor" value="<?php //echo $fv_fp->conf['buttonColor']; ?>" /></td>
-      <td><label for="buttonOverColor">Mouseover</label></td>
-      <td><input class="color small" type="text" name="buttonOverColor" id="buttonOverColor" value="<?php //echo $fv_fp->conf['buttonOverColor']; ?>" /></td>
-    <tr>-->
-
+function fv_flowplayer_admin_skin_subtitles() {
+	global $fv_fp;
+?>
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <tr>  
+      <td><label for="subtitle-font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-subtitle p { font-family: %val%; }">
+          <option value="inherit"<?php if( isset($fv_fp->conf['subtitleFontFace']) && $fv_fp->conf['subtitleFontFace'] == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit)', 'fv-wordpress-flowplayer'); ?></option>          
+          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( isset($fv_fp->conf['subtitleFontFace']) && $fv_fp->conf['subtitleFontFace'] == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+          <option value="Tahoma, Geneva, sans-serif"<?php if( isset($fv_fp->conf['subtitleFontFace']) &&  $fv_fp->conf['subtitleFontFace'] == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
+        </select>
+      </td>   
+    </tr>    
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td colspan="2"></td>        
-      <!--<td><label for="db_duration">Show Playlist Duration (<abbr title="Beta version! Turn on to enable video duration scanning. Turn off if you experience issues when saving posts.">?!</abbr>)</label></td>
-      <td><?php fv_flowplayer_admin_checkbox('db_duration'); ?></td>-->       
+      <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" 
+                 data-fv-preview=".flowplayer .fp-subtitle p { font-size: %val%px; }"/></td>
     </tr>
     <tr>
-      <td></td>
-      <td></td>
-      <td><label for="ui_play_button"></label></td>
-      <td colspan="2"></td>   
+      <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo isset($fv_fp->conf['subtitleBgColor']) ? esc_attr($fv_fp->conf['subtitleBgColor']) : '#000000'; ?>" 
+                 data-fv-preview=".flowplayer .fp-subtitle p { background-color: rgba(%val%); }"/></td>
+    </tr>    
+    <tr>
+      <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? esc_attr($fv_fp->conf['subtitleBgAlpha']) : '0.5'; ?>" 
+                 data-fv-preview=""/></td>
     </tr>
     <tr>    		
-      <td colspan="4">
+      <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
       </td>
     </tr>
@@ -1490,6 +1547,8 @@ if( !class_exists('FV_Player_Pro') ) {
 /* Skin Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
 
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
@@ -1513,7 +1572,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 <div class="wrap">
 	<div style="position: absolute; margin-top: 10px; right: 10px;">
-		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://foliovision.com/shared/fv-logo.png" /></a>
+		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="//foliovision.com/shared/fv-logo.png" /></a>
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>

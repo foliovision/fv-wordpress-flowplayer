@@ -100,7 +100,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'page_rewrite_rules', array( $this, 'rewrite_embed' ) );
+    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
     
@@ -108,6 +108,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    
+    
     
   }
   
@@ -155,8 +157,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     //
     
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
-    if( !isset( $conf['width'] ) ) $conf['width'] = '720';
-    if( !isset( $conf['height'] ) ) $conf['height'] = '480';
+    if( !isset( $conf['width'] ) ) $conf['width'] = '640';
+    if( !isset( $conf['height'] ) ) $conf['height'] = '360';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
     if( !isset( $conf['ad'] ) ) $conf['ad'] = '';     
@@ -181,7 +183,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
+<<<<<<< HEAD
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = '';
+=======
+    if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = '';
+>>>>>>> master
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -209,7 +215,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -218,6 +224,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
       }
     }
+    
     $aNewOptions['key'] = trim($sKey);
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -233,10 +240,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset($aOldOptions['pro']) || !is_array($aOldOptions['pro']) ) {
       $aOldOptions['pro'] = array();
     }    
- 
     
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);
+    
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->conf = $aNewOptions;    
@@ -481,6 +488,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $iMarginBottom = (isset($fv_fp->conf['marginBottom']) && intval($fv_fp->conf['marginBottom']) > -1 ) ? intval($fv_fp->conf['marginBottom']) : '28';
     
+    $sSubtitleBgColor = isset($fv_fp->conf['subtitleBgColor']) ? $fv_fp->conf['subtitleBgColor'] : '#000000';
+    
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
@@ -539,7 +548,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->conf['splash']; ?>); }<?php endif; ?>    
-    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleFontFace']) ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo trim($fv_fp->conf['subtitleFontFace']); ?>; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
       if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
         $sCSS = "bottom: 30px; left: 15px";
@@ -551,6 +561,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? $fv_fp->conf['subtitleBgAlpha'] : 0.5; ?>); }
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
@@ -593,7 +605,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
     } else {
       wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
-      wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      
+      if(is_user_logged_in()){
+        //TODO: is this needed?
+        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      }
+      
       
       if( $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate' ) );
@@ -880,6 +897,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public static function get_languages() {
     $aLangs = array(
+      'SDH' => 'SDH',
       'AB' => 'Abkhazian',
       'AA' => 'Afar',
       'AF' => 'Afrikaans',
@@ -1292,6 +1310,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       ob_start();
       
+      global $fvseo;
+      if( isset($_REQUEST['fv_player_preview']) ) {
+        global $fvseo;
+        if( isset($fvseo) ) remove_action('wp_footer', array($fvseo, 'script_footer_content'), 999999 );
+        
+        global $objTracker;
+        if( isset($objTracker) ) remove_action( 'wp_footer', array( $objTracker, 'OutputFooter' ) );
+      }
     }
   }
   
@@ -1308,7 +1334,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <style>
     body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
-    html {margin-top: 0px !important;overflow-y: auto;}
+    html {margin-top: 0px !important;}
   </style>
 </head>
 <body>
@@ -1329,7 +1355,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $height = 'min-height:'.$matches[1].'px;';
     }
     
-    ?>
+    ?>    
+    <style>
+      html {overflow-y: auto;}
+    </style>    
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
@@ -1407,11 +1436,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
   
-  
+
 }
-
-
-
 
 function fv_wp_flowplayer_save_post( $post_id ) {
   if( $parent_id = wp_is_post_revision($post_id) ) {

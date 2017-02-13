@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+  global $fv_wp_flowplayer_ver;
   global $post;
   $post_id = isset($post->ID) ? $post->ID : 0;
   
@@ -144,6 +145,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles">Subtitles</a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options">Options</a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions">Actions</a>
+                <?php do_action('fv_player_shortcode_editor_tab'); ?>
               </h2>
             </div>
             <div class="fv-player-tabs">
@@ -441,6 +443,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 </table>
               </div>
               
+              <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
             </div>
             <!--<div id="fv-player-tabs-debug"></div>-->
           </td>

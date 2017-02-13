@@ -355,7 +355,7 @@ class flowplayer_frontend extends flowplayer
           }
         }
         if( $bPlayButton ) {
-          $attributes['class'] .= ' play-button';
+          $attributes['class'] .= ' fvp-play-button';
         }
 				
         //  Align
@@ -483,9 +483,12 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
+        
+        $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
 
-      if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
-					$this->ret['html'] .= "\t".'<video';      
+        if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
+					$this->ret['html'] .= "\t".'<video';
+          $this->ret['html'] .= ' class="fp-engine"';
 					if (isset($splash_img) && !empty($splash_img)) {
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
@@ -505,15 +508,7 @@ class flowplayer_frontend extends flowplayer
           
 					 
 					$this->ret['html'] .= ">\n";
-									          
-          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
-          }
-					if (!empty($mobile)) {
-						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
-					}			
-			
+
 					if( isset($rtmp) && !empty($rtmp) ) {
             
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
@@ -543,7 +538,15 @@ class flowplayer_frontend extends flowplayer
 
               $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
             }
-					}  
+					}          
+					
+          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
+            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
+          }
+					if (!empty($mobile)) {
+						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
+					}			
 					
 					if (isset($aSubtitles) && !empty($aSubtitles)) {
             $aLangs = self::get_languages();
@@ -1055,23 +1058,24 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_sharing_html() {
-  
+    $sSharingText = empty($this->conf['sharing_email_text']) ? __('Check the amazing video here', 'fv-wordpress-flowplayer') : $this->conf['sharing_email_text'];
+
     if( isset($this->aCurArgs['share']) ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
         $sPermalink = urlencode($aSharing[1]);
-        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[1] ) );
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] ) );
         $sTitle = urlencode( $aSharing[0].' ');
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
         $sPermalink = urlencode($aSharing[0]);
-        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[0] ) );
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$aSharing[0] ) );
         $sTitle = urlencode( get_bloginfo().' ');
       }
     }
 				
     if( !isset($sPermalink) || empty($sPermalink) ) {  
       $sPermalink = urlencode(get_permalink());
-      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
       $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
     }
 					
