@@ -85,8 +85,9 @@ class FV_Player_Collect_Emails {
     $id = $fv_fp->conf['mailchimp_list'];
     $aLists = get_option('fv_mailchimp_lists', array());
     if (isset($aLists[$id])) {
+      $popup = "<p>Subscribe to ".$aLists[$id]['name'].":</p>";
       $popup .= '<form class="mailchimp-form">'
-              . '<input type="email" placeholder="e-mail" name="MERGE0"/>';
+              . '<input type="email" placeholder="Email Adress" name="MERGE0"/>';
       foreach ($aLists[$id]['fields'] as $field) {
         if ($field['required']) {
           $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
@@ -161,7 +162,7 @@ class FV_Player_Collect_Emails {
     }
 
     $result_data = $MailChimp->post("lists/$list_id/members", array(
-        'email_address' => 'a2' . $_POST['MERGE0'],
+        'email_address' => $_POST['MERGE0'],
         'status' => 'subscribed',
         'merge_fields' => $merge_fields));
 
