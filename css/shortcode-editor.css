@@ -99,3 +99,5 @@
   display: table-row;
 }
 
+.fv-player-tabs th { width: 21%; text-align: right; }
+.fv-player-tabs .fv-player-tab-playlist th { text-align: left; }
