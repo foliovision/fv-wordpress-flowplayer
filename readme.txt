@@ -343,8 +343,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.20 - 2017/02/?? =
+= 6.0.5.20 - 2017/02/14 =
 
+* CSS - fixing play icon size on mobile devices in fullscreen
 * Feature - Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
 * Feature - Sharing text "Check the amazing video here" can now be customized
 
