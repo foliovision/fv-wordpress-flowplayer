@@ -1393,7 +1393,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo isset($fv_fp->conf['subtitleBgColor']) ? esc_attr($fv_fp->conf['subtitleBgColor']) : '#000000'; ?>" 
-                 data-fv-preview=".flowplayer .fp-subtitle p { background-color: rgba(%val%); }"/></td>
+                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%)!important; }"/></td>
     </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
@@ -1406,32 +1406,15 @@ function fv_flowplayer_admin_skin_subtitles() {
       </td>
     </tr>
   </table>
-  <div id="fp-previw-wrapper">
+  <div id="fp-preview-wrapper">
     <div class="flowplayer"id="preview"> 
-      <span class="fp-subtitle fp-active">
-        <p>
-          The quick brown fox jumps over the lazy dog
-        </p>
-      </span>
+      <div class="fp-subtitle fp-active">
+        <span class="fp-subtitle-line">
+          The quick brown fox jumps over the lazy dog.
+        </span>
+      </div>
     </div>
   </div>
-    <style>
-      #fp-previw-wrapper{
-        height:360px;
-        width:420px;
-        position:absolute;
-        top:0px;
-        right:0px;
-      }
-      #fp-previw-wrapper>.flowplayer{
-        position:relative;
-       height:160px;
-       background-color: #fff !important;
-      }
-      #fp-previw-wrapper .fp-subtitle{
-        height:50px;
-      }
-    </style>
   <div style="clear: both"></div>
 <?php
 }
