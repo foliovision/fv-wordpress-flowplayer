@@ -45,7 +45,7 @@
       <?php endif; ?>
       <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
       <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
-      <?php if($fv_fp->conf['mailchimp_use']==='true'){?>
+      <?php if(!empty($fv_fp->conf['mailchimp_api'])){?>
         <option <?php if( $aArgs['item_id'] === 'mailchimp' ) echo 'selected '; ?>value="mailchimp">MailChimp</option>
       <?php
       }

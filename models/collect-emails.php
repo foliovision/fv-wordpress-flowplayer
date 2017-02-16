@@ -16,7 +16,6 @@ class FV_Player_Collect_Emails {
 
   public function settings_default($defaults) {
     $defaults += array(
-        'mailchimp_use' => 'false',
         'mailchimp_api' => '',
         'mailchimp_list' => '',
     );
@@ -32,12 +31,6 @@ class FV_Player_Collect_Emails {
     global $fv_fp;
     ?>
     <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-      <tr>
-        <td class="first"><label for="mailchimp_use"><?php _e('Use MailChimp', 'fv-wordpress-flowplayer'); ?>:</label></td>
-        <td>             
-          <?php fv_flowplayer_admin_checkbox('mailchimp_use'); ?>
-        </td>
-      </tr>
       <tr>
         <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
@@ -85,7 +78,7 @@ class FV_Player_Collect_Emails {
     $id = $fv_fp->conf['mailchimp_list'];
     $aLists = get_option('fv_mailchimp_lists', array());
     if (isset($aLists[$id])) {
-      $popup = "<p>Subscribe to ".$aLists[$id]['name'].":</p>";
+      $popup = "<p>Subscribe to " . $aLists[$id]['name'] . ":</p>";
       $popup .= '<form class="mailchimp-form">'
               . '<input type="email" placeholder="Email Adress" name="MERGE0"/>';
       foreach ($aLists[$id]['fields'] as $field) {
@@ -171,6 +164,24 @@ class FV_Player_Collect_Emails {
       $result = array(
           'status' => 'OK',
           'text' => 'OK');
+
+      global $wpdb;
+      $table_name = $wpdb->prefix . 'fv_player_emails';
+      if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        $sql = "CREATE TABLE `$table_name` (
+          `id` INT(11) NOT NULL AUTO_INCREMENT,
+          `email` TEXT NULL,
+          `data` TEXT NULL,
+          PRIMARY KEY (`id`)
+        )" . $wpdb->get_charset_collate() . ";";
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta($sql);
+      }
+
+      $wpdb->insert($table_name, array(
+          'email' => $_POST['MERGE0'],
+          'data' => serialize($merge_fields),
+      ));
     } elseif ($result_data['status'] === 400) {
       if ($result_data['title'] === 'Member Exists') {
         $result = array(
@@ -182,7 +193,7 @@ class FV_Player_Collect_Emails {
             'status' => 'ERROR',
             'text' => $result_data['detail'],
         );
-      }else{
+      } else {
         $result = array(
             'status' => 'ERROR',
             'text' => 'unknown error',
