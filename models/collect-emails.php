@@ -46,7 +46,7 @@ class FV_Player_Collect_Emails {
       </tr>
     </table>
     <?php
-    $aLists = $this->mailchimpGetLists();
+    $aLists = $this->mailchimp_get_lists();
     $aLists = $aLists['result'];
     ?><table><tr><th></th><th>List</th><th>Fields</th></tr><?php
       foreach ($aLists as $list) {
@@ -86,7 +86,8 @@ class FV_Player_Collect_Emails {
           $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
         }
       }
-      $popup .= '<input type="submit" value="submit"/></form>';
+      $popup .= '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>'
+              . '<div class="mailchimp-response"></div>';
     }
     return $popup;
   }
@@ -95,7 +96,7 @@ class FV_Player_Collect_Emails {
    * API CALL
    */
 
-  private function mailchimpGetLists() {
+  private function mailchimp_get_lists() {
     global $fv_fp;
     $status = 0;
     $aLists = array();
@@ -163,7 +164,7 @@ class FV_Player_Collect_Emails {
     if ($result_data['status'] === 'subscribed') {
       $result = array(
           'status' => 'OK',
-          'text' => 'OK');
+          'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
 
       global $wpdb;
       $table_name = $wpdb->prefix . 'fv_player_emails';
@@ -185,7 +186,7 @@ class FV_Player_Collect_Emails {
     } elseif ($result_data['status'] === 400) {
       if ($result_data['title'] === 'Member Exists') {
         $result = array(
-            'status' => 'ERROR',
+            'status' => 'OK',
             'text' => __('e-mail address already subscribed', 'fv-wordpress-flowplayer'),
         );
       } elseif ($result_data['title'] === 'Invalid Resource') {

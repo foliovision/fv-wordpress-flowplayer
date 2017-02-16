@@ -927,3 +927,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.chrome55fix video::-webkit-media-controls-panel {
   width: calc(100% + 48px);
 }
+
+.flowplayer .fv-form-loading{
+  background:transparent url(loading.gif) 50% 50% no-repeat;
+}
