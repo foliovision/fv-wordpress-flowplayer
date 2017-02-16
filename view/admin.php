@@ -392,7 +392,7 @@ function fv_flowplayer_admin_default_options() {
               <td>
                 <p class="description">
                   <input type="hidden" value="true" name="playlist_advance" />
-                  <input type="checkbox" value="false" name="playlist_advance" id="playlist_advance" <?php if (!isset($fv_fp->conf['playlist_advance']) || isset($fv_fp->conf['playlist_advance']) && $fv_fp->conf['playlist_advance'] == 'true') echo 'checked="checked"'; ?> />
+                  <input type="checkbox" value="false" name="playlist_advance" id="playlist_advance" <?php if (isset($fv_fp->conf['playlist_advance']) && $fv_fp->conf['playlist_advance'] == 'false') echo 'checked="checked"'; ?> />
                   <?php _e('Playlist won\'t play the next video automatically.', 'fv-wordpress-flowplayer'); ?></a>
                 </p>
               </td>
