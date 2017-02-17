@@ -463,6 +463,15 @@ class flowplayer_frontend extends flowplayer
         if( isset($this->conf['ad_show_after']) ) {
           $attributes['data-ad_show_after'] = $this->conf['ad_show_after'];
         }
+        if( count($aPlaylistItems) ) {
+          if( isset($this->aCurArgs['playlist_advance']) && $this->aCurArgs['playlist_advance'] === 'false' ){
+            $attributes['data-advance'] = 'false';
+          }elseif(empty($this->aCurArgs['playlist_advance']) ) {
+            if( isset($this->conf['playlist_advance']) && $this->conf['playlist_advance'] === 'false' ) {
+              $attributes['data-advance'] = 'false';
+            }
+          }
+        }
 				
 				$attributes_html = '';
 				$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
@@ -604,7 +613,7 @@ class flowplayer_frontend extends flowplayer
         
         if ($args['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
-        }
+        }          
         
 				$this->ret['html'] .= '</div>'."\n";
         

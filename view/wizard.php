@@ -70,8 +70,8 @@
                           'id' => false,
                           'label' => '',
                           'live' => true,
-                          'name' => '' ,
-                          'playlist_label' => false,                    
+                          'name' => '',
+                          'playlist_label' => false,
                          ) );
     extract($args);
     
@@ -85,12 +85,12 @@
     }
     
     $live = !$live ? ' data-live-update="false"' : '';
-
+    
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
     
     ?>
       <tr<?php echo $id.$class; ?>>
-        <th scope="row" class="label"><label  for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
+        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
         <td class="field">
           <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?>>
             <?php foreach( $dropdown AS $option ) : ?>
@@ -374,6 +374,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   
                   <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
+                                    
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance' ) ); ?>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>
                   
