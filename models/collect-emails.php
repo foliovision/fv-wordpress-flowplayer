@@ -46,22 +46,25 @@ class FV_Player_Collect_Emails {
       </tr>
     </table>
     <?php
-    $aLists = $this->mailchimp_get_lists();
-    $aLists = $aLists['result'];
-    ?><table><tr><th></th><th>List</th><th>Fields</th></tr><?php
-      foreach ($aLists as $list) {
-        $names = array();
-        foreach ($list['fields'] as $field) {
-          $names[] = $field['name'];
+    if (!empty($fv_fp->conf['mailchimp_api'])) {
+      $aLists = $this->mailchimp_get_lists();
+      $aLists = $aLists['result'];
+      ?><table><tr><th></th><th>List</th><th>Fields</th></tr><?php
+        foreach ($aLists as $list) {
+          $names = array();
+          foreach ($list['fields'] as $field) {
+            $names[] = $field['name'];
+          }
+          ?>
+          <tr>
+            <td><input type="radio" name="mailchimp_list" value="<?php echo $list['id'] ?>" <?php echo $fv_fp->conf['mailchimp_list'] === $list['id'] ? 'checked' : ''; ?>></td>
+            <td><?php echo $list['name'] ?></td>
+            <td><?php echo implode($names, ', '); ?></td>
+          </tr><?php
         }
-        ?>
-        <tr>
-          <td><input type="radio" name="mailchimp_list" value="<?php echo $list['id'] ?>" <?php echo $fv_fp->conf['mailchimp_list'] === $list['id'] ? 'checked' : ''; ?>></td>
-          <td><?php echo $list['name'] ?></td>
-          <td><?php echo implode($names, ', '); ?></td>
-        </tr><?php
-      }
-      ?></table>
+        ?></table><?php 
+    }
+    ?>
     <div style="clear: both"></div>
     <?php
   }
@@ -72,7 +75,7 @@ class FV_Player_Collect_Emails {
 
   public function popup_html($popup) {
     global $fv_fp;
-    if ($popup !== 'mailchimp') {
+    if ($popup !== 'mailchimp' || empty($fv_fp->conf['mailchimp_api'])) {
       return $popup;
     }
     $id = $fv_fp->conf['mailchimp_list'];
