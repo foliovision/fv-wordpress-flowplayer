@@ -1261,8 +1261,7 @@ function fv_flowplayer_admin_skin() {
 ?>
 <style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
-    <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'"]'); ?>
-    <p><?php _e('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer'); ?></p>
+    <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" caption="'.__('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer').'"]'); ?>    
   </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
