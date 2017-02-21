@@ -89,8 +89,7 @@ class FV_Player_Collect_Emails {
           $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
         }
       }
-      $popup .= '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>'
-              . '<div class="mailchimp-response"></div>';
+      $popup .= '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
     }
     return $popup;
   }
@@ -190,7 +189,7 @@ class FV_Player_Collect_Emails {
       if ($result_data['title'] === 'Member Exists') {
         $result = array(
             'status' => 'OK',
-            'text' => __('e-mail address already subscribed', 'fv-wordpress-flowplayer'),
+            'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
         );
       } elseif ($result_data['title'] === 'Invalid Resource') {
         $result = array(
@@ -200,7 +199,8 @@ class FV_Player_Collect_Emails {
       } else {
         $result = array(
             'status' => 'ERROR',
-            'text' => 'unknown error',
+            'text' => 'Unknown Error.',
+            'details' => $result_data['detail'],
         );
       }
     }
