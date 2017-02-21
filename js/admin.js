@@ -40,7 +40,7 @@
         }
       }, 0);
       $('#fv-style-preview').html(style);
-    });
+    }).trigger('input');
   });
 
   
