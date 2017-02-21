@@ -18,6 +18,7 @@ class FV_Player_Collect_Emails {
     $defaults += array(
         'mailchimp_api' => '',
         'mailchimp_list' => '',
+        'mailchimp_label' => '',
     );
 
     return $defaults;
@@ -30,42 +31,66 @@ class FV_Player_Collect_Emails {
   public function fv_player_admin_menu() {
     global $fv_fp;
     ?>
-    <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <table class="form-table2 fv-player-interface-form-group">
       <tr>
         <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
           <p class="description">
-            <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php if ($fv_fp->conf['mailchimp_api'] !== 'false') echo esc_attr($fv_fp->conf['mailchimp_api']); ?>" placeholder="<?php _e('', 'fv-wordpress-flowplayer'); ?>" />                  
+            <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php if ($fv_fp->conf['mailchimp_api'] !== 'false') echo esc_attr($fv_fp->conf['mailchimp_api']); ?>" />                  
           </p>
         </td>
       </tr>
+      <?php if (!empty($fv_fp->conf['mailchimp_api'])) : ?>
+        <tr>
+          <td><label for="mailchimp_api"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td>
+            <p class="description">
+              <input type="text" name="mailchimp_label" id="mailchimp_label" value="<?php if( isset($fv_fp->conf['mailchimp_label']) ) echo esc_attr($fv_fp->conf['mailchimp_label']); ?>" />
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+          <?php        
+            $aLists = $this->mailchimp_get_lists();
+            if( $aLists['error'] ) {
+              echo $aLists['error'];
+            } else {            
+              $aLists = $aLists['result']; ?>
+              <style>
+                .mailchimp-lists th { text-align: left; }
+                #wpfp_options .mailchimp-lists label { text-align: left; }
+                .mailchimp-lists tr td:first-child { width: 2%; }
+                .mailchimp-lists tr td:nth-child(2) { width: 20%; }
+                .mailchimp-lists tr td:nth-child(3) { width: 75%; }
+              </style>
+              <p><?php _e('Pick your list below:', 'fv-wordpress-flowplayer' ); ?></p>
+              <table class="mailchimp-lists">
+                <tr><th></th><th>List</th><th>Additional Required Fields</th></tr><?php
+                foreach ($aLists as $key => $list) {
+                  $names = array();
+                  foreach ($list['fields'] as $field) {
+                    if( $field['required'] )$names[] = $field['name'];
+                  }
+                  ?>
+                  <tr>
+                    <td><input id="list-<?php echo $key; ?>" type="radio" name="mailchimp_list" value="<?php echo $list['id'] ?>" <?php echo $fv_fp->conf['mailchimp_list'] === $list['id'] ? 'checked' : ''; ?>></td>
+                    <td><label for="list-<?php echo $key; ?>"><?php echo $list['name'] ?></label></td>
+                    <td><?php echo implode($names, ', '); ?></td>
+                  </tr><?php
+                }
+              ?></table><?php
+            }        
+            ?>
+          </td>
+        </tr>
+      <?php endif; ?>
       <tr>    		
-        <td colspan="2">
+        <td colspan="2">          
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
         </td>
       </tr>
     </table>
-    <?php
-    if (!empty($fv_fp->conf['mailchimp_api'])) {
-      $aLists = $this->mailchimp_get_lists();
-      $aLists = $aLists['result'];
-      ?><table><tr><th></th><th>List</th><th>Fields</th></tr><?php
-        foreach ($aLists as $list) {
-          $names = array();
-          foreach ($list['fields'] as $field) {
-            $names[] = $field['name'];
-          }
-          ?>
-          <tr>
-            <td><input type="radio" name="mailchimp_list" value="<?php echo $list['id'] ?>" <?php echo $fv_fp->conf['mailchimp_list'] === $list['id'] ? 'checked' : ''; ?>></td>
-            <td><?php echo $list['name'] ?></td>
-            <td><?php echo implode($names, ', '); ?></td>
-          </tr><?php
-        }
-        ?></table><?php 
-    }
-    ?>
-    <div style="clear: both"></div>
     <?php
   }
 
@@ -81,7 +106,7 @@ class FV_Player_Collect_Emails {
     $id = $fv_fp->conf['mailchimp_list'];
     $aLists = get_option('fv_mailchimp_lists', array());
     if (isset($aLists[$id])) {
-      $popup = "<p>Subscribe to " . $aLists[$id]['name'] . ":</p>";
+      $popup = "<p>".( isset($fv_fp->conf['mailchimp_label']) ? $fv_fp->conf['mailchimp_label'] : '' )."</p>";
       $popup .= '<form class="mailchimp-form">'
               . '<input type="email" placeholder="Email Adress" name="MERGE0"/>';
       foreach ($aLists[$id]['fields'] as $field) {
@@ -99,24 +124,21 @@ class FV_Player_Collect_Emails {
    */
 
   private function mailchimp_get_lists() {
-    global $fv_fp;
-    $status = 0;
+    global $fv_fp;    
     $aLists = array();
 
     if (empty($fv_fp->conf['mailchimp_api'])) {
-      $status = 1;
       update_option('fv_mailchimp_lists', $aLists);
-      return array('status' => $status, 'result' => $aLists);
+      return array('error' => 'No API key found.  ', 'result' => $aLists);
     }
 
     $MailChimp = new MailChimp($fv_fp->conf['mailchimp_api']);
+    $MailChimp->verify_ssl = false;
     $result = $MailChimp->get('lists');
     $error = $MailChimp->getLastError();
-
-    if ($error || !$result) {
-      $status = 1;
+    if ($error || !$result) {      
       update_option('fv_mailchimp_lists', $aLists);
-      return array('status' => $status, 'result' => $aLists);
+      return array('error' => $error, 'result' => $aLists);
     }
     foreach ($result['lists']as $list) {
       $item = array(
@@ -142,7 +164,7 @@ class FV_Player_Collect_Emails {
       $aLists[$list['id']] = $item;
     }
     update_option('fv_mailchimp_lists', $aLists);
-    return array('status' => $status, 'result' => $aLists);
+    return array('error' => false, 'result' => $aLists);
   }
 
   public function mailchimp_register() {
