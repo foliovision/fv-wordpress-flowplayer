@@ -181,7 +181,8 @@ jQuery(document).ready(function($){
      
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( FVFP_sStoreRTMP );
       
-      fv_wp_flowplayer_submit(true);
+      //fv_wp_flowplayer_submit(true);
+      jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').show();
     },
     axis: 'y',
     //handle: '.fvp_item_sort',
@@ -342,7 +343,7 @@ jQuery(document).ready(function($){
   /*
    * Preview iframe dialog resize
    */
-  jQuery(document).on('fvp-preview-complete',function(){
+  jQuery(document).on('fvp-preview-complete',function(e,width,height){
     fv_player_shortcode_preview = false;
     iFrame = jQuery('#fv-player-shortcode-editor-preview-iframe');
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
