@@ -343,12 +343,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.20 - 2017/02/?? =
+= 6.0.5.20 - 2017/02/22 =
 
 * CSS - fixing play icon size on mobile devices in fullscreen
+* Feature - Disable Playlist Autoadvance global setting and also a shortcode editor option
 * Feature - Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
-* Feature - Sharing text "Check the amazing video here" can now be customized
+* Feature - Sharing text "Check the amazing video here" can now be customized using the "Sharing Text" global setting
 * Feature - Skin settings - quick preview of subtitle styling
+* Bugfix - Shortcode editor - disabling live preview to increase stability, use the "Refresh preview" button or Enter key
 
 = 6.0.5.19 - 2017/02/09 =
 
@@ -394,8 +396,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - HLS - fix for HLS.js fallback to Flash HLS in playlists
 * Bugfix - Iframe embedding - not working for posts
 * Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
-* Bugfix - Lightbox - for for images regex to pick the right anchor tag
-* Bubfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
+* Bugfix - Lightbox - fix for images regex to pick the right anchor tag
+* Bugfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
 
 = 6.0.5.13 - 2016/12/13 =
 
