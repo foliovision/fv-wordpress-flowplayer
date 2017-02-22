@@ -1419,7 +1419,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   jQuery(document).ready( function(){
     var parent = window.parent.jQuery(window.parent.document);
     if( typeof(flowplayer) != "undefined" ) {      
-      parent.trigger('fvp-preview-complete');      
+      parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+    
     } else {
       parent.trigger('fvp-preview-error');
     }
