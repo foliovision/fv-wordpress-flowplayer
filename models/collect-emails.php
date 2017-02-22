@@ -18,7 +18,7 @@ class FV_Player_Collect_Emails {
     $defaults += array(
         'mailchimp_api' => '',
         'mailchimp_list' => '',
-        'mailchimp_label' => '',
+        'mailchimp_label' => 'Subscribe for updates',
     );
 
     return $defaults;
@@ -106,7 +106,8 @@ class FV_Player_Collect_Emails {
     $id = $fv_fp->conf['mailchimp_list'];
     $aLists = get_option('fv_mailchimp_lists', array());
     if (isset($aLists[$id])) {
-      $popup = "<p>".( isset($fv_fp->conf['mailchimp_label']) ? $fv_fp->conf['mailchimp_label'] : '' )."</p>";
+      $popup = "";
+      if( isset($fv_fp->conf['mailchimp_label']) && strlen(trim($fv_fp->conf['mailchimp_label'])) ) $popup = wpautop($fv_fp->conf['mailchimp_label']);
       $popup .= '<form class="mailchimp-form">'
               . '<input type="email" placeholder="Email Adress" name="MERGE0"/>';
       foreach ($aLists[$id]['fields'] as $field) {
