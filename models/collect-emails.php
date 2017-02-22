@@ -33,7 +33,7 @@ class FV_Player_Collect_Emails {
     ?>
     <table class="form-table2 fv-player-interface-form-group">
       <tr>
-        <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td style="width:150px"><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
           <p class="description">
             <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php if ($fv_fp->conf['mailchimp_api'] !== 'false') echo esc_attr($fv_fp->conf['mailchimp_api']); ?>" />                  
@@ -42,11 +42,12 @@ class FV_Player_Collect_Emails {
       </tr>
       <?php if (!empty($fv_fp->conf['mailchimp_api'])) : ?>
         <tr>
-          <td><label for="mailchimp_api"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td style="vertical-align:top;line-height:2.4em;"><label for="mailchimp_api"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
           <td>
             <p class="description">
               <input type="text" name="mailchimp_label" id="mailchimp_label" value="<?php if( isset($fv_fp->conf['mailchimp_label']) ) echo esc_attr($fv_fp->conf['mailchimp_label']); ?>" />
             </p>
+          <p class="description">Some HTML is allowed to use for headings etc.</p>
           </td>
         </tr>
         <tr>
