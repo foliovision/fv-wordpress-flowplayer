@@ -1186,7 +1186,7 @@ function fv_flowplayer_admin_video_ads(){
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tbody><tr>
-          <td style="width: 250px"><label for="pro[video_ads_default]">Default pre-roll ad:</label></td>
+          <td style="width:180px"><label for="pro[video_ads_default]">Default pre-roll ad:</label></td>
           <td>
             <p class="description">
               <select disabled="true" id="pro[video_ads_default]" >
@@ -1199,7 +1199,7 @@ function fv_flowplayer_admin_video_ads(){
           </td>
         </tr>
         <tr>
-          <td style="width: 250px"><label for="pro[video_ads_postroll_default]">Default post-roll ad:</label></td>
+          <td style="width:180px"><label for="pro[video_ads_postroll_default]">Default post-roll ad:</label></td>
           <td>
             <p class="description">
               <select disabled="true" id="pro[video_ads_postroll_default]" >
@@ -1212,7 +1212,7 @@ function fv_flowplayer_admin_video_ads(){
           </td>
         </tr>
         <tr>
-          <td style="width: 250px"><label for="pro[video_ads_skip]">Default ad skip time:</label></td>
+          <td style="width:180px"><label for="pro[video_ads_skip]">Default ad skip time:</label></td>
           <td>
             <p class="description">
               <input disabled="true" class="small" id="pro[video_ads_skip]"  title="Enter value in seconds" type="text" value="5">
