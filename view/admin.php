@@ -903,7 +903,7 @@ function fv_flowplayer_admin_video_ads(){
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tbody><tr>
-          <td style="width: 180px"><label for="pro[video_ads_default]"><?php _e('Default pre-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
+          <td style="width:180px"><label for="pro[video_ads_default]"><?php _e('Default pre-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
           <td>
             <p class="description">
               <select disabled="true" id="pro[video_ads_default]" >
@@ -916,7 +916,7 @@ function fv_flowplayer_admin_video_ads(){
           </td>
         </tr>
         <tr>
-          <td style="width: 180px"><label for="pro[video_ads_postroll_default]"><?php _e('Default post-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
+          <td style="width:180px"><label for="pro[video_ads_postroll_default]"><?php _e('Default post-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
           <td>
             <p class="description">
               <select disabled="true" id="pro[video_ads_postroll_default]" >
@@ -929,7 +929,7 @@ function fv_flowplayer_admin_video_ads(){
           </td>
         </tr>
         <tr>
-          <td style="width: 180px"><label for="pro[video_ads_skip]"><?php _e('Default ad skip time', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td style="width:180px"><label for="pro[video_ads_skip]"><?php _e('Default ad skip time', 'fv-wordpress-flowplayer'); ?>:</label></td>
           <td>
             <p class="description">
               <input disabled="true" class="small" id="pro[video_ads_skip]"  title="<?php _e('Enter value in seconds', 'fv-wordpress-flowplayer'); ?>" type="text" value="5">
@@ -948,9 +948,9 @@ function fv_flowplayer_admin_video_ads(){
                   <td class="id">1</td>
                   <td>
                     <table class="fv-player-pro_video-ad-formats">
-                      <tbody><tr><td><label>Name:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="<?php _e('Ad name', 'fv-wordpress-flowplayer'); ?>"></td></tr>
-                        <tr><td><label>Click URL:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="<?php _e('Clicking the video ad will open the URL in new window', 'fv-wordpress-flowplayer'); ?>"></td></tr>
-                        <tr><td><label>Video:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="<?php _e('Enter the video URL here', 'fv-wordpress-flowplayer'); ?>"></td></tr>
+                      <tbody><tr><td><label><?php _e('Name', 'fv-wordpress-flowplayer'); ?>:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="<?php _e('Ad name', 'fv-wordpress-flowplayer'); ?>"></td></tr>
+                        <tr><td><label><?php _e('Click URL', 'fv-wordpress-flowplayer'); ?>:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="<?php _e('Clicking the video ad will open the URL in new window', 'fv-wordpress-flowplayer'); ?>"></td></tr>
+                        <tr><td><label><?php _e('Video', 'fv-wordpress-flowplayer'); ?>:</label></td><td colspan="2"><input disabled="true" type="text"  value="" placeholder="<?php _e('Enter the video URL here', 'fv-wordpress-flowplayer'); ?>"></td></tr>
                       </tbody></table>
                   </td>
                   <td>
@@ -962,7 +962,7 @@ function fv_flowplayer_admin_video_ads(){
         </tr>         
         <tr>    		
           <td>
-            <input disabled="true" type="button" value="Add more video ads" class="button" id="fv-player-pro_video-ads-add">
+            <input disabled="true" type="button" value="<?php _e('Add more video ads', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-pro_video-ads-add">
           </td>
         </tr>         
       </tbody></table>
@@ -1148,7 +1148,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     <div class="flowplayer"id="preview"> 
       <div class="fp-subtitle fp-active">
         <span class="fp-subtitle-line">
-          The quick brown fox jumps over the lazy dog.
+          <?php _e('The quick brown fox jumps over the lazy dog.', 'fv-wordpress-flowplayer'); ?>
         </span>
       </div>
     </div>
@@ -1364,13 +1364,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       <div id="fv_flowplayer_ad">
         <div class="text-part">
           <h2>FV Wordpress<strong>Flowplayer</strong></h2>
-          <span class="red-text">with your own branding</span>
+          <span class="red-text"><?php _e('with your own branding', 'fv-wordpress-flowplayer'); ?></span>
             <ul>
-            <li>Put up your own logo</li>
-            <li>Or remove the logo completely</li>
-            <li>The best video plugin for Wordpress</li>
+            <li><?php _e('Put up your own logo', 'fv-wordpress-flowplayer'); ?></li>
+            <li><?php _e('Or remove the logo completely', 'fv-wordpress-flowplayer'); ?></li>
+            <li><?php _e('The best video plugin for Wordpress', 'fv-wordpress-flowplayer'); ?></li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
+              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong><?php _e('Easter sale!', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('All Licenses 20% Off', 'fv-wordpress-flowplayer'); ?></a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
@@ -1540,7 +1540,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
     jQuery('#playlistFontColor-proxy').on('change',function(e){
       jQuery('#playlistFontColor').val(jQuery(e.target).val());
-    })
+    });
   });
 	//]]>
 </script>
@@ -1580,7 +1580,7 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
       jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
     }
   }
-})
+});
 
 
 
