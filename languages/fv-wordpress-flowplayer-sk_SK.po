@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
-"POT-Creation-Date: 2017-02-24 13:53+0100\n"
-"PO-Revision-Date: 2017-02-24 13:53+0100\n"
+"POT-Creation-Date: 2017-02-24 13:57+0100\n"
+"PO-Revision-Date: 2017-02-24 13:57+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -185,12 +185,12 @@ msgstr "Neplatná RTMP URL"
 msgid "Unsupported video format. Try installing Adobe Flash."
 msgstr "Nepodporovaný video formát. Skúste nainštalovať Adobe Flash."
 
-#: controller/frontend.php:57 models/flowplayer-frontend.php:220
-#: models/flowplayer-frontend.php:240
+#: controller/frontend.php:57 models/flowplayer-frontend.php:216
+#: models/flowplayer-frontend.php:236
 msgid "Click to watch the video"
 msgstr "Kliknite pre pozeranie videa"
 
-#: controller/frontend.php:58 models/flowplayer-frontend.php:220
+#: controller/frontend.php:58 models/flowplayer-frontend.php:216
 msgid "[This post contains video, click to play]"
 msgstr "[Tento post obsahuje video, kliknite pre prehratie]"
 
@@ -301,13 +301,13 @@ msgid ""
 "excluded."
 msgstr ""
 
-#: models/flowplayer-frontend.php:240
+#: models/flowplayer-frontend.php:236
 msgid ""
 "[This post contains advanced video player, click to open the original "
 "website]"
 msgstr ""
 
-#: models/flowplayer-frontend.php:1058 view/admin.php:298
+#: models/flowplayer-frontend.php:999 view/admin.php:298
 msgid "Check the amazing video here"
 msgstr ""
 

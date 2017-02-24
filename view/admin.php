@@ -996,7 +996,7 @@ function fv_flowplayer_admin_skin() {
     </tr>
     <tr>
       <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="marginBottom" name="marginBottom" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo esc_attr($fv_fp->conf['marginBottom']); ?>" 
+      <td><input id="marginBottom" name="marginBottom" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo esc_attr($fv_fp->_get_option('marginBottom')); ?>" 
                  data-fv-preview=".flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
     .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
     .flowplayer.has-abloop { margin-bottom: %val%px!important; }
