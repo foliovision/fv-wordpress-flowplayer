@@ -46,8 +46,7 @@ class FV_Player_lightbox {
       remove_filter('fv_flowplayer_args', array($FV_Player_Pro, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add'));
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'), 999 );  //  moved after the shortcodes are parsed to work for galleries
-      
-   
+
     }
   }
 
@@ -127,6 +126,7 @@ class FV_Player_lightbox {
           $sStyle .= ' data-ratio="' . round($iHeight / $iWidth, 4) . '"';
         }
 
+        $sClass = "";
         if (is_object($aArgs[1]) && method_exists($aArgs[1], 'get_align')) {
           $sClass = $aArgs[1]->get_align();
         }
@@ -189,8 +189,8 @@ class FV_Player_lightbox {
         $output['html'] .= "</div>";
       }
 
-      foreach ($aPlayer['script'] AS $key => $value) {
-        $output['script'][$key] = array_merge(isset($output['script'][$key]) ? $output['script'][$key] : array(), $aPlayer['script'][$key]);
+      foreach ($aPlayer['script'] AS $key2 => $value) {
+        $output['script'][$key2] = array_merge(isset($output['script'][$key2]) ? $output['script'][$key2] : array(), $aPlayer['script'][$key2]);
       }
     }
 
@@ -296,7 +296,7 @@ class FV_Player_lightbox {
       </tr>
       <script>
 
-        jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode, remains) {
+        jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode) {
 
           document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 0;
           document.getElementById("fv_wp_flowplayer_field_lightbox_width").value = '';
@@ -309,7 +309,7 @@ class FV_Player_lightbox {
             fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace(/lightbox="(.*?)"/, '');
 
             if (sLightbox) {
-              aLightbox = sLightbox.split(/[;]/, 4);
+              var aLightbox = sLightbox.split(/[;]/, 4);
               if (aLightbox.length > 2) {
                 for (var i in aLightbox) {
                   if (i == 0 && aLightbox[i] == 'true') {
@@ -332,8 +332,8 @@ class FV_Player_lightbox {
               }
             }
           }
-        })
-        jQuery(document).on('fv_flowplayer_shortcode_create', function (e) {
+        });
+        jQuery(document).on('fv_flowplayer_shortcode_create', function () {
           if (document.getElementById("fv_wp_flowplayer_field_lightbox").checked) {
             var iWidth = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_width").value);
             var iHeight = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_height").value);
@@ -383,7 +383,7 @@ class FV_Player_lightbox {
         <p class="description">
           <input type="hidden" value="false" name="lightbox_improve_galleries" />
           <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if (!isset($fv_fp->conf['lightbox_improve_galleries']) || isset($fv_fp->conf['lightbox_improve_galleries']) && $fv_fp->conf['lightbox_improve_galleries'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?></a>
+          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -391,12 +391,13 @@ class FV_Player_lightbox {
       jQuery(document).ready(function(){
         jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
         jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
-        if(jQuery('#lightbox_images').attr('checked')){
+        var lightbox_images = jQuery('#lightbox_images');
+        if(lightbox_images.attr('checked')){
             jQuery('#lightbox-wp-galleries').show();
           }else{
             jQuery('#lightbox-wp-galleries').hide();
           }
-        jQuery('#lightbox_images').on('click',function(){
+        lightbox_images.on('click',function(){
           if(jQuery(this).attr('checked')){
             jQuery('#lightbox-wp-galleries').show();
           }else{
