@@ -76,7 +76,7 @@
 .fv-player-tab-playlist > table > tbody{ display:block;overflow:auto;max-height:calc(100vh - 270px); }
 #fv-player-list-thumb-toggle > .active{ font-weight:bold; }
 #fv-player-list-thumb-toggle > a{ box-shadow:none; }
-
+#fv-player-shortcode-editor td > input[type="checkbox"]{margin-top:-4px}
 
 /*Preview iframe*/
 #fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
@@ -101,3 +101,4 @@
 }
 
 .fv-player-tabs th { width: 21%; text-align: right; }
+.fv-player-tabs .fv-player-tab-playlist th { text-align: left; }

@@ -41,9 +41,9 @@
 .fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
 .fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
-.fv-player-interface-form-group td { width:25%; }
+.fv-player-interface-form-group td { width:50%; }
 
-.flowplayer-wrapper { width: 54%; display: inline-block; float: right;}
+.flowplayer-wrapper { width: 70%; display: inline-block; float: right;}
 @media only screen and (max-width: 940px) {.flowplayer-wrapper { width: 100%; float: none;} .form-table2.flowplayer-settings {width: 100% !important;}}
 
 
@@ -97,3 +97,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 }
 
 #fv_flowplayer_interface_options p.description { line-height: 1.5; margin-bottom: 0; margin-top: 0; }
+
+#fp-preview-wrapper{height:360px;width:420px;position:absolute;top:0px;right:50px;}
+#fp-preview-wrapper>.flowplayer{position:relative; height:160px;}
+#fp-preview-wrapper .fp-subtitle{height:50px;}

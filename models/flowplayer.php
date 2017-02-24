@@ -109,6 +109,33 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
+    
+    
+  }
+  
+  
+  public function _get_checkbox( $name, $key, $help = false, $more = false ) {
+    $checked = $this->_get_option( $key );
+    if( is_array($key) ) {
+      $array_key = array_keys($key)[0];
+      $array_value = array_pop($key);
+      $key = $array_key.'['.$array_value.']';
+    }
+    ?>
+      <tr>
+        <td class="first"><label for="<?php echo $key; ?>"><?php _e($name, 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td>
+          <p class="description">
+            <input type="hidden" name="<?php echo $key; ?>" value="false" />
+            <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true" <?php if( $checked ) echo 'checked="checked"'; ?> />
+            <?php if( $help ) _e($help, 'fv-wordpress-flowplayer'); ?>
+            <?php if( $more ) : ?>
+              <span class="more"><?php _e($more, 'fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+            <?php endif; ?>
+          </p>
+        </td>
+      </tr>
+    <?php
   }
   
   
@@ -181,11 +208,33 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
+    if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
+    if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = '';
+    
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
     return true;   
     /// End of addition
+  }
+  
+  
+  public function _get_option( $key, $default = false ) {
+    $value = false;
+    if( is_array($key) ) {
+      $tmp = $key;
+      $array_key = array_keys($tmp)[0];
+      $array_value = array_pop($tmp);      
+      if( isset($this->conf[$array_key]) && isset($this->conf[$array_key][$array_value]) ) {
+        $value = $this->conf[$array_key][$array_value];
+      }
+    } elseif( isset($this->conf[$key]) ) {
+      $value = $this->conf[$key];      
+    }
+    
+    if( $value === 'false' ) $value = $default;
+    
+    return $value;
   }
 
   
@@ -208,7 +257,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -217,6 +266,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
       }
     }
+    
     $aNewOptions['key'] = trim($sKey);
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -232,10 +282,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset($aOldOptions['pro']) || !is_array($aOldOptions['pro']) ) {
       $aOldOptions['pro'] = array();
     }    
- 
     
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);
+    
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->conf = $aNewOptions;    
@@ -480,6 +530,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $iMarginBottom = (isset($fv_fp->conf['marginBottom']) && intval($fv_fp->conf['marginBottom']) > -1 ) ? intval($fv_fp->conf['marginBottom']) : '28';
     
+    $sSubtitleBgColor = isset($fv_fp->conf['subtitleBgColor']) ? $fv_fp->conf['subtitleBgColor'] : '#000000';
+    
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
@@ -534,7 +586,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     .fp-playlist-external a.is-active { color:<?php echo $fv_fp->conf['playlistSelectedColor'];?>; }
     <?php if (!empty($fv_fp->conf['splash'])):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->conf['splash']; ?>); }<?php endif; ?>    
-    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle p { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleSize']) ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->conf['subtitleSize']); ?>px; }<?php endif; ?>
+    <?php if( isset($fv_fp->conf['subtitleFontFace']) ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo trim($fv_fp->conf['subtitleFontFace']); ?>; }<?php endif; ?>
     <?php if( isset($fv_fp->conf['logoPosition']) ) :
       if( $fv_fp->conf['logoPosition'] == 'bottom-left' ) {
         $sCSS = "bottom: 30px; left: 15px";
@@ -546,6 +599,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo isset($fv_fp->conf['subtitleBgAlpha']) ? $fv_fp->conf['subtitleBgAlpha'] : 0.5; ?>); }
   
     <?php if( isset($fv_fp->conf['player-position']) && 'left' == $fv_fp->conf['player-position'] ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
@@ -588,7 +643,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
     } else {
       wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
-      wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      
+      if(is_user_logged_in()){
+        //TODO: is this needed?
+        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      }
+      
       
       if( $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate' ) );
@@ -1288,6 +1348,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       ob_start();
       
+      global $fvseo;
+      if( isset($_REQUEST['fv_player_preview']) ) {
+        global $fvseo;
+        if( isset($fvseo) ) remove_action('wp_footer', array($fvseo, 'script_footer_content'), 999999 );
+        
+        global $objTracker;
+        if( isset($objTracker) ) remove_action( 'wp_footer', array( $objTracker, 'OutputFooter' ) );
+      }
     }
   }
   
@@ -1387,7 +1455,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   jQuery(document).ready( function(){
     var parent = window.parent.jQuery(window.parent.document);
     if( typeof(flowplayer) != "undefined" ) {      
-      parent.trigger('fvp-preview-complete');      
+      parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+    
     } else {
       parent.trigger('fvp-preview-error');
     }
@@ -1406,11 +1475,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
   }
   
-  
+
 }
-
-
-
 
 function fv_wp_flowplayer_save_post( $post_id ) {
   if( $parent_id = wp_is_post_revision($post_id) ) {

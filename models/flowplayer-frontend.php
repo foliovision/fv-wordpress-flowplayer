@@ -355,7 +355,7 @@ class flowplayer_frontend extends flowplayer
           }
         }
         if( $bPlayButton ) {
-          $attributes['class'] .= ' play-button';
+          $attributes['class'] .= ' fvp-play-button';
         }
 				
         //  Align
@@ -461,6 +461,15 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($this->conf['ad_show_after']) ) {
           $attributes['data-ad_show_after'] = $this->conf['ad_show_after'];
+        }
+        if( count($aPlaylistItems) ) {
+          if( isset($this->aCurArgs['playlist_advance']) && $this->aCurArgs['playlist_advance'] === 'false' ){
+            $attributes['data-advance'] = 'false';
+          }elseif(empty($this->aCurArgs['playlist_advance']) ) {
+            if( isset($this->conf['playlist_advance']) && $this->conf['playlist_advance'] === 'false' ) {
+              $attributes['data-advance'] = 'false';
+            }
+          }
         }
 				
 				$attributes_html = '';
@@ -603,7 +612,7 @@ class flowplayer_frontend extends flowplayer
         
         if ($args['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
-        }
+        }          
         
 				$this->ret['html'] .= '</div>'."\n";
         
@@ -1045,23 +1054,24 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_sharing_html() {
-  
+    $sSharingText = empty($this->conf['sharing_email_text']) ? __('Check the amazing video here', 'fv-wordpress-flowplayer') : $this->conf['sharing_email_text'];
+
     if( isset($this->aCurArgs['share']) ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
         $sPermalink = urlencode($aSharing[1]);
-        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[1] ) );
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] ) );
         $sTitle = urlencode( $aSharing[0].' ');
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
         $sPermalink = urlencode($aSharing[0]);
-        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.$aSharing[0] ) );
+        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$aSharing[0] ) );
         $sTitle = urlencode( get_bloginfo().' ');
       }
     }
 				
     if( !isset($sPermalink) || empty($sPermalink) ) {  
       $sPermalink = urlencode(get_permalink());
-      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', 'Check the amazing video here: '.get_permalink() ) );
+      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
       $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
     }
 					

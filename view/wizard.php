@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+  global $fv_wp_flowplayer_ver;
   global $post;
   $post_id = isset($post->ID) ? $post->ID : 0;
   
@@ -66,8 +67,8 @@
                           'id' => false,
                           'label' => '',
                           'live' => true,
-                          'name' => '' ,
-                          'playlist_label' => false,                    
+                          'name' => '',
+                          'playlist_label' => false,
                          ) );
     extract($args);
     
@@ -81,12 +82,12 @@
     }
     
     $live = !$live ? ' data-live-update="false"' : '';
-
+    
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
     
     ?>
       <tr<?php echo $id.$class; ?>>
-        <th scope="row" class="label"><label  for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
+        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
         <td class="field">
           <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?>>
             <?php foreach( $dropdown AS $option ) : ?>
@@ -370,6 +371,8 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   
                   <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
+                                    
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance' ) ); ?>
                   
                   <tr>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_logo" class="alignright"><?php _e('Logo', 'fv_flowplayer'); ?></label></th>
@@ -410,13 +413,13 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   </tr>
                   
                   <tr class="fv_player_actions_end-toggle">
-                    <th valign="top" scope="row" class="label"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
+                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
                     <td>
                       <!-- legacy -->
                       
                       <!-- end legacy -->
                       <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
-                      <div>
+                      <div style="display: none">
                         <p><span class="dashicons dashicons-warning"></span> You are using the legacy popup functionality. Move the popup code <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_target">here</a>, then use the drop down menu above.</p>
                         <textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
                       </div>                      
@@ -424,7 +427,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   </tr>
                   
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th valign="top" scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
+                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
                     <td>
                       <textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
                     </td>
