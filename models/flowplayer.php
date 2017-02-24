@@ -114,7 +114,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public function _get_checkbox( $name, $key, $help = false, $more = false ) {
-    $checked = $this->_get_option( $key );
+    $checked = $this->_get_option($key);
+    if($checked === 'false' ) $checked = false;
     if( is_array($key) && count($key) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
@@ -228,7 +229,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
   public function _get_option($key) {
 
-    $value = '';
+    $value = false;
     if( is_array($key) && count($key) === 2) {
       if( isset($this->conf[$key[0]]) && isset($this->conf[$key[0]][$key[1]]) ) {
         $value = $this->conf[$key[0]][$key[1]];
@@ -238,7 +239,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
 
     if( is_string($value) ) $value = trim($value);
-    
+
+    if($value === 'false')
+        $value = false;
+    else if($value === 'true')
+        $value = true;
+
     return $value;
   }
 
