@@ -116,10 +116,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public function _get_checkbox( $name, $key, $help = false, $more = false ) {
     $checked = $this->_get_option( $key );
-    if( is_array($key) ) {
-      $array_key = array_keys($key)[0];
-      $array_value = array_pop($key);
-      $key = $array_key.'['.$array_value.']';
+    if( is_array($key) && count($key) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
     }
     ?>
       <tr>
@@ -230,23 +228,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return true;   
     /// End of addition
   }
-  
-  
-  public function _get_option( $key, $default = false ) {
-    $value = $default;
-    if( is_array($key) ) {
-      $tmp = $key;
-      $array_key = array_keys($tmp)[0];
-      $array_value = array_pop($tmp);      
-      if( isset($this->conf[$array_key]) && isset($this->conf[$array_key][$array_value]) ) {
-        $value = $this->conf[$array_key][$array_value];
+
+
+  public function _get_option($key) {
+
+    $value = '';
+    if( is_array($key) && count($key) === 2) {
+      if( isset($this->conf[$key[0]]) && isset($this->conf[$key[0]][$key[1]]) ) {
+        $value = $this->conf[$key[0]][$key[1]];
       }
     } elseif( isset($this->conf[$key]) ) {
-      $value = $this->conf[$key];      
+      $value = $this->conf[$key];
     }
-    
-    if( $value === 'false' || $value === '' ) $value = $default;
-    
+
     if( is_string($value) ) $value = trim($value);
     
     return $value;
@@ -324,17 +318,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if(isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical'){
 
        if( $sSplashImage ) {
-        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"" . $sSplashImage . "\")'></span>$sItemCaption</a>\n";
       } else {
         $sHTML = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
       }  
       
     }else{
       if( $sSplashImage ) {
-        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"".$sSplashImage."\")'></span>$sItemCaption</a>\n";
+        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"" . $sSplashImage . "\")'></span>$sItemCaption</a>\n";
       } else {
         $sHTML = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
-      }  
+      }
     }
       
     return $sHTML;
@@ -766,7 +760,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     if( $amazon_key != -1 &&
-       $fv_fp->_get_option( array('amazon_key' => $amazon_key) ) &&$fv_fp->_get_option( array('amazon_secret' => $amazon_key) ) && $fv_fp->_get_option( array('amazon_bucket' => $amazon_key) ) && stripos( $media, $fv_fp->_get_option( array('amazon_bucket' => $amazon_key) ) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
+       $fv_fp->_get_option( array('amazon_key', $amazon_key) ) &&$fv_fp->_get_option( array('amazon_secret', $amazon_key) ) && $fv_fp->_get_option( array('amazon_bucket', $amazon_key) ) && stripos( $media, $fv_fp->_get_option( array('amazon_bucket', $amazon_key) ) ) !== false && apply_filters( 'fv_flowplayer_amazon_secure_exclude', $media ) ) {
     
       $resource = trim( $media );
 
@@ -788,7 +782,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $url_components = parse_url($resource);
       
-      $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region' => $amazon_key ) ) ? 4 : 2;
+      $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region', $amazon_key ) ) ? 4 : 2;
       
       if( $iAWSVersion == 4 ) {
         $url_components['path'] = str_replace('+', ' ', $url_components['path']);
@@ -806,9 +800,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       if( $iAWSVersion == 4 ) {
         $sXAMZDate = gmdate('Ymd\THis\Z');
         $sDate = gmdate('Ymd');
-        $sCredentialScope = $sDate."/".$fv_fp->_get_option( array('amazon_region' => $amazon_key ) )."/s3/aws4_request"; //  todo: variable
+        $sCredentialScope = $sDate."/".$fv_fp->_get_option( array('amazon_region', $amazon_key ) )."/s3/aws4_request"; //  todo: variable
         $sSignedHeaders = "host";
-        $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key' => $amazon_key ) ).'/'.$sCredentialScope);
+        $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key', $amazon_key ) ).'/'.$sCredentialScope);
         
         //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
         $sCanonicalRequest = "GET\n";
@@ -825,8 +819,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sStringToSign .= hash('sha256',$sCanonicalRequest);
         
         //  3. http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
-        $sSignature = hash_hmac('sha256', $sDate, "AWS4".$fv_fp->_get_option( array('amazon_secret' => $amazon_key) ), true );
-        $sSignature = hash_hmac('sha256', $fv_fp->_get_option( array('amazon_region' => $amazon_key) ), $sSignature, true );  //  todo: variable
+        $sSignature = hash_hmac('sha256', $sDate, "AWS4".$fv_fp->_get_option( array('amazon_secret', $amazon_key) ), true );
+        $sSignature = hash_hmac('sha256', $fv_fp->_get_option( array('amazon_region', $amazon_key) ), $sSignature, true );  //  todo: variable
         $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
         $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
         $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
@@ -844,8 +838,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else {
         $expires = time() + $time;
         
-        if( strpos( $url_components['path'], $fv_fp->_get_option( array('amazon_bucket' => $amazon_key) ) ) === false ) {
-          $url_components['path'] = '/'.$fv_fp->_get_option( array('amazon_bucket' => $amazon_key) ).$url_components['path'];
+        if( strpos( $url_components['path'], $fv_fp->_get_option( array('amazon_bucket', $amazon_key) ) ) === false ) {
+          $url_components['path'] = '/'.$fv_fp->_get_option( array('amazon_bucket', $amazon_key) ).$url_components['path'];
         }        
             
         do {
@@ -854,13 +848,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
           $signature = utf8_encode($stringToSign);
     
-          $signature = hash_hmac('sha1', $signature, $fv_fp->_get_option( array('amazon_secret' => $amazon_key ) ), true);
+          $signature = hash_hmac('sha1', $signature, $fv_fp->_get_option( array('amazon_secret', $amazon_key ) ), true);
           $signature = base64_encode($signature);
           
           $signature = urlencode($signature);        
         } while( stripos($signature,'%2B') !== false );      
       
-        $resource .= '?AWSAccessKeyId='.$fv_fp->_get_option( array('amazon_key' => $amazon_key) ).$sGlue.'Expires='.$expires.$sGlue.'Signature='.$signature;
+        $resource .= '?AWSAccessKeyId='.$fv_fp->_get_option( array('amazon_key', $amazon_key) ).$sGlue.'Expires='.$expires.$sGlue.'Signature='.$signature;
         
       }
       
