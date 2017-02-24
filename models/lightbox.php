@@ -44,8 +44,10 @@ class FV_Player_lightbox {
     //TODO probbably not needed in the future
     if(isset($conf['lightbox_images']) && $conf['lightbox_images'] && !isset($conf['lightbox_improve_galleries']) )$conf['lightbox_improve_galleries'] = false;
 
-    if(!isset($conf['lightbox_images']))$conf['lightbox_images'] = false;
-    if(!isset($conf['lightbox_improve_galleries']))$conf['lightbox_improve_galleries'] = false;
+    $conf += array(
+      'lightbox_images' => false,
+      'lightbox_improve_galleries' => false
+    );
 
     return $conf;
   }
