@@ -280,7 +280,7 @@ class FV_Player_lightbox {
   function shortcode_editor() {
     global $fv_fp;
 
-    $bLightbox = (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true' );
+    $bLightbox = $fv_fp->_get_option(array('interface','lightbox'));
 
     if ($bLightbox) {
       ?>
@@ -350,18 +350,7 @@ class FV_Player_lightbox {
 
   function lightbox_admin_interface_html() {
     global $fv_fp;
-    ?>
-    <tr>
-      <td style="width: 250px"><label for="interface[lightbox]"><?php _e('Enable video lightbox', 'fv-wordpress-flowplayer'); ?>:</label></td>
-      <td>
-        <p class="description">
-          <input type="hidden" value="false" name="interface[lightbox]" />
-          <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'); ?>
-        </p>
-      </td>
-    </tr>
-    <?php
+    $fv_fp->_get_checkbox(__('Enable video lightbox', 'fv-wordpress-flowplayer'), ['interface', 'lightbox'], __('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'));
   }
 
   function lightbox_admin_default_options_html() {

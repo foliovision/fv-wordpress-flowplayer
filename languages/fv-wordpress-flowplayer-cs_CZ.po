@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2017-02-24 13:57+0100\n"
-"PO-Revision-Date: 2017-02-24 13:57+0100\n"
+"POT-Creation-Date: 2017-02-24 16:55+0100\n"
+"PO-Revision-Date: 2017-02-24 16:55+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -321,15 +321,15 @@ msgid ""
 "website]"
 msgstr ""
 
-#: models/flowplayer-frontend.php:999 view/admin.php:298
+#: models/flowplayer.php:212 view/admin.php:293
 msgid "Check the amazing video here"
 msgstr ""
 
-#: models/lightbox.php:355 view/admin.php:834
+#: models/lightbox.php:353 view/admin.php:829
 msgid "Enable video lightbox"
 msgstr "\tPovolit video lightbox"
 
-#: models/lightbox.php:360
+#: models/lightbox.php:353
 msgid ""
 "You can also put in <code>&lt;a href=\"http://path.to.your/video.mp4\" class="
 "\"colorbox\"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed "
@@ -339,11 +339,11 @@ msgstr ""
 "vašeho odkazu: <code>&lt;a href=\"http://cesta.k.vasemu/videu.mp4\" class="
 "\"colorbox\"&gt;Nadpis vašeho odkazu&lt;/a&gt;</code>"
 
-#: models/lightbox.php:371
+#: models/lightbox.php:360
 msgid "Use video lightbox for images as well"
 msgstr "Použít video lightbox také pro obrázky"
 
-#: models/lightbox.php:376
+#: models/lightbox.php:365
 msgid ""
 "Will group images as well as videos into the same lightbox gallery. Turn "
 "<strong>off</strong> your lightbox plugin when using this."
@@ -351,18 +351,18 @@ msgstr ""
 "Sdruží obrázky stejně jako videa do lightbox galerie. <strong>Vypněte</"
 "strong> Váš lightbox plugin, když chcete použít tuto možnost."
 
-#: models/lightbox.php:376
+#: models/lightbox.php:365
 msgid ""
 "Also works with WordPress <code>[gallery]</code> galleries - these are "
 "automatically switched to link to image URLs rather than the attachment "
 "pages."
 msgstr ""
 
-#: models/lightbox.php:381
+#: models/lightbox.php:370
 msgid "Use video lightbox for WP Galleries"
 msgstr ""
 
-#: models/lightbox.php:386
+#: models/lightbox.php:375
 msgid "Your gallery litems will link to image files directly to allow this."
 msgstr ""
 
@@ -430,9 +430,9 @@ msgstr "Bílá, se středem v dolní části videa"
 msgid "(Hint: put .wpfp_custom_ad_content before your own CSS selectors)"
 msgstr "(Tip: dejte .wpfp_custom_ad_content před vlastní CSS selektori)"
 
-#: view/admin.php:74 view/admin.php:179 view/admin.php:338 view/admin.php:625
-#: view/admin.php:730 view/admin.php:785 view/admin.php:1066
-#: view/admin.php:1103 view/admin.php:1143
+#: view/admin.php:74 view/admin.php:174 view/admin.php:333 view/admin.php:620
+#: view/admin.php:725 view/admin.php:780 view/admin.php:1061
+#: view/admin.php:1098 view/admin.php:1138
 msgid "Save All Changes"
 msgstr "Uložiť všechny změny"
 
@@ -478,11 +478,11 @@ msgstr ""
 "jako expirační doba. V případě, že doba trvání není k dispozici, je použita "
 "tato hodnota."
 
-#: view/admin.php:135
+#: view/admin.php:130
 msgid "Amazon Bucket"
 msgstr "Amazon bucket"
 
-#: view/admin.php:135
+#: view/admin.php:130
 msgid ""
 "We recommend that you simply put all of your protected video into a single "
 "bucket and enter its name here. All matching videos will use the protected "
@@ -492,207 +492,207 @@ msgstr ""
 "jednoho bucketu a zadali zde jich jména. Všechna odpovídající videa budou "
 "používat chráněnú URL."
 
-#: view/admin.php:139
+#: view/admin.php:134
 msgid "Region"
 msgstr "Krajina"
 
-#: view/admin.php:142
+#: view/admin.php:137
 msgid "Select the region"
 msgstr "Vyberte zemi"
 
-#: view/admin.php:143
+#: view/admin.php:138
 msgid "Frankfurt"
 msgstr "Frankfurt"
 
-#: view/admin.php:144
+#: view/admin.php:139
 msgid "Ireland"
 msgstr "Irsko"
 
-#: view/admin.php:145
+#: view/admin.php:140
 msgid "Northern California"
 msgstr "Severní Kalifornie"
 
-#: view/admin.php:146
+#: view/admin.php:141
 msgid "Oregon"
 msgstr "Oregon"
 
-#: view/admin.php:147
+#: view/admin.php:142
 msgid "Sao Paulo"
 msgstr "Sao Paulo"
 
-#: view/admin.php:148
+#: view/admin.php:143
 msgid "Seoul"
 msgstr ""
 
-#: view/admin.php:149
+#: view/admin.php:144
 msgid "Singapore"
 msgstr "Singapur"
 
-#: view/admin.php:150
+#: view/admin.php:145
 msgid "Sydney"
 msgstr "Sydney"
 
-#: view/admin.php:151
+#: view/admin.php:146
 msgid "Tokyo"
 msgstr "Tokio"
 
-#: view/admin.php:152
+#: view/admin.php:147
 msgid "US Standard"
 msgstr "US Standard"
 
-#: view/admin.php:157
+#: view/admin.php:152
 msgid "Access Key ID"
 msgstr "ID přístupového klíče"
 
-#: view/admin.php:161
+#: view/admin.php:156
 msgid "Secret Access Key"
 msgstr "Tajný přístupoví klíč"
 
-#: view/admin.php:167
+#: view/admin.php:162
 msgid "remove"
 msgstr "odstranit"
 
-#: view/admin.php:180
+#: view/admin.php:175
 msgid "Add more Amazon S3 secure buckets"
 msgstr "Přidej další Amazon S3 zabezpečné buckety"
 
-#: view/admin.php:200
+#: view/admin.php:195
 msgid "Default Video Size"
 msgstr "Výchozí velikost videa"
 
-#: view/admin.php:203 view/wizard.old.php:127 view/wizard.old.php:305
+#: view/admin.php:198 view/wizard.old.php:127 view/wizard.old.php:305
 #: view/wizard.php:242 view/wizard.php:357 view/wizard.php:425
 msgid "Width"
 msgstr "Šírka"
 
-#: view/admin.php:204 view/wizard.old.php:127 view/wizard.old.php:305
+#: view/admin.php:199 view/wizard.old.php:127 view/wizard.old.php:305
 #: view/wizard.php:243 view/wizard.php:358 view/wizard.php:426
 msgid "Height"
 msgstr "Výška"
 
-#: view/admin.php:205
+#: view/admin.php:200
 msgid "Enter values in pixels."
 msgstr "Zadejte hodnoty v pixelech."
 
-#: view/admin.php:210
+#: view/admin.php:205
 msgid "Default Volume"
 msgstr "Výchozí hlasitost"
 
-#: view/admin.php:224
+#: view/admin.php:219
 msgid "Flash Streaming Server"
 msgstr "Server pro Flash streamování"
 
-#: view/admin.php:227
+#: view/admin.php:222
 msgid "Enter your default RTMP streaming server (Amazon CloudFront domain)."
 msgstr ""
 "Zadejte Váš výchozí RTMP server pro streamování (Amazon CloudFront doména)"
 
-#: view/admin.php:235
+#: view/admin.php:230
 msgid "Google Analytics ID"
 msgstr "Google Analytics ID"
 
-#: view/admin.php:238
+#: view/admin.php:233
 msgid "Will be automatically loaded when playing a video."
 msgstr "Se automaticky načte při přehrávání videa"
 
-#: view/admin.php:251
+#: view/admin.php:246
 msgid "You have a valid FV Flowplayer license, you can put up your logo here"
 msgstr "Máte platnou licenci FV Flowplayer, zde si můžete vložit své logo"
 
-#: view/admin.php:253
+#: view/admin.php:248
 msgid "You need to have a FV Flowplayer license to use it"
 msgstr "Pro použítí loga potřebujete FV Flowplayer licenci"
 
-#: view/admin.php:257 view/admin.php:325
+#: view/admin.php:252 view/admin.php:320
 msgid "Upload Image"
 msgstr "Nahrát obrázek"
 
-#: view/admin.php:263
+#: view/admin.php:258
 msgid "Position"
 msgstr "Pozice"
 
-#: view/admin.php:264
+#: view/admin.php:259
 msgid "Bottom-left"
 msgstr "Dolů-vlevo"
 
-#: view/admin.php:265
+#: view/admin.php:260
 msgid "Bottom-right"
 msgstr "Dolů-vpravo"
 
-#: view/admin.php:266
+#: view/admin.php:261
 msgid "Top-left"
 msgstr "Nahoru-vlevo"
 
-#: view/admin.php:267
+#: view/admin.php:262
 msgid "Top-right"
 msgstr "Nahoru-vpravo"
 
-#: view/admin.php:275
+#: view/admin.php:270
 msgid "Playlist style"
 msgstr "Styl playlistu"
 
-#: view/admin.php:282 view/wizard.old.php:241
+#: view/admin.php:277 view/wizard.old.php:241
 msgid "Horizontal"
 msgstr "Vodorovně"
 
-#: view/admin.php:283 view/wizard.old.php:238
+#: view/admin.php:278 view/wizard.old.php:238
 msgid "Tabs"
 msgstr "Karty"
 
-#: view/admin.php:284 view/wizard.old.php:239
+#: view/admin.php:279 view/wizard.old.php:239
 msgid "Prev/Next"
 msgstr "Předchozí/Další"
 
-#: view/admin.php:285 view/wizard.old.php:240
+#: view/admin.php:280 view/wizard.old.php:240
 msgid "Vertical"
 msgstr "Svisle"
 
-#: view/admin.php:287
+#: view/admin.php:282
 msgid "Enter your default playlist style here"
 msgstr "Zde zadejte výchozí styl playlistu"
 
-#: view/admin.php:295
+#: view/admin.php:290
 msgid "Sharing Text"
 msgstr ""
 
-#: view/admin.php:306
+#: view/admin.php:301
 msgid "Speed Step"
 msgstr "Násobek rychlosti přehrávání"
 
-#: view/admin.php:317
+#: view/admin.php:312
 msgid ""
 "Speed buttons will increase or decrease the speed in steps of selected value"
 msgstr ""
 "Tlačítka pro ovládání rychlosti umožnující zvyšovat nebo snižovat rychlost "
 "přehrávání ve vybraných násobcích"
 
-#: view/admin.php:322 view/wizard.old.php:172 view/wizard.php:271
+#: view/admin.php:317 view/wizard.old.php:172 view/wizard.php:271
 msgid "Splash Image"
 msgstr "Náhledový obrázek"
 
-#: view/admin.php:324
+#: view/admin.php:319
 msgid "Default which will be used for any player without its own splash image."
 msgstr ""
 "Výchozí nastavení, které bude použito pro každý přehrávač bez vlastního "
 "náhledového obrázku"
 
-#: view/admin.php:333
+#: view/admin.php:328
 msgid ""
 "Missing settings? Check <a class=\"fv-settings-anchor\" href="
 "\"#fv_flowplayer_integrations\">Integrations/Compatbility</a> box below."
 msgstr ""
 
-#: view/admin.php:440
+#: view/admin.php:435
 msgid "FV Player is a free, easy-to-use, and complete solution for embedding"
 msgstr ""
 "FV Player je zdarma, snadno použitelný, a nabízí kompletní řešení pro "
 "vkládání"
 
-#: view/admin.php:442
+#: view/admin.php:437
 msgid "and"
 msgstr "a"
 
-#: view/admin.php:444
+#: view/admin.php:439
 msgid ""
 "videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; "
 "coverage even on mobile devices."
@@ -700,22 +700,22 @@ msgstr ""
 "videa do vašich příspěvků nebo stránek. S formátem MP4  nabízí FV Player  "
 "98&#37; pokrytí i na mobilních zařízeních."
 
-#: view/admin.php:461
+#: view/admin.php:456
 msgid "You can customize the colors of the player to match your website."
 msgstr ""
 "Můžete si přizpůsobit barvy prehrávače, aby ladily s vaší webovou stránkou."
 
-#: view/admin.php:478
+#: view/admin.php:473
 msgid "Here you can enable and configure advanced hosting options."
 msgstr "Zde můžete povolit a konfigurovat pokročilé možnosti hostování."
 
-#: view/admin.php:495
+#: view/admin.php:490
 msgid ""
 "Here you can configure ads and banners that will be showed in the video."
 msgstr ""
 "Zde si můžete nastavit reklamy a bannery, které budou zobrazeny ve videu."
 
-#: view/admin.php:512
+#: view/admin.php:507
 msgid ""
 "Purchase <a href=\"https://foliovision.com/player/download\" target=\"_blank"
 "\"><b>FV Player Licence</b></a>, and you will be able to configure multiple, "
@@ -725,12 +725,12 @@ msgstr ""
 "\"><b>FV Player licenci</b></a> a budete moci nakonfigurovat mnoho klikacích "
 "video reklam, které lze přehrát před nebo po vašich videích."
 
-#: view/admin.php:515
+#: view/admin.php:510
 msgid "You can configure video ads globally, or on a per video basis."
 msgstr ""
 "Video reklamy můžete nakonfigurovat globálně, nebo pro každé video zvlášť."
 
-#: view/admin.php:518
+#: view/admin.php:513
 msgid ""
 "If you are interested in VAST or VPAID ads, then check out <a href=\"https://"
 "foliovision.com/player/vast\" target=\"_blank\"><b>FV Player VAST</b></a>."
@@ -739,28 +739,28 @@ msgstr ""
 "\"https://foliovision.com/player/vast\" target=\"_blank\"><b>FV Player VAST</"
 "b></a>."
 
-#: view/admin.php:529
+#: view/admin.php:524
 msgid "Following options are suitable for web developers and programmers."
 msgstr "Následující možnosti jsou vhodné pro webové vývojáře a programátory."
 
-#: view/admin.php:538
+#: view/admin.php:533
 msgid "Enable profile videos (beta)"
 msgstr ""
 
-#: view/admin.php:544
+#: view/admin.php:539
 msgid ""
 "Check your site carefully after enabling. Videos attached to the user "
 "profile will be showing as a part of the user bio."
 msgstr ""
 
-#: view/admin.php:547
+#: view/admin.php:542
 msgid ""
 "This feature is designed for YouTube and Vimeo videos and works best for our "
 "licensed users who get these videos playing without YouTube or Vimeo "
 "branding."
 msgstr ""
 
-#: view/admin.php:548
+#: view/admin.php:543
 msgid ""
 "Some themes show author bio on the author post archive automatically "
 "(Genesis framework and others). Or you can also just put this code into your "
@@ -768,76 +768,76 @@ msgid ""
 "is called:"
 msgstr ""
 
-#: view/admin.php:564
+#: view/admin.php:559
 msgid "We will be adding integration for it for popular user profile plugins."
 msgstr ""
 
-#: view/admin.php:581
+#: view/admin.php:576
 msgid "Scan video length"
 msgstr "Zjistuj délku videa"
 
-#: view/admin.php:586
+#: view/admin.php:581
 msgid "Beta version, turn off if you experience issues when saving posts!"
 msgstr "Beta verze, vypne pokud máte problémy při ukládání příspěvků!"
 
-#: view/admin.php:587
+#: view/admin.php:582
 msgid "Turn on to enable video duration scanning."
 msgstr "Zapnutím umožníte zistovaní trvání videa. "
 
-#: view/admin.php:600
+#: view/admin.php:595
 #, php-format
 msgid "Currently %d videos in database and %s posts in queue."
 msgstr "Aktuálně %d videí v databázi a %s příspěvků ve frontě."
 
-#: view/admin.php:602
+#: view/admin.php:597
 #, php-format
 msgid "Currently %d videos in database."
 msgstr "Aktuálně %d videí v databázi."
 
-#: view/admin.php:604
+#: view/admin.php:599
 #, php-format
 msgid "Currently %s posts in queue."
 msgstr "Aktuálně %s příspěvků ve frontě."
 
-#: view/admin.php:667
+#: view/admin.php:662
 msgid "Default Popup"
 msgstr "Výchozí pop-up"
 
-#: view/admin.php:671
+#: view/admin.php:666
 msgid ""
 "You can set a default popup here and then skip it for individual videos."
 msgstr ""
 "Zde můžete nastavit výchozí popup a pak ho přeskočit pro jednotlivá videa."
 
-#: view/admin.php:683
+#: view/admin.php:678
 msgid "Status"
 msgstr "Stav"
 
-#: view/admin.php:702 view/admin.php:951
+#: view/admin.php:697 view/admin.php:946
 msgid "Name"
 msgstr "Název"
 
-#: view/admin.php:710
+#: view/admin.php:705
 msgid "Custom<br />CSS"
 msgstr "Vlastní<br />CSS"
 
-#: view/admin.php:718
+#: view/admin.php:713
 msgid "Disable"
 msgstr "Zakázat"
 
-#: view/admin.php:719
+#: view/admin.php:714
 msgid "Remove"
 msgstr "Odstranit"
 
-#: view/admin.php:731
+#: view/admin.php:726
 msgid "Add more Popups"
 msgstr "Přidat další pop-up okna"
 
-#: view/admin.php:762
+#: view/admin.php:757
 msgid "Which features should be available in shortcode editor?"
 msgstr "Které funkce by měly být k dispozici v shortcode editore?"
 
-#: view/admin.php:801
+#: view/admin.php:796
 msgid ""
 "Valid license found, click the button at the top of the screen to install FV "
 "Player Pro!"
@@ -845,51 +845,51 @@ msgstr ""
 "Nalezena platná licence , klepněte na tlačítko v horní části obrazovky pro "
 "instalaci FV Player Pro!"
 
-#: view/admin.php:803
+#: view/admin.php:798
 msgid "Purchase FV Flowplayer license"
 msgstr "Kupte si  FV Flowplayer licenci"
 
-#: view/admin.php:803
+#: view/admin.php:798
 msgid "to enable Pro features!"
 msgstr "a získáte doplňkové funkce!"
 
-#: view/admin.php:807
+#: view/admin.php:802
 msgid "Advanced Vimeo embeding"
 msgstr "Rozšírené Vimeo vkládání"
 
-#: view/admin.php:811
+#: view/admin.php:806
 msgid "Use Vimeo as your video host and use all of FV Flowplayer features."
 msgstr ""
 "Používejte Vimeo jako vašeho video hostitele a používejte všechny funkce FV "
 "Flowplayer."
 
-#: view/admin.php:816
+#: view/admin.php:811
 msgid "Advanced YouTube embeding"
 msgstr "Rozšírené YouTube vkládání"
 
-#: view/admin.php:820
+#: view/admin.php:815
 msgid "Use YouTube as your video host and use all of FV Flowplayer features."
 msgstr ""
 "Používejte YouTube jako vašeho video hostitele a používejte všechny funkce "
 "FV Flowplayer."
 
-#: view/admin.php:825
+#: view/admin.php:820
 msgid "Enable user defined AB loop"
 msgstr "Povolit uživatelem definovanu AB slučku"
 
-#: view/admin.php:829
+#: view/admin.php:824
 msgid "Let your users repeat the parts of the video which they like!"
 msgstr "Nechte svým uživatelům opakovat části videa, která se jim líbí!"
 
-#: view/admin.php:838
+#: view/admin.php:833
 msgid "Enables Lightbox video gallery to show videos in a lightbox popup!"
 msgstr "Povolit lightbox video galerii pro zobrazení videi v lightbox popup!"
 
-#: view/admin.php:843
+#: view/admin.php:838
 msgid "Enable quality switching"
 msgstr "Povolit změnu kvality"
 
-#: view/admin.php:847
+#: view/admin.php:842
 msgid ""
 "Upload your videos in multiple quality for best user experience with YouTube-"
 "like quality switching!"
@@ -897,29 +897,29 @@ msgstr ""
 "Nahrávejte svá videá ve více kvalitách pro co nejlepší uživatelský zážitek s "
 "přepínáním kvality podobňe jako na YouTube!"
 
-#: view/admin.php:852
+#: view/admin.php:847
 msgid "Amazon CloudFront protected content"
 msgstr "Amazon CloudFront chráněný obsah"
 
-#: view/admin.php:856
+#: view/admin.php:851
 msgid "Protect your Amazon CDN hosted videos"
 msgstr "Ochraňte vaše videa hostované na Amazon CDN"
 
-#: view/admin.php:861
+#: view/admin.php:856
 msgid "Autoplay just once"
 msgstr "Automatické přehrávání jen jednou"
 
-#: view/admin.php:865
+#: view/admin.php:860
 msgid "Makes sure each video autoplays only once for each visitor."
 msgstr ""
 "Zabezpečí, že každé video sa přehraje automaticky pouze jednou pro každého "
 "návštěvníka."
 
-#: view/admin.php:870
+#: view/admin.php:865
 msgid "Enable video ads"
 msgstr "Povolit video reklamy"
 
-#: view/admin.php:874
+#: view/admin.php:869
 msgid ""
 "Define your own videos ads to play in together with your videos - postroll "
 "or prerool"
@@ -927,385 +927,385 @@ msgstr ""
 "Zvolte si vlastní nastavení přehrávání reklam ve videu - na začátku, nebo na "
 "konci"
 
-#: view/admin.php:879
+#: view/admin.php:874
 msgid "Upcoming pro features"
 msgstr "Připravované profesionální funkce"
 
-#: view/admin.php:882
+#: view/admin.php:877
 msgid "Enable PayWall"
 msgstr "Povolit PayWall"
 
-#: view/admin.php:886
+#: view/admin.php:881
 msgid "Monetize the video content on your membership site."
 msgstr "Zpeněžit obsah videa na členských stránkach."
 
-#: view/admin.php:906
+#: view/admin.php:901
 msgid "Default pre-roll ad:"
 msgstr ""
 
-#: view/admin.php:914
+#: view/admin.php:909
 msgid "Set which ad should be played before videos."
 msgstr ""
 
-#: view/admin.php:919
+#: view/admin.php:914
 msgid "Default post-roll ad:"
 msgstr ""
 
-#: view/admin.php:927
+#: view/admin.php:922
 msgid "Set which ad should be played after videos."
 msgstr ""
 
-#: view/admin.php:932
+#: view/admin.php:927
 msgid "Default ad skip time"
 msgstr ""
 
-#: view/admin.php:935
+#: view/admin.php:930
 msgid "Enter value in seconds"
 msgstr ""
 
-#: view/admin.php:951
+#: view/admin.php:946
 msgid "Ad name"
 msgstr ""
 
-#: view/admin.php:952
+#: view/admin.php:947
 msgid "Click URL"
 msgstr ""
 
-#: view/admin.php:952
+#: view/admin.php:947
 msgid "Clicking the video ad will open the URL in new window"
 msgstr ""
 
-#: view/admin.php:953 view/wizard.old.php:111 view/wizard.old.php:131
+#: view/admin.php:948 view/wizard.old.php:111 view/wizard.old.php:131
 #: view/wizard.old.php:140 view/wizard.php:144 view/wizard.php:203
 msgid "Video"
 msgstr "Video"
 
-#: view/admin.php:953
+#: view/admin.php:948
 msgid "Enter the video URL here"
 msgstr ""
 
-#: view/admin.php:965
+#: view/admin.php:960
 msgid "Add more video ads"
 msgstr ""
 
-#: view/admin.php:981
+#: view/admin.php:976
 msgid "Hint: play the video to see live preview of the color settings"
 msgstr ""
 
-#: view/admin.php:985
+#: view/admin.php:980
 msgid "Border"
 msgstr "Okraj"
 
-#: view/admin.php:993
+#: view/admin.php:988
 msgid "Border color"
 msgstr "Barva okraje"
 
-#: view/admin.php:998
+#: view/admin.php:993
 msgid "Bottom Margin"
 msgstr "Spodní odsazení"
 
-#: view/admin.php:999 view/admin.php:1128
+#: view/admin.php:994 view/admin.php:1123
 msgid "Enter value in pixels"
 msgstr ""
 
-#: view/admin.php:1006
+#: view/admin.php:1001
 msgid "Buffer"
 msgstr "Vyrovnávací paměť"
 
-#: view/admin.php:1012
+#: view/admin.php:1007
 msgid "Canvas"
 msgstr "Plátno"
 
-#: view/admin.php:1017 view/wizard.old.php:320
+#: view/admin.php:1012 view/wizard.old.php:320
 msgid "Controlbar"
 msgstr "Ovládací panel"
 
-#: view/admin.php:1025 view/admin.php:1117
+#: view/admin.php:1020 view/admin.php:1112
 msgid "Font Face"
 msgstr "Typ písma"
 
-#: view/admin.php:1031
+#: view/admin.php:1026
 msgid "(inherit from template)"
 msgstr "(zdědiť od šablony)"
 
-#: view/admin.php:1038
+#: view/admin.php:1033
 msgid "Player position"
 msgstr "Pozice přehrávače"
 
-#: view/admin.php:1041
+#: view/admin.php:1036
 msgid "Centered"
 msgstr "Na stred"
 
-#: view/admin.php:1042
+#: view/admin.php:1037
 msgid "Left (no text-wrap)"
 msgstr "Doleva (bez zalamování textu)"
 
-#: view/admin.php:1047
+#: view/admin.php:1042
 msgid "Progress"
 msgstr "Aktuální pozice"
 
-#: view/admin.php:1054
+#: view/admin.php:1049
 msgid "Time"
 msgstr "Čas"
 
-#: view/admin.php:1060
+#: view/admin.php:1055
 msgid "Total time"
 msgstr "Celkový čas"
 
-#: view/admin.php:1080 view/admin.php:1132
+#: view/admin.php:1075 view/admin.php:1127
 msgid "Background Color"
 msgstr ""
 
-#: view/admin.php:1085
+#: view/admin.php:1080
 msgid "Active Item"
 msgstr ""
 
-#: view/admin.php:1091
+#: view/admin.php:1086
 msgid "Font Color"
 msgstr ""
 
-#: view/admin.php:1097
+#: view/admin.php:1092
 msgid "Use custom color"
 msgstr "Použít vlastní barvu"
 
-#: view/admin.php:1098
+#: view/admin.php:1093
 msgid "Inherit from theme"
 msgstr "Zdědiť od šablony"
 
-#: view/admin.php:1120
+#: view/admin.php:1115
 msgid "(inherit)"
 msgstr ""
 
-#: view/admin.php:1127
+#: view/admin.php:1122
 msgid "Font Size"
 msgstr ""
 
-#: view/admin.php:1137
+#: view/admin.php:1132
 msgid "Background Opacity"
 msgstr ""
 
-#: view/admin.php:1151
+#: view/admin.php:1146
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 
-#: view/admin.php:1168
+#: view/admin.php:1163
 msgid "Illustrated user guides"
 msgstr "Ilustrovaný užívatelský průvodce"
 
-#: view/admin.php:1171
+#: view/admin.php:1166
 msgid "Inserting videos"
 msgstr "Vkládání videí"
 
-#: view/admin.php:1172
+#: view/admin.php:1167
 msgid "License key and custom logo"
 msgstr "Licenční klíč a vlastní logo"
 
-#: view/admin.php:1173
+#: view/admin.php:1168
 msgid "How to create a playlist"
 msgstr "Jak vytvoriť playlist"
 
-#: view/admin.php:1174
+#: view/admin.php:1169
 msgid "Using ads"
 msgstr "Použití reklam"
 
-#: view/admin.php:1175
+#: view/admin.php:1170
 msgid "Using Google Ads"
 msgstr "Používaní reklám od Googlu"
 
-#: view/admin.php:1176
+#: view/admin.php:1171
 msgid "RTMP streams"
 msgstr "RTMP streamy"
 
-#: view/admin.php:1177 view/admin.php:1279 view/wizard.old.php:180
+#: view/admin.php:1172 view/admin.php:1274 view/wizard.old.php:180
 #: view/wizard.php:145 view/wizard.php:308
 msgid "Subtitles"
 msgstr "Titulky"
 
-#: view/admin.php:1178
+#: view/admin.php:1173
 msgid "Amazon S3 secure content guide"
 msgstr "Amazon S3 průvodce chráneného obsahu"
 
-#: view/admin.php:1179
+#: view/admin.php:1174
 msgid "How to setup a HLS stream"
 msgstr "Jak nastavit HLS stream"
 
-#: view/admin.php:1180
+#: view/admin.php:1175
 msgid "Google Analytics support"
 msgstr "Google Analytics podpora"
 
-#: view/admin.php:1181
+#: view/admin.php:1176
 msgid "Video lightbox"
 msgstr "Video lightbox"
 
-#: view/admin.php:1182
+#: view/admin.php:1177
 msgid "YouTube integration"
 msgstr "Integrace s YouTube"
 
-#: view/admin.php:1183
+#: view/admin.php:1178
 msgid "Quality Switching"
 msgstr "Přepínaní kvality"
 
-#: view/admin.php:1184
+#: view/admin.php:1179
 msgid "Vimeo integration"
 msgstr "Integrace s Vimeom"
 
-#: view/admin.php:1185
+#: view/admin.php:1180
 msgid "Custom video ads"
 msgstr "Vlastní reklamy vo videu"
 
-#: view/admin.php:1186
+#: view/admin.php:1181
 msgid "CloudFront CDN - protected video downloads"
 msgstr "CloudFront CDN - chráněné stahování videa"
 
-#: view/admin.php:1191
+#: view/admin.php:1186
 msgid "Troubleshooting"
 msgstr "Řešení problémů"
 
-#: view/admin.php:1194
+#: view/admin.php:1189
 msgid "Automated checks"
 msgstr "Automatizované kontroly"
 
-#: view/admin.php:1195
+#: view/admin.php:1190
 msgid "Video encoding tips"
 msgstr "Tipy pro kódovaní videa"
 
-#: view/admin.php:1196
+#: view/admin.php:1191
 msgid "Video formats to avoid"
 msgstr "Formáty videí, kterým by ste se měli vyhýbat"
 
-#: view/admin.php:1197
+#: view/admin.php:1192
 msgid "Fixing mime type on Amazon S3"
 msgstr "Oprava MIME typu na Amazon S3"
 
-#: view/admin.php:1198
+#: view/admin.php:1193
 msgid "Plugin FAQ"
 msgstr "FAQ pre plugin"
 
-#: view/admin.php:1199
+#: view/admin.php:1194
 msgid "Support forums"
 msgstr "Podpora fóra"
 
-#: view/admin.php:1249
+#: view/admin.php:1244
 msgid "Setup"
 msgstr "Nastavení"
 
-#: view/admin.php:1250
+#: view/admin.php:1245
 msgid "Skin"
 msgstr "Vzhled"
 
-#: view/admin.php:1251
+#: view/admin.php:1246
 msgid "Hosting"
 msgstr "Hostování"
 
-#: view/admin.php:1252 view/wizard.php:147
+#: view/admin.php:1247 view/wizard.php:147
 msgid "Actions"
 msgstr "Akce"
 
-#: view/admin.php:1253 view/admin.php:1293
+#: view/admin.php:1248 view/admin.php:1288
 msgid "Video Ads"
 msgstr "Video reklamy"
 
-#: view/admin.php:1254
+#: view/admin.php:1249
 msgid "Help"
 msgstr "Pomoc"
 
-#: view/admin.php:1268
+#: view/admin.php:1263
 msgid "Post Interface Options"
 msgstr "Možnosti rozhraní příspěvků"
 
-#: view/admin.php:1269
+#: view/admin.php:1264
 msgid "Sitewide Flowplayer Defaults"
 msgstr "Globální nastavení Flowplayeru"
 
-#: view/admin.php:1270
+#: view/admin.php:1265
 msgid "Integrations/Compatibility"
 msgstr "Integrace/Kompatibilita"
 
-#: view/admin.php:1272
+#: view/admin.php:1267
 msgid "Pro Features"
 msgstr "Pro Funkce"
 
-#: view/admin.php:1277
+#: view/admin.php:1272
 msgid "Player Skin"
 msgstr "Vzhled přehrávače"
 
-#: view/admin.php:1278 view/wizard.php:143
+#: view/admin.php:1273 view/wizard.php:143
 msgid "Playlist"
 msgstr "Playlist"
 
-#: view/admin.php:1283
+#: view/admin.php:1278
 msgid "Amazon S3 Protected Content"
 msgstr "Amazon S3 chráněný obsah"
 
-#: view/admin.php:1287
+#: view/admin.php:1282
 msgid "Popups"
 msgstr "Vyskakovací okna"
 
-#: view/admin.php:1288
+#: view/admin.php:1283
 msgid "Ads"
 msgstr "Reklamy"
 
-#: view/admin.php:1297
+#: view/admin.php:1292
 msgid "Usage"
 msgstr "Používání"
 
-#: view/admin.php:1303
+#: view/admin.php:1298
 msgid "Documentation"
 msgstr ""
 
-#: view/admin.php:1332
+#: view/admin.php:1327
 msgid "Enable the Pro extension"
 msgstr "Aktivovat Pro rozšíření"
 
-#: view/admin.php:1334
+#: view/admin.php:1329
 msgid "Pro pack installed"
 msgstr "Pro verze je nainstalována"
 
-#: view/admin.php:1336
+#: view/admin.php:1331
 msgid "Install Pro extension"
 msgstr "Nainstalovat Pro rozšíření"
 
-#: view/admin.php:1339
+#: view/admin.php:1334
 msgid "Apply Pro upgrade"
 msgstr "Použít Pro aktualizaci"
 
-#: view/admin.php:1341
+#: view/admin.php:1336
 msgid "Check template"
 msgstr "Zkontroluj šablony"
 
-#: view/admin.php:1342
+#: view/admin.php:1337
 msgid "Check videos"
 msgstr "Zkontroluj videa"
 
-#: view/admin.php:1344
+#: view/admin.php:1339
 msgid "Commercial License Key"
 msgstr "Komerčný licenční klíč"
 
-#: view/admin.php:1344
+#: view/admin.php:1339
 msgid "Click here for license info"
 msgstr "Klikněte zde pro informace ohledně licence"
 
-#: view/admin.php:1367
+#: view/admin.php:1362
 msgid "with your own branding"
 msgstr ""
 
-#: view/admin.php:1369
+#: view/admin.php:1364
 msgid "Put up your own logo"
 msgstr ""
 
-#: view/admin.php:1370
+#: view/admin.php:1365
 msgid "Or remove the logo completely"
 msgstr ""
 
-#: view/admin.php:1371
+#: view/admin.php:1366
 msgid "The best video plugin for Wordpress"
 msgstr ""
 
-#: view/admin.php:1373
+#: view/admin.php:1368
 msgid "Easter sale!"
 msgstr ""
 
-#: view/admin.php:1373
+#: view/admin.php:1368
 msgid "All Licenses 20% Off"
 msgstr ""
 

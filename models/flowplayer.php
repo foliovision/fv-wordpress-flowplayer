@@ -109,8 +109,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
-    
-    
+
   }
   
   
@@ -121,14 +120,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     ?>
       <tr>
-        <td class="first"><label for="<?php echo $key; ?>"><?php _e($name, 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td class="first"><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
         <td>
           <p class="description">
             <input type="hidden" name="<?php echo $key; ?>" value="false" />
             <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true" <?php if( $checked ) echo 'checked="checked"'; ?> />
-            <?php if( $help ) _e($help, 'fv-wordpress-flowplayer'); ?>
+            <?php if( $help ) echo $help; ?>
             <?php if( $more ) : ?>
-              <span class="more"><?php _e($more, 'fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
             <?php endif; ?>
           </p>
         </td>
