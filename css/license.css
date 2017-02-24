@@ -126,6 +126,8 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   display: block;
   text-align: right;
 }
+td.aligntop { vertical-align:top; }
+td.aligntop > label { margin-top:4px; }
 #postbox-container-tab_skin .button-primary {
 	margin-left: 51%;
 }
