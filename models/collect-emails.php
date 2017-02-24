@@ -9,19 +9,18 @@ class FV_Player_Collect_Emails {
 
     add_action('admin_init', array($this, 'admin__add_meta_boxes'));
     add_filter('fv_flowplayer_popup_html', array($this, 'popup_html'));
-    add_filter('fv_player_settings_default', array($this, 'settings_default'));
+    add_filter('fv_player_conf_defaults', array($this, 'conf_defaults'));
     add_action('wp_ajax_nopriv_fv_wp_flowplayer_mailchimp_register', array($this, 'mailchimp_register'));
     add_action('wp_ajax_fv_wp_flowplayer_mailchimp_register', array($this, 'mailchimp_register'));
   }
 
-  public function settings_default($defaults) {
-    $defaults += array(
+  public function conf_defaults($conf) {
+    $conf += array(
         'mailchimp_api' => '',
         'mailchimp_list' => '',
         'mailchimp_label' => 'Subscribe for updates',
     );
-
-    return $defaults;
+    return $conf;
   }
 
   public function admin__add_meta_boxes() {

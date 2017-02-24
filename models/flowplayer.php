@@ -210,10 +210,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
     if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = '';
-    
-    
-    $conf += apply_filters('fv_player_settings_default', array());
-    
+
+
+    $conf = apply_filters('fv_player_conf_defaults', $conf);
+
     
 
     update_option( 'fvwpflowplayer', $conf );
