@@ -903,7 +903,7 @@ function fv_flowplayer_admin_video_ads(){
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tbody><tr>
-          <td style="width: 250px"><label for="pro[video_ads_default]"><?php _e('Default pre-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
+          <td style="width: 180px"><label for="pro[video_ads_default]"><?php _e('Default pre-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
           <td>
             <p class="description">
               <select disabled="true" id="pro[video_ads_default]" >
@@ -916,7 +916,7 @@ function fv_flowplayer_admin_video_ads(){
           </td>
         </tr>
         <tr>
-          <td style="width: 250px"><label for="pro[video_ads_postroll_default]"><?php _e('Default post-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
+          <td style="width: 180px"><label for="pro[video_ads_postroll_default]"><?php _e('Default post-roll ad:', 'fv-wordpress-flowplayer'); ?></label></td>
           <td>
             <p class="description">
               <select disabled="true" id="pro[video_ads_postroll_default]" >
@@ -929,7 +929,7 @@ function fv_flowplayer_admin_video_ads(){
           </td>
         </tr>
         <tr>
-          <td style="width: 250px"><label for="pro[video_ads_skip]"><?php _e('Default ad skip time', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td style="width: 180px"><label for="pro[video_ads_skip]"><?php _e('Default ad skip time', 'fv-wordpress-flowplayer'); ?>:</label></td>
           <td>
             <p class="description">
               <input disabled="true" class="small" id="pro[video_ads_skip]"  title="<?php _e('Enter value in seconds', 'fv-wordpress-flowplayer'); ?>" type="text" value="5">
@@ -1125,11 +1125,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>    
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
-<<<<<<< HEAD
-      <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( isset($fv_fp->conf['subtitleSize']) ) ? intval($fv_fp->conf['subtitleSize']) : '16'; ?>" 
-=======
-      <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize', 16 ) ); ?>" 
->>>>>>> refs/remotes/origin/master
+      <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize', 16 ) ); ?>" 
                  data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px!important; }"/></td>
     </tr>
     <tr>
