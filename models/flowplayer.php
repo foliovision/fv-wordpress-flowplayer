@@ -177,6 +177,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
     if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#00a7c8';
+    if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
 
     //
     
@@ -210,16 +211,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
     if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __('Check the amazing video here', 'fv-wordpress-flowplayer');
 
-    if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
 
     if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';
-
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
-
-
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
 
-
+    $conf = apply_filters('fv_player_conf_defaults', $conf);
 
 
     update_option( 'fvwpflowplayer', $conf );

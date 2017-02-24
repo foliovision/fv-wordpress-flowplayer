@@ -116,7 +116,7 @@ function fv_flowplayer_admin_amazon_options() {
             </td>
 					</tr>
           
-          <?php $fv_fp->_get_checkbox('Force the default expiration time', 'amazon_expire_force'); ?>
+          <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
           
           <?php do_action('fv_player_admin_amazon_options'); ?>
 <?php
@@ -775,11 +775,11 @@ function fv_flowplayer_admin_interface_options() {
 
           <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), 'Not recommended' ); ?>
           
-					<tr>    		
+					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
 						</td>
-					</tr>                                    
+					</tr>
 				</table>
 <?php
 }

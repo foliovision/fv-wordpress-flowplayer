@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2017-02-24 17:04+0100\n"
-"PO-Revision-Date: 2017-02-24 17:04+0100\n"
+"POT-Creation-Date: 2017-02-24 17:14+0100\n"
+"PO-Revision-Date: 2017-02-24 17:14+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -479,6 +479,10 @@ msgstr ""
 "Cada duración de vídeo está guardada y luego se usa como el tiempo de "
 "expiración. En el caso de que el tiempo de duración no está disponible, se "
 "usa este valor."
+
+#: view/admin.php:119
+msgid "Force the default expiration time"
+msgstr "Forzar el tiempo de expiración por defecto"
 
 #: view/admin.php:130
 msgid "Amazon Bucket"
@@ -1688,9 +1692,6 @@ msgstr ""
 #: view/wizard.php:423
 msgid "Ad Size"
 msgstr ""
-
-#~ msgid "Force the default expiration time"
-#~ msgstr "Forzar el tiempo de expiración por defecto"
 
 #, fuzzy
 #~ msgid ""

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
-"POT-Creation-Date: 2017-02-24 17:04+0100\n"
-"PO-Revision-Date: 2017-02-24 17:04+0100\n"
+"POT-Creation-Date: 2017-02-24 17:14+0100\n"
+"PO-Revision-Date: 2017-02-24 17:14+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -445,6 +445,10 @@ msgstr ""
 msgid ""
 "Each video duration is stored on post save and then used as the expire time. "
 "If the duration is not available, this value is used."
+msgstr ""
+
+#: view/admin.php:119
+msgid "Force the default expiration time"
 msgstr ""
 
 #: view/admin.php:130

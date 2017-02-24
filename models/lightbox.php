@@ -29,11 +29,25 @@ class FV_Player_lightbox {
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
 
+    add_filter('fv_player_conf_defaults', array( $this, 'conf_defaults' ) );
+
+
+    //TODO is this hack needed?
     $conf = get_option('fvwpflowplayer');
     if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
       (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
       add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     }
+  }
+
+  function conf_defaults($conf){
+    //TODO probbably not needed in the future
+    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] && !isset($conf['lightbox_improve_galleries']) )$conf['lightbox_improve_galleries'] = false;
+
+    if(!isset($conf['lightbox_images']))$conf['lightbox_images'] = false;
+    if(!isset($conf['lightbox_improve_galleries']))$conf['lightbox_improve_galleries'] = false;
+
+    return $conf;
   }
 
   function remove_pro_hooks() {
@@ -92,8 +106,8 @@ class FV_Player_lightbox {
       
       global $fv_fp;
 
-      $iConfWidth = intval($fv_fp->conf['width']);
-      $iConfHeight = intval($fv_fp->conf['height']);
+      $iConfWidth = intval($fv_fp->_get_option('width'));
+      $iConfHeight = intval($fv_fp->_get_option('height'));
 
       $iPlayerWidth = ( isset($aArgs[1]->aCurArgs['width']) && intval($aArgs[1]->aCurArgs['width']) > 0 ) ? intval($aArgs[1]->aCurArgs['width']) : $iConfWidth;
       $iPlayerHeight = ( isset($aArgs[1]->aCurArgs['height']) && intval($aArgs[1]->aCurArgs['height']) > 0 ) ? intval($aArgs[1]->aCurArgs['height']) : $iConfHeight;
@@ -361,7 +375,7 @@ class FV_Player_lightbox {
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_images" />
-          <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true') echo 'checked="checked"'; ?> />
+          <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if ($fv_fp->_get_option('lightbox_images')) echo 'checked="checked"'; ?> />
           <?php _e('Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-wordpress-flowplayer'); ?> <span class="more"><?php _e('Also works with WordPress <code>[gallery]</code> galleries - these are automatically switched to link to image URLs rather than the attachment pages.'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
@@ -371,7 +385,7 @@ class FV_Player_lightbox {
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_improve_galleries" />
-          <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if (!isset($fv_fp->conf['lightbox_improve_galleries']) || isset($fv_fp->conf['lightbox_improve_galleries']) && $fv_fp->conf['lightbox_improve_galleries'] == 'true') echo 'checked="checked"'; ?> />
+          <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if ($fv_fp->_get_option('lightbox_improve_galleries')) echo 'checked="checked"'; ?> />
           <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
