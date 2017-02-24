@@ -114,6 +114,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public function _get_checkbox( $name, $key, $help = false, $more = false ) {
+    $checked = $this->_get_option( $key );
+    if( is_array($key) ) {
+      $array_key = array_keys($key)[0];
+      $array_value = array_pop($key);
+      $key = $array_key.'['.$array_value.']';
+    }
+    ?>
+      <tr>
+        <td class="first"><label for="<?php echo $key; ?>"><?php _e($name, 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td>
+          <p class="description">
+            <input type="hidden" name="<?php echo $key; ?>" value="false" />
+            <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true" <?php if( $checked ) echo 'checked="checked"'; ?> />
+            <?php if( $help ) _e($help, 'fv-wordpress-flowplayer'); ?>
+            <?php if( $more ) : ?>
+              <span class="more"><?php _e($more, 'fv-wordpress-flowplayer'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+            <?php endif; ?>
+          </p>
+        </td>
+      </tr>
+    <?php
+  }
+  
+  
   private function _get_conf() {
     ///  Addition  2010/07/12  mv
     $conf = get_option( 'fvwpflowplayer' );  
@@ -191,6 +216,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $this->conf = $conf;
     return true;   
     /// End of addition
+  }
+  
+  
+  public function _get_option( $key, $default = false ) {
+    $value = false;
+    if( is_array($key) ) {
+      $tmp = $key;
+      $array_key = array_keys($tmp)[0];
+      $array_value = array_pop($tmp);      
+      if( isset($this->conf[$array_key]) && isset($this->conf[$array_key][$array_value]) ) {
+        $value = $this->conf[$array_key][$array_value];
+      }
+    } elseif( isset($this->conf[$key]) ) {
+      $value = $this->conf[$key];      
+    }
+    
+    if( $value === 'false' ) $value = $default;
+    
+    return $value;
   }
 
   
