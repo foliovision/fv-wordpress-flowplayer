@@ -209,7 +209,7 @@ class FV_Player_lightbox {
 
     return $content;
   }
-  
+
   function html_to_lightbox_videos_callback($matches) {
     $html = $matches[0];
     $caption = trim($matches[1]);
@@ -236,21 +236,21 @@ class FV_Player_lightbox {
     }
     
     return $html;
-  }  
+  }
 
   function html_lightbox_images($content) {
     global $fv_fp;
     //TODO IMAGES
- 
-    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
-      return $content;    
+
+    if( $fv_fp->_get_option('lightbox_images') === false ) {
+      return $content;
     }
 
     $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content);
     return $content;
   }
-  
-  function html_lightbox_images_callback($matches) {    
+
+  function html_lightbox_images_callback($matches) {
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
@@ -268,7 +268,7 @@ class FV_Player_lightbox {
     }
     return $aArgs;
   }
-  
+
   function parse_html_caption( $aArgs ) {
     if( isset($aArgs['caption_html']) && $aArgs['caption_html'] ) {
       $aArgs['caption'] = base64_decode($aArgs['caption_html']);

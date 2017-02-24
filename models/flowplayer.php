@@ -172,7 +172,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
-    
+    if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = '#000000';
+    if( !isset( $conf['subtitleBgAlpha'] ) ) $conf['subtitleBgAlpha'] = 0.5;
+    if( !isset( $conf['subtitleSize'] ) ) $conf['subtitleSize'] = 16;
     
     //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
@@ -209,8 +211,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
-    if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = '';
-    
+    if( !isset( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __('Check the amazing video here', 'fv-wordpress-flowplayer');
+
+    if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
+
+    if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';
+
+    if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
+
+
+    if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
+
+
+
 
     update_option( 'fvwpflowplayer', $conf );
     $this->conf = $conf;
@@ -532,7 +545,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $iMarginBottom = intval($this->_get_option('marginBottom')) > -1 ? intval( $this->_get_option('marginBottom') ) : '28';
     
-    $sSubtitleBgColor = $this->_get_option('subtitleBgColor', '#000000');
+    $sSubtitleBgColor = $this->_get_option('subtitleBgColor');
     
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
@@ -607,7 +620,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $fv_fp->_get_option('subtitleBgAlpha', 0.5); ?>); }
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $fv_fp->_get_option('subtitleBgAlpha'); ?>); }
   
     <?php if( $fv_fp->_get_option('player-position') && 'left' == $fv_fp->_get_option('player-position') ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>

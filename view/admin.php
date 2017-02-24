@@ -257,7 +257,7 @@ function fv_flowplayer_admin_default_options() {
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select Logo" />
                 
                 <?php
-                $value = $fv_fp->_get_option('logoPosition','bottom-left');
+                $value = $fv_fp->_get_option('logoPosition');
                 ?>
                 <select name="logoPosition" class="small">
                   <option value="bottom-left"><?php _e('Position', 'fv-wordpress-flowplayer'); ?></option>                  
@@ -276,7 +276,7 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="3">
                 <p class="description">
                   <?php
-                  $value = $fv_fp->_get_option('liststyle', 'horizontal');
+                  $value = $fv_fp->_get_option('liststyle');
                   ?>
                   <select id="liststyle" name="liststyle">
                     <option value="horizontal"<?php if( $value == 'horizontal' ) echo ' selected="selected"'; ?> ><?php _e('Horizontal', 'fv-wordpress-flowplayer'); ?></option>
@@ -307,7 +307,7 @@ function fv_flowplayer_admin_default_options() {
 							<td colspan="3">
                 <p class="description">
                   <?php
-                  $value = $fv_fp->_get_option('ui_speed_increment', 0.25);
+                  $value = $fv_fp->_get_option('ui_speed_increment');
                   ?>
                   <select id="ui_speed_increment" name="ui_speed_increment">
                     <option value="0.1"   <?php if( $value == 0.1 ) echo ' selected="selected"'; ?> >0.1</option>
@@ -666,7 +666,7 @@ function fv_flowplayer_admin_popups(){
       <tr>
         <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <?php $cva_id = $fv_fp->_get_option('popups_default', 'no'); ?>
+          <?php $cva_id = $fv_fp->_get_option('popups_default'); ?>
           <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
           <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
@@ -1125,17 +1125,17 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>    
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize', 16 ) ); ?>" 
+      <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
                  data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px!important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor', '#000000' ) ); ?>" 
+      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor' ) ); ?>"
                  data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%)!important; }"/></td>
     </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgAlpha', '0.5') ); ?>" 
+      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgAlpha') ); ?>"
                  data-fv-preview=""/></td>
     </tr>
     <tr>    		

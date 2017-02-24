@@ -74,8 +74,8 @@ class flowplayer_frontend extends flowplayer
 		/*
      *  Set common variables
      */
-		$width = $this->_get_option('width', 640);
-		$height = $this->_get_option('height', 360);
+		$width = $this->_get_option('width');
+		$height = $this->_get_option('height');
 		if (isset($this->aCurArgs['width'])&&!empty($this->aCurArgs['width'])) $width = trim($this->aCurArgs['width']);
 		if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);		
 		        
@@ -774,7 +774,7 @@ class flowplayer_frontend extends flowplayer
     if ( !empty($this->aCurArgs['popup'])) {
       $popup = trim($this->aCurArgs['popup']);
     } else {
-      $popup = $this->_get_option('popups_default', 'no');
+      $popup = $this->_get_option('popups_default');
     }
     if (stripos($popup, '<!--fv_flowplayer_base64_encoded-->') !== false) {
       $popup = str_replace('<!--fv_flowplayer_base64_encoded-->', '', $popup);
@@ -820,7 +820,7 @@ class flowplayer_frontend extends flowplayer
     $rtmp_server = false;
     if( !empty($this->aCurArgs['rtmp']) ) {
       $rtmp_server = trim( $this->aCurArgs['rtmp'] );
-    } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && stripos($this->_get_option('rtmp',$rmpt === false ) ) ) {
+    } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && stripos($this->_get_option('rtmp'), $rtmp ) === false  ) {
       if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
         $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
         $rtmp_server = $aTMP[0];
@@ -996,7 +996,7 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_sharing_html() {
-    $sSharingText = $this->_get_option('sharing_email_text', __('Check the amazing video here', 'fv-wordpress-flowplayer') );
+    $sSharingText = $this->_get_option('sharing_email_text' );
     
     if( isset($this->aCurArgs['share']) ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
