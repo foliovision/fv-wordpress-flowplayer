@@ -232,7 +232,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $value = $this->conf[$key];      
     }
     
-    if( $value === 'false' ) $value = $default;
+    if( $value === 'false' || $value === '' ) $value = $default;
     
     if( is_string($value) ) $value = trim($value);
     
