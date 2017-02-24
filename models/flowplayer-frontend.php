@@ -394,7 +394,7 @@ class flowplayer_frontend extends flowplayer
 				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
     
 
-				if( $this->_get_option('allowfullscreen') ) {
+				if( !$this->_get_option('allowfullscreen') ) {
 					$attributes['data-fullscreen'] = 'false';
 				}       
 	
@@ -997,7 +997,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_sharing_html() {
     $sSharingText = $this->_get_option('sharing_email_text', __('Check the amazing video here', 'fv-wordpress-flowplayer') );
-
+    
     if( isset($this->aCurArgs['share']) ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
