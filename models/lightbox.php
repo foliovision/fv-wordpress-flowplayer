@@ -78,7 +78,7 @@ class FV_Player_lightbox {
     if ($sType === 'video') {
       add_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
     } else {
-      remove_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
+      remove_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11);
     }
 
     return $sType;
@@ -383,7 +383,7 @@ class FV_Player_lightbox {
       </td>
     </tr>
     <tr id="lightbox-wp-galleries">
-      <td style="width: 250px"><label for="lightbox_images"><?php _e('Use video lightbox for WP Galleries', 'fv-wordpress-flowplayer'); ?>:</label></td>
+      <td style="width: 250px"><label for="lightbox_improve_galleries"><?php _e('Use video lightbox for WP Galleries', 'fv-wordpress-flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_improve_galleries" />
