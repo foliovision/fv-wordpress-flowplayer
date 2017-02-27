@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2017-02-24 17:14+0100\n"
-"PO-Revision-Date: 2017-02-24 17:14+0100\n"
+"POT-Creation-Date: 2017-02-27 14:54+0100\n"
+"PO-Revision-Date: 2017-02-27 14:54+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -321,15 +321,15 @@ msgid ""
 "website]"
 msgstr ""
 
-#: models/flowplayer.php:211 view/admin.php:293
+#: models/flowplayer.php:213 view/admin.php:293
 msgid "Check the amazing video here"
 msgstr ""
 
-#: models/lightbox.php:353 view/admin.php:829
+#: models/lightbox.php:369 view/admin.php:829
 msgid "Enable video lightbox"
 msgstr "Video Lightbox aktivieren"
 
-#: models/lightbox.php:353
+#: models/lightbox.php:369
 msgid ""
 "You can also put in <code>&lt;a href=\"http://path.to.your/video.mp4\" class="
 "\"colorbox\"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed "
@@ -339,11 +339,11 @@ msgstr ""
 "\"colorbox\"&gt;Your link title&lt;/a&gt;</code> verwenden, um ein Video "
 "unkompliziert in einer Lightbox darzustellen."
 
-#: models/lightbox.php:360
+#: models/lightbox.php:376
 msgid "Use video lightbox for images as well"
 msgstr "Video Lightbox auch für Bilder verwenden"
 
-#: models/lightbox.php:365
+#: models/lightbox.php:381
 msgid ""
 "Will group images as well as videos into the same lightbox gallery. Turn "
 "<strong>off</strong> your lightbox plugin when using this."
@@ -351,18 +351,18 @@ msgstr ""
 "Gruppiert Bilder sowie Videos in derselben Lightbox Galerie. Schalten Sie "
 "Ihren Lightbox Plugin <strong>aus</strong>, wenn Sie ihn benutzen."
 
-#: models/lightbox.php:365
+#: models/lightbox.php:381
 msgid ""
 "Also works with WordPress <code>[gallery]</code> galleries - these are "
 "automatically switched to link to image URLs rather than the attachment "
 "pages."
 msgstr ""
 
-#: models/lightbox.php:370
+#: models/lightbox.php:386
 msgid "Use video lightbox for WP Galleries"
 msgstr ""
 
-#: models/lightbox.php:375
+#: models/lightbox.php:391
 msgid "Your gallery litems will link to image files directly to allow this."
 msgstr ""
 
@@ -566,9 +566,24 @@ msgstr "Weitere gesicherte Amazon S3 Buckets hinzufügen"
 msgid "Autoplay"
 msgstr "Autoplay"
 
+#: view/admin.php:191
+msgid ""
+"We make sure only one video per page autoplays. Note that mobile devices "
+"don't support autoplay."
+msgstr ""
+"Wir stellen sicher, dass nur ein Video pro Seite automatisch abgespielt "
+"wird. Vergessen Sie nicht, dass mobile Geräte die automatische Wiedergabe "
+"nicht unterstützen."
+
 #: view/admin.php:192
 msgid "Auto Buffering"
 msgstr "Automatisches Puffern"
+
+#: view/admin.php:192
+msgid "Works for first 2 videos on the page only, to preserve your bandwidth."
+msgstr ""
+"Funktioniert nur für die ersten 2 Videos auf der Seite, um Bandbreite zu "
+"schonen."
 
 #: view/admin.php:195
 msgid "Default Video Size"
@@ -596,17 +611,37 @@ msgstr "Standard Volumen"
 msgid "Disable Admin Video Checker"
 msgstr ""
 
+#: view/admin.php:213
+msgid ""
+"Checks your video encoding when you open a post with video as admin. "
+"Notifies you about possible playback issues."
+msgstr ""
+"Überprüft Ihr Video-Encoding, wenn Sie einen Beitrag mit Video als Admin "
+"öffnen. Informiert Sie über mögliche Probleme bei der Wiedergabe."
+
 #: view/admin.php:214
 msgid "Disable Embed Button"
 msgstr "Deaktiviere Einbetten Schaltfläche"
+
+#: view/admin.php:214
+msgid "Removes embed button from top bar."
+msgstr "Entfernt die 'Einbetten' Schaltfläche von der Leiste oben."
 
 #: view/admin.php:215
 msgid "Disable Playlist Autoadvance"
 msgstr ""
 
+#: view/admin.php:215
+msgid "Playlist won't play the next video automatically."
+msgstr ""
+
 #: view/admin.php:216
 msgid "Disable Sharing"
 msgstr "Sharing deaktivieren"
+
+#: view/admin.php:216
+msgid "Removes sharing buttons from top bar."
+msgstr "Entfernt 'Sharing' Schaltflächen von der Leiste oben."
 
 #: view/admin.php:219
 msgid "Flash Streaming Server"
@@ -621,6 +656,10 @@ msgstr ""
 #: view/admin.php:227
 msgid "Fullscreen Button"
 msgstr "Schaltfläche für Vollbild"
+
+#: view/admin.php:227
+msgid "Adds fullscreen button to player top bar."
+msgstr "Fügt Vollbild Schaltfläche in die obere Leiste des Videospieler ein"
 
 #: view/admin.php:230
 msgid "Google Analytics ID"
@@ -666,6 +705,10 @@ msgstr "Oben rechts"
 msgid "Play Button"
 msgstr "Play Taste"
 
+#: view/admin.php:267
+msgid "Adds play button to player controlbar."
+msgstr "Fügt die Play-Taste in die Player Kontrollleiste ein."
+
 #: view/admin.php:270
 msgid "Playlist style"
 msgstr "Playlist Stil"
@@ -694,6 +737,14 @@ msgstr "Geben Sie Ihren Playlist Standardstil hier ein"
 msgid "Popup Box"
 msgstr "Popup Box"
 
+#: view/admin.php:287
+msgid ""
+"Shows a generic \"Would you like to replay the video?\" message at the end "
+"of each video."
+msgstr ""
+"Zeigt eine generische \"Möchten Sie das Video abzuspielen? \" Nachricht am "
+"Ende jedes Video."
+
 #: view/admin.php:290
 msgid "Sharing Text"
 msgstr ""
@@ -701,6 +752,14 @@ msgstr ""
 #: view/admin.php:298 view/admin.php:770 view/wizard.old.php:334
 msgid "Speed Buttons"
 msgstr "Geschwindigkeit-Tasten"
+
+#: view/admin.php:298
+msgid ""
+"Speed buttons control playback speed and only work in HTML5 compatible "
+"browsers."
+msgstr ""
+"Tasten für Wiedergabegeschwindigkeit funktionieren nur in HTML5 kompatiblen "
+"Browsern."
 
 #: view/admin.php:301
 msgid "Speed Step"
@@ -726,6 +785,12 @@ msgstr ""
 #: view/admin.php:323
 msgid "Subtitles On By Default"
 msgstr "Untertitel automatisch anzeigen"
+
+#: view/admin.php:323
+msgid "Normally you have to hit a button in controlbar to turn on subtitles."
+msgstr ""
+"Normalerweise müssen Sie auf die Schaltfläche in der Kontrollleiste klicken, "
+"um Untertitel aktivieren."
 
 #: view/admin.php:328
 msgid ""
@@ -804,17 +869,61 @@ msgstr ""
 msgid "Always use fixed size player"
 msgstr "Immer die feste Spielergröße verwenden"
 
+#: view/admin.php:527
+msgid "Enable to force video size at cost of loosing the video responsiveness."
+msgstr ""
+"Aktivieren, um die Videogröße zu Lasten der Video Reaktionszeit zu forcieren."
+
 #: view/admin.php:528
 msgid "Colorbox Compatibility"
 msgstr "Colorbox Kompatibilität"
+
+#: view/admin.php:528
+msgid ""
+"Enable if your theme is using colorbox lightbox to show content and clones "
+"the HTML content into it."
+msgstr ""
+"Aktivieren, wenn Ihr Theme colorbox lightbox  benutzt, um Inhalte anzuzeigen "
+"und den HTML Inhalt dort hinein kopiert."
 
 #: view/admin.php:529
 msgid "Disable saving of color settings into a static file"
 msgstr ""
 "Speichern von Farben-Einstellungen in eine statische Datei deaktivieren"
 
+#: view/admin.php:529
+msgid ""
+"Normally the player CSS configuration is stored in wp-content/fv-player-"
+"custom/style-{blog_id}.css."
+msgstr ""
+"Normalerweise wird die Player CSS Konfiguration in wp-content/fv-player-"
+"custom/style-{blog_id}.css gespeichert."
+
+#: view/admin.php:529
+msgid ""
+"We do this to avoid outputting CSS code into your site <head>. Don't edit "
+"this file though, as it will be overwritten by plugin update or saving its "
+"options!"
+msgstr ""
+"Wir tun dies, um zu vermeiden, dass CSS-Code in den <head> Teil der Webseite "
+"ausgegeben wird. Bearbeiten Sie nicht diese Datei, da sie durch Plugin-"
+"Updates oder beim Speichern der Einstellungen überschrieben wird!"
+
 #: view/admin.php:530
 msgid "Enable HLS.js"
+msgstr ""
+
+#: view/admin.php:530
+msgid "Beta version, allows HLS playback in all modern browsers."
+msgstr ""
+
+#: view/admin.php:530
+msgid ""
+"HLS normally plays only on iOS, Mac Safari and new Android versions. FV "
+"Player increases the compatibility by using Flash engine for HLS. With this "
+"option you can go even further and modern browsers supporting MediaSource "
+"will play HLS even without Flash. Make sure you setup the required CORS "
+"headers."
 msgstr ""
 
 #: view/admin.php:533
@@ -850,6 +959,14 @@ msgstr ""
 msgid "Fit scaling"
 msgstr "Videogröße anpassen"
 
+#: view/admin.php:566
+msgid ""
+"Original aspect ratio of the video will be used to display the video - for "
+"troubleshooting of fullscreen issues."
+msgstr ""
+"Urprüngliches Seitenverhältnis des Videos wird für die Anzeige verwendet - "
+"für die Fehlerbehebung von Vollbildanzeigeproblemen."
+
 #: view/admin.php:567
 msgid "Handle WordPress <code><small>[video]</small></code> shortcodes"
 msgstr "WordPress <code><small>[video]</small></code> shortcodes bearbeiten"
@@ -858,25 +975,104 @@ msgstr "WordPress <code><small>[video]</small></code> shortcodes bearbeiten"
 msgid "Load FV Flowplayer JS everywhere"
 msgstr "FV Flowplayer JS überall laden"
 
+#: view/admin.php:568
+msgid ""
+"If you use some special JavaScript integration you might prefer this option."
+msgstr ""
+"Wenn Sie spezielles JavaScript verwenden, um unseren Spieler einfügen, "
+"können Sie diese Option verwenden."
+
+#: view/admin.php:568
+msgid ""
+"Otherwise our JavaScript only loads if the shortcode is found in any of the "
+"posts being currently displayed."
+msgstr ""
+"Andernfalls lädt sich unser JavaScript nur, wenn ist der shortcode in "
+"irgendeine Beitrag gefunden der ist aktuell angezeigt."
+
 #: view/admin.php:569
 msgid "Parse old shortcodes with commas"
 msgstr "Alte Shortcodes mit Komma einfügen"
 
+#: view/admin.php:569
+msgid ""
+"Older versions of this plugin used commas to sepparate shortcode parameters."
+msgstr ""
+"Ältere Versionen dieses Plugins verwenden Kommas, um den shortcode Parameter "
+"voneinander zu trennen."
+
+#: view/admin.php:569
+msgid ""
+"This option will make sure it works with current version. Turn this off if "
+"you have some problems with display or other plugins which use shortcodes."
+msgstr ""
+"Diese Option wird sicherstellen, dass es mit der aktuellen Version "
+"funktionieren wird. Schalten Sie diese Option aus, wenn Sie Problemen mit "
+"dem Anzeige haben oder mit anderen Plugins, die shortcodes benutzen."
+
 #: view/admin.php:570
 msgid "Parse Vimeo and YouTube links"
+msgstr ""
+
+#: view/admin.php:570
+msgid ""
+"Affects comments, bbPress and BuddyPress. These links will be displayed as "
+"videos."
+msgstr ""
+
+#: view/admin.php:570
+msgid ""
+"This option makes most sense together with FV Player Pro as it embeds these "
+"videos using FV Player. Enables use of shortcodes in comments and bbPress."
 msgstr ""
 
 #: view/admin.php:571
 msgid "Post Thumbnail"
 msgstr "Beitrags-Bild"
 
+#: view/admin.php:571
+msgid ""
+"Setting a video splash screen from the media library will automatically make "
+"it the splash image if there is none."
+msgstr ""
+"Ein Video-Begrüßungsbildschirm aus der Medienbibliothek Einstellung wird es "
+"automatisch den Splash-Bild machen, wenn es keine gibt."
+
 #: view/admin.php:572
 msgid "Prefer Flash player by default"
 msgstr "Flash-Player standardmäßig bevorzugen"
 
+#: view/admin.php:572
+msgid "Provides greater compatibility."
+msgstr "Bietet bessere Kompatibilität."
+
+#: view/admin.php:572
+msgid ""
+"We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of "
+"this setting."
+msgstr ""
+"Wir verwenden Flash für MP4-Dateien in IE9-10 und M4V-Dateien in Firefox "
+"unabhängig von dieser Einstellung."
+
 #: view/admin.php:573
 msgid "RTMP bufferTime tweak"
 msgstr "RTMP bufferTime Verbeserung"
+
+#: view/admin.php:573
+msgid "Use if your live streams are not smooth."
+msgstr "Aktivieren, wenn die Live Streams ruckeln"
+
+#: view/admin.php:573
+msgid ""
+"Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
+"actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to set "
+"bufferTime to 0 for live streams, but if your stream is not smooth, you can "
+"use this setting."
+msgstr ""
+"Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
+"actionscript/3/flash/net/NetStream.html#bufferTime\">empfiehlt</a> empfiehlt "
+"den bufferTime auf 0 für Live-Streams zu setzen, aber wenn Ihr Stream nicht "
+"glatt ist, können Sie diese Einstellung verwenden."
 
 #: view/admin.php:576
 msgid "Scan video length"
@@ -912,8 +1108,22 @@ msgstr "Aktuell %s Beiträge in der Warteschlange."
 msgid "Use iframe embedding"
 msgstr "Iframe embed verwenden"
 
+#: view/admin.php:614
+msgid ""
+"Beta version! New kind of embedding which supports all the features in "
+"embedded player."
+msgstr ""
+"Betaversion! Neue Art von Einbettung, die alle Funktionen in Embedded-Player "
+"unterstützt."
+
 #: view/admin.php:615
 msgid "Add featured image automatically"
+msgstr ""
+
+#: view/admin.php:615
+msgid ""
+"If the featured image is not set, splash image of the first player will be "
+"used."
 msgstr ""
 
 #: view/admin.php:662
@@ -967,6 +1177,10 @@ msgstr "Ausrichtung"
 msgid "Allow User Uploads"
 msgstr "Benutzer-Uploads ermöglichen"
 
+#: view/admin.php:761
+msgid "Enables the WP Media Library integraton"
+msgstr ""
+
 #: view/admin.php:763 view/admin.php:1012 view/wizard.old.php:320
 msgid "Controlbar"
 msgstr "Kontrollleiste"
@@ -1006,8 +1220,18 @@ msgstr "Untertitel"
 msgid "Video Actions"
 msgstr ""
 
+#: view/admin.php:772
+msgid ""
+"Enables end of playlist actions like Loop, Redirect, Show popup and Show "
+"splash screen"
+msgstr ""
+
 #: view/admin.php:776
 msgid "Enable old interface"
+msgstr ""
+
+#: view/admin.php:776
+msgid "Not recommended"
 msgstr ""
 
 #: view/admin.php:796
@@ -1705,165 +1929,8 @@ msgstr ""
 msgid "Ad Size"
 msgstr ""
 
-#~ msgid ""
-#~ "We make sure only one video per page autoplays. Note that mobile devices "
-#~ "don't support autoplay."
-#~ msgstr ""
-#~ "Wir stellen sicher, dass nur ein Video pro Seite automatisch abgespielt "
-#~ "wird. Vergessen Sie nicht, dass mobile Geräte die automatische Wiedergabe "
-#~ "nicht unterstützen."
-
-#~ msgid ""
-#~ "Works for first 2 videos on the page only, to preserve your bandwidth."
-#~ msgstr ""
-#~ "Funktioniert nur für die ersten 2 Videos auf der Seite, um Bandbreite zu "
-#~ "schonen."
-
 #~ msgid "Disable Admin Video Checker:"
 #~ msgstr "Admin Video Controller deaktivieren"
-
-#~ msgid ""
-#~ "Checks your video encoding when you open a post with video as admin. "
-#~ "Notifies you about possible playback issues."
-#~ msgstr ""
-#~ "Überprüft Ihr Video-Encoding, wenn Sie einen Beitrag mit Video als Admin "
-#~ "öffnen. Informiert Sie über mögliche Probleme bei der Wiedergabe."
-
-#~ msgid "Removes embed button from top bar."
-#~ msgstr "Entfernt die 'Einbetten' Schaltfläche von der Leiste oben."
-
-#~ msgid "Removes sharing buttons from top bar."
-#~ msgstr "Entfernt 'Sharing' Schaltflächen von der Leiste oben."
-
-#~ msgid "Adds fullscreen button to player top bar."
-#~ msgstr "Fügt Vollbild Schaltfläche in die obere Leiste des Videospieler ein"
-
-#~ msgid "Adds play button to player controlbar."
-#~ msgstr "Fügt die Play-Taste in die Player Kontrollleiste ein."
-
-#~ msgid ""
-#~ "Shows a generic \"Would you like to replay the video?\" message at the "
-#~ "end of each video."
-#~ msgstr ""
-#~ "Zeigt eine generische \"Möchten Sie das Video abzuspielen? \" Nachricht "
-#~ "am Ende jedes Video."
-
-#~ msgid ""
-#~ "Speed buttons control playback speed and only work in HTML5 compatible "
-#~ "browsers."
-#~ msgstr ""
-#~ "Tasten für Wiedergabegeschwindigkeit funktionieren nur in HTML5 "
-#~ "kompatiblen Browsern."
-
-#~ msgid ""
-#~ "Normally you have to hit a button in controlbar to turn on subtitles."
-#~ msgstr ""
-#~ "Normalerweise müssen Sie auf die Schaltfläche in der Kontrollleiste "
-#~ "klicken, um Untertitel aktivieren."
-
-#~ msgid ""
-#~ "Enable to force video size at cost of loosing the video responsiveness."
-#~ msgstr ""
-#~ "Aktivieren, um die Videogröße zu Lasten der Video Reaktionszeit zu "
-#~ "forcieren."
-
-#~ msgid ""
-#~ "Enable if your theme is using colorbox lightbox to show content and "
-#~ "clones the HTML content into it."
-#~ msgstr ""
-#~ "Aktivieren, wenn Ihr Theme colorbox lightbox  benutzt, um Inhalte "
-#~ "anzuzeigen und den HTML Inhalt dort hinein kopiert."
-
-#~ msgid ""
-#~ "Normally the player CSS configuration is stored in wp-content/fv-player-"
-#~ "custom/style-{blog_id}.css."
-#~ msgstr ""
-#~ "Normalerweise wird die Player CSS Konfiguration in wp-content/fv-player-"
-#~ "custom/style-{blog_id}.css gespeichert."
-
-#~ msgid ""
-#~ "We do this to avoid outputting CSS code into your site <head>. Don't edit "
-#~ "this file though, as it will be overwritten by plugin update or saving "
-#~ "its options!"
-#~ msgstr ""
-#~ "Wir tun dies, um zu vermeiden, dass CSS-Code in den <head> Teil der "
-#~ "Webseite ausgegeben wird. Bearbeiten Sie nicht diese Datei, da sie durch "
-#~ "Plugin-Updates oder beim Speichern der Einstellungen überschrieben wird!"
-
-#~ msgid ""
-#~ "Original aspect ratio of the video will be used to display the video - "
-#~ "for troubleshooting of fullscreen issues."
-#~ msgstr ""
-#~ "Urprüngliches Seitenverhältnis des Videos wird für die Anzeige verwendet "
-#~ "- für die Fehlerbehebung von Vollbildanzeigeproblemen."
-
-#~ msgid ""
-#~ "If you use some special JavaScript integration you might prefer this "
-#~ "option."
-#~ msgstr ""
-#~ "Wenn Sie spezielles JavaScript verwenden, um unseren Spieler einfügen, "
-#~ "können Sie diese Option verwenden."
-
-#~ msgid ""
-#~ "Otherwise our JavaScript only loads if the shortcode is found in any of "
-#~ "the posts being currently displayed."
-#~ msgstr ""
-#~ "Andernfalls lädt sich unser JavaScript nur, wenn ist der shortcode in "
-#~ "irgendeine Beitrag gefunden der ist aktuell angezeigt."
-
-#~ msgid ""
-#~ "Older versions of this plugin used commas to sepparate shortcode "
-#~ "parameters."
-#~ msgstr ""
-#~ "Ältere Versionen dieses Plugins verwenden Kommas, um den shortcode "
-#~ "Parameter voneinander zu trennen."
-
-#~ msgid ""
-#~ "This option will make sure it works with current version. Turn this off "
-#~ "if you have some problems with display or other plugins which use "
-#~ "shortcodes."
-#~ msgstr ""
-#~ "Diese Option wird sicherstellen, dass es mit der aktuellen Version "
-#~ "funktionieren wird. Schalten Sie diese Option aus, wenn Sie Problemen mit "
-#~ "dem Anzeige haben oder mit anderen Plugins, die shortcodes benutzen."
-
-#~ msgid ""
-#~ "Setting a video splash screen from the media library will automatically "
-#~ "make it the splash image if there is none."
-#~ msgstr ""
-#~ "Ein Video-Begrüßungsbildschirm aus der Medienbibliothek Einstellung wird "
-#~ "es automatisch den Splash-Bild machen, wenn es keine gibt."
-
-#~ msgid "Provides greater compatibility."
-#~ msgstr "Bietet bessere Kompatibilität."
-
-#~ msgid ""
-#~ "We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless "
-#~ "of this setting."
-#~ msgstr ""
-#~ "Wir verwenden Flash für MP4-Dateien in IE9-10 und M4V-Dateien in Firefox "
-#~ "unabhängig von dieser Einstellung."
-
-#~ msgid "Use if your live streams are not smooth."
-#~ msgstr "Aktivieren, wenn die Live Streams ruckeln"
-
-#~ msgid ""
-#~ "Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
-#~ "actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to "
-#~ "set bufferTime to 0 for live streams, but if your stream is not smooth, "
-#~ "you can use this setting."
-#~ msgstr ""
-#~ "Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
-#~ "actionscript/3/flash/net/NetStream.html#bufferTime\">empfiehlt</a> "
-#~ "empfiehlt den bufferTime auf 0 für Live-Streams zu setzen, aber wenn Ihr "
-#~ "Stream nicht glatt ist, können Sie diese Einstellung verwenden."
-
-#~ msgid ""
-#~ "Beta version! New kind of embedding which supports all the features in "
-#~ "embedded player."
-#~ msgstr ""
-#~ "Betaversion! Neue Art von Einbettung, die alle Funktionen in Embedded-"
-#~ "Player unterstützt."
 
 #~ msgid "Playlist captions"
 #~ msgstr "Wiedergabeliste Titel"

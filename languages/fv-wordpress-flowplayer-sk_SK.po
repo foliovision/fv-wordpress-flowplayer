@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV Wordpress Flowplayer v2.3.13\n"
-"POT-Creation-Date: 2017-02-24 17:14+0100\n"
-"PO-Revision-Date: 2017-02-24 17:14+0100\n"
+"POT-Creation-Date: 2017-02-27 14:54+0100\n"
+"PO-Revision-Date: 2017-02-27 14:54+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: sk_SK\n"
@@ -307,43 +307,43 @@ msgid ""
 "website]"
 msgstr ""
 
-#: models/flowplayer.php:211 view/admin.php:293
+#: models/flowplayer.php:213 view/admin.php:293
 msgid "Check the amazing video here"
 msgstr ""
 
-#: models/lightbox.php:353 view/admin.php:829
+#: models/lightbox.php:369 view/admin.php:829
 msgid "Enable video lightbox"
 msgstr ""
 
-#: models/lightbox.php:353
+#: models/lightbox.php:369
 msgid ""
 "You can also put in <code>&lt;a href=\"http://path.to.your/video.mp4\" class="
 "\"colorbox\"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed "
 "video."
 msgstr ""
 
-#: models/lightbox.php:360
+#: models/lightbox.php:376
 msgid "Use video lightbox for images as well"
 msgstr ""
 
-#: models/lightbox.php:365
+#: models/lightbox.php:381
 msgid ""
 "Will group images as well as videos into the same lightbox gallery. Turn "
 "<strong>off</strong> your lightbox plugin when using this."
 msgstr ""
 
-#: models/lightbox.php:365
+#: models/lightbox.php:381
 msgid ""
 "Also works with WordPress <code>[gallery]</code> galleries - these are "
 "automatically switched to link to image URLs rather than the attachment "
 "pages."
 msgstr ""
 
-#: models/lightbox.php:370
+#: models/lightbox.php:386
 msgid "Use video lightbox for WP Galleries"
 msgstr ""
 
-#: models/lightbox.php:375
+#: models/lightbox.php:391
 msgid "Your gallery litems will link to image files directly to allow this."
 msgstr ""
 
@@ -530,8 +530,18 @@ msgstr ""
 msgid "Autoplay"
 msgstr "Automatické prehratie"
 
+#: view/admin.php:191
+msgid ""
+"We make sure only one video per page autoplays. Note that mobile devices "
+"don't support autoplay."
+msgstr ""
+
 #: view/admin.php:192
 msgid "Auto Buffering"
+msgstr ""
+
+#: view/admin.php:192
+msgid "Works for first 2 videos on the page only, to preserve your bandwidth."
 msgstr ""
 
 #: view/admin.php:195
@@ -561,16 +571,34 @@ msgstr "Predvoleny kod"
 msgid "Disable Admin Video Checker"
 msgstr ""
 
+#: view/admin.php:213
+msgid ""
+"Checks your video encoding when you open a post with video as admin. "
+"Notifies you about possible playback issues."
+msgstr ""
+
 #: view/admin.php:214
 msgid "Disable Embed Button"
+msgstr ""
+
+#: view/admin.php:214
+msgid "Removes embed button from top bar."
 msgstr ""
 
 #: view/admin.php:215
 msgid "Disable Playlist Autoadvance"
 msgstr ""
 
+#: view/admin.php:215
+msgid "Playlist won't play the next video automatically."
+msgstr ""
+
 #: view/admin.php:216
 msgid "Disable Sharing"
+msgstr ""
+
+#: view/admin.php:216
+msgid "Removes sharing buttons from top bar."
 msgstr ""
 
 #: view/admin.php:219
@@ -583,6 +611,10 @@ msgstr ""
 
 #: view/admin.php:227
 msgid "Fullscreen Button"
+msgstr ""
+
+#: view/admin.php:227
+msgid "Adds fullscreen button to player top bar."
 msgstr ""
 
 #: view/admin.php:230
@@ -630,6 +662,10 @@ msgstr ""
 msgid "Play Button"
 msgstr ""
 
+#: view/admin.php:267
+msgid "Adds play button to player controlbar."
+msgstr ""
+
 #: view/admin.php:270
 msgid "Playlist style"
 msgstr ""
@@ -658,12 +694,24 @@ msgstr ""
 msgid "Popup Box"
 msgstr ""
 
+#: view/admin.php:287
+msgid ""
+"Shows a generic \"Would you like to replay the video?\" message at the end "
+"of each video."
+msgstr ""
+
 #: view/admin.php:290
 msgid "Sharing Text"
 msgstr ""
 
 #: view/admin.php:298 view/admin.php:770 view/wizard.old.php:334
 msgid "Speed Buttons"
+msgstr ""
+
+#: view/admin.php:298
+msgid ""
+"Speed buttons control playback speed and only work in HTML5 compatible "
+"browsers."
 msgstr ""
 
 #: view/admin.php:301
@@ -687,6 +735,10 @@ msgstr ""
 #, fuzzy
 msgid "Subtitles On By Default"
 msgstr "Titulky neboli nájdené"
+
+#: view/admin.php:323
+msgid "Normally you have to hit a button in controlbar to turn on subtitles."
+msgstr ""
 
 #: view/admin.php:328
 msgid ""
@@ -746,16 +798,52 @@ msgstr ""
 msgid "Always use fixed size player"
 msgstr ""
 
+#: view/admin.php:527
+msgid "Enable to force video size at cost of loosing the video responsiveness."
+msgstr ""
+
 #: view/admin.php:528
 msgid "Colorbox Compatibility"
+msgstr ""
+
+#: view/admin.php:528
+msgid ""
+"Enable if your theme is using colorbox lightbox to show content and clones "
+"the HTML content into it."
 msgstr ""
 
 #: view/admin.php:529
 msgid "Disable saving of color settings into a static file"
 msgstr ""
 
+#: view/admin.php:529
+msgid ""
+"Normally the player CSS configuration is stored in wp-content/fv-player-"
+"custom/style-{blog_id}.css."
+msgstr ""
+
+#: view/admin.php:529
+msgid ""
+"We do this to avoid outputting CSS code into your site <head>. Don't edit "
+"this file though, as it will be overwritten by plugin update or saving its "
+"options!"
+msgstr ""
+
 #: view/admin.php:530
 msgid "Enable HLS.js"
+msgstr ""
+
+#: view/admin.php:530
+msgid "Beta version, allows HLS playback in all modern browsers."
+msgstr ""
+
+#: view/admin.php:530
+msgid ""
+"HLS normally plays only on iOS, Mac Safari and new Android versions. FV "
+"Player increases the compatibility by using Flash engine for HLS. With this "
+"option you can go even further and modern browsers supporting MediaSource "
+"will play HLS even without Flash. Make sure you setup the required CORS "
+"headers."
 msgstr ""
 
 #: view/admin.php:533
@@ -791,6 +879,12 @@ msgstr ""
 msgid "Fit scaling"
 msgstr ""
 
+#: view/admin.php:566
+msgid ""
+"Original aspect ratio of the video will be used to display the video - for "
+"troubleshooting of fullscreen issues."
+msgstr ""
+
 #: view/admin.php:567
 msgid "Handle WordPress <code><small>[video]</small></code> shortcodes"
 msgstr ""
@@ -799,24 +893,86 @@ msgstr ""
 msgid "Load FV Flowplayer JS everywhere"
 msgstr ""
 
+#: view/admin.php:568
+msgid ""
+"If you use some special JavaScript integration you might prefer this option."
+msgstr ""
+
+#: view/admin.php:568
+msgid ""
+"Otherwise our JavaScript only loads if the shortcode is found in any of the "
+"posts being currently displayed."
+msgstr ""
+
 #: view/admin.php:569
 msgid "Parse old shortcodes with commas"
+msgstr ""
+
+#: view/admin.php:569
+msgid ""
+"Older versions of this plugin used commas to sepparate shortcode parameters."
+msgstr ""
+
+#: view/admin.php:569
+msgid ""
+"This option will make sure it works with current version. Turn this off if "
+"you have some problems with display or other plugins which use shortcodes."
 msgstr ""
 
 #: view/admin.php:570
 msgid "Parse Vimeo and YouTube links"
 msgstr ""
 
+#: view/admin.php:570
+msgid ""
+"Affects comments, bbPress and BuddyPress. These links will be displayed as "
+"videos."
+msgstr ""
+
+#: view/admin.php:570
+msgid ""
+"This option makes most sense together with FV Player Pro as it embeds these "
+"videos using FV Player. Enables use of shortcodes in comments and bbPress."
+msgstr ""
+
 #: view/admin.php:571
 msgid "Post Thumbnail"
+msgstr ""
+
+#: view/admin.php:571
+msgid ""
+"Setting a video splash screen from the media library will automatically make "
+"it the splash image if there is none."
 msgstr ""
 
 #: view/admin.php:572
 msgid "Prefer Flash player by default"
 msgstr ""
 
+#: view/admin.php:572
+msgid "Provides greater compatibility."
+msgstr ""
+
+#: view/admin.php:572
+msgid ""
+"We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of "
+"this setting."
+msgstr ""
+
 #: view/admin.php:573
 msgid "RTMP bufferTime tweak"
+msgstr ""
+
+#: view/admin.php:573
+msgid "Use if your live streams are not smooth."
+msgstr ""
+
+#: view/admin.php:573
+msgid ""
+"Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
+"actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to set "
+"bufferTime to 0 for live streams, but if your stream is not smooth, you can "
+"use this setting."
 msgstr ""
 
 #: view/admin.php:576
@@ -850,8 +1006,20 @@ msgstr ""
 msgid "Use iframe embedding"
 msgstr ""
 
+#: view/admin.php:614
+msgid ""
+"Beta version! New kind of embedding which supports all the features in "
+"embedded player."
+msgstr ""
+
 #: view/admin.php:615
 msgid "Add featured image automatically"
+msgstr ""
+
+#: view/admin.php:615
+msgid ""
+"If the featured image is not set, splash image of the first player will be "
+"used."
 msgstr ""
 
 #: view/admin.php:662
@@ -903,6 +1071,10 @@ msgstr "Zarovnanie"
 msgid "Allow User Uploads"
 msgstr ""
 
+#: view/admin.php:761
+msgid "Enables the WP Media Library integraton"
+msgstr ""
+
 #: view/admin.php:763 view/admin.php:1012 view/wizard.old.php:320
 msgid "Controlbar"
 msgstr "Ovládacia lišta"
@@ -942,8 +1114,18 @@ msgstr "Titulky"
 msgid "Video Actions"
 msgstr ""
 
+#: view/admin.php:772
+msgid ""
+"Enables end of playlist actions like Loop, Redirect, Show popup and Show "
+"splash screen"
+msgstr ""
+
 #: view/admin.php:776
 msgid "Enable old interface"
+msgstr ""
+
+#: view/admin.php:776
+msgid "Not recommended"
 msgstr ""
 
 #: view/admin.php:796

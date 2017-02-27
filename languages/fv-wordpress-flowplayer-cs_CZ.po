@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2017-02-24 17:14+0100\n"
-"PO-Revision-Date: 2017-02-24 17:14+0100\n"
+"POT-Creation-Date: 2017-02-27 14:54+0100\n"
+"PO-Revision-Date: 2017-02-27 14:54+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -321,15 +321,15 @@ msgid ""
 "website]"
 msgstr ""
 
-#: models/flowplayer.php:211 view/admin.php:293
+#: models/flowplayer.php:213 view/admin.php:293
 msgid "Check the amazing video here"
 msgstr ""
 
-#: models/lightbox.php:353 view/admin.php:829
+#: models/lightbox.php:369 view/admin.php:829
 msgid "Enable video lightbox"
 msgstr "\tPovolit video lightbox"
 
-#: models/lightbox.php:353
+#: models/lightbox.php:369
 msgid ""
 "You can also put in <code>&lt;a href=\"http://path.to.your/video.mp4\" class="
 "\"colorbox\"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed "
@@ -339,11 +339,11 @@ msgstr ""
 "vašeho odkazu: <code>&lt;a href=\"http://cesta.k.vasemu/videu.mp4\" class="
 "\"colorbox\"&gt;Nadpis vašeho odkazu&lt;/a&gt;</code>"
 
-#: models/lightbox.php:360
+#: models/lightbox.php:376
 msgid "Use video lightbox for images as well"
 msgstr "Použít video lightbox také pro obrázky"
 
-#: models/lightbox.php:365
+#: models/lightbox.php:381
 msgid ""
 "Will group images as well as videos into the same lightbox gallery. Turn "
 "<strong>off</strong> your lightbox plugin when using this."
@@ -351,18 +351,18 @@ msgstr ""
 "Sdruží obrázky stejně jako videa do lightbox galerie. <strong>Vypněte</"
 "strong> Váš lightbox plugin, když chcete použít tuto možnost."
 
-#: models/lightbox.php:365
+#: models/lightbox.php:381
 msgid ""
 "Also works with WordPress <code>[gallery]</code> galleries - these are "
 "automatically switched to link to image URLs rather than the attachment "
 "pages."
 msgstr ""
 
-#: models/lightbox.php:370
+#: models/lightbox.php:386
 msgid "Use video lightbox for WP Galleries"
 msgstr ""
 
-#: models/lightbox.php:375
+#: models/lightbox.php:391
 msgid "Your gallery litems will link to image files directly to allow this."
 msgstr ""
 
@@ -564,9 +564,21 @@ msgstr "Přidej další Amazon S3 zabezpečné buckety"
 msgid "Autoplay"
 msgstr "Automatické přehrávání"
 
+#: view/admin.php:191
+msgid ""
+"We make sure only one video per page autoplays. Note that mobile devices "
+"don't support autoplay."
+msgstr ""
+"Zajistíme, aby se začalo automaticky přehrávat pouze jedno video na stránce. "
+"Nezapomínejte, že mobilní zařízení nepodporují automatické přehrávání."
+
 #: view/admin.php:192
 msgid "Auto Buffering"
 msgstr "Vyrovnávací paměť"
+
+#: view/admin.php:192
+msgid "Works for first 2 videos on the page only, to preserve your bandwidth."
+msgstr "Funguje jen pro první dve videa na stránce, pro zachování šířky pásma."
 
 #: view/admin.php:195
 msgid "Default Video Size"
@@ -594,17 +606,37 @@ msgstr "Výchozí hlasitost"
 msgid "Disable Admin Video Checker"
 msgstr ""
 
+#: view/admin.php:213
+msgid ""
+"Checks your video encoding when you open a post with video as admin. "
+"Notifies you about possible playback issues."
+msgstr ""
+"Zkontroluje kódování videa když otevřete příspěvek s videem jako "
+"administrátor. Upozorní Vás  na možné problémy s přehráváním."
+
 #: view/admin.php:214
 msgid "Disable Embed Button"
 msgstr "Zakázat vkládání"
+
+#: view/admin.php:214
+msgid "Removes embed button from top bar."
+msgstr "Odstraní tlačítko pro získání HTML kódu přehrávače z horní lišty."
 
 #: view/admin.php:215
 msgid "Disable Playlist Autoadvance"
 msgstr ""
 
+#: view/admin.php:215
+msgid "Playlist won't play the next video automatically."
+msgstr ""
+
 #: view/admin.php:216
 msgid "Disable Sharing"
 msgstr "Zakázat získání HTML kódu"
+
+#: view/admin.php:216
+msgid "Removes sharing buttons from top bar."
+msgstr "Odstraní tlačítko sdílení z horní lišty."
 
 #: view/admin.php:219
 msgid "Flash Streaming Server"
@@ -618,6 +650,10 @@ msgstr ""
 #: view/admin.php:227
 msgid "Fullscreen Button"
 msgstr "Tlačítko pro  režim celé obrazovky"
+
+#: view/admin.php:227
+msgid "Adds fullscreen button to player top bar."
+msgstr "Přidá tlačítko pro režim celé obrazovky do vrchní lišty přehrávače."
 
 #: view/admin.php:230
 msgid "Google Analytics ID"
@@ -663,6 +699,10 @@ msgstr "Nahoru-vpravo"
 msgid "Play Button"
 msgstr "Tlačítko přehrání"
 
+#: view/admin.php:267
+msgid "Adds play button to player controlbar."
+msgstr "Přidá tlačítko přehrávání do ovládacího panelu přehrávače."
+
 #: view/admin.php:270
 msgid "Playlist style"
 msgstr "Styl playlistu"
@@ -691,6 +731,14 @@ msgstr "Zde zadejte výchozí styl playlistu"
 msgid "Popup Box"
 msgstr "Vyskakovací okno"
 
+#: view/admin.php:287
+msgid ""
+"Shows a generic \"Would you like to replay the video?\" message at the end "
+"of each video."
+msgstr ""
+"Zobrazit obecnou zprávu \"Chcete znovu přehrát video?\" na konci každého "
+"videa."
+
 #: view/admin.php:290
 msgid "Sharing Text"
 msgstr ""
@@ -698,6 +746,14 @@ msgstr ""
 #: view/admin.php:298 view/admin.php:770 view/wizard.old.php:334
 msgid "Speed Buttons"
 msgstr "Tlačítka pro ovládání rychlosti"
+
+#: view/admin.php:298
+msgid ""
+"Speed buttons control playback speed and only work in HTML5 compatible "
+"browsers."
+msgstr ""
+"Tlačítka pro ovládání rychlosti přehrávání fungují pouze v HTML5 "
+"kompatibilních prohlížečích."
 
 #: view/admin.php:301
 msgid "Speed Step"
@@ -723,6 +779,12 @@ msgstr ""
 #: view/admin.php:323
 msgid "Subtitles On By Default"
 msgstr "Automaticky zobrazit titulky"
+
+#: view/admin.php:323
+msgid "Normally you have to hit a button in controlbar to turn on subtitles."
+msgstr ""
+"V opačném případě musíte klepnout na tlačítko v ovládacím panelu pro zapnutí "
+"titulků."
 
 #: view/admin.php:328
 msgid ""
@@ -795,16 +857,59 @@ msgstr "Následující možnosti jsou vhodné pro webové vývojáře a program�
 msgid "Always use fixed size player"
 msgstr "Vždy použít pevne zadanou velikost přehrávače"
 
+#: view/admin.php:527
+msgid "Enable to force video size at cost of loosing the video responsiveness."
+msgstr ""
+"Zapnete pro vynucení velikosti videa za cenu ztráty responzívnosti tématu."
+
 #: view/admin.php:528
 msgid "Colorbox Compatibility"
 msgstr "Kompatibilita Colorboxu"
+
+#: view/admin.php:528
+msgid ""
+"Enable if your theme is using colorbox lightbox to show content and clones "
+"the HTML content into it."
+msgstr ""
+"Použijte, pokud vaše téma používa colorbox lightbox a klonuje do ní HTML."
 
 #: view/admin.php:529
 msgid "Disable saving of color settings into a static file"
 msgstr "Zakázat ukládání nastavení barev do statického souboru"
 
+#: view/admin.php:529
+msgid ""
+"Normally the player CSS configuration is stored in wp-content/fv-player-"
+"custom/style-{blog_id}.css."
+msgstr ""
+"Konfigurace přehrávače CSS je obvykle uložena v wp-content/fv-player-custom/"
+"style-{blog_id}.css."
+
+#: view/admin.php:529
+msgid ""
+"We do this to avoid outputting CSS code into your site <head>. Don't edit "
+"this file though, as it will be overwritten by plugin update or saving its "
+"options!"
+msgstr ""
+"Děláme to proto, aby se zabránilo výstupu CSS kódu do vašich  <head> "
+"stránek. Neupravujte tento soubor, protože bude přepsán aktualizacemi "
+"pluginu, nebo uložením jeho nastaveními!"
+
 #: view/admin.php:530
 msgid "Enable HLS.js"
+msgstr ""
+
+#: view/admin.php:530
+msgid "Beta version, allows HLS playback in all modern browsers."
+msgstr ""
+
+#: view/admin.php:530
+msgid ""
+"HLS normally plays only on iOS, Mac Safari and new Android versions. FV "
+"Player increases the compatibility by using Flash engine for HLS. With this "
+"option you can go even further and modern browsers supporting MediaSource "
+"will play HLS even without Flash. Make sure you setup the required CORS "
+"headers."
 msgstr ""
 
 #: view/admin.php:533
@@ -840,6 +945,14 @@ msgstr ""
 msgid "Fit scaling"
 msgstr "Přizpůsobit velikost videa"
 
+#: view/admin.php:566
+msgid ""
+"Original aspect ratio of the video will be used to display the video - for "
+"troubleshooting of fullscreen issues."
+msgstr ""
+"Původní poměr stran videa bude použit k zobrazení videa - pro řešení "
+"problémů v režimu celé obrazovky."
+
 #: view/admin.php:567
 msgid "Handle WordPress <code><small>[video]</small></code> shortcodes"
 msgstr "Spracovavat WordPress <code><small>[video]</small></code> shortcodes"
@@ -848,25 +961,103 @@ msgstr "Spracovavat WordPress <code><small>[video]</small></code> shortcodes"
 msgid "Load FV Flowplayer JS everywhere"
 msgstr "Načíst FV Flowplayer JS všude"
 
+#: view/admin.php:568
+msgid ""
+"If you use some special JavaScript integration you might prefer this option."
+msgstr ""
+"Pokud používáte nějaký speciální JavaScript na vkládání našeho přehrávače "
+"můžete použít tuto možnost."
+
+#: view/admin.php:568
+msgid ""
+"Otherwise our JavaScript only loads if the shortcode is found in any of the "
+"posts being currently displayed."
+msgstr ""
+"Jinak se náš JavaScript načte pouze v případě, že se najde shortcode v "
+"jakémkoli příspěvku, který se aktuálně zobrazuje."
+
 #: view/admin.php:569
 msgid "Parse old shortcodes with commas"
 msgstr "Zpracovat staré shortcodes čárkami"
 
+#: view/admin.php:569
+msgid ""
+"Older versions of this plugin used commas to sepparate shortcode parameters."
+msgstr ""
+"Starší verze tohoto pluginu používali čárky pro oddělení parametrů shortcode."
+
+#: view/admin.php:569
+msgid ""
+"This option will make sure it works with current version. Turn this off if "
+"you have some problems with display or other plugins which use shortcodes."
+msgstr ""
+"Tato možnost zajistí jejich fungování s aktuální verzí. Vypnite tuto funkci, "
+"pokud máte nějaké problémy se zobrazováním nebo jinými pluginy, které "
+"používají shortcodes."
+
 #: view/admin.php:570
 msgid "Parse Vimeo and YouTube links"
+msgstr ""
+
+#: view/admin.php:570
+msgid ""
+"Affects comments, bbPress and BuddyPress. These links will be displayed as "
+"videos."
+msgstr ""
+
+#: view/admin.php:570
+msgid ""
+"This option makes most sense together with FV Player Pro as it embeds these "
+"videos using FV Player. Enables use of shortcodes in comments and bbPress."
 msgstr ""
 
 #: view/admin.php:571
 msgid "Post Thumbnail"
 msgstr "Miniatura příspěvku"
 
+#: view/admin.php:571
+msgid ""
+"Setting a video splash screen from the media library will automatically make "
+"it the splash image if there is none."
+msgstr ""
+"Nastavením náhledové obrazovky videa z knihovny médií se automaticky použije "
+"tento náhledový obrázek, pokud žádný není použit."
+
 #: view/admin.php:572
 msgid "Prefer Flash player by default"
 msgstr "Preferovat Flash Player ve výchozím nastavení"
 
+#: view/admin.php:572
+msgid "Provides greater compatibility."
+msgstr "Poskytuje lepší kompatibilitu."
+
+#: view/admin.php:572
+msgid ""
+"We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of "
+"this setting."
+msgstr ""
+"Používáme Flash pro MP4 soubory v IE9-10 a M4V soubory ve Firefoxu bez "
+"ohledu na toto nastavení."
+
 #: view/admin.php:573
 msgid "RTMP bufferTime tweak"
 msgstr "RTMP bufferTime vylepšení"
+
+#: view/admin.php:573
+msgid "Use if your live streams are not smooth."
+msgstr "Použijte pokud nejsou vaše živé přenosy plynulé."
+
+#: view/admin.php:573
+msgid ""
+"Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
+"actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to set "
+"bufferTime to 0 for live streams, but if your stream is not smooth, you can "
+"use this setting."
+msgstr ""
+"Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
+"actionscript/3/flash/net/NetStream.html#bufferTime\">doporučuje</a> nastavit "
+"bufferTime na 0 pro živé streamy, ale pokud váš stream není hladký, můžete "
+"použít toto nastavení."
 
 #: view/admin.php:576
 msgid "Scan video length"
@@ -899,8 +1090,22 @@ msgstr "Aktuálně %s příspěvků ve frontě."
 msgid "Use iframe embedding"
 msgstr "Použít iframe vkládání"
 
+#: view/admin.php:614
+msgid ""
+"Beta version! New kind of embedding which supports all the features in "
+"embedded player."
+msgstr ""
+"Beta verze! Nový druh vkládaní, který podporuje všechny funkce vloženého "
+"přehrávače."
+
 #: view/admin.php:615
 msgid "Add featured image automatically"
+msgstr ""
+
+#: view/admin.php:615
+msgid ""
+"If the featured image is not set, splash image of the first player will be "
+"used."
 msgstr ""
 
 #: view/admin.php:662
@@ -953,6 +1158,10 @@ msgstr "Zarovnat"
 msgid "Allow User Uploads"
 msgstr "Povolit vkládání z knihovny médií"
 
+#: view/admin.php:761
+msgid "Enables the WP Media Library integraton"
+msgstr ""
+
 #: view/admin.php:763 view/admin.php:1012 view/wizard.old.php:320
 msgid "Controlbar"
 msgstr "Ovládací panel"
@@ -992,8 +1201,18 @@ msgstr "Titulky"
 msgid "Video Actions"
 msgstr ""
 
+#: view/admin.php:772
+msgid ""
+"Enables end of playlist actions like Loop, Redirect, Show popup and Show "
+"splash screen"
+msgstr ""
+
 #: view/admin.php:776
 msgid "Enable old interface"
+msgstr ""
+
+#: view/admin.php:776
+msgid "Not recommended"
 msgstr ""
 
 #: view/admin.php:796
@@ -1688,162 +1907,8 @@ msgstr ""
 msgid "Ad Size"
 msgstr ""
 
-#~ msgid ""
-#~ "We make sure only one video per page autoplays. Note that mobile devices "
-#~ "don't support autoplay."
-#~ msgstr ""
-#~ "Zajistíme, aby se začalo automaticky přehrávat pouze jedno video na "
-#~ "stránce. Nezapomínejte, že mobilní zařízení nepodporují automatické "
-#~ "přehrávání."
-
-#~ msgid ""
-#~ "Works for first 2 videos on the page only, to preserve your bandwidth."
-#~ msgstr ""
-#~ "Funguje jen pro první dve videa na stránce, pro zachování šířky pásma."
-
 #~ msgid "Disable Admin Video Checker:"
 #~ msgstr "Odepři administrátorskou kontrolu videa:"
-
-#~ msgid ""
-#~ "Checks your video encoding when you open a post with video as admin. "
-#~ "Notifies you about possible playback issues."
-#~ msgstr ""
-#~ "Zkontroluje kódování videa když otevřete příspěvek s videem jako "
-#~ "administrátor. Upozorní Vás  na možné problémy s přehráváním."
-
-#~ msgid "Removes embed button from top bar."
-#~ msgstr "Odstraní tlačítko pro získání HTML kódu přehrávače z horní lišty."
-
-#~ msgid "Removes sharing buttons from top bar."
-#~ msgstr "Odstraní tlačítko sdílení z horní lišty."
-
-#~ msgid "Adds fullscreen button to player top bar."
-#~ msgstr "Přidá tlačítko pro režim celé obrazovky do vrchní lišty přehrávače."
-
-#~ msgid "Adds play button to player controlbar."
-#~ msgstr "Přidá tlačítko přehrávání do ovládacího panelu přehrávače."
-
-#~ msgid ""
-#~ "Shows a generic \"Would you like to replay the video?\" message at the "
-#~ "end of each video."
-#~ msgstr ""
-#~ "Zobrazit obecnou zprávu \"Chcete znovu přehrát video?\" na konci každého "
-#~ "videa."
-
-#~ msgid ""
-#~ "Speed buttons control playback speed and only work in HTML5 compatible "
-#~ "browsers."
-#~ msgstr ""
-#~ "Tlačítka pro ovládání rychlosti přehrávání fungují pouze v HTML5 "
-#~ "kompatibilních prohlížečích."
-
-#~ msgid ""
-#~ "Normally you have to hit a button in controlbar to turn on subtitles."
-#~ msgstr ""
-#~ "V opačném případě musíte klepnout na tlačítko v ovládacím panelu pro "
-#~ "zapnutí titulků."
-
-#~ msgid ""
-#~ "Enable to force video size at cost of loosing the video responsiveness."
-#~ msgstr ""
-#~ "Zapnete pro vynucení velikosti videa za cenu ztráty responzívnosti tématu."
-
-#~ msgid ""
-#~ "Enable if your theme is using colorbox lightbox to show content and "
-#~ "clones the HTML content into it."
-#~ msgstr ""
-#~ "Použijte, pokud vaše téma používa colorbox lightbox a klonuje do ní HTML."
-
-#~ msgid ""
-#~ "Normally the player CSS configuration is stored in wp-content/fv-player-"
-#~ "custom/style-{blog_id}.css."
-#~ msgstr ""
-#~ "Konfigurace přehrávače CSS je obvykle uložena v wp-content/fv-player-"
-#~ "custom/style-{blog_id}.css."
-
-#~ msgid ""
-#~ "We do this to avoid outputting CSS code into your site <head>. Don't edit "
-#~ "this file though, as it will be overwritten by plugin update or saving "
-#~ "its options!"
-#~ msgstr ""
-#~ "Děláme to proto, aby se zabránilo výstupu CSS kódu do vašich  <head> "
-#~ "stránek. Neupravujte tento soubor, protože bude přepsán aktualizacemi "
-#~ "pluginu, nebo uložením jeho nastaveními!"
-
-#~ msgid ""
-#~ "Original aspect ratio of the video will be used to display the video - "
-#~ "for troubleshooting of fullscreen issues."
-#~ msgstr ""
-#~ "Původní poměr stran videa bude použit k zobrazení videa - pro řešení "
-#~ "problémů v režimu celé obrazovky."
-
-#~ msgid ""
-#~ "If you use some special JavaScript integration you might prefer this "
-#~ "option."
-#~ msgstr ""
-#~ "Pokud používáte nějaký speciální JavaScript na vkládání našeho přehrávače "
-#~ "můžete použít tuto možnost."
-
-#~ msgid ""
-#~ "Otherwise our JavaScript only loads if the shortcode is found in any of "
-#~ "the posts being currently displayed."
-#~ msgstr ""
-#~ "Jinak se náš JavaScript načte pouze v případě, že se najde shortcode v "
-#~ "jakémkoli příspěvku, který se aktuálně zobrazuje."
-
-#~ msgid ""
-#~ "Older versions of this plugin used commas to sepparate shortcode "
-#~ "parameters."
-#~ msgstr ""
-#~ "Starší verze tohoto pluginu používali čárky pro oddělení parametrů "
-#~ "shortcode."
-
-#~ msgid ""
-#~ "This option will make sure it works with current version. Turn this off "
-#~ "if you have some problems with display or other plugins which use "
-#~ "shortcodes."
-#~ msgstr ""
-#~ "Tato možnost zajistí jejich fungování s aktuální verzí. Vypnite tuto "
-#~ "funkci, pokud máte nějaké problémy se zobrazováním nebo jinými pluginy, "
-#~ "které používají shortcodes."
-
-#~ msgid ""
-#~ "Setting a video splash screen from the media library will automatically "
-#~ "make it the splash image if there is none."
-#~ msgstr ""
-#~ "Nastavením náhledové obrazovky videa z knihovny médií se automaticky "
-#~ "použije tento náhledový obrázek, pokud žádný není použit."
-
-#~ msgid "Provides greater compatibility."
-#~ msgstr "Poskytuje lepší kompatibilitu."
-
-#~ msgid ""
-#~ "We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless "
-#~ "of this setting."
-#~ msgstr ""
-#~ "Používáme Flash pro MP4 soubory v IE9-10 a M4V soubory ve Firefoxu bez "
-#~ "ohledu na toto nastavení."
-
-#~ msgid "Use if your live streams are not smooth."
-#~ msgstr "Použijte pokud nejsou vaše živé přenosy plynulé."
-
-#~ msgid ""
-#~ "Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
-#~ "actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to "
-#~ "set bufferTime to 0 for live streams, but if your stream is not smooth, "
-#~ "you can use this setting."
-#~ msgstr ""
-#~ "Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/"
-#~ "actionscript/3/flash/net/NetStream.html#bufferTime\">doporučuje</a> "
-#~ "nastavit bufferTime na 0 pro živé streamy, ale pokud váš stream není "
-#~ "hladký, můžete použít toto nastavení."
-
-#~ msgid ""
-#~ "Beta version! New kind of embedding which supports all the features in "
-#~ "embedded player."
-#~ msgstr ""
-#~ "Beta verze! Nový druh vkládaní, který podporuje všechny funkce vloženého "
-#~ "přehrávače."
 
 #~ msgid "Playlist captions"
 #~ msgstr "Popisky videí v playlistu"
