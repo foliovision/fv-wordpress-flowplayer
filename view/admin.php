@@ -188,8 +188,8 @@ function fv_flowplayer_admin_default_options() {
           </style>
 					<table class="form-table2">
             
-            <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), 'autoplay', 'We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' ); ?>
-            <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', 'Works for first 2 videos on the page only, to preserve your bandwidth.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), 'autoplay', __('We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' , 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
 
 						<tr>
 							<td><label for="width"><?php _e('Default Video Size', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -210,10 +210,10 @@ function fv_flowplayer_admin_default_options() {
 							</td>
             </tr>
 
-            <?php $fv_fp->_get_checkbox(__('Disable Admin Video Checker', 'fv-wordpress-flowplayer'), 'disable_videochecker', 'Checks your video encoding when you open a post with video as admin. Notifies you about possible playback issues.' ); ?>
-            <?php $fv_fp->_get_checkbox(__('Disable Embed Button', 'fv-wordpress-flowplayer'), 'disableembedding', 'Removes embed button from top bar.' ); ?>
-            <?php $fv_fp->_get_checkbox(__('Disable Playlist Autoadvance', 'fv-wordpress-flowplayer'), 'playlist_advance', 'Playlist won\'t play the next video automatically.' ); ?>
-            <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', 'Removes sharing buttons from top bar.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Admin Video Checker', 'fv-wordpress-flowplayer'), 'disable_videochecker', __('Checks your video encoding when you open a post with video as admin. Notifies you about possible playback issues.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Embed Button', 'fv-wordpress-flowplayer'), 'disableembedding', __('Removes embed button from top bar.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Playlist Autoadvance', 'fv-wordpress-flowplayer'), 'playlist_advance', __('Playlist won\'t play the next video automatically.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', __('Removes sharing buttons from top bar.', 'fv-wordpress-flowplayer') ); ?>
 
 						<tr>
 							<td><label for="rtmp"><?php _e('Flash Streaming Server', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -224,7 +224,7 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 
-            <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', 'Adds fullscreen button to player top bar.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player top bar.', 'fv-wordpress-flowplayer') ); ?>
 
 						<tr>
 							<td><label for="googleanalytics"><?php _e('Google Analytics ID', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -264,7 +264,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
 						</tr>
 
-            <?php $fv_fp->_get_checkbox(__('Play Button', 'fv-wordpress-flowplayer'), 'ui_play_button', 'Adds play button to player controlbar.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Play Button', 'fv-wordpress-flowplayer'), 'ui_play_button', __('Adds play button to player controlbar.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
 							<td><label for="liststyle"><?php _e('Playlist style', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -284,7 +284,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
 						</tr>
 
-            <?php $fv_fp->_get_checkbox(__('Popup Box', 'fv-wordpress-flowplayer'), 'popupbox', 'Shows a generic "Would you like to replay the video?" message at the end of each video.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Popup Box', 'fv-wordpress-flowplayer'), 'popupbox', __('Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
               <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -295,7 +295,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
             </tr>
 
-            <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), 'ui_speed', 'Speed buttons control playback speed and only work in HTML5 compatible browsers.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), 'ui_speed', __('Speed buttons control playback speed and only work in HTML5 compatible browsers.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
 							<td><label for="ui_speed_increment"><?php _e('Speed Step', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -320,7 +320,7 @@ function fv_flowplayer_admin_default_options() {
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select default Splash Screen" /></td>
 						</tr>
 
-            <?php $fv_fp->_get_checkbox(__('Subtitles On By Default', 'fv-wordpress-flowplayer'), 'subtitleOn', 'Normally you have to hit a button in controlbar to turn on subtitles.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Subtitles On By Default', 'fv-wordpress-flowplayer'), 'subtitleOn', __('Normally you have to hit a button in controlbar to turn on subtitles.', 'fv-wordpress-flowplayer') ); ?>
 
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
@@ -524,10 +524,10 @@ function fv_flowplayer_admin_integrations() {
         <p><?php _e('Following options are suitable for web developers and programmers.', 'fv-wordpress-flowplayer'); ?></p>
 				<table class="form-table2">
 
-          <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', 'Enable to force video size at cost of loosing the video responsiveness.' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Colorbox Compatibility', 'fv-wordpress-flowplayer'), 'cbox_compatibility', 'Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Disable saving of color settings into a static file', 'fv-wordpress-flowplayer'), 'css_disable', 'Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', 'Beta version, allows HLS playback in all modern browsers.', 'HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', __('Enable to force video size at cost of loosing the video responsiveness.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Colorbox Compatibility', 'fv-wordpress-flowplayer'), 'cbox_compatibility', __('Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Disable saving of color settings into a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Beta version, allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' )); ?>
 
           <tr>
 						<td><label for="css_disable"><?php _e('Enable profile videos (beta)', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -563,14 +563,14 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
 
-          <?php $fv_fp->_get_checkbox(__('Fit scaling', 'fv-wordpress-flowplayer'), 'scaling', 'Original aspect ratio of the video will be used to display the video - for troubleshooting of fullscreen issues.' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Fit scaling', 'fv-wordpress-flowplayer'), 'scaling', __('Original aspect ratio of the video will be used to display the video - for troubleshooting of fullscreen issues.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '', '' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', 'If you use some special JavaScript integration you might prefer this option.', 'Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.' ); ?>
-					<?php $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', 'Older versions of this plugin used commas to sepparate shortcode parameters.', 'This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', 'Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', 'Setting a video splash screen from the media library will automatically make it the splash image if there is none.' ); ?>
-					<?php $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', 'Provides greater compatibility.', 'We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.' ); ?>
-          <?php $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', 'Use if your live streams are not smooth.', 'Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
+					<?php $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
+					<?php $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', __('Provides greater compatibility.', 'fv-wordpress-flowplayer'), __('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
 
           <tr>
 						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -611,8 +611,8 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>-->
 
-          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), 'Beta version! New kind of embedding which supports all the features in embedded player.' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), 'If the featured image is not set, splash image of the first player will be used.' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>
@@ -758,7 +758,7 @@ function fv_flowplayer_admin_interface_options() {
 				<table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Ads', 'fv-wordpress-flowplayer'), array('interface', 'ads') ); ?>
           <?php $fv_fp->_get_checkbox(__('Align', 'fv-wordpress-flowplayer'), array('interface', 'align') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Allow User Uploads', 'fv-wordpress-flowplayer'),'allowuploads', 'Enables the WP Media Library integraton' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Allow User Uploads', 'fv-wordpress-flowplayer'),'allowuploads', __('Enables the WP Media Library integraton', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), array('interface', 'autoplay') ); ?>
           <?php $fv_fp->_get_checkbox(__('Controlbar', 'fv-wordpress-flowplayer'), array('interface', 'controlbar') ); ?>
           <?php $fv_fp->_get_checkbox(__('Embed', 'fv-wordpress-flowplayer'), array('interface', 'embed') ); ?>
@@ -769,11 +769,11 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Playlist Captions', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), 'Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
 
-          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), 'Not recommended' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
 					<tr>
 						<td colspan="4">
