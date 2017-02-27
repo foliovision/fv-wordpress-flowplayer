@@ -419,7 +419,10 @@ class flowplayer_frontend extends flowplayer
           }
           $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
 
-          $attributes['style'] .= "background-image: url({$splash_img});";
+          if( !empty($splash_img) ) {
+            $attributes['style'] .= "background-image: url({$splash_img});";
+          }
+          
           if( $autoplay ) {
             $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
             $attributes['class'] .= ' is-splash';
