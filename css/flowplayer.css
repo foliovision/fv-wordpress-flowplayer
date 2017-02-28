@@ -304,6 +304,9 @@
 .flowplayer.is-fv-narrow .fv_player_popup{padding-top:1em;font-size:0.9em}
 .flowplayer.is-fv-narrow .mailchimp-form{padding-top:20px}
 .flowplayer.is-fv-narrow .fv_player_popup h1,.flowplayer.is-fv-narrow .fv_player_popup h2,.flowplayer.is-fv-narrow .fv_player_popup h3,.flowplayer.is-fv-narrow .fv_player_popup h4,.flowplayer.is-fv-narrow .fv_player_popup h5,.flowplayer.is-fv-narrow .fv_player_popup h6{font-size:1.2em}
+.flowplayer.is-fullscreen .fv_player_popup{padding-top:10%}
+.flowplayer.is-fullscreen .fv_player_popup p{margin:0 auto 6px}
+.flowplayer.is-fullscreen .mailchimp-form{padding:30px 25%}
 @media (max-width: 56.25em){
 .flowplayer .fp-subtitle br{display:block}
 .flowplayer .fp-subtitle .fp-subtitle-line:first-of-type,.flowplayer .fp-subtitle .fp-subtitle-line:last-of-type{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
