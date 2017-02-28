@@ -147,7 +147,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                 <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php _e('Video', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e('Subtitles', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e('Options', 'fv-wordpress-flowplayer'); ?></a>
-                <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e('Actions', 'fv-wordpress-flowplayer'); ?>Actions</a>
+                <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e('Actions', 'fv-wordpress-flowplayer'); ?></a>
                 <?php do_action('fv_player_shortcode_editor_tab'); ?>
               </h2>
             </div>

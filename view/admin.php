@@ -116,32 +116,27 @@ function fv_flowplayer_admin_amazon_options() {
             </td>
 					</tr>
           
-          <?php $fv_fp->_get_checkbox('Force the default expiration time', 'amazon_expire_force'); ?>
+          <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
           
           <?php do_action('fv_player_admin_amazon_options'); ?>
 <?php
-			if( !$fv_fp->_get_option('amazon_bucket') ) {
-				$fv_fp->conf['amazon_bucket'] = array('');
-				$fv_fp->conf['amazon_key'] = array('');
-				$fv_fp->conf['amazon_secret'] = array('');				
-			}
 			$count = 0;
 			foreach( $fv_fp->_get_option('amazon_bucket') AS $key => $item ) :
 				$count++;
 				$amazon_tr_class = ($count==1) ? ' class="amazon-s3-first"' : ' class="amazon-s3-'.$count.'"';
-        $sRegion = $fv_fp->_get_option( array( 'amazon_region' => $key ) );
+            $sRegion = $fv_fp->_get_option( array( 'amazon_region', $key ) );
 ?>					
-					<tr<?php echo $amazon_tr_class; ?>>
-						<td><label for="amazon_bucket[]"><?php _e('Amazon Bucket', 'fv-wordpress-flowplayer'); ?> (<abbr title="<?php _e('We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.', 'fv-wordpress-flowplayer'); ?>">?</abbr>):</label></td>
-						<td><input id="amazon_bucket[]" name="amazon_bucket[]" type="text" value="<?php echo esc_attr($item); ?>" /></td>
-					</tr>
-					<tr<?php echo $amazon_tr_class; ?>>
-						<td><label for="amazon_region[]"><?php _e('Region', 'fv-wordpress-flowplayer'); ?></td>
-						<td>
+        <tr<?php echo $amazon_tr_class; ?>>
+            <td><label for="amazon_bucket[]"><?php _e('Amazon Bucket', 'fv-wordpress-flowplayer'); ?> (<abbr title="<?php _e('We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.', 'fv-wordpress-flowplayer'); ?>">?</abbr>):</label></td>
+            <td><input id="amazon_bucket[]" name="amazon_bucket[]" type="text" value="<?php echo esc_attr($item); ?>" /></td>
+        </tr>
+        <tr<?php echo $amazon_tr_class; ?>>
+            <td><label for="amazon_region[]"><?php _e('Region', 'fv-wordpress-flowplayer'); ?></td>
+            <td>
               <select id="amazon_region[]" name="amazon_region[]">
                 <option value=""><?php _e('Select the region', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="eu-central-1"<?php if( $sRegion == 'eu-central-1' ) echo " selected"; ?>><?php _e('Frankfurt', 'fv-wordpress-flowplayer'); ?></option>
-                <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>><?php _e('Ireland', 'fv-wordpress-flowplayer'); ?></option>                              
+                <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>><?php _e('Ireland', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="us-west-1"<?php if( $sRegion == 'us-west-1' ) echo " selected"; ?>><?php _e('Northern California', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="us-west-2"<?php if( $sRegion == 'us-west-2' ) echo " selected"; ?>><?php _e('Oregon', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('Sao Paulo', 'fv-wordpress-flowplayer'); ?></option>
@@ -149,27 +144,27 @@ function fv_flowplayer_admin_amazon_options() {
                 <option value="ap-southeast-1"<?php if( $sRegion == 'ap-southeast-1' ) echo " selected"; ?>><?php _e('Singapore', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-southeast-2"<?php if( $sRegion == 'ap-southeast-2' ) echo " selected"; ?>><?php _e('Sydney', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="ap-northeast-1"<?php if( $sRegion == 'ap-northeast-1' ) echo " selected"; ?>><?php _e('Tokyo', 'fv-wordpress-flowplayer'); ?></option>
-                <option value="us-east-1"<?php if( $sRegion == 'us-east-1' ) echo " selected"; ?>><?php _e('US Standard', 'fv-wordpress-flowplayer'); ?></option>      
+                <option value="us-east-1"<?php if( $sRegion == 'us-east-1' ) echo " selected"; ?>><?php _e('US Standard', 'fv-wordpress-flowplayer'); ?></option>
               </select>
             </td>
-					</tr>			          
-					<tr<?php echo $amazon_tr_class; ?>>
-						<td><label for="amazon_key[]"><?php _e('Access Key ID', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_key' => $key ) ) ); ?>" /></td>
-					</tr>	
-					<tr<?php echo $amazon_tr_class; ?>>
-						<td><label for="amazon_secret[]"><?php _e('Secret Access Key', 'fv-wordpress-flowplayer'); ?>:</label></td>
-						<td><input id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_secret' => $key ) ) ); ?>" /></td>
-					</tr>
-					<tr<?php echo $amazon_tr_class; ?>>
-						<td colspan="2">
-							<div class="alignright fv_fp_amazon_remove">
-								<a href="#" onclick="fv_fp_amazon_s3_remove(this); return false"><?php _e('remove', 'fv-wordpress-flowplayer'); ?></a>
-							</div>
-							<div class="clear"></div>
-							<hr style="border: 0; border-top: 1px solid #ccc;" />
-						</td>
-					</tr>						
+        </tr>
+        <tr<?php echo $amazon_tr_class; ?>>
+            <td><label for="amazon_key[]"><?php _e('Access Key ID', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_key', $key ) ) ); ?>" /></td>
+        </tr>
+        <tr<?php echo $amazon_tr_class; ?>>
+            <td><label for="amazon_secret[]"><?php _e('Secret Access Key', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <td><input id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_secret', $key ) ) ); ?>" /></td>
+        </tr>
+        <tr<?php echo $amazon_tr_class; ?>>
+            <td colspan="2">
+                <div class="alignright fv_fp_amazon_remove">
+                    <a href="#" onclick="fv_fp_amazon_s3_remove(this); return false"><?php _e('remove', 'fv-wordpress-flowplayer'); ?></a>
+                </div>
+                <div class="clear"></div>
+                <hr style="border: 0; border-top: 1px solid #ccc;" />
+            </td>
+        </tr>
 <?php
 			endforeach;
 ?>							
@@ -193,49 +188,49 @@ function fv_flowplayer_admin_default_options() {
           </style>
 					<table class="form-table2">
             
-            <?php $fv_fp->_get_checkbox('Autoplay', 'autoplay', 'We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' ); ?>
-            <?php $fv_fp->_get_checkbox('Auto Buffering', 'auto_buffering', 'Works for first 2 videos on the page only, to preserve your bandwidth.' ); ?>
+            <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), 'autoplay', __('We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' , 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
 
 						<tr>
 							<td><label for="width"><?php _e('Default Video Size', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <label for="width"><?php _e('Width', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval( $fv_fp->_get_option('width') ); ?>" />  
+                  <label for="width"><?php _e('Width', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval( $fv_fp->_get_option('width') ); ?>" />
                   <label for="height"><?php _e('Height', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval( $fv_fp->_get_option('height') ); ?>" />
                   <?php _e('Enter values in pixels.', 'fv-wordpress-flowplayer'); ?>
                 </p>
 							</td>
-						</tr>            
+						</tr>
 						<tr>
 							<td><label for="volume"><?php _e('Default Volume', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo esc_attr( $fv_fp->_get_option('volume') ); ?>" class="medium" />                  
+                  <input id="volume" name="volume" type="range" min="0" max="1" step="0.1" value="<?php echo esc_attr( $fv_fp->_get_option('volume') ); ?>" class="medium" />
                 </p>
 							</td>
             </tr>
-            
-            <?php $fv_fp->_get_checkbox('Disable Admin Video Checker', 'disable_videochecker', 'Checks your video encoding when you open a post with video as admin. Notifies you about possible playback issues.' ); ?>
-            <?php $fv_fp->_get_checkbox('Disable Embed Button', 'disableembedding', 'Removes embed button from top bar.' ); ?>
-            <?php $fv_fp->_get_checkbox('Disable Playlist Autoadvance', 'playlist_advance', 'Playlist won\'t play the next video automatically.' ); ?>
-            <?php $fv_fp->_get_checkbox('Disable Sharing', 'disablesharing', 'Removes sharing buttons from top bar.' ); ?>
-            
+
+            <?php $fv_fp->_get_checkbox(__('Disable Admin Video Checker', 'fv-wordpress-flowplayer'), 'disable_videochecker', __('Checks your video encoding when you open a post with video as admin. Notifies you about possible playback issues.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Embed Button', 'fv-wordpress-flowplayer'), 'disableembedding', __('Removes embed button from top bar.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Playlist Autoadvance', 'fv-wordpress-flowplayer'), 'playlist_advance', __('Playlist won\'t play the next video automatically.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', __('Removes sharing buttons from top bar.', 'fv-wordpress-flowplayer') ); ?>
+
 						<tr>
 							<td><label for="rtmp"><?php _e('Flash Streaming Server', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr( $fv_fp->_get_option('rtmp') ); ?>" placeholder="<?php _e('Enter your default RTMP streaming server (Amazon CloudFront domain).', 'fv-wordpress-flowplayer'); ?>" />                  
+                  <input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr( $fv_fp->_get_option('rtmp') ); ?>" placeholder="<?php _e('Enter your default RTMP streaming server (Amazon CloudFront domain).', 'fv-wordpress-flowplayer'); ?>" />
                 </p>
 							</td>
 						</tr>
-            
-            <?php $fv_fp->_get_checkbox('Fullscreen Button', 'allowfullscreen', 'Adds fullscreen button to player top bar.' ); ?>
-            
+
+            <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player top bar.', 'fv-wordpress-flowplayer') ); ?>
+
 						<tr>
 							<td><label for="googleanalytics"><?php _e('Google Analytics ID', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo esc_attr( $fv_fp->_get_option('googleanalytics') ); ?>" placeholder="<?php _e('Will be automatically loaded when playing a video.', 'fv-wordpress-flowplayer'); ?>" />                  
+                  <input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo esc_attr( $fv_fp->_get_option('googleanalytics') ); ?>" placeholder="<?php _e('Will be automatically loaded when playing a video.', 'fv-wordpress-flowplayer'); ?>" />
                 </p>
 							</td>
 						</tr>
@@ -253,14 +248,14 @@ function fv_flowplayer_admin_default_options() {
               _e('You need to have a FV Flowplayer license to use it', 'fv-wordpress-flowplayer');
             }
             ?>" />
-                
+
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select Logo" />
-                
+
                 <?php
-                $value = $fv_fp->_get_option('logoPosition','bottom-left');
+                $value = $fv_fp->_get_option('logoPosition');
                 ?>
                 <select name="logoPosition" class="small">
-                  <option value="bottom-left"><?php _e('Position', 'fv-wordpress-flowplayer'); ?></option>                  
+                  <option value="bottom-left"><?php _e('Position', 'fv-wordpress-flowplayer'); ?></option>
                   <option <?php if( $value == 'bottom-left' ) echo "selected"; ?> value="bottom-left"><?php _e('Bottom-left', 'fv-wordpress-flowplayer'); ?></option>
                   <option <?php if( $value == 'bottom-right' ) echo "selected"; ?> value="bottom-right"><?php _e('Bottom-right', 'fv-wordpress-flowplayer'); ?></option>
                   <option <?php if( $value == 'top-left' ) echo "selected"; ?> value="top-left"><?php _e('Top-left', 'fv-wordpress-flowplayer'); ?></option>
@@ -268,19 +263,19 @@ function fv_flowplayer_admin_default_options() {
                 </select>
               </td>
 						</tr>
-            
-            <?php $fv_fp->_get_checkbox('Play Button', 'ui_play_button', 'Adds play button to player controlbar.' ); ?>
-            
+
+            <?php $fv_fp->_get_checkbox(__('Play Button', 'fv-wordpress-flowplayer'), 'ui_play_button', __('Adds play button to player controlbar.', 'fv-wordpress-flowplayer') ); ?>
+
             <tr>
 							<td><label for="liststyle"><?php _e('Playlist style', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td colspan="3">
                 <p class="description">
                   <?php
-                  $value = $fv_fp->_get_option('liststyle', 'horizontal');
+                  $value = $fv_fp->_get_option('liststyle');
                   ?>
                   <select id="liststyle" name="liststyle">
                     <option value="horizontal"<?php if( $value == 'horizontal' ) echo ' selected="selected"'; ?> ><?php _e('Horizontal', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="tabs"      <?php if( $value == 'tabs' ) echo ' selected="selected"'; ?> ><?php _e('Tabs', 'fv-wordpress-flowplayer'); ?></option> 
+                    <option value="tabs"      <?php if( $value == 'tabs' ) echo ' selected="selected"'; ?> ><?php _e('Tabs', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="prevnext"  <?php if( $value == 'prevnext' ) echo ' selected="selected"'; ?> ><?php _e('Prev/Next', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="vertical"  <?php if( $value == 'vertical' ) echo ' selected="selected"'; ?> ><?php _e('Vertical', 'fv-wordpress-flowplayer'); ?></option>
                   </select>
@@ -288,30 +283,30 @@ function fv_flowplayer_admin_default_options() {
                 </p>
               </td>
 						</tr>
-            
-            <?php $fv_fp->_get_checkbox('Popup Box', 'popupbox', 'Shows a generic "Would you like to replay the video?" message at the end of each video.' ); ?>
-            
+
+            <?php $fv_fp->_get_checkbox(__('Popup Box', 'fv-wordpress-flowplayer'), 'popupbox', __('Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-wordpress-flowplayer') ); ?>
+
             <tr>
               <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
               <td>
                 <p class="description">
-                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php echo $fv_fp->_get_option('sharing_email_text'); ?>" placeholder="<?php _e('Check the amazing video here', 'fv-wordpress-flowplayer'); ?>" />
+                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php echo $fv_fp->_get_option('sharing_email_text'); ?>" placeholder="<?php _e('Check out the amazing video here', 'fv-wordpress-flowplayer'); ?>" />
                 </p>
               </td>
             </tr>
-            
-            <?php $fv_fp->_get_checkbox('Speed Buttons', 'ui_speed', 'Speed buttons control playback speed and only work in HTML5 compatible browsers.' ); ?>
-            
+
+            <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), 'ui_speed', __('Speed buttons control playback speed and only work in HTML5 compatible browsers.', 'fv-wordpress-flowplayer') ); ?>
+
             <tr>
 							<td><label for="ui_speed_increment"><?php _e('Speed Step', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td colspan="3">
                 <p class="description">
                   <?php
-                  $value = $fv_fp->_get_option('ui_speed_increment', 0.25);
+                  $value = $fv_fp->_get_option('ui_speed_increment');
                   ?>
                   <select id="ui_speed_increment" name="ui_speed_increment">
                     <option value="0.1"   <?php if( $value == 0.1 ) echo ' selected="selected"'; ?> >0.1</option>
-                    <option value="0.25"  <?php if( $value == 0.25 ) echo ' selected="selected"'; ?> >0.25</option> 
+                    <option value="0.25"  <?php if( $value == 0.25 ) echo ' selected="selected"'; ?> >0.25</option>
                     <option value="0.5"   <?php if ( $value == 0.5 )  echo ' selected="selected"'; ?> >0.5</option>
                   </select>
                   <?php _e('Speed buttons will increase or decrease the speed in steps of selected value', 'fv-wordpress-flowplayer'); ?>
@@ -324,33 +319,33 @@ function fv_flowplayer_admin_default_options() {
                 <input type="text" name="splash" id="splash" value="<?php echo esc_attr( $fv_fp->_get_option('splash') ); ?>" class="large" placeholder="<?php _e('Default which will be used for any player without its own splash image.', 'fv-wordpress-flowplayer'); ?>" />
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select default Splash Screen" /></td>
 						</tr>
-            
-            <?php $fv_fp->_get_checkbox('Subtitles On By Default', 'subtitleOn', 'Normally you have to hit a button in controlbar to turn on subtitles.' ); ?>
-            
+
+            <?php $fv_fp->_get_checkbox(__('Subtitles On By Default', 'fv-wordpress-flowplayer'), 'subtitleOn', __('Normally you have to hit a button in controlbar to turn on subtitles.', 'fv-wordpress-flowplayer') ); ?>
+
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
           <small class="alignright">
           	<?php _e('Missing settings? Check <a class="fv-settings-anchor" href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.', 'fv-wordpress-flowplayer'); ?>
-          </small>   
+          </small>
           <table class="form-table2">
-						<tr>    		
+						<tr>
 							<td colspan="4">
 								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
 							</td>
-						</tr>						
-					</table>             
+						</tr>
+					</table>
 <script>
-jQuery(document).ready(function($) {    
+jQuery(document).ready(function($) {
   var fv_flowplayer_uploader;
   var fv_flowplayer_uploader_button;
 
   $(document).on( 'click', '.upload_image_button', function(e) {
       e.preventDefault();
-      
+
       fv_flowplayer_uploader_button = jQuery(this);
       jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
       fv_flowplayer_uploader_button.parents('tr').find('input[type=text]').addClass('fv_flowplayer_target' );
-                       
+
       //If the uploader object has already been created, reopen the dialog
       if (fv_flowplayer_uploader) {
           fv_flowplayer_uploader.open();
@@ -365,10 +360,10 @@ jQuery(document).ready(function($) {
           },
           multiple: false
       });
-      
+
       fv_flowplayer_uploader.on('open', function() {
         jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.attr('alt'));
-      });      
+      });
 
       //When a file is selected, grab the URL and set it as the text field's value
       fv_flowplayer_uploader.on('select', function() {
@@ -376,7 +371,7 @@ jQuery(document).ready(function($) {
 
           $('.fv_flowplayer_target').val(attachment.url);
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
-        
+
           /*if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
               $('#fv_wp_flowplayer_field_width').val(attachment.width);
@@ -392,7 +387,7 @@ jQuery(document).ready(function($) {
               $('#fv_wp_flowplayer_file_info').show();
               $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
             }
-            
+
           } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
             if( jQuery('#remove-post-thumbnail').length > 0 ){
               return;
@@ -412,24 +407,24 @@ jQuery(document).ready(function($) {
                   jQuery('#postimagediv .inside #plupload-upload-ui').hide();
                 }
               } );
-            
+
           }*/
-          
+
       });
 
       //Open the uploader dialog
       fv_flowplayer_uploader.open();
 
-  });    
- 
-});  
-</script>          
+  });
+
+});
+</script>
 					<div class="clear"></div>
 <?php
 }
 
 /*
- * Setup Tab Description 
+ * Setup Tab Description
  */
 function fv_flowplayer_admin_description() {
 ?>
@@ -457,7 +452,7 @@ function fv_flowplayer_admin_description_skin() {
   <table class="form-table">
       <tr>
         <td colspan="4">
-          <p>                                 
+          <p>
             <?php _e('You can customize the colors of the player to match your website.', 'fv-wordpress-flowplayer'); ?>
           </p>
         </td>
@@ -467,14 +462,14 @@ function fv_flowplayer_admin_description_skin() {
 }
 
 /*
- * Hosting Tab Description 
+ * Hosting Tab Description
  */
 function fv_flowplayer_admin_description_hosting() {
 ?>
   <table class="form-table">
     <tr>
       <td colspan="4">
-        <p>                                 
+        <p>
           <?php _e('Here you can enable and configure advanced hosting options.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
@@ -484,14 +479,14 @@ function fv_flowplayer_admin_description_hosting() {
 }
 
 /*
- * Actions Tab Description 
+ * Actions Tab Description
  */
 function fv_flowplayer_admin_description_actions() {
 ?>
   <table class="form-table">
     <tr>
       <td colspan="4">
-        <p>                                 
+        <p>
           <?php _e('Here you can configure ads and banners that will be showed in the video.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
@@ -508,7 +503,7 @@ function fv_flowplayer_admin_description_video_ads() {
   <table class="form-table">
     <tr>
       <td colspan="4">
-        <p>                                 
+        <p>
           <?php _e('Purchase <a href="https://foliovision.com/player/download" target="_blank"><b>FV Player Licence</b></a>, and you will be able to configure multiple, clickable Video Ads, that can be played before or after Your videos.', 'fv-wordpress-flowplayer'); ?>
         </p>
         <p>
@@ -516,7 +511,7 @@ function fv_flowplayer_admin_description_video_ads() {
         </p>
         <p>
           <?php _e('If you are interested in VAST or VPAID ads, then check out <a href="https://foliovision.com/player/vast" target="_blank"><b>FV Player VAST</b></a>.', 'fv-wordpress-flowplayer'); ?>
-        </p>        
+        </p>
       </td>
     </tr>
   </table>
@@ -528,16 +523,16 @@ function fv_flowplayer_admin_integrations() {
 ?>
         <p><?php _e('Following options are suitable for web developers and programmers.', 'fv-wordpress-flowplayer'); ?></p>
 				<table class="form-table2">
-          
-          <?php $fv_fp->_get_checkbox('Always use fixed size player', 'fixed_size', 'Enable to force video size at cost of loosing the video responsiveness.' ); ?>
-          <?php $fv_fp->_get_checkbox('Colorbox Compatibility', 'cbox_compatibility', 'Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.' ); ?>
-          <?php $fv_fp->_get_checkbox('Disable saving of color settings into a static file', 'css_disable', 'Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' ); ?>
-          <?php $fv_fp->_get_checkbox('Enable HLS.js', 'hlsjs', 'Beta version, allows HLS playback in all modern browsers.', 'HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' ); ?>
-          
+
+          <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', __('Enable to force video size at cost of loosing the video responsiveness.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Colorbox Compatibility', 'fv-wordpress-flowplayer'), 'cbox_compatibility', __('Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Disable saving of color settings into a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Beta version, allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' )); ?>
+
           <tr>
 						<td><label for="css_disable"><?php _e('Enable profile videos (beta)', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
-              <div class="description">                
+              <div class="description">
                 <p>
                   <input type="hidden" name="profile_videos_enable_bio" value="false" />
                   <input type="checkbox" name="profile_videos_enable_bio" id="profile_videos_enable_bio" value="true" <?php if( $fv_fp->_get_option('profile_videos_enable_bio') ) echo 'checked="checked"'; ?> />
@@ -548,12 +543,12 @@ function fv_flowplayer_admin_integrations() {
                   <p><?php _e('Some themes show author bio on the author post archive automatically (Genesis framework and others). Or you can also just put this code into your theme archive.php template, right before <code>while ( have_posts() )</code> is called:','fv-wordpress-flowplayer'); ?></p>
                   <blockquote>
 <pre>
-&lt;?php if ( is_author() &amp;&amp; get_the_author_meta( 'description' ) ) : ?&gt;  
+&lt;?php if ( is_author() &amp;&amp; get_the_author_meta( 'description' ) ) : ?&gt;
   &lt;div class=&quot;author-info&quot;&gt;
     &lt;div class=&quot;author-avatar&quot;&gt;
       &lt;?php echo get_avatar( get_the_author_meta( 'user_email' ) ); ?&gt;
     &lt;/div&gt;
-  
+
     &lt;div class=&quot;author-description&quot;&gt;
       &lt;?php the_author_meta( 'description' ); ?&gt;
     &lt;/div&gt;
@@ -562,21 +557,21 @@ function fv_flowplayer_admin_integrations() {
 </pre>
                   </blockquote>
                   <p><?php _e('We will be adding integration for it for popular user profile plugins.','fv-wordpress-flowplayer'); ?></p>
-                  
-                </div>                
+
+                </div>
               </div>
 						</td>
 					</tr>
-          
-          <?php $fv_fp->_get_checkbox('Fit scaling', 'scaling', 'Original aspect ratio of the video will be used to display the video - for troubleshooting of fullscreen issues.' ); ?>
-          <?php $fv_fp->_get_checkbox('Handle WordPress <code><small>[video]</small></code> shortcodes', array( 'integrations' => 'wp_core_video' ), '', '' ); ?>
-          <?php $fv_fp->_get_checkbox('Load FV Flowplayer JS everywhere', 'js-everywhere', 'If you use some special JavaScript integration you might prefer this option.', 'Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.' ); ?>
-					<?php $fv_fp->_get_checkbox('Parse old shortcodes with commas', 'parse_commas', 'Older versions of this plugin used commas to sepparate shortcode parameters.', 'This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.' ); ?>
-          <?php $fv_fp->_get_checkbox('Parse Vimeo and YouTube links', 'parse_comments', 'Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.' ); ?>
-          <?php $fv_fp->_get_checkbox('Post Thumbnail', 'postthumbnail', 'Setting a video splash screen from the media library will automatically make it the splash image if there is none.' ); ?>
-					<?php $fv_fp->_get_checkbox('Prefer Flash player by default', 'engine', 'Provides greater compatibility.', 'We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.' ); ?>
-          <?php $fv_fp->_get_checkbox('RTMP bufferTime tweak', 'rtmp-live-buffer', 'Use if your live streams are not smooth.', 'Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.' ); ?>
-          
+
+          <?php $fv_fp->_get_checkbox(__('Fit scaling', 'fv-wordpress-flowplayer'), 'scaling', __('Original aspect ratio of the video will be used to display the video - for troubleshooting of fullscreen issues.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '', '' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
+					<?php $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
+					<?php $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', __('Provides greater compatibility.', 'fv-wordpress-flowplayer'), __('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
+
           <tr>
 						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv-wordpress-flowplayer'); ?>:</label></td>
 						<td>
@@ -605,35 +600,35 @@ function fv_flowplayer_admin_integrations() {
                 }
                 ?>
                 </span> <a href="#" class="show-more">(&hellip;)</a>
-              </p>            
+              </p>
 						</td>
-					</tr>          
+					</tr>
 					<!--<tr>
 						<td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
 						<td>
               <input type="hidden" name="integrations[optimizepress2]" value="false" />
-              <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( $fv_fp->_get_option( array( 'integrations' => 'optimizepress2' ) ) ) echo 'checked="checked"'; ?> />
+              <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( $fv_fp->_get_option( array( 'integrations', 'optimizepress2' ) ) ) echo 'checked="checked"'; ?> />
 						</td>
 					</tr>-->
-          
-          <?php $fv_fp->_get_checkbox('Use iframe embedding', array( 'integrations' => 'embed_iframe' ), 'Beta version! New kind of embedding which supports all the features in embedded player.' ); ?>
-          <?php $fv_fp->_get_checkbox('Add featured image automatically', array( 'integrations' => 'featured_img' ), 'If the featured image is not set, splash image of the first player will be used.' ); ?>
-					
+
+          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
+
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
-					<tr>    		
+					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
 						</td>
-					</tr>                               
-				</table>  
+					</tr>
+				</table>
 <?php
 }
 
 function fv_flowplayer_admin_select_popups($aArgs){
   global $fv_fp;
-  
+
   $aPopupData = get_option('fv_player_popups');
-  
+
 
   $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
   $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'cva_id'=>'', 'show_default' => false ) );
@@ -653,7 +648,7 @@ function fv_flowplayer_admin_select_popups($aArgs){
         if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
       }
-    } ?>      
+    } ?>
   </select>
   <?php
 }
@@ -666,14 +661,14 @@ function fv_flowplayer_admin_popups(){
       <tr>
         <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <?php $cva_id = $fv_fp->_get_option('popups_default', 'no'); ?>
+          <?php $cva_id = $fv_fp->_get_option('popups_default'); ?>
           <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
           <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
       </table>
-      <table class="form-table2" style="margin: 5px; ">  
-      <tr>    		
+      <table class="form-table2" style="margin: 5px; ">
+      <tr>
         <td>
           <table id="fv-player-popups-settings">
             <thead>
@@ -714,7 +709,7 @@ function fv_flowplayer_admin_popups(){
                     </td>
                     <td>
                       <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
-                      <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> /> 
+                      <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> />
                       <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />
                       <a class='fv-player-popup-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
                   </tr>
@@ -724,31 +719,31 @@ function fv_flowplayer_admin_popups(){
             </tbody>
           </table>
         </td>
-      </tr>         
-      <tr>    		
+      </tr>
+      <tr>
         <td>
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
           <input type="button" value="<?php _e('Add more Popups', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-popups-add" />
         </td>
-      </tr>         
+      </tr>
     </table>
 
     <script>
-    
+
     jQuery('#fv-player-popups-add').click( function() {
       var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
       jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
       jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
       return false;
     } );
-    
+
     jQuery(document).on('click','.fv-player-popup-remove', false, function() {
       if( confirm('Are you sure you want to remove the popup ad?') ){
         jQuery(this).parents('.data').remove();
         if(jQuery('#fv-player-popups-settings .data').length === 1) {
           jQuery('#fv-player-popups-add').trigger('click');
         }
-      }      
+      }
       return false;
     } );
     </script>
@@ -761,30 +756,30 @@ function fv_flowplayer_admin_interface_options() {
 ?>
 				<p><?php _e('Which features should be available in shortcode editor?', 'fv-wordpress-flowplayer'); ?></p>
 				<table class="form-table2">
-          <?php $fv_fp->_get_checkbox('Ads', array('interface' => 'ads') ); ?>
-          <?php $fv_fp->_get_checkbox('Align', array('interface' => 'align') ); ?>
-          <?php $fv_fp->_get_checkbox('Allow User Uploads','allowuploads', 'Enables the WP Media Library integraton' ); ?>
-          <?php $fv_fp->_get_checkbox('Autoplay', array('interface' => 'autoplay') ); ?>
-          <?php $fv_fp->_get_checkbox('Controlbar', array('interface' => 'controlbar') ); ?>
-          <?php $fv_fp->_get_checkbox('Embed', array('interface' => 'embed') ); ?>
-          <?php $fv_fp->_get_checkbox('Live Stream', array('interface' => 'live') ); ?>
-          <?php $fv_fp->_get_checkbox('Mobile Video', array('interface' => 'mobile') ); ?>
-          <?php $fv_fp->_get_checkbox('Playlist Auto Advance', array('interface' => 'playlist_advance') ); ?>
-          <?php $fv_fp->_get_checkbox('Playlist Style', array('interface' => 'playlist') ); ?>
-          <?php $fv_fp->_get_checkbox('Playlist Captions', array('interface' => 'playlist_captions') ); ?>          
-          <?php $fv_fp->_get_checkbox('Speed Buttons', array('interface' => 'speed') ); ?>
-          <?php $fv_fp->_get_checkbox('Subtitles', array('interface' => 'subtitles') ); ?>
-          <?php $fv_fp->_get_checkbox('Video Actions', array('interface' => 'end_actions'), 'Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen' ); ?>
-          
+          <?php $fv_fp->_get_checkbox(__('Ads', 'fv-wordpress-flowplayer'), array('interface', 'ads') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Align', 'fv-wordpress-flowplayer'), array('interface', 'align') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Allow User Uploads', 'fv-wordpress-flowplayer'),'allowuploads', __('Enables the WP Media Library integraton', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), array('interface', 'autoplay') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Controlbar', 'fv-wordpress-flowplayer'), array('interface', 'controlbar') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Embed', 'fv-wordpress-flowplayer'), array('interface', 'embed') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Live Stream', 'fv-wordpress-flowplayer'), array('interface', 'live') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Mobile Video', 'fv-wordpress-flowplayer'), array('interface', 'mobile') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Auto Advance', 'fv-wordpress-flowplayer'), array('interface', 'playlist_advance') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Style', 'fv-wordpress-flowplayer'), array('interface', 'playlist') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Captions', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
+
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
+
+          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
-          <?php $fv_fp->_get_checkbox('Enable old interface', array('interface' => 'shortcode_editor_old'), 'Not recommended' ); ?>
-          
-					<tr>    		
+					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
 						</td>
-					</tr>                                    
+					</tr>
 				</table>
 <?php
 }
@@ -1125,17 +1120,17 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>    
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize', 16 ) ); ?>" 
+      <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
                  data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px!important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor', '#000000' ) ); ?>" 
+      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor' ) ); ?>"
                  data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%)!important; }"/></td>
     </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgAlpha', '0.5') ); ?>" 
+      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgAlpha') ); ?>"
                  data-fv-preview=""/></td>
     </tr>
     <tr>    		
