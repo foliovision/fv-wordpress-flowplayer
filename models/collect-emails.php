@@ -104,13 +104,13 @@ class FV_Player_Collect_Emails {
       return $popup;
     }
     $id = $fv_fp->conf['mailchimp_list'];
-    $aLists = get_option('fv_mailchimp_lists', array());
-    if (isset($aLists[$id])) {
+    $aLists = $this->mailchimp_get_lists();
+    if( !$aLists['error'] && isset($aLists['result'][$id]) ) {
       $popup = "";
       if( isset($fv_fp->conf['mailchimp_label']) && strlen(trim($fv_fp->conf['mailchimp_label'])) ) $popup = wpautop($fv_fp->conf['mailchimp_label']);
       $popup .= '<form class="mailchimp-form">'
               . '<input type="email" placeholder="Email Adress" name="MERGE0"/>';
-      foreach ($aLists[$id]['fields'] as $field) {
+      foreach ($aLists['result'][$id]['fields'] as $field) {
         if ($field['required']) {
           $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
         }
@@ -132,16 +132,20 @@ class FV_Player_Collect_Emails {
       update_option('fv_mailchimp_lists', $aLists);
       return array('error' => 'No API key found.  ', 'result' => $aLists);
     }
+    
+    $aLists = get_option('fv_mailchimp_lists', array());
+    if( get_option('fv_mailchimp_time', 0 ) + 3600 > time() ) return array('error' => false, 'result' => $aLists);
 
     $MailChimp = new MailChimp($fv_fp->conf['mailchimp_api']);
     $MailChimp->verify_ssl = false;
     $result = $MailChimp->get('lists');
     $error = $MailChimp->getLastError();
-    if ($error || !$result) {      
+    if ($error || !$result) {
+      update_option('fv_mailchimp_time', time() );
       update_option('fv_mailchimp_lists', $aLists);
       return array('error' => $error, 'result' => $aLists);
     }
-    foreach ($result['lists']as $list) {
+    foreach ($result['lists'] as $list) {
       $item = array(
           'id' => $list['id'],
           'name' => $list['name'],
@@ -149,10 +153,10 @@ class FV_Player_Collect_Emails {
       );
 
 
-      foreach ($list['_links']as $link) {
+      foreach ($list['_links'] as $link) {
         if ($link['rel'] === 'merge-fields') {
           $mergeFields = $MailChimp->get("lists/{$list['id']}/merge-fields");
-          foreach ($mergeFields['merge_fields']as $field) {
+          foreach ($mergeFields['merge_fields'] as $field) {
             $item['fields'][] = array(
                 'tag' => $field['tag'],
                 'name' => $field['name'],
@@ -164,6 +168,8 @@ class FV_Player_Collect_Emails {
       }
       $aLists[$list['id']] = $item;
     }
+    
+    update_option('fv_mailchimp_time', time() );
     update_option('fv_mailchimp_lists', $aLists);
     return array('error' => false, 'result' => $aLists);
   }
@@ -183,8 +189,7 @@ class FV_Player_Collect_Emails {
     $result_data = $MailChimp->post("lists/$list_id/members", array(
         'email_address' => $_POST['MERGE0'],
         'status' => 'subscribed',
-        'merge_fields' => $merge_fields));
-
+        'merge_fields' => $merge_fields));    
 
     if ($result_data['status'] === 'subscribed') {
       $result = array(
