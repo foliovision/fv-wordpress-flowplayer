@@ -216,7 +216,7 @@ class FV_Player_Collect_Emails {
       if(!in_array('first_name',$cols)){
 
         $sql = "ALTER TABLE `$table_name`
-	ADD COLUMN `first_name` TEXT NULL AFTER `data`,
+	ADD COLUMN `first_name` TEXT NULL AFTER `email`,
 	ADD COLUMN `last_name` TEXT NULL AFTER `first_name`;";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         $wpdb->query($sql);
