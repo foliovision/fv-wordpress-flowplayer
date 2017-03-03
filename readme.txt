@@ -343,6 +343,28 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.20 - 2017/02/22 =
+
+* CSS - fixing play icon size on mobile devices in fullscreen
+* Feature - Disable Playlist Autoadvance global setting and also a shortcode editor option
+* Feature - Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
+* Feature - Sharing text "Check the amazing video here" can now be customized using the "Sharing Text" global setting
+* Feature - Skin settings - quick preview of subtitle styling
+* Bugfix - Shortcode editor - disabling live preview to increase stability, use the "Refresh preview" button or Enter key
+
+= 6.0.5.19 - 2017/02/09 =
+
+* Mobile - using the native fullscreen only on older devices - iPad with iOS < 7 and Android < 4.4. This takes care of the Google Chrome video download button
+
+= 6.0.5.18 - 2017/02/07 =
+
+* Feature - Facebook Video Sharing - when enabled the first MP4 video in the post will be shared directly rather than the post excerpt.
+* Feature - Lightbox - now you can use HTML like <a class="colorbox" href="video.mp4"><img src="image.jpg" /></a> to make clicking that image open a video
+* Feature - Skin settings - now you can see the changes you are doing live if you play the video
+* CSS - renaming the play-button class to fvp-play-button to prevent conflicts with some themes
+* CSS - subtitle styling improvements
+* Bugfix - PHP 5.2 compatilibty fix for FV Player widget
+
 = 6.0.5.17 - 2017/01/30 =
 
 * Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
@@ -374,8 +396,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - HLS - fix for HLS.js fallback to Flash HLS in playlists
 * Bugfix - Iframe embedding - not working for posts
 * Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
-* Bugfix - Lightbox - for for images regex to pick the right anchor tag
-* Bubfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
+* Bugfix - Lightbox - fix for images regex to pick the right anchor tag
+* Bugfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
 
 = 6.0.5.13 - 2016/12/13 =
 
