@@ -41,7 +41,7 @@ class FV_Player_Collect_Emails {
       </tr>
       <?php if (!empty($fv_fp->conf['mailchimp_api'])) : ?>
         <tr>
-          <td style="vertical-align:top;line-height:2.4em;"><label for="mailchimp_api"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td style="vertical-align:top;line-height:2.4em;"><label for="mailchimp_label"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
           <td>
             <p class="description">
               <input type="text" name="mailchimp_label" id="mailchimp_label" value="<?php if( isset($fv_fp->conf['mailchimp_label']) ) echo esc_attr($fv_fp->conf['mailchimp_label']); ?>" />
@@ -176,20 +176,20 @@ class FV_Player_Collect_Emails {
 
   public function mailchimp_register() {
     global $fv_fp;
-    $MailChimp = new MailChimp($fv_fp->conf['mailchimp_api']);
-
-    $list_id = $fv_fp->conf['mailchimp_list'];
+    $MailChimp = new MailChimp($fv_fp->_get_option('mailchimp_api'));
+    $lists = $fv_fp->_get_option('fv_mailchimp_lists');
+    $list_id = $fv_fp->_get_option('mailchimp_list');
+    $fields = $lists[$list_id]['fields'];
     $merge_fields = array();
     foreach ($_POST as $key => $val) {
       if ($key === 'action' || $key === 'MERGE0')
         continue;
       $merge_fields[$key] = addslashes($val);
     }
-
     $result_data = $MailChimp->post("lists/$list_id/members", array(
         'email_address' => $_POST['MERGE0'],
         'status' => 'subscribed',
-        'merge_fields' => $merge_fields));    
+        'merge_fields' => $merge_fields));
 
     if ($result_data['status'] === 'subscribed') {
       $result = array(
@@ -198,10 +198,12 @@ class FV_Player_Collect_Emails {
 
       global $wpdb;
       $table_name = $wpdb->prefix . 'fv_player_emails';
-      if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+      if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
         $sql = "CREATE TABLE `$table_name` (
           `id` INT(11) NOT NULL AUTO_INCREMENT,
           `email` TEXT NULL,
+          `first_name` TEXT NULL,
+          `last_name` TEXT NULL,
           `data` TEXT NULL,
           PRIMARY KEY (`id`)
         )" . $wpdb->get_charset_collate() . ";";
@@ -209,9 +211,22 @@ class FV_Player_Collect_Emails {
         dbDelta($sql);
       }
 
+
+      $cols = $wpdb->get_col("SHOW COLUMNS FROM `$table_name`",0 );
+      if(!in_array('first_name',$cols)){
+
+        $sql = "ALTER TABLE `$table_name`
+	ADD COLUMN `first_name` TEXT NULL AFTER `data`,
+	ADD COLUMN `last_name` TEXT NULL AFTER `first_name`;";
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        $wpdb->query($sql);
+      }
+
       $wpdb->insert($table_name, array(
           'email' => $_POST['MERGE0'],
           'data' => serialize($merge_fields),
+          'first_name' => isset($_POST['FNAME']) ? $_POST['FNAME'] : '',
+          'last_name' => isset($_POST['LNAME']) ? $_POST['LNAME'] : ''
       ));
     } elseif ($result_data['status'] === 400) {
       if ($result_data['title'] === 'Member Exists') {
