@@ -425,6 +425,7 @@ class flowplayer_frontend extends flowplayer
           
           if( $autoplay ) {
             $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
+            $attributes['class'] .= ' is-splash'; 
           }
           
 				} else if( !empty($this->aCurArgs['caption']) ) {
