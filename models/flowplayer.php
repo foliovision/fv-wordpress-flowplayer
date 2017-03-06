@@ -108,8 +108,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
-    
 
+    add_filter( 'rocket_exclude_js', array($this, 'rocket_exclude_js') );
   }
   
   
@@ -1490,6 +1490,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       <?php
       exit();  
     }
+  }
+
+  public function rocket_exclude_js( $excluded_js ) {
+    $excluded_js[] = str_replace( home_url(), '', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js' );
+
+    return $excluded_js;
   }
   
 
