@@ -433,7 +433,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Fix - AMP - putting in new code which uses bare <video> tag for AMP if possible (no playlist and the video has to be on https://)
 * Fix - Shortcode editor - fix for Foliopress WYSIWYG
 * Pro - Beta - User AB loop - improved keyboard controls
->>>>>>> master
 
 = 6.0.5.8 - 2016/10/19 =
 
