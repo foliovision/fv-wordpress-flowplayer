@@ -189,7 +189,7 @@ class FV_Player_Collect_Emails {
     $result_data = $MailChimp->post("lists/$list_id/members", array(
         'email_address' => $_POST['MERGE0'],
         'status' => 'subscribed',
-        'merge_fields' => $merge_fields));
+        'merge_fields' => (object)$merge_fields));
 
     if ($result_data['status'] === 'subscribed') {
       $result = array(
@@ -209,17 +209,6 @@ class FV_Player_Collect_Emails {
         )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta($sql);
-      }
-
-
-      $cols = $wpdb->get_col("SHOW COLUMNS FROM `$table_name`",0 );
-      if(!in_array('first_name',$cols)){
-
-        $sql = "ALTER TABLE `$table_name`
-	ADD COLUMN `first_name` TEXT NULL AFTER `email`,
-	ADD COLUMN `last_name` TEXT NULL AFTER `first_name`;";
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        $wpdb->query($sql);
       }
 
       $wpdb->insert($table_name, array(
