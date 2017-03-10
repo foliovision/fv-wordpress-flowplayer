@@ -30,9 +30,9 @@ class FV_Player_Collect_Emails {
   public function fv_player_admin_menu() {
     global $fv_fp;
     ?>
-    <table class="form-table2 fv-player-interface-form-group">
+    <table class="form-table2 ">
       <tr>
-        <td style="width:150px"><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
           <p class="description">
             <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php if ($fv_fp->conf['mailchimp_api'] !== 'false') echo esc_attr($fv_fp->conf['mailchimp_api']); ?>" />                  
