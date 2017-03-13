@@ -297,6 +297,10 @@
 .flowplayer .fv_player_popup {background-color:#222;position:relative;top:0;width:100%;height:100%;padding:2em 0 1%}
 .flowplayer .fv_player_popup h1,.flowplayer .fv_player_popup h2,.flowplayer .fv_player_popup h3,.flowplayer .fv_player_popup h4,.flowplayer .fv_player_popup h5,.flowplayer .fv_player_popup h6{margin:0 0 6px !important}
 .mailchimp-form input{width:31.33333333%;max-width:31.33333333%;margin:0 1%}
+.mailchimp-form-1 input{width:48%;max-width:48%;margin:0 1%}
+.mailchimp-form-2 input{width:31.33333333%;max-width:31.33333333%;margin:0 1%}
+.mailchimp-form-3 input{width:23%;max-width:23%;margin:0 1%}
+
 .mailchimp-form input[type="text"],.mailchimp-form input[type="email"]{padding:8px;line-height:1;border:0;float:left}
 .mailchimp-form input[type="submit"]{background-color:#bf0000;float:right;padding:8px}
 .mailchimp-form input[type="submit"]:hover{background-color:#af0000}

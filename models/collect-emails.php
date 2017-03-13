@@ -108,19 +108,22 @@ class FV_Player_Collect_Emails {
     }
 
 
-    $id = $fv_fp->conf['mailchimp_list'];
+    $id = $fv_fp->_get_option('mailchimp_list');
     $aLists = $this->mailchimp_get_lists();
     if( !$aLists['error'] && isset($aLists['result'][$id]) ) {
-      $popup = "";
-      if( isset($fv_fp->conf['mailchimp_label']) && strlen(trim($fv_fp->conf['mailchimp_label'])) ) $popup = wpautop($fv_fp->conf['mailchimp_label']);
-      $popup .= '<form class="mailchimp-form">'
-              . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="MERGE0"/>';
+      $popup='';
+      $popups='';
+      if( $fv_fp->_get_option('mailchimp_label')  ) $popup = wpautop($fv_fp->_get_option('mailchimp_label'));
+      $count = 1;
       foreach ($aLists['result'][$id]['fields'] as $field) {
         if ($field['required']) {
-          $popup .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
+          $count ++;
+          $popups .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
         }
       }
-      $popup .= '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
+      $popup .= '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
+        . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="MERGE0"/>'
+        . $popups . '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
     }
     return $popup;
   }
