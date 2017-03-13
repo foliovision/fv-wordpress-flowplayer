@@ -231,7 +231,7 @@ class FV_Player_Collect_Emails {
       } elseif ($result_data['title'] === 'Invalid Resource') {
         $result = array(
             'status' => 'ERROR',
-            'text' => ['detail'],
+            'text' => __('Email Address not valid', 'fv-wordpress-flowplayer'),
         );
         $error = serialize($result_data);
       } else {
