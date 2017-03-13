@@ -16,9 +16,11 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_playlist_style', array($this, 'lightbox_playlist'), 10, 5);
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
+    
+    add_filter('fv_flowplayer_args', array($this, 'parse_html_caption'), 0);
 
-    add_filter('the_content', array($this, 'lightbox_add'));
-    add_filter('the_content', array($this, 'lightbox_add_post'), 999);  //  moved after the shortcodes are parsed to work for galleries
+    add_filter('the_content', array($this, 'html_to_lightbox_videos'));
+    add_filter('the_content', array($this, 'html_lightbox_images'), 999);  //  moved after the shortcodes are parsed to work for galleries
 
     add_action('fv_flowplayer_shortcode_editor_tab_options', array($this, 'shortcode_editor'), 8);
 
@@ -27,11 +29,27 @@ class FV_Player_lightbox {
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
 
+    add_filter('fv_player_conf_defaults', array( $this, 'conf_defaults' ) );
+
+
+    //TODO is this hack needed?
     $conf = get_option('fvwpflowplayer');
     if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
       (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
       add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     }
+  }
+
+  function conf_defaults($conf){
+    //TODO probbably not needed in the future
+    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] && !isset($conf['lightbox_improve_galleries']) )$conf['lightbox_improve_galleries'] = false;
+
+    $conf += array(
+      'lightbox_images' => false,
+      'lightbox_improve_galleries' => false
+    );
+
+    return $conf;
   }
 
   function remove_pro_hooks() {
@@ -44,8 +62,7 @@ class FV_Player_lightbox {
       remove_filter('fv_flowplayer_args', array($FV_Player_Pro, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add'));
       remove_filter('the_content', array($FV_Player_Pro, 'lightbox_add_post'), 999 );  //  moved after the shortcodes are parsed to work for galleries
-      
-   
+
     }
   }
 
@@ -61,7 +78,7 @@ class FV_Player_lightbox {
     if ($sType === 'video') {
       add_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
     } else {
-      remove_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11, 2);
+      remove_filter('fv_flowplayer_html', array($this, 'lightbox_html'), 11);
     }
 
     return $sType;
@@ -91,8 +108,8 @@ class FV_Player_lightbox {
       
       global $fv_fp;
 
-      $iConfWidth = intval($fv_fp->conf['width']);
-      $iConfHeight = intval($fv_fp->conf['height']);
+      $iConfWidth = intval($fv_fp->_get_option('width'));
+      $iConfHeight = intval($fv_fp->_get_option('height'));
 
       $iPlayerWidth = ( isset($aArgs[1]->aCurArgs['width']) && intval($aArgs[1]->aCurArgs['width']) > 0 ) ? intval($aArgs[1]->aCurArgs['width']) : $iConfWidth;
       $iPlayerHeight = ( isset($aArgs[1]->aCurArgs['height']) && intval($aArgs[1]->aCurArgs['height']) > 0 ) ? intval($aArgs[1]->aCurArgs['height']) : $iConfHeight;
@@ -125,6 +142,7 @@ class FV_Player_lightbox {
           $sStyle .= ' data-ratio="' . round($iHeight / $iWidth, 4) . '"';
         }
 
+        $sClass = "";
         if (is_object($aArgs[1]) && method_exists($aArgs[1], 'get_align')) {
           $sClass = $aArgs[1]->get_align();
         }
@@ -187,8 +205,8 @@ class FV_Player_lightbox {
         $output['html'] .= "</div>";
       }
 
-      foreach ($aPlayer['script'] AS $key => $value) {
-        $output['script'][$key] = array_merge(isset($output['script'][$key]) ? $output['script'][$key] : array(), $aPlayer['script'][$key]);
+      foreach ($aPlayer['script'] AS $key2 => $value) {
+        $output['script'][$key2] = array_merge(isset($output['script'][$key2]) ? $output['script'][$key2] : array(), $aPlayer['script'][$key2]);
       }
     }
 
@@ -197,37 +215,58 @@ class FV_Player_lightbox {
     return $output;
   }
 
-  function lightbox_add($content) {
+  function html_to_lightbox_videos($content) {
 
     //  todo: disabling the option should turn this off
-    if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg))[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1"  lightbox="true;text" caption="$2"]', $content);
-    }
-
-    if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-      $content = preg_replace('~<a[^>]*?href=[\'"](.*?\.(?:mp4|webm|m4v|mov|ogv|ogg)(?:\?.*?)?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-
-      $content = preg_replace('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
-      $content = preg_replace('~<a[^>]*?href=[\'"](.*?(?:youtube\.com|youtu\.be|vimeo.com).*?)[\'"][^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', '[fvplayer src="$1" lightbox="true;text" caption="$2"]', $content);
+    if (stripos($content, 'colorbox') !== false) {  
+      $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
+      return $content;
     }
 
     return $content;
   }
 
-  function lightbox_add_post($content) {
+  function html_to_lightbox_videos_callback($matches) {
+    $html = $matches[0];
+    $caption = trim($matches[1]);
+    if( stripos($html,'.mp4') !== false &&
+       stripos($html,'.webm') !== false &&
+       stripos($html,'.m4v') !== false &&
+       stripos($html,'.mov') !== false &&
+       stripos($html,'.ogv') !== false &&
+       stripos($html,'.ogg') !== false &&
+       stripos($html,'.m3u8') !== false &&
+       stripos($html,'youtube.com/') !== false &&
+       stripos($html,'youtu.be/') !== false &&
+       stripos($html,'vimeo.com/') !== false
+       ) {
+      return $html;  
+    }
+    
+    if( preg_match( '~href=[\'"](.*?(?:mp4|webm|m4v|mov|ogv|ogg|m3u8|youtube\.com|youtu\.be|vimeo.com).*?)[\'"]~', $html, $href ) ) {
+      if( stripos($caption,'<img') === 0 ) {
+        return '[fvplayer src="'.esc_attr($href[1]).'" lightbox="true;text" caption_html="'.base64_encode($caption).'"]';
+      } else {
+        return '[fvplayer src="'.esc_attr($href[1]).'" lightbox="true;text" caption="'.esc_attr($caption).'"]';
+      }
+    }
+    
+    return $html;
+  }
+
+  function html_lightbox_images($content) {
     global $fv_fp;
     //TODO IMAGES
- 
-    if( !isset($fv_fp->conf['lightbox_images']) || $fv_fp->conf['lightbox_images'] != 'true' ) {
-      return $content;    
+
+    if( $fv_fp->_get_option('lightbox_images') === false ) {
+      return $content;
     }
 
-    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'lightbox_add_callback'), $content);
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content);
     return $content;
   }
-  
-  function lightbox_add_callback($matches) {    
+
+  function html_lightbox_images_callback($matches) {
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
@@ -246,10 +285,18 @@ class FV_Player_lightbox {
     return $aArgs;
   }
 
+  function parse_html_caption( $aArgs ) {
+    if( isset($aArgs['caption_html']) && $aArgs['caption_html'] ) {
+      $aArgs['caption'] = base64_decode($aArgs['caption_html']);
+      unset($aArgs['caption_html']);
+    }
+    return $aArgs;
+  }
+
   function shortcode_editor() {
     global $fv_fp;
 
-    $bLightbox = (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true' );
+    $bLightbox = $fv_fp->_get_option(array('interface','lightbox'));
 
     if ($bLightbox) {
       ?>
@@ -265,7 +312,7 @@ class FV_Player_lightbox {
       </tr>
       <script>
 
-        jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode, remains) {
+        jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode) {
 
           document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 0;
           document.getElementById("fv_wp_flowplayer_field_lightbox_width").value = '';
@@ -278,7 +325,7 @@ class FV_Player_lightbox {
             fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace(/lightbox="(.*?)"/, '');
 
             if (sLightbox) {
-              aLightbox = sLightbox.split(/[;]/, 4);
+              var aLightbox = sLightbox.split(/[;]/, 4);
               if (aLightbox.length > 2) {
                 for (var i in aLightbox) {
                   if (i == 0 && aLightbox[i] == 'true') {
@@ -301,8 +348,8 @@ class FV_Player_lightbox {
               }
             }
           }
-        })
-        jQuery(document).on('fv_flowplayer_shortcode_create', function (e) {
+        });
+        jQuery(document).on('fv_flowplayer_shortcode_create', function () {
           if (document.getElementById("fv_wp_flowplayer_field_lightbox").checked) {
             var iWidth = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_width").value);
             var iHeight = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_height").value);
@@ -319,18 +366,7 @@ class FV_Player_lightbox {
 
   function lightbox_admin_interface_html() {
     global $fv_fp;
-    ?>
-    <tr>
-      <td style="width: 250px"><label for="interface[lightbox]"><?php _e('Enable video lightbox', 'fv-wordpress-flowplayer'); ?>:</label></td>
-      <td>
-        <p class="description">
-          <input type="hidden" value="false" name="interface[lightbox]" />
-          <input type="checkbox" value="true" name="interface[lightbox]" id="interface[lightbox]" <?php if (isset($fv_fp->conf['interface']['lightbox']) && $fv_fp->conf['interface']['lightbox'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'); ?>
-        </p>
-      </td>
-    </tr>
-    <?php
+    $fv_fp->_get_checkbox(__('Enable video lightbox', 'fv-wordpress-flowplayer'), ['interface', 'lightbox'], __('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'));
   }
 
   function lightbox_admin_default_options_html() {
@@ -341,18 +377,18 @@ class FV_Player_lightbox {
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_images" />
-          <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if (isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true') echo 'checked="checked"'; ?> />
+          <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if ($fv_fp->_get_option('lightbox_images')) echo 'checked="checked"'; ?> />
           <?php _e('Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-wordpress-flowplayer'); ?> <span class="more"><?php _e('Also works with WordPress <code>[gallery]</code> galleries - these are automatically switched to link to image URLs rather than the attachment pages.'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
     </tr>
     <tr id="lightbox-wp-galleries">
-      <td style="width: 250px"><label for="lightbox_images"><?php _e('Use video lightbox for WP Galleries', 'fv-wordpress-flowplayer'); ?>:</label></td>
+      <td style="width: 250px"><label for="lightbox_improve_galleries"><?php _e('Use video lightbox for WP Galleries', 'fv-wordpress-flowplayer'); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_improve_galleries" />
-          <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if (!isset($fv_fp->conf['lightbox_improve_galleries']) || isset($fv_fp->conf['lightbox_improve_galleries']) && $fv_fp->conf['lightbox_improve_galleries'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?></a>
+          <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if ($fv_fp->_get_option('lightbox_improve_galleries')) echo 'checked="checked"'; ?> />
+          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -360,12 +396,13 @@ class FV_Player_lightbox {
       jQuery(document).ready(function(){
         jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
         jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
-        if(jQuery('#lightbox_images').attr('checked')){
+        var lightbox_images = jQuery('#lightbox_images');
+        if(lightbox_images.attr('checked')){
             jQuery('#lightbox-wp-galleries').show();
           }else{
             jQuery('#lightbox-wp-galleries').hide();
           }
-        jQuery('#lightbox_images').on('click',function(){
+        lightbox_images.on('click',function(){
           if(jQuery(this).attr('checked')){
             jQuery('#lightbox-wp-galleries').show();
           }else{
