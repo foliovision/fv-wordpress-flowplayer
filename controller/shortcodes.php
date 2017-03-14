@@ -28,7 +28,8 @@ add_shortcode('fv_time','fv_player_time');
 
 function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
-	
+  if( !$fv_fp ) return false;	
+  
   if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {
     
     if( !isset( $atts['src'] ) ) {     
@@ -120,11 +121,13 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'admin_warning' => '',
     'live' => '',
     'caption' => '',
+    'caption_html' => '',
     'logo' => '',
     'share' => '',
     'post' => '',
     'speed' => '',
-    'liststyle' => ''
+    'liststyle' => '',
+    'playlist_advance' => '',
   ), $atts ) );
 
   if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
@@ -156,11 +159,13 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['admin_warning'] = $admin_warning;
     $arguments['live'] = $live;
     $arguments['caption'] = $caption;
+    $arguments['caption_html'] = $caption_html;
     $arguments['logo'] = $logo;
     $arguments['share'] = $share;
     $arguments['post'] = $post;
     $arguments['speed'] = $speed;
     $arguments['liststyle'] = $liststyle;
+    $arguments['playlist_advance'] = $playlist_advance;
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
     
 	} else {
@@ -194,11 +199,13 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'admin_warning' => '',
       'live' => '',
       'caption' => '',
+      'caption_html' => '',
       'logo' => '',
       'share' => '',
       'post' => '',
       'speed' => '',
-      'liststyle' => ''
+      'liststyle' => '',
+      'playlist_advance' => ''
 		), $atts );
 	}
   

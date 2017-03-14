@@ -183,7 +183,7 @@ class FV_Player_Checker {
               $out = @fopen( $localtempfilename,'wb' );
            
               if( $out ) {
-                $aArgs = array( 'file' => $localtempfilename );
+                $aArgs = array( 'file' => $out );
                 if( !$this->is_cron ) {
                   $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
                 }
@@ -235,14 +235,52 @@ class FV_Player_Checker {
             /*
             Only check file length
             */
+            
             if( isset($meta_action) && $meta_action == 'check_time' ) {
               $time = false;
               if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
                 $time = $ThisFileInfo['playtime_seconds'];    	
               }
+                       
+              
+          
+              if(preg_match('/.m3u8(\?.*)?$/i', $meta_original)){
+                
+                remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
+                
+                $request = wp_remote_get($meta_original);
+                $response = wp_remote_retrieve_body( $request );
+
+                $playlist = false;
+                $duration = 0;
+                $segments = false;
+
+                if(!preg_match_all('/^[^#].*\.m3u8(\?.*)?$/im', $response,$playlist)){
+                  if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
+                    foreach($segments[1] as $segment_item){
+                      $duration += $segment_item;
+                    }  
+                  }
+                }else{
+                  foreach($playlist[0] as $item){
+                    $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $meta_original);
+                    $request = wp_remote_get($item_url);
+                    $playlist_item = wp_remote_retrieve_body( $request );
+                    if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
+                      foreach($segments[1] as $segment_item){
+                        $duration += $segment_item;
+                      }  
+                    }
+                    if($duration > 0)
+                      break;
+                  }
+                }
+
+                $time = $duration;
+              }
               
               $time = apply_filters( 'fv_flowplayer_checker_time', $time, $meta_original );
-
+              
               global $post;
               $fv_flowplayer_meta = get_post_meta( $post->ID, flowplayer::get_video_key($meta_original), true );
               $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
@@ -363,7 +401,7 @@ class FV_Player_Checker {
   public static function http_request( $sURL, $args ) {
     global $fv_wp_flowplayer_ver;
     
-    $args = wp_parse_args( $args, array( 'file' => false, 'size' => 2097152, 'quick_check' => false ) );
+    $args = wp_parse_args( $args, array( 'file' => false, 'size' => 4194304, 'quick_check' => false ) );
     extract($args);
     
     $iTimeout = ($quick_check) ? $quick_check : 20;
@@ -387,8 +425,14 @@ class FV_Player_Checker {
     $header = substr($data, 0, $header_size);
     $body = substr($data, $header_size);
   
-    if( $file ) {
-      file_put_contents( $file, $body);
+    if ($file) {
+      $size = strlen($body);
+      for ($written = 0; $written < $size; $written += $fwrite) {
+        $fwrite = fwrite($file, substr($body, $written ,1024*512));
+        if ($fwrite == 0) {
+          break;
+        }
+      }
     }
     $sError = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : false;
     if( curl_errno($ch) == 28 ) {
