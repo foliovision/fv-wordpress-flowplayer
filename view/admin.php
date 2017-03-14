@@ -226,6 +226,9 @@ function fv_flowplayer_admin_default_options() {
 
             <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player top bar.', 'fv-wordpress-flowplayer') ); ?>
 
+            <?php $fv_fp->_get_checkbox(__('Video specific sharing links', 'fv-wordpress-flowplayer') . '(beta)', 'video_hash_links', __('Users can link to specific videos on a page', 'fv-wordpress-flowplayer') ); ?>
+
+
 						<tr>
 							<td><label for="googleanalytics"><?php _e('Google Analytics ID', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
