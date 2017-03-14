@@ -1392,7 +1392,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     html {margin-top: 0px !important;}
   </style>
 </head>
-<body>
+<body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
     if( !is_user_logged_in() ){
