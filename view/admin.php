@@ -758,7 +758,7 @@ function fv_flowplayer_admin_interface_options() {
 				<table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Ads', 'fv-wordpress-flowplayer'), array('interface', 'ads') ); ?>
           <?php $fv_fp->_get_checkbox(__('Align', 'fv-wordpress-flowplayer'), array('interface', 'align') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Allow User Uploads', 'fv-wordpress-flowplayer'),'allowuploads', __('Enables the WP Media Library integraton', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Allow Video Uploads', 'fv-wordpress-flowplayer'),'allowuploads', __('Enables the WP Media Library integraton if you want to host videos on your own server', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), array('interface', 'autoplay') ); ?>
           <?php $fv_fp->_get_checkbox(__('Controlbar', 'fv-wordpress-flowplayer'), array('interface', 'controlbar') ); ?>
           <?php $fv_fp->_get_checkbox(__('Embed', 'fv-wordpress-flowplayer'), array('interface', 'embed') ); ?>
