@@ -347,6 +347,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Compatibility - fix for Gravity Forms Partial Entries when video starts playing on background
 * Feature - clicking playlist item now scrolls to the player if it's outside of view
+* Bugfix - disabling video element right click menu
 
 = 6.0.5.20 - 2017/02/22 =
 
