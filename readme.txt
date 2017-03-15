@@ -343,11 +343,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.21 - 2017/03/?? =
+= 6.0.5.21 - 2017/03/15 =
 
 * Compatibility - fix for Gravity Forms Partial Entries when video starts playing on background
 * Feature - clicking playlist item now scrolls to the player if it's outside of view
 * Bugfix - disabling video element right click menu
+* Bugfix - shortcode editor preview not working in some themes
+* Code refactoring
 
 = 6.0.5.20 - 2017/02/22 =
 
