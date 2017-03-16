@@ -924,3 +924,10 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.chrome55fix video::-webkit-media-controls-panel {
   width: calc(100% + 48px);
 }
+
+
+.is-audio .fp-player {
+  background-size: contain;
+  background-position: top center;
+  background-repeat: no-repeat;
+}

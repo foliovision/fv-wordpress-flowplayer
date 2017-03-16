@@ -527,10 +527,11 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', __('Enable to force video size at cost of loosing the video responsiveness.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Colorbox Compatibility', 'fv-wordpress-flowplayer'), 'cbox_compatibility', __('Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Disable saving of color settings into a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
-          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Beta version, allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable audio playback', 'fv-wordpress-flowplayer').' (beta)', 'audio', __('Allows audio playback directly in FV Player with all the features.', 'fv-wordpress-flowplayer'), __('Normally there is a fallback to Media Element player.','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer').' (beta)', 'hlsjs', __('Allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' )); ?>
 
           <tr>
-						<td><label for="css_disable"><?php _e('Enable profile videos (beta)', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td><label for="css_disable"><?php _e('Enable profile videos', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
 						<td>
               <div class="description">
                 <p>
@@ -573,12 +574,12 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
 
           <tr>
-						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv-wordpress-flowplayer'); ?>:</label></td>
+						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
 						<td>
               <p class="description">
                 <input type="hidden" name="db_duration" value="false" />
                 <input type="checkbox" name="db_duration" id="db_duration" value="true" <?php if( $fv_fp->_get_option('db_duration') ) echo 'checked="checked"'; ?> />
-                <?php _e('Beta version, turn off if you experience issues when saving posts!','fv-wordpress-flowplayer'); ?>
+                <?php _e('Turn off if you experience issues when saving posts!','fv-wordpress-flowplayer'); ?>
                 <span class="more"><?php _e('Turn on to enable video duration scanning.', 'fv-wordpress-flowplayer'); ?>
                 <?php
                 global $wpdb;
@@ -611,7 +612,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>-->
 
-          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer').' (beta)', array( 'integrations', 'embed_iframe' ), __('New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
