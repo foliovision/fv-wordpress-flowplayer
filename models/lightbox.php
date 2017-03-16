@@ -366,7 +366,7 @@ class FV_Player_lightbox {
 
   function lightbox_admin_interface_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Enable video lightbox', 'fv-wordpress-flowplayer'), ['interface', 'lightbox'], __('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'));
+    $fv_fp->_get_checkbox(__('Enable video lightbox', 'fv-wordpress-flowplayer'), array('interface', 'lightbox'), __('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'));
   }
 
   function lightbox_admin_default_options_html() {
