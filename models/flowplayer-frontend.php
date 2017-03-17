@@ -997,6 +997,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_sharing_html() {
     $sSharingText = $this->_get_option('sharing_email_text' );
+    $bVideoLink = empty($this->aCurArgs['linking']) ? $this->_get_option('video_hash_links' ) : $this->aCurArgs['linking'] === 'true';
     
     if( isset($this->aCurArgs['share']) ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
@@ -1020,11 +1021,11 @@ class flowplayer_frontend extends flowplayer
 
 					
     $sHTMLSharing = '<ul class="fvp-sharing">
-    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status='.$sTitle.$sPermalink.'" target="_blank">Twitter</a></li>
-    <li><a class="sharing-google" href="https://plus.google.com/share?url='.$sPermalink.'" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body='.$sMail.'" target="_blank">Email</a></li></ul>
-    <div><a class="sharing-link" href="'.$sLink.'" target="_blank">Link</a></div>';
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank">Facebook</a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank">Twitter</a></li>
+    <li><a class="sharing-google" href="https://plus.google.com/share?url=' . $sPermalink . '" target="_blank">Google+</a></li>
+    <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank">Email</a></li></ul>';
+    $sHTMLSharing .= $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
