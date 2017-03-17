@@ -637,8 +637,8 @@ function fv_flowplayer_admin_select_popups($aArgs){
     <?php if( $aArgs['show_default'] ) : ?>
       <option>Use site default</option>
     <?php endif; ?>
-    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
-    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
+    <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no"><?php _e('None', 'fv-wordpress-flowplayer'); ?></option>
+    <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random"><?php _e('Random', 'fv-wordpress-flowplayer'); ?></option>
     <?php
     if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
       foreach( $aPopupData AS $key => $aPopupAd ) {
@@ -758,7 +758,7 @@ function fv_flowplayer_admin_interface_options() {
 				<table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Ads', 'fv-wordpress-flowplayer'), array('interface', 'ads') ); ?>
           <?php $fv_fp->_get_checkbox(__('Align', 'fv-wordpress-flowplayer'), array('interface', 'align') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Allow User Uploads', 'fv-wordpress-flowplayer'),'allowuploads', __('Enables the WP Media Library integraton', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Allow Video Uploads', 'fv-wordpress-flowplayer'),'allowuploads', __('Enables the WP Media Library integraton if you want to host videos on your own server', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), array('interface', 'autoplay') ); ?>
           <?php $fv_fp->_get_checkbox(__('Controlbar', 'fv-wordpress-flowplayer'), array('interface', 'controlbar') ); ?>
           <?php $fv_fp->_get_checkbox(__('Embed', 'fv-wordpress-flowplayer'), array('interface', 'embed') ); ?>
@@ -1279,7 +1279,7 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_popups', __('Popups'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_popups', __('Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
