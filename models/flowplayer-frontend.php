@@ -52,8 +52,7 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
-		global $post;
-						
+
 		$this->hash = md5($media.$this->_salt()); //  unique player id
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
     $this->sHTMLAfter = false;
@@ -82,11 +81,8 @@ class flowplayer_frontend extends flowplayer
 		$src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
 		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
 		
-    
-    
     $splash_img = $this->get_splash();
-    
-    
+
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
       if( stripos( $media_item, 'rtmp://' ) === 0 ) {
         $rtmp = $media_item;
@@ -118,7 +114,7 @@ class flowplayer_frontend extends flowplayer
       }
 		}
     
-		if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
 			if( isset($aYoutube[5]) ) {
 				$youtube = $aYoutube[5];
 				$player_type = 'youtube';
@@ -1021,6 +1017,7 @@ class flowplayer_frontend extends flowplayer
       $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
       $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
     }
+
 					
     $sHTMLSharing = '<ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
