@@ -591,7 +591,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer.fixed-controls { margin: 0 auto <?php echo $iMarginBottom+30; ?>px auto; display: block; }
     .flowplayer.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
     .flowplayer.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
-    .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
+    .flowplayer.has-caption, .flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; background-color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
     .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
     .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
@@ -918,7 +918,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function get_duration_post( $post_id = false ) {
-    global $post, $fv_fp;
+    global $post;
     $post_id = ( $post_id ) ? $post_id : $post->ID;
 
     $content = false;
@@ -1405,7 +1405,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       ob_start();
       
-      global $fvseo;
       if( isset($_REQUEST['fv_player_preview']) ) {
         global $fvseo;
         if( isset($fvseo) ) remove_action('wp_footer', array($fvseo, 'script_footer_content'), 999999 );
@@ -1428,8 +1427,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ?>
   <style>
     body { margin: 0; padding: 0; overflow:hidden; background:white;}
-    body:before { height: 0px!important;}
-    html {margin-top: 0px !important;}
+    body:before { height: 0!important;}
+    html {margin-top: 0!important;}
   </style>
 </head>
 <body class="fv-player-preview">

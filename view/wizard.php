@@ -31,8 +31,7 @@
 	}
   
   function fv_flowplayer_admin_select_popups($aArgs) {
-    global $fv_fp;
-    
+
     $aPopupData = get_option('fv_player_popups');
     
   
@@ -63,7 +62,7 @@
     $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
     $args = wp_parse_args( $args, array(
                           'class' => false,
-                          'dropdown' => array( 'Default', 'On', 'Off' ),
+                          'dropdown' => array( array('','Default'), array('true','On'), array('false','Off') ),
                           'id' => false,
                           'label' => '',
                           'live' => true,
@@ -109,7 +108,7 @@
   
 <script>
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
-var fv_wp_flowplayer_re_edit = /\[[^\]]*?<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>.*?[^\\]\]/mi;
+var fv_wp_flowplayer_re_edit = /\[[^\]]*?<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>.*?[^\\]]/mi;
 var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>/gi;
 var fv_Player_site_base = "<?php echo home_url(); ?>";
 <?php global $fv_fp; if( isset($fv_fp->conf['postthumbnail']) && $fv_fp->conf['postthumbnail'] == 'true' ) : ?>

@@ -1077,7 +1077,11 @@ function fv_wp_flowplayer_submit( preview ) {
       if( jQuery('[name=fv_wp_flowplayer_field_popup]').val() !== ''){
         fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
       }else{
-        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
+        var sPopup = jQuery('#fv_wp_flowplayer_field_popup_id').val();
+        if(sPopup){
+          fv_wp_fp_shortcode += ' popup="' + sPopup + '"';
+        }
+
       }
     break;
   }
@@ -1336,7 +1340,7 @@ function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, a
   if( typeof(element) == "undefined") {
     return false;
   }
-  
+
   var sValue = false;
   if( bCheckbox ) {
     if( element.checked ){
