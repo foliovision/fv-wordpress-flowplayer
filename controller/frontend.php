@@ -363,17 +363,21 @@ function flowplayer_prepare_scripts() {
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
-    if( count($fv_fp->aAds) > 0 ) {
+    
+    if( !$fv_fp->_get_option('new_code') ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
+    }
+    
+    if( count($fv_fp->aAds) > 0 ) { //  todo: move into player
       wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds ); 
     }
-    if( count($fv_fp->aPopups) > 0 ) {
+    if( count($fv_fp->aPopups) > 0 ) {  //  todo: move into player
       wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
     }    
 
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
-        wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+        //wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
     

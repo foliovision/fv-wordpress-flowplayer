@@ -26,8 +26,6 @@ class flowplayer_frontend extends flowplayer
 	
 	var $autobuffer_count = 0;	
 	
-	var $autoplay_count = 0;
-	
 	var $expire_time = 0;
   
   var $aAds = array();
@@ -62,6 +60,8 @@ class flowplayer_frontend extends flowplayer
 		$youtube = false;
 		$vimeo = false;
     $scripts_after = '';
+    
+    $attributes = array();
     
 		// returned array with new player's html and javascript content
     if( !isset($GLOBALS['fv_fp_scripts']) ) {
@@ -148,14 +148,19 @@ class flowplayer_frontend extends flowplayer
     }
     
         
-    $aPlaylistItems = array();
+    $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-    if(apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
+    if( $this->_get_option('new_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
 
       list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }
-        
+    
+    if( $this->_get_option('new_code')  && count($aPlaylistItems) == 1 ) {
+      $playlist_items_external_html = false;
+      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0 ) );
+    }
+    
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
     
     
@@ -177,19 +182,18 @@ class flowplayer_frontend extends flowplayer
  
     if( $player_type == 'video'  && $this->aCurArgs['liststyle'] == 'tabs' && count($aPlaylistItems) > 1 ) {
       return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions);            
-    }    
+    }
     
+    
+    /*
+     *  Autoplay
+     */
     $autoplay = false;  //  todo: should be changed into a property
-    if( $this->autoplay_count < 1 ) {
-      if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
-        $this->autoplay_count++;
-        $autoplay = true;
-
-      }  
-      if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
-        $this->autoplay_count++;
-        $autoplay = true;
-      }
+    if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
+      $autoplay = true;
+    }  
+    if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
+      $autoplay = true;
     }
     
     
@@ -274,10 +278,6 @@ class flowplayer_frontend extends flowplayer
 					if( !$this->_get_option('engine') && stripos( $media_item, '.m4v' ) !== false ) {
 						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
 					}
-          
-					if( !$this->_get_option('engine') && preg_match( '~\.(mp4|m4v|mov)~', $media_item ) > 0 ) {
-						$this->ret['script']['fv_flowplayer_browser_chrome_mp4'][$this->hash] = true;
-					}
 					
 				}
 				
@@ -303,13 +303,13 @@ class flowplayer_frontend extends flowplayer
 				
 	
 				
-				$attributes = array();
-				$attributes['class'] = 'flowplayer no-brand';
 				
-				if( $autoplay == false && !( $this->_get_option('auto_bufferingDISABLED') && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
-					$attributes['class'] .= ' is-splash';
-				}
-        
+				$attributes['class'] = 'flowplayer no-brand is-splash';
+      
+        if( $autoplay ) {
+          $attributes['data-fvautoplay'] = 'true';
+        }        
+
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
 					$attributes['class'] .= ' playlist-hidden';
 				}
@@ -417,15 +417,13 @@ class flowplayer_frontend extends flowplayer
           if( $args['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
             $this->sHTMLAfter .= $playlist_items_external_html;
           }
-          $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
+          
+          if( !$this->_get_option('new_code') ) {
+            $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
+          }
 
           if( !empty($splash_img) ) {
             $attributes['style'] .= "background-image: url({$splash_img});";
-          }
-          
-          if( $autoplay ) {
-            $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
-            $attributes['class'] .= ' is-splash';
           }
           
 				} else if( !empty($this->aCurArgs['caption']) ) {
@@ -462,7 +460,11 @@ class flowplayer_frontend extends flowplayer
 				$attributes_html = '';
 				$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
 				foreach( $attributes AS $attr_key => $attr_value ) {
-					$attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
+          if( $attr_key == 'data-item' ) {
+            $attributes_html .= ' '.$attr_key.'=\''.$attr_value.'\'';
+          } else {
+            $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
+          }
 				}
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
@@ -470,23 +472,10 @@ class flowplayer_frontend extends flowplayer
         $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
 
         if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
-					$this->ret['html'] .= "\t".'<video';
-          $this->ret['html'] .= ' class="fp-engine"';
+					$this->ret['html'] .= "\t".'<video class="fp-engine" preload="none"';
 					if (isset($splash_img) && !empty($splash_img)) {
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
-					if( $autoplay == true ) {
-						$this->ret['html'] .= ' autoplay="autoplay"';  
-					}
-    
-					if( $this->_get_option('auto_bufferingDISABLED') && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) {
-						$this->ret['html'] .= ' preload="preload"';
-						//$this->ret['html'] .= ' id="wpfp_'.$this->hash.'_video"';
-					}	else if ($autoplay == false) {
-						$this->ret['html'] .= ' preload="none"';        
-					}        
-					
-          
 					$this->ret['html'] .= ">\n";
 
 					if( isset($rtmp) && !empty($rtmp) ) {
@@ -900,33 +889,35 @@ class flowplayer_frontend extends flowplayer
   
   function get_subtitles() {
     $aSubtitles = array();
-    foreach( $this->aCurArgs AS $key => $subtitles ) {
-      if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
-        continue;
+    if( $this->aCurArgs && count($this->aCurArgs) > 0 ) {
+      foreach( $this->aCurArgs AS $key => $subtitles ) {
+        if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
+          continue;
+        }
+  
+        if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
+          //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
+          if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
+            if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+              $subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+            }
+            else
+            if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+              $subtitles = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
+            }
+            else {
+              //if the videos are not in the videos directory but they are adressed relatively
+              $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+              $subtitles = 'http://'.$subtitles;
+            }
+        }
+        else {
+          $subtitles = trim($subtitles);
+        }
+        
+        $aSubtitles[str_replace( 'subtitles_', '', $key )] = $subtitles;
+        
       }
-
-      if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-        //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
-        if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
-          }
-          else
-          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-          }
-          else {
-            //if the videos are not in the videos directory but they are adressed relatively
-            $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-            $subtitles = 'http://'.$subtitles;
-          }
-      }
-      else {
-        $subtitles = trim($subtitles);
-      }
-      
-      $aSubtitles[str_replace( 'subtitles_', '', $key )] = $subtitles;
-      
     }
 
     return $aSubtitles;
