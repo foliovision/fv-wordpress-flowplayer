@@ -31,7 +31,6 @@ class FV_Player_lightbox {
 
     add_filter('fv_player_conf_defaults', array( $this, 'conf_defaults' ) );
 
-
     //TODO is this hack needed?
     $conf = get_option('fvwpflowplayer');
     if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
@@ -165,7 +164,8 @@ class FV_Player_lightbox {
   }
 
   function lightbox_playlist($output, $aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions) {
-    if ($output || empty($aCurArgs['lightbox']) || !count($aPlaylistItems)) {
+    
+    if ($output || empty($aCurArgs['lightbox']) || !count($aPlaylistItems) || count($aPlaylistItems) == 1 ) {
       return $output;
     }
 
