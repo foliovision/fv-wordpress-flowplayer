@@ -39,53 +39,68 @@ class FV_Player_Collect_Emails {
           </p>
         </td>
       </tr>
-      <?php if (!empty($fv_fp->conf['mailchimp_api'])) : ?>
-        <tr>
-          <td style="vertical-align:top;line-height:2.4em;"><label for="mailchimp_label"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
-          <td>
-            <p class="description">
-              <input type="text" name="mailchimp_label" id="mailchimp_label" value="<?php if( isset($fv_fp->conf['mailchimp_label']) ) echo esc_attr($fv_fp->conf['mailchimp_label']); ?>" />
-            </p>
-          <p class="description">Some HTML is allowed to use for headings etc.</p>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-          <?php        
-            $aLists = $this->mailchimp_get_lists();
-            if( $aLists['error'] ) {
-              echo $aLists['error'];
-            } else {            
-              $aLists = $aLists['result']; ?>
-              <style>
-                .mailchimp-lists th { text-align: left; }
-                #wpfp_options .mailchimp-lists label { text-align: left; }
-                .mailchimp-lists tr td:first-child { width: 2%; }
-                .mailchimp-lists tr td:nth-child(2) { width: 20%; }
-                .mailchimp-lists tr td:nth-child(3) { width: 75%; }
-              </style>
-              <p><?php _e('Pick your list below:', 'fv-wordpress-flowplayer' ); ?> &nbsp; <a href="<?php echo get_site_url();?>/wp-admin/options-general.php?page=fvplayer&fv_refresh_mailchimp=true"><?php _e('Refresh Lists') ?></p>
-              <table class="mailchimp-lists">
-                <tr><th></th><th>List</th><th>Additional Required Fields</th></tr><?php
-                foreach ($aLists as $key => $list) {
-                  $names = array();
-                  foreach ($list['fields'] as $field) {
-                    if( $field['required'] )$names[] = $field['name'];
-                  }
-                  ?>
-                  <tr>
-                    <td><input id="list-<?php echo $key; ?>" type="radio" name="mailchimp_list" value="<?php echo $list['id'] ?>" <?php echo $fv_fp->conf['mailchimp_list'] === $list['id'] ? 'checked' : ''; ?>></td>
-                    <td><label for="list-<?php echo $key; ?>"><?php echo $list['name'] ?></label></td>
-                    <td><?php echo implode($names, ', '); ?></td>
-                  </tr><?php
+      <tr>
+        <td style="vertical-align:top;line-height:2.4em;"><label for="mailchimp_label"><?php _e('Form label', 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td>
+          <p class="description">
+            <input type="text" name="mailchimp_label" id="mailchimp_label" value="<?php if( isset($fv_fp->conf['mailchimp_label']) ) echo esc_attr($fv_fp->conf['mailchimp_label']); ?>" />
+          </p>
+        <p class="description">Some HTML is allowed to use for headings etc.</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+        <?php
+          $aMailchimpLists = $this->get_mailchimp_lists();
+          if( $aMailchimpLists['error'] ) {
+            echo $aMailchimpLists['error'];
+          } else {
+            $aMailchimpLists = $aMailchimpLists['result']; ?>
+            <style>
+              .mailchimp-lists th { text-align: left; }
+              #wpfp_options .mailchimp-lists label { text-align: left; }
+              .mailchimp-lists tr td:first-child { width: 2%; }
+              .mailchimp-lists tr td:nth-child(2) { width: 20%; }
+              .mailchimp-lists tr td:nth-child(3) { width: 75%; }
+            </style>
+            <p><?php _e('Pick your list below:', 'fv-wordpress-flowplayer' ); ?> &nbsp; <a href="<?php echo get_site_url();?>/wp-admin/options-general.php?page=fvplayer&fv_refresh_mailchimp=true"><?php _e('Refresh Lists') ?></p>
+            <table class="mailchimp-lists">
+              <tr><th></th><th>List</th><th>Additional Required Fields</th></tr><?php
+              foreach ($aMailchimpLists as $key => $list) {
+                $names = array();
+                foreach ($list['fields'] as $field) {
+                  if( $field['required'] )$names[] = $field['name'];
                 }
-              ?></table><?php
-            }        
-            ?>
-          </td>
-        </tr>
-      <?php endif; ?>
-      <tr>    		
+                ?>
+                <tr>
+                  <td><input id="list-<?php echo $key; ?>" type="radio" name="mailchimp_list" value="<?php echo $list['id'] ?>" <?php echo $fv_fp->conf['mailchimp_list'] === $list['id'] ? 'checked' : ''; ?>></td>
+                  <td><label for="list-<?php echo $key; ?>"><?php echo $list['name'] ?></label></td>
+                  <td><?php echo implode($names, ', '); ?></td>
+                </tr><?php
+              }
+            ?></table><?php
+          }
+
+
+
+
+          $aLists = $fv_fp->_get_option('email_lists');
+
+          ?>
+          <table class="mailchimp-lists">
+            <tr><th></th><th>Local List</th><th>Additional Required Fields</th></tr><?php
+            foreach ($aLists as $key => $list) {
+              $names = array();
+              ?>
+              <tr>
+              <td><label for="list-<?php echo $key; ?>"><?php echo $list['name'] ?></label></td>
+              <td><?php echo implode($names, ', '); ?></td>
+              </tr><?php
+            }
+            ?></table>
+        </td>
+      </tr>
+      <tr>
         <td colspan="2">          
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
         </td>
@@ -109,7 +124,7 @@ class FV_Player_Collect_Emails {
 
 
     $id = $fv_fp->_get_option('mailchimp_list');
-    $aLists = $this->mailchimp_get_lists();
+    $aLists = $this->get_mailchimp_lists();
     if( !$aLists['error'] && isset($aLists['result'][$id]) ) {
       $popup='';
       $popups='';
@@ -131,8 +146,7 @@ class FV_Player_Collect_Emails {
   /*
    * API CALL
    */
-
-  private function mailchimp_get_lists() {
+  private function get_mailchimp_lists() {
     global $fv_fp;    
     $aLists = array();
 
@@ -182,6 +196,7 @@ class FV_Player_Collect_Emails {
     return array('error' => false, 'result' => $aLists);
   }
 
+
   public function mailchimp_register() {
     global $fv_fp;
     $MailChimp = new MailChimp($fv_fp->_get_option('mailchimp_api'));
@@ -210,6 +225,8 @@ class FV_Player_Collect_Emails {
         `email` TEXT NULL,
         `first_name` TEXT NULL,
         `last_name` TEXT NULL,
+        `id_list` INT(11) NOT NULL,
+        `date` DATETIME NULL DEFAULT NULL,
         `data` TEXT NULL,
         `error` TEXT NULL,
         PRIMARY KEY (`id`)

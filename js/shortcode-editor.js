@@ -327,7 +327,7 @@ jQuery(document).ready(function($){
   jQuery('#fv_wp_flowplayer_field_end_actions').change(function(){
     var value = jQuery(this).val();
     jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
-    
+    console.log(value);
     switch(value){
       case 'redirect': 
         jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show(); 
@@ -335,6 +335,9 @@ jQuery(document).ready(function($){
       case 'popup':
         jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
         jQuery('#fv_wp_flowplayer_field_' + value + '_id').parents('tr').show();
+        break;
+      case 'email_list':
+        jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
         break;
       default:        
         fv_wp_flowplayer_submit('refresh-button');
