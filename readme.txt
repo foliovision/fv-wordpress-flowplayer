@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.22 - 2017/03/?? =
+
+* Bugfix - making the license check work even if SSL certificates are not installed on your server
+
 = 6.0.5.21 - 2017/03/15 =
 
 * Compatibility - fix for Gravity Forms Partial Entries when video starts playing on background
