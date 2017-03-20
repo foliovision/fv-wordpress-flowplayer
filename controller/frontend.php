@@ -381,7 +381,7 @@ function flowplayer_prepare_scripts() {
 
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
-        //wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
+        wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
     
