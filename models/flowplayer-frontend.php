@@ -160,7 +160,7 @@ class flowplayer_frontend extends flowplayer
     
     if( $this->_get_option('new_code')  && count($aPlaylistItems) == 1 ) {
       $playlist_items_external_html = false;
-      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0 ) );
+      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
     }
     
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );

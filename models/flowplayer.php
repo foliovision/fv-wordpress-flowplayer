@@ -321,7 +321,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ){
     
-    $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index );
+    $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
     $sHTML = "\t\t<a href='#' onclick='return false'";
     $sHTML .= $this->_get_option('new_code') ? " data-item='".json_encode($aPlayer)."'" : "";
