@@ -100,10 +100,12 @@ class flowplayer_frontend extends flowplayer
      *  Which player should be used
      */
 		foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-			if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
-					$player_type = 'audio';
-					break;
-				} 
+      if( !$this->_get_option('audio') ) {
+        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
+          $player_type = 'audio';
+          break;
+        }
+      }
 				
 			global $post;
       if( $post ) {
