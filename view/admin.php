@@ -627,7 +627,6 @@ function fv_flowplayer_admin_integrations() {
 }
 
 function fv_flowplayer_admin_select_popups($aArgs){
-  global $fv_fp;
 
   $aPopupData = get_option('fv_player_popups');
 
@@ -1463,11 +1462,10 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     
     jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
       var button = jQuery(this);
-      jQuery(button).siblings('img').eq(0).show();
+      button.siblings('img').eq(0).show();
       
-      var button = this;
       jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_activate_extension' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
-        jQuery(button).siblings('img').eq(0).hide();
+        button.siblings('img').eq(0).hide();
         
         var obj;
         try {
@@ -1475,8 +1473,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
           response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
           obj = jQuery.parseJSON( response );
 
-          jQuery(button).removeClass('fv_wp_flowplayer_activate_extension');
-          jQuery(button).attr('value',obj.message);
+          button.removeClass('fv_wp_flowplayer_activate_extension');
+          button.attr('value',obj.message);
           
           if( typeof(obj.error) == "undefined" ) {
             //window.location.hash = '#'+jQuery(button).attr("data-plugin");
@@ -1484,13 +1482,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             window.location.href = window.location.href;
           }
         } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
-          jQuery(button).after('<p>Error parsing JSON</p>');
+          button.after('<p>Error parsing JSON</p>');
           return;
         }
     
       } ).error(function() {
-        jQuery(button).siblings('img').eq(0).hide();
-        jQuery(button).after('<p>Error!</p>');
+        button.siblings('img').eq(0).hide();
+        button.after('<p>Error!</p>');
       });  
     } );
     
