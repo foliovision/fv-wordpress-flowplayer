@@ -1134,7 +1134,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $output = 'mp4';      
       } else if( $extension == 'mkv' ) {
         $output = 'mp4';      
-      } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
+      } else if( $extension == 'mp3' ) {
+        $output = 'mpeg';      
+      } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'ogg', 'wav', '3gp')) ) {
         $output = $default;  
       } else {
         $output = $extension;
@@ -1152,7 +1154,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           break;
         case 'm3u8' :
           $output = 'application/'.$output;
-          break;        
+          break;
+        case 'mp3' :
+        case 'ogv' :
+        case 'wav' :
+          $output = 'audio/'.$output;
+          break;   
         default:
           $output = 'video/'.$output;
           break;
