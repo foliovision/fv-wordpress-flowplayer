@@ -37,6 +37,7 @@ class FV_Player_Collect_Emails {
       foreach( $aOptions AS $key => $value ) {
         $aOptions[$key]['first_name'] = stripslashes($value['first_name']);
         $aOptions[$key]['last_name'] = stripslashes($value['last_name']);
+        $aOptions[$key]['mailchimp'] = stripslashes($value['mailchimp']);
         $aOptions[$key]['name'] = stripslashes($value['name']);
 
       }
@@ -116,14 +117,12 @@ class FV_Player_Collect_Emails {
             $aMailchimpLists = $this->get_mailchimp_lists();
 
             foreach ($aListData AS $key => $aList) {
+              $mailchimpOptions = '';
 
-
-
-              $aTempMailchimpLists = $aMailchimpLists;
-              foreach($aTempMailchimpLists as $key => $list){
+              foreach($aMailchimpLists['result'] as $mailchimpId => $list){
+                var_dump($aMailchimpLists);
                 if(!$list)
                   continue;
-                $list = $list[key($list)];
                 $use = true;
                 foreach($list['fields'] as $field){
                   if( $field['tag']==='FNAME' && (isset($aList['first_name']) && !$aList['first_name'] || empty($aList['first_name']) ) ||
@@ -133,12 +132,11 @@ class FV_Player_Collect_Emails {
                   }
 
                 }
-                if(!$use ){
-                  unset($aTempMailchimpLists[$key]);
+                if($use){
+
+                  $mailchimpOptions .= '<option value="' . $list['id'] . '" ' . ($list['id'] === $aList['mailchimp']?"checked":"" ) . '>' . $list['name'] . '</option>';
                 }
               }
-              var_dump($aTempMailchimpLists);
-
 
               ?>
               <tr class='data' id="fv-player-list-item-<?php echo $key; ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
@@ -155,6 +153,13 @@ class FV_Player_Collect_Emails {
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
                   <input id='list-last-name-<?php echo $key; ?>' type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
                   <label for='list-last-name-<?php echo $key; ?>'><?php _e('Last Name', 'fv-wordpress-flowplayer'); ?></label><br />
+                </td>
+                <td>
+                  <label for='list-mailchimp-<?php echo $key; ?>'><?php _e('Mailchimp List', 'fv-wordpress-flowplayer'); ?></label>
+                  <select name="email_lists[<?php echo $key; ?>][mailchimp]" >
+                    <option value="" >No list</option>
+                    <?php echo $mailchimpOptions ;?>
+                  </select>
                 </td>
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
@@ -201,34 +206,41 @@ class FV_Player_Collect_Emails {
   /*
    * GENEREATE HTML
    */
+  function toReadable($val, $key){
+
+
+  }
+
 
   public function popup_html($popup) {
     global $fv_fp;
-    if ($popup !== 'mailchimp' ) {
+    if (strpos($popup,'email-') !== 0 ) {
       return $popup;
     }
-    if(!$fv_fp->_get_option('mailchimp_api')){
-      return __('No mailchimp list selected.', 'fv-wordpress-flowplayer') ;
-    }
 
-
-    $id = $fv_fp->_get_option('mailchimp_list');
-    $aLists = $this->get_mailchimp_lists();
-    if( !$aLists['error'] && isset($aLists['result'][$id]) ) {
-      $popup='';
-      $popups='';
-      if( $fv_fp->_get_option('mailchimp_label')  ) $popup = wpautop($fv_fp->_get_option('mailchimp_label'));
-      $count = 1;
-      foreach ($aLists['result'][$id]['fields'] as $field) {
-        if ($field['required']) {
-          $count ++;
-          $popups .= '<input type="text" placeholder="' . $field['name'] . '" name="' . $field['tag'] . '" required/>';
+    $id = array_reverse(explode('-',$popup));
+    $id = $id[0];
+    $aLists = get_option('fv_player_email_lists',array());
+    //var_dump($aLists,$id);
+    $list = isset($aLists[$id]) ? $aLists[$id] : array();
+    $popupItems = '';
+    $count = 1;
+    foreach($list as $key => $field){
+      if(($key === 'first_name' || $key === 'last_name') && $field == "1"){
+        $count++;
+        $aName = explode('_',$key);
+        foreach($aName as $nameKey => $val){
+          $aName[$nameKey] = ucfirst($aName[$nameKey]);
         }
+
+        $sName = implode(' ',$aName);
+        $popupItems .= '<input type="text" placeholder="' . $sName . '" name="' . $key . '" required/>';
       }
-      $popup .= '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
-        . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="MERGE0"/>'
-        . $popups . '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
+
     }
+    $popup = '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
+      . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="email"/>'
+      . $popupItems . '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
     return $popup;
   }
 

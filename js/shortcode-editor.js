@@ -50,14 +50,14 @@ jQuery(document).ready(function($){
    * NAV TABS 
    */
   $('.fv-player-tabs-header a').click( function(e) {
-    e.preventDefault();
-    $('.fv-player-tabs-header a').removeClass('nav-tab-active');
-    $(this).addClass('nav-tab-active')
-    $( '.fv-player-tabs > .fv-player-tab' ).hide();
-    $( '.' + $(this).data('tab') ).show();
-    
-    fv_wp_flowplayer_dialog_resize();
-  });
+  e.preventDefault();
+  $('.fv-player-tabs-header a').removeClass('nav-tab-active');
+  $(this).addClass('nav-tab-active')
+  $('.fv-player-tabs > .fv-player-tab').hide();
+  $('.' + $(this).data('tab')).show();
+
+  fv_wp_flowplayer_dialog_resize();
+});
   
   /* 
    * Select playlist item 
@@ -149,7 +149,7 @@ jQuery(document).ready(function($){
     $(e.target).parents('[data-index]').remove();
     jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').remove();
     jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']').remove();
-    if(!jQuery('.fv-player-tab-subtitles table[data-index').length){
+    if(!jQuery('.fv-player-tab-subtitles table[data-index]').length){
       fv_flowplayer_playlist_add();
       jQuery('.fv-player-tab-playlist tr td').click();
     }
@@ -327,7 +327,6 @@ jQuery(document).ready(function($){
   jQuery('#fv_wp_flowplayer_field_end_actions').change(function(){
     var value = jQuery(this).val();
     jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
-    console.log(value);
     switch(value){
       case 'redirect': 
         jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show(); 
@@ -496,7 +495,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption ) {
   //jQuery('.fv-player-tab-video-files table').hover( function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } );
   
   if( sInput ) {
-    aInput = sInput.split(',');
+    var aInput = sInput.split(',');
     var count = 0;
     for( var i in aInput ) {
       if( aInput[i].match(/^rtmp:/) ) new_item.find('.fv_wp_flowplayer_field_rtmp_path').val(aInput[i].replace(/^rtmp:/,''));
@@ -702,7 +701,7 @@ function fv_wp_flowplayer_edit() {
  
   if( shortcode != null ) { 
     shortcode = shortcode.join('');
-    shortcode = shortcode.replace(/^\[|\]+$/gm,'');
+    shortcode = shortcode.replace(/^\[|]+$/gm,'');
   	shortcode = shortcode.replace( fv_wp_flowplayer_re_insert, '' );
   	
   	shortcode = shortcode.replace( /\\'/g,'&#039;' );
@@ -869,7 +868,7 @@ function fv_wp_flowplayer_edit() {
       spopup = spopup.replace(/&amp;/g,'&');
       
       jQuery("#fv_wp_flowplayer_field_popup_id").parents('tr').show();
-      if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random' || spopup === 'mailchimp') {
+      if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random' || spopup === 'email_list') {
         jQuery("#fv_wp_flowplayer_field_popup_id").val(spopup)
       } else {
         jQuery("#fv_wp_flowplayer_field_popup").val(spopup).parent().show();
@@ -1099,9 +1098,15 @@ function fv_wp_flowplayer_submit( preview ) {
       if( jQuery('[name=fv_wp_flowplayer_field_popup]').val() !== ''){
         fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
       }else{
-        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','mailchimp','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
+        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','email','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
       }
     break;
+    case'email_list':
+      var value = jQuery('#fv_wp_flowplayer_field_email_list').val();
+      if(value)
+        fv_wp_fp_shortcode += ' popup="email-' + value + '"';
+    break;
+
   }
   
   
@@ -1122,10 +1127,10 @@ function fv_wp_flowplayer_submit( preview ) {
 		var aPlaylistItems = new Array();
     var aPlaylistCaptions = new Array();
 		jQuery('.fv-player-tab-video-files table').each(function(i,e) {      
-      aPlaylistCaptions.push(jQuery('[name=fv_wp_flowplayer_field_caption]',this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
+      aPlaylistCaptions.push(jQuery('[name=fv_wp_flowplayer_field_caption]',this).attr('value').trim().replace(/;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
       
-		  if( i == 0 ) return;  
-      var aPlaylistItem = new Array();      
+		  if( i == 0 ) return;
+      var aPlaylistItem = new Array();
       jQuery(this).find('input').each( function() {
         if( jQuery(this).attr('name').match(/fv_wp_flowplayer_field_caption/) ) return;     
         if( jQuery(this).hasClass('fv_wp_flowplayer_field_rtmp') || jQuery(this).hasClass('fv_wp_flowplayer_field_width') || jQuery(this).hasClass('fv_wp_flowplayer_field_height') ) return;
@@ -1146,7 +1151,7 @@ function fv_wp_flowplayer_submit( preview ) {
 		if( sPlaylistItems.length > 0 ) {
 			fv_wp_fp_shortcode += ' playlist="'+sPlaylistItems+'"';
 		}
-    
+
     var bPlaylistCaptionExists = false;
     for( var i in aPlaylistCaptions ){
       if( typeof(aPlaylistCaptions[i]) == "string" && aPlaylistCaptions[i].trim().length > 0 ) {
@@ -1323,7 +1328,7 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
   fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace( rMatch, '' );
  
   if( bHTML ) {
-    aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|\])/g, '$1');
+    aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|])/g, '$1');
   }
   
   if( sCallback ) {
@@ -1360,7 +1365,7 @@ function fv_wp_flowplayer_shortcode_write_args( sField, sArg, sKind, bCheckbox, 
   jQuery('[id='+sField+']').each( function(k,v) {
     k = (k==0) ? '' : k;
     fv_wp_flowplayer_shortcode_write_arg(jQuery(this)[0],sArg+k, sKind, bCheckbox, aValues);
-  });    
+  });
 }
 
 function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, aValues ) {
@@ -1412,7 +1417,7 @@ function fv_wp_flowplayer_shortcode_write_arg( sField, sArg, sKind, bCheckbox, a
   }
 
   if( sValue.match(/"/) || sKind == 'html' ){
-    sOutput = '"'+sValue.replace(/"/g, '\\"').replace(/(\[|\])/g, '\\$1')+'"';
+    sOutput = '"'+sValue.replace(/"/g, '\\"').replace(/(\[|])/g, '\\$1')+'"';
   } else {
     sOutput = '"'+sValue+'"';
   }

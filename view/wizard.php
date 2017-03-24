@@ -430,7 +430,9 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   $rawLists = $fv_fp->_get_option('email_lists');
                   $aLists = array();
                   foreach($rawLists as $key => $val){
-                    $aLists[] = array($val->id,$val->name);
+                    if(!is_numeric($key))
+                      continue;
+                    $aLists[] = array($key,(empty($val->name) ? "List " . $key : "$val->name" ));
                   }
                   if(count($aLists)){
                     fv_player_shortcode_row( array(
