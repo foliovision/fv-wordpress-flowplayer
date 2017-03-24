@@ -998,24 +998,28 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_sharing_html() {
+    global $post;
+    
     $sSharingText = $this->_get_option('sharing_email_text' );
     $bVideoLink = empty($this->aCurArgs['linking']) ? $this->_get_option('video_hash_links' ) : $this->aCurArgs['linking'] === 'true';
     
-    if( isset($this->aCurArgs['share']) ) { 
+    if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
         $sPermalink = urlencode($aSharing[1]);
         $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] ) );
         $sTitle = urlencode( $aSharing[0].' ');
+        $bVideoLink = false;
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
         $sPermalink = urlencode($aSharing[0]);
         $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$aSharing[0] ) );
         $sTitle = urlencode( get_bloginfo().' ');
+        $bVideoLink = false;
       }
     }
-				
-    if( !isset($sPermalink) || empty($sPermalink) ) { 
-      $sLink = get_permalink();
+		
+    $sLink = get_permalink();
+    if( !isset($sPermalink) || empty($sPermalink) ) {       
       $sPermalink = urlencode(get_permalink());
       $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
       $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
@@ -1027,7 +1031,7 @@ class flowplayer_frontend extends flowplayer
     <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank">Twitter</a></li>
     <li><a class="sharing-google" href="https://plus.google.com/share?url=' . $sPermalink . '" target="_blank">Google+</a></li>
     <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank">Email</a></li></ul>';
-    $sHTMLSharing .= $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
+    if( isset($post) && isset($post->ID) ) $sHTMLSharing .= $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
