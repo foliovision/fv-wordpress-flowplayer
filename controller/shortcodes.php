@@ -30,7 +30,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
   if( !$fv_fp ) return false;	
   
-  if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {
+  if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     
     if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
@@ -128,9 +128,10 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'speed' => '',
     'liststyle' => '',
     'playlist_advance' => '',
+    'linking' => '',
   ), $atts ) );
 
-  if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
+  if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
 		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
@@ -167,7 +168,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['liststyle'] = $liststyle;
     $arguments['playlist_advance'] = $playlist_advance;
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
-    
+    $arguments['linking'] = $linking;
+
 	} else {
 		$arguments = shortcode_atts( array(
 			'src' => '',
@@ -205,7 +207,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'post' => '',
       'speed' => '',
       'liststyle' => '',
-      'playlist_advance' => ''
+      'playlist_advance' => '',
+      'linking' => '',
 		), $atts );
 	}
   

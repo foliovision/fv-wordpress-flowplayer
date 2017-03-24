@@ -214,6 +214,7 @@ function fv_flowplayer_admin_default_options() {
             <?php $fv_fp->_get_checkbox(__('Disable Embed Button', 'fv-wordpress-flowplayer'), 'disableembedding', __('Removes embed button from top bar.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Disable Playlist Autoadvance', 'fv-wordpress-flowplayer'), 'playlist_advance', __('Playlist won\'t play the next video automatically.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', __('Removes sharing buttons from top bar.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Enable video links', 'fv-wordpress-flowplayer') . ' (beta)', 'video_hash_links', __('Adds a "Link" item to the top bar. Clicking it gives your visitors a link to the exact place in the video they are watching.', 'fv-wordpress-flowplayer') ); ?>
 
 						<tr>
 							<td><label for="rtmp"><?php _e('Flash Streaming Server', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -321,8 +322,6 @@ function fv_flowplayer_admin_default_options() {
 						</tr>
 
             <?php $fv_fp->_get_checkbox(__('Subtitles On By Default', 'fv-wordpress-flowplayer'), 'subtitleOn', __('Normally you have to hit a button in controlbar to turn on subtitles.', 'fv-wordpress-flowplayer') ); ?>
-            
-            <?php $fv_fp->_get_checkbox(__('Video specific sharing links', 'fv-wordpress-flowplayer') . ' (beta)', 'video_hash_links', __('Users can link to specific videos on a page', 'fv-wordpress-flowplayer') ); ?>
             
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
@@ -771,6 +770,7 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Playlist Auto Advance', 'fv-wordpress-flowplayer'), array('interface', 'playlist_advance') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Style', 'fv-wordpress-flowplayer'), array('interface', 'playlist') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Captions', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
@@ -1265,7 +1265,7 @@ $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_pla
 /* Setup tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_default_options', __('Sitewide Flowplayer Defaults', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_default_options', __('Sitewide FV Player Defaults', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );

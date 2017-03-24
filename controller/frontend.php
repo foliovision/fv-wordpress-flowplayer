@@ -298,9 +298,9 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     (isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) ||     
+     $fv_fp->_get_option('js-everywhere')  ||
      isset($_GET['fv_wp_flowplayer_check_template'])
-  ) {
+  ){
     
     $aDependencies = array('jquery');
     if( $fv_fp->load_tabs ) {
@@ -339,7 +339,7 @@ function flowplayer_prepare_scripts() {
       $aConf['speeds'] = array( 0.25,0.5,1,1.5,2 );
     }
 
-    $aConf['video_hash_links'] = $fv_fp->_get_option('video_hash_links');
+    $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? $fv_fp->_get_option('video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
     
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {

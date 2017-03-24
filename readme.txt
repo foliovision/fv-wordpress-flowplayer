@@ -345,6 +345,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.22 - 2017/03/?? =
 
+* Feature - Enable video links - Adds a "Link" item to the top bar. Clicking it gives your visitors a link to the exact place in the video they are watching. On by default, unless your sharing is disabled.
+* Feature - Sharing settings added into shortcode editor
+* Beta Feature - Audio support - allows you to use all the FV Player Pro features with audio and also playlists. Needs to be enabled in "Sidewide FV Player Defaults".
 * Bugfix - making the license check work even if SSL certificates are not installed on your server
 
 = 6.0.5.21 - 2017/03/15 =
