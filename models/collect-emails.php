@@ -11,15 +11,15 @@ class FV_Player_Collect_Emails {
     add_filter('fv_flowplayer_popup_html', array($this, 'popup_html'));
     add_filter('fv_player_conf_defaults', array($this, 'conf_defaults'));
     add_filter('fv_flowplayer_settings_save',array($this, 'fv_flowplayer_settings_save'), 10, 2);
-    add_action('wp_ajax_nopriv_fv_wp_flowplayer_mailchimp_register', array($this, 'mailchimp_register'));
-    add_action('wp_ajax_fv_wp_flowplayer_mailchimp_register', array($this, 'mailchimp_register'));
+    add_action('wp_ajax_nopriv_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
+    add_action('wp_ajax_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
   }
 
   public function conf_defaults($conf) {
     $conf += array(
-        'mailchimp_api' => '',
-        'mailchimp_list' => '',
-        'mailchimp_label' => 'Subscribe for updates',
+      'mailchimp_api' => '',
+      'mailchimp_list' => '',
+      'mailchimp_label' => 'Subscribe for updates',
     );
     return $conf;
   }
@@ -44,7 +44,7 @@ class FV_Player_Collect_Emails {
       update_option('fv_player_email_lists',$aOptions);
     }
 
-   return $param1;
+    return $param1;
   }
 
   private function fv_flowplayer_admin_select_email_lists($aArgs){
@@ -120,7 +120,6 @@ class FV_Player_Collect_Emails {
               $mailchimpOptions = '';
 
               foreach($aMailchimpLists['result'] as $mailchimpId => $list){
-                var_dump($aMailchimpLists);
                 if(!$list)
                   continue;
                 $use = true;
@@ -206,14 +205,7 @@ class FV_Player_Collect_Emails {
   /*
    * GENEREATE HTML
    */
-  function toReadable($val, $key){
-
-
-  }
-
-
   public function popup_html($popup) {
-    global $fv_fp;
     if (strpos($popup,'email-') !== 0 ) {
       return $popup;
     }
@@ -221,7 +213,6 @@ class FV_Player_Collect_Emails {
     $id = array_reverse(explode('-',$popup));
     $id = $id[0];
     $aLists = get_option('fv_player_email_lists',array());
-    //var_dump($aLists,$id);
     $list = isset($aLists[$id]) ? $aLists[$id] : array();
     $popupItems = '';
     $count = 1;
@@ -239,6 +230,7 @@ class FV_Player_Collect_Emails {
 
     }
     $popup = '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
+      . '<input type="hidden" name="list" value="' . $id . '" />'
       . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="email"/>'
       . $popupItems . '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
     return $popup;
@@ -248,14 +240,14 @@ class FV_Player_Collect_Emails {
    * API CALL
    */
   private function get_mailchimp_lists() {
-    global $fv_fp;    
+    global $fv_fp;
     $aLists = array();
 
     if (empty($fv_fp->conf['mailchimp_api'])) {
       update_option('fv_mailchimp_lists', $aLists);
       return array('error' => 'No API key found.  ', 'result' => $aLists);
     }
-    
+
     $aLists = get_option('fv_mailchimp_lists', array());
     if( get_option('fv_mailchimp_time', 0 ) + 3600 > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
 
@@ -270,9 +262,9 @@ class FV_Player_Collect_Emails {
     }
     foreach ($result['lists'] as $list) {
       $item = array(
-          'id' => $list['id'],
-          'name' => $list['name'],
-          'fields' => array()
+        'id' => $list['id'],
+        'name' => $list['name'],
+        'fields' => array()
       );
 
 
@@ -281,9 +273,9 @@ class FV_Player_Collect_Emails {
           $mergeFields = $MailChimp->get("lists/{$list['id']}/merge-fields");
           foreach ($mergeFields['merge_fields'] as $field) {
             $item['fields'][] = array(
-                'tag' => $field['tag'],
-                'name' => $field['name'],
-                'required' => $field['required'],
+              'tag' => $field['tag'],
+              'name' => $field['name'],
+              'required' => $field['required'],
             );
           }
           break;
@@ -291,32 +283,73 @@ class FV_Player_Collect_Emails {
       }
       $aLists[$list['id']] = $item;
     }
-    
+
     update_option('fv_mailchimp_time', time() );
     update_option('fv_mailchimp_lists', $aLists);
     return array('error' => false, 'result' => $aLists);
   }
 
-
-  public function mailchimp_register() {
+  private function  mailchimp_signup($list_id,$data){
     global $fv_fp;
     $MailChimp = new MailChimp($fv_fp->_get_option('mailchimp_api'));
-    $list_id = $fv_fp->_get_option('mailchimp_list');
     $merge_fields = array();
-    foreach ($_POST as $key => $val) {
+    foreach ($data as $key => $val) {
       if ($key === 'action' || $key === 'MERGE0')
         continue;
       $merge_fields[$key] = addslashes($val);
     }
     $result_data = $MailChimp->post("lists/$list_id/members", array(
-        'email_address' => $_POST['MERGE0'],
-        'status' => 'subscribed',
-        'merge_fields' => (object)$merge_fields));
+      'email_address' => $data['email'],
+      'status' => 'subscribed',
+      'merge_fields' => (object)$merge_fields));
+
+    $error = false;
+
+    if ($result_data['status'] === 400) {
+      if ($result_data['title'] === 'Member Exists') {
+        $result = array(
+          'status' => 'OK',
+          'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
+        );
+        die(json_encode($result));
+      } elseif ($result_data['title'] === 'Invalid Resource') {
+        $result = array(
+          'status' => 'ERROR',
+          'text' => __('Email Address not valid', 'fv-wordpress-flowplayer'),
+        );
+        $error = serialize($result_data);
+      } else {
+        $result = array(
+          'status' => 'ERROR',
+          'text' => 'Unknown Error.',
+          'details' => $result_data['detail'],
+        );
+        $error = serialize($result_data);
+      }
+    }elseif($result_data['status'] !== 'subscribed'){
+      $error = serialize($result_data);
+    }
+
+
+    return array(
+      'data' => $result_data,
+      'error' => $error
+    );
+
+  }
+
+  public function email_signup() {
+
+    $list_id = isset($data['list']) ? $data['list'] : 0;
+    unset($data['list']);
+    $aLists = get_option('fv_player_email_lists');
+
+    $list = isset($aLists[$list_id]) ? $aLists[$list_id] : array();
 
 
     $result = array(
-        'status' => 'OK',
-        'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
+      'status' => 'OK',
+      'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
 
     global $wpdb;
     $table_name = $wpdb->prefix . 'fv_player_emails';
@@ -336,41 +369,29 @@ class FV_Player_Collect_Emails {
       dbDelta($sql);
     }
 
-
-    $error = false;
-
-    if ($result_data['status'] === 400) {
-      if ($result_data['title'] === 'Member Exists') {
-        $result = array(
-            'status' => 'OK',
-            'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
-        );
-        die(json_encode($result));
-      } elseif ($result_data['title'] === 'Invalid Resource') {
-        $result = array(
-            'status' => 'ERROR',
-            'text' => __('Email Address not valid', 'fv-wordpress-flowplayer'),
-        );
-        $error = serialize($result_data);
-      } else {
-        $result = array(
-            'status' => 'ERROR',
-            'text' => 'Unknown Error.',
-            'details' => $result_data['detail'],
-        );
-        $error = serialize($result_data);
-      }
-    }elseif($result_data['status'] !== 'subscribed'){
-      $error = serialize($result_data);
+    $error = array();
+    if(!empty($list['mailchimp'])){
+      $error[] = $this->mailchimp_signup($list['mailchimp'],$data);
     }
 
+//TODO: check for duplicates
+    $count = $wpdb->get_var('SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"' );
+    //var_dump('janko','SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"');
+
+
     $wpdb->insert($table_name, array(
-      'email' => $_POST['MERGE0'],
-      'data' => serialize($merge_fields),
-      'first_name' => isset($_POST['FNAME']) ? $_POST['FNAME'] : '',
-      'last_name' => isset($_POST['LNAME']) ? $_POST['LNAME'] : '',
-      'error' => $error
+      'email' => $data['email'],
+      'data' => serialize($data),
+      'id_list'=>$list_id,
+      'date'=>date("Y-m-d H:i:s"),
+      'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
+      'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
+      'error' => count($error) ? $error : '',
     ));
+
+
+
+
 
     die(json_encode($result));
   }
