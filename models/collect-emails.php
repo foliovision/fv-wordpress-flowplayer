@@ -50,6 +50,7 @@ class FV_Player_Collect_Emails {
   private function fv_flowplayer_admin_select_email_lists($aArgs){
 
     $aPopupData = get_option('fv_player_email_lists');
+    unset($aPopupData['#fv_list_dummy_key#']);
 
     $sId = (isset($aArgs['id'])?$aArgs['id']:'email_lists_default');
     $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'cva_id'=>'', 'show_default' => false ) );
@@ -59,14 +60,13 @@ class FV_Player_Collect_Emails {
         <option>Use site default</option>
       <?php endif; ?>
       <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no"><?php _e('None', 'fv-wordpress-flowplayer'); ?></option>
-      <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random"><?php _e('Random', 'fv-wordpress-flowplayer'); ?></option>
       <?php
       if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
         foreach( $aPopupData AS $key => $aPopupAd ) {
           ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
           echo $key;
-          if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
-          if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
+          echo empty($aPopupAd['name']) ? '' : ' - '.$aPopupAd['name'];
+          echo $aPopupAd['disabled'] != 1 ? '' : ' (currently disabled)' ;
           ?></option><?php
         }
       } ?>
@@ -81,8 +81,7 @@ class FV_Player_Collect_Emails {
       <tr>
         <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="email_lists_default"><?php _e('Default list', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <?php $cva_id = $fv_fp->_get_option('email_lists_default'); ?>
-          <?php $this->fv_flowplayer_admin_select_email_lists( array('item_id'=>$cva_id,'id'=>'email_lists_default') ); ?>
+          <?php $this->fv_flowplayer_admin_select_email_lists( array('item_id'=>$fv_fp->_get_option('email_lists_default'),'id'=>'email_lists_default') ); ?>
           <p class="description"><?php _e('You can set a default list here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
@@ -91,7 +90,7 @@ class FV_Player_Collect_Emails {
       <tr>
         <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label>
           <p class="description">
-            <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php if ($fv_fp->conf['mailchimp_api'] !== 'false') echo esc_attr($fv_fp->conf['mailchimp_api']); ?>" />
+            <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php echo esc_attr($fv_fp->_get_option('mailchimp_api')); ?>" />
           </p>
         </td>
       </tr>
@@ -289,7 +288,7 @@ class FV_Player_Collect_Emails {
     return array('error' => false, 'result' => $aLists);
   }
 
-  private function  mailchimp_signup($list_id,$data){
+  private function  mailchimp_signup($list_id, $data){
     global $fv_fp;
     $MailChimp = new MailChimp($fv_fp->_get_option('mailchimp_api'));
     $merge_fields = array();
@@ -303,53 +302,50 @@ class FV_Player_Collect_Emails {
       'status' => 'subscribed',
       'merge_fields' => (object)$merge_fields));
 
-    $error = false;
+    $result = array(
+      'status' => 'OK',
+      'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'),
+      'error_log' => false,
+    );
 
     if ($result_data['status'] === 400) {
       if ($result_data['title'] === 'Member Exists') {
         $result = array(
-          'status' => 'OK',
+          'status' => 'ERROR',
           'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
+          'error_log' => $result_data,
         );
-        die(json_encode($result));
       } elseif ($result_data['title'] === 'Invalid Resource') {
         $result = array(
           'status' => 'ERROR',
           'text' => __('Email Address not valid', 'fv-wordpress-flowplayer'),
+          'error_log' => $result_data
         );
-        $error = serialize($result_data);
       } else {
         $result = array(
           'status' => 'ERROR',
           'text' => 'Unknown Error.',
-          'details' => $result_data['detail'],
+          'error_log'=> $result_data,
         );
-        $error = serialize($result_data);
       }
     }elseif($result_data['status'] !== 'subscribed'){
-      $error = serialize($result_data);
+      $result = array(
+        'status' => 'ERROR',
+        'text' => 'Unknown Error.',
+        'error_log'=> $result_data,
+      );
     }
 
-
-    return array(
-      'data' => $result_data,
-      'error' => $error
-    );
-
+    return $result;
   }
 
   public function email_signup() {
-
+    $data = $_POST;
     $list_id = isset($data['list']) ? $data['list'] : 0;
     unset($data['list']);
     $aLists = get_option('fv_player_email_lists');
 
     $list = isset($aLists[$list_id]) ? $aLists[$list_id] : array();
-
-
-    $result = array(
-      'status' => 'OK',
-      'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
 
     global $wpdb;
     $table_name = $wpdb->prefix . 'fv_player_emails';
@@ -369,30 +365,40 @@ class FV_Player_Collect_Emails {
       dbDelta($sql);
     }
 
-    $error = array();
+    $result = array(
+      'status' => 'OK',
+      'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
+
+
     if(!empty($list['mailchimp'])){
-      $error[] = $this->mailchimp_signup($list['mailchimp'],$data);
+      $result = $this->mailchimp_signup($list['mailchimp'],$data);
+    }
+    if(empty($data['email']) || filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)===false){
+      $result['status'] = 'ERROR';
+      $result['text'] = __('Malformed Email Address.', 'fv-wordpress-flowplayer');
+    };
+
+    $count = $wpdb->get_var('SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"' );
+
+
+    if(intval($count) === 0){
+      $wpdb->insert($table_name, array(
+        'email' => $data['email'],
+        'data' => serialize($data),
+        'id_list'=>$list_id,
+        'date'=>date("Y-m-d H:i:s"),
+        'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
+        'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
+        'error' => count($error_log) ? serialize($error_log) : '',
+      ));
+    }elseif($result['status'] === 'OK'){
+      $result = array(
+        'status' => 'ERROR',
+        'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
+      );
     }
 
-//TODO: check for duplicates
-    $count = $wpdb->get_var('SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"' );
-    //var_dump('janko','SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"');
-
-
-    $wpdb->insert($table_name, array(
-      'email' => $data['email'],
-      'data' => serialize($data),
-      'id_list'=>$list_id,
-      'date'=>date("Y-m-d H:i:s"),
-      'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
-      'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
-      'error' => count($error) ? $error : '',
-    ));
-
-
-
-
-
+    unset($result['error_log']);
     die(json_encode($result));
   }
 
