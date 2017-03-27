@@ -207,7 +207,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
     if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
-    if( !isset( $conf['volume'] ) ) $conf['volume'] = 0.7;
+    if( !isset( $conf['volume'] ) ) $conf['volume'] = '0.7';
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
     if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __('Check out the amazing video here', 'fv-wordpress-flowplayer');
