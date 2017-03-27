@@ -194,7 +194,10 @@ class FV_Player_Collect_Emails {
     $id = array_reverse(explode('-',$popup));
     $id = $id[0];
     $aLists = get_option('fv_player_email_lists',array());
-    $list = isset($aLists[$id]) ? $aLists[$id] : array();
+    $list = isset($aLists[$id]) ? $aLists[$id] : array('disabled' => '1');
+    if($list['disabled'] === '1'){
+      return '';
+    }
     $popupItems = '';
     $count = 1;
     foreach($list as $key => $field){
