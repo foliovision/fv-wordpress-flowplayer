@@ -13,6 +13,7 @@ class FV_Player_Collect_Emails {
     add_filter('fv_flowplayer_settings_save',array($this, 'fv_flowplayer_settings_save'), 10, 2);
     add_action('wp_ajax_nopriv_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
     add_action('wp_ajax_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
+    add_filter('fv_player_admin_popups_defaults',array($this,'fv_player_admin_popups_defaults'));
   }
 
   public function conf_defaults($conf) {
@@ -47,45 +48,21 @@ class FV_Player_Collect_Emails {
     return $param1;
   }
 
-  private function fv_flowplayer_admin_select_email_lists($aArgs){
-
+  public function fv_player_admin_popups_defaults($aData){
     $aPopupData = get_option('fv_player_email_lists');
     unset($aPopupData['#fv_list_dummy_key#']);
 
-    $sId = (isset($aArgs['id'])?$aArgs['id'] : 'email_lists_default');
-    $aArgs = wp_parse_args( $aArgs, array( 'id' => $sId, 'item_id'=>'', 'show_default' => false ) );
-    ?>
-    <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
-      <?php if( $aArgs['show_default'] ) : ?>
-        <option>Use site default</option>
-      <?php endif; ?>
-      <option <?php if( $aArgs['item_id'] === false ) echo 'selected '; ?>value="false"><?php _e('None', 'fv-wordpress-flowplayer'); ?></option>
-      <?php
-      if( !empty($aPopupData) && is_array($aPopupData) ) {
-        foreach( $aPopupData AS $key => $aPopupAd ) {
-          ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
-          echo $key;
-          echo empty($aPopupAd['name']) ? '' : ' - '.$aPopupAd['name'];
-          echo $aPopupAd['disabled'] != 1 ? '' : ' (currently disabled)' ;
-          ?></option><?php
-        }
-      } ?>
-    </select>
-    <?php
+    foreach( $aPopupData AS $key => $aPopupAd ) {
+      $aData['email-' . $key] = $aPopupAd;
+    }
+
+
+    return $aData;
   }
 
   public function fv_player_admin_menu (){
     global $fv_fp;
     ?>
-<!--    <table class="form-table2" style="margin: 5px; ">-->
-<!--      <tr>-->
-<!--        <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="email_lists_default">--><?php //_e('Default list', 'fv-wordpress-flowplayer'); ?><!--:</label></td>-->
-<!--        <td>-->
-<!--          --><?php //$this->fv_flowplayer_admin_select_email_lists( array('item_id'=>$fv_fp->_get_option('email_lists_default'),'id'=>'email_lists_default') ); ?>
-<!--          <p class="description">--><?php //_e('You can set a default list here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?><!--</p>-->
-<!--        </td>-->
-<!--      </tr>-->
-<!--    </table>-->
     <table class="form-table3" style="margin: 5px; ">
       <tr>
         <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label>
@@ -205,9 +182,13 @@ class FV_Player_Collect_Emails {
    * GENEREATE HTML
    */
   public function popup_html($popup) {
-    global $fv_fp;
-    if ($popup === 'email-no' || (strpos($popup,'email-') !== 0 && !$fv_fp->_get_option('email_lists_default'))) {
-      return $popup;
+    if ($popup === 'email-no'){
+      return '';
+    }
+
+    if(strpos($popup,'email-') !== 0)
+    {
+      return $popup ;
     }
 
     $id = array_reverse(explode('-',$popup));
