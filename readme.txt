@@ -349,6 +349,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Feature - Sharing settings added into shortcode editor
 * Beta Feature - Audio support - allows you to use all the FV Player Pro features with audio and also playlists. Needs to be enabled in "Sidewide FV Player Defaults".
 * Bugfix - making the license check work even if SSL certificates are not installed on your server
+* Bugfix - subtitles not server via https:// when using SSL and paths without domain name
 
 = 6.0.5.21 - 2017/03/15 =
 

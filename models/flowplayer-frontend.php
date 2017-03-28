@@ -906,19 +906,24 @@ class flowplayer_frontend extends flowplayer
 
       if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
-        if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
-          }
-          else
-          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-          }
-          else {
-            //if the videos are not in the videos directory but they are adressed relatively
-            $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-            $subtitles = 'http://'.$subtitles;
-          }
+        if($subtitles[0]=='/') {
+          $subtitles = substr($subtitles, 1);
+        }
+        
+        $protocol = is_ssl() ? 'https' : 'http';
+        if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+        }
+        else
+        if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
+        }
+        else {
+          //if the videos are not in the videos directory but they are adressed relatively
+          $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+          $subtitles = $protocol.'://'.$subtitles;
+        }
+        
       }
       else {
         $subtitles = trim($subtitles);
