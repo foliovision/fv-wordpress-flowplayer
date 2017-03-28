@@ -504,6 +504,20 @@ function fv_wp_flowplayer_admin_init() {
     );    
   }
   
+  if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {
+		$fv_fp->pointer_boxes['fv_player_notification_video_links'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_player_notification_video_links',
+      'heading' => __('FV Player Video Links', 'fv-wordpress-flowplayer'),
+      'content' => __("<p>Each video player now contains a link in the top bar. Clicking that link gives you a link to play that video at the exact time where you are watching it.</p><p>This feature won't make your membership videos available to the public, but you can disable it if you prefer.</p>", 'fv-wordpress-flowplayer'),
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1' => __('Open Settings', 'fv-wordpress-flowplayer'),
+      'button2' => __('Dismiss', 'fv-wordpress-flowplayer')
+    );
+    
+    add_action( 'admin_print_footer_scripts', 'fv_player_pointer_scripts' );
+	}  
+  
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
@@ -1064,6 +1078,16 @@ function fv_wp_flowplayer_pointers_ajax() {
 		}
 		die();
 	}
+  
+  if( isset($_POST['key']) && $_POST['key'] == 'fv_player_notification_video_links' && isset($_POST['value']) ) {
+		check_ajax_referer('fv_player_notification_video_links');
+		$conf = get_option( 'fvwpflowplayer' );
+		if( $conf ) {
+			$conf['notification_video_links'] = 'true';
+			update_option( 'fvwpflowplayer', $conf );
+		}
+		die();
+	}  
 	
   if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_license_expired' && isset($_POST['value']) && $_POST['value'] === 'true' ) {
     check_ajax_referer('fv_flowplayer_license_expired');
@@ -1300,4 +1324,21 @@ function fv_player_remove_update( $objUpdates ) {
   }
   
   return $objUpdates;
+}
+
+
+
+
+function fv_player_pointer_scripts() {
+  ?>
+  <script>
+    (function ($) {console.log('fv_player_pointer_scripts 0');
+      $(document).on('click', '.fv_player_notification_video_links .button-primary', function(e) {console.log('fv_player_pointer_scripts 1');
+        $(document).ajaxComplete( function() {console.log('fv_player_pointer_scripts 2');
+          window.location = '<?php echo site_url('wp-admin/options-general.php?page=fvplayer'); ?>#playlist_advance';
+        });
+      });
+    })(jQuery);        
+  </script>
+  <?php
 }
