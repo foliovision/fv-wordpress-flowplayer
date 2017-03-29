@@ -50,6 +50,8 @@
 #fv-player-popups-settings tr.data:nth-child(even) { background-color: #eee; }
 .fv-player-popup-remove { visibility: hidden; }
 td:hover > .fv-player-popup-remove { visibility: visible; }
+.fv-player-list-remove { visibility: hidden; }
+td:hover > .fv-player-list-remove { visibility: visible; }
 table.fv-player-popup-formats td:first-child { width: 72px }
 #fv_flowplayer_popups .inside label {
   display: initial;

@@ -26,7 +26,8 @@ class FV_Player_Collect_Emails {
   }
 
   public function admin__add_meta_boxes() {
-    add_meta_box('fv_flowplayer_email_collection', __('Email collection', 'fv-wordpress-flowplayer'), array($this, 'fv_player_admin_menu'), 'fv_flowplayer_settings_actions', 'normal');
+    add_meta_box('fv_flowplayer_email_lists', __('Email Lists', 'fv-wordpress-flowplayer'), array($this, 'settings_box_lists'), 'fv_flowplayer_settings_actions', 'normal');
+    add_meta_box('fv_flowplayer_email_integration', __('Email Integration', 'fv-wordpress-flowplayer'), array($this, 'settings_box_integration'), 'fv_flowplayer_settings_actions', 'normal');
   }
 
   public function fv_flowplayer_settings_save($param1,$param2){
@@ -38,8 +39,9 @@ class FV_Player_Collect_Emails {
       foreach( $aOptions AS $key => $value ) {
         $aOptions[$key]['first_name'] = stripslashes($value['first_name']);
         $aOptions[$key]['last_name'] = stripslashes($value['last_name']);
-        $aOptions[$key]['mailchimp'] = stripslashes($value['mailchimp']);
-        $aOptions[$key]['name'] = stripslashes($value['name']);
+        $aOptions[$key]['integration'] = stripslashes($value['integration']);
+        $aOptions[$key]['title'] = stripslashes($value['title']);
+        $aOptions[$key]['description'] = stripslashes($value['description']);
 
       }
       update_option('fv_player_email_lists',$aOptions);
@@ -52,33 +54,56 @@ class FV_Player_Collect_Emails {
     $aPopupData = get_option('fv_player_email_lists');
     unset($aPopupData['#fv_list_dummy_key#']);
 
-    foreach( $aPopupData AS $key => $aPopupAd ) {
-      $aData['email-' . $key] = $aPopupAd;
+    if( is_array($aPopupData) ) {
+      foreach( $aPopupData AS $key => $aPopupAd ) {
+        $aData['email-' . $key] = $aPopupAd;
+      }
     }
-
 
     return $aData;
   }
-
-  public function fv_player_admin_menu (){
+  
+  public function settings_box_integration () {
     global $fv_fp;
     ?>
-    <table class="form-table3" style="margin: 5px; ">
+    <p><?php _e('Enter your service API key and then assign it to a list which you create above.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label>
+        <td style="width: 250px"><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
+        <td>
           <p class="description">
             <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php echo esc_attr($fv_fp->_get_option('mailchimp_api')); ?>" />
           </p>
         </td>
       </tr>
       <tr>
+        <td></td>
+        <td>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        </td>
+      </tr>
+    </table>
+
+
+    <?php
+  }
+
+  public function settings_box_lists () {
+    global $fv_fp;
+    ?>
+    <table class="form-table2" style="margin: 5px; ">
+      <tr>
         <td>
           <table id="fv-player-email_lists-settings">
             <thead>
             <tr>
               <td>ID</td>
-              <td></td>
-              <td><?php _e('Status', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Title', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Description', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('First Name', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Last Name', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Integration', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></td>
             </tr>
             </thead>
             <tbody>
@@ -91,7 +116,7 @@ class FV_Player_Collect_Emails {
               $aListData =  array( '#fv_list_dummy_key#' => array() ) + $aListData ;
             }
             $aMailchimpLists = $this->get_mailchimp_lists();
-
+            
             foreach ($aListData AS $key => $aList) {
               $mailchimpOptions = '';
 
@@ -108,38 +133,44 @@ class FV_Player_Collect_Emails {
 
                 }
                 if($use){
-
-                  $mailchimpOptions .= '<option value="' . $list['id'] . '" ' . ($list['id'] === $aList['mailchimp']?"checked":"" ) . '>' . $list['name'] . '</option>';
+                  $mailchimpOptions .= '<option value="' . $list['id'] . '" ' . ( isset($aList['integration']) && $list['id'] === $aList['integration']?"selected":"" ) . '>' . $list['name'] . '</option>';
                 }
+              }
+              
+              if( $aMailchimpLists && $mailchimpOptions ) {
+                $mailchimp_no_option = 'None';
+              } else if( $aMailchimpLists && !$mailchimpOptions ) {
+                $mailchimp_no_option = 'No matching list found';
+              } else {
+                $mailchimp_no_option = 'No integrations configured';
               }
 
               ?>
               <tr class='data' id="fv-player-list-item-<?php echo $key; ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
                 <td>
-                  <label for='list-name-<?php echo $key; ?>'><?php _e('First Name', 'fv-wordpress-flowplayer'); ?></label><input type='text' name='email_lists[<?php echo $key; ?>][name]' value='<?php echo isset($aList['name']) ? $aList['name'] : ''; ?>' />
+                  <input type='text' name='email_lists[<?php echo $key; ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' />
                 </td>
+                <td>
+                  <input type='text' name='email_lists[<?php echo $key; ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' />
+                </td>                
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
                   <input id='list-first-name-<?php echo $key; ?>' type='checkbox' name='email_lists[<?php echo $key; ?>][first_name]' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
-                  <label for='list-first-name-<?php echo $key; ?>'><?php _e('First Name', 'fv-wordpress-flowplayer'); ?></label><br />
                 </td>
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
                   <input id='list-last-name-<?php echo $key; ?>' type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
-                  <label for='list-last-name-<?php echo $key; ?>'><?php _e('Last Name', 'fv-wordpress-flowplayer'); ?></label><br />
                 </td>
-                <td>
-                  <label for='list-mailchimp-<?php echo $key; ?>'><?php _e('Mailchimp List', 'fv-wordpress-flowplayer'); ?></label>
-                  <select name="email_lists[<?php echo $key; ?>][mailchimp]" >
-                    <option value="" >No list</option>
+                <td>                  
+                  <select name="email_lists[<?php echo $key; ?>][integration]" >
+                    <option value=""><?php echo $mailchimp_no_option; ?></option>
                     <?php echo $mailchimpOptions ;?>
                   </select>
                 </td>
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
                   <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' name='email_lists[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
-                  <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />
                   <a class='fv-player-list-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
               </tr>
               <?php
@@ -152,7 +183,7 @@ class FV_Player_Collect_Emails {
       <tr>
         <td>
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-          <input type="button" value="<?php _e('Add more lists', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-email_lists-add" />
+          <input type="button" value="<?php _e('Add More Lists', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-email_lists-add" />
         </td>
       </tr>
     </table>
@@ -213,7 +244,10 @@ class FV_Player_Collect_Emails {
       }
 
     }
-    $popup = '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
+    $popup = '';
+    if( !empty($list['title']) ) $popup .= '<h3>'.$list['title'].'</h3>';
+    if( !empty($list['description']) ) $popup .= '<p>'.$list['description'].'</p>';
+    $popup .= '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
       . '<input type="hidden" name="list" value="' . $id . '" />'
       . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="email"/>'
       . $popupItems . '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
@@ -355,8 +389,8 @@ class FV_Player_Collect_Emails {
       'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
 
 
-    if(!empty($list['mailchimp'])){
-      $result = $this->mailchimp_signup($list['mailchimp'],$data);
+    if(!empty($list['integration'])){
+      $result = $this->mailchimp_signup($list['integration'],$data);
     }
     if(empty($data['email']) || filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)===false){
       $result['status'] = 'ERROR';
