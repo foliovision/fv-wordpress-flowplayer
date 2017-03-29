@@ -868,9 +868,15 @@ function fv_wp_flowplayer_edit() {
       spopup = spopup.replace(/&amp;/g,'&');
       
       jQuery("#fv_wp_flowplayer_field_popup_id").parents('tr').show();
+
       if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random' || spopup === 'email_list') {
         jQuery("#fv_wp_flowplayer_field_popup_id").val(spopup)
-      } else {
+      } else if( spopup.match(/email-[0-9]*/)){
+        jQuery("#fv_wp_flowplayer_field_popup_id").parent().parent().hide();
+        jQuery("#fv_wp_flowplayer_field_email_list").parent().parent().show();
+        jQuery("#fv_wp_flowplayer_field_end_actions").val('email_list');
+        jQuery("#fv_wp_flowplayer_field_email_list").val(spopup.match(/email-([0-9]*)/)[1]);
+      }else {
         jQuery("#fv_wp_flowplayer_field_popup").val(spopup).parent().show();
       }
       

@@ -89,7 +89,6 @@ class FV_Player_Collect_Emails {
   }
 
   public function settings_box_lists () {
-    global $fv_fp;
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
@@ -125,8 +124,8 @@ class FV_Player_Collect_Emails {
                   continue;
                 $use = true;
                 foreach($list['fields'] as $field){
-                  if( $field['tag']==='FNAME' && (isset($aList['first_name']) && !$aList['first_name'] || empty($aList['first_name']) ) ||
-                    $field['tag']==='LNAME' && (isset($aList['last_name']) && !$aList['last_name'] || empty($aList['last_name']))){
+
+                  if( $field['required'] && ($field['tag'] === "FNAME" && !$aList['first_name'] || $field['tag'] === "LNAME" && !$aList['last_name'] ) ){
                     $use = false;
                     break;
                   }
@@ -408,7 +407,7 @@ class FV_Player_Collect_Emails {
         'date'=>date("Y-m-d H:i:s"),
         'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
         'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
-        'error' => count($error_log) ? serialize($error_log) : '',
+        'error' => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
       ));
     }elseif($result['status'] === 'OK'){
       $result = array(
