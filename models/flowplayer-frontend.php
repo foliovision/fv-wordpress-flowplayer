@@ -1041,7 +1041,7 @@ class flowplayer_frontend extends flowplayer
       $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
     }
     
-    if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] == 'no' && $this->aCurArgs['embed'] == 'false' ) {
+    if( $this->aCurArgs['embed'] == 'false' ) {
       $sHTMLVideoLink = false;
     }
 

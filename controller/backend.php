@@ -504,12 +504,12 @@ function fv_wp_flowplayer_admin_init() {
     );    
   }
   
-  if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {
+  if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {    
 		$fv_fp->pointer_boxes['fv_player_notification_video_links'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_player_notification_video_links',
       'heading' => __('FV Player Video Links', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>Each video player now contains a link in the top bar. Clicking that link gives you a link to play that video at the exact time where you are watching it.</p><p>This feature won't make your membership videos available to the public, but you can disable it if you prefer.</p>", 'fv-wordpress-flowplayer'),
+      'content' => $fv_fp->_get_option('disableembedding') ? __("<p>Now you can enable Video Links to allow people to share exact location in your videos. Clicking that link gives them a link to play that video at the exact time.</p>", 'fv-wordpress-flowplayer') : __("<p>Each video player now contains a link in the top bar. Clicking that link gives your visitors a link to play that video at the exact time where they are watching it.</p>", 'fv-wordpress-flowplayer'),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __('Open Settings', 'fv-wordpress-flowplayer'),
       'button2' => __('Dismiss', 'fv-wordpress-flowplayer')
@@ -1332,9 +1332,9 @@ function fv_player_remove_update( $objUpdates ) {
 function fv_player_pointer_scripts() {
   ?>
   <script>
-    (function ($) {console.log('fv_player_pointer_scripts 0');
-      $(document).on('click', '.fv_player_notification_video_links .button-primary', function(e) {console.log('fv_player_pointer_scripts 1');
-        $(document).ajaxComplete( function() {console.log('fv_player_pointer_scripts 2');
+    (function ($) {
+      $(document).on('click', '.fv_player_notification_video_links .button-primary', function(e) {
+        $(document).ajaxComplete( function() {
           window.location = '<?php echo site_url('wp-admin/options-general.php?page=fvplayer'); ?>#playlist_advance';
         });
       });
