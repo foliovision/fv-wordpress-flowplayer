@@ -332,7 +332,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sHTML .= $this->_get_option('new_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     $sHTML .= $sSplashImage ? "<span style='background-image: url(\"" . $sSplashImage . "\")'></span>" : "<span></span>";
-    $sHTML .= $sItemCaption."</a>\n";      
+    $sHTML .= $sItemCaption."</a>\n";
+    
+    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
+    
     return $sHTML;
   }
   
@@ -532,8 +535,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       
       $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
+      
+      $attributes = array();
+      $attributes_html = '';
+      $attributes['class'] = 'fp-playlist-external '.$sPlaylistClass;
+      $attributes['rel'] = 'wpfp_'.$this->hash;
+      
+      $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
+      foreach( $attributes AS $attr_key => $attr_value ) {
+        $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
+      }
 
-      $sHTML = "\t<div class='fp-playlist-external $sPlaylistClass' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
+      $sHTML = "\t<div $attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
       
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  

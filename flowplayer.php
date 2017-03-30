@@ -45,6 +45,8 @@ include_once(dirname( __FILE__ ) . '/models/facebook-share.php');
 
 include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
 
+include_once(dirname( __FILE__ ) . '/models/seo.php');
+
 include_once(dirname( __FILE__ ) . '/models/subtitles.php');
 
 include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
