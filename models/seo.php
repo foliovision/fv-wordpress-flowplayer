@@ -61,8 +61,8 @@ class FV_Player_SEO {
       $url = get_permalink();
     }
     
-    return '<meta itemprop="name">'.esc_attr($title).'</meta>
-        <meta itemprop="description">'.esc_attr($description).'</meta>          
+    return '<meta itemprop="name" content="'.esc_attr($title).'" />
+        <meta itemprop="description" content="'.esc_attr($description).'" />
         <meta itemprop="thumbnailUrl" content="'.esc_attr($splash).'" />
         <meta itemprop="contentURL" content="'.esc_attr($url).'" />';        
   }
