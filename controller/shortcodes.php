@@ -30,7 +30,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
 	global $fv_fp;
   if( !$fv_fp ) return false;	
   
-  if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {
+  if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     
     if( !isset( $atts['src'] ) ) {     
       foreach( $atts AS $key => $att ) {
@@ -121,14 +121,17 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'admin_warning' => '',
     'live' => '',
     'caption' => '',
+    'caption_html' => '',
     'logo' => '',
     'share' => '',
     'post' => '',
     'speed' => '',
-    'liststyle' => ''
+    'liststyle' => '',
+    'playlist_advance' => '',
+    'linking' => '',
   ), $atts ) );
 
-  if( $fv_fp->conf['parse_commas'] == 'true' && strcmp($tag,'flowplayer') == 0 ) {  
+  if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
 		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
@@ -157,13 +160,16 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     $arguments['admin_warning'] = $admin_warning;
     $arguments['live'] = $live;
     $arguments['caption'] = $caption;
+    $arguments['caption_html'] = $caption_html;
     $arguments['logo'] = $logo;
     $arguments['share'] = $share;
     $arguments['post'] = $post;
     $arguments['speed'] = $speed;
     $arguments['liststyle'] = $liststyle;
+    $arguments['playlist_advance'] = $playlist_advance;
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
-    
+    $arguments['linking'] = $linking;
+
 	} else {
 		$arguments = shortcode_atts( array(
 			'src' => '',
@@ -195,11 +201,14 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'admin_warning' => '',
       'live' => '',
       'caption' => '',
+      'caption_html' => '',
       'logo' => '',
       'share' => '',
       'post' => '',
       'speed' => '',
-      'liststyle' => ''
+      'liststyle' => '',
+      'playlist_advance' => '',
+      'linking' => '',
 		), $atts );
 	}
   
