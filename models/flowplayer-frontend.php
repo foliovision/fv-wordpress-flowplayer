@@ -413,7 +413,7 @@ class flowplayer_frontend extends flowplayer
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
           if( $args['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
-            if( count($aPlaylistItems) == 1 ) {
+            if( count($aPlaylistItems) == 1 && $this->aCurArgs['caption'] ) {
               $attributes['class'] .= ' has-caption';
               $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
             }
