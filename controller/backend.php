@@ -607,12 +607,15 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 
   if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
     return $data;
-  }
   
-  $args['sslverify'] = false;
-  $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
-  if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
-    return $data;
+  } else if( is_wp_error($resp) && stripos($resp->get_error_message(),'SSL' ) !== false ) {
+    $args = array( 'sslverify' => false );
+    $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
+  
+    if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
+      return $data;
+    }
+    
   }
   
   return false;
