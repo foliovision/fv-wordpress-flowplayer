@@ -312,11 +312,15 @@ class FV_Player_Collect_Emails {
     global $fv_fp;
     $MailChimp = new MailChimp($fv_fp->_get_option('mailchimp_api'));
     $merge_fields = array();
-    foreach ($data as $key => $val) {
-      if ($key === 'action' || $key === 'MERGE0')
-        continue;
-      $merge_fields[$key] = addslashes($val);
+
+    if(isset($data['first_name'])){
+      $merge_fields['FNAME'] = $data['first_name'];
     }
+
+    if(isset($data['last_name'])){
+      $merge_fields['LNAME'] = $data['last_name'];
+    }
+
     $result_data = $MailChimp->post("lists/$list_id/members", array(
       'email_address' => $data['email'],
       'status' => 'subscribed',
