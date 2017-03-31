@@ -268,6 +268,7 @@ class FV_Player_Collect_Emails {
     $aLists = get_option('fv_mailchimp_lists', array());
     if( get_option('fv_mailchimp_time', 0 ) + 3600 > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
 
+
     $MailChimp = new MailChimp($fv_fp->conf['mailchimp_api']);
     $MailChimp->verify_ssl = false;
     $result = $MailChimp->get('lists');
@@ -277,6 +278,7 @@ class FV_Player_Collect_Emails {
       update_option('fv_mailchimp_lists', $aLists);
       return array('error' => $error, 'result' => $aLists);
     }
+    $aLists  = array();
     foreach ($result['lists'] as $list) {
       $item = array(
         'id' => $list['id'],
@@ -326,6 +328,7 @@ class FV_Player_Collect_Emails {
       'error_log' => false,
     );
 
+
     if ($result_data['status'] === 400) {
       if ($result_data['title'] === 'Member Exists') {
         $result = array(
@@ -342,14 +345,14 @@ class FV_Player_Collect_Emails {
       } else {
         $result = array(
           'status' => 'ERROR',
-          'text' => 'Unknown Error.',
+          'text' => 'Unknown Error 1. ',
           'error_log'=> $result_data,
         );
       }
     }elseif($result_data['status'] !== 'subscribed'){
       $result = array(
         'status' => 'ERROR',
-        'text' => 'Unknown Error.',
+        'text' => 'Unknown Error 2.',
         'error_log'=> $result_data,
       );
     }
@@ -414,6 +417,16 @@ class FV_Player_Collect_Emails {
         'status' => 'ERROR',
         'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
       );
+    }else{
+      $wpdb->insert($table_name, array(
+        'email' => $data['email'],
+        'data' => serialize($data),
+        'id_list'=>$list_id,
+        'date'=>date("Y-m-d H:i:s"),
+        'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
+        'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
+        'error' => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
+      ));
     }
 
     unset($result['error_log']);
