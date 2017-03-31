@@ -438,7 +438,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                     fv_player_shortcode_row( array(
                         'label' => 'E-mail list',
                         'name' => 'email_list',
-                        'class' => '.fv_player_actions_end-toggle',
+                        'class' => 'fv_player_actions_end-toggle',
                         'dropdown' =>$aLists,
                         'live' => false ) );
                   }

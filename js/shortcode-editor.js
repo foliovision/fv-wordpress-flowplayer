@@ -50,14 +50,14 @@ jQuery(document).ready(function($){
    * NAV TABS 
    */
   $('.fv-player-tabs-header a').click( function(e) {
-  e.preventDefault();
-  $('.fv-player-tabs-header a').removeClass('nav-tab-active');
-  $(this).addClass('nav-tab-active')
-  $('.fv-player-tabs > .fv-player-tab').hide();
-  $('.' + $(this).data('tab')).show();
+    e.preventDefault();
+    $('.fv-player-tabs-header a').removeClass('nav-tab-active');
+    $(this).addClass('nav-tab-active')
+    $('.fv-player-tabs > .fv-player-tab').hide();
+    $('.' + $(this).data('tab')).show();
 
-  fv_wp_flowplayer_dialog_resize();
-});
+    fv_wp_flowplayer_dialog_resize();
+  });
   
   /* 
    * Select playlist item 
@@ -75,10 +75,7 @@ jQuery(document).ready(function($){
     $('.fv-player-tab-video-files table').hide();
     var video_tab = $('.fv-player-tab-video-files table').eq(new_index).show();
     
-    $('.fv-player-tab-subtitles table').hide();
-    $('.fv-player-tab-subtitles table').eq(new_index).show();
-    
-    
+
     if($('.fv-player-tab-playlist [data-index]').length > 1){
       $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
       $('.playlist_edit').html($('.playlist_edit').data('edit')).removeClass('button').addClass('button-primary');
@@ -1104,10 +1101,10 @@ function fv_wp_flowplayer_submit( preview ) {
       if( jQuery('[name=fv_wp_flowplayer_field_popup]').val() !== ''){
         fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
       }else{
-        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','email','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
+        fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup_id', 'popup', false, false, ['no','random','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'] );
       }
     break;
-    case'email_list':
+    case 'email_list':
       var value = jQuery('#fv_wp_flowplayer_field_email_list').val();
       if(value)
         fv_wp_fp_shortcode += ' popup="email-' + value + '"';
