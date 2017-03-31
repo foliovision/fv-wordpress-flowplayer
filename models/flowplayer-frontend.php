@@ -906,19 +906,24 @@ class flowplayer_frontend extends flowplayer
 
       if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
-        if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
-          }
-          else
-          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-          }
-          else {
-            //if the videos are not in the videos directory but they are adressed relatively
-            $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-            $subtitles = 'http://'.$subtitles;
-          }
+        if($subtitles[0]=='/') {
+          $subtitles = substr($subtitles, 1);
+        }
+        
+        $protocol = is_ssl() ? 'https' : 'http';
+        if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+        }
+        else
+        if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
+        }
+        else {
+          //if the videos are not in the videos directory but they are adressed relatively
+          $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+          $subtitles = $protocol.'://'.$subtitles;
+        }
+        
       }
       else {
         $subtitles = trim($subtitles);
@@ -1001,7 +1006,7 @@ class flowplayer_frontend extends flowplayer
     global $post;
     
     $sSharingText = $this->_get_option('sharing_email_text' );
-    $bVideoLink = empty($this->aCurArgs['linking']) ? $this->_get_option('video_hash_links' ) : $this->aCurArgs['linking'] === 'true';
+    $bVideoLink = empty($this->aCurArgs['linking']) ? !$this->_get_option('disable_video_hash_links' ) : $this->aCurArgs['linking'] === 'true';
     
     if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
@@ -1031,7 +1036,14 @@ class flowplayer_frontend extends flowplayer
     <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank">Twitter</a></li>
     <li><a class="sharing-google" href="https://plus.google.com/share?url=' . $sPermalink . '" target="_blank">Google+</a></li>
     <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank">Email</a></li></ul>';
-    if( isset($post) && isset($post->ID) ) $sHTMLSharing .= $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
+    
+    if( isset($post) && isset($post->ID) ) {
+      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
+    }
+    
+    if( $this->aCurArgs['embed'] == 'false' ) {
+      $sHTMLVideoLink = false;
+    }
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
@@ -1049,8 +1061,8 @@ class flowplayer_frontend extends flowplayer
     }
 
     $sHTML = false;
-    if( $sHTMLSharing || $sHTMLEmbed ) {
-      $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLEmbed</div>";
+    if( $sHTMLSharing || $sHTMLEmbed || $sHTMLVideoLink) {
+      $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLVideoLink$sHTMLEmbed</div>";
     }
 
     return $sHTML;
