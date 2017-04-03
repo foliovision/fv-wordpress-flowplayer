@@ -504,6 +504,20 @@ function fv_wp_flowplayer_admin_init() {
     );    
   }
   
+  if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {    
+		$fv_fp->pointer_boxes['fv_player_notification_video_links'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_player_notification_video_links',
+      'heading' => __('FV Player Video Links', 'fv-wordpress-flowplayer'),
+      'content' => $fv_fp->_get_option('disableembedding') ? __("<p>Now you can enable Video Links to allow people to share exact location in your videos. Clicking that link gives them a link to play that video at the exact time.</p>", 'fv-wordpress-flowplayer') : __("<p>Each video player now contains a link in the top bar. Clicking that link gives your visitors a link to play that video at the exact time where they are watching it.</p>", 'fv-wordpress-flowplayer'),
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1' => __('Open Settings', 'fv-wordpress-flowplayer'),
+      'button2' => __('Dismiss', 'fv-wordpress-flowplayer')
+    );
+    
+    add_action( 'admin_print_footer_scripts', 'fv_player_pointer_scripts' );
+	}  
+  
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
@@ -586,16 +600,25 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
   
 	$args = array(
 		'body' => array( 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver, 'type' => home_url(), 'action' => $aArgs['action'], 'admin-url' => admin_url() ),
-		'timeout' => 20,
+		'timeout' => 10,
 		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
 	);
 	$resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
 
-  if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
+  if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
     return $data;
-  } else {
-    return false;  
+  
+  } else if( is_wp_error($resp) && stripos($resp->get_error_message(),'SSL' ) !== false ) {
+    $args = array( 'sslverify' => false );
+    $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
+  
+    if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
+      return $data;
+    }
+    
   }
+  
+  return false;
 }
 
 function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
@@ -1058,6 +1081,16 @@ function fv_wp_flowplayer_pointers_ajax() {
 		}
 		die();
 	}
+  
+  if( isset($_POST['key']) && $_POST['key'] == 'fv_player_notification_video_links' && isset($_POST['value']) ) {
+		check_ajax_referer('fv_player_notification_video_links');
+		$conf = get_option( 'fvwpflowplayer' );
+		if( $conf ) {
+			$conf['notification_video_links'] = 'true';
+			update_option( 'fvwpflowplayer', $conf );
+		}
+		die();
+	}  
 	
   if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_license_expired' && isset($_POST['value']) && $_POST['value'] === 'true' ) {
     check_ajax_referer('fv_flowplayer_license_expired');
@@ -1294,4 +1327,21 @@ function fv_player_remove_update( $objUpdates ) {
   }
   
   return $objUpdates;
+}
+
+
+
+
+function fv_player_pointer_scripts() {
+  ?>
+  <script>
+    (function ($) {
+      $(document).on('click', '.fv_player_notification_video_links .button-primary', function(e) {
+        $(document).ajaxComplete( function() {
+          window.location = '<?php echo site_url('wp-admin/options-general.php?page=fvplayer'); ?>#playlist_advance';
+        });
+      });
+    })(jQuery);        
+  </script>
+  <?php
 }

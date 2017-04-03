@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.7
+Tested up to: 4.7.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -342,6 +342,22 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.0.5.22 - 2017/03/29 =
+
+* Feature - Video Links - Adds a "Link" item to the top bar. Clicking it gives your visitors a link to the exact place in the video they are watching. On by default, unless you have disabled embedding.
+* Feature - Sharing settings added into shortcode editor
+* Beta Feature - Audio support - allows you to use all the FV Player Pro features with audio and also playlists. Needs to be enabled in "Sidewide FV Player Defaults".
+* Bugfix - making the license check work even if SSL certificates are not installed on your server
+* Bugfix - subtitles not server via https:// when using SSL and paths without domain name
+
+= 6.0.5.21 - 2017/03/15 =
+
+* Compatibility - fix for Gravity Forms Partial Entries when video starts playing on background
+* Feature - clicking playlist item now scrolls to the player if it's outside of view
+* Bugfix - disabling video element right click menu
+* Bugfix - shortcode editor preview not working in some themes
+* Code refactoring
 
 = 6.0.5.20 - 2017/02/22 =
 

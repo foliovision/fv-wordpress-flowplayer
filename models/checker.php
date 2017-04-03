@@ -162,7 +162,7 @@ class FV_Player_Checker {
              $video_errors[] = '<p><strong>UTF-8 error</strong>: Your file name is using non-latin characters, the file might not play in browsers using Flash for the video!</p>';
           }
           
-          if( @ini_get('safe_mode') ) {
+          if( version_compare(phpversion(), '5.3.0', '<') && @ini_get('safe_mode') ) {
             $video_warnings[]	= 'Detailed video check is not available with PHP Safe Mode On. Please contact your webhost support.';
           } else {
                     

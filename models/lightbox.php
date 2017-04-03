@@ -366,7 +366,7 @@ class FV_Player_lightbox {
 
   function lightbox_admin_interface_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Enable video lightbox', 'fv-wordpress-flowplayer'), ['interface', 'lightbox'], __('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'));
+    $fv_fp->_get_checkbox(__('Enable video lightbox', 'fv-wordpress-flowplayer'), array('interface', 'lightbox'), __('You can also put in <code>&lt;a href="http://path.to.your/video.mp4" class="colorbox"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video.', 'fv-wordpress-flowplayer'));
   }
 
   function lightbox_admin_default_options_html() {
@@ -394,8 +394,8 @@ class FV_Player_lightbox {
     </tr>
     <script>
       jQuery(document).ready(function(){
-        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
-        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
+        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p><?php _e('Setting <a href="#interface[live]">moved</a>', 'fv-wordpress-flowplayer'); ?></p></td>');
+        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p><?php _e('Setting <a href="#subtitleOn">moved</a>', 'fv-wordpress-flowplayer'); ?></p></td>');
         var lightbox_images = jQuery('#lightbox_images');
         if(lightbox_images.attr('checked')){
             jQuery('#lightbox-wp-galleries').show();

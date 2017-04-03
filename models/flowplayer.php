@@ -149,6 +149,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['auto_buffering'] ) ) $conf['auto_buffering'] = 'false';
     if( !isset( $conf['scaling'] ) ) $conf['scaling'] = 'true';
     if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
+    if( !isset( $conf['disablesharing'] ) ) $conf['disablesharing'] = 'false';
+    
+    if( !isset( $conf['disable_video_hash_links'] ) ) $conf['disable_video_hash_links'] = $conf['disableembedding'] == 'true' ? true : false;
+    
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';    
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
     if( !isset( $conf['allowuploads'] ) ) $conf['allowuploads'] = 'true';
@@ -207,7 +211,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
     if( !isset( $conf['marginBottom'] ) ) $conf['marginBottom'] = '28';
     if( !isset( $conf['ui_play_button'] ) ) $conf['ui_play_button'] = 'true';
-    if( !isset( $conf['volume'] ) ) $conf['volume'] = 1;
+    if( !isset( $conf['volume'] ) ) $conf['volume'] = '0.7';
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = ''; 
     if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __('Check out the amazing video here', 'fv-wordpress-flowplayer');
@@ -216,6 +220,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
+
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
 
@@ -1133,7 +1138,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $output = 'mp4';      
       } else if( $extension == 'mkv' ) {
         $output = 'mp4';      
-      } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'mp3', 'ogg', 'wav', '3gp')) ) {
+      } else if( $extension == 'mp3' ) {
+        $output = 'mpeg';      
+      } else if( !in_array($extension, array('mp4', 'm4v', 'webm', 'ogv', 'ogg', 'wav', '3gp')) ) {
         $output = $default;  
       } else {
         $output = $extension;
@@ -1151,7 +1158,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           break;
         case 'm3u8' :
           $output = 'application/'.$output;
-          break;        
+          break;
+        case 'mp3' :
+        case 'ogv' :
+        case 'wav' :
+          $output = 'audio/'.$output;
+          break;   
         default:
           $output = 'video/'.$output;
           break;
@@ -1392,7 +1404,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     html {margin-top: 0px !important;}
   </style>
 </head>
-<body>
+<body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
     if( !is_user_logged_in() ){

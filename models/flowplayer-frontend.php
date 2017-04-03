@@ -52,8 +52,7 @@ class flowplayer_frontend extends flowplayer
 	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
 	 */
 	function build_min_player($media,$args = array()) {
-		global $post;
-						
+
 		$this->hash = md5($media.$this->_salt()); //  unique player id
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
     $this->sHTMLAfter = false;
@@ -82,11 +81,8 @@ class flowplayer_frontend extends flowplayer
 		$src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
 		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
 		
-    
-    
     $splash_img = $this->get_splash();
-    
-    
+
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
       if( stripos( $media_item, 'rtmp://' ) === 0 ) {
         $rtmp = $media_item;
@@ -104,10 +100,12 @@ class flowplayer_frontend extends flowplayer
      *  Which player should be used
      */
 		foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-			if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
-					$player_type = 'audio';
-					break;
-				} 
+      if( !$this->_get_option('audio') ) {
+        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
+          $player_type = 'audio';
+          break;
+        }
+      }
 				
 			global $post;
       if( $post ) {
@@ -118,7 +116,7 @@ class flowplayer_frontend extends flowplayer
       }
 		}
     
-		if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
 			if( isset($aYoutube[5]) ) {
 				$youtube = $aYoutube[5];
 				$player_type = 'youtube';
@@ -309,7 +307,7 @@ class flowplayer_frontend extends flowplayer
 				if( $autoplay == false && !( $this->_get_option('auto_bufferingDISABLED') && $this->autobuffer_count < apply_filters( 'fv_flowplayer_autobuffer_limit', 2 )) ) {
 					$attributes['class'] .= ' is-splash';
 				}
-        
+
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
 					$attributes['class'] .= ' playlist-hidden';
 				}
@@ -424,7 +422,7 @@ class flowplayer_frontend extends flowplayer
           
           if( $autoplay ) {
             $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;				//  todo: any better way?
-            $attributes['class'] .= ' is-splash';
+            $attributes['class'] .= ' is-splash'; 
           }
           
 				} else if( !empty($this->aCurArgs['caption']) ) {
@@ -475,6 +473,7 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
 					} 
 					if( $autoplay == true ) {
+            $this->ret['script']['fv_flowplayer_autoplay'][$this->hash] = true;
 						$this->ret['html'] .= ' autoplay="autoplay"';  
 					}
     
@@ -485,7 +484,7 @@ class flowplayer_frontend extends flowplayer
 						$this->ret['html'] .= ' preload="none"';        
 					}        
 					
-          
+
 					$this->ret['html'] .= ">\n";
 
 					if( isset($rtmp) && !empty($rtmp) ) {
@@ -906,19 +905,24 @@ class flowplayer_frontend extends flowplayer
 
       if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
-        if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
-          }
-          else
-          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-            $subtitles = 'http://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-          }
-          else {
-            //if the videos are not in the videos directory but they are adressed relatively
-            $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-            $subtitles = 'http://'.$subtitles;
-          }
+        if($subtitles[0]=='/') {
+          $subtitles = substr($subtitles, 1);
+        }
+        
+        $protocol = is_ssl() ? 'https' : 'http';
+        if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+        }
+        else
+        if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
+        }
+        else {
+          //if the videos are not in the videos directory but they are adressed relatively
+          $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+          $subtitles = $protocol.'://'.$subtitles;
+        }
+        
       }
       else {
         $subtitles = trim($subtitles);
@@ -998,32 +1002,47 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_sharing_html() {
-    $sSharingText = $this->_get_option('sharing_email_text' );
+    global $post;
     
-    if( isset($this->aCurArgs['share']) ) { 
+    $sSharingText = $this->_get_option('sharing_email_text' );
+    $bVideoLink = empty($this->aCurArgs['linking']) ? !$this->_get_option('disable_video_hash_links' ) : $this->aCurArgs['linking'] === 'true';
+    
+    if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
         $sPermalink = urlencode($aSharing[1]);
         $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] ) );
         $sTitle = urlencode( $aSharing[0].' ');
+        $bVideoLink = false;
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
         $sPermalink = urlencode($aSharing[0]);
         $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$aSharing[0] ) );
         $sTitle = urlencode( get_bloginfo().' ');
+        $bVideoLink = false;
       }
     }
-				
-    if( !isset($sPermalink) || empty($sPermalink) ) {  
+		
+    $sLink = get_permalink();
+    if( !isset($sPermalink) || empty($sPermalink) ) {       
       $sPermalink = urlencode(get_permalink());
       $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
       $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
     }
+
 					
     $sHTMLSharing = '<ul class="fvp-sharing">
-    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u='.$sPermalink.'" target="_blank">Facebook</a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status='.$sTitle.$sPermalink.'" target="_blank">Twitter</a></li>
-    <li><a class="sharing-google" href="https://plus.google.com/share?url='.$sPermalink.'" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body='.$sMail.'" target="_blank">Email</a></li></ul>';
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank">Facebook</a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank">Twitter</a></li>
+    <li><a class="sharing-google" href="https://plus.google.com/share?url=' . $sPermalink . '" target="_blank">Google+</a></li>
+    <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank">Email</a></li></ul>';
+    
+    if( isset($post) && isset($post->ID) ) {
+      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
+    }
+    
+    if( $this->aCurArgs['embed'] == 'false' ) {
+      $sHTMLVideoLink = false;
+    }
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
@@ -1041,8 +1060,8 @@ class flowplayer_frontend extends flowplayer
     }
 
     $sHTML = false;
-    if( $sHTMLSharing || $sHTMLEmbed ) {
-      $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLEmbed</div>";
+    if( $sHTMLSharing || $sHTMLEmbed || $sHTMLVideoLink) {
+      $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLVideoLink$sHTMLEmbed</div>";
     }
 
     return $sHTML;
