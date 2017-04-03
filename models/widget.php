@@ -112,7 +112,7 @@ class FV_Player_Widget extends WP_Widget {
 
   function formFooter() {
 
-    include __DIR__ . '/../view/wizard.php';
+    include dirname(__FILE__) . '/../view/wizard.php';
     ?>    
     <script src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/shortcode-editor.js"></script>
     <script src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jquery.colorbox-min.js"></script>

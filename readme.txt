@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.7
+Tested up to: 4.7.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -323,6 +323,10 @@ No worries.
 1. You can always downgrade to version the Flash version ([delete the plugin then grab older version here and install from the ZIP file](https://wordpress.org/plugins/fv-wordpress-flowplayer/developers/)). If you downgrade to version 1.x you do lose a lot of mobile and iOS capability but you didn't have it in the first place.
 1. Contact us via [support](https://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 5 working in your environment.
 
+= 33. I can't see overlay ads on my videos =
+
+The problem is probably in AdBlock. If it's active, the overlay ads will be blocked. Once AdBlock is deactivated for the particular domain where the video is played, the overlay ads will be displayed (page refresh needed).
+
 FV Player Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
 
 Thank you for being part of the HMTL 5 mobile video revolution!
@@ -339,14 +343,77 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.22 - 2017/03/29 =
+
+* Feature - Video Links - Adds a "Link" item to the top bar. Clicking it gives your visitors a link to the exact place in the video they are watching. On by default, unless you have disabled embedding.
+* Feature - Sharing settings added into shortcode editor
+* Beta Feature - Audio support - allows you to use all the FV Player Pro features with audio and also playlists. Needs to be enabled in "Sidewide FV Player Defaults".
+* Bugfix - making the license check work even if SSL certificates are not installed on your server
+* Bugfix - subtitles not server via https:// when using SSL and paths without domain name
+
+= 6.0.5.21 - 2017/03/15 =
+
+* Compatibility - fix for Gravity Forms Partial Entries when video starts playing on background
+* Feature - clicking playlist item now scrolls to the player if it's outside of view
+* Bugfix - disabling video element right click menu
+* Bugfix - shortcode editor preview not working in some themes
+* Code refactoring
+
+= 6.0.5.20 - 2017/02/22 =
+
+* CSS - fixing play icon size on mobile devices in fullscreen
+* Feature - Disable Playlist Autoadvance global setting and also a shortcode editor option
+* Feature - Removing FV Simpler SEO and FV Tracker tracking from Shortcode Editor preview
+* Feature - Sharing text "Check the amazing video here" can now be customized using the "Sharing Text" global setting
+* Feature - Skin settings - quick preview of subtitle styling
+* Bugfix - Shortcode editor - disabling live preview to increase stability, use the "Refresh preview" button or Enter key
+
+= 6.0.5.19 - 2017/02/09 =
+
+* Mobile - using the native fullscreen only on older devices - iPad with iOS < 7 and Android < 4.4. This takes care of the Google Chrome video download button
+
+= 6.0.5.18 - 2017/02/07 =
+
+* Feature - Facebook Video Sharing - when enabled the first MP4 video in the post will be shared directly rather than the post excerpt.
+* Feature - Lightbox - now you can use HTML like <a class="colorbox" href="video.mp4"><img src="image.jpg" /></a> to make clicking that image open a video
+* Feature - Skin settings - now you can see the changes you are doing live if you play the video
+* CSS - renaming the play-button class to fvp-play-button to prevent conflicts with some themes
+* CSS - subtitle styling improvements
+* Bugfix - PHP 5.2 compatilibty fix for FV Player widget
+
+= 6.0.5.17 - 2017/01/30 =
+
+* Feature - Featured image - check the "Add featured image automatically" setting and video splash image will be set as featured image if it's not already specified
+* Feature - HLS - video duration check now works with m3u8 files
+* Feature - Subtitles - added settings for font face, backgroud opacity and color
+* Fix - Lightbox - moving into a separate file for faster loading if using for images
+* Fix - Splash screen ascept ratio incorrect during pageloads if not matching the player size
+* Fix - Splash screen showing with black border if ascept ratio not matching player aspect ratio in Chrome
+* CSS - fix for splash screen appearing behind the video when aspect ratios don't match and the video is paused
+* Beta feature - User Profile Videos now supports bbPress and Easy Digital Downloads
+
+= 6.0.5.16 - 2017/01/13 =
+
+* Feature - Subtitles - Added option for SDH (Subtitles for the deaf or hard-of-hearing)
+* Fix - Iframe embedding scrollbars appearing
+* Fix - Iframe embedding for Youtube and Vimeo is now responsive
+* Fix - Lightbox - no longer using href attribute to increase theme compatibility
+* Translations - German translation improvements contributed by Helmar Rudolph http://www.helmar.org/
+
+= 6.0.5.15 - 2017/01/05 =
+
+* "FV WordPressFlowplayer" menu item - removed, look for "FV Player"
+* Fix - Chrome 55 adds download button for the video player which appears for fullscreen mode on mobile - hiding this button
+* Bugfix - RTMP - making sure it takes priority over other formats to prevent browser from trying to load HLS in Flash engine
+
 = 6.0.5.14 - 2016/12/23 =
 
 * Feature - "Parse Vimeo and YouTube links" option now affects BuddyPress as well
 * Bugfix - HLS - fix for HLS.js fallback to Flash HLS in playlists
 * Bugfix - Iframe embedding - not working for posts
 * Bugfix - Lightbox - text links not working in Divi theme due to their smooth scrolling script
-* Bugfix - Lightbox - for for images regex to pick the right anchor tag
-* Bubfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
+* Bugfix - Lightbox - fix for images regex to pick the right anchor tag
+* Bugfix - New Shortcode Editor - disabled for Edge and Safari due to stability issues for now
 
 = 6.0.5.13 - 2016/12/13 =
 
