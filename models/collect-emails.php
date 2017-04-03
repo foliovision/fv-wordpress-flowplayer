@@ -14,6 +14,11 @@ class FV_Player_Collect_Emails {
     add_action('wp_ajax_nopriv_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
     add_action('wp_ajax_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
     add_filter('fv_player_admin_popups_defaults',array($this,'fv_player_admin_popups_defaults'));
+
+
+    if( !empty($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
+      $this->csvExport($_GET['fv-email-export']);
+    }
   }
 
   public function conf_defaults($conf) {
@@ -102,6 +107,7 @@ class FV_Player_Collect_Emails {
               <td><?php _e('First Name', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('Last Name', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('Integration', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Export', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></td>
             </tr>
             </thead>
@@ -168,9 +174,14 @@ class FV_Player_Collect_Emails {
                   </select>
                 </td>
                 <td>
+                  <a class='fv-player-list-export' href='<?php echo trailingslashit(admin_url());?>options-general.php?page=fvplayer&fv-email-export=<?php echo $key; ?>' target="_blank" ><?php _e('CSV', 'fv-wordpress-flowplayer'); ?></a>
+                </td>
+                <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
                   <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' name='email_lists[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
-                  <a class='fv-player-list-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
+                  <a class='fv-player-list-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a>
+                </td>
+
               </tr>
               <?php
             }
@@ -435,6 +446,26 @@ class FV_Player_Collect_Emails {
 
     unset($result['error_log']);
     die(json_encode($result));
+  }
+
+  private function csvExport($list_id){
+    $aLists = get_option('fv_player_email_lists');
+    $list = $aLists[$list_id];
+    $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . date('Y-m-d') . '.csv';
+
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename=$filename");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    global $wpdb;
+    $results = $wpdb->get_results('SELECT `email`,`first_name`,`last_name`,`date` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . addslashes($list_id) . '"');
+
+
+    foreach ($results as $row){
+      echo '"'.implode('","',(array)$row) . "\"\n";
+    }
+    die;
   }
 
 }
