@@ -345,6 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.23 - 2017/04/?? =
 
+* Bugfix - Compatibility for browsers with localStorage blocked
 * Bugfix - Sharing - Fix for Twitter post titles
 
 = 6.0.5.22 - 2017/03/29 =
