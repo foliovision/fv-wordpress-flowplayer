@@ -1019,7 +1019,7 @@ class flowplayer_frontend extends flowplayer
     if( !isset($sPermalink) || empty($sPermalink) ) {       
       $sPermalink = urlencode(get_permalink());
       $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
-      $sTitle = urlencode( (is_singular()) ? get_the_title().' ' : get_bloginfo().' ');
+      $sTitle = urlencode( html_entity_decode( is_singular() ? get_the_title().' ' : get_bloginfo() ).' ');
     }
 
 					

@@ -343,6 +343,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.23 - 2017/04/04 =
+
+* Bugfix - Compatibility for browsers with localStorage blocked
+* Bugfix - Playlist autoplay broken when Video Links disabled
+* Bugfix - Sharing - Fix for Twitter post titles
+
 = 6.0.5.22 - 2017/03/29 =
 
 * Feature - Video Links - Adds a "Link" item to the top bar. Clicking it gives your visitors a link to the exact place in the video they are watching. On by default, unless you have disabled embedding.
