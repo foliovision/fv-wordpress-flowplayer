@@ -32,11 +32,12 @@ class FV_Player_SEO {
     if( !$description ) { //  todo: read this from shortcode
       $description = get_post_meta(get_the_ID(),'_aioseop_description', true );
     }
-    $post_excerpt = get_the_excerpt();
-    if( !$description && strlen($post_excerpt) > 0 ) {
-      $aWords = explode( ' ', $post_excerpt, 10 );
-      unset($aWords[count($aWords)-1]);
-      $description = implode( ' ', $aWords );
+    $post_content = get_the_content();
+    if( !$description && strlen($post_content) > 0 ) {
+      $post_content = strip_shortcodes( $post_content );
+      $post_content = strip_tags( $post_content );
+      $excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
+      $description = wp_trim_words( $post_content, '10', $excerpt_more );
     }
     if( !$description ) {
       $description = get_option('blogdescription');
