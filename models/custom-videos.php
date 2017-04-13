@@ -162,7 +162,7 @@ class FV_Player_Custom_Videos {
     }
     
     $aVideos = array();
-    if( $aMeta ) {
+    if( is_array($aMeta) && count($aMeta) > 0 ) {
       foreach( $aMeta AS $aVideo ) {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) $aVideos[] = $aVideo;
       }
