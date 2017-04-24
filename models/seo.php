@@ -68,6 +68,11 @@ class FV_Player_SEO {
   
   function should_i( $args ) {
     global $fv_fp;
+    if( !$fv_fp->_get_option( array( 'integrations', 'schema_org' ) ) ) {
+      $this->can_seo = false;
+      return $args;
+    }
+    
     if( !get_permalink() || !$fv_fp->get_splash() ) {
       $this->can_seo = false;
     }

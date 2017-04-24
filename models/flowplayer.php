@@ -250,8 +250,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     else if($value === 'true')
         $value = true;
         
-    if( isset($_GET['new_code']) && $key == 'new_code' ) {
-      return $_GET['new_code'];
+    if( isset($_GET['old_code']) && $key == 'old_code' ) {
+      return $_GET['old_code'];
     }
 
     return $value;
@@ -329,7 +329,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
     $sHTML = "\t\t<a href='#' onclick='return false'";
-    $sHTML .= $this->_get_option('new_code') ? " data-item='".json_encode($aPlayer)."'" : "";
+    $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     $sHTML .= $sSplashImage ? "<span style='background-image: url(\"" . $sSplashImage . "\")'></span>" : "<span></span>";
     $sHTML .= $sItemCaption."</a>\n";
@@ -423,7 +423,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $sHTML = array();
       
-      if( $this->_get_option('new_code') || $sShortcode && count($sItems) > 0) {
+      if( !$this->_get_option('old_code') || $sShortcode && count($sItems) > 0) {
         //var_dump($sItemCaption);
         
         if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){

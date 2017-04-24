@@ -149,12 +149,12 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-    if( $this->_get_option('new_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
+    if( !$this->_get_option('old_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
 
       list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }
     
-    if( $this->_get_option('new_code')  && count($aPlaylistItems) == 1 ) {
+    if( !$this->_get_option('old_code')  && count($aPlaylistItems) == 1 ) {
       $playlist_items_external_html = false;
       $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
     }
@@ -420,7 +420,7 @@ class flowplayer_frontend extends flowplayer
             $this->sHTMLAfter .= $playlist_items_external_html;
           }
           
-          if( !$this->_get_option('new_code') ) {
+          if( $this->_get_option('old_code') ) {
             $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
           }
 

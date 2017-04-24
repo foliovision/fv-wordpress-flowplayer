@@ -368,7 +368,7 @@ function flowplayer_prepare_scripts() {
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     
-    if( !$fv_fp->_get_option('new_code') ) {
+    if( $fv_fp->_get_option('old_code') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
     }
     
