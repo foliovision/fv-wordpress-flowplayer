@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.0.5.23 - 2017/04/04 =
 
 * Bugfix - Compatibility for browsers with localStorage blocked
+* Bugfix - Playlist autoadvance disabled for people who upgrade from FV Player 6.0.5.20
 * Bugfix - Playlist autoplay broken when Video Links disabled
 * Bugfix - Sharing - Fix for Twitter post titles
 

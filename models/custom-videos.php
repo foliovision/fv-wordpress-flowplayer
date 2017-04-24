@@ -162,7 +162,7 @@ class FV_Player_Custom_Videos {
     }
     
     $aVideos = array();
-    if( $aMeta ) {
+    if( is_array($aMeta) && count($aMeta) > 0 ) {
       foreach( $aMeta AS $aVideo ) {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) $aVideos[] = $aVideo;
       }
@@ -454,8 +454,8 @@ class FV_Player_Custom_Videos_Master {
     
     $user = new FV_Player_Custom_Videos(array( 'id' => get_current_user_id(), 'type' => 'user' ));
     ?>
-        <p>
-          <label for="edd_email"><?php _e( 'Profile Videos', 'fv-wordpress-flowplayer' ); ?></label>
+        <p class="edd-profile-videos-label">
+          <span for="edd_email"><?php _e( 'Profile Videos', 'fv-wordpress-flowplayer' ); ?></span>
             <?php echo $user->get_form(array('no_form' => true));?>
         </p>
     <?php
