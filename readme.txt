@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.24 - 2017/04/25 =
+
+* Amazon S3 - adding support for new AWS Regions - US East (Ohio), Asia Pacific (Mumbai) and EU (London).
+
 = 6.0.5.23 - 2017/04/04 =
 
 * Bugfix - Compatibility for browsers with localStorage blocked
