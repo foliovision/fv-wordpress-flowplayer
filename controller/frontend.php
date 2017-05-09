@@ -72,7 +72,7 @@ function fv_flowplayer_get_js_translations() {
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
-  'warning_unstable_android' => __('For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.','fv-wordpress-flowplayer'),  
+  'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer'),  
   );
   
   return $aStrings;
