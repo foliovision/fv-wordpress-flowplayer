@@ -653,7 +653,8 @@ class flowplayer_frontend extends flowplayer
     
     
 		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
-		return $this->ret;
+      
+      return $this->ret;
 	}
   
   

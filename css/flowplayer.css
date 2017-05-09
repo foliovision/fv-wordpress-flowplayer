@@ -918,6 +918,16 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   user-select: auto;
 }
 
+.fv-player-warning-wrapper{
+  margin: 5px 0 15px;
+  border-left: 4px solid #fff;
+  border-left-color: #46b450; 
+}
+.fv-player-warning-wrapper p{
+  margin: .5em;
+  padding: 2px;
+}
+
 
 .flowplayer.chrome55fix video::-internal-media-controls-download-button {
   display:none;
@@ -931,7 +941,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   width: calc(100% + 48px);
 }
 
-
 .is-audio .fp-player {
   background-size: contain;
   background-position: top center;
@@ -940,4 +949,3 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 
 
 .fvfp-notice { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; text-shadow: 0 0 1px #000;}
-
