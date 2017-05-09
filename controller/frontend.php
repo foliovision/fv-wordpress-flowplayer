@@ -65,12 +65,14 @@ function fv_flowplayer_get_js_translations() {
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv-wordpress-flowplayer'),
   'full_sentence' => __('Please give us more information (a full sentence) so we can help you better','fv-wordpress-flowplayer'),
-  'error_JSON' => __('Admin: Error parsing JSON','fv-wordpress-flowplayer'),
-  'no_support_IE9' => __('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
-  'check_failed' => __('Admin: Check failed.','fv-wordpress-flowplayer'),
-  'video_issues' => __('Video Issues','fv-wordpress-flowplayer'),
+  'error_JSON' =>__('Admin: Error parsing JSON','fv-wordpress-flowplayer'),
+  'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
+  'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
+  'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
+  'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
+  'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
-  'warning_unstable_android' => __('For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.','fv-wordpress-flowplayer'),
+  'warning_unstable_android' => __('For best performance use <a href="https://play.google.com/store/apps/details?id=com.android.chrome">Google Chrome</a>.','fv-wordpress-flowplayer'),  
   );
   
   return $aStrings;
@@ -298,9 +300,9 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     (isset($fv_fp->conf['js-everywhere']) && $fv_fp->conf['js-everywhere'] == 'true' ) ||     
+     $fv_fp->_get_option('js-everywhere')  ||
      isset($_GET['fv_wp_flowplayer_check_template'])
-  ) {
+  ){
     
     $aDependencies = array('jquery');
     if( $fv_fp->load_tabs ) {
@@ -337,7 +339,9 @@ function flowplayer_prepare_scripts() {
       $aConf['speeds'] = array( 0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2 );
     }elseif($fv_fp->conf['ui_speed_increment'] == 0.5){
       $aConf['speeds'] = array( 0.25,0.5,1,1.5,2 );
-    }  
+    }
+
+    $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
     
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
