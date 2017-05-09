@@ -343,10 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.24 - 2017/04/25 =
+= 6.0.5.24 - 2017/05/10 =
 
 * Amazon S3 - adding support for new AWS Regions - US East (Ohio), Asia Pacific (Mumbai) and EU (London).
 * End Popup - making sure it works on the last item in playlist only
+* Speed control - making sure it works for Android when using Firefox
 
 = 6.0.5.23 - 2017/04/04 =
 
