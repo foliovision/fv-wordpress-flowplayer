@@ -42,6 +42,8 @@ add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
   
+  $sWhy = __(' <a target="_blank" href="https://foliovision.com/2017/05/issues-with-vimeo-on-android">Why?</a>','fv-wordpress-flowplayer');
+  
   $aStrings = array(
   0 => '',
   1 => __('Video loading aborted', 'fv-wordpress-flowplayer'),
@@ -72,8 +74,8 @@ function fv_flowplayer_get_js_translations() {
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
-  'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer'),
-  'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),  
+  'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer').$sWhy,
+  'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,  
   );
   
   return $aStrings;
