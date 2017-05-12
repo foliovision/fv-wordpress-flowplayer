@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.25 - 2017/05/?? =
+
+* CSS - Fixing conflict with OptimizePress plugin as it contains its own Flowplayer styling
+
 = 6.0.5.24 - 2017/05/09 =
 
 * Amazon S3 - adding support for new AWS Regions - US East (Ohio), Asia Pacific (Mumbai) and EU (London).
