@@ -293,7 +293,9 @@ function fv_player_colorbox_scrset(args) {
     var srcset = jQuery(args).find('img[srcset]');
     if ( srcset.length > 0 ) {
       var find = jQuery(window).width() > jQuery(window).height() ? jQuery(window).width() : jQuery(window).height();
-      var win = false;
+      var ratio = typeof(window.devicePixelRatio) != "undefined" ? window.devicePixelRatio : 1;
+      find = find * ratio;
+      var win = false;      
       var aSources = parseSrcset(srcset.attr('srcset'));
       jQuery(aSources).each( function(k,v) {
         if( !win || Math.abs(v.w - find) < Math.abs(aSources[win].w - find) ){
