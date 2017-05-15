@@ -50,7 +50,8 @@ jQuery(document).ready(function(){
       scrolling: false,
       onLoad: fv_lightbox_flowplayer_shutdown,
       onCleanup: fv_lightbox_flowplayer_shutdown,
-      title: function() { return fv_player_colorbox_title(this) }
+      title: function() { return fv_player_colorbox_title(this) },
+      href: function() { return fv_player_colorbox_scrset(this) }
     } );
       
     //Lightbox external sites href="example.com"  
@@ -259,4 +260,50 @@ function fv_lightbox_flowplayer_shutdown() {
 function fv_player_lightbox_width() {
   var elFlowplayer = jQuery( jQuery(this).data('fv-lightbox') || jQuery(this).attr('href') );
   return parseInt(elFlowplayer.css('max-width'));  
+}
+
+/*
+ *  https://github.com/albell/parse-srcset, 1.0.2
+ */
+
+/**
+ * Srcset Parser
+ *
+ * By Alex Bell |  MIT License
+ *
+ * JS Parser for the string value that appears in markup <img srcset="here">
+ *
+ * @returns Array [{url: _, d: _, w: _, h:_}, ...]
+ *
+ * Based super duper closely on the reference algorithm at:
+ * https://html.spec.whatwg.org/multipage/embedded-content.html#parse-a-srcset-attribute
+ *
+ * Most comments are copied in directly from the spec
+ * (except for comments in parens).
+ */
+if ( typeof(parseSrcset) == "undefined") {
+  
+!function(a,b){"function"==typeof define&&define.amd?define([],b):"object"==typeof module&&module.exports?module.exports=b():a.parseSrcset=b()}(this,function(){return function(a){function b(a){return" "===a||"\t"===a||"\n"===a||"\f"===a||"\r"===a}function c(b){var c,d=b.exec(a.substring(p));if(d)return c=d[0],p+=c.length,c}function r(){for(c(e),m="",n="in descriptor";;){if(o=a.charAt(p),"in descriptor"===n)if(b(o))m&&(l.push(m),m="",n="after descriptor");else{if(","===o)return p+=1,m&&l.push(m),void s();if("("===o)m+=o,n="in parens";else{if(""===o)return m&&l.push(m),void s();m+=o}}else if("in parens"===n)if(")"===o)m+=o,n="in descriptor";else{if(""===o)return l.push(m),void s();m+=o}else if("after descriptor"===n)if(b(o));else{if(""===o)return void s();n="in descriptor",p-=1}p+=1}}function s(){var c,d,e,f,h,m,n,o,p,b=!1,g={};for(f=0;f<l.length;f++)h=l[f],m=h[h.length-1],n=h.substring(0,h.length-1),o=parseInt(n,10),p=parseFloat(n),i.test(n)&&"w"===m?((c||d)&&(b=!0),0===o?b=!0:c=o):j.test(n)&&"x"===m?((c||d||e)&&(b=!0),p<0?b=!0:d=p):i.test(n)&&"h"===m?((e||d)&&(b=!0),0===o?b=!0:e=o):b=!0;b?console&&console.log&&console.log("Invalid srcset descriptor found in '"+a+"' at '"+h+"'."):(g.url=k,c&&(g.w=c),d&&(g.d=d),e&&(g.h=e),q.push(g))}for(var k,l,m,n,o,d=a.length,e=/^[ \t\n\r\u000c]+/,f=/^[, \t\n\r\u000c]+/,g=/^[^ \t\n\r\u000c]+/,h=/[,]+$/,i=/^\d+$/,j=/^-?(?:[0-9]+|[0-9]*\.[0-9]+)(?:[eE][+-]?[0-9]+)?$/,p=0,q=[];;){if(c(f),p>=d)return q;k=c(g),l=[],","===k.slice(-1)?(k=k.replace(h,""),s()):r()}}});
+
+}
+
+function fv_player_colorbox_scrset(args) {
+  var src = jQuery(args).attr('href');
+  if( src.match(/\.(png|jpg|jpeg|gif)/i) ){
+    var srcset = jQuery(args).find('img[srcset]');
+    if ( srcset.length > 0 ) {
+      var find = jQuery(window).width() > jQuery(window).height() ? jQuery(window).width() : jQuery(window).height();
+      var win = false;
+      var aSources = parseSrcset(srcset.attr('srcset'));
+      jQuery(aSources).each( function(k,v) {
+        if( !win || Math.abs(v.w - find) < Math.abs(aSources[win].w - find) ){
+          win = k;
+        }
+      });
+      
+      src = aSources[win].url;
+      
+    }
+  }
+  return src;
 }
