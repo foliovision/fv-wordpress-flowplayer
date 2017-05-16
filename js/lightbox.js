@@ -290,13 +290,23 @@ if ( typeof(parseSrcset) == "undefined") {
 function fv_player_colorbox_scrset(args) {
   var src = jQuery(args).attr('href');
   if( src.match(/\.(png|jpg|jpeg|gif)/i) ){
+    var aSources = false;
     var srcset = jQuery(args).find('img[srcset]');
     if ( srcset.length > 0 ) {
+      aSources = parseSrcset(srcset.attr('srcset'));
+    } else {
+      srcset = jQuery(args).find('img[data-lazy-srcset]');
+      if ( srcset.length > 0 ) {
+        aSources = parseSrcset(srcset.attr('data-lazy-srcset'));
+      }
+    }
+    
+    if( aSources ) {    
       var find = jQuery(window).width() > jQuery(window).height() ? jQuery(window).width() : jQuery(window).height();
       var ratio = typeof(window.devicePixelRatio) != "undefined" ? window.devicePixelRatio : 1;
       find = find * ratio;
       var win = false;      
-      var aSources = parseSrcset(srcset.attr('srcset'));
+      
       jQuery(aSources).each( function(k,v) {
         if( !win || Math.abs(v.w - find) < Math.abs(aSources[win].w - find) ){
           win = k;
@@ -304,8 +314,8 @@ function fv_player_colorbox_scrset(args) {
       });
       
       src = aSources[win].url;
-      
     }
+    
   }
   return src;
 }
