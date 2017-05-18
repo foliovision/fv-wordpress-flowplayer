@@ -345,7 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.25 - 2017/05/?? =
 
-* CSS - moving FV Player stylesheet down to increase it's priority over the WP themes
+* CSS - moving FV Player stylesheet down to increase it's priority over the WP themes. Pro users need to upgrade FV Player Pro as well if they experience slight display issues.
 
 = 6.0.5.24 - 2017/05/09 =
 
