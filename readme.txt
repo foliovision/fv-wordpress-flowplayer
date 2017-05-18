@@ -345,7 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.0.5.25 - 2017/05/?? =
 
-* CSS - Fixing conflict with OptimizePress plugin as it contains its own Flowplayer styling
+* CSS - moving FV Player stylesheet down to increase it's priority over the WP themes
 
 = 6.0.5.24 - 2017/05/09 =
 
