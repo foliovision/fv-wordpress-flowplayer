@@ -53,6 +53,8 @@ $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {
 	include( dirname( __FILE__ ) . '/controller/backend.php' );
+  include( dirname( __FILE__ ) . '/controller/editor.php' );
+  include( dirname( __FILE__ ) . '/controller/settings.php' );
   
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 

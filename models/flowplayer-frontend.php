@@ -1040,6 +1040,8 @@ class flowplayer_frontend extends flowplayer
     
     if( isset($post) && isset($post->ID) ) {
       $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
+    } else {
+      $sHTMLVideoLink = false;
     }
     
     if( $this->aCurArgs['embed'] == 'false' ) {
