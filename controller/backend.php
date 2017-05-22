@@ -439,11 +439,11 @@ function fv_wp_flowplayer_admin_init() {
   global $fv_fp;
   global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
   if(
-    preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) &&
+    preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) /*&&
     (
       ( isset($fv_fp->conf['key_automatic']) && $fv_fp->conf['key_automatic'] == 'true' ) ||
       ( isset($fv_fp->conf['video_checker_agreement']) && $fv_fp->conf['video_checker_agreement'] == 'true' )
-    )
+    )*/
   ) {
     
     $version = get_option( 'fvwpflowplayer_core_ver' );
@@ -469,6 +469,7 @@ function fv_wp_flowplayer_admin_init() {
     );
 	} else {  
     if(
+      1<0 &&  //  DISABLING
       preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) && version_compare( $fv_wp_flowplayer_core_ver, get_option('fvwpflowplayer_core_ver') ) !== 0 &&
       ( !isset($fv_fp->conf['key_automatic']) || $fv_fp->conf['key_automatic'] != 'true' ) &&
       ( !isset($fv_fp->conf['video_checker_agreement']) || $fv_fp->conf['video_checker_agreement'] != 'true' )
