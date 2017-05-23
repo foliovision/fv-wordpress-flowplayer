@@ -970,3 +970,10 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .is-audio + .fp-playlist-external a { counter-increment: fv-playlist-counter; display: block; width: 100%; text-align: left; line-height: 1.15; margin: 0; padding: 6px 12px; color: #666; clear: both; min-height: 26px; }
 .is-audio + .fp-playlist-external a span { display: none; }
 .is-audio + .fp-playlist-external a:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". "; float: left; min-width: 26px; color: #adadad; }
+
+.flowplayer.is-audio .fp-ratio {
+  display: none;
+}
+.flowplayer.is-audio.is-splash .fp-controls {
+  display: block !important;
+}
