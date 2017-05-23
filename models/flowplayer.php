@@ -249,6 +249,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $value = false;
     else if($value === 'true')
         $value = true;
+        
+    if( isset($_GET['old_code']) && $key == 'old_code' ) {
+      return $_GET['old_code'];
+    }
 
     return $value;
   }
@@ -320,24 +324,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption ){
-
-    if(isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical'){
-
-       if( $sSplashImage ) {
-        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"" . $sSplashImage . "\")'></span>$sItemCaption</a>\n";
-      } else {
-        $sHTML = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
-      }  
-      
-    }else{
-      if( $sSplashImage ) {
-        $sHTML = "\t\t<a href='#' onclick='return false'><span style='background-image: url(\"" . $sSplashImage . "\")'></span>$sItemCaption</a>\n";
-      } else {
-        $sHTML = "\t\t<a href='#' onclick='return false'><span></span>$sItemCaption</a>\n";
-      }
-    }
-      
+  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ){
+    
+    $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
+    
+    $sHTML = "\t\t<a href='#' onclick='return false'";
+    $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
+    $sHTML .= ">";
+    $sHTML .= $sSplashImage ? "<span style='background-image: url(\"" . $sSplashImage . "\")'></span>" : "<span></span>";
+    $sHTML .= $sItemCaption."</a>\n";
+    
+    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
+    
     return $sHTML;
   }
   
@@ -425,88 +423,93 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $sHTML = array();
       
-      if( $sShortcode && count($sItems) > 0) {
+      if( !$this->_get_option('old_code') || $sShortcode && count($sItems) > 0) {
         //var_dump($sItemCaption);
         
         if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
-          $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption );
+          $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
         }else{
           $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
-        }       
-            
-        foreach( $sItems AS $iKey => $sItem ) {
-          $aPlaylist_item = explode( ',', $sItem );
+        }
         
-          foreach( $aPlaylist_item AS $key => $item ) {
-            if( $key > 0 && ( stripos($item,'http:') !== 0 && stripos($item,'https:') !== 0 && stripos($item,'rtmp:') !== 0 && stripos($item,'/') !== 0 ) ) {
-              $aPlaylist_item[$key-1] .= ','.$item;              
-              $aPlaylist_item[$key] = $aPlaylist_item[$key-1];
-              unset($aPlaylist_item[$key-1]);
+        if( count($sItems) > 0 ) {
+          foreach( $sItems AS $iKey => $sItem ) {
+            
+            if( !$sItem ) continue;
+            
+            $aPlaylist_item = explode( ',', $sItem );
+          
+            foreach( $aPlaylist_item AS $key => $item ) {
+              if( $key > 0 && ( stripos($item,'http:') !== 0 && stripos($item,'https:') !== 0 && stripos($item,'rtmp:') !== 0 && stripos($item,'/') !== 0 ) ) {
+                $aPlaylist_item[$key-1] .= ','.$item;              
+                $aPlaylist_item[$key] = $aPlaylist_item[$key-1];
+                unset($aPlaylist_item[$key-1]);
+              }
+              $aPlaylist_item[$key] = str_replace( $replace_to, $replace_from, $aPlaylist_item[$key] );                          
             }
-            $aPlaylist_item[$key] = str_replace( $replace_to, $replace_from, $aPlaylist_item[$key] );                          
-          }
+    
+            $aItem = array();
+            $sSplashImage = false;
+            $flash_media = array();
+            
+            $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
   
-          $aItem = array();
-          $sSplashImage = false;
-          $flash_media = array();
-          
-          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
-
-          foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
-            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
-              $sSplashImage = $aPlaylist_item_i;
-              continue;
-            }
-            
-            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
-            if( is_array($media_url) ) {
-              $actual_media_url = $media_url['media'];
-              if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
-                $flash_media[] = $media_url['flash'];
+            foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
+              if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
+                $sSplashImage = $aPlaylist_item_i;
+                continue;
               }
-            } else {
-              $actual_media_url = $media_url;
-            }
-            if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
-              if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-                $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+              
+              $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+              if( is_array($media_url) ) {
+                $actual_media_url = $media_url['media'];
+                if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
+                  $flash_media[] = $media_url['flash'];
+                }
               } else {
-                $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
-              }              
-            } else {
-              $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
-            }                
-            
-          }
-          
-          if( count($flash_media) ) {
-            $bHaveFlash = false;
-            foreach( $aItem AS $key => $aItemFile ) {
-              if( in_array( 'flash', array_keys($aItemFile) ) ) {
-                $bHaveFlash = true;
+                $actual_media_url = $media_url;
               }
+              if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
+                if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
+                  $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+                } else {
+                  $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+                }              
+              } else {
+                $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
+              }                
+              
             }
             
-            if( !$bHaveFlash ) {
-              foreach( $flash_media AS $flash_media_items ) {
-                $aItem[] = array( 'flash' => $flash_media_items );
+            if( count($flash_media) ) {
+              $bHaveFlash = false;
+              foreach( $aItem AS $key => $aItemFile ) {
+                if( in_array( 'flash', array_keys($aItemFile) ) ) {
+                  $bHaveFlash = true;
+                }
               }
-            }      
+              
+              if( !$bHaveFlash ) {
+                foreach( $flash_media AS $flash_media_items ) {
+                  $aItem[] = array( 'flash' => $flash_media_items );
+                }
+              }      
+            }
+  
+            $aPlayer = array( 'sources' => $aItem );      
+            if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
+        
+            $aPlaylistItems[] = $aPlayer;
+            $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
+            $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
+            
+            
+            $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $iKey + 1 );
+            if( $sSplashImage ) {
+              $aSplashScreens[] = $sSplashImage;  
+            } 
+            $aCaptions[] = $sItemCaption;
           }
-
-          $aPlayer = array( 'sources' => $aItem );      
-          if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
-      
-          $aPlaylistItems[] = $aPlayer;
-          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
-          $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
-          
-          
-          $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption );
-          if( $sSplashImage ) {
-            $aSplashScreens[] = $sSplashImage;  
-          } 
-          $aCaptions[] = $sItemCaption;
         }
         
       }
@@ -532,12 +535,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       
       $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
+      
+      $attributes = array();
+      $attributes_html = '';
+      $attributes['class'] = 'fp-playlist-external '.$sPlaylistClass;
+      $attributes['rel'] = 'wpfp_'.$this->hash;
+      
+      $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
+      foreach( $attributes AS $attr_key => $attr_value ) {
+        $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
+      }
 
-      $sHTML = "\t<div class='fp-playlist-external $sPlaylistClass' rel='wpfp_{$this->hash}'>\n".implode( '', $sHTML )."\t</div>\n";
-
-      $jsonPlaylistItems = str_replace( array('\\/', ','), array('/', ",\n\t\t"), json_encode($aPlaylistItems) );
-      //$jsonPlaylistItems = preg_replace( '~"(.*)":"~', '$1:"', $jsonPlaylistItems );
-     
+      $sHTML = "\t<div $attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
+      
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  
   
