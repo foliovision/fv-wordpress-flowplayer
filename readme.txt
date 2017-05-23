@@ -343,9 +343,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.0.5.25 - 2017/05/?? =
+= 6.0.5.25 - 2017/05/23 =
 
+* Markup - getting rid of use of HTML5 video tag to unify the player code of single videos and video playlist
 * CSS - moving FV Player stylesheet down to increase it's priority over the WP themes. Pro users need to upgrade FV Player Pro as well if they experience slight display issues.
+* Lightbox -
+* SEO - support for Schema.org markup, enable "Use Schema.org markup"
 
 = 6.0.5.24 - 2017/05/09 =
 
