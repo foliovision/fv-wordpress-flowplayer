@@ -653,6 +653,10 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   $download_url = $aPluginInfo->{$plugin_package}->url;
   
   $sPluginBasenameReal = fv_flowplayer_get_extension_path( str_replace( '_', '-', $plugin_package ) );
+  if( $sPluginBasenameReal ) {
+    return; //  already installed
+  }
+  
   $plugin_basename = $sPluginBasenameReal ? $sPluginBasenameReal : $plugin_basename;
 
   $url = wp_nonce_url( site_url().'/wp-admin/options-general.php?page=fvplayer', 'fv_player_pro_install', 'nonce_fv_player_pro_install' );
