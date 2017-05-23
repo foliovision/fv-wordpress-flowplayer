@@ -974,6 +974,9 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.is-audio .fp-ratio {
   display: none;
 }
+.flowplayer.is-audio .fp-fullscreen {
+  display: none;
+}
 .flowplayer.is-audio.is-splash .fp-controls {
   display: block !important;
 }
