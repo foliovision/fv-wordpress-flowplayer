@@ -218,7 +218,8 @@ class FV_Player_lightbox {
   function html_to_lightbox_videos($content) {
 
     //  todo: disabling the option should turn this off
-    if (stripos($content, 'colorbox') !== false) {  
+    if (stripos($content, 'colorbox') !== false) {
+      $this->bLoad = true;
       $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
       return $content;
     }
@@ -275,6 +276,9 @@ class FV_Player_lightbox {
     } else {
       $matches[1] = preg_replace('~(class=[\'"])~', '$1colorbox ', $matches[1]);
     }
+    
+    $this->bLoad = true;
+    
     return $matches[1] . $matches[2];
   }
 

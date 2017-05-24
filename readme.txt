@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.26 - 2017/05/?? =
+
+* CSS - only loading if FV Player is found in the posts which are about to display or in any active widget or if there is some image for lightbox. In case of missing player styles use "Load FV Flowplayer JS everywhere" setting.
+
 = 6.0.5.25 - 2017/05/23 =
 
 * Markup - getting rid of use of HTML5 video tag to unify the player code of single videos and video playlist

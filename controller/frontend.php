@@ -403,7 +403,7 @@ function flowplayer_prepare_scripts() {
   }
   
   global $FV_Player_lightbox;
-  if( $FV_Player_lightbox->bLoad || isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) {
+  if( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('js-everywhere') ) {
     $aConf = array();
     $aConf['lightbox_images'] = !empty($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ? true : false;
     

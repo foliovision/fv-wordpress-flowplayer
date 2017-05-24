@@ -647,6 +647,54 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       return;
     }
     
+    /*
+     *  Let's check if FV Player is going to be used before loading CSS!
+     */
+    global $posts;
+    if( !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
+      $bFound = false;
+      
+      if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
+        $bFound = true;
+      }         
+      
+      foreach( $posts AS $objPost ) {
+        if(
+          stripos($objPost->post_content,'[fvplayer') !== false ||
+          stripos($objPost->post_content,'[flowplayer') !== false ||
+          stripos($objPost->post_content,'[video') !== false
+        ) {
+          $bFound = true;
+          break;
+        }
+        
+        if( $this->_get_option('lightbox_images') ) { //  if lightbox is enabled, check for images or colorbox class
+          if(
+            stripos($objPost->post_content,'colorbox') !== false ||
+            stripos($objPost->post_content,'<img') !== false
+          ) {
+            $bFound = true;
+            break;
+          }
+        }
+      }
+      
+      //  also check widgets - is there widget_fvplayer among active widgets?
+      if( !$bFound ) {
+        $aWidgets = get_option('sidebars_widgets');
+        if( isset($aWidgets['wp_inactive_widgets']) ) {
+          unset($aWidgets['wp_inactive_widgets']);
+        }
+        if( stripos(json_encode($aWidgets),'widget_fvplayer') !== false ) {
+          $bFound = true;
+        }
+      }
+      
+      if( !$bFound ) {
+        return;
+      }
+    }
+    
     global $fv_wp_flowplayer_ver;
     $this->bCSSInline = true;
     $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
