@@ -13,7 +13,7 @@ class FV_Player_SEO {
   }
   
   function single_attributes( $attributes, $media, $fv_fp ) {
-    if( $fv_fp->aCurArgs['playlist'] || !$this->can_seo ) {
+    if( !empty($fv_fp->aCurArgs['playlist']) || !$this->can_seo ) {
       return $attributes;
     }
     
