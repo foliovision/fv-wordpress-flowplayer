@@ -375,6 +375,8 @@ function flowplayer_prepare_scripts() {
     
     if( $fv_fp->_get_option('old_code') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
+    } else {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
     }
     
     if( count($fv_fp->aAds) > 0 ) { //  todo: move into player
