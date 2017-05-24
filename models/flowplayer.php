@@ -514,10 +514,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
       }
       
-      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'prevnext' ){
-        $sHTML = array();
-      }
-      
       $sPlaylistClass = '' ;
       
       if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){

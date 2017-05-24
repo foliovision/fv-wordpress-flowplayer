@@ -412,13 +412,15 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
-          if( $args['liststyle'] != 'prevnext' && ( !isset($this->aCurArgs['playlist_hide']) || strcmp($this->aCurArgs['playlist_hide'],'true') != 0 ) ) {
-            if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) ) {
-              $attributes['class'] .= ' has-caption';
-              $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
-            }
-            $this->sHTMLAfter .= $playlist_items_external_html;
+          if( $args['liststyle'] == 'prevnext' || ( isset($this->aCurArgs['playlist_hide']) && $this->aCurArgs['playlist_hide']== 'true' ) ) {
+            $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
+          
+          if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) ) {
+            $attributes['class'] .= ' has-caption';
+            $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
+          }
+          $this->sHTMLAfter .= $playlist_items_external_html;
           
           if( $this->_get_option('old_code') ) {
             $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
