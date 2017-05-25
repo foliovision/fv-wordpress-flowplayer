@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.26 - 2017/05/25 =
+
+* CSS - if it's not loaded but JS is enqueued, we load CSS in footer - safety measure for weird pagebuilder themes.
+
 = 6.0.5.25 - 2017/05/23 =
 
 * Markup - getting rid of use of HTML5 video tag to unify the player code of single videos and video playlist

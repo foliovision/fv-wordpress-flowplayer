@@ -60,6 +60,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $load_hlsjs = false;
   
+  public $bCSSLoaded = false;
+  
 
   public function __construct() {
     //load conf data into stack
@@ -637,7 +639,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function css_enqueue() {
+  function css_enqueue( $force = false ) {
     
     if( is_admin() && !did_action('admin_footer') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
       return;
@@ -647,7 +649,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
      *  Let's check if FV Player is going to be used before loading CSS!
      */
     global $posts;
-    if( !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
+    if( !$force && !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
       
       if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
@@ -690,6 +692,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         return;
       }
     }
+    
+    $this->bCSSLoaded = true;
     
     global $fv_wp_flowplayer_ver;
     $this->bCSSInline = true;

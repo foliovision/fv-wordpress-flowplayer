@@ -313,6 +313,8 @@ function flowplayer_prepare_scripts() {
       $aDependencies[] = 'jquery-ui-tabs';
     }
     
+    if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
+    
     wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
