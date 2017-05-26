@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.0.5.27 - 2017/05/25 =
+
+* Bugfix - Autoplay breaking mobile playback!
+
 = 6.0.5.26 - 2017/05/25 =
 
 * CSS - if it's not loaded but JS is enqueued, we load CSS in footer - safety measure for weird pagebuilder themes.
