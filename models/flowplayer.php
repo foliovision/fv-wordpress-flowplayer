@@ -648,7 +648,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     /*
      *  Let's check if FV Player is going to be used before loading CSS!
      */
-    global $posts;
+    global $posts, $post;
+    if( !$posts || empty($posts) ) $posts = array( $post );
+    
     if( !$force && !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
       
@@ -672,6 +674,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             stripos($objPost->post_content,'<img') !== false
           ) {
             $bFound = true;
+            global $FV_Player_lightbox;
+            $FV_Player_lightbox->bLoad = true;
             break;
           }
         }
