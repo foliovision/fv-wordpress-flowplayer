@@ -826,7 +826,7 @@ add_action( 'fv_player_settings_pre', 'fv_player_admin_notice_expired_license' )
 function fv_player_admin_notice_expired_license() {
   global $FV_Player_Pro;
   $screen = get_current_screen();
-  if( ( $screen && $screen->id == 'plugins' || did_action('fv_player_settings_pre') ) && isset($FV_Player_Pro) && isset($FV_Player_Pro->version) && version_compare($FV_Player_Pro->version, '0.8.17') == -1 ) {
+  if( ( $screen && $screen->id == 'plugins' || did_action('fv_player_settings_pre') ) && isset($FV_Player_Pro) && isset($FV_Player_Pro->version) && version_compare( str_replace( '.beta', '', $FV_Player_Pro->version), '0.8.17') == -1 ) {
     $aCheck = get_transient( 'fv-player-pro_license' );
     if( !empty($aCheck->expired) || !empty($aCheck->error) ) { ?>
       <div class="updated">
