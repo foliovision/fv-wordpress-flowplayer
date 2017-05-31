@@ -347,6 +347,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Switching to a more sensible numbering - not using the core Flowplayer version number anymore
 * Bugfix - JavaScript warnings related to popups
+* Bugfix - OptimizePress - making sure FV Player CSS loads after OptimizePress CSS
 
 = 6.0.5.27 - 2017/05/25 =
 

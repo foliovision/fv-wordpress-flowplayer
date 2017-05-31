@@ -725,7 +725,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
     } else {
-      wp_enqueue_style( 'fv_flowplayer', $sURL, array(), $sVer );
+      $aDeps = array();
+      if( class_exists('OptimizePress_Default_Assets') ) $aDeps = array('optimizepress-default'); //  make sure the CSS loads after optimizePressPlugin
+      
+      wp_enqueue_style( 'fv_flowplayer', $sURL, $aDeps, $sVer );
       
       if(is_user_logged_in()){
         //TODO: is this needed?
