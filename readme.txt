@@ -1453,6 +1453,10 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
+= 6.1 =
+
+* Make sure to clear your CDN of Minify cache after upgrading!
+
 = 6.0.5.13 =
 
 * New Shortcode Editor! Better looking, with improved workflow and video preview functionality.
