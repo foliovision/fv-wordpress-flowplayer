@@ -667,18 +667,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $bFound = true;
           break;
         }
-        
-        if( $this->_get_option('lightbox_images') ) { //  if lightbox is enabled, check for images or colorbox class
-          if(
-            stripos($objPost->post_content,'colorbox') !== false ||
-            stripos($objPost->post_content,'<img') !== false
-          ) {
-            $bFound = true;
-            global $FV_Player_lightbox;
-            $FV_Player_lightbox->bLoad = true;
-            break;
-          }
-        }
       }
       
       //  also check widgets - is there widget_fvplayer among active widgets?
