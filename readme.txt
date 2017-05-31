@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1 - 2017/05/31 =
+
+* Switching to a more sensible numbering - not using the core Flowplayer version number anymore
+* Bugfix - JavaScript warnings related to popups
+
 = 6.0.5.27 - 2017/05/25 =
 
 * Bugfix - Autoplay breaking mobile playback!
