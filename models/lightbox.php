@@ -4,6 +4,8 @@ class FV_Player_lightbox {
 
   private $lightboxHtml;
   
+  public $bCSSLoaded = false;
+  
   public $bLoad = false;
   
   public function __construct() {
@@ -31,13 +33,24 @@ class FV_Player_lightbox {
 
     add_filter('fv_player_conf_defaults', array( $this, 'conf_defaults' ) );
 
-
     //TODO is this hack needed?
     $conf = get_option('fvwpflowplayer');
     if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
       (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
       add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     }
+    
+    add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
+  }
+  
+  function css_enqueue( $force ) {
+    global $fv_fp;
+    if( !$force && !$fv_fp->_get_option('lightbox_images') ) return;
+    
+    $bCSSLoaded = true;
+    
+    global $fv_wp_flowplayer_ver;
+    wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH.'/css/lightbox.css', array(), $fv_wp_flowplayer_ver );
   }
 
   function conf_defaults($conf){
@@ -165,7 +178,8 @@ class FV_Player_lightbox {
   }
 
   function lightbox_playlist($output, $aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions) {
-    if ($output || empty($aCurArgs['lightbox']) || !count($aPlaylistItems)) {
+    
+    if ($output || empty($aCurArgs['lightbox']) || !count($aPlaylistItems) || count($aPlaylistItems) == 1 ) {
       return $output;
     }
 
@@ -218,7 +232,7 @@ class FV_Player_lightbox {
   function html_to_lightbox_videos($content) {
 
     //  todo: disabling the option should turn this off
-    if (stripos($content, 'colorbox') !== false) {  
+    if (stripos($content, 'colorbox') !== false) {
       $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
       return $content;
     }
@@ -275,6 +289,7 @@ class FV_Player_lightbox {
     } else {
       $matches[1] = preg_replace('~(class=[\'"])~', '$1colorbox ', $matches[1]);
     }
+    
     return $matches[1] . $matches[2];
   }
 
