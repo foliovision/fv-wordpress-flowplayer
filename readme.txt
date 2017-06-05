@@ -343,9 +343,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.1.1 - 2017/06/?? =
+= 6.1.1 - 2017/06/05 =
 
-* Keyboard controls - setting left/right arrow keys to jump 5 seconds back/forward and n/p keys to go to next/previous playlist item. c will cycle through the subtitles
+* Keyboard controls - setting left/right arrow keys to jump 5 seconds back/forward and Shift+n/p keys to go to next/previous playlist item. 'c' will cycle through the subtitles
 
 = 6.1 - 2017/05/31 =
 
