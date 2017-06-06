@@ -397,8 +397,10 @@ class flowplayer_frontend extends flowplayer
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
           $attributes['data-rtmp'] = $rtmp_server;
         }
-         				
-				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
+        
+        if( !$bIsAudio ) {
+          $this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
+        }
     
 
 				if( !$this->_get_option('allowfullscreen') ) {

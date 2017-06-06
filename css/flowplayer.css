@@ -811,6 +811,10 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.is-audio .fp-fullscreen {
   display: none;
 }
-.flowplayer.is-audio.is-splash .fp-controls {
+.flowplayer.is-audio .fp-controls {
   display: block !important;
 }
+.flowplayer.is-audio.is-error { border: 0 }
+.flowplayer.is-audio.is-splash .fp-timeline-tooltip { display: none }
+.flowplayer.is-audio .fp-message { padding-top: 0 }
+.flowplayer.is-audio .fp-time em { width: 36px }
