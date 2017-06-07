@@ -220,6 +220,7 @@ jQuery(document).ready(function($){
       });
       
       fv_flowplayer_uploader.on('open', function() {
+        jQuery('.media-router .media-menu-item').eq(0).click();
         jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
       });      
 
