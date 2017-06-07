@@ -805,10 +805,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.is-loading.is-audio .fp-controls, .flowplayer.is-loading.is-audio .fp-time { display: block; }
 .flowplayer.is-loading.is-audio .fp-waiting { position: relative; top: -3px; z-index: 99; }
 
-.flowplayer.is-audio .fp-ratio {
-  display: none;
-}
-.flowplayer.is-audio .fp-fullscreen {
+.flowplayer.is-audio .fp-fullscreen, .flowplayer.is-audio .fp-ratio {
   display: none;
 }
 .flowplayer.is-audio .fp-controls {
@@ -819,3 +816,9 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.is-audio.is-splash .fp-timeline-tooltip { display: none }
 .flowplayer.is-audio .fp-message { padding-top: 0 }
 .flowplayer.is-audio .fp-time em { width: 36px }
+
+.flowplayer.is-audio .fp-duration, .flowplayer.is-audio .fp-elapsed, .flowplayer.is-audio a.fp-play, .flowplayer.is-audio a.fp-mute { color: #eeeeee !important }
+.flowplayer.is-audio .fp-volumelevel, .flowplayer.is-audio .fp-progress { background-color: #bb0000 !important; }
+.flowplayer.is-audio .fp-volumeslider, .flowplayer.is-audio .fp-buffer { background-color: #eeeeee !important; }
+
+.fp-playlist-external.is-audio a.is-active { color: #bb0000 !important; }

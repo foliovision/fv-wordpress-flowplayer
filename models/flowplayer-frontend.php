@@ -425,6 +425,11 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
+          
+          if( $bIsAudio ) {
+            $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'class="fp-playlist-external is-audio', $playlist_items_external_html );
+          }
+          
           if( $args['liststyle'] == 'prevnext' || ( isset($this->aCurArgs['playlist_hide']) && $this->aCurArgs['playlist_hide']== 'true' ) ) {
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
@@ -447,7 +452,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
-        }        
+        }
         
         if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
