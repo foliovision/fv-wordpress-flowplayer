@@ -365,6 +365,10 @@ function flowplayer_prepare_scripts() {
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
+    
+    $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
+    $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');    
+    
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
