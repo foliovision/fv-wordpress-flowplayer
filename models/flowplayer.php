@@ -169,7 +169,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['buttonOverColor'] ) ) $conf['buttonOverColor'] = '#ffffff';*/
     if( !isset( $conf['durationColor'] ) ) $conf['durationColor'] = '#eeeeee';
     if( !isset( $conf['timeColor'] ) ) $conf['timeColor'] = '#eeeeee';
-    if( !isset( $conf['progressColor'] ) ) $conf['progressColor'] = '#00a7c8';
+    if( !isset( $conf['progressColor'] ) ) $conf['progressColor'] = '#bb0000';
     if( !isset( $conf['bufferColor'] ) ) $conf['bufferColor'] = '#eeeeee';
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
@@ -183,7 +183,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
-    if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#00a7c8';
+    if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#bb0000';
     if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
 
     //
