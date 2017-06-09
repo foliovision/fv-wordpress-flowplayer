@@ -3,7 +3,7 @@
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Formerly FV WordPress Flowplayer. Embed videos (MP4, WEBM, OGV, FLV) into posts or pages. Uses Flowplayer 6.
-Version: 6.0.5.17
+Version: 6.1.2
 Author URI: http://foliovision.com/
 License:     GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -26,7 +26,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$fv_wp_flowplayer_ver = '6.0.5.17';
+$fv_wp_flowplayer_ver = '6.1.2';
 $fv_wp_flowplayer_core_ver = '6.0.5';
 
 include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
@@ -45,6 +45,10 @@ include_once(dirname( __FILE__ ) . '/models/facebook-share.php');
 
 include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
 
+include_once(dirname( __FILE__ ) . '/models/seo.php');
+
+include_once(dirname( __FILE__ ) . '/models/subtitles.php');
+
 include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
@@ -53,6 +57,8 @@ $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {
 	include( dirname( __FILE__ ) . '/controller/backend.php' );
+  include( dirname( __FILE__ ) . '/controller/editor.php' );
+  include( dirname( __FILE__ ) . '/controller/settings.php' );
   
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
