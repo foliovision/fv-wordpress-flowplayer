@@ -775,8 +775,9 @@ function fv_flowplayer_get_extension_path( $slug ){
       return $item;
   }
   
+  $sPluginFolder = plugin_dir_path( dirname( dirname(__FILE__) ) );
   foreach( $aInactivePlugins as $item ){
-    if( stripos($item,$slug.'.php') !== false )
+    if( stripos($item,$slug.'.php') !== false && file_exists($sPluginFolder.$item) )
       return $item;
   }  
   

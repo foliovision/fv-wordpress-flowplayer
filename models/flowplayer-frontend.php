@@ -915,7 +915,7 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_subtitles() {
+  function get_subtitles($index = 0) {
     $aSubtitles = array();
 
     if( $this->aCurArgs && count($this->aCurArgs) > 0 ) {
@@ -924,6 +924,11 @@ class flowplayer_frontend extends flowplayer
         if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
           continue;
         }
+        
+        $subtitles = explode( ";",$subtitles);
+        if( empty($subtitles[$index]) ) return $aSubtitles;
+        
+        $subtitles = $subtitles[$index];
   
         if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
           //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);

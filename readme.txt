@@ -343,6 +343,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1.2 - 2017/06/09 =
+
+* MPEG-DASH - making sure the automated quality switching respects the player size
+* Mobile - added "Mobile Settings" box with "Use native fullscreen on mobile" and "Force fullscreen on mobile" (beta) settings
+* Subtitles - you can not select a single subtitle item for each video in playlist
+
 = 6.1.1 - 2017/06/05 =
 
 * Keyboard controls - setting left/right arrow keys to jump 5 seconds back/forward and Shift+n/p keys to go to next/previous playlist item. 'c' will cycle through the subtitles

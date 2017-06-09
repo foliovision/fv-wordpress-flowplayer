@@ -99,8 +99,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
     
-    add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
-    add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
+    add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
+    add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
     add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
