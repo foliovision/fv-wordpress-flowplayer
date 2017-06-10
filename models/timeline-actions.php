@@ -4,17 +4,28 @@ class FV_Player_Timeline_Actions {
   
   public function __construct() {
     add_filter( 'fv_flowplayer_shortcode', array( $this, 'shortcode' ), 10, 3 );
-    add_filter('fv_player_item', array($this, 'add_timeline_actions'), 10, 2 );
-
+    add_filter( 'fv_player_item', array($this, 'add_timeline_actions'), 10, 2 );
+    add_filter( 'fv_flowplayer_inner_html', array( $this, 'html' ), 10, 2 );
   }
 
   function add_timeline_actions( $aItem, $index ) {
-    global $fv_fp;
+    if( $index > 0 ) return $aItem;
     
-    if( empty($fv_fp->aCurArgs['actions']) ) return $aItem;
+    global $fv_fp;    
+    $aActions = $this->get_actions($fv_fp->aCurArgs);
     
-    $aActions = explode(',', $fv_fp->aCurArgs['actions'] );
-    if( count($aActions) == 0 ) return $aItem;
+    if( count($aActions) ) {
+      $aItem['cuepoints'] = $aActions;
+    }
+    
+    return $aItem;
+  }
+  
+  function get_actions( $args ) {
+    if( empty($args['actions']) ) return false;
+    
+    $aActions = explode(',', $args['actions'] );
+    if( count($aActions) == 0 ) return false;
     
     $aOutput = array();
     foreach( $aActions AS $k => $v ) {
@@ -25,11 +36,40 @@ class FV_Player_Timeline_Actions {
       $aOutput[] = $objAction;
     }
     
-    if( count($aOutput) ) {
-      $aItem['cuepoints'] = $aOutput;
+    return $aOutput;
+  }
+  
+  function html( $sHTML ) {
+    $aArgs = func_get_args();
+    if( !empty($aArgs[1]->aCurArgs['actions']) ) {
+      $aActions = $this->get_actions($aArgs[1]->aCurArgs);
+      $aPopupsAdded = array();
+      foreach( $aActions AS $objAction ) {
+        if($objAction->popup === 'random' || is_numeric($objAction->popup)  ){
+          $aPopupData = get_option('fv_player_popups');    
+          if ($objAction->popup === 'random') {
+            $iPopupIndex = rand(1,count($aPopupData) );
+          } elseif (is_numeric($objAction->popup)) {
+            $iPopupIndex = intval($objAction->popup);
+          }
+          
+          if(isset($aPopupData[$iPopupIndex]) && !isset($aPopupsAdded[$iPopupIndex]) ){
+            $aPopupsAdded[$iPopupIndex] = true;
+            
+            $popup = $aPopupData[$iPopupIndex]['html'];
+            $sClass = ' fv_player_popup-'.$iPopupIndex;
+        
+            $popup = apply_filters('fv_flowplayer_popup_html', $popup);
+            if (strlen(trim($popup)) > 0) {
+              $sHTML .= '<div class="wpfp_custom_popup" data-popup-id="'.$iPopupIndex.'" style="display: none"><div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">'.$popup.'</div></div>';
+            }
+          }else{
+            continue;
+          }
+        }
+      }
     }
-    
-    return $aItem;
+    return $sHTML;
   }
   
   function shortcode( $attrs ) {
