@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1.3 - 2017/06/12 =
+
+* Fix for player loading for WPLMS users
+
 = 6.1.2 - 2017/06/09 =
 
 * MPEG-DASH - making sure the automated quality switching respects the player size
