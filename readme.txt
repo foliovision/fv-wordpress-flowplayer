@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.7.2
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -343,9 +343,50 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1.2 - 2017/06/09 =
+
+* MPEG-DASH - making sure the automated quality switching respects the player size
+* Mobile - added "Mobile Settings" box with "Use native fullscreen on mobile" and "Force fullscreen on mobile" (beta) settings
+* Subtitles - you can not select a single subtitle item for each video in playlist
+
+= 6.1.1 - 2017/06/05 =
+
+* Keyboard controls - setting left/right arrow keys to jump 5 seconds back/forward and Shift+n/p keys to go to next/previous playlist item. 'c' will cycle through the subtitles
+
+= 6.1 - 2017/05/31 =
+
+* Switching to a more sensible numbering - not using the core Flowplayer version number anymore
+* Lightbox - moving CSS to another file for optimized loading speeds on mobile if only lightbox is used and no video is on page
+* Bugfix - JavaScript warnings related to popups
+* Bugfix - OptimizePress - making sure FV Player CSS loads after OptimizePress CSS
+
+= 6.0.5.27 - 2017/05/25 =
+
+* Bugfix - Autoplay breaking mobile playback!
+
+= 6.0.5.26 - 2017/05/25 =
+
+* CSS - if it's not loaded but JS is enqueued, we load CSS in footer - safety measure for weird pagebuilder themes.
+
+= 6.0.5.25 - 2017/05/23 =
+
+* Markup - getting rid of use of HTML5 video tag to unify the player code of single videos and video playlist
+* CSS - moving FV Player stylesheet down to increase it's priority over the WP themes. Pro users need to upgrade FV Player Pro as well if they experience slight display issues.
+* CSS - only loading if FV Player is found in the posts which are about to display or in any active widget or if there is some image for lightbox. In case of missing player styles use "Load FV Flowplayer JS everywhere" setting.
+* Lightbox for images - supports srcset to make sure properly sizes images are loaded into lightbox view
+* SEO - support for Schema.org markup, enable "Use Schema.org markup"
+
+= 6.0.5.24 - 2017/05/09 =
+
+* Amazon S3 - adding support for new AWS Regions - US East (Ohio), Asia Pacific (Mumbai) and EU (London).
+* End Popup - making sure it works on the last item in playlist only
+* Speed control - making sure it works for Android when using Firefox
+* Vimeo (Pro) - showing a notice to install Firefox if user has playback issues due to TLS 1.2 incompatibility on Android 4 and old OS X. More details: https://foliovision.com/2017/05/issues-with-vimeo-on-android
+
 = 6.0.5.23 - 2017/04/04 =
 
 * Bugfix - Compatibility for browsers with localStorage blocked
+* Bugfix - Playlist autoadvance disabled for people who upgrade from FV Player 6.0.5.20
 * Bugfix - Playlist autoplay broken when Video Links disabled
 * Bugfix - Sharing - Fix for Twitter post titles
 
@@ -1423,6 +1464,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 6.1 =
+
+* Make sure to clear your CDN of Minify cache after upgrading!
 
 = 6.0.5.13 =
 

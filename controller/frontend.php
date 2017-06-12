@@ -42,6 +42,8 @@ add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
   
+  $sWhy = __(' <a target="_blank" href="https://foliovision.com/2017/05/issues-with-vimeo-on-android">Why?</a>','fv-wordpress-flowplayer');
+  
   $aStrings = array(
   0 => '',
   1 => __('Video loading aborted', 'fv-wordpress-flowplayer'),
@@ -71,6 +73,11 @@ function fv_flowplayer_get_js_translations() {
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
+  'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
+  'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
+  'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
+  'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer').$sWhy,
+  'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,  
   );
   
   return $aStrings;
@@ -308,6 +315,8 @@ function flowplayer_prepare_scripts() {
       $aDependencies[] = 'jquery-ui-tabs';
     }
     
+    if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
+    
     wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
@@ -356,6 +365,10 @@ function flowplayer_prepare_scripts() {
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
+    
+    $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
+    $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');    
+    
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
@@ -367,11 +380,17 @@ function flowplayer_prepare_scripts() {
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
-    wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
-    if( count($fv_fp->aAds) > 0 ) {
+    
+    if( $fv_fp->_get_option('old_code') ) {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
+    } else {
+      wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
+    }
+    
+    if( count($fv_fp->aAds) > 0 ) { //  todo: move into player
       wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds ); 
     }
-    if( count($fv_fp->aPopups) > 0 ) {
+    if( count($fv_fp->aPopups) > 0 ) {  //  todo: move into player
       wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
     }    
 
@@ -392,9 +411,11 @@ function flowplayer_prepare_scripts() {
   }
   
   global $FV_Player_lightbox;
-  if( $FV_Player_lightbox->bLoad || isset($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ) {
+  if( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') ) {
     $aConf = array();
-    $aConf['lightbox_images'] = !empty($fv_fp->conf['lightbox_images']) && $fv_fp->conf['lightbox_images'] == 'true' ? true : false;
+    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
+    
+    if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
     
     wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/lightbox.js', 'jquery', $fv_wp_flowplayer_ver, true );
     wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
