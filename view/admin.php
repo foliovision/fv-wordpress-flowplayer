@@ -492,7 +492,7 @@ function fv_flowplayer_admin_description_actions() {
     <tr>
       <td colspan="4">
         <p>
-          <?php _e('Here you can configure ads and banners that will be showed in the video.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('Here you can configure ads and banners that will be shown in the video.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -668,6 +668,7 @@ function fv_flowplayer_admin_select_popups($aArgs){
       foreach( $aPopupData AS $key => $aPopupAd ) {
         ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
         echo $key;
+        if( !empty($aPopupAd['title']) ) echo ' - '.$aPopupAd['title'];
         if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
         if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
@@ -678,20 +679,32 @@ function fv_flowplayer_admin_select_popups($aArgs){
 }
 
 
-function fv_flowplayer_admin_popups(){
+function fv_flowplayer_admin_end_of_video(){
   global $fv_fp;
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <?php $cva_id = $fv_fp->_get_option('popups_default'); ?>
-          <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
-          <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
+          <?php $cva_id = $fv_fp->_get_option('popups_default'); ?>          
+          <p class="description"><?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?> <?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
-      </table>
-      <table class="form-table2" style="margin: 5px; ">
+      <tr>
+        <td colspan="4">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        </td>
+      </tr>
+    </table>
+    <?php
+}
+
+
+function fv_flowplayer_admin_popups(){
+  global $fv_fp;
+    ?>
+    <p><?php _e('Add any popups here which you would like to use with multiple videos.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td>
           <table id="fv-player-popups-settings">
@@ -1305,7 +1318,8 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_popups', __('Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_end_of_video', __('End of Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_end_of_video' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_popups', __('Popup Library', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */

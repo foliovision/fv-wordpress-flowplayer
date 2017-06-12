@@ -1,27 +1,24 @@
 <?php
-require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
-
-use \DrewM\MailChimp\MailChimp;
 
 class FV_Player_Collect_Emails {
 
   public function __construct() {
 
-    add_action('admin_init', array($this, 'admin__add_meta_boxes'));
-    add_filter('fv_flowplayer_popup_html', array($this, 'popup_html'));
-    add_filter('fv_player_conf_defaults', array($this, 'conf_defaults'));
-    add_filter('fv_flowplayer_settings_save',array($this, 'fv_flowplayer_settings_save'), 10, 2);
-    add_action('wp_ajax_nopriv_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
-    add_action('wp_ajax_fv_wp_flowplayer_email_signup', array($this, 'email_signup'));
-    add_filter('fv_player_admin_popups_defaults',array($this,'fv_player_admin_popups_defaults'));
+    add_action( 'admin_init', array($this, 'admin__add_meta_boxes') );
+    add_filter( 'fv_flowplayer_popup_html', array($this, 'popup_html') );
+    add_filter( 'fv_player_conf_defaults', array($this, 'conf_defaults') );
+    add_filter( 'fv_flowplayer_settings_save', array($this, 'fv_flowplayer_settings_save'), 10, 2 );
+    add_action( 'wp_ajax_nopriv_fv_wp_flowplayer_email_signup', array($this, 'email_signup') );
+    add_action( 'wp_ajax_fv_wp_flowplayer_email_signup', array($this, 'email_signup') );
+    add_filter( 'fv_player_admin_popups_defaults', array($this,'fv_player_admin_popups_defaults') );
 
 
     if( !empty($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
-      $this->csv_export($_GET['fv-email-export']);
+      add_action('admin_init', array( $this, 'csv_export' ) );
     }
 
     if( !empty($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
-      add_action('admin_init',array($this,'admin_export_screen'));
+      add_action('in_admin_header',array($this,'admin_export_screen'));
     }
 
   }
@@ -40,8 +37,8 @@ class FV_Player_Collect_Emails {
   }
 
   public function admin__add_meta_boxes() {
-    add_meta_box('fv_flowplayer_email_lists', __('Email Lists', 'fv-wordpress-flowplayer'), array($this, 'settings_box_lists'), 'fv_flowplayer_settings_actions', 'normal');
-    add_meta_box('fv_flowplayer_email_integration', __('Email Integration', 'fv-wordpress-flowplayer'), array($this, 'settings_box_integration'), 'fv_flowplayer_settings_actions', 'normal');
+    add_meta_box('fv_flowplayer_email_lists', __('Email Lists', 'fv-wordpress-flowplayer'), array($this, 'settings_box_lists'), 'fv_flowplayer_settings_actions', 'normal', 'low');
+    add_meta_box('fv_flowplayer_email_integration', __('Email Integration', 'fv-wordpress-flowplayer'), array($this, 'settings_box_integration'), 'fv_flowplayer_settings_actions', 'normal', 'low');
   }
 
   public function fv_flowplayer_settings_save($param1,$param2){
@@ -53,7 +50,7 @@ class FV_Player_Collect_Emails {
       foreach( $aOptions AS $key => $value ) {
         $aOptions[$key]['first_name'] = stripslashes($value['first_name']);
         $aOptions[$key]['last_name'] = stripslashes($value['last_name']);
-        $aOptions[$key]['integration'] = stripslashes($value['integration']);
+        $aOptions[$key]['integration'] = isset($value['integration']) ? stripslashes($value['integration']) : false;
         $aOptions[$key]['title'] = stripslashes($value['title']);
         $aOptions[$key]['description'] = stripslashes($value['description']);
 
@@ -81,29 +78,39 @@ class FV_Player_Collect_Emails {
     global $fv_fp;
     ?>
     <p><?php _e('Enter your service API key and then assign it to a list which you create above.', 'fv-wordpress-flowplayer'); ?></p>
-    <table class="form-table2" style="margin: 5px; ">
-      <tr>
-        <td style="width: 250px"><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
-        <td>
-          <p class="description">
-            <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php echo esc_attr($fv_fp->_get_option('mailchimp_api')); ?>" />
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-        </td>
-      </tr>
-    </table>
-
-
-    <?php
+    <?php if( version_compare(phpversion(),'5.3.0') >= 0 ) : ?>
+      <table class="form-table2" style="margin: 5px; ">
+        <tr>
+          <td style="width: 250px"><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td>
+            <p class="description">
+              <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php echo esc_attr($fv_fp->_get_option('mailchimp_api')); ?>" />
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          </td>
+        </tr>        
+      </table>
+    <?php else : ?>
+      <p><?php _e('Please upgrade to PHP 5.3 or above to use the Mailchimp integration.', 'fv-wordpress-flowplayer'); ?></p>
+    <?php endif;
   }
 
   public function settings_box_lists () {
+    $aListData = get_option('fv_player_email_lists');
+    if( empty($aListData) ) {
+      $aListData = array( 1 => array() );
+    }
+    if(!isset($aListData['#fv_list_dummy_key#'])){
+      $aListData =  array( '#fv_list_dummy_key#' => array() ) + $aListData ;
+    }
+    $aMailchimpLists = $this->get_mailchimp_lists();
     ?>
+    <p><?php _e('Lists defined here can be used for subscription box for each video or for Default Popup above.', 'fv-wordpress-flowplayer'); ?></p>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td>
@@ -115,22 +122,16 @@ class FV_Player_Collect_Emails {
               <td><?php _e('Description', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('First Name', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('Last Name', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('Integration', 'fv-wordpress-flowplayer'); ?></td>
+              <?php if( !empty($aMailchimpLists['result']) ) : ?>
+                <td><?php _e('Integration', 'fv-wordpress-flowplayer'); ?></td>
+              <?php endif; ?>
               <td><?php _e('Export', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></td>
             </tr>
             </thead>
             <tbody>
             <?php
-            $aListData = get_option('fv_player_email_lists');
-            if( empty($aListData) ) {
-              $aListData = array( 1 => array() );
-            }
-            if(!isset($aListData['#fv_list_dummy_key#'])){
-              $aListData =  array( '#fv_list_dummy_key#' => array() ) + $aListData ;
-            }
-            $aMailchimpLists = $this->get_mailchimp_lists();
-            
+
             foreach ($aListData AS $key => $aList) {
               $mailchimpOptions = '';
 
@@ -155,8 +156,6 @@ class FV_Player_Collect_Emails {
                 $mailchimp_no_option = 'None';
               } else if( $aMailchimpLists && !$mailchimpOptions ) {
                 $mailchimp_no_option = 'No matching list found';
-              } else {
-                $mailchimp_no_option = 'No integrations configured';
               }
 
               ?>
@@ -176,15 +175,17 @@ class FV_Player_Collect_Emails {
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
                   <input id='list-last-name-<?php echo $key; ?>' title="last name" type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
                 </td>
-                <td>                  
-                  <select name="email_lists[<?php echo $key; ?>][integration]" title="E-mail list">
-                    <option value=""><?php echo $mailchimp_no_option; ?></option>
-                    <?php echo $mailchimpOptions ;?>
-                  </select>
-                </td>
+                <?php if( !empty($aMailchimpLists['result']) ) : ?>
+                  <td>                  
+                    <select name="email_lists[<?php echo $key; ?>][integration]" title="E-mail list">
+                      <option value=""><?php echo $mailchimp_no_option; ?></option>
+                      <?php echo $mailchimpOptions ;?>
+                    </select>
+                  </td>
+                <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo trailingslashit(admin_url());?>options-general.php?page=fvplayer&fv-email-export=<?php echo $key; ?>' target="_blank" ><?php _e('CSV', 'fv-wordpress-flowplayer'); ?></a><br/>
-                  <a class='fv-player-list-export' href='<?php echo trailingslashit(admin_url());?>options-general.php?page=fvplayer&fv-email-export-screen=<?php echo $key; ?>' target="_blank" ><?php _e('preview', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ); ?>' target="_blank" ><?php _e('CSV', 'fv-wordpress-flowplayer'); ?></a><br/>
+                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key); ?>' target="_blank" ><?php _e('preview', 'fv-wordpress-flowplayer'); ?></a>
                 </td>
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
@@ -289,8 +290,9 @@ class FV_Player_Collect_Emails {
     $aLists = get_option('fv_mailchimp_lists', array());
     if( get_option('fv_mailchimp_time', 0 ) + 3600 > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
 
+    require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
 
-    $MailChimp = new MailChimp($fv_fp->conf['mailchimp_api']);
+    $MailChimp = new \DrewM\MailChimp\MailChimp($fv_fp->conf['mailchimp_api']);
     $MailChimp->verify_ssl = false;
     $result = $MailChimp->get('lists');
     $error = $MailChimp->getLastError();
@@ -331,7 +333,8 @@ class FV_Player_Collect_Emails {
 
   private function  mailchimp_signup($list_id, $data){
     global $fv_fp;
-    $MailChimp = new MailChimp($fv_fp->_get_option('mailchimp_api'));
+    require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
+    $MailChimp = new \DrewM\MailChimp\MailChimp($fv_fp->_get_option('mailchimp_api'));
     $merge_fields = array();
 
     if(isset($data['first_name'])){
@@ -445,11 +448,13 @@ class FV_Player_Collect_Emails {
         'status' => $result['status'],
         'error' => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
       ));
+      
     }elseif($result['status'] === 'OK'){
       $result = array(
         'status' => 'ERROR',
         'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
       );
+      
     }else{
       $wpdb->insert($table_name, array(
         'email' => $data['email'],
@@ -469,48 +474,56 @@ class FV_Player_Collect_Emails {
     die(json_encode($result));
   }
 
-  private function csv_export($list_id){
+  function csv_export(){
+    $list_id = $_GET['fv-email-export'];
     $aLists = get_option('fv_player_email_lists');
     $list = $aLists[$list_id];
     $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . date('Y-m-d') . '.csv';
 
-//    header("Content-type: text/csv");
-//    header("Content-Disposition: attachment; filename=$filename");
-//    header("Pragma: no-cache");
-//    header("Expires: 0");
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename=$filename");
+    header("Pragma: no-cache");
+    header("Expires: 0");
 
     global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . addslashes($list_id) . '"');
+    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . esc_sql($list_id) . '"');
 
-    foreach ($results as $row){
-      if(!empty($row->integration)){
-        $row->integration .= ': '.$row->integration_nice;
+    echo 'email,first_name,last_name,date,integration,status,error'."\n";
+    if( $results ) {
+      foreach ($results as $row){
+        if(!empty($row->integration)){
+          $row->integration .= ': '.$row->integration_nice;
+        }
+        unset($row->integration_nice);
+  
+        if(!empty($row->error)){
+          $row->error =  unserialize($row->error)['title'];
+        }
+  
+  
+        echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
       }
-      unset($row->integration_nice);
-
-      if(!empty($row->error)){
-        $row->error =  unserialize($row->error)['title'];
-      }
-
-
-      echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
     }
     die;
   }
 
 
   public function admin_export_screen(){
+
     $list_id = $_GET['fv-email-export-screen'];
 
     global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . addslashes($list_id) . '" LIMIT 10');
+    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . esc_sql($list_id) . '" LIMIT 10');
 
     ?>
-    <a class='fv-player-list-export' href='<?php echo trailingslashit(admin_url());?>options-general.php?page=fvplayer&fv-email-export=<?php echo $list_id; ?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a><br/>
+    <style>
+      #adminmenumain { display: none }
+      #wpcontent { margin-left: 0 }
+    </style>
+    
     <table class="wp-list-table widefat fixed striped posts">
       <thead>
       <tr>
-        <td class="manage-column"></td>
         <th scope="col" class="manage-column">E-mail</th>
         <th scope="col" class="manage-column">First Name</th>
         <th scope="col" class="manage-column">Last Name</th>
@@ -523,7 +536,7 @@ class FV_Player_Collect_Emails {
       <tbody>
     <?php
     foreach ($results as $row){
-      echo '<tr><td></td>';
+      echo '<tr>';
       foreach ($row as $key => $item) {
         if($key === 'integration' && !empty($item)){
           $item .= ': ' . $row->integration_nice;
@@ -539,10 +552,13 @@ class FV_Player_Collect_Emails {
     ?>
       </tbody>
     </table>
+    <p>
+      <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$list_id);?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+    </p>
 
   <?php
 
-    die;
+    die();
   }
 
 }
