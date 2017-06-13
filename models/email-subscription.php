@@ -3,7 +3,8 @@
 class FV_Player_Email_Subscription {
 
   public function __construct() {
-
+    add_action( 'admin_init', array($this, 'init_options') );
+  
     add_action( 'admin_init', array($this, 'admin__add_meta_boxes') );
     add_filter( 'fv_flowplayer_popup_html', array($this, 'popup_html') );
     add_filter( 'fv_player_conf_defaults', array($this, 'conf_defaults') );
@@ -34,6 +35,18 @@ class FV_Player_Email_Subscription {
       'mailchimp_label' => 'Subscribe for updates',
     );
     return $conf;
+  }
+  
+  public function init_options() {
+    if( !get_option('fv_player_email_lists') ) {
+      update_option('fv_player_email_lists', array( 1 => array('first_name' => true,
+                                                   'last_name' => false,
+                                                   'integration' => false,
+                                                   'title' => 'Subscribe',
+                                                   'description' => 'If you are interested, we will be happy to have you on our list',
+                                                   'disabled' => false
+                                                   ) ) );
+    }
   }
 
   public function admin__add_meta_boxes() {
@@ -247,7 +260,8 @@ class FV_Player_Email_Subscription {
     $id = $id[0];
     $aLists = get_option('fv_player_email_lists',array());
     $list = isset($aLists[$id]) ? $aLists[$id] : array('disabled' => '1');
-    if($list['disabled'] === '1'){
+    
+    if( empty($list['title']) || $list['disabled'] === '1'){
       return '';
     }
     $popupItems = '';
