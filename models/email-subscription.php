@@ -1,6 +1,6 @@
 <?php
 
-class FV_Player_Collect_Emails {
+class FV_Player_Email_Subscription {
 
   public function __construct() {
 
@@ -184,8 +184,8 @@ class FV_Player_Collect_Emails {
                   </td>
                 <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ); ?>' target="_blank" ><?php _e('CSV', 'fv-wordpress-flowplayer'); ?></a><br/>
-                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key); ?>' target="_blank" ><?php _e('preview', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ); ?>' target="_blank" ><?php _e('CSV', 'fv-wordpress-flowplayer'); ?></a> |
+                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key); ?>' target="_blank" ><?php _e('Preview', 'fv-wordpress-flowplayer'); ?></a>
                 </td>
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
@@ -283,12 +283,14 @@ class FV_Player_Collect_Emails {
     $aLists = array();
 
     if (!$fv_fp->_get_option('mailchimp_api')) {
-      update_option('fv_mailchimp_lists', $aLists);
+      update_option('fv_player_mailchimp_lists', $aLists);
       return array('error' => 'No API key found.  ', 'result' => $aLists);
     }
 
-    $aLists = get_option('fv_mailchimp_lists', array());
-    if( get_option('fv_mailchimp_time', 0 ) + 3600 > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
+    $aLists = get_option('fv_player_mailchimp_lists', array());
+    $sTimeout = !$aLists || count($aLists) == 0 ? 60 : 3600;
+    
+    if( get_option('fv_player_mailchimp_time', 0 ) + $sTimeout > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
 
     require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
 
@@ -297,8 +299,8 @@ class FV_Player_Collect_Emails {
     $result = $MailChimp->get('lists');
     $error = $MailChimp->getLastError();
     if ($error || !$result) {
-      update_option('fv_mailchimp_time', time() - 50 * 60);
-      update_option('fv_mailchimp_lists', $aLists);
+      update_option('fv_player_mailchimp_time', time() - 50 * 60);
+      update_option('fv_player_mailchimp_lists', $aLists);
       return array('error' => $error, 'result' => $aLists);
     }
     $aLists  = array();
@@ -326,8 +328,8 @@ class FV_Player_Collect_Emails {
       $aLists[$list['id']] = $item;
     }
 
-    update_option('fv_mailchimp_time', time() );
-    update_option('fv_mailchimp_lists', $aLists);
+    update_option('fv_player_mailchimp_time', time() );
+    update_option('fv_player_mailchimp_lists', $aLists);
     return array('error' => false, 'result' => $aLists);
   }
 
@@ -423,7 +425,7 @@ class FV_Player_Collect_Emails {
     $integration_nice = '';
 
     if(!empty($list['integration'])){
-      $aLists = get_option('fv_mailchimp_lists', array());
+      $aLists = get_option('fv_player_mailchimp_lists', array());
       $integration_nice = $aLists[str_replace('mailchimp-','',$list['integration'])]['name'];
       $result = $this->mailchimp_signup(str_replace('mailchimp-','',$list['integration']),$data);
     }
@@ -563,4 +565,4 @@ class FV_Player_Collect_Emails {
 
 }
 
-$FV_Player_Collect_Emails = new FV_Player_Collect_Emails();
+$FV_Player_Email_Subscription = new FV_Player_Email_Subscription();

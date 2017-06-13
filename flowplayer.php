@@ -53,7 +53,7 @@ include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
-include_once(dirname( __FILE__ ) . '/models/collect-emails.php');
+include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 
 
 
