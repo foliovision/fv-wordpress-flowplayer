@@ -129,6 +129,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
     'liststyle' => '',
     'playlist_advance' => '',
     'linking' => '',
+    'end_popup_preview' => ''
   ), $atts ) );
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
@@ -209,6 +210,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag ) {
       'liststyle' => '',
       'playlist_advance' => '',
       'linking' => '',
+      'end_popup_preview' => '',
 		), $atts );
 	}
   

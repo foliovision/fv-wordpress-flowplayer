@@ -22,6 +22,8 @@ class FV_Player_Email_Subscription {
     if( !empty($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
       add_action('in_admin_header',array($this,'admin_export_screen'));
     }
+    
+    add_filter( 'fv_flowplayer_attributes', array( $this, 'popup_preview' ), 10, 3 );
 
   }
 
@@ -115,6 +117,8 @@ class FV_Player_Email_Subscription {
   }
 
   public function settings_box_lists () {
+    global $fv_fp;
+    
     $aListData = get_option('fv_player_email_lists');
     if( empty($aListData) ) {
       $aListData = array( 1 => array() );
@@ -156,7 +160,7 @@ class FV_Player_Email_Subscription {
                 $use = true;
                 foreach($list['fields'] as $field){
 
-                  if( $field['required'] && ($field['tag'] === "FNAME" && !$aList['first_name'] || $field['tag'] === "LNAME" && !$aList['last_name'] ) ){
+                  if( $field['required'] && ($field['tag'] === "FNAME" && ( empty($aList['first_name']) || !$aList['first_name'] ) || $field['tag'] === "LNAME" && ( empty($aList['last_name']) || !$aList['last_name'] ) ) ){
                     $use = false;
                     break;
                   }
@@ -177,22 +181,22 @@ class FV_Player_Email_Subscription {
               <tr class='data' id="fv-player-list-item-<?php echo $key; ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
                 <td>
-                  <input type='text' name='title' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' />
+                  <input type='text' name='email_lists[<?php echo $key; ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' />
                 </td>
                 <td>
-                  <input type='text' name='description' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' />
+                  <input type='text' name='email_lists[<?php echo $key; ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' />
                 </td>                
                 <td>
-                  <input type='hidden' name='first_name' value='0' />
-                  <input id='list-first-name-<?php echo $key; ?>' title="first name" type='checkbox' name='first_name' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
+                  <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
+                  <input id='list-first-name-<?php echo $key; ?>' title="first name" type='checkbox' name='email_lists[<?php echo $key; ?>][first_name]' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
                 </td>
                 <td>
-                  <input type='hidden' name='last_name' value='0' />
-                  <input id='list-last-name-<?php echo $key; ?>' title="last name" type='checkbox' name='last_name' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
+                  <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
+                  <input id='list-last-name-<?php echo $key; ?>' title="last name" type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
                 </td>
                 <?php if( !empty($aMailchimpLists['result']) ) : ?>
                   <td>                  
-                    <select name="integration" title="E-mail list">
+                    <select name="email_lists[<?php echo $key; ?>][integration]" title="E-mail list">
                       <option value=""><?php echo $mailchimp_no_option; ?></option>
                       <?php echo $mailchimpOptions ;?>
                     </select>
@@ -203,12 +207,12 @@ class FV_Player_Email_Subscription {
                   <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key); ?>' target="_blank" ><?php _e('View list', 'fv-wordpress-flowplayer'); ?></a>
                 </td>
                 <td>
-                  <input type='hidden' name='disabled' value='0' />
-                  <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' title="disable" name='disabled' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
+                  <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
+                  <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' title="disable" name='email_lists[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
                   <a class='fv-player-list-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a>
                 </td>
                 <td>
-                  <input type="button" style="display: none" class="fv_player_email_list_save button" value="Save" />
+                  <input type="button" style="display: none" class="fv_player_email_list_save button" value="Save & Preview" />
                 </td>
               </tr>
               <?php
@@ -243,7 +247,7 @@ class FV_Player_Email_Subscription {
         return false;
       } );
       
-      jQuery(document).on('keydown, change', '#fv-player-email_lists-settings', function(e) {
+      jQuery(document).on('keydown change', '#fv-player-email_lists-settings', function(e) {
         var row = jQuery(e.target).parents('[id^="fv-player-list-item-"]');
         row.find('.fv_player_email_list_save').show();
       });
@@ -258,6 +262,8 @@ class FV_Player_Email_Subscription {
         var aInputs = row.find('input, select');
         var key = row.attr('id').replace(/fv-player-list-item-/,'');
         
+        fv_player_open_preview_window(null,<?php echo $fv_fp->_get_option('width') ?>,<?php echo $fv_fp->_get_option('height') ?>+100);
+        
         button.prop('disabled',true);
         jQuery.ajax( {
           type: "POST",
@@ -265,7 +271,16 @@ class FV_Player_Email_Subscription {
           data: aInputs.serialize()+'&key='+key+'&action=fv_player_email_subscription_save&_wpnonce=<?php echo wp_create_nonce('fv_player_email_subscription_save'); ?>',
           success: function() {
             button.hide();
-            button.prop('disabled', false)
+            button.prop('disabled', false);
+            
+            var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" end_popup_preview="true" autoplay="true" popup="email-#key#"]'; ?>';
+            shortcode = shortcode.replace(/#key#/,key);
+            console.log(shortcode);
+            var url = '<?php echo home_url(); ?>?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(shortcode);
+            fv_player_open_preview_window(url);
+          },
+          error: function() {
+            button.val('Error saving!');
           }
         } );
       });
@@ -612,18 +627,25 @@ class FV_Player_Email_Subscription {
     check_ajax_referer('fv_player_email_subscription_save');
     
     $aLists = get_option('fv_player_email_lists',array());
-    
     $key = intval($_POST['key']);
     
-    if( !isset($aLists[$key]) ) $aLists[$key] = array();
+    if( !isset($_POST['email_lists'][$key]) ) {
+      header('HTTP/1.0 403 Forbidden');
+      die();
+    }
     
-    $aLists[$key]['first_name'] = isset($_POST['first_name']) ? stripslashes($_POST['first_name']) : false;
-    $aLists[$key]['last_name'] = isset($_POST['last_name']) ? stripslashes($_POST['last_name']) : false;
-    $aLists[$key]['integration'] = isset($_POST['integration']) ? stripslashes($_POST['integration']) : false;
-    $aLists[$key]['title'] = isset($_POST['title']) ? stripslashes($_POST['title']) : false;
-    $aLists[$key]['description'] = isset($_POST['description']) ? stripslashes($_POST['description']) : false;
-    
+    $aLists[$key] = $_POST['email_lists'][$key];
     update_option('fv_player_email_lists',$aLists);
+  }
+  
+  
+  public function popup_preview( $aAttributes ) {
+    global $fv_fp;
+    $aArgs = func_get_args();
+    if( isset($aArgs[2]->aCurArgs['end_popup_preview']) ) {
+      $aAttributes['data-end_popup_preview'] = true;
+    }    
+    return $aAttributes;
   }
 
 }

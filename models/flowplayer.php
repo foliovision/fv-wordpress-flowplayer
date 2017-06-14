@@ -1459,7 +1459,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 <body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
-    if( !is_user_logged_in() ){
+    if( !is_user_logged_in() || !current_user_can('manage_options') ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
       wp_die('Please log in.');
     }
