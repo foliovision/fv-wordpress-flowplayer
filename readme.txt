@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1.4 - 2016/06/21 =
+
+* Ads - close icon size increased and retina version provided
+* HLS.js - updated the core library to latest version
+
 = 6.1.3 - 2017/06/12 =
 
 * Fix for player loading for WPLMS users
