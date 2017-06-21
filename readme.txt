@@ -347,6 +347,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Ads - close icon size increased and retina version provided
 * HLS.js - updated the core library to latest version
+* Lightbox for image - fix srcset parsing when the first image is the biggest one
 
 = 6.1.3 - 2017/06/12 =
 
