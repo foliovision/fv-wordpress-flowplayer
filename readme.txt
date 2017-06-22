@@ -343,7 +343,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.1.4 - 2016/06/21 =
+= 6.1.4 - 2016/06/22 =
 
 * Ads - close icon size increased and retina version provided
 * Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content
