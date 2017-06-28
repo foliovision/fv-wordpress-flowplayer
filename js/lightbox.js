@@ -305,10 +305,10 @@ function fv_player_colorbox_scrset(args) {
       var find = jQuery(window).width() > jQuery(window).height() ? jQuery(window).width() : jQuery(window).height();
       var ratio = typeof(window.devicePixelRatio) != "undefined" ? window.devicePixelRatio : 1;
       find = find * ratio;
-      var win = false;      
+      var win = -1;      
       
       jQuery(aSources).each( function(k,v) {
-        if( !win || Math.abs(v.w - find) < Math.abs(aSources[win].w - find) ){
+        if( win == -1 || Math.abs(v.w - find) < Math.abs(aSources[win].w - find) ){
           win = k;
         }
       });

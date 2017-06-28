@@ -343,6 +343,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1.5 - 2016/06/?? =
+
+* Compatibility - bugfix for FV Player widget as it was breaking Featured Image insertion when also using DesignThemes Core Features Plugin
+
+= 6.1.4 - 2016/06/22 =
+
+* Ads - close icon size increased and retina version provided
+* Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content
+* HLS.js - updated the core library to latest version
+* Lightbox for image - fix srcset parsing when the first image is the biggest one
+
+= 6.1.3 - 2017/06/12 =
+
+* Fix for player loading for WPLMS users
+
 = 6.1.2 - 2017/06/09 =
 
 * MPEG-DASH - making sure the automated quality switching respects the player size
