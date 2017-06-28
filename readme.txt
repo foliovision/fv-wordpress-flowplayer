@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.1.5 - 2016/06/?? =
+
+* Compatibility - bugfix for FV Player widget as it was breaking Featured Image insertion when also using DesignThemes Core Features Plugin
+
 = 6.1.4 - 2016/06/22 =
 
 * Ads - close icon size increased and retina version provided
