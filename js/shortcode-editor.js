@@ -1238,7 +1238,8 @@ function b64EncodeUnicode(str) {
 function fv_player_open_preview_window(url, width, height){
   height = Math.min(window.screen.availHeight * 0.80, height + 25);
   width = Math.min(window.screen.availWidth * 0.66, width + 100);
-  if(fv_player_preview_window == null || fv_player_preview_window.self == null){
+  
+  if(fv_player_preview_window == null || fv_player_preview_window.self == null || fv_player_preview_window.closed ){
     fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes width=' + width + ' height=' + height);
   }else{
     fv_player_preview_window.location.assign(url);
