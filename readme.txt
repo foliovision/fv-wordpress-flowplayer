@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.1.5 - 2016/06/?? =
 
 * Compatibility - bugfix for FV Player widget as it was breaking Featured Image insertion when also using DesignThemes Core Features Plugin
+* Reverting - Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content. You have to set fv_player_did_autoplay = false in your JavaScript instead.
 
 = 6.1.4 - 2016/06/22 =
 
