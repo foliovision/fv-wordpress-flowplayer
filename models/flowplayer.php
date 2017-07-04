@@ -111,6 +111,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
+    add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
+    
 
   }
   
@@ -322,6 +324,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public function _salt() {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
+  }
+  
+  
+  public function add_fake_extension( $media ) {
+    if( stripos( $media, '(format=m3u8' ) !== false ) { //  http://*.streaming.mediaservices.windows.net/*.ism/manifest(format=m3u8-aapl)
+      $media .= '#.m3u8'; //  if this is not added then the Flowpalyer Flash HLS won't play the HLS stream!
+    }
+    return $media;
   }
   
   
@@ -1167,12 +1177,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $output = $default;
     } else {
       if ($extension == 'm3u8' || $extension == 'm3u') {
-        global $fv_fp;
-        $fv_fp->load_hlsjs = true;        
         $output = 'x-mpegurl';
       } else if ($extension == 'mpd') {
-        global $fv_fp;
-        $fv_fp->load_dash = true;
         $output = 'dash+xml';
       } else if ($extension == 'm4v') {
         $output = 'mp4';
@@ -1197,6 +1203,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else {
         $output = $extension;
       }
+    }
+    
+    if( $output == 'flash' ) {
+      if( stripos( $media, '(format=m3u8' ) !== false ) { //  http://*.streaming.mediaservices.windows.net/*.ism/manifest(format=m3u8-aapl)
+        $output = 'x-mpegurl';
+        $extension = 'm3u8';
+      }
+      if( stripos( $media, '(format=mpd' ) !== false ) {  //  http://*.streaming.mediaservices.windows.net/*.ism/manifest(format=mpd-time-csf)
+        $output = 'dash+xml';
+        $extension = 'mpd';
+      }
+    }
+    
+    global $fv_fp;    
+    if( $extension == 'mpd' ) {
+      $fv_fp->load_dash = true;
+    } else if( $extension == 'm3u8' ) {
+      $fv_fp->load_hlsjs = true;
     }
     
     if( !$no_video ) {
