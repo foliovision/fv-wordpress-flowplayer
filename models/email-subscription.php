@@ -136,15 +136,13 @@ class FV_Player_Email_Subscription {
             <thead>
             <tr>
               <td>ID</td>
-              <td><?php _e('Header', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('Message', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('First Name', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('Last Name', 'fv-wordpress-flowplayer'); ?></td>
+              <td style="width: 40%"><?php _e('Properties', 'fv-wordpress-flowplayer'); ?></td>
               <?php if( !empty($aMailchimpLists['result']) ) : ?>
                 <td><?php _e('Integration', 'fv-wordpress-flowplayer'); ?></td>
               <?php endif; ?>
-              <td><?php _e('Signups', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Export', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Options', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e('Status', 'fv-wordpress-flowplayer'); ?></td>
               <td></td>
             </tr>
             </thead>
@@ -181,38 +179,49 @@ class FV_Player_Email_Subscription {
               <tr class='data' id="fv-player-list-item-<?php echo $key; ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
                 <td>
-                  <input type='text' name='email_lists[<?php echo $key; ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' />
-                </td>
-                <td>
-                  <input type='text' name='email_lists[<?php echo $key; ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' />
+                  <table>
+                    <tr>
+                      <td>Header:</td>
+                      <td><input type='text' name='email_lists[<?php echo $key; ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' /></td>
+                    </tr>
+                    <tr>
+                      <td>Message:</td>
+                      <td><input type='text' name='email_lists[<?php echo $key; ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' /></td>
+                    </tr>
+                  </table>
                 </td>                
-                <td>
-                  <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
-                  <input id='list-first-name-<?php echo $key; ?>' title="first name" type='checkbox' name='email_lists[<?php echo $key; ?>][first_name]' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
-                </td>
-                <td>
-                  <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
-                  <input id='list-last-name-<?php echo $key; ?>' title="last name" type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
-                </td>
                 <?php if( !empty($aMailchimpLists['result']) ) : ?>
                   <td>                  
                     <select name="email_lists[<?php echo $key; ?>][integration]" title="E-mail list">
                       <option value=""><?php echo $mailchimp_no_option; ?></option>
                       <?php echo $mailchimpOptions ;?>
                     </select>
+                    <br />&nbsp;
                   </td>
                 <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ); ?>' target="_blank" ><?php _e('Export CSV', 'fv-wordpress-flowplayer'); ?></a> |
+                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ); ?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+                  <br />
                   <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key); ?>' target="_blank" ><?php _e('View list', 'fv-wordpress-flowplayer'); ?></a>
+                </td>
+                <td>
+                    <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
+                    <input id='list-first-name-<?php echo $key; ?>' title="first name" type='checkbox' name='email_lists[<?php echo $key; ?>][first_name]' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
+                    <label for='list-first-name-<?php echo $key; ?>'>First Name</label>
+                    <br />
+                    <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
+                    <input id='list-last-name-<?php echo $key; ?>' title="last name" type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
+                    <label for='list-last-name-<?php echo $key; ?>'>Last Name</label>
                 </td>
                 <td>
                   <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
                   <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' title="disable" name='email_lists[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
+                  <label for='ListAdDisabled-<?php echo $key; ?>'>Disable</label>
+                  <br />
                   <a class='fv-player-list-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a>
                 </td>
                 <td>
-                  <input type="button" style="display: none" class="fv_player_email_list_save button" value="Save & Preview" />
+                  <input type="button" style="visibility: hidden" class="fv_player_email_list_save button" value="Save & Preview" />
                 </td>
               </tr>
               <?php
@@ -249,11 +258,11 @@ class FV_Player_Email_Subscription {
       
       jQuery(document).on('keydown change', '#fv-player-email_lists-settings', function(e) {
         var row = jQuery(e.target).parents('[id^="fv-player-list-item-"]');
-        row.find('.fv_player_email_list_save').show();
+        row.find('.fv_player_email_list_save').css('visibility','visible');
       });
       jQuery(document).on('click', '#fv-player-email_lists-settings input[type=checkbox]', function(e) {
         var row = jQuery(e.target).parents('[id^="fv-player-list-item-"]');
-        row.find('.fv_player_email_list_save').show();
+        row.find('.fv_player_email_list_save').css('visibility','visible');
       });
       
       jQuery(document).on('click', '.fv_player_email_list_save', function() {
@@ -270,7 +279,7 @@ class FV_Player_Email_Subscription {
           url: ajaxurl,
           data: aInputs.serialize()+'&key='+key+'&action=fv_player_email_subscription_save&_wpnonce=<?php echo wp_create_nonce('fv_player_email_subscription_save'); ?>',
           success: function() {
-            button.hide();
+            button.css('visibility','hidden');
             button.prop('disabled', false);
             
             var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
