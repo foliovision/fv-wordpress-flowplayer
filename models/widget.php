@@ -86,8 +86,7 @@ class FV_Player_Widget extends WP_Widget {
    * @param array $instance Current settings.
    */
   public function form($instance) {
-    //add_action('wp_enqueue_scripts', 'fv_flowplayer_admin_scripts');
-    wp_enqueue_media();
+    add_action('admin_head', 'wp_enqueue_media');    
     
     $instance = wp_parse_args((array) $instance, array('title' => '', 'text' => ''));
     $filter = isset($instance['filter']) ? $instance['filter'] : 0;

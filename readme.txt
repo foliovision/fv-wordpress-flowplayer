@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.7.2
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -342,6 +342,25 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.1.5 - 2016/06/?? =
+
+* Compatibility - bugfix for FV Player widget as it was breaking Featured Image insertion when also using DesignThemes Core Features Plugin
+* Iframe embedding - using width and height attributes like YouTube or Vimeo to ensure FV Player Iframe embeds are responsive at least in themes with iframe responsiveness code
+* Microsoft Smooth Streaming - adding support for http://*.streaming.mediaservices.windows.net/*.ism/manifest(format=mpd-time-csf) and ...(format=m3u8-aapl) kind of URLs
+* Reverting - Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content. You have to set fv_player_did_autoplay = false in your JavaScript instead.
+* Bugfix - "audio" errors showing instead of "video" errors
+
+= 6.1.4 - 2016/06/22 =
+
+* Ads - close icon size increased and retina version provided
+* Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content
+* HLS.js - updated the core library to latest version
+* Lightbox for image - fix srcset parsing when the first image is the biggest one
+
+= 6.1.3 - 2017/06/12 =
+
+* Fix for player loading for WPLMS users
 
 = 6.1.2 - 2017/06/09 =
 
