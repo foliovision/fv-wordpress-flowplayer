@@ -441,7 +441,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
           $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
         }else{
-          $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
+          $sHTML[] = "<a href='#' class='is-active fvp-video-thumb' onclick='return false'><div ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></div><h4><span>$sItemCaption</span></h4></a>\n";
         }
         
         if( count($sItems) > 0 ) {
