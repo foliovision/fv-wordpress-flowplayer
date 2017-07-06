@@ -340,11 +340,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
-    $sHTML = "\t\t<a href='#' onclick='return false'";
+    $sHTML = "\t\t<a href='#' class='fvp-video-thumb' onclick='return false'";
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
-    $sHTML .= $sSplashImage ? "<span style='background-image: url(\"" . $sSplashImage . "\")'></span>" : "<span></span>";
-    $sHTML .= $sItemCaption."</a>\n";
+    $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
+    $sHTML .= "<h4><span>".$sItemCaption."</span></h4></a>\n";
     
     $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
     
