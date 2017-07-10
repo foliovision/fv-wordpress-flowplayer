@@ -401,7 +401,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 									<tr class="fv_player_actions_item">
                     <th scope="row" class="label"><label for="fv_player_action_time[]" class="alignright"><?php _e('Action', 'fv_flowplayer'); ?></label></th>
                     <td class="field">
-											<input type="text" class="fv_player_action_time" style="width: 19%" />
+											<input type="text" class="fv_player_action_time" style="width: 19%" /> - <input type="text" class="fv_player_action_time_end" style="width: 19%" />
 											<?php fv_flowplayer_admin_select_popups(array('id' => 'fv_player_action_popup', 'show_default' => false)) ?>
 											<a class="button" id="fv_player_action_add">Add more</a>
 										</td>

@@ -24,14 +24,16 @@ class FV_Player_Timeline_Actions {
   function get_actions( $args ) {
     if( empty($args['actions']) ) return false;
     
-    $aActions = explode(',', $args['actions'] );
+    $aActions = explode(';', $args['actions'] );
     if( count($aActions) == 0 ) return false;
     
     $aOutput = array();
     foreach( $aActions AS $k => $v ) {
-      $v = explode('-',$v);
+      $v = explode(',',$v);
+      $t = explode('-',$v[0]);
       $objAction = new stdClass;
-      $objAction->time = $v[0];
+      $objAction->time = $t[0];
+      $objAction->duration = $t[1]-$t[0];
       $objAction->popup = $v[1];
       $aOutput[] = $objAction;
     }

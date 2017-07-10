@@ -898,13 +898,15 @@ function fv_wp_flowplayer_edit() {
      */
     var sactions = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'actions' );console.log('sactions',sactions);
     if( sactions != null && sactions[1].length > 0 ) {
-      var aActions = sactions[1].split(',');
+      var aActions = sactions[1].split(';');
       jQuery(aActions).each( function(k,v) {
-        var aAction = v.split('-');
-        if( k> 0 ) {
-          fv_player_add_timeline_action(aAction[0],aAction[1]);
+        var aAction = v.split(',');
+        var aTime = aAction[0].split('-');
+        if( k> 0 ) {          
+          fv_player_add_timeline_action(aTime[0],aTime[1],aAction[1]);
         } else {
-          jQuery('.fv_player_action_time').val(aAction[0]);
+          jQuery('.fv_player_action_time').val(aTime[0]);
+          jQuery('.fv_player_action_time_end').val(aTime[1]);
           jQuery('[name=fv_player_action_popup]').prop('selectedIndex',++aAction[1]);
         }
       });
@@ -1133,9 +1135,9 @@ function fv_wp_flowplayer_submit( preview ) {
   
   var actions = [];
   jQuery('.fv_player_action_time').each( function(k,v) {
-    actions.push( jQuery(v).val()+'-'+jQuery('[name=fv_player_action_popup]').eq(k).val() );
+    actions.push( jQuery(v).val()+'-'+jQuery('.fv_player_action_time_end').eq(k).val()+  ','+jQuery('[name=fv_player_action_popup]').eq(k).val() );
   });
-  fv_wp_fp_shortcode += ' actions="'+actions.join()+'"'; 
+  fv_wp_fp_shortcode += ' actions="'+actions.join(';')+'"'; 
   
   jQuery('.fv_wp_flowplayer_field_subtitles').each( function() {
     var lang = jQuery(this).siblings('.fv_wp_flowplayer_field_subtitles_lang').val();
@@ -1466,11 +1468,13 @@ jQuery(document).on('fv_flowplayer_shortcode_insert', function(e) {
   jQuery(e.target).siblings('.button.fv-wordpress-flowplayer-button').val('Edit');
 })
 
-function fv_player_add_timeline_action(time,action) {
+function fv_player_add_timeline_action(time,timeend,action) {
   var new_action = jQuery('.fv_player_actions_item').eq(0).clone();
   new_action.find('label').remove();
   new_action.find('.button').remove();
+  new_action.find('input').val('');
   if( time ) new_action.find('.fv_player_action_time').val(time);
+  if( timeend ) new_action.find('.fv_player_action_time_end').val(timeend);
   if( action ) new_action.find('[name=fv_player_action_popup]').prop('selectedIndex',++action);
   new_action.insertAfter( jQuery('.fv_player_actions_item:last') );
 }
