@@ -367,7 +367,14 @@ function flowplayer_prepare_scripts() {
     }
     
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
-    $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');    
+    $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
+    
+    global $post;
+    if( $post && isset($post->ID) && $post->ID > 0 ) {
+      if( get_post_meta($post->ID, 'fv_player_mobile_native_fullscreen', true) ) $aConf['mobile_native_fullscreen'] = true;
+      if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
+    }
+    
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
