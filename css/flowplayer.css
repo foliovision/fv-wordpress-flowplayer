@@ -489,7 +489,7 @@
 .fp-playlist-external a,.entry-content .fp-playlist-external a {text-decoration:none;border-bottom:0;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;text-align:center;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 .fp-playlist-external a:focus {outline:0}
 .fp-playlist-external a,.fp-playlist-external a h4,.fp-playlist-vertical-wrapper .fp-playlist-external {-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
-.fp-playlist-external a div:empty {background-color:#ccc}
+.fp-playlist-external a div:empty,.fp-playlist-horizontal a.fvp-video-thumb-no-splash h4 {background-color:#aaa}
 
 .fp-playlist-horizontal {text-align:center;display:block;margin-left:auto;margin-right:auto;margin-bottom: 24px;clear:both;font-size:0}
 .fp-playlist-horizontal:before,.fp-playlist-horizontal:after {content:"";display:table}
@@ -501,7 +501,7 @@
 .fp-playlist-horizontal a:nth-child(3n+1) div:before {display:none}
 .fp-playlist-horizontal a h4 {opacity:0;position:absolute;top:0%;bottom:0;left:0;right:0;width:100%;margin:0 auto;padding:5px 10px;text-align:center;transition:all 0.3s ease-in-out 0.1s;font-size:13px;color:#fff;background-color:rgba(0, 0, 0, 0.75)}
 .fp-playlist-horizontal a h4 span {position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);border:0;padding:5px}
-.fp-playlist-horizontal a:hover h4 {opacity:1}
+.fp-playlist-horizontal a:hover h4,.fp-playlist-horizontal a.fvp-video-thumb-no-splash h4  {opacity:1}
 .fp-playlist-horizontal a.is-active {-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s}
 .fp-playlist-horizontal a.is-active div:after {position:absolute;content:"";top:0;bottom:0;left:0;right:0;width:100%;height:100%;background-color:#00a7c8;opacity:0.6}
 .fp-playlist-horizontal.is-wide a,.entry-content .fp-playlist-horizontal.is-wide a {width: 20%}
