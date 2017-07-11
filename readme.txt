@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.1.6 - 2016/07/?? =
 
 * CSS - optimizing the player graphics
+* HLS.js - fix for Flash fallback - if it failed on the page once, it was forcing any further HLS playback to use Flash
 * Mobile - "Force fullscreen on mobile" fix for iPhone with iOS 10
 * Fixing shortcode editor JS glitch with playlist subtitles
 
