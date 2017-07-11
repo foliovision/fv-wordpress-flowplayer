@@ -411,7 +411,7 @@ function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
 }
 
 function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
-  $aTransientsLike = array('fv-player-pro_license','fv-player-vast_license','fv-player-pro_fp-private-updates','fv-player-vast_fp-private-updates');
+  $aTransientsLike = array('fv_flowplayer_license','fv-player-pro_license','fv-player-vast_license','fv-player-pro_fp-private-updates','fv-player-vast_fp-private-updates');
   
   global $wpdb;
   $aWhere = array();

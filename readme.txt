@@ -343,7 +343,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.1.5 - 2016/06/?? =
+= 6.1.6 - 2016/07/?? =
+
+* CSS - optimizing the player graphics
+* Fixing shortcode editor JS glitch with playlist subtitles
+
+= 6.1.5 - 2016/06/29 =
 
 * Compatibility - bugfix for FV Player widget as it was breaking Featured Image insertion when also using DesignThemes Core Features Plugin
 * Iframe embedding - using width and height attributes like YouTube or Vimeo to ensure FV Player Iframe embeds are responsive at least in themes with iframe responsiveness code

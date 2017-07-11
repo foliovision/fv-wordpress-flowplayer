@@ -80,7 +80,7 @@ function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
 /*
  *  Saving settings
  */
-add_action('admin_init', 'fv_player_settings_save');
+add_action('admin_init', 'fv_player_settings_save', 9);
 
 function fv_player_settings_save() {
   //  Trick media uploader to show video only, while making sure we use our custom type; Also save options
