@@ -138,7 +138,7 @@ class FV_Player_Email_Subscription {
               <td>ID</td>
               <td style="width: 40%"><?php _e('Properties', 'fv-wordpress-flowplayer'); ?></td>
               <?php if( !empty($aMailchimpLists['result']) ) : ?>
-                <td><?php _e('Integration', 'fv-wordpress-flowplayer'); ?></td>
+                <td><?php _e('Target List', 'fv-wordpress-flowplayer'); ?></td>
               <?php endif; ?>
               <td><?php _e('Export', 'fv-wordpress-flowplayer'); ?></td>
               <td><?php _e('Options', 'fv-wordpress-flowplayer'); ?></td>
