@@ -441,7 +441,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
           $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
         }else{
-          $sHTML[] = "<a href='#' class='is-active fvp-video-thumb' onclick='return false'><div ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></div><h4><span>$sItemCaption</span></h4></a>\n";
+          $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
         }
         
         if( count($sItems) > 0 ) {
@@ -528,7 +528,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $sPlaylistClass = '' ;
       
-      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
+      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'horizontal' ){
+        $sPlaylistClass .= ' fp-playlist-horizontal';
+      } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
         $sPlaylistClass .= ' fp-playlist-vertical';
       }
       //var_dump($aCaptions);
@@ -620,10 +622,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fvfp_admin_error_content {  background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
     
     .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }
-    <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
     .fp-playlist-external a.is-active { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
-    <?php if ( $fv_fp->_get_option('splash') ):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->_get_option('splash'); ?>); }<?php endif; ?>    
+    <?php if ( $fv_fp->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }<?php endif; ?>    
+    <?php if ( $fv_fp->_get_option('splash') ):?>.fp-playlist-external a.is-active div:after {background-color:<?php echo $fv_fp->_get_option('playlistFontColor');?>}<?php endif; ?>    
+    
+    .fp-playlist-external a.is-active div:after {position:absolute;content:"";top:0;bottom:0;left:0;right:0;width:100%;height:100%;background-color:#00a7c8;opacity:0.6}
+
     <?php if( $fv_fp->_get_option('subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
     <?php if( $fv_fp->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo $fv_fp->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
     <?php if( $fv_fp->_get_option('logoPosition') ) :
