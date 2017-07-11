@@ -278,9 +278,11 @@ class FV_Player_Email_Subscription {
           type: "POST",
           url: ajaxurl,
           data: aInputs.serialize()+'&key='+key+'&action=fv_player_email_subscription_save&_wpnonce=<?php echo wp_create_nonce('fv_player_email_subscription_save'); ?>',
-          success: function() {
+          success: function(response) {
             button.css('visibility','hidden');
             button.prop('disabled', false);
+            
+            row.replaceWith( jQuery('#'+row.attr('id'),response) );
             
             var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
             shortcode = shortcode.replace(/#key#/,key);
@@ -645,6 +647,8 @@ class FV_Player_Email_Subscription {
     
     $aLists[$key] = $_POST['email_lists'][$key];
     update_option('fv_player_email_lists',$aLists);
+    
+    fv_player_admin_page();
   }
   
   
