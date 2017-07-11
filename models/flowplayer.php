@@ -315,7 +315,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $this->conf = $aNewOptions;    
     
     $this->css_writeout();
-           
+    
+    if( $aOldOptions['key'] != $sKey ) {
+      fv_wp_flowplayer_delete_extensions_transients();
+      global $FV_Player_Pro_loader;
+      if( $FV_Player_Pro_loader ) {
+        $FV_Player_Pro_loader->license_key = $sKey;
+      }
+    }
+    
     return true;  
   }
   /**
