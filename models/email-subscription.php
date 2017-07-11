@@ -181,11 +181,11 @@ class FV_Player_Email_Subscription {
                 <td>
                   <table>
                     <tr>
-                      <td>Header:</td>
+                      <td style="width:16%"><label>Header</label></td>
                       <td><input type='text' name='email_lists[<?php echo $key; ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' /></td>
                     </tr>
                     <tr>
-                      <td>Message:</td>
+                      <td><label>Message</label></td>
                       <td><input type='text' name='email_lists[<?php echo $key; ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' /></td>
                     </tr>
                   </table>
