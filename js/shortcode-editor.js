@@ -1157,7 +1157,7 @@ function fv_wp_flowplayer_submit( preview ) {
 			fv_wp_fp_shortcode += ' caption="'+sPlaylistCaptions+'"';
 		}
     
-    if( sPlaylistSubtitles.replace(/[; ]/,'').length > 0 && sPlaylistSubtitles.length > 0 ) {
+    if( sPlaylistSubtitles.replace(/[; ]/g,'').length > 0 && sPlaylistSubtitles.length > 0 ) {
 			fv_wp_fp_shortcode += ' subtitles="'+sPlaylistSubtitles+'"';
 		} 
 	}
