@@ -349,11 +349,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
-    $sHTML = "\t\t<a href='#' onclick='return false'";
+    $sHTML = "\t\t<a href='#' class='fvp-video-thumb' onclick='return false'";
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
-    $sHTML .= $sSplashImage ? "<span style='background-image: url(\"" . $sSplashImage . "\")'></span>" : "<span></span>";
-    $sHTML .= $sItemCaption."</a>\n";
+    $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
+    $sHTML .= "<h4><span>".$sItemCaption."</span></h4></a>\n";
     
     $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
     
@@ -537,7 +537,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $sPlaylistClass = '' ;
       
-      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
+      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'horizontal' ){
+        $sPlaylistClass .= ' fp-playlist-horizontal';
+      } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
         $sPlaylistClass .= ' fp-playlist-vertical';
       }
       //var_dump($aCaptions);
@@ -629,10 +631,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fvfp_admin_error_content {  background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
     
     .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }
-    <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
-    .fp-playlist-external a.is-active { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
-    <?php if ( $fv_fp->_get_option('splash') ):?>.fp-playlist-external a span { background-image:url(<?php echo $fv_fp->_get_option('splash'); ?>); }<?php endif; ?>    
+    .fp-playlist-external a.is-active,.fp-playlist-external a.is-active h4 { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    <?php if ( $fv_fp->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }<?php endif; ?>    
+    <?php if ( $fv_fp->_get_option('splash') ):?>.fp-playlist-external a.is-active div:after {background-color:<?php echo $fv_fp->_get_option('playlistFontColor');?>}<?php endif; ?>    
+    
+    .fp-playlist-external a.is-active div:after {position:absolute;content:"";top:0;bottom:0;left:0;right:0;width:100%;height:100%;background-color:#00a7c8;opacity:0.6}
+
     <?php if( $fv_fp->_get_option('subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
     <?php if( $fv_fp->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo $fv_fp->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
     <?php if( $fv_fp->_get_option('logoPosition') ) :
