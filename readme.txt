@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.1.6 - 2016/07/?? =
 
 * CSS - optimizing the player graphics
+* Mobile - "Force fullscreen on mobile" fix for iPhone with iOS 10
 * Fixing shortcode editor JS glitch with playlist subtitles
 
 = 6.1.5 - 2016/06/29 =
