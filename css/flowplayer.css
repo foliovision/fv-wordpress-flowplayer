@@ -517,8 +517,8 @@
 .fp-playlist-vertical a {margin:2px 0 8px}
 .fp-playlist-vertical a div {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
 .fp-playlist-vertical a h4 {margin:0;font-size:13px;font-weight:400;color:#000;}
-	.fp-playlist-vertical-wrapper .flowplayer {width:65%;float:left;margin-bottom:0}
-	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:35%;float:right;margin-bottom:0;padding:0 2px}
+	.fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left;margin-bottom:0}
+	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;float:right;margin-bottom:0;padding:0 2px}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a {display:block}
 	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video {min-height:0 !important;height:100% !important}
 
@@ -809,11 +809,10 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   .fv_fp_close a {width:24px;height:24px;background-size:24px 24px}
   .fp-playlist-horizontal a h4 {font-size:12px}
   	.fp-playlist-vertical-wrapper .flowplayer,.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:100%;float:none;margin-bottom:0}
-        .fp-playlist-vertical a {width:48%;float:left;margin:3% 1%}
+        .fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}
+        .fp-playlist-vertical a:nth-child(2n+1) {clear:both}
+
 }
 @media only screen and (max-width: 30em) {
   .fp-playlist-horizontal a h4 {font-size:9px}
-}
-@media only screen and (max-width: 25em) {
-  .fp-playlist-vertical a {width:100%;float:none;margin:10px 0 15px}
 }
