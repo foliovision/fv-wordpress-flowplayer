@@ -868,7 +868,11 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   .fp-playlist-horizontal a:nth-child(2n+1) {clear:both}
 }
 @media (max-width: 40em){
-.fv_fp_close a { width: 24px; height: 24px; background-size: 24px 24px; }
+  .fv_fp_close a {width:24px;height:24px;background-size:24px 24px}
+  .fp-playlist-horizontal a h4 {font-size:12px}
+  	.fp-playlist-vertical-wrapper .flowplayer,.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:100%;float:none;margin-bottom:0}
+        .fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}
+        .fp-playlist-vertical a:nth-child(2n+1) {clear:both}
 }
 @media only screen and (max-width: 30em) {
   .flowplayer.is-audio .fp-time em {font-size:12px}
