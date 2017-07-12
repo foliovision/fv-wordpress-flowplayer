@@ -52,6 +52,7 @@
 td:hover > .fv-player-popup-remove { visibility: visible; }
 .fv-player-list-remove { visibility: hidden; }
 td:hover > .fv-player-list-remove { visibility: visible; }
+#fv_flowplayer_popups table { -webkit-border-collapse:collapse;-moz-border-collapse:collapse;border-collapse:collapse }
 table.fv-player-popup-formats td:first-child { width: 72px }
 #fv_flowplayer_popups .inside label {
   display: initial;
