@@ -75,6 +75,9 @@ jQuery(document).ready(function($){
     $('.fv-player-tab-video-files table').hide();
     var video_tab = $('.fv-player-tab-video-files table').eq(new_index).show();
     
+    $('.fv-player-tab-subtitles table').hide();
+    var subtitles_tab = $('.fv-player-tab-subtitles table').eq(new_index).show();
+    
 
     if($('.fv-player-tab-playlist [data-index]').length > 1){
       $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
