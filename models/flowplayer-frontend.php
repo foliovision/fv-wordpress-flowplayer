@@ -311,6 +311,12 @@ class flowplayer_frontend extends flowplayer
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
 					$attributes['class'] .= ' playlist-hidden';
 				}
+        
+        $bIsAudio = false;
+        if( empty($splash_img) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+          $bIsAudio = true;
+          $attributes['class'] .= ' is-audio fixed-controls is-mouseover';
+        }
 				
         //  Fixed control bar
         $bFixedControlbar = $this->_get_option('ui_fixed_controlbar');
@@ -370,11 +376,14 @@ class flowplayer_frontend extends flowplayer
 					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
 				}
 				
-				if( $this->_get_option('fixed_size') ) {
-					$attributes['style'] = 'width: ' . $width . 'px; height: ' . $height . 'px; ';
-				} else {
-					$attributes['style'] = 'max-width: ' . $width . 'px; max-height: ' . $height . 'px; ';
-				}
+        $attributes['style'] = '';
+        if( !$bIsAudio ) {
+          if( $this->_get_option('fixed_size') ) {
+            $attributes['style'] .= 'width: ' . $width . 'px; height: ' . $height . 'px; ';
+          } else {
+            $attributes['style'] .= 'max-width: ' . $width . 'px; max-height: ' . $height . 'px; ';
+          }
+        }
 				
         global $fv_wp_flowplayer_ver;
 				//$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
@@ -388,18 +397,22 @@ class flowplayer_frontend extends flowplayer
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
           $attributes['data-rtmp'] = $rtmp_server;
         }
-         				
-				$this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
+        
+        if( !$bIsAudio ) {
+          $this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
+        }
     
 
 				if( !$this->_get_option('allowfullscreen') ) {
 					$attributes['data-fullscreen'] = 'false';
 				}       
 	
-				$ratio = round($height / $width, 4);   
-        $this->fRatio = $ratio;
+        if( !$bIsAudio ) {
+          $ratio = round($height / $width, 4);   
+          $this->fRatio = $ratio;
   
-				$attributes['data-ratio'] = str_replace(',','.',$ratio);
+          $attributes['data-ratio'] = str_replace(',','.',$ratio);
+        }
         
 				if( $this->_get_option('scaling') && $this->_get_option('fixed_size') ) {
 					$attributes['data-flashfit'] = 'true';
@@ -412,6 +425,11 @@ class flowplayer_frontend extends flowplayer
 				$playlist = '';
 				$is_preroll = false;
 				if( isset($playlist_items_external_html) ) {
+          
+          if( $bIsAudio ) {
+            $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'class="fp-playlist-external is-audio', $playlist_items_external_html );
+          }
+          
           if( $args['liststyle'] == 'prevnext' || ( isset($this->aCurArgs['playlist_hide']) && $this->aCurArgs['playlist_hide']== 'true' ) ) {
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
@@ -434,7 +452,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
-        }        
+        }
         
         if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
@@ -473,7 +491,9 @@ class flowplayer_frontend extends flowplayer
 				
 				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
         
-        $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+        if( !$bIsAudio ) {
+          $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+        }
 
         if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
 					$this->ret['html'] .= "\t".'<video class="fp-engine" preload="none"';
@@ -583,8 +603,10 @@ class flowplayer_frontend extends flowplayer
         }
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
-              
-        $this->ret['html'] .= $this->get_sharing_html()."\n";
+        
+        if( !$bIsAudio ) {
+          $this->ret['html'] .= $this->get_sharing_html()."\n";
+        }
 
         if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') ) {
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
