@@ -21,6 +21,7 @@
 /*
  *  Video Checker support email
  */
+
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
 
 function fv_wp_flowplayer_support_mail() {
