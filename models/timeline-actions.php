@@ -63,7 +63,7 @@ class FV_Player_Timeline_Actions {
         
             $popup = apply_filters('fv_flowplayer_popup_html', $popup);
             if (strlen(trim($popup)) > 0) {
-              $sHTML .= '<div class="wpfp_custom_popup" data-popup-id="'.$iPopupIndex.'" style="display: none"><div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">'.$popup.'</div></div>';
+              $sHTML .= '<div class="wpfp_custom_popup" data-popup-id="'.$iPopupIndex.'" style="display: none"><div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content" data-content="'.htmlspecialchars($popup).'"></div></div>'; //  tod
             }
           }else{
             continue;
