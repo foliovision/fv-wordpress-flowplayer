@@ -633,6 +633,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
     .fp-playlist-external a.is-active,.fp-playlist-external a.is-active h4 { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    .fp-playlist-external a.is-active div:after { background-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?> !important; }
     <?php if ( $fv_fp->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }<?php endif; ?>    
     <?php if ( $fv_fp->_get_option('splash') ):?>.fp-playlist-external a.is-active div:after {background-color:<?php echo $fv_fp->_get_option('playlistFontColor');?>}<?php endif; ?>    
     
