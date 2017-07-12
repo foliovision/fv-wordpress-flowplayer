@@ -31,10 +31,9 @@
 	}
   
   function fv_flowplayer_admin_select_popups($aArgs) {
-    global $fv_fp;
-    
+
     $aPopupData = get_option('fv_player_popups');
-    
+
   
     $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
     $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
@@ -401,20 +400,23 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <?php fv_player_shortcode_row( array('label' => 'End of video',
                                                        'playlist_label' => 'End of playlist',
                                                        'name' => 'end_actions',
-                                                       'dropdown' => array( array('', 'Nothing'), array('redirect', 'Redirect'), array('loop', 'Loop'), array('popup','Show popup'), array('splashend','Show splash screen') ),
+                                                       'dropdown' => array(
+                                                            array('', 'Nothing'),
+                                                            array('redirect', 'Redirect'),
+                                                            array('loop', 'Loop'),
+                                                            array('popup', 'Show popup'),
+                                                            array('splashend', 'Show splash screen'),
+                                                            array('email_list', 'Collect Emails')),
                                                        'live' => false ) ); ?>
-                                   
+
                   <tr class="fv_player_actions_end-toggle">
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
                     <td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
                   </tr>
-                  
+
                   <tr class="fv_player_actions_end-toggle">
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
                     <td>
-                      <!-- legacy -->
-                      
-                      <!-- end legacy -->
                       <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
                       <div style="display: none">
                         <p><span class="dashicons dashicons-warning"></span> <?php _e('You are using the legacy popup functionality. Move the popup code', 'fv-wordpress-flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_target"><?php _e('here', 'fv-wordpress-flowplayer'); ?></a><?php _e(', then use the drop down menu above.', 'fv-wordpress-flowplayer'); ?></p>
@@ -422,7 +424,25 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       </div>                      
                     </td>
                   </tr>
-                  
+
+                  <?php
+
+                  $rawLists = $fv_fp->_get_option('email_lists');
+                  $aLists = array();
+                  foreach($rawLists as $key => $val){
+                    if(!is_numeric($key))
+                      continue;
+                    $aLists[] = array($key,(empty($val->name) ? "List " . $key : "$val->name" ));
+                  }
+                  if(count($aLists)){
+                    fv_player_shortcode_row( array(
+                        'label' => 'E-mail list',
+                        'name' => 'email_list',
+                        'class' => 'fv_player_actions_end-toggle',
+                        'dropdown' =>$aLists,
+                        'live' => false ) );
+                  }
+                  ?>
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
                     <td>

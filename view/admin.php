@@ -492,7 +492,7 @@ function fv_flowplayer_admin_description_actions() {
     <tr>
       <td colspan="4">
         <p>
-          <?php _e('Here you can configure ads and banners that will be showed in the video.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('Here you can configure ads and banners that will be shown in the video.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -650,9 +650,8 @@ function fv_flowplayer_admin_mobile() {
 
 
 function fv_flowplayer_admin_select_popups($aArgs){
-  global $fv_fp;
 
-  $aPopupData = get_option('fv_player_popups');
+  $aPopupData = apply_filters('fv_player_admin_popups_defaults', get_option('fv_player_popups'));
 
 
   $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
@@ -669,6 +668,7 @@ function fv_flowplayer_admin_select_popups($aArgs){
       foreach( $aPopupData AS $key => $aPopupAd ) {
         ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
         echo $key;
+        if( !empty($aPopupAd['title']) ) echo ' - '.$aPopupAd['title'];
         if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
         if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
@@ -679,20 +679,32 @@ function fv_flowplayer_admin_select_popups($aArgs){
 }
 
 
-function fv_flowplayer_admin_popups(){
+function fv_flowplayer_admin_end_of_video(){
   global $fv_fp;
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td style="width:150px;vertical-align:top;line-height:2.4em;"><label for="popups_default"><?php _e('Default Popup', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <?php $cva_id = $fv_fp->_get_option('popups_default'); ?>
-          <?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?>
-          <p class="description"><?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
+          <?php $cva_id = $fv_fp->_get_option('popups_default'); ?>          
+          <p class="description"><?php fv_flowplayer_admin_select_popups( array('item_id'=>$cva_id,'id'=>'popups_default') ); ?> <?php _e('You can set a default popup here and then skip it for individual videos.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>
-      </table>
-      <table class="form-table2" style="margin: 5px; ">
+      <tr>
+        <td colspan="4">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        </td>
+      </tr>
+    </table>
+    <?php
+}
+
+
+function fv_flowplayer_admin_popups(){
+  global $fv_fp;
+    ?>
+    <p><?php _e('Add any popups here which you would like to use with multiple videos.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td>
           <table id="fv-player-popups-settings">
@@ -1306,7 +1318,8 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_popups', __('Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_end_of_video', __('End of Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_end_of_video' , 'fv_flowplayer_settings_actions', 'normal', 'high' );
+add_meta_box( 'fv_flowplayer_popups', __('Custom Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
@@ -1372,14 +1385,6 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     </p>
     <div id="fv_flowplayer_admin_notices">
     </div> 
-    <div id="fv_flowplayer_admin_tabs">
-      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
-        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
-        <?php endforeach;?>
-        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
-      </h2>
-    </div>
     
     <?php if( preg_match( '!^\$\d+!', $fv_fp->_get_option('key') ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
     <?php else : ?>
@@ -1399,7 +1404,16 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
           </div>
       </div>
-    <?php endif; ?>	
+    <?php endif; ?>
+    
+    <div id="fv_flowplayer_admin_tabs">
+      <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
+        <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
+        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
+        <?php endforeach;?>
+        <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+      </h2>
+    </div>    
   
 		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
@@ -1488,11 +1502,10 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     
     jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
       var button = jQuery(this);
-      jQuery(button).siblings('img').eq(0).show();
+      button.siblings('img').eq(0).show();
       
-      var button = this;
       jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_activate_extension' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
-        jQuery(button).siblings('img').eq(0).hide();
+        button.siblings('img').eq(0).hide();
         
         var obj;
         try {
@@ -1500,8 +1513,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
           response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
           obj = jQuery.parseJSON( response );
 
-          jQuery(button).removeClass('fv_wp_flowplayer_activate_extension');
-          jQuery(button).attr('value',obj.message);
+          button.removeClass('fv_wp_flowplayer_activate_extension');
+          button.attr('value',obj.message);
           
           if( typeof(obj.error) == "undefined" ) {
             //window.location.hash = '#'+jQuery(button).attr("data-plugin");
@@ -1509,13 +1522,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             window.location.href = window.location.href;
           }
         } catch(e) {  //  todo: what if there is "<p>Plugin install failed.</p>"
-          jQuery(button).after('<p>Error parsing JSON</p>');
+          button.after('<p>Error parsing JSON</p>');
           return;
         }
     
       } ).error(function() {
-        jQuery(button).siblings('img').eq(0).hide();
-        jQuery(button).after('<p>Error!</p>');
+        button.siblings('img').eq(0).hide();
+        button.after('<p>Error!</p>');
       });  
     } );
     
