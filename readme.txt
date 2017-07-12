@@ -376,7 +376,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * MPEG-DASH - making sure the automated quality switching respects the player size
 * Mobile - added "Mobile Settings" box with "Use native fullscreen on mobile" and "Force fullscreen on mobile" (beta) settings
-* Subtitles - you can not select a single subtitle item for each video in playlist
+* Subtitles - playlist support!
 
 = 6.1.1 - 2017/06/05 =
 
