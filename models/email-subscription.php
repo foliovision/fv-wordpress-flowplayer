@@ -655,7 +655,7 @@ class FV_Player_Email_Subscription {
   public function popup_preview( $aAttributes ) {
     global $fv_fp;
     $aArgs = func_get_args();
-    if( isset($aArgs[2]->aCurArgs['end_popup_preview']) ) {
+    if( isset($aArgs[2]->aCurArgs['end_popup_preview']) && $aArgs[2]->aCurArgs['end_popup_preview'] ) {
       $aAttributes['data-end_popup_preview'] = true;
     }    
     return $aAttributes;

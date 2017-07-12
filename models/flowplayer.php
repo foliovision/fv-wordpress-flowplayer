@@ -615,6 +615,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
+    .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }  
     .fv_player_popup {  background: <?php echo $fv_fp->_get_option('backgroundColor') ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
   

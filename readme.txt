@@ -345,7 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.2 - 2017/07/12 =
 
-* New feature - Email subscription forms with Mailchimp support
+* New feature - Email subscription forms with Mailchimp support, check Actions -> Email Popups
 * Audio support - new audio player styling, try enabling Integration/Compatibility -> Enable audio playback (beta)
 * Playlist - new styling
 * CSS - optimizing the player graphics
