@@ -861,11 +861,17 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .is-audio .fp-player {background-size:contain;background-position:top center;background-repeat:no-repeat}
 
 
-
+@media only screen and (max-width: 48em) {
+  .fp-playlist-horizontal {margin-left:-1px;margin-right:-1px}
+  .fp-playlist-horizontal a,.entry-content .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fp-playlist-horizontal a {width: 50%}
+  .fp-playlist-horizontal a:nth-child(3n+1) {clear:none}
+  .fp-playlist-horizontal a:nth-child(2n+1) {clear:both}
+}
 @media (max-width: 40em){
 .fv_fp_close a { width: 24px; height: 24px; background-size: 24px 24px; }
 }
 @media only screen and (max-width: 30em) {
+  .flowplayer.is-audio .fp-time em {font-size:12px}
   .fp-playlist-horizontal a h4 {font-size:9px}
 }
 
