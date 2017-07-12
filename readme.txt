@@ -343,14 +343,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.1.6 - 2016/07/?? =
+= 6.2 - 2017/07/12 =
 
+* New feature - Email subscription forms with Mailchimp support
+* Playlist - new styling
 * CSS - optimizing the player graphics
 * HLS.js - fix for Flash fallback - if it failed on the page once, it was forcing any further HLS playback to use Flash
 * Mobile - "Force fullscreen on mobile" fix for iPhone with iOS 10
 * Fixing shortcode editor JS glitch with playlist subtitles
 
-= 6.1.5 - 2016/06/29 =
+= 6.1.5 - 2017/06/29 =
 
 * Compatibility - bugfix for FV Player widget as it was breaking Featured Image insertion when also using DesignThemes Core Features Plugin
 * Iframe embedding - using width and height attributes like YouTube or Vimeo to ensure FV Player Iframe embeds are responsive at least in themes with iframe responsiveness code
@@ -358,7 +360,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Reverting - Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content. You have to set fv_player_did_autoplay = false in your JavaScript instead.
 * Bugfix - "audio" errors showing instead of "video" errors
 
-= 6.1.4 - 2016/06/22 =
+= 6.1.4 - 2017/06/22 =
 
 * Ads - close icon size increased and retina version provided
 * Ajax loading - fix for repeated autoplay if your theme loads FV Player using Ajax and uses autoplay for the loaded content
