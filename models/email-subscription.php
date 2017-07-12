@@ -569,7 +569,8 @@ class FV_Player_Email_Subscription {
         unset($row->integration_nice);
   
         if(!empty($row->error)){
-          $row->error =  unserialize($row->error)['title'];
+          $tmp = unserialize($row->error);
+          $row->error =  $tmp['title'];
         }
   
   
@@ -615,7 +616,11 @@ class FV_Player_Email_Subscription {
         }elseif($key === 'integration_nice'){
           continue;
         }elseif($key === 'error'){
-          $item = empty($item) ? '' : unserialize($item)['title'];
+          $item = '';
+          if( !empty($item) ) {
+            $tmp = unserialize($item);
+            $item = $tmp['title'];
+          }
         }
         echo '<td>' . $item . '</td>';
       }

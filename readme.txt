@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.1 - 2017/07/12 =
+
+* Fix for PHP versions below 5.4
+
 = 6.2 - 2017/07/12 =
 
 * New feature - Email subscription forms with Mailchimp support, check Actions -> Email Popups
