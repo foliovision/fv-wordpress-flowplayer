@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.2 - 2017/07/12 =
 
 * New feature - Email subscription forms with Mailchimp support
+* Audio support - new audio player styling, try enabling Integration/Compatibility -> Enable audio playback (beta)
 * Playlist - new styling
 * CSS - optimizing the player graphics
 * HLS.js - fix for Flash fallback - if it failed on the page once, it was forcing any further HLS playback to use Flash
