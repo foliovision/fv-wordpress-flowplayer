@@ -790,8 +790,8 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_popup_code() {   
-    if ( !empty($this->aCurArgs['popup'])) {
+  function get_popup_code() {
+    if (!empty($this->aCurArgs['popup'])) {
       $popup = trim($this->aCurArgs['popup']);
     } else {
       $popup = $this->_get_option('popups_default');
@@ -802,33 +802,33 @@ class flowplayer_frontend extends flowplayer
     } else {
       $popup = html_entity_decode(str_replace('&#039;', "'", $popup));
     }
-    
+
     if ($popup === 'no') {
       return false;
-    } 
-    
+    }
+
     $iPopupIndex = 1;
-    if($popup === 'random' || is_numeric($popup)  ){
-      $aPopupData = get_option('fv_player_popups');    
+    if ($popup === 'random' || is_numeric($popup)) {
+      $aPopupData = get_option('fv_player_popups');
       if ($popup === 'random') {
-        $iPopupIndex = rand(1,count($aPopupData) );
+        $iPopupIndex = rand(1, count($aPopupData));
       } elseif (is_numeric($popup)) {
         $iPopupIndex = intval($popup);
       }
-      
-      if(isset($aPopupData[$iPopupIndex])){
-        $popup = $aPopupData[$iPopupIndex]['html']; 
-      }else{
+
+      if (isset($aPopupData[$iPopupIndex])) {
+        $popup = $aPopupData[$iPopupIndex]['html'];
+      } else {
         return false;
       }
     }
-    
-    $sClass = ' fv_player_popup-'.$iPopupIndex;
-    
+
+    $sClass = ' fv_player_popup-' . $iPopupIndex;
+
     $popup = apply_filters('fv_flowplayer_popup_html', $popup);
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
-          'html' => '<div class="fv_player_popup'.$sClass.' wpfp_custom_popup_content">' . $popup . '</div>'
+          'html' => '<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>'
       );
       return $popup_contents;
     }
