@@ -349,6 +349,10 @@ class FV_Player_Email_Subscription {
    * API CALL
    */
   private function get_mailchimp_lists() {
+    if(version_compare(phpversion(),'5.3.0','<')){
+      return array('error' => 'PHP 5.3 or above required.', 'result' => false);
+    }
+    
     global $fv_fp;
     $aLists = array();
 
@@ -363,11 +367,10 @@ class FV_Player_Email_Subscription {
     if( get_option('fv_player_mailchimp_time', 0 ) + $sTimeout > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
 
     require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
-
-    $MailChimp = new \DrewM\MailChimp\MailChimp($fv_fp->conf['mailchimp_api']);
-    $MailChimp->verify_ssl = false;
-    $result = $MailChimp->get('lists');
-    $error = $MailChimp->getLastError();
+    require_once dirname(__FILE__) . '/email-subscription-mailchimp.php';
+    
+    $result = fv_player_mailchimp_result();
+    $error = fv_player_mailchimp_last_error();
     if ($error || !$result) {
       update_option('fv_player_mailchimp_time', time() - 50 * 60);
       update_option('fv_player_mailchimp_lists', $aLists);
@@ -384,7 +387,7 @@ class FV_Player_Email_Subscription {
 
       foreach ($list['_links'] as $link) {
         if ($link['rel'] === 'merge-fields') {
-          $mergeFields = $MailChimp->get("lists/{$list['id']}/merge-fields");
+          $mergeFields = fv_player_mailchimp_get($list['id']);
           foreach ($mergeFields['merge_fields'] as $field) {
             $item['fields'][] = array(
               'tag' => $field['tag'],
@@ -406,7 +409,8 @@ class FV_Player_Email_Subscription {
   private function  mailchimp_signup($list_id, $data){
     global $fv_fp;
     require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
-    $MailChimp = new \DrewM\MailChimp\MailChimp($fv_fp->_get_option('mailchimp_api'));
+    require_once dirname(__FILE__) . '/email-subscription-mailchimp.php';
+    
     $merge_fields = array();
 
     if(isset($data['first_name'])){
@@ -417,10 +421,7 @@ class FV_Player_Email_Subscription {
       $merge_fields['LNAME'] = $data['last_name'];
     }
 
-    $result_data = $MailChimp->post("lists/$list_id/members", array(
-      'email_address' => $data['email'],
-      'status' => 'subscribed',
-      'merge_fields' => (object)$merge_fields));
+    $result_data = fv_player_mailchimp_post($list_id, $data['email'], $merge_fields);
 
     $result = array(
       'status' => 'OK',
