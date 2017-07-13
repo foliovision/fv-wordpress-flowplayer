@@ -427,7 +427,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
                   <?php
 
-                  $rawLists = $fv_fp->_get_option('email_lists');
+                  $rawLists = get_option('fv_player_email_lists');
                   $aLists = array();
                   foreach($rawLists as $key => $val){
                     if(!is_numeric($key))
