@@ -110,7 +110,11 @@ class FV_Player_Widget extends WP_Widget {
   }
 
   function formFooter() {
-
+    if( function_exists('get_current_screen') ) { // fix for wp-page-widget
+      $ojbScreen = get_current_screen();
+      if( $ojbScreen && $ojbScreen->base == 'post' ) return;
+    }
+    
     include dirname(__FILE__) . '/../view/wizard.php';
     ?>    
     <script src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/shortcode-editor.js"></script>
