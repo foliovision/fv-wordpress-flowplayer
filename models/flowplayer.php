@@ -524,6 +524,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
             
             
+            if( !$sSplashImage && $this->_get_option('splash') ) {
+              $sSplashImage = $this->_get_option('splash');
+            }
+            
             $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $iKey + 1 );
             if( $sSplashImage ) {
               $aSplashScreens[] = $sSplashImage;  

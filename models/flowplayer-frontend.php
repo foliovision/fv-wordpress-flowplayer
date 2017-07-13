@@ -313,7 +313,7 @@ class flowplayer_frontend extends flowplayer
 				}
         
         $bIsAudio = false;
-        if( empty($splash_img) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+        if( ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
           $bIsAudio = true;
           $attributes['class'] .= ' is-audio fixed-controls is-mouseover';
         }
