@@ -346,6 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.2.3 - 2017/07/?? =
 
 * Improved handling for default splash screen (will be used for playlist as well, but won't show up for audio player)
+* Bugfix for loading of mobile video
 
 = 6.2.2 - 2017/07/13 =
 

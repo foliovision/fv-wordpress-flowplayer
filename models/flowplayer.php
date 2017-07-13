@@ -433,6 +433,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
       
+      if( !empty($aArgs['mobile']) ) {
+        $mobile = $this->get_video_url($aArgs['mobile']);
+        $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
+      }
+      
       $aPlayer = array( 'sources' => $aItem );      
       if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
       
