@@ -883,6 +883,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .flowplayer.is-loading.is-audio .fp-controls, .flowplayer.is-loading.is-audio .fp-time { display:block }
 .flowplayer.is-loading.is-audio .fp-waiting { position:relative;top:-3px;z-index:99 }
 .flowplayer.fixed-controls.is-audio { margin-bottom:0;height:40px }
+.flowplayer.is-audio .fv-ab-loop,.flowplayer.fixed-controls.is-audio .fv-ab-loop {bottom:-28px;padding-left:82px}
 
 .flowplayer.is-audio .fp-fullscreen,.flowplayer.is-audio .fp-ratio,.flowplayer.is-audio.is-splash .fp-timeline-tooltip {display:none}
 .flowplayer.is-audio .fp-controls {display:block !important}
