@@ -343,8 +343,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.2.3 - 2017/07/?? =
+= 6.2.3 - 2017/07/14 =
 
+* Playlist - bringing back the captions for mobile, on desktop they show up on hower
 * Improved handling for default splash screen (will be used for playlist as well, but won't show up for audio player)
 * Bugfix for loading of mobile video
 
