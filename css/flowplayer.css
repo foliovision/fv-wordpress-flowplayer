@@ -855,6 +855,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 
 
 /* Audio player playlist */
+.flowplayer.is-audio,.site-content .flowplayer.is-audio,.flowplayer.fixed-controls.is-audio {margin-top:40px}
+.flowplayer.is-audio .fv-player-buttons li {margin:0}
 .site-content .flowplayer.is-audio .fp-controls,.site-content .flowplayer.is-audio .fv-ab-loop,.site-content .fv-player-buttons a:active,.site-content .fv-player-buttons a { background-color:#888 !important }
 .is-audio .fp-playlist-external { background-color:#eee }
 .flowplayer.is-audio .fp-controls { height:40px;top:0;bottom:0 }
