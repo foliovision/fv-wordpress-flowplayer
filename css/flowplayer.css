@@ -914,6 +914,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 }
 @media only screen and (max-width: 30em) {
   .flowplayer.is-audio .fp-time em {font-size:12px}
-  .fp-playlist-horizontal a h4 {font-size:9px}
+  .fp-playlist-horizontal a h4 {font-size:11px}
 }
-
+@media only screen and (max-width: 20em) {
+  .fp-playlist-horizontal a h4 {font-size:10px}
+}
