@@ -869,10 +869,11 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .is-audio + .fp-playlist-external { counter-reset: 'fv-playlist-counter';background-color:#f0f0f0;border-radius:0 0 10px 10px;border-top:1px solid #fff }
 .flowplayer.is-audio .fp-waiting { margin:0 auto; }
 .flowplayer.is-audio .fp-speed.fp-hilite { opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0); }
+.is-audio + .fp-playlist-horizontal {margin-left:0;margin-right:0}
 .is-audio + .fp-playlist-horizontal a div,.entry-content .is-audio + .fp-playlist-horizontal a div,.flowplayer.is-audio .fp-player + a { display:none;bottom:0;background-image:none !important }
-.is-audio + .fp-playlist-external a,.entry-content .is-audio + .fp-playlist-external a { counter-increment:fv-playlist-counter;display:block;width:100%;display:block;text-align:left;line-height:1.15;margin:0;padding:6px 12px;border:0;color:#666;clear:both;min-height:26px }
+.is-audio + .fp-playlist-external.fp-playlist-horizontal a,.entry-content .is-audio + .fp-playlist-external.fp-playlist-horizontal a,.flowplayer.is-fv-narrow.is-audio + .fp-playlist-external.fp-playlist-horizontal a { counter-increment:fv-playlist-counter;display:block;width:100%;display:block;text-align:left;line-height:1.15;margin:0;padding:6px 12px;border:0;color:#666;clear:both;min-height:26px }
 .is-audio + .fp-playlist-external a:nth-child(odd),.entry-content .is-audio + .fp-playlist-external a:nth-child(odd) {background-color: #f8f8f8;}
-.is-audio + .fp-playlist-external a h4,.entry-content .is-audio + .fp-playlist-external a h4 { display: block;opacity:1;position:relative;text-align:left;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
+.is-audio + .fp-playlist-external a h4,.entry-content .is-audio + .fp-playlist-external a h4 { display: block;opacity:1;position:relative;text-align:left;font-size:13px;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
 .is-audio + .fp-playlist-external a h4 span,.entry-content .is-audio + .fp-playlist-external a h4 span { position:relative;top:auto;padding:0;transform:none }
 .is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
 .flowplayer.is-loading.is-audio .fp-controls, .flowplayer.is-loading.is-audio .fp-time { display:block }
