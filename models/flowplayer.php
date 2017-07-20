@@ -385,13 +385,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $aItem = array();      
       $flash_media = array();
       
-      if( $rtmp ) {
+      if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
         $rtmp = 'rtmp:'.$rtmp;  
       }
       
       foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
         if( !$media_item ) continue;
-        $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $media_item ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+        
+        if( stripos($media_item,'rtmp:') === 0 && stripos($media_item,'rtmp://') === false ) {
+          $media_item = preg_replace( '~^rtmp:~', '', $media_item );
+        }
+        
+        $media_url = $this->get_video_src( $media_item, array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+        
+        //  add domain for relative video URLs if it's not RTMP
+        if( stripos($media_item,'rtmp://') === false && $key != 3 ) {
+          $media_url = $this->get_video_url($media_url);
+        }
+        
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
           if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {

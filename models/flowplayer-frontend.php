@@ -1002,19 +1002,18 @@ class flowplayer_frontend extends flowplayer
     if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
       $this->ajax_count++;
       
-      $rtmp_test = false;
-      if( isset($attributes['data-rtmp']) && $rtmp ) {
-        $rtmp_test = parse_url($rtmp);
-        $rtmp_test = trailingslashit($attributes['data-rtmp']).ltrim($rtmp_test['path'],'/');
+      if( stripos($rtmp,'rtmp://') === false && $rtmp ) {
+        list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
+        $rtmp = trailingslashit($rtmp_server).$rtmp;
       }
     
       $aTest_media = array();
-      foreach( array( $media, $src1, $src2, $rtmp_test ) AS $media_item ) {
+      foreach( array( $media, $src1, $src2, $rtmp ) AS $media_item ) {
         if( $media_item ) {
           $aTest_media[] = $this->get_video_src( $media_item, array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
           //break;
         } 
-      }    
+      }
 
       if( isset($aTest_media) && count($aTest_media) > 0 ) { 
         $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;

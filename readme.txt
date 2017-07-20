@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.4 - 2017/07/20 =
+
+* RTMP - parsing fixes for stream without extension and full rtmp://{server}/path/{extension}:{stream_name} URLs
+* Bugfix - relative video paths
+
 = 6.2.3 - 2017/07/14 =
 
 * Playlist - bringing back the captions for mobile, on desktop they show up on hower
