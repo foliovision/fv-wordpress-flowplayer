@@ -393,10 +393,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if( !$media_item ) continue;
         
         if( stripos($media_item,'rtmp:') === 0 && stripos($media_item,'rtmp://') === false ) {
-          $media_item = preg_replace( '~^rtmp:~', '', $media_item );
+          $media_item_tmp = preg_replace( '~^rtmp:~', '', $media_item );
+        } else {
+          $media_item_tmp = $media_item;
         }
         
-        $media_url = $this->get_video_src( $media_item, array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+        $media_url = $this->get_video_src( $media_item_tmp, array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
         
         //  add domain for relative video URLs if it's not RTMP
         if( stripos($media_item,'rtmp://') === false && $key != 3 ) {
@@ -413,7 +415,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         }
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
           if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-            $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+            $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,false,true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           } else {
             $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           }
