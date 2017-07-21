@@ -414,8 +414,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           $actual_media_url = $media_url;
         }
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
-          if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-            $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,false,true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+          if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
+            $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
+            $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           } else {
             $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           }
@@ -508,11 +509,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
                 $actual_media_url = $media_url;
               }
               if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
-                if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) {
-                  $aItem[] = array( 'src' => $this->get_mime_type($actual_media_url,'mp4',true).':'.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+                if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
+                  $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
+                  $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
                 } else {
                   $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
-                }              
+                }             
               } else {
                 $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
               }                

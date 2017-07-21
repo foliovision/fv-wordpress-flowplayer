@@ -343,9 +343,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.5 - 2017/07/21 =
+
+* RTMP - more parsing fixes for streams without extension or full RTMP URL
+
 = 6.2.4 - 2017/07/20 =
 
-* RTMP - parsing fixes for stream without extension and full rtmp://{server}/path/{extension}:{stream_name} URLs
+* RTMP - parsing fixes for streams without extension and full RTMP URL like rtmp://{server}/path/{extension}:{stream_name}
 * Bugfix - relative video paths
 
 = 6.2.3 - 2017/07/14 =
