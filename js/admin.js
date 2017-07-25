@@ -41,6 +41,15 @@
       }, 0);
       $('#fv-style-preview').html(style);
     }).trigger('input');
+    
+    $('#playlist-design').on('change', function () {
+      var match = jQuery('.fp-playlist-external').attr('class').match(/fv-playlist-design-\S+/)
+      if( match ) {
+        jQuery('.fp-playlist-external').removeClass(match[0]);
+      }
+      jQuery('.fp-playlist-external').removeClass('visible-captions');
+      jQuery('.fp-playlist-external').addClass('fv-playlist-design-'+$(this).val());
+    });
   });
 
   

@@ -534,8 +534,8 @@
 .fp-playlist-horizontal a h4 span {position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);border:0;padding:5px}
 .fp-playlist-horizontal a:hover h4,.fp-playlist-horizontal a.fvp-video-thumb-no-splash h4  {opacity:1}
 .fp-playlist-horizontal a.is-active {-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s}
-.is-touch + .fp-playlist-horizontal a h4 {opacity:1;background-color:transparent;text-shadow:0 0 12px #000;top:20%;bottom:20%;font-family:"myriad pro",Helvetica,Arial,sans-serif !important}
-.is-touch + .fp-playlist-horizontal a h4 span {background-color:rgba(0,0,0,0.3)}
+.fp-playlist-horizontal.visible-captions a h4 {opacity:1;background-color:transparent;text-shadow:0 0 12px #000;top:20%;bottom:20%;font-family:"myriad pro",Helvetica,Arial,sans-serif !important}
+.fp-playlist-horizontal.visible-captions a h4 span {background-color:rgba(0,0,0,0.3)}
 .fp-playlist-horizontal a.is-active div:after {position:absolute;content:"";top:0;bottom:0;left:0;right:0;width:100%;height:100%;background-color:#00a7c8;opacity:0.6}
 .fp-playlist-horizontal.is-wide a,.entry-content .fp-playlist-horizontal.is-wide a {width: 20%}
 .fp-playlist-horizontal.is-wide a:nth-child(3n+1) div:before {display: block}

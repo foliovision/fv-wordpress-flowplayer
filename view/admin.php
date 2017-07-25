@@ -1011,7 +1011,12 @@ function fv_flowplayer_admin_skin() {
 ?>
 <style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
-    <?php echo do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" caption="'.__('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer').'"]'); ?>    
+    <?php
+    $fv_fp->admin_preview_player = do_shortcode('[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" autoplay="false" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" caption="Foliovision Video;Another Video;Yet Another Video" playlist="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005,https://i.vimeocdn.com/video/609485450_1280.jpg;https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005,https://i.vimeocdn.com/video/609485450_1280.jpg"]');
+    $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
+    echo $fv_fp->admin_preview_player[0];
+    ?>
+    <?php _e('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer') ?>
   </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
@@ -1108,7 +1113,25 @@ function fv_flowplayer_admin_skin() {
 function fv_flowplayer_admin_skin_playlist() {
 	global $fv_fp;
 ?>
+  <div class="flowplayer-wrapper">
+    <?php   
+    if( isset($fv_fp->admin_preview_player[1]) ) {      
+      echo '<div class="fp-playlist-external'.$fv_fp->admin_preview_player[1];
+      _e('Hint: you can click the thumbnails to switch videos in the above player', 'fv-wordpress-flowplayer');
+    }
+    ?>    
+  </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <tr>  
+      <td><label for="playlist-design"><?php _e('Playlist Design', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <select id="playlist-design" name="playlist-design" data-fv-preview="">
+          <option value="2017"<?php if( $fv_fp->_get_option('playlist-design') == '2017'  ) echo ' selected="selected"'; ?>><?php _e('2017', 'fv-wordpress-flowplayer'); ?></option>          
+          <option value="2017 visible-captions"<?php if( $fv_fp->_get_option('playlist-design') == "2017 visible-captions" ) echo ' selected="selected"'; ?>><?php _e('2017 with captions', 'fv-wordpress-flowplayer'); ?></option>										  
+          <option value="2014"<?php if( $fv_fp->_get_option('playlist-design') == "2014" ) echo ' selected="selected"'; ?>><?php _e('2014', 'fv-wordpress-flowplayer'); ?></option>          
+        </select>
+      </td>   
+    </tr>    
     <tr>
       <td><label for="playlistBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistBgColor') ); ?>" 
@@ -1118,7 +1141,8 @@ function fv_flowplayer_admin_skin_playlist() {
       <td><label for="playlistSelectedColor"><?php _e('Active Item', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistSelectedColor') ); ?>" 
                  data-fv-preview=".fp-playlist-external > a.is-active > span { border-color:#%val%; }
-    .fp-playlist-external a.is-active { color:#%val%; }"/></td>
+    .fp-playlist-external a.is-active { color:#%val%; }
+    .fp-playlist-external a.is-active div:after { background-color: #%val% !important; }"/></td>
     </tr>
     <tr>              
       <td><label for="playlistFontColor-proxy"><?php _e('Font Color', 'fv-wordpress-flowplayer'); ?></label></td>
@@ -1130,7 +1154,7 @@ function fv_flowplayer_admin_skin_playlist() {
         <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?></a>
         <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?></a>
       </td>      
-    </tr>    
+    </tr>  
     <tr>    		
       <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />

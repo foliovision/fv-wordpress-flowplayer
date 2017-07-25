@@ -226,6 +226,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
 
+    if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
+    
     $conf = apply_filters('fv_player_conf_defaults', $conf);
 
     update_option( 'fvwpflowplayer', $conf );
@@ -280,7 +282,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -558,7 +560,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
       }
       
-      $sPlaylistClass = '' ;
+      $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
       
       if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'horizontal' ){
         $sPlaylistClass .= ' fp-playlist-horizontal';
@@ -588,7 +590,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
       }
 
-      $sHTML = "\t<div $attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
+      $sHTML = "\t<div$attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
       
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  
