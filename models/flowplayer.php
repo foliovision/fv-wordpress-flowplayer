@@ -1363,6 +1363,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   function get_video_url($media) {
+    if( !is_string($media) ) return $media;
+    
     if( strpos($media,'rtmp://') !== false ) {
       return null;
     }
