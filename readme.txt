@@ -346,7 +346,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.2.6 - 2017/07/26 =
 
 * Android - fix for duplicate warning about obsolete stock browsers on Android 4
-* Core Flowplayer - Chrome 59 not showing video error messages, applying bugfix https://github.com/flowplayer/flowplayer/issues/1221
+* Core Flowplayer - Chrome 59-60 not showing video error messages, applying bugfix https://github.com/flowplayer/flowplayer/issues/1221
 * JW Player - conversion tool added - takes care of [jwplayer] shortcodes with file, image and playlistid parameters.
 
 = 6.2.5 - 2017/07/21 =
