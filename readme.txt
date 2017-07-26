@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.6 - 2017/07/26 =
+
+* Core Flowplayer - Chrome 59 not showing video error messages, applying bugfix https://github.com/flowplayer/flowplayer/issues/1221
+
 = 6.2.5 - 2017/07/21 =
 
 * RTMP - more parsing fixes for streams without extension or full RTMP URL
