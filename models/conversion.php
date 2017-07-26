@@ -44,7 +44,7 @@ public function settings_box_conversion () {
     $sType = sanitize_title($type);
           
     global $wpdb;
-    $aPosts = $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE '%".$sType."%' ORDER BY post_date DESC LIMIT 1000" );
+    $aPosts = $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE '%".$sType."%' ORDER BY post_date DESC" );
       
     $tMax = ini_get('max_execution_time') ? ini_get('max_execution_time') : 30;
     $tStart = microtime(true);
@@ -61,8 +61,8 @@ public function settings_box_conversion () {
       
       $method = 'convert__'.$sType.'_callback';
       $new_content = $this->$method($objPost->post_content);
-              
-      if( strlen($new_content) != strlen($objPost->post_content) ) {
+      
+      if( strlen($new_content) != strlen($objPost->post_content) || $new_content != $objPost->post_content ) {
         $iFound++;
         
         $post_id = wp_update_post( array( 'ID' => $objPost->ID, 'post_content' => $new_content ) );
@@ -110,9 +110,9 @@ public function settings_box_conversion () {
     
     $aFVPlayer = array();
     
-    $aMatch[0] = rtrim($aMatch[0],']');
+    $shortcode = rtrim($aMatch[0],']');
     
-    $aJW = shortcode_parse_atts($aMatch[0]);
+    $aJW = shortcode_parse_atts($shortcode);
         
     if( !empty($aJW['playlist']) ) {
       echo "<p><code>playlist</code> argument not supported!</p>";
@@ -134,7 +134,7 @@ public function settings_box_conversion () {
       $sPlaylistItems = get_post_meta( $aJW['playlistid'], 'jwplayermodule_playlist_items', true );
       if( !$sPlaylistItems ) $sPlaylistItems = get_post_meta( $aJW['playlistid'], 'jwplayermodule_playlist_items', true );
       
-      $aAttachments = get_posts( array( 'include' => $sPlaylistItems, 'post_type' => 'attachment' ) );
+      $aAttachments = get_posts( array( 'include' => $sPlaylistItems, 'orderby' => 'post__in', 'post_type' => 'attachment' ) );
       if( count($aAttachments) > 0 ) {
         $iCount = 0;
         $aFVPlaylist = array();
