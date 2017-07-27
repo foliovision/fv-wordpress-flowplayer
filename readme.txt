@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.7 - 2017/07/?? =
+
+* CSS - making the timeline wider if there are subtitles but no volume control (mobile)
+* Lightbox - parsing link rel attribute to allow you to create lightboxes which are not grouped into galleries. Very useful for lightboxes which show inline HTML or iframe.
+
 = 6.2.6 - 2017/07/26 =
 
 * Android - fix for duplicate warning about obsolete stock browsers on Android 4

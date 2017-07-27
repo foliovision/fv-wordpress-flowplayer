@@ -15,6 +15,12 @@ jQuery(document).ready(function(){
  
   if( typeof(jQuery().fv_player_pro_colorbox) == "undefined" ) return;
   
+  function fv_player_colorbox_rel( that ) {
+    that = jQuery(that);
+    if( that.attr('rel') && that.attr('rel').length > 0 ) return that.attr('rel');
+    return 'group1';
+  }  
+  
   function fv_player_colorbox_title( that ) {
     that = jQuery(that);
     if( typeof(that.attr('title')) == "undefined" && typeof(that.find('img').attr('alt')) == "undefined" ) {
@@ -41,7 +47,7 @@ jQuery(document).ready(function(){
     jQuery(".colorbox").filter(function() {
         return this.href.match(/\.(png|jpg|jpeg|gif)/i);
     }).fv_player_pro_colorbox( {
-      rel: 'group1',
+      rel: function() { return fv_player_colorbox_rel(this) },
       current: "{current} of {total}",
       maxHeight: '100%',
       maxWidth: '100%',
@@ -58,7 +64,7 @@ jQuery(document).ready(function(){
     jQuery(".colorbox").filter(function() {
       return !this.href.match(/\.(png|jpg|jpeg|gif)/i)
     }).not('[href^="#"]').fv_player_pro_colorbox( {
-      rel: 'group1',
+      rel: function() { return fv_player_colorbox_rel(this) },
       current: "{current} of {total}",
       height: '80%',
       width: '80%',
@@ -70,7 +76,7 @@ jQuery(document).ready(function(){
     
     //Lightbox for non image divs href="#loginForm"
     jQuery(".colorbox[href^='#']").fv_player_pro_colorbox( {
-        rel: 'group1',
+        rel: function() { return fv_player_colorbox_rel(this) },
         current: "{current} of {total}",
         maxHeight: '100%',
         maxWidth: '100%',
@@ -107,7 +113,7 @@ jQuery(document).ready(function(){
       href:function(){         
          return this.getAttribute('data-fv-lightbox')||this.getAttribute('href');
       },
-      rel: 'group1',
+      rel: function() { return fv_player_colorbox_rel(this) },
       current: "{current} of {total}",
       inline: true,
       maxWidth: '100%',
