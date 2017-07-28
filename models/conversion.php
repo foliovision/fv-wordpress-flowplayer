@@ -141,7 +141,11 @@ public function settings_box_conversion () {
         $aFVCaptions = array();
         foreach( $aAttachments AS $objAttachment ) {
           $src = get_post_meta($objAttachment->ID,'_wp_attached_file',true);
+          $src = $this->get_full_url($src);
+          
           $splash = get_post_meta($objAttachment->ID,'jwplayermodule_thumbnail',true);
+          $splash = $this->get_full_url($splash);
+          
           if( $iCount == 0 ) {
             $aFVPlayer['src'] = $src;
             if( $splash ) $aFVPlayer['splash'] = $splash;            
@@ -176,6 +180,15 @@ public function settings_box_conversion () {
     $out = '[fvplayer '.implode(' ',$aShortcode).']';
     echo '<p>With <code>'.$out.'</code><p>';
     return $out;
+  }
+  
+  
+  function get_full_url( $url ) {
+    if( stripos($url,'://') === false && stripos($url,'/') !== 0 ) {
+      $aUploads = wp_upload_dir();
+      $url = trailingslashit($aUploads['baseurl']).$url;
+    }
+    return $url;
   }
 
 }
