@@ -1314,8 +1314,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $aArgs = wp_parse_args( $aArgs, array(
           'dynamic' => false,
           'flash' => true,
-          'id' => false,
-          'mobileUserAgent' => false,
+          'id' => false,          
           'rtmp' => false,        
           'suppress_filters' => false,
           'url_only' => false
