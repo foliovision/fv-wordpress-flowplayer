@@ -15,6 +15,18 @@ jQuery(document).ready(function(){
  
   if( typeof(jQuery().fv_player_pro_colorbox) == "undefined" ) return;
   
+  function fv_player_colorbox_class( that ) {
+    that = jQuery(that);
+    if( that.attr('data-class') && that.attr('data-class').length > 0 ) return that.attr('data-class');
+    return false;
+  } 
+  
+  function fv_player_colorbox_rel( that ) {
+    that = jQuery(that);
+    if( that.attr('rel') && that.attr('rel').length > 0 ) return that.attr('rel');
+    return 'group1';
+  }  
+  
   function fv_player_colorbox_title( that ) {
     that = jQuery(that);
     if( typeof(that.attr('title')) == "undefined" && typeof(that.find('img').attr('alt')) == "undefined" ) {
@@ -26,7 +38,17 @@ jQuery(document).ready(function(){
     } else {
       return false;
     }    
-  }  
+  }
+  
+  var defaults = {
+    rel: function() { return fv_player_colorbox_rel(this) },
+    current: "{current} of {total}",      
+    onLoad: fv_lightbox_flowplayer_shutdown,
+    onCleanup: fv_lightbox_flowplayer_shutdown,
+    title: function() { return fv_player_colorbox_title(this) },
+    href: function() { return fv_player_colorbox_scrset(this) },
+    className: function() { return fv_player_colorbox_class(this) }
+  };
 
   /*
    * Lightbox
@@ -38,50 +60,30 @@ jQuery(document).ready(function(){
     });
     
     //Lightbox for images href="*.jpg"
+    var args = defaults;
+    args.maxHeight = '100%';
+    args.maxWidth = '100%';
+    args.initialHeight = 48;
+    args.initialWidth = 96;
+    args.scrolling = false;
     jQuery(".colorbox").filter(function() {
         return this.href.match(/\.(png|jpg|jpeg|gif)/i);
-    }).fv_player_pro_colorbox( {
-      rel: 'group1',
-      current: "{current} of {total}",
-      maxHeight: '100%',
-      maxWidth: '100%',
-      initialHeight: 48,
-      initialWidth: 96,
-      scrolling: false,
-      onLoad: fv_lightbox_flowplayer_shutdown,
-      onCleanup: fv_lightbox_flowplayer_shutdown,
-      title: function() { return fv_player_colorbox_title(this) },
-      href: function() { return fv_player_colorbox_scrset(this) }
-    } );
-      
-    //Lightbox external sites href="example.com"  
-    jQuery(".colorbox").filter(function() {
-      return !this.href.match(/\.(png|jpg|jpeg|gif)/i)
-    }).not('[href^="#"]').fv_player_pro_colorbox( {
-      rel: 'group1',
-      current: "{current} of {total}",
-      height: '80%',
-      width: '80%',
-      onLoad: fv_lightbox_flowplayer_shutdown,
-      onCleanup: fv_lightbox_flowplayer_shutdown,
-      iframe: true,
-      title: function() { return fv_player_colorbox_title(this) }
-    } );
+    }).fv_player_pro_colorbox( args );
     
     //Lightbox for non image divs href="#loginForm"
-    jQuery(".colorbox[href^='#']").fv_player_pro_colorbox( {
-        rel: 'group1',
-        current: "{current} of {total}",
-        maxHeight: '100%',
-        maxWidth: '100%',
-        initialHeight: 48,
-        initialWidth: 96,
-        scrolling: false,
-        onLoad: fv_lightbox_flowplayer_shutdown,
-        onCleanup: fv_lightbox_flowplayer_shutdown,
-        inline: true,
-        title: function() { return fv_player_colorbox_title(this) }
-      } );
+    args.inline = true;
+    jQuery(".colorbox[href^='#']").fv_player_pro_colorbox( args );    
+    
+    //Lightbox external sites href="example.com"    
+    var args2 = defaults;
+    args2.height = '80%';
+    args2.width = '80%';
+    args2.iframe = true;
+    
+    jQuery(".colorbox").filter(function() {
+      return !this.href.match(/\.(png|jpg|jpeg|gif)/i)
+    }).not('[href^="#"]').fv_player_pro_colorbox( args2 );
+    
   }
   
   /*
@@ -101,26 +103,18 @@ jQuery(document).ready(function(){
     //if (!support.inlineBlock) $("object", root).height(root.height());  
   } );
   
+  var args3 = defaults;
+  args3.href = function(){ return this.getAttribute('data-fv-lightbox')||this.getAttribute('href'); }
+  args3.inline = true;
+  args3.maxHeight = '100%';
+  args3.maxWidth = '100%';
+  args3.initialHeight = 48;
+  args3.initialWidth = 96;
+  args3.scrolling = false;
+  args3.innerWidth = fv_player_lightbox_width;
+  args3.innerHeight = 'auto';
   
-  jQuery("a[id ^=fv_flowplayer_][id $=_lightbox_starter], .flowplayer.lightbox-starter").fv_player_pro_colorbox(
-    {
-      href:function(){         
-         return this.getAttribute('data-fv-lightbox')||this.getAttribute('href');
-      },
-      rel: 'group1',
-      current: "{current} of {total}",
-      inline: true,
-      maxWidth: '100%',
-      maxHeight: '100%',
-      initialHeight: 48,
-      initialWidth: 96,
-      innerWidth: fv_player_lightbox_width,
-      innerHeight: 'auto',
-      scrolling: false,
-      onLoad: fv_lightbox_flowplayer_shutdown,
-      onCleanup: fv_lightbox_flowplayer_shutdown
-    }
-  ).addClass('et_smooth_scroll_disabled');
+  jQuery("a[id ^=fv_flowplayer_][id $=_lightbox_starter], .flowplayer.lightbox-starter").fv_player_pro_colorbox(args3).addClass('et_smooth_scroll_disabled');
 
   
   var fv_player_lightbox_fresh = true;

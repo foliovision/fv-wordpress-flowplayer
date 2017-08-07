@@ -152,7 +152,7 @@
 .no-volume.flowplayer .fp-timeline{margin-right:160px}
 .no-mute.flowplayer .fp-timeline{margin-right:195px}
 .no-mute.no-volume.flowplayer .fp-timeline{margin-right:120px;}
-.has-menu.no-mute.no-volume.flowplayer .fp-timeline{margin-right:157px}
+.has-menu.no-mute.no-volume.flowplayer .fp-timeline{margin-right:82px}
 .is-rtl.flowplayer .fp-timeline{margin:0 55px 0 225px;}
 .no-brand.is-rtl.flowplayer .fp-timeline{margin-left:160px;}
 .has-menu.no-brand.is-rtl.flowplayer .fp-timeline{margin-left:197px}
@@ -222,7 +222,7 @@
 .no-volume.flowplayer .fp-remaining,.no-volume.flowplayer .fp-duration{right:115px}
 .no-mute.flowplayer .fp-remaining,.no-mute.flowplayer .fp-duration{right:160px}
 .no-mute.no-volume.flowplayer .fp-remaining,.no-mute.no-volume.flowplayer .fp-duration{right:75px;}
-.has-menu.no-mute.no-volume.flowplayer .fp-remaining,.has-menu.no-mute.no-volume.flowplayer .fp-duration{right:112px}
+.has-menu.no-mute.no-volume.flowplayer .fp-remaining,.has-menu.no-mute.no-volume.flowplayer .fp-duration{right:35px}
 .is-rtl.flowplayer .fp-remaining,.is-rtl.flowplayer .fp-duration{right:auto;left:180px;}
 .no-brand.is-rtl.flowplayer .fp-remaining,.no-brand.is-rtl.flowplayer .fp-duration{left:115px;}
 .has-menu.no-brand.is-rtl.flowplayer .fp-remaining,.has-menu.no-brand.is-rtl.flowplayer .fp-duration{left:142px}

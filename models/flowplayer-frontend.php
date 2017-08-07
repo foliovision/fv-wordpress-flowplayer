@@ -233,8 +233,7 @@ class flowplayer_frontend extends flowplayer
           }
         }
         
-        
-        if( !$bHTTPs && function_exists('is_amp_endpoint') && is_amp_endpoint() || count($aPlaylistItems) && function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
+        if( !$bHTTPs && function_exists('is_amp_endpoint') && is_amp_endpoint() || count($aPlaylistItems) > 1 && function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains advanced video player, click to open the original website]') );
           if( $splash_img ) {
             $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
@@ -253,13 +252,21 @@ class flowplayer_frontend extends flowplayer
 					if( $autoplay == true ) {
 						$this->ret['html'] .= ' autoplay';  
 					}
+          
+          if( $width ) {
+						$this->ret['html'] .= ' width="'.$width.'"'; 
+					}
+          if( $height ) {
+						$this->ret['html'] .= ' height="'.$height.'"';
+					}
+          
 					$this->ret['html'] .= ">\n";
 					
 					if (!empty($mobile)) {
-						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => true ) );
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile' ) );
 					} else {
              foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-              $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => true ) );
+              $this->ret['html'] .= $this->get_video_src($media_item);
             }
           }
 					
@@ -280,15 +287,6 @@ class flowplayer_frontend extends flowplayer
 				}
 				
 				$popup = '';
-				
-				//check user agents
-				$aUserAgents = array('iphone', 'ipod', 'iPad', 'aspen', 'incognito', 'webmate', 'android', 'android', 'dream', 'cupcake', 'froyo', 'blackberry9500', 'blackberry9520', 'blackberry9530', 'blackberry9550', 'blackberry9800', 'Palm', 'webos', 's8000', 'bada', 'Opera Mini', 'Opera Mobi', 'htc_touch_pro');
-				$mobileUserAgent = false;
-				foreach($aUserAgents as $userAgent){
-					if(stripos($_SERVER['HTTP_USER_AGENT'],$userAgent))
-						$mobileUserAgent = true;
-				}
-        
         
         $aSubtitles = $this->get_subtitles();
 			
@@ -535,11 +533,11 @@ class flowplayer_frontend extends flowplayer
 					}          
 					
           foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-            $this->ret['html'] .= $this->get_video_src($media_item, array( 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
+            $this->ret['html'] .= $this->get_video_src($media_item, array( 'rtmp' => $rtmp ) );
           }
 					if (!empty($mobile)) {
 						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'mobileUserAgent' => $mobileUserAgent, 'rtmp' => $rtmp ) );
+						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'rtmp' => $rtmp ) );
 					}			
 					
 					if (isset($aSubtitles) && !empty($aSubtitles)) {
@@ -662,7 +660,7 @@ class flowplayer_frontend extends flowplayer
 			$this->build_audio_player( $media, $width, $autoplay );
 		}
     
-    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' && count($aPlaylistItems) ){
+    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-vertical-wrapper">'.$this->ret['html'].'</div>';
     }
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
@@ -1014,6 +1012,10 @@ class flowplayer_frontend extends flowplayer
           //break;
         } 
       }
+			
+			if( !empty($this->aCurArgs['mobile']) ) {
+				$aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
+			}
 
       if( isset($aTest_media) && count($aTest_media) > 0 ) { 
         $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
