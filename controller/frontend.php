@@ -70,6 +70,7 @@ function fv_flowplayer_get_js_translations() {
   'error_JSON' =>__('Admin: Error parsing JSON','fv-wordpress-flowplayer'),
   'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
   'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
+  'playlist_current' =>__('Now Playing','fv-wordpress-flowplayer'),
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
