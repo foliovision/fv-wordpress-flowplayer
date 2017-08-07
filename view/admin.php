@@ -148,7 +148,7 @@ function fv_flowplayer_admin_amazon_options() {
                 <option value="eu-central-1"<?php if( $sRegion == 'eu-central-1' ) echo " selected"; ?>><?php _e('EU (Frankfurt)', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="eu-west-1"<?php if( $sRegion == 'eu-west-1' ) echo " selected"; ?>><?php _e('EU (Ireland)', 'fv-wordpress-flowplayer'); ?></option>
                 <option value="eu-west-2"<?php if( $sRegion == 'eu-west-2' ) echo " selected"; ?>><?php _e('EU (London)', 'fv-wordpress-flowplayer'); ?></option>                
-                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('South America (São Paulo)', 'fv-wordpress-flowplayer'); ?></option>
+                <option value="sa-east-1"<?php if( $sRegion == 'sa-east-1' ) echo " selected"; ?>><?php _e('South America (S&atilde;o Paulo)', 'fv-wordpress-flowplayer'); ?></option>
               </select>
             </td>
         </tr>
