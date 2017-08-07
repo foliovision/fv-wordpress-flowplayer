@@ -603,11 +603,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
-    
+
     if ( $fv_fp->_get_option('key') && $fv_fp->_get_option('logo') ) : ?>    
       .flowplayer .fp-logo { display: block; opacity: 1; }                                              
     <?php endif;
-  
+
     if( $fv_fp->_get_option('hasBorder') ) : ?>
       .flowplayer { border: 1px solid <?php echo $fv_fp->_get_option('borderColor'); ?> !important; }
     <?php endif; ?>
@@ -616,7 +616,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer.fixed-controls { margin: 0 auto <?php echo $iMarginBottom+30; ?>px auto; display: block; }
     .flowplayer.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
     .flowplayer.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
-    .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
+    .flowplayer.has-caption, .flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; background-color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
     .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
     .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }

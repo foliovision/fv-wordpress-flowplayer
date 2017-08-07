@@ -119,7 +119,7 @@
 .has-menu.no-volume.no-mute.flowplayer .fp-brand{right:47px}
 .no-volume.flowplayer .fp-brand{right:50px}
 .no-mute.flowplayer .fp-brand{right:95px}
-.flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:40px;cursor:pointer;display:none;z-index:100;}
+.flowplayer .fp-logo{position:absolute;top:auto;left:15px;bottom:40px;cursor:pointer;z-index:100;}
 .flowplayer .fp-logo img{width:100%}
 .is-embedded.flowplayer .fp-logo{display:block}
 .fixed-controls.flowplayer .fp-logo{bottom:15px}
