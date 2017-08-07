@@ -1124,8 +1124,8 @@ function fv_flowplayer_admin_skin_playlist() {
 ?>
   <div class="flowplayer-wrapper">
     <?php   
-    if( isset($fv_fp->admin_preview_player[1]) ) {      
-      echo '<div class="fp-playlist-external'.$fv_fp->admin_preview_player[1];
+    if( isset($fv_fp->admin_preview_player[1]) ) {            
+			echo '<div class="fp-playlist-external'.str_replace( 'https://i.vimeocdn.com/video/609485450_1280.jpg', 'https://i.vimeocdn.com/video/608654918_295x166.jpg', $fv_fp->admin_preview_player[1] );
       _e('Hint: you can click the thumbnails to switch videos in the above player', 'fv-wordpress-flowplayer');
     }
     ?>    
