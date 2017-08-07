@@ -403,7 +403,7 @@ class FV_Player_lightbox {
         <p class="description">
           <input type="hidden" value="false" name="lightbox_improve_galleries" />
           <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if ($fv_fp->_get_option('lightbox_improve_galleries')) echo 'checked="checked"'; ?> />
-          <?php _e('Your gallery litems will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('Your gallery items will link to image files directly to allow this.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>

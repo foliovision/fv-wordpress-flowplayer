@@ -53,14 +53,14 @@ jQuery(document).ready(function(){
   /*
    * Lightbox
    */
-  if(fv_player_lightbox.lightbox_images ) {
+  if( fv_player_lightbox.lightbox_images ) {
     
     jQuery("a[data-colorbox]").each( function() {
       jQuery(this).attr('href', jQuery(this).attr('data-colorbox') );
     });
     
     //Lightbox for images href="*.jpg"
-    var args = defaults;
+    var args = jQuery.extend( {}, defaults );
     args.maxHeight = '100%';
     args.maxWidth = '100%';
     args.initialHeight = 48;
@@ -75,7 +75,7 @@ jQuery(document).ready(function(){
     jQuery(".colorbox[href^='#']").fv_player_pro_colorbox( args );    
     
     //Lightbox external sites href="example.com"    
-    var args2 = defaults;
+    var args2 = jQuery.extend( {}, defaults );
     args2.height = '80%';
     args2.width = '80%';
     args2.iframe = true;
@@ -103,7 +103,7 @@ jQuery(document).ready(function(){
     //if (!support.inlineBlock) $("object", root).height(root.height());  
   } );
   
-  var args3 = defaults;
+  var args3 = jQuery.extend( {}, defaults );
   args3.href = function(){ return this.getAttribute('data-fv-lightbox')||this.getAttribute('href'); }
   args3.inline = true;
   args3.maxHeight = '100%';
