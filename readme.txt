@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.8 - 2017/08/25 =
+
+* Fix for fullscreen mode on Chrome 60 on Android - was using native fullscreen
+
 = 6.2.7 - 2017/08/25 =
 
 * Fix for Download button appearing in Chrome 60 on Android when using native fullscreen
