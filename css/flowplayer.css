@@ -813,16 +813,20 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 }
 
 
-.flowplayer.chrome55fix video::-internal-media-controls-download-button {
+.flowplayer.chrome55fix video::-internal-media-controls-download-button, .flowplayer.chrome55fix-subtitles video::-internal-media-controls-download-button {
   display:none;
 }
 
-.flowplayer.chrome55fix video::-webkit-media-controls-enclosure {
+.flowplayer.chrome55fix video::-webkit-media-controls-enclosure, .flowplayer.chrome55fix-subtitles video::-webkit-media-controls-enclosure {
   overflow:hidden;
 }
 
 .flowplayer.chrome55fix video::-webkit-media-controls-panel {
   width: calc(100% + 48px);
+}
+
+.flowplayer.chrome55fix-subtitles video::-webkit-media-controls-panel {
+  width: calc(100% + 96px);
 }
 
 .flowplayer .fv-form-loading{
