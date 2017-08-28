@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.9 - 2017/08/28 =
+
+* Fix for error message not appearing on old browser using Flash
+
 = 6.2.8 - 2017/08/25 =
 
 * Fix for fullscreen mode on Chrome 60 on Android - was using native fullscreen
