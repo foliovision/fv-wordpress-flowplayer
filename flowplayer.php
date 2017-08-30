@@ -26,7 +26,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$fv_wp_flowplayer_ver = '6.2.6.1';
+$fv_wp_flowplayer_ver = '6.2.6.1a';
 $fv_wp_flowplayer_core_ver = '6.0.5';
 
 include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
