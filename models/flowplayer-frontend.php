@@ -22,11 +22,11 @@
 class flowplayer_frontend extends flowplayer
 {
 
-	var $ajax_count = 0;
-	
-	var $autobuffer_count = 0;	
-	
-	var $expire_time = 0;
+  var $ajax_count = 0;
+  
+  var $autobuffer_count = 0;  
+  
+  var $expire_time = 0;
   
   var $aAds = array();
   
@@ -43,44 +43,44 @@ class flowplayer_frontend extends flowplayer
   var $count_tabs = 0;
   
 
-	/**
-	 * Builds the HTML and JS code of single flowplayer instance on a page/post.
-	 * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
-	 * @param array $args Array of arguments (name => value).
-	 * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
-	 */
-	function build_min_player($media,$args = array()) {
+  /**
+   * Builds the HTML and JS code of single flowplayer instance on a page/post.
+   * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
+   * @param array $args Array of arguments (name => value).
+   * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
+   */
+  function build_min_player($media,$args = array()) {
 
-		$this->hash = md5($media.$this->_salt()); //  unique player id
+    $this->hash = md5($media.$this->_salt()); //  unique player id
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
     $this->sHTMLAfter = false;
-		$player_type = 'video';
-		$rtmp = false;
-		$youtube = false;
-		$vimeo = false;
+    $player_type = 'video';
+    $rtmp = false;
+    $youtube = false;
+    $vimeo = false;
     $scripts_after = '';
     
     $attributes = array();
     
-		// returned array with new player's html and javascript content
+    // returned array with new player's html and javascript content
     if( !isset($GLOBALS['fv_fp_scripts']) ) {
       $GLOBALS['fv_fp_scripts'] = array();
     }
-		$this->ret = array('html' => '', 'script' => $GLOBALS['fv_fp_scripts'] );	//	note: we need the white space here, it fails to add into the string on some hosts without it (???)
-		
+    $this->ret = array('html' => '', 'script' => $GLOBALS['fv_fp_scripts'] );  //  note: we need the white space here, it fails to add into the string on some hosts without it (???)
+    
       
     
-		/*
+    /*
      *  Set common variables
      */
-		$width = $this->_get_option('width');
-		$height = $this->_get_option('height');
-		if (isset($this->aCurArgs['width'])&&!empty($this->aCurArgs['width'])) $width = trim($this->aCurArgs['width']);
-		if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);		
-		        
-		$src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
-		$src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
-		
+    $width = $this->_get_option('width');
+    $height = $this->_get_option('height');
+    if (isset($this->aCurArgs['width'])&&!empty($this->aCurArgs['width'])) $width = trim($this->aCurArgs['width']);
+    if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);    
+            
+    $src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
+    $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
+    
     $splash_img = $this->get_splash();
 
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -95,50 +95,50 @@ class flowplayer_frontend extends flowplayer
   
     list( $media, $src1, $src2 ) = apply_filters( 'fv_flowplayer_media_pre', array( $media, $src1, $src2 ), $this );
     
-		
+    
     /*
      *  Which player should be used
      */
-		foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+    foreach( array( $media, $src1, $src2 ) AS $media_item ) {
       if( !$this->_get_option('audio') ) {
         if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
           $player_type = 'audio';
           break;
         }
       }
-				
-			global $post;
+        
+      global $post;
       if( $post ) {
         $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
         if( $fv_flowplayer_meta && isset($fv_flowplayer_meta[sanitize_title($media_item)]['time']) ) {
           $this->expire_time = $fv_flowplayer_meta[sanitize_title($media_item)]['time'];
         }
       }
-		}
+    }
     
     if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
-			if( isset($aYoutube[5]) ) {
-				$youtube = $aYoutube[5];
-				$player_type = 'youtube';
-			}
-		} else if( preg_match( "~^[a-zA-Z0-9-_]{11}$~", $media, $aYoutube ) ) {
-			if( isset($aYoutube[0]) ) {
-				$youtube = $aYoutube[0];
-				$player_type = 'youtube';
-			}
-		}
+      if( isset($aYoutube[5]) ) {
+        $youtube = $aYoutube[5];
+        $player_type = 'youtube';
+      }
+    } else if( preg_match( "~^[a-zA-Z0-9-_]{11}$~", $media, $aYoutube ) ) {
+      if( isset($aYoutube[0]) ) {
+        $youtube = $aYoutube[0];
+        $player_type = 'youtube';
+      }
+    }
 
-		if( preg_match( "~vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)?(\d+)~i", $media, $aVimeo ) ) {
-			if( isset($aVimeo[1]) ) {
-				$vimeo = $aVimeo[1];
-				$player_type = 'vimeo';
-			}
-		} else if( preg_match( "~^[0-9]{8}$~", $media, $aVimeo ) ) {
-			if( isset($aVimeo[0]) ) {
-				$vimeo = $aVimeo[0];
-				$player_type = 'vimeo';
-			}
-		}
+    if( preg_match( "~vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)?(\d+)~i", $media, $aVimeo ) ) {
+      if( isset($aVimeo[1]) ) {
+        $vimeo = $aVimeo[1];
+        $player_type = 'vimeo';
+      }
+    } else if( preg_match( "~^[0-9]{8}$~", $media, $aVimeo ) ) {
+      if( isset($aVimeo[0]) ) {
+        $vimeo = $aVimeo[0];
+        $player_type = 'vimeo';
+      }
+    }
     
     
     if( !isset($this->aCurArgs['liststyle']) || empty($this->aCurArgs['liststyle']) ){
@@ -198,21 +198,21 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Video player
      */
-		if( $player_type == 'video' ) {
+    if( $player_type == 'video' ) {
       
-      	if (!empty($media)) {
-					$media = $this->get_video_url($media);
-				}
-				if (!empty($src1)) {
-					$src1 = $this->get_video_url($src1);
-				}
-				if (!empty($src2)) {
-					$src2 = $this->get_video_url($src2);
-				}
+        if (!empty($media)) {
+          $media = $this->get_video_url($media);
+        }
+        if (!empty($src1)) {
+          $src1 = $this->get_video_url($src1);
+        }
+        if (!empty($src2)) {
+          $src2 = $this->get_video_url($src2);
+        }
         $mobile = ( isset($this->aCurArgs['mobile']) && !empty($this->aCurArgs['mobile']) ) ? trim($this->aCurArgs['mobile']) : false;  
-				if (!empty($mobile)) {
-					$mobile = $this->get_video_url($mobile);
-				}			
+        if (!empty($mobile)) {
+          $mobile = $this->get_video_url($mobile);
+        }      
       
         if( is_feed() ) {
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
@@ -245,77 +245,77 @@ class flowplayer_frontend extends flowplayer
           return $this->ret;
         
         } else if( function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
-					$this->ret['html'] .= "\t".'<video controls';      
-					if (isset($splash_img) && !empty($splash_img)) {
-						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
-					} 
-					if( $autoplay == true ) {
-						$this->ret['html'] .= ' autoplay';  
-					}
+          $this->ret['html'] .= "\t".'<video controls';      
+          if (isset($splash_img) && !empty($splash_img)) {
+            $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
+          } 
+          if( $autoplay == true ) {
+            $this->ret['html'] .= ' autoplay';  
+          }
           
           if( $width ) {
-						$this->ret['html'] .= ' width="'.$width.'"'; 
-					}
+            $this->ret['html'] .= ' width="'.$width.'"'; 
+          }
           if( $height ) {
-						$this->ret['html'] .= ' height="'.$height.'"';
-					}
+            $this->ret['html'] .= ' height="'.$height.'"';
+          }
           
-					$this->ret['html'] .= ">\n";
-					
-					if (!empty($mobile)) {
-						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile' ) );
-					} else {
+          $this->ret['html'] .= ">\n";
+          
+          if (!empty($mobile)) {
+            $this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile' ) );
+          } else {
              foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
               $this->ret['html'] .= $this->get_video_src($media_item);
             }
           }
-					
-					$this->ret['html'] .= "\t".'</video>';
+          
+          $this->ret['html'] .= "\t".'</video>';
           
           $this->ret['html'] = apply_filters( 'fv_flowplayer_amp', $this->ret['html'], $this );
           
           return $this->ret;
         }    
-		
-				foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-					//if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-					
-					if( !$this->_get_option('engine') && stripos( $media_item, '.m4v' ) !== false ) {
-						$this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
-					}
-					
-				}
-				
-				$popup = '';
+    
+        foreach( array( $media, $src1, $src2 ) AS $media_item ) {
+          //if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
+          
+          if( !$this->_get_option('engine') && stripos( $media_item, '.m4v' ) !== false ) {
+            $this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
+          }
+          
+        }
+        
+        $popup = '';
         
         $aSubtitles = $this->get_subtitles();
-			
-				$show_splashend = false;
-				if (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {      
-					$show_splashend = true;
-					$splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
-				}	
-								
-				
-	
-				
-				
-				$attributes['class'] = 'flowplayer no-brand is-splash';
+      
+        $show_splashend = false;
+        if (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {      
+          $show_splashend = true;
+          $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
+        }
+        
+        
+  
+        
+        
+        $attributes['class'] = 'flowplayer no-brand is-splash';
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
         }        
 
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
-					$attributes['class'] .= ' playlist-hidden';
-				}
+          $attributes['class'] .= ' playlist-hidden';
+        }
         
         $bIsAudio = false;
         if( ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
           $bIsAudio = true;
           $attributes['class'] .= ' is-audio fixed-controls is-mouseover';
         }
-				
+        
         //  Fixed control bar
         $bFixedControlbar = $this->_get_option('ui_fixed_controlbar');
         if( isset($this->aCurArgs['controlbar']) ) {
@@ -341,23 +341,23 @@ class flowplayer_frontend extends flowplayer
         if( $bPlayButton ) {
           $attributes['class'] .= ' fvp-play-button';
         }
-				
+        
         //  Align
-				if( isset($this->aCurArgs['align']) ) {
-					if( $this->aCurArgs['align'] == 'left' ) {
-						$attributes['class'] .= ' alignleft';
-					} else if( $this->aCurArgs['align'] == 'right' ) {
-						$attributes['class'] .= ' alignright';
-					} else if( $this->aCurArgs['align'] == 'center' ) {
-						$attributes['class'] .= ' aligncenter';
-					} 
-				}
+        if( isset($this->aCurArgs['align']) ) {
+          if( $this->aCurArgs['align'] == 'left' ) {
+            $attributes['class'] .= ' alignleft';
+          } else if( $this->aCurArgs['align'] == 'right' ) {
+            $attributes['class'] .= ' alignright';
+          } else if( $this->aCurArgs['align'] == 'center' ) {
+            $attributes['class'] .= ' aligncenter';
+          } 
+        }
         $attributes['class'] .= $this->get_align();
-				
-				if( $this->_get_option('engine') || $this->aCurArgs['engine'] == 'flash' ) {
-					$attributes['data-engine'] = 'flash';
-				}
-				
+        
+        if( $this->_get_option('engine') || $this->aCurArgs['engine'] == 'flash' ) {
+          $attributes['data-engine'] = 'flash';
+        }
+        
         if( $this->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
           if( $this->aCurArgs['embed'] == 'false' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
             
@@ -371,9 +371,9 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
-					$attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
-				}
-				
+          $attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
+        }
+        
         $attributes['style'] = '';
         if( !$bIsAudio ) {
           if( $this->_get_option('fixed_size') ) {
@@ -382,14 +382,14 @@ class flowplayer_frontend extends flowplayer
             $attributes['style'] .= 'max-width: ' . $width . 'px; max-height: ' . $height . 'px; ';
           }
         }
-				
+        
         global $fv_wp_flowplayer_ver;
-				//$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
-				//$attributes['data-flashfit'] = "true";
-				
-				if( $this->_get_option('googleanalytics') ) {
-					$attributes['data-analytics'] = $this->_get_option('googleanalytics');
-				}	
+        //$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
+        //$attributes['data-flashfit'] = "true";
+        
+        if( $this->_get_option('googleanalytics') ) {
+          $attributes['data-analytics'] = $this->_get_option('googleanalytics');
+        }  
                 
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
@@ -401,10 +401,10 @@ class flowplayer_frontend extends flowplayer
         }
     
 
-				if( !$this->_get_option('allowfullscreen') ) {
-					$attributes['data-fullscreen'] = 'false';
-				}       
-	
+        if( !$this->_get_option('allowfullscreen') ) {
+          $attributes['data-fullscreen'] = 'false';
+        }       
+  
         if( !$bIsAudio ) {
           $ratio = round($height / $width, 4);   
           $this->fRatio = $ratio;
@@ -412,17 +412,17 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
         }
         
-				if( $this->_get_option('scaling') && $this->_get_option('fixed_size') ) {
-					$attributes['data-flashfit'] = 'true';
-				}
+        if( $this->_get_option('scaling') && $this->_get_option('fixed_size') ) {
+          $attributes['data-flashfit'] = 'true';
+        }
         
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
-					$attributes['data-live'] = 'true';
-				}
+          $attributes['data-live'] = 'true';
+        }
         
-				$playlist = '';
-				$is_preroll = false;
-				if( isset($playlist_items_external_html) ) {
+        $playlist = '';
+        $is_preroll = false;
+        if( isset($playlist_items_external_html) ) {
           
           if( $bIsAudio ) {
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'class="fp-playlist-external is-audio', $playlist_items_external_html );
@@ -446,7 +446,7 @@ class flowplayer_frontend extends flowplayer
             $attributes['style'] .= "background-image: url({$splash_img});";
           }
           
-				} else if( !empty($this->aCurArgs['caption']) ) {
+        } else if( !empty($this->aCurArgs['caption']) ) {
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
@@ -476,32 +476,32 @@ class flowplayer_frontend extends flowplayer
             }
           }
         }
-				
-				$attributes_html = '';
-				$attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
-				foreach( $attributes AS $attr_key => $attr_value ) {
+        
+        $attributes_html = '';
+        $attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
+        foreach( $attributes AS $attr_key => $attr_value ) {
           if( $attr_key == 'data-item' ) {
             $attributes_html .= ' '.$attr_key.'=\''.$attr_value.'\'';
           } else {
             $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
           }
-				}
-				
-				$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
+        }
+        
+        $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
         
         if( !$bIsAudio ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
         }
 
-        if( count($aPlaylistItems) == 0 ) {	// todo: this stops subtitles, mobile video, preload etc.
-					$this->ret['html'] .= "\t".'<video class="fp-engine" preload="none"';
-					if (isset($splash_img) && !empty($splash_img)) {
-						$this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
-					} 
+        if( count($aPlaylistItems) == 0 ) {  // todo: this stops subtitles, mobile video, preload etc.
+          $this->ret['html'] .= "\t".'<video class="fp-engine" preload="none"';
+          if (isset($splash_img) && !empty($splash_img)) {
+            $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
+          } 
 
-					$this->ret['html'] .= ">\n";
+          $this->ret['html'] .= ">\n";
 
-					if( isset($rtmp) && !empty($rtmp) ) {
+          if( isset($rtmp) && !empty($rtmp) ) {
             
             foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
               $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
@@ -530,17 +530,17 @@ class flowplayer_frontend extends flowplayer
 
               $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
             }
-					}          
-					
+          }          
+          
           foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
             $this->ret['html'] .= $this->get_video_src($media_item, array( 'rtmp' => $rtmp ) );
           }
-					if (!empty($mobile)) {
-						$this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-						$this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'rtmp' => $rtmp ) );
-					}			
-					
-					if (isset($aSubtitles) && !empty($aSubtitles)) {
+          if (!empty($mobile)) {
+            $this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
+            $this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'rtmp' => $rtmp ) );
+          }      
+          
+          if (isset($aSubtitles) && !empty($aSubtitles)) {
             $aLangs = self::get_languages();
             $countSubtitles = 0;
             foreach( $aSubtitles AS $key => $subtitles ) {
@@ -577,27 +577,27 @@ class flowplayer_frontend extends flowplayer
               $countSubtitles++;
               $this->ret['html'] .= "\t"."\t".'<track '.$sExtra.'src="'.esc_attr($subtitles).'" />'."\n";
             }
-					}     
-					
-					$this->ret['html'] .= "\t".'</video>';//."\n";
-				}
-				
+          }     
+          
+          $this->ret['html'] .= "\t".'</video>';//."\n";
+        }
+        
         $this->ret['html'] .= $this->get_buttons();
-				
-				if( isset($splashend_contents) ) {
-					$this->ret['html'] .= $splashend_contents;
-				}
-				if( $popup_contents = $this->get_popup_code() ) {
+        
+        if( isset($splashend_contents) ) {
+          $this->ret['html'] .= $splashend_contents;
+        }
+        if( $popup_contents = $this->get_popup_code() ) {
           $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;  
-				}
-				if( $ad_contents = $this->get_ad_code() ) {
-					$this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
-				}
+        }
+        if( $ad_contents = $this->get_ad_code() ) {
+          $this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
+        }
         
         if( flowplayer::is_special_editor() ) {
           $this->ret['html'] .= '<div class="fp-ui"></div>';       
         } else if( current_user_can('manage_options') && !isset($playlist_items_external_html) ) {
-					$this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="http://foliovision.com/wordpress/pro-install" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
+          $this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="http://foliovision.com/wordpress/pro-install" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
@@ -614,51 +614,51 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
         }          
         
-				$this->ret['html'] .= '</div>'."\n";
+        $this->ret['html'] .= '</div>'."\n";
         
-				$this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+        $this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
         
                  if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
                    $this->ret['html'] .= "<!--fv player end-->";
                  }
         
-				//  change engine for IE9 and 10
-				if( $this->aCurArgs['engine'] == 'false' ) {
-					$this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
-				}        
+        //  change engine for IE9 and 10
+        if( $this->aCurArgs['engine'] == 'false' ) {
+          $this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
+        }        
         
-		} //  end Video player
+    } //  end Video player
     
     
     /*
      *  Youtube player
      */
     else if( $player_type == 'youtube' ) {
-				
-			$sAutoplay = ($autoplay) ? 'autoplay=1&amp;' : '';
-			$this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
-	  src='//www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
-			
-		}
+        
+      $sAutoplay = ($autoplay) ? 'autoplay=1&amp;' : '';
+      $this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
+    src='//www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
+      
+    }
     
     
     /*
      *  Vimeo player
      */
     else if( $player_type == 'vimeo' ) {
-		
-			$sAutoplay = ($autoplay) ? " autoplay='1'" : "";
-			$this->ret['html'] .= "<iframe id='fv_vimeo_{$this->hash}' src='//player.vimeo.com/video/{$vimeo}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen{$sAutoplay}></iframe>\n";
-			
-		}
+    
+      $sAutoplay = ($autoplay) ? " autoplay='1'" : "";
+      $this->ret['html'] .= "<iframe id='fv_vimeo_{$this->hash}' src='//player.vimeo.com/video/{$vimeo}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen{$sAutoplay}></iframe>\n";
+      
+    }
     
     
     /*
      *  Audio player
      */
-    else {	//	$player_type == 'video' ends
-			$this->build_audio_player( $media, $width, $autoplay );
-		}
+    else {  //  $player_type == 'video' ends
+      $this->build_audio_player( $media, $width, $autoplay );
+    }
     
     if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-vertical-wrapper">'.$this->ret['html'].'</div>';
@@ -667,21 +667,21 @@ class flowplayer_frontend extends flowplayer
 
     
     
-		$this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
+    $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
       
       return $this->ret;
-	}
+  }
   
   
-  function build_audio_player( $media, $width, $autoplay ) {    			
-			$this->load_mediaelement = true;
-			
-			$preload = ($autoplay == true) ? '' : ' preload="none"'; 
-					
-			$this->ret['script']['mediaelementplayer'][$this->hash] = true;
-			$this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";			
+  function build_audio_player( $media, $width, $autoplay ) {          
+      $this->load_mediaelement = true;
+      
+      $preload = ($autoplay == true) ? '' : ' preload="none"'; 
+          
+      $this->ret['script']['mediaelementplayer'][$this->hash] = true;
+      $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";      
       $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_mime_type($media, false, true).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
-			$this->ret['html'] .= '</div>'."\n";  
+      $this->ret['html'] .= '</div>'."\n";  
   }
   
   
@@ -690,7 +690,7 @@ class flowplayer_frontend extends flowplayer
     
     if(
       ( trim($this->_get_option('ad')) || ( isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad']) ) ) 
-      && !strlen($this->aCurArgs['ad_skip'])				
+      && !strlen($this->aCurArgs['ad_skip'])        
     ) {
       if (isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad'])) {
         $ad = trim($this->aCurArgs['ad']);
@@ -701,12 +701,12 @@ class flowplayer_frontend extends flowplayer
           $ad = html_entity_decode( str_replace('&#039;',"'",$ad ) );
         }
 
-        $ad_width = ( isset($this->aCurArgs['ad_width']) && intval($this->aCurArgs['ad_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';	
-        $ad_height = ( isset($this->aCurArgs['ad_height']) && intval($this->aCurArgs['ad_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';					
+        $ad_width = ( isset($this->aCurArgs['ad_width']) && intval($this->aCurArgs['ad_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';  
+        $ad_height = ( isset($this->aCurArgs['ad_height']) && intval($this->aCurArgs['ad_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';          
       }
       else {
-        $ad = trim( $this->_get_option('ad') );			
-        $ad_width = ( $this->_get_option('ad_width') ) ? $this->_get_option('ad_width').'px' : '100%';	
+        $ad = trim( $this->_get_option('ad') );      
+        $ad_width = ( $this->_get_option('ad_width') ) ? $this->_get_option('ad_width').'px' : '100%';  
         $ad_height = ( $this->_get_option('ad_height') ) ? $this->_get_option('ad_height').'px' : '';
       }
      
@@ -720,7 +720,7 @@ class flowplayer_frontend extends flowplayer
       
       
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
-      if( strlen(trim($ad)) > 0 ) {			
+      if( strlen(trim($ad)) > 0 ) {      
         $ad_contents = array(
                              'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_display;'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
                              'width' => $ad_width,
@@ -903,7 +903,7 @@ class flowplayer_frontend extends flowplayer
       }
       else {
         $splash_img = trim($this->aCurArgs['splash']);
-      }  		  		
+      }            
     } else if( $this->_get_option('splash') ) {
       $splash_img = $this->_get_option('splash');
     }    
@@ -1012,10 +1012,10 @@ class flowplayer_frontend extends flowplayer
           //break;
         } 
       }
-			
-			if( !empty($this->aCurArgs['mobile']) ) {
-				$aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
-			}
+      
+      if( !empty($this->aCurArgs['mobile']) ) {
+        $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
+      }
 
       if( isset($aTest_media) && count($aTest_media) > 0 ) { 
         $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
@@ -1045,7 +1045,7 @@ class flowplayer_frontend extends flowplayer
         $bVideoLink = false;
       }
     }
-		
+    
     $sLink = get_permalink();
     if( !isset($sPermalink) || empty($sPermalink) ) {       
       $sPermalink = urlencode(get_permalink());
@@ -1053,7 +1053,7 @@ class flowplayer_frontend extends flowplayer
       $sTitle = urlencode( html_entity_decode( is_singular() ? get_the_title().' ' : get_bloginfo() ).' ');
     }
 
-					
+          
     $sHTMLSharing = '<ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank">Facebook</a></li>
     <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank">Twitter</a></li>
