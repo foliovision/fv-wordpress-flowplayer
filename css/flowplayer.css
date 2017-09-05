@@ -193,7 +193,7 @@
 .flowplayer.is-touch.is-mouseover .fp-progress:after{height:18px;width:18px;top:-4px;right:-10px;border:5px solid rgba(255,255,255,0.65);-webkit-box-shadow:1px 0 4px rgba(0,0,0,0.5);-moz-box-shadow:1px 0 4px rgba(0,0,0,0.5);box-shadow:1px 0 4px rgba(0,0,0,0.5)}
 .flowplayer.is-touch.is-mouseover .fp-timeline.is-dragging .fp-progress:after{border:10px solid #fff;-webkit-border-radius:20px;-moz-border-radius:20px;border-radius:20px;-webkit-transition:inherit;-moz-transition:inherit;transition:inherit;top:-5px;right:-10px}
 .flowplayer.is-touch.is-rtl.is-mouseover .fp-timeline.is-dragging .fp-progress:after{left:-15px;right:auto;border:10px solid #fff}
-.flowplayer .fp-volume{position:absolute;height:6px;bottom:12px;right:10px;}
+.flowplayer .fp-volume{position:absolute;height:6px;bottom:12px;right:10px;align-items:normal;display:block}
 .has-menu.flowplayer .fp-volume{right:37px}
 .is-rtl.flowplayer .fp-volume{right:auto;left:10px}
 .is-rtl.has-menu.flowplayer .fp-volume{left:37px}
@@ -237,9 +237,11 @@
 .flowplayer.aside-time .fp-time .fp-elapsed::after{content:' / '}
 .flowplayer.is-splash,.flowplayer.is-poster{cursor:pointer;}
 .flowplayer.is-splash .fp-controls,.flowplayer.is-poster .fp-controls,.flowplayer.is-splash .fp-fullscreen,.flowplayer.is-poster .fp-fullscreen,.flowplayer.is-splash .fp-unload,.flowplayer.is-poster .fp-unload,.flowplayer.is-splash .fp-time,.flowplayer.is-poster .fp-time,.flowplayer.is-splash .fp-embed,.flowplayer.is-poster .fp-embed,.flowplayer.is-splash .fp-title,.flowplayer.is-poster .fp-title,.flowplayer.is-splash .fp-brand,.flowplayer.is-poster .fp-brand{display:none !important}
+.flowplayer .fp-controls > * { margin:inherit }
 .flowplayer.is-poster .fp-engine{top:-9999em}
 .flowplayer.is-loading .fp-waiting{display:block}
-.flowplayer.is-loading .fp-controls,.flowplayer.is-loading .fp-time{display:none}
+.flowplayer.is-loading .
+,.flowplayer.is-loading .fp-time{display:none}
 .flowplayer.is-loading .fp-ui{background-position:-9999em}
 .flowplayer.is-loading video.fp-engine{position:absolute;top:-9999em}
 .flowplayer.is-seeking .fp-waiting{display:block}
