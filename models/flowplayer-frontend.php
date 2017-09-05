@@ -253,10 +253,10 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' autoplay';  
           }
           
-          if( $width ) {
+          if( intval($width) > 0 ) {
             $this->ret['html'] .= ' width="'.$width.'"'; 
           }
-          if( $height ) {
+          if( intval($height) > 0 ) {
             $this->ret['html'] .= ' height="'.$height.'"';
           }
           
@@ -376,10 +376,12 @@ class flowplayer_frontend extends flowplayer
         
         $attributes['style'] = '';
         if( !$bIsAudio ) {
+          $cssWidth = intval($width) > 0 ? $width . 'px' : '100%';
+          $cssHeight = intval($height) > 0 ? $height . 'px' : '100%';          
           if( $this->_get_option('fixed_size') ) {
-            $attributes['style'] .= 'width: ' . $width . 'px; height: ' . $height . 'px; ';
+            $attributes['style'] .= 'width: ' . $cssWidth . '; height: ' . $cssHeight . '; ';
           } else {
-            $attributes['style'] .= 'max-width: ' . $width . 'px; max-height: ' . $height . 'px; ';
+            $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
           }
         }
         
@@ -405,7 +407,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fullscreen'] = 'false';
         }       
   
-        if( !$bIsAudio ) {
+        if( !$bIsAudio && intval($width) > 0 && intval($height) > 0 ) {
           $ratio = round($height / $width, 4);   
           $this->fRatio = $ratio;
   
@@ -489,7 +491,7 @@ class flowplayer_frontend extends flowplayer
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
         
-        if( !$bIsAudio ) {
+        if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
         }
 

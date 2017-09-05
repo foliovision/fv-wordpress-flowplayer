@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.2.11 - 2017/09/?? =
+
+* CSS - Player width setting - now you can enter 0 to get 100% player width
+
 = 6.2.10 - 2017/09/04 =
 
 * Google Analytics - fix for HLS streams turning up as "index" only - adding last directory name into it as well, so you will get my-video/index now.
