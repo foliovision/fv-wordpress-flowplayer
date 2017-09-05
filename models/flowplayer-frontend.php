@@ -253,10 +253,10 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' autoplay';  
           }
           
-          if( intval($width) > 0 ) {
+          if( is_int($width) && intval($width) > 0 ) {
             $this->ret['html'] .= ' width="'.$width.'"'; 
           }
-          if( intval($height) > 0 ) {
+          if( is_int($height) && intval($height) > 0 ) {
             $this->ret['html'] .= ' height="'.$height.'"';
           }
           
@@ -376,8 +376,10 @@ class flowplayer_frontend extends flowplayer
         
         $attributes['style'] = '';
         if( !$bIsAudio ) {
-          $cssWidth = intval($width) > 0 ? $width . 'px' : '100%';
-          $cssHeight = intval($height) > 0 ? $height . 'px' : '100%';          
+          if( intval($width) == 0 ) $width = '100%';
+          if( intval($height) == 0 ) $height = '100%';
+          $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
+          $cssHeight = stripos($height,'%') !== false ? $height : $height. 'px';          
           if( $this->_get_option('fixed_size') ) {
             $attributes['style'] .= 'width: ' . $cssWidth . '; height: ' . $cssHeight . '; ';
           } else {
@@ -407,7 +409,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fullscreen'] = 'false';
         }       
   
-        if( !$bIsAudio && intval($width) > 0 && intval($height) > 0 ) {
+        if( !$bIsAudio && is_int($width) && intval($width) > 0 && is_int($height) && intval($height) > 0 ) {
           $ratio = round($height / $width, 4);   
           $this->fRatio = $ratio;
   

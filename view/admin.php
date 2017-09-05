@@ -199,9 +199,9 @@ function fv_flowplayer_admin_default_options() {
 							<td><label for="width"><?php _e('Default Video Size', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
                 <p class="description">
-                  <label for="width"><?php _e('Width', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo intval( $fv_fp->_get_option('width') ); ?>" />
-                  <label for="height"><?php _e('Height', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo intval( $fv_fp->_get_option('height') ); ?>" />
-                  <?php _e('Enter values in pixels. 0 = 100%', 'fv-wordpress-flowplayer'); ?>
+                  <label for="width"><?php _e('Width', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo $fv_fp->_get_option('width'); ?>" />
+                  <label for="height"><?php _e('Height', 'fv-wordpress-flowplayer'); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo $fv_fp->_get_option('height'); ?>" />
+                  <?php _e('Enter values in pixels or 100%.', 'fv-wordpress-flowplayer'); ?>
                 </p>
 							</td>
 						</tr>

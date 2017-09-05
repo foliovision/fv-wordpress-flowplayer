@@ -345,7 +345,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.2.11 - 2017/09/?? =
 
-* CSS - Player width setting - now you can enter 0 to get 100% player width
+* CSS - Player width setting - now you can enter 100% for player width
 
 = 6.2.10 - 2017/09/04 =
 
