@@ -282,6 +282,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
+      } else if( in_array( $key, array('width', 'height') ) ) {
+        $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
       } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
