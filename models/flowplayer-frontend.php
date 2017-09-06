@@ -667,6 +667,9 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-vertical-wrapper">'.$this->ret['html'].'</div>';
     }
+    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' && count($aPlaylistItems) > 1 ){
+      $this->ret['html'] = '<div class="fp-playlist-text-wrapper">'.$this->ret['html'].'</div>';
+    }
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
 
     

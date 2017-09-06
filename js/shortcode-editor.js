@@ -803,6 +803,7 @@ function fv_wp_flowplayer_edit() {
         if (sliststyle[1] == 'prevnext') objPlaylistStyle.selectedIndex = 2;
         if (sliststyle[1] == 'vertical') objPlaylistStyle.selectedIndex = 3;
         if (sliststyle[1] == 'horizontal') objPlaylistStyle.selectedIndex = 4;
+        if (sliststyle[1] == 'text') objPlaylistStyle.selectedIndex = 5;
     }    
   	if( sembed != null && sembed[1] != null ) {
   		if (sembed[1] == 'true') 
@@ -1080,7 +1081,7 @@ function fv_wp_flowplayer_submit( preview ) {
   
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_align', 'align', false, false, ['left', 'right'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false'] );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_playlist', 'liststyle', false, false, ['tabs', 'prevnext', 'vertical','horizontal'] );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_playlist', 'liststyle', false, false, ['tabs', 'prevnext', 'vertical','horizontal','text'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_controlbar', 'controlbar', false, false, ['yes', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_speed', 'speed', false, false, ['buttons', 'no'] );
