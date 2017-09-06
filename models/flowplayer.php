@@ -663,7 +663,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }
     <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
-    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
     <?php if ( $fv_fp->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }<?php endif; ?>    
 
     <?php if( $fv_fp->_get_option('subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->_get_option('subtitleSize')); ?>px; }<?php endif; ?>

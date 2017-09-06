@@ -527,7 +527,8 @@
 .fp-playlist-external a h4 {font-family:Helvetica Neue,Helvetica,Arial,sans-serif;letter-spacing:0}
 .fp-playlist-external a .now-playing {opacity:0;width:100%;height:100%;transition: all 1s ease-in-out 0s;position:absolute;top:0;bottom:0;left:0;right:0;box-shadow: inset 0 0 250px #000;color:#fff;font-size:16px;font-family:"myriad pro",Helvetica,Arial,sans-serif;font-weight:700;text-transform:uppercase;text-shadow:0 0 5px #333;z-index:99;-webkit-animation:blending 3s ease-in-out 1s alternate infinite;-moz-animation:blending 3s ease-in-out 1s alternate infinite;animation:blending 3s ease-in-out 1s alternate infinite}
 .fp-playlist-external a .now-playing span {background-color:transparent;display:block;margin:0 auto;position:relative;top:50%;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);transform:translateY(-50%)}
-.fp-playlist-external a.is-active h4,.fp-playlist-external a.is-active:hover h4 {display:none}
+.fp-playlist-external:not(.fv-playlist-design-2014):not(.fp-playlist-only-captions) a.is-active h4 {opacity:0}
+.fp-playlist-external a.is-active:hover .now-playing {display:none}
 
 .fp-playlist-horizontal {text-align:center;display:block;margin-left:auto;margin-right:auto;margin-bottom: 24px;clear:both;font-size:0}
 .fp-playlist-horizontal:before,.fp-playlist-horizontal:after {content:"";display:table}
@@ -539,7 +540,7 @@
 .fp-playlist-horizontal a:nth-child(3n+1) div:before {display:none}
 .fp-playlist-external a h4 {opacity:0;position:absolute;top:0%;bottom:0;left:0;right:0;width:100%;margin:0 auto;padding:5px 10px;text-align:center;transition:all 0.3s ease-in-out 0.1s;font-size:13px;color:#fff;background-color:rgba(0, 0, 0, 0.75)}
 .fp-playlist-external a h4 span {position:absolute;top:50%;left:0;right:0;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);transform:translateY(-50%);border:0;padding:5px 10px}
-.fp-playlist-external a:hover h4,.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper a:hover h4 {opacity:1;color:#fff}
+.fp-playlist-external a:hover h4,.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper a:hover h4,.fp-playlist-external a.is-active:hover h4 {opacity:1;color:#fff}
 .fp-playlist-horizontal a.is-active {-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s}
 .is-touch + .fp-playlist-horizontal a h4 {opacity:1;background-color:transparent;text-shadow:0 0 12px #000;top:20%;bottom:20%;font-family:"myriad pro",Helvetica,Arial,sans-serif !important}
 .is-touch + .fp-playlist-horizontal a h4 span {background-color:rgba(0,0,0,0.3)}
@@ -564,7 +565,6 @@
 	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video {min-height:0 !important;height:100% !important}
 .fp-playlist-external.fp-playlist-vertical a:hover .now-playing {opacity:0}
 .fp-playlist-only-captions.fp-playlist-vertical a h4 {position:relative;top:auto;background-color:transparent;opacity:1;text-shadow:none}
-.fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a h4 {color:#fff}
 .fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
 
 @-moz-keyframes blending{
@@ -580,8 +580,9 @@
 }
 
 /* Playlist 2014 - classic */ 
-.fv-playlist-design-2014.fp-playlist-horizontal a h4 {opacity:1;position:relative;margin-bottom:7px;color:#000;background-color:transparent}
-.fv-playlist-design-2014.fp-playlist-horizontal a h4 span {position:relative;transform:none;top:auto;padding:0}
+.fv-playlist-design-2014.fp-playlist-external a h4 {opacity:1;position:relative;margin-bottom:7px;padding:0 10px 4px;color:#000;background-color:transparent}
+.fv-playlist-design-2014.fp-playlist-external a h4 span {position:relative;transform:none;top:auto;padding:0}
+.fv-playlist-design-2014.fp-playlist-external a:hover h4,.fv-playlist-design-2014.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper .fv-playlist-design-2014 a:hover h4 {color:inherit}
 
 /* Playlist 2017 - text only */ 
 .fp-playlist-text.fp-playlist-external a h4,.visible-captions.fp-playlist-external a h4 {background-color:transparent;opacity:1}
