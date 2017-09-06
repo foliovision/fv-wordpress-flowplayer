@@ -163,29 +163,3 @@
 		background-size: 100%;
 	}
 }
-
-/* No chrome option */
-.no-chrome #fv_player_pro_boxWrapper,
-.no-chrome #fv_player_pro_boxMiddleLeft, 
-.no-chrome #fv_player_pro_boxMiddleRight, 
-.no-chrome #fv_player_pro_boxTopLeft, 
-.no-chrome #fv_player_pro_boxTopCenter, 
-.no-chrome #fv_player_pro_boxTopRight, 
-.no-chrome #fv_player_pro_boxBottomLeft, 
-.no-chrome #fv_player_pro_boxBottomRight, 
-.no-chrome #fv_player_pro_boxBottomCenter {
-    background: transparent;
-}
-.no-chrome #fv_player_pro_boxContent {
-    background: #fff;
-}
-.no-chrome .flowplayer.lightbox-starter,
-.no-chrome .flowplayer.lightboxed {
-    background-color: transparent;
-}
-.no-chrome #fv_player_pro_boxClose,
-.no-chrome #fv_player_pro_boxBottomLeft,
-.no-chrome #fv_player_pro_boxBottomCenter,
-.no-chrome #fv_player_pro_boxBottomRight {
-    display: none;
-}

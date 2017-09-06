@@ -343,25 +343,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.2.11 - 2017/09/?? =
+= 6.2.7 - 2017/07/?? =
 
-* CSS - Player width setting - now you can enter 100% for player width
-
-= 6.2.10 - 2017/09/04 =
-
-* Google Analytics - fix for HLS streams turning up as "index" only - adding last directory name into it as well, so you will get my-video/index now.
-
-= 6.2.9 - 2017/08/28 =
-
-* Fix for error message not appearing on old browser using Flash
-
-= 6.2.8 - 2017/08/25 =
-
-* Fix for fullscreen mode on Chrome 60 on Android - was using native fullscreen
-
-= 6.2.7 - 2017/08/25 =
-
-* Fix for Download button appearing in Chrome 60 on Android when using native fullscreen
 * CSS - making the timeline wider if there are subtitles but no volume control (mobile)
 * Lightbox - parsing link rel attribute to allow you to create lightboxes which are not grouped into galleries. Very useful for lightboxes which show inline HTML or iframe.
 
