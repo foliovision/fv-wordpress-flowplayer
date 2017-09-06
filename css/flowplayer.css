@@ -240,8 +240,7 @@
 .flowplayer .fp-controls > * { margin:inherit }
 .flowplayer.is-poster .fp-engine{top:-9999em}
 .flowplayer.is-loading .fp-waiting{display:block}
-.flowplayer.is-loading .
-,.flowplayer.is-loading .fp-time{display:none}
+.flowplayer.is-loading .fp-controls,.flowplayer.is-loading .fp-time{display:none}
 .flowplayer.is-loading .fp-ui{background-position:-9999em}
 .flowplayer.is-loading video.fp-engine{position:absolute;top:-9999em}
 .flowplayer.is-seeking .fp-waiting{display:block}
