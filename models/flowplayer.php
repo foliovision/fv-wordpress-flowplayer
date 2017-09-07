@@ -567,7 +567,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'horizontal' ){
         $sPlaylistClass .= ' fp-playlist-horizontal';
       } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
-        $sPlaylistClass = 'fp-playlist-vertical';
+        $sPlaylistClass .= ' fp-playlist-vertical';
       } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ){
         $sPlaylistClass = 'fp-playlist-vertical';
       }
