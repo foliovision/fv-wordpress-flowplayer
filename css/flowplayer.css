@@ -528,8 +528,8 @@
 .fp-playlist-external a h4 {font-family:Helvetica Neue,Helvetica,Arial,sans-serif;letter-spacing:0}
 .fp-playlist-external a .now-playing {opacity:0;width:100%;height:100%;transition: all 1s ease-in-out 0s;position:absolute;top:0;bottom:0;left:0;right:0;box-shadow: inset 0 0 250px #000;color:#fff;font-size:16px;font-family:"myriad pro",Helvetica,Arial,sans-serif;font-weight:700;text-transform:uppercase;text-shadow:0 0 5px #333;z-index:99;-webkit-animation:blending 3s ease-in-out 1s alternate infinite;-moz-animation:blending 3s ease-in-out 1s alternate infinite;animation:blending 3s ease-in-out 1s alternate infinite}
 .fp-playlist-external a .now-playing span {background-color:transparent;display:block;margin:0 auto;position:relative;top:50%;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);transform:translateY(-50%)}
-.fp-playlist-external:not(.fv-playlist-design-2014):not(.fp-playlist-only-captions) a.is-active h4 {opacity:0}
-.fp-playlist-external a.is-active:hover .now-playing {display:none}
+.fp-playlist-external.fv-playlist-design-2017 a.is-active h4,.fp-playlist-external a.is-active:hover .now-playing {display:none;}
+.fp-playlist-external.fv-playlist-design-2017 a.is-active:hover h4 {display:block}
 
 .fp-playlist-horizontal {text-align:center;display:block;margin-left:auto;margin-right:auto;margin-bottom: 24px;clear:both;font-size:0}
 .fp-playlist-horizontal:before,.fp-playlist-horizontal:after {content:"";display:table}
