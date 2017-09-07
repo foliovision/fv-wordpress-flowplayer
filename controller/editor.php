@@ -33,22 +33,23 @@ function fv_player_shortcode_editor_scripts( $page ) {
 add_action('media_buttons', 'flowplayer_add_media_button', 10);
 
 function flowplayer_add_media_button() {
-  if( stripos( $_SERVER['REQUEST_URI'], 'post.php' ) === FALSE && stripos( $_SERVER['REQUEST_URI'], 'post-new.php' ) === FALSE ) {
-    return;
+  if( stripos( $_SERVER['REQUEST_URI'], 'post.php' ) !== FALSE ||
+     stripos( $_SERVER['REQUEST_URI'], 'post-new.php' ) !== FALSE ||
+     isset($_POST['action']) && $_POST['action'] == 'vc_edit_form'
+     ) {
+    global $post;
+    $plugins = get_option('active_plugins');
+    $found = false;
+    foreach ( $plugins AS $plugin ) {
+      if( stripos($plugin,'foliopress-wysiwyg') !== FALSE )
+        $found = true;
+    }
+    $button_tip = 'Insert a video';
+    $wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
+    $icon = '<span> </span>';
+  
+    echo '<a title="' . __('Add FV Player', 'fv-wordpress-flowplayer') . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
   }
-
-  global $post;
-	$plugins = get_option('active_plugins');
-	$found = false;
-	foreach ( $plugins AS $plugin ) {
-		if( stripos($plugin,'foliopress-wysiwyg') !== FALSE )
-			$found = true;
-	}
-	$button_tip = 'Insert a video';
-	$wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
-	$icon = '<span> </span>';
-
-	echo '<a title="' . __('Add FV Player', 'fv-wordpress-flowplayer') . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
 }
 
 
