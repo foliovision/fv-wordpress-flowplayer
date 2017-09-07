@@ -343,9 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.2.11 - 2017/09/?? =
+= 6.3 - 2017/09/07 =
 
+* CSS - New playlist designs! Pick one of the designs in Settings -> FV Player -> Skin -> Playlist
 * CSS - Player width setting - now you can enter 100% for player width
+* Visual Composer - text module now support FV Player shortcode editor
 
 = 6.2.10 - 2017/09/04 =
 

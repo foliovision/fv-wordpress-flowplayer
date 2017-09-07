@@ -123,8 +123,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   height: 243px;
 }
 
-#fv_flowplayer_interface_options p.description { line-height: 1.5; margin-bottom: 0; margin-top: 0; }
+#fv_flowplayer_interface_options p.description {line-height:1.5;margin-bottom:0;margin-top:0}
 
-#fp-preview-wrapper{height:360px;width:420px;position:absolute;top:0px;right:50px;}
-#fp-preview-wrapper>.flowplayer{position:relative; height:160px;}
-#fp-preview-wrapper .fp-subtitle{height:50px;}
+#fp-preview-wrapper{height:360px;width:420px;position:absolute;top:0px;right:50px}
+#fp-preview-wrapper>.flowplayer{position:relative; height:160px}
+#fp-preview-wrapper .fp-subtitle{height:50px}
+
+#dashboard-widgets .flowplayer-wrapper h3, #dashboard-widgets .flowplayer-wrapper h4 {color:inherit;margin:0 auto;padding:0;font-weight:700;font-size:inherit}

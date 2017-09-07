@@ -26,7 +26,7 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 
 add_shortcode('fv_time','fv_player_time');
 
-function flowplayer_content_handle( $atts, $content = null, $tag ) {
+function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 	global $fv_fp;
   if( !$fv_fp ) return false;	
   
