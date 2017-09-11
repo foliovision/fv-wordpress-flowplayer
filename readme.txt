@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.1 - 2017/09/11 =
+
+* CSS - Fix for "2014" playlist design on mobile and "Now playing" on it
+
 = 6.3 - 2017/09/07 =
 
 * CSS - New playlist designs! Pick one of the designs in Settings -> FV Player -> Skin -> Playlist

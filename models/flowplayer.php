@@ -356,7 +356,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
-    $sHTML .= "<h4><span>".$sItemCaption."</span></h4></a>\n";
+    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4></a>\n";
     
     $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
     
@@ -574,7 +574,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       //var_dump($aCaptions);
       if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ){
         $sPlaylistClass .= ' fp-playlist-only-captions';
-      } else if( isset($aArgs['liststyle']) && sizeof($aCaptions) > 0 ){
+      } else if( isset($aArgs['liststyle']) && sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ){
         $sPlaylistClass .= ' fp-playlist-has-captions';
       }
       
