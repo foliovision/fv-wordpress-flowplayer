@@ -253,10 +253,10 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' autoplay';  
           }
           
-          if( is_int($width) && intval($width) > 0 ) {
+          if( stripos($width,'%') == false && intval($width) > 0 ) {
             $this->ret['html'] .= ' width="'.$width.'"'; 
           }
-          if( is_int($height) && intval($height) > 0 ) {
+          if( stripos($height,'%') == false && intval($height) > 0 ) {
             $this->ret['html'] .= ' height="'.$height.'"';
           }
           
@@ -407,9 +407,9 @@ class flowplayer_frontend extends flowplayer
 
         if( !$this->_get_option('allowfullscreen') ) {
           $attributes['data-fullscreen'] = 'false';
-        }       
-  
-        if( !$bIsAudio && is_int($width) && intval($width) > 0 && is_int($height) && intval($height) > 0 ) {
+        }
+        
+        if( !$bIsAudio && stripos($width,'%') == false && intval($width) > 0 && stripos($height,'%') == false && intval($height) > 0 ) {
           $ratio = round($height / $width, 4);   
           $this->fRatio = $ratio;
   
