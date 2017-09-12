@@ -37,5 +37,5 @@ order/nesting of the generated HTML, so that the structure easier to understand.
         
 /* Add video button */
 .wp-media-buttons .fv-wordpress-flowplayer-button span{min-width:28px;min-height: 26px;display:inline-block;background:url('../images/icon.png') no-repeat center center;vertical-align:top;}
-@media only screen and (max-width: 782px) {.wp-media-buttons .fv-wordpress-flowplayer-button span{min-width:24px;display:inline-block;min-height:38px;} }
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {.wp-media-buttons .fv-wordpress-flowplayer-button span{background:url('../images/icon@x2.png') no-repeat center center;min-width:32px;background-size:32px auto;min-height:36px;} }
+@media only screen and (max-width: 782px) {.wp-media-buttons .fv-wordpress-flowplayer-button span{min-width:24px;display:inline-block;min-height:18px;background-size:24px auto;} }
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {.wp-media-buttons .fv-wordpress-flowplayer-button span{background:url('../images/icon@x2.png') no-repeat center center;min-width:32px;background-size:25px auto;} }
