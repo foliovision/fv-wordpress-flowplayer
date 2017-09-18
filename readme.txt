@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.2 - 2017/09/18 =
+
+* Playlist - fix for users who use "Prev/Next" playlist style globally
+
 = 6.3.1 - 2017/09/11 =
 
 * CSS - Fix for "2014" playlist design on mobile and "Now playing" on it

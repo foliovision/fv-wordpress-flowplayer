@@ -432,7 +432,7 @@ class flowplayer_frontend extends flowplayer
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'class="fp-playlist-external is-audio', $playlist_items_external_html );
           }
           
-          if( $args['liststyle'] == 'prevnext' || ( isset($this->aCurArgs['playlist_hide']) && $this->aCurArgs['playlist_hide']== 'true' ) ) {
+          if( $this->aCurArgs['liststyle'] == 'prevnext' || ( isset($this->aCurArgs['playlist_hide']) && $this->aCurArgs['playlist_hide']== 'true' ) ) {
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
           
@@ -614,7 +614,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
         }
         
-        if ($args['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
+        if ($this->aCurArgs['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
         }          
         
