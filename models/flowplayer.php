@@ -1002,7 +1002,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
     $content = false;
     $objPost = get_post($post_id);
-    if( $aVideos = FV_Player_Checker::get_videos($objPost->post_content) ) {
+    if( $aVideos = FV_Player_Checker::get_videos($objPost->ID) ) {
       if( $sDuration = flowplayer::get_duration($post_id, $aVideos[0]) ) {
         $content = $sDuration;
       }
@@ -1643,7 +1643,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   }
   
   $saved_post = get_post($post_id);
-  $videos = FV_Player_Checker::get_videos($saved_post->post_content);
+  $videos = FV_Player_Checker::get_videos($saved_post->ID);
 
   $iDone = 0;
   if( is_array($videos) && count($videos) > 0 ) {

@@ -358,10 +358,25 @@ class FV_Player_Checker {
   
   
   
-  public static function get_videos( $content ) {
+  public static function get_videos( $post_id ) {
     global $fv_fp;
     
-    preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
+    $objPost = get_post($post_id);
+    if( $objPost ) {
+      $content = $objPost->post_content;
+      preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
+      
+      $aMeta = get_post_custom($post_id);
+      if( $aMeta && is_array($aMeta) && count($aMeta) > 0) {
+        $meta_values = '';
+        foreach( $aMeta AS $values ) {
+          $meta_values .= implode( $values );
+        }
+        preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_values, $meta_matches );
+      }
+      
+      $matches[0] = array_merge($matches[0], $meta_matches[0]);
+    }
     
     $videos = array();
     if( isset($matches[0]) && count($matches[0]) ) {
