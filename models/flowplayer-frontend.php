@@ -58,6 +58,7 @@ class flowplayer_frontend extends flowplayer
     $rtmp = false;
     $youtube = false;
     $vimeo = false;
+    $wistia = false;
     $scripts_after = '';
     
     $attributes = array();
@@ -140,6 +141,14 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
+    //  https://account.wistia.com/medias/9km3qucr7g?embedType=async&videoFoam=true&videoWidth=1920
+    if( preg_match( "~https?://\S*?\.wistia\.com/medias/([a-z0-9]+)~i", $media, $aWistia ) ) {
+      $wistia = $aWistia[1];
+      $player_type = 'wistia';      
+    } else if( preg_match( "~https?://\S*?\.wistia\.com/embed/(?:iframe|medias)/([a-z0-9]+)~i", $media, $aWistia ) ) {
+      $wistia = $aWistia[1];
+      $player_type = 'wistia';      
+    }
     
     if( !isset($this->aCurArgs['liststyle']) || empty($this->aCurArgs['liststyle']) ){
       $this->aCurArgs['liststyle'] = $this->_get_option('liststyle');     
@@ -653,6 +662,16 @@ class flowplayer_frontend extends flowplayer
     
       $sAutoplay = ($autoplay) ? " autoplay='1'" : "";
       $this->ret['html'] .= "<iframe id='fv_vimeo_{$this->hash}' src='//player.vimeo.com/video/{$vimeo}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen{$sAutoplay}></iframe>\n";
+      
+    }
+    
+    
+    /*
+     *  Wistia player
+     */
+    else if( $player_type == 'wistia' ) {
+      $ratio = $width > 0 ? ' data-ratio="'.($height/$width).'"' : '';
+      $this->ret['html'] .= "</script><script src='//fast.wistia.com/assets/external/E-v1.js' async></script><div class='wistia_embed wistia_async_{$wistia}' style='height:{$height}px;max-width:{$width}px'".$ratio.">&nbsp;</div>\n";
       
     }
     
