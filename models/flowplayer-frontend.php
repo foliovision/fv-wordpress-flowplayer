@@ -144,8 +144,10 @@ class flowplayer_frontend extends flowplayer
     //  https://account.wistia.com/medias/9km3qucr7g?embedType=async&videoFoam=true&videoWidth=1920
     if( preg_match( "~https?://\S*?\.wistia\.com/medias/([a-z0-9]+)~i", $media, $aWistia ) ) {
       $wistia = $aWistia[1];
-      $player_type = 'wistia';      
-    } else if( preg_match( "~https?://\S*?\.wistia\.com/embed/(?:iframe|medias)/([a-z0-9]+)~i", $media, $aWistia ) ) {
+      $player_type = 'wistia';
+      
+    //  http://fast.wistia.net/embed/iframe/avk9twrrbn
+    } else if( preg_match( "~https?://\S*?\.wistia\.(?:com|net)/embed/(?:iframe|medias)/([a-z0-9]+)~i", $media, $aWistia ) ) {
       $wistia = $aWistia[1];
       $player_type = 'wistia';      
     }
