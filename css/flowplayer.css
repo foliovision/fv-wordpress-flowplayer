@@ -882,7 +882,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   background-repeat: no-repeat;
 }
 
-.fvfp-notice { position: absolute;top:10%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 1px #000}
+.fvfp-notices { position: absolute;top:10%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 1px #000}
 
 @media only screen and (max-width: 48em) {
   .fp-playlist-horizontal {margin-left:-1px;margin-right:-1px}
