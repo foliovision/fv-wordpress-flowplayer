@@ -343,6 +343,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.3 - 2017/09/26 =
+
+* Wistia - basic iframe embed support
+* Fix for PHP warnings when video duration check is active
+
 = 6.3.2 - 2017/09/18 =
 
 * Playlist - fix for users who use "Prev/Next" playlist style globally
