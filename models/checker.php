@@ -372,10 +372,11 @@ class FV_Player_Checker {
         foreach( $aMeta AS $values ) {
           $meta_values .= implode( $values );
         }
-        preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_values, $meta_matches );
+        if( preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_values, $meta_matches ) ) {
+          $matches[0] = array_merge($matches[0], $meta_matches[0]);
+        }
       }
       
-      $matches[0] = array_merge($matches[0], $meta_matches[0]);
     }
     
     $videos = array();
