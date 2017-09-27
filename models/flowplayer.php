@@ -494,8 +494,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             $aItem = array();
             $sSplashImage = false;
             $flash_media = array();
-            
-            $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
   
             foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
               if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
@@ -524,6 +522,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
               }                
               
             }
+            
+            $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
             
             if( count($flash_media) ) {
               $bHaveFlash = false;
