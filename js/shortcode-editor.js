@@ -505,7 +505,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles ) {
     var count = 0;
     for( var i in aInput ) {
       if( aInput[i].match(/^rtmp:/) ) new_item.find('.fv_wp_flowplayer_field_rtmp_path').val(aInput[i].replace(/^rtmp:/,''));
-      else if( aInput[i].match(/\.(jpg|png|gif|jpe|jpeg)$/) ) new_item.find('.fv_wp_flowplayer_field_splash').val(aInput[i]);
+      else if( aInput[i].match(/\.(jpg|png|gif|jpe|jpeg)(?:\?.*?)$/) ) new_item.find('.fv_wp_flowplayer_field_splash').val(aInput[i]);
       else {
         if( count == 0 ) {
           new_item.find('#fv_wp_flowplayer_field_src').val(aInput[i]);
