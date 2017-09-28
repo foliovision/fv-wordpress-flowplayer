@@ -101,3 +101,44 @@
 
 .fv-player-tabs th { width: 21%; text-align: right; }
 .fv-player-tabs .fv-player-tab-playlist th { text-align: left; }
+
+
+
+/*  moved in from main plugin css */
+.add_media span.wp-media-buttons-icon {
+	background: url("img/media-button.png") no-repeat scroll left top;
+    display: inline-block;
+    height: 16px;
+    margin: 0 2px;
+    vertical-align: text-top;
+    width: 16px;
+}
+#cboxWrapper a {
+	text-decoration: none;	
+}
+a #add-format, a #add-rtmp {
+    background: #333;
+    border-radius: 2px;
+    color: #fff;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: normal;
+    height: 18px;
+    line-height: 1rem;
+    margin: 0 5px 0 0;
+    text-align: center;
+    width: 18px;
+	padding: 0;
+	text-decoration: none;
+}
+#fv-wordpress-flowplayer-popup table {
+	width: 100%;	
+}
+#fv-wordpress-flowplayer-popup table th {
+	text-align: right;	
+	width: 18%;
+	padding: 4px 2px;
+}
+#fv-wordpress-flowplayer-popup table td {
+	padding: 4px 2px;
+}
