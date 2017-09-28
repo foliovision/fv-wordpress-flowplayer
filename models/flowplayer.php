@@ -629,11 +629,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
     .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
     .flowplayer .fp-elapsed { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
-    .flowplayer .fp-volumelevel { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }  
+    .flowplayer .fp-color { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }  
     .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }
     .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
-    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }
+    .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }
     .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important }
