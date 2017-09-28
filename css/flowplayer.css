@@ -1112,16 +1112,6 @@
 
 
 
-/*  control bar play button - needed?, todo: check  */
-.flowplayer.fvp-play-button .fp-play{display:block}
-.flowplayer.fvp-play-button .fp-elapsed{left:27px;}
-.is-rtl.flowplayer.fvp-play-button .fp-elapsed{right:27px}
-.flowplayer.fvp-play-button .fp-timeline{margin-left:72px;}
-.is-rtl.flowplayer.fvp-play-button .fp-timeline{margin-right:72px}
-.is-long.flowplayer.fvp-play-button .fp-timeline{margin-left:102px;}
-.is-rtl.is-long.flowplayer.fvp-play-button .fp-timeline{margin-right:102px}
-.no-time.flowplayer.fvp-play-button .fp-timeline,.aside-time.flowplayer.fvp-play-button .fp-timeline{margin-left:27px;}
-.is-rtl.no-time.flowplayer.fvp-play-button .fp-timeline,.is-rtl.aside-time.flowplayer.fvp-play-button .fp-timeline{margin-right:27px}
 
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
 /*this might be needed some day: .flowplayer.is-fullscreen .fp-player{background-color:#000}*/
@@ -1435,7 +1425,7 @@
 .flowplayer.no-controlbar .fp-controls a,.flowplayer.no-controlbar .fp-controls .fp-volume,.flowplayer.no-controlbar .fp-time {display:none;}
 .flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.fixed-controls.no-controlbar .fp-controls {height:auto;}
 .flowplayer.is-mouseover.no-controlbar .fp-timeline {height:4px;top:0;}
-.has-menu.no-brand.flowplayer.no-controlbar .fp-timeline,.flowplayer.fvp-play-button.no-controlbar .fp-timeline {margin:0;}
+.has-menu.no-brand.flowplayer.no-controlbar .fp-timeline {margin:0;}
 .flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.is-mouseover.no-controlbar .fp-mute, .flowplayer.is-mouseover.no-controlbar .fp-title {height:0;}
 .flowplayer.no-controlbar .fp-buffer, .flowplayer.no-controlbar .fp-progress, .flowplayer.no-controlbar .fp-timeline  { cursor: auto; }
 .flowplayer.no-controlbar .fp-timeline:hover+.fp-timeline-tooltip { display: none; }
@@ -1668,8 +1658,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
 .is-audio .fp-playlist-external { background-color:#eee }
 .flowplayer.is-audio .fp-controls { height:40px;top:0;bottom:0 }
 .flowplayer.is-audio .fp-play { height:40px !important; width:40px;line-height:40px !important }
-.flowplayer.fvp-play-button.is-audio .fp-timeline { margin-left:82px }
-.flowplayer.fvp-play-button.is-audio .fp-elapsed { left:35px }
 .flowplayer.fixed-controls.is-audio .fp-time em { bottom:13px }
 .flowplayer.is-audio .fp-waiting em {margin:0.8em 0.3em 0}
 .flowplayer.is-audio .fp-timeline { top:15px }
