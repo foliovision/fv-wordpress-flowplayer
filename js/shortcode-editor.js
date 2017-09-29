@@ -346,7 +346,7 @@ jQuery(document).ready(function($){
   });
   
   /*
-   * Preview iframe dialog resize
+   * Preview iframe dialog resize, todo: will it be needed?
    */
   jQuery(document).on('fvp-preview-complete',function(e,width,height){
     fv_player_shortcode_preview = false;
@@ -1206,7 +1206,7 @@ function fv_wp_flowplayer_submit( preview ) {
       jQuery('#fv-player-shortcode-editor-preview-new-tab > a').html('Open preview in a new window');
       if( jQuery('#fv-player-shortcode-editor-preview div.incompatibility').length == 0 ) jQuery('#fv-player-shortcode-editor-preview-new-tab').after('<div class="notice notice-warning incompatibility"><p>For live preview of the video player please use the latest Firefox, Chromium or Opera.</p></div>');
     }
-    if(fv_player_preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 9 || fv_player_shortcode_preview_unsupported){
+    if(fv_player_preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 90 || fv_player_shortcode_preview_unsupported){
       jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-new-tab');
       fv_player_shortcode_preview = false;
       //console.log('fv_player_shortcode_preview = false');
@@ -1219,8 +1219,13 @@ function fv_wp_flowplayer_submit( preview ) {
     }
     
     //console.log('Iframe refresh with '+fv_wp_fp_shortcode);
-    if(url !== iFrame.attr('src') ){
-      iFrame.attr('src', url);
+    if( typeof(fv_player_shortcode_editor_last_url) == 'undefined' || url !== fv_player_shortcode_editor_last_url ){  //  todo: this need to check the last URL
+      fv_player_shortcode_editor_last_url = url;
+      jQuery.get(url, function(response) {
+        jQuery('#fv-player-shortcode-editor-preview-target').html('');
+        jQuery('#fv-player-shortcode-editor-preview-target').append( jQuery('#wrapper',response) );
+        jQuery(document).trigger('fvp-preview-complete');
+      } );
     }else{
       jQuery(document).trigger('fvp-preview-complete');
     }
@@ -1348,7 +1353,7 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
     aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|])/g, '$1');
   }
   
-  if( sCallback ) {
+  if( aOutput && sCallback ) {
     sCallback(aOutput);
   } else {
    return aOutput;
