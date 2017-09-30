@@ -167,7 +167,7 @@ class flowplayer_frontend extends flowplayer
     
     if( !$this->_get_option('old_code')  && count($aPlaylistItems) == 1 ) {
       $playlist_items_external_html = false;
-      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
+      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ), JSON_HEX_APOS );
     }
     
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
@@ -495,11 +495,7 @@ class flowplayer_frontend extends flowplayer
         $attributes_html = '';
         $attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
         foreach( $attributes AS $attr_key => $attr_value ) {
-          if( $attr_key == 'data-item' ) {
-            $attributes_html .= ' '.$attr_key.'=\''.$attr_value.'\'';
-          } else {
-            $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
-          }
+          $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
         }
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
