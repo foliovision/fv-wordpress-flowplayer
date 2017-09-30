@@ -79,8 +79,8 @@
 
 /*Preview iframe*/
 #fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
-#fv-player-shortcode-editor-preview div.fv-player-shortcode-editor-helper,
-#fv-player-shortcode-editor-preview iframe{display:none;}
+#fv-player-shortcode-editor-preview div.fv-player-shortcode-editor-helper/*,
+#fv-player-shortcode-editor-preview iframe*/{display:none;}
 #fv-player-shortcode-editor-preview.preview-loading #fv-player-shortcode-editor-preview-spinner,
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-no,
 #fv-player-shortcode-editor-preview.preview-show #fv-player-shortcode-editor-preview-iframe,
