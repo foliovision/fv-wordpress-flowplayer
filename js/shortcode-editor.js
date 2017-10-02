@@ -982,7 +982,8 @@ function fv_wp_flowplayer_dialog_resize() {
 function fv_wp_flowplayer_on_close() {
   fv_wp_flowplayer_init();
   fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
-  jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src','');
+  //jQuery('#fv-player-shortcode-editor-preview-iframe').attr('src','');
+  jQuery('#fv-player-shortcode-editor-preview-target').html('');
 }   
 
 
@@ -1199,8 +1200,8 @@ function fv_wp_flowplayer_submit( preview ) {
       return;
     }
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-loading');
-
-    var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(fv_wp_fp_shortcode);
+    
+    var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + encodeURIComponent(b64EncodeUnicode(fv_wp_fp_shortcode));
     
     if(fv_player_shortcode_preview_unsupported){
       jQuery('#fv-player-shortcode-editor-preview-new-tab > a').html('Open preview in a new window');
@@ -1221,9 +1222,10 @@ function fv_wp_flowplayer_submit( preview ) {
     //console.log('Iframe refresh with '+fv_wp_fp_shortcode);
     if( typeof(fv_player_shortcode_editor_last_url) == 'undefined' || url !== fv_player_shortcode_editor_last_url ){  //  todo: this need to check the last URL
       fv_player_shortcode_editor_last_url = url;
+      var preview_div = jQuery('#fv-player-shortcode-editor-preview-target');
+      preview_div.html('');
       jQuery.get(url, function(response) {
-        jQuery('#fv-player-shortcode-editor-preview-target').html('');
-        jQuery('#fv-player-shortcode-editor-preview-target').append( jQuery('#wrapper',response) );
+        preview_div.html( jQuery('#wrapper',response ) );
         jQuery(document).trigger('fvp-preview-complete');
       } );
     }else{

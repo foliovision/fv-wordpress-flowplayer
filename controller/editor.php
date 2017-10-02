@@ -69,14 +69,16 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
   } else {
     include dirname( __FILE__ ) . '/../view/wizard.php';
     
-    // todo: will this break page builders?
+    // todo: will some of this break page builders?
     global $fv_fp_scripts, $fv_fp;
     $fv_fp_scripts = true;
     $fv_fp->load_hlsjs= true;
     $fv_fp->load_dash = true;
+    $fv_fp->load_tabs = true;
     
     global $FV_Player_Pro;
     if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+      $FV_Player_Pro->bYoutube = true;
       //  todo: there should be a better way than this
       add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
       add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );

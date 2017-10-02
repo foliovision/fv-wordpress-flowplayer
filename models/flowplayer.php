@@ -352,6 +352,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
+    if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
+    
     $sHTML = "\t\t<a href='#' onclick='return false'";
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
