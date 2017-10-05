@@ -327,6 +327,17 @@ No worries.
 
 The problem is probably in AdBlock. If it's active, the overlay ads will be blocked. Once AdBlock is deactivated for the particular domain where the video is played, the overlay ads will be displayed (page refresh needed).
 
+= 34. My YouTube video doesn't show properly in fullscreen =
+
+There is an possible issue with some themes: YouTube video opens in fullscreen, but after minimizing and opening fullscreen again, the video is shrinked in the left part of the screen (as in [this example](http://screenshots.foliovision.com/431J0P0z0v3s)). You need to copy this CSS into your theme style sheet:
+
+`iframe.fvyoutube-engine {`
+    `width: 100% !important;`
+`}`
+
+You can optionally edit your theme's JS to prevent the shrinking.
+
+
 FV Player Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
 
 Thank you for being part of the HMTL 5 mobile video revolution!
