@@ -79,12 +79,13 @@
 
 /*Preview iframe*/
 #fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
-#fv-player-shortcode-editor-preview div.fv-player-shortcode-editor-helper/*,
-#fv-player-shortcode-editor-preview iframe*/{display:none;}
+#fv-player-shortcode-editor-preview div.fv-player-shortcode-editor-helper {display:none;}
 #fv-player-shortcode-editor-preview.preview-loading #fv-player-shortcode-editor-preview-spinner,
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-no,
-#fv-player-shortcode-editor-preview.preview-show #fv-player-shortcode-editor-preview-iframe,
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab{display:block;}
+#fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-target,
+#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-target{display:none}
+#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-iframe-refresh{display:none!important}
 #fv-player-shortcode-editor-preview-spinner{background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center; position:absolute; z-index: 2; height: 200px; width: 100%;}
 .fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}

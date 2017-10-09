@@ -131,7 +131,6 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
                 <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
               </div>
-              <!--<iframe id="fv-player-shortcode-editor-preview-iframe" allowfullscreen></iframe>-->
 							<div id="fv-player-shortcode-editor-preview-target"></div>
               <input type="button" value="<?php _e('Refresh preview', 'fv_flowplayer'); ?>"  class="button extra-field"  style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh" />
             </div>
