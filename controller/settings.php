@@ -22,6 +22,16 @@ function fv_player_admin_page() {
 
 
 
+function fv_player_is_admin_screen() {
+	if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
+		 return true;
+	}
+	return false;
+}
+
+
+
+
 add_filter('plugin_action_links', 'fv_wp_flowplayer_plugin_action_links', 10, 2);
 
 function fv_wp_flowplayer_plugin_action_links($links, $file) {
@@ -133,7 +143,7 @@ function fv_player_admin_pointer_boxes() {
 	}
   
   if( 
-    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false || ( isset($_GET['page']) && $_GET['page'] === 'fvplayer' ) ) 
+    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false ||fv_player_is_admin_screen() ) 
     && $pnotices = get_option('fv_wordpress_flowplayer_persistent_notices') 
   ) {  
     $fv_fp->pointer_boxes['fv_flowplayer_license_expired'] = array(
@@ -229,7 +239,7 @@ add_action('admin_enqueue_scripts', 'fv_flowplayer_admin_scripts');
 
 function fv_flowplayer_admin_scripts() {
   global $fv_wp_flowplayer_ver;
-  if (isset($_GET['page']) && $_GET['page'] == 'fvplayer') {
+  if( fv_player_is_admin_screen() ) {
     wp_enqueue_media();
     
   	wp_enqueue_script('common');
@@ -247,10 +257,7 @@ function fv_flowplayer_admin_scripts() {
 add_action('admin_head', 'flowplayer_admin_head');
 
 function flowplayer_admin_head() {  
-  
-  if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
-    return; 
-  }  
+  if( !fv_player_is_admin_screen() ) return; 
 
   global $fv_wp_flowplayer_ver;
   ?>      
@@ -271,9 +278,7 @@ function flowplayer_admin_head() {
 add_action('admin_footer', 'flowplayer_admin_footer');
 
 function flowplayer_admin_footer() {
-  if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
-    return; 
-  }
+  if( !fv_player_is_admin_screen() ) return;
   
   flowplayer_prepare_scripts();
 }
@@ -284,9 +289,7 @@ function flowplayer_admin_footer() {
 add_action('admin_print_footer_scripts', 'flowplayer_admin_footer_wp_js_restore', 999999 );
 
 function flowplayer_admin_footer_wp_js_restore() {
-  if( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) {
-    return; 
-  }
+  if( !fv_player_is_admin_screen() ) return; 
   
   ?>
   <script>
