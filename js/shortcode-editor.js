@@ -1019,6 +1019,7 @@ function fv_wp_flowplayer_submit( preview ) {
   fv_wp_fp_shortcode = '';
   var shorttag = 'fvplayer';
   var iFrame = jQuery('#fv-player-shortcode-editor-preview-iframe');
+  var divPreview = jQuery('#fv-player-shortcode-editor-preview');
 	
 	if(
     !preview &&
@@ -1072,10 +1073,13 @@ function fv_wp_flowplayer_submit( preview ) {
   }else{
     width = parseInt(jQuery('#fv_wp_flowplayer_field_width').val()) || 460;
     height = parseInt(jQuery('#fv_wp_flowplayer_field_height').val()) || 300;
-    if( iFrame.width() < width ) {
+    if( iFrame.length && iFrame.width() < width ) {
       height = height * ( iFrame.width()/width );
       width = iFrame.width();      
-    }
+    } else if( divPreview.length && divPreview.width() < width ) {
+      height = Math.round(height * ( divPreview.width()/width ));
+      width = divPreview.width();      
+    }    
     fv_wp_fp_shortcode += ' width="' + width + '" '    
     fv_wp_fp_shortcode += ' height="' + height + '" '
   }
