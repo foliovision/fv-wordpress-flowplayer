@@ -389,6 +389,7 @@ jQuery(document).ready(function($){
 function fv_wp_flowplayer_init() {
   fv_wp_flowplayer_dialog_resize_height_record = 0;
   fv_player_shortcode_preview = false;
+  fv_player_shortcode_editor_last_url = false;
   
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val();
