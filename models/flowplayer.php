@@ -1548,7 +1548,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     ?>    
     <style>
-      html {overflow-y: auto;}
+      html {overflow: hidden;}
     </style>    
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
