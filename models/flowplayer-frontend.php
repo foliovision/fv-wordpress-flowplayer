@@ -354,15 +354,6 @@ class flowplayer_frontend extends flowplayer
         }
         
         //  Align
-        if( isset($this->aCurArgs['align']) ) {
-          if( $this->aCurArgs['align'] == 'left' ) {
-            $attributes['class'] .= ' alignleft';
-          } else if( $this->aCurArgs['align'] == 'right' ) {
-            $attributes['class'] .= ' alignright';
-          } else if( $this->aCurArgs['align'] == 'center' ) {
-            $attributes['class'] .= ' aligncenter';
-          } 
-        }
         $attributes['class'] .= $this->get_align();
         
         if( $this->_get_option('engine') || $this->aCurArgs['engine'] == 'flash' ) {
@@ -759,7 +750,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_align() {
     $sClass = false;
-    if( isset($this->aCurArgs['align']) ) {
+    if( isset($this->aCurArgs['align']) && ( empty($this->aCurArgs['liststyle']) || $this->aCurArgs['liststyle'] != 'vertical' ) ) {
       if( $this->aCurArgs['align'] == 'left' ) {
         $sClass .= ' alignleft';
       } else if( $this->aCurArgs['align'] == 'right' ) {
