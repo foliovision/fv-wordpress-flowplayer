@@ -358,7 +358,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
-    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4></a>\n";
+    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4>";
+    $sHTML .= "</a>\n";
     
     $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
     

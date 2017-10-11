@@ -354,6 +354,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.5 - 2017/10/11 =
+
+* Bugfix - Playlist markup bug
+* Bugfix - Playlist alignment issue when using vertical playlist together with align shortcode attribute
+
 = 6.3.4 - 2017/10/09 =
 
 * HLS - updated the HLS.js library
