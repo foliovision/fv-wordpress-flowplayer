@@ -357,6 +357,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.3.6 - 2017/10/12 =
 
 * Fix for PHP warnings
+* Mobile - iPhone iOS 11 fullscreen fix
 
 = 6.3.5 - 2017/10/11 =
 
