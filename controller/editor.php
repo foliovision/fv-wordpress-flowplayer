@@ -71,7 +71,7 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
     
     // todo: will some of this break page builders?
     global $fv_fp_scripts, $fv_fp;
-    $fv_fp_scripts = array( 'fv_player_admin_load' => true ); //  without this or option js-everywhere the JS won't load
+    $fv_fp_scripts = array( 'fv_player_admin_load' => array( 'load' => true ) ); //  without this or option js-everywhere the JS won't load
     $fv_fp->load_hlsjs= true;
     $fv_fp->load_dash = true;
     $fv_fp->load_tabs = true;

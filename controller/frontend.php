@@ -402,7 +402,7 @@ function flowplayer_prepare_scripts() {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
     }    
 
-    if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {var_dump('globals',$GLOBALS['fv_fp_scripts']);
+    if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
