@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.7 - 2017/10/17 =
+
+* Mobile - iPhone iOS 11 fix for AWS hosted videos (CORS issue)
+
 = 6.3.6 - 2017/10/12 =
 
 * Fix for PHP warnings
