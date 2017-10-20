@@ -978,7 +978,7 @@ class flowplayer_frontend extends flowplayer
     $this->count_tabs++;
     $output = new stdClass;
     $output->ret = array();
-    $output->ret['html'] = '<div class="fv_flowplayer_tabs tabs woocommerce-tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
+    $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
     $output->ret['script'] = '';
     
     $output->ret['html'] .= '<ul>';
@@ -1001,7 +1001,8 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle']='none';
       
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
-      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$aPlayer['html'].'</div>';
+      $sClass = $key == 0 ? ' class="fv_flowplayer_tabs_first"' : '';
+      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'"'.$sClass.'>'.$aPlayer['html'].'</div>';
       foreach( $aPlayer['script'] AS $key => $value ) {
         $output->ret['script'][$key] = array_merge( isset($output->ret['script'][$key]) ? $output->ret['script'][$key] : array(), $aPlayer['script'][$key] );
       }

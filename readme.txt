@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.8 - 2017/10/20 =
+
+* CSS - avoiding FOUC when loading playlist tabs
+
 = 6.3.7 - 2017/10/17 =
 
 * Mobile - iPhone iOS 11 fix for AWS hosted videos (CORS issue)
