@@ -50,6 +50,16 @@
       jQuery('.fp-playlist-external').removeClass('visible-captions');
       jQuery('.fp-playlist-external').addClass('fv-playlist-design-'+$(this).val());
     });
+    
+    $('#design-timeline').on('change', function () {
+      jQuery('.flowplayer').removeClass('fp-slim fp-full fp-fat fp-minimal');
+      jQuery('.flowplayer').addClass( $(this).val() );
+    });
+    
+    $('#design-icons').on('change', function () {
+      jQuery('.flowplayer').removeClass('fp-edgy fp-outlined fp-playful');
+      jQuery('.flowplayer').addClass( $(this).val() );
+    });        
   });
 
   

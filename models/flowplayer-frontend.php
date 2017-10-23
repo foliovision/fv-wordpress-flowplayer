@@ -311,7 +311,7 @@ class flowplayer_frontend extends flowplayer
   
         
         
-        $attributes['class'] = 'flowplayer no-brand is-splash';
+        $attributes['class'] = 'flowplayer no-brand is-splash '.$this->_get_option('design-timeline').' '.$this->_get_option('design-icons');
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
@@ -488,6 +488,8 @@ class flowplayer_frontend extends flowplayer
             }
           }
         }
+        
+        add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
         
         $attributes_html = '';
         $attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
@@ -773,9 +775,7 @@ class flowplayer_frontend extends flowplayer
   }
   
     
-  function get_buttons() {
-    add_filter( 'fv_flowplayer_buttons_center', array( $this, 'get_speed_buttons' ) );
-    
+  function get_buttons() {    
     $sHTML = false;
     foreach( array('left','center','right','controlbar') AS $key ) {
       $aButtons = apply_filters( 'fv_flowplayer_buttons_'.$key, array() );
@@ -886,7 +886,7 @@ class flowplayer_frontend extends flowplayer
   
   
   
-  function get_speed_buttons( $aButtons ) {
+  function get_speed_attribute( $attributes ) {
     $bShow = false;
     if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
       $bShow = true;
@@ -897,10 +897,10 @@ class flowplayer_frontend extends flowplayer
     }
 
     if( $bShow ) {   
-      $aButtons[] = "<ul class='fv-player-speed'><li><a class='fv_sp_slower'>&#45;</a></li><li><a class='fv_sp_faster'>&#43;</a></li></ul>";
+      $attributes['data-speedb'] = true;
     }
     
-    return $aButtons;
+    return $attributes;
   }
   
   

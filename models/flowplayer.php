@@ -141,6 +141,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public function _get_select( $name, $key, $help = false, $more = false, $aOptions ) {
+    $option = $this->_get_option($key);
+    $key = esc_attr($key);
+    ?>
+      <tr>  
+        <td><label for="<?php echo $key ?>"><?php echo $name ?></label></td>
+        <td>
+          <select id="<?php echo $key ?>" name="<?php echo $key ?>" data-fv-preview="">
+            <?php foreach( $aOptions AS $k => $v ) : ?>
+              <option value="<?php echo esc_attr($k); ?>"<?php if( $option == $k ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
+            <?php endforeach; ?>      
+          </select>
+        </td>   
+      </tr>
+    <?php
+  }  
+  
+  
   private function _get_conf() {
     ///  Addition  2010/07/12  mv
     $conf = get_option( 'fvwpflowplayer' );  
@@ -627,8 +645,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
     .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; background-color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
     .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
-    .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
-    .flowplayer .fp-elapsed { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
+    .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
+    .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
     .flowplayer .fp-color { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }  
     .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }

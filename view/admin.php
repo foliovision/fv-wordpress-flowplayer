@@ -1101,14 +1101,42 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="timeColor"><?php _e('Time', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('timeColor') ); ?>" 
-                 data-fv-preview=".flowplayer .fp-elapsed { color: #%val% !important; } 
+                 data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
                  .fv-wp-flowplayer-notice-small { color: #%val% !important; }"/></td>
     </tr>
     <tr>
-      <td><label for="durationColor"><?php _e('Total time', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="durationColor"><?php _e('Buttons', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('durationColor') ); ?>" 
                  data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }"/></td>
     </tr>
+	<?php
+	$fv_fp->_get_select(
+						__('Timeline', 'fv-wordpress-flowplayer'),
+						'design-timeline',
+						false,
+						false,
+						array(
+							  ' ' => __('Default' , 'fv-wordpress-flowplayer'),
+							  'fp-slim' => __('Slim' , 'fv-wordpress-flowplayer'),
+							  'fp-full' => __('Full' , 'fv-wordpress-flowplayer'),
+							  'fp-fat' => __('Fat' , 'fv-wordpress-flowplayer'),
+							  'fp-minimal' => __('Minimal' , 'fv-wordpress-flowplayer'),
+							  )
+					   );
+	
+	$fv_fp->_get_select(
+						__('Icons', 'fv-wordpress-flowplayer'),
+						'design-icons',
+						false,
+						false,
+						array(
+							  ' ' => __('Default' , 'fv-wordpress-flowplayer'),
+							  'fp-edgy' => __('Edgy' , 'fv-wordpress-flowplayer'),
+							  'fp-outlined' => __('Outlined' , 'fv-wordpress-flowplayer'),
+							  'fp-playful' => __('Playful' , 'fv-wordpress-flowplayer')
+							  )
+					   );
+	?>						   
     <tr>    		
       <td colspan="2">        
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -1132,16 +1160,18 @@ function fv_flowplayer_admin_skin_playlist() {
     ?>    
   </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-    <tr>  
-      <td><label for="playlist-design"><?php _e('Playlist Design', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td>
-        <select id="playlist-design" name="playlist-design" data-fv-preview="">
-          <option value="2017"<?php if( $fv_fp->_get_option('playlist-design') == '2017'  ) echo ' selected="selected"'; ?>><?php _e('2017', 'fv-wordpress-flowplayer'); ?></option>          
-          <option value="2017 visible-captions"<?php if( $fv_fp->_get_option('playlist-design') == "2017 visible-captions" ) echo ' selected="selected"'; ?>><?php _e('2017 with captions', 'fv-wordpress-flowplayer'); ?></option>										  
-          <option value="2014"<?php if( $fv_fp->_get_option('playlist-design') == "2014" ) echo ' selected="selected"'; ?>><?php _e('2014', 'fv-wordpress-flowplayer'); ?></option>          
-        </select>
-      </td>   
-    </tr>    
+	<?php
+	$fv_fp->_get_select(
+						__('Playlist Design', 'fv-wordpress-flowplayer'),
+						'playlist-design',
+						false,
+						false,
+						array(
+							  '2017' => __('2017' , 'fv-wordpress-flowplayer'),
+							  '2017 visible-captions' => __('2017 with captions' , 'fv-wordpress-flowplayer'),
+							  '2014' => __('2014' , 'fv-wordpress-flowplayer')
+							  )
+					   ); ?>
     <tr>
       <td><label for="playlistBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistBgColor') ); ?>" 
