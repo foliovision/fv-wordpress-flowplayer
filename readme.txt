@@ -343,6 +343,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7 - 2017/10/?? =
+
+* Video linking - fix for bad URL when switching quality on Vimeo MP4 files
+
 = 6.3.3 - 2017/09/26 =
 
 * Wistia - basic iframe embed support
