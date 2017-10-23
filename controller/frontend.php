@@ -16,7 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-//add_action('the_content', 'flowplayer_content_remove_commas');
 add_action('wp_footer','flowplayer_prepare_scripts',9);
 add_action('wp_footer','flowplayer_display_scripts',100);          
 add_action('widget_text','do_shortcode');
@@ -83,14 +82,6 @@ function fv_flowplayer_get_js_translations() {
   
   return $aStrings;
 } 
-
-function flowplayer_content_remove_commas($content) {
-  preg_match('/.*popup=\'(.*?)\'.*/', $content, $matches);
-  $content_new = preg_replace('/\,/', '',$content);
-  if (isset($matches[1]))
-  $content_new = preg_replace('/popup=\'(.*?)\'/', 'popup=\''.$matches[1].'\'',$content_new);
-  return $content_new;
-}
 
 /**
  * Replaces the flowplayer tags in post content by players and fills the $GLOBALS['fv_fp_scripts'] array.

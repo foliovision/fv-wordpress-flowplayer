@@ -246,7 +246,3 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 }
 
-
-
-
-add_action('the_content', 'flowplayer_content_remove_commas');
