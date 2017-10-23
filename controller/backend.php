@@ -860,7 +860,7 @@ function fv_player_block_update( $arg ) {
     
     $sMessage .= 'Are you sure you want to upgrade?';
     
-    if( stripos($aUpdates->response[$plugin_path]->new_version,'6.3') === 0 ) {
+    if( stripos($aUpdates->response[$plugin_path]->new_version,'7.') === 0 ) {
       ?>
       <script>
       ( function($) {        
