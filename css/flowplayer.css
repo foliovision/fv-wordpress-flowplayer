@@ -1121,8 +1121,7 @@
 
 
 /* error icon, todo: check! */
-.is-error.flowplayer .fp-ui{background:url(img/no_play_white.png) center no-repeat;background-size:12%;}
-.is-error.flowplayer .fp-ui {background:url(img/no_play_white-x2.png) center no-repeat;background-size:12%}
+.is-error.flowplayer .fp-ui {background:url(img/no-play-white.svg) center no-repeat;background-size:14%}
 
 
 .flowplayer video.fp-engine { visibility:visible; }
@@ -1131,7 +1130,7 @@
 
 /* Share bar, todo: check!  */
 .flowplayer .fp-embed-code{display:none;}
-.flowplayer .fvp-share-bar{opacity:0;display:none;position:absolute;top:0px;left:0px;background-color:rgba(0, 0, 0, 0.3);font-size:12px;width:100%}
+.flowplayer .fvp-share-bar{font-size:12px}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
@@ -1143,16 +1142,11 @@
 .fvp-share-bar ul,
 .fvp-share-bar .fvp-sharing, 
 #content .fvp-share-bar .fvp-sharing {
-	/*clear: both;
-	width: 102px;*/ 
 	min-height: 24px;
-	margin: 3px auto !important;
+	margin: margin: 1em 0 0 0;
   	padding: 0 !important;
 	float: left;
   	font-family: "Lucida Console", Monaco, monospace;
-}
-.fvp-share-bar {
-	line-height: 18px !important;	
 }
 .fvp-share-bar label {
 	text-align: center !important;
@@ -1215,7 +1209,9 @@
 .fvp-share-bar .sharing-link{
     float: left;
     color: #fff;
-    padding: 6px 10px;
+    line-height: 24px;
+    margin: .5em 0;
+    padding: .5em;
     font-weight:bold;
 }
 .flowplayer .fvp-share-bar label{float:left;color:#fff;padding: 6px 10px;}
