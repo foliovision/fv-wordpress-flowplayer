@@ -1704,3 +1704,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
  *  Flowplayer 7 new stuff
  */
 .fp-playlist { display: none }
+
+.flowplayer.is-ready.is-paused {
+    background-image: none !important;    
+}
