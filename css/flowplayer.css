@@ -563,6 +563,11 @@
         color: #ec6c4c; }
     .flowplayer .fp-header .fp-fullscreen, .flowplayer .fp-header .fp-unload {
       float: right; }
+    .flowplayer .fp-airplay {
+    	position: absolute;
+    	right: 40px;
+    	top: 0;
+    }
     .flowplayer .fp-header .fp-unload {
       display: none; }
   .flowplayer .fp-help {
