@@ -1126,8 +1126,15 @@
 
 
 /* error icon, todo: check! */
-.is-error.flowplayer .fp-ui {background:url(img/no-play-white.svg) center no-repeat;background-size:14%}
-
+.is-error.flowplayer .fp-player:before {
+	background: url("img/no-play-white.svg") no-repeat center center;
+	background-size: 14%;
+	z-index: 2;
+	content: '';
+	display: block;
+	height: 100%;
+	position: relative;
+}
 
 .flowplayer video.fp-engine { visibility:visible; }
 .flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
@@ -1378,6 +1385,7 @@
   .fp-playlist-horizontal a,.entry-content .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fp-playlist-horizontal a {width: 50%}
   .fp-playlist-horizontal a:nth-child(3n+1) {clear:none}
   .fp-playlist-horizontal a:nth-child(2n+1) {clear:both}
+  .is-error.flowplayer .fp-player:before {background-size:17%}
 }
 @media (max-width: 40em){
   .fv_fp_close a {width:24px;height:24px;background-size:24px 24px}
@@ -1393,6 +1401,7 @@
 }
 @media only screen and (max-width: 22.44em) {
   .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:100%;float:none;margin:0.75% 0.5%}
+  .is-error.flowplayer .fp-player:before {background-size:20%}
 }
 
         
