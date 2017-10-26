@@ -1134,6 +1134,8 @@
 	display: block;
 	height: 100%;
 	position: relative;
+	-webkit-filter: drop-shadow( 0 0 4px #aaa );
+	filter: drop-shadow( 0 0 4px #aaa );	
 }
 
 .flowplayer video.fp-engine { visibility:visible; }
