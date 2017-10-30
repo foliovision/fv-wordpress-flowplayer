@@ -204,10 +204,10 @@
   top: 0; }
 
 .flowplayer.is-tiny {
-  font-size: .7em; }
+  font-size: .8em; }
 
 .flowplayer.is-small {
-  font-size: .8em; }
+  font-size: .7em; }
 
 .flowplayer.no-buffer .fp-ui .fp-controls .fp-timeline .fp-buffer {
   display: none; }
@@ -566,6 +566,11 @@
     .flowplayer .fp-airplay {
     	position: absolute;
     	right: 40px;
+    	top: 0;
+    }
+    .fp-chromecast {
+       	position: absolute;
+    	right: 80px;
     	top: 0;
     }
     .flowplayer .fp-header .fp-unload {
@@ -1231,9 +1236,9 @@
 .flowplayer .fvp-share-bar label{float:left;color:#fff;margin: .5em 0;padding: .5em;line-height:24px;}
 .flowplayer .fp-embed{display:none}
 /*.flowplayer.is-mouseover.is-ready .fp-embed-code{display:block}*/
-.flowplayer.is-mouseout .fvp-share-bar{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
+/*.flowplayer.is-mouseout .fvp-share-bar{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
 .flowplayer.is-mouseout .fvp-share-bar.visible{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
-.flowplayer.is-mouseover.is-ready .fvp-share-bar{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
+.flowplayer.is-mouseover.is-ready .fvp-share-bar{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)} */
 .flowplayer .fp-fullscreen {z-index:1}
 /*.flowplayer .fvp-share-bar {display:none;}*/
 .flowplayer .embed-code {padding: 0 10px 10px; display: none; clear: both; background-color: rgba(0, 0, 0, 0); }
