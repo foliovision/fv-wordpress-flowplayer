@@ -281,6 +281,11 @@ if ( typeof(parseSrcset) == "undefined") {
 
 }
 
+/*
+ *  Check if any of the retina images is not big enough for full-screen lightbox view.
+ *  However, if the found image is not at least 2/3 of the screen size, it won't be used.
+ *  Then it simply uses href image
+ */
 function fv_player_colorbox_scrset(args) {
   var src = jQuery(args).attr('href');
   if( src.match(/\.(png|jpg|jpeg|gif|webp)/i) ){
@@ -307,7 +312,9 @@ function fv_player_colorbox_scrset(args) {
         }
       });
       
-      src = aSources[win].url;
+      if( jQuery(args).width()*1.5 > find ) {
+        src = aSources[win].url;
+      }
     }
     
   }
