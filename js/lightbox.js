@@ -67,7 +67,7 @@ jQuery(document).ready(function(){
     args.initialWidth = 96;
     args.scrolling = false;
     jQuery(".colorbox").filter(function() {
-        return this.href.match(/\.(png|jpg|jpeg|gif)/i);
+        return this.href.match(/\.(png|jpg|jpeg|gif|webp)/i);
     }).fv_player_pro_colorbox( args );
     
     //Lightbox for non image divs href="#loginForm"
@@ -81,7 +81,7 @@ jQuery(document).ready(function(){
     args2.iframe = true;
     
     jQuery(".colorbox").filter(function() {
-      return !this.href.match(/\.(png|jpg|jpeg|gif)/i)
+      return !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
     }).not('[href^="#"]').fv_player_pro_colorbox( args2 );
     
   }
@@ -283,7 +283,7 @@ if ( typeof(parseSrcset) == "undefined") {
 
 function fv_player_colorbox_scrset(args) {
   var src = jQuery(args).attr('href');
-  if( src.match(/\.(png|jpg|jpeg|gif)/i) ){
+  if( src.match(/\.(png|jpg|jpeg|gif|webp)/i) ){
     var aSources = false;
     var srcset = jQuery(args).find('img[srcset]');
     if ( srcset.length > 0 ) {

@@ -354,10 +354,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.3.8 - 2017/10/?? =
+= 6.3.8 - 2017/11/.. =
 
 * Bugfix - comas in post content not appearing on site for some users
 * CSS - avoiding FOUC when loading playlist tabs
+* Lightbox - fix for WebP images
 
 = 6.3.7 - 2017/10/17 =
 
