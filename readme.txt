@@ -359,6 +359,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Bugfix - comas in post content not appearing on site for some users
 * CSS - avoiding FOUC when loading playlist tabs
 * Lightbox - fix for WebP images and responsive image picking
+* Lightbox - keyboard arrow keys no longer switch to next video/image if the video is playing
 
 = 6.3.7 - 2017/10/17 =
 

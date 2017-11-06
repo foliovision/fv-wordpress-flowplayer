@@ -40,6 +40,12 @@ jQuery(document).ready(function(){
     }    
   }
   
+  function fv_player_colorbox_keyboard( that ) {
+    var api = jQuery('#fv_player_pro_boxLoadedContent').find('.flowplayer').data("flowplayer");
+    if( api && api.ready ) return false;
+    return true;
+  }
+  
   var defaults = {
     rel: function() { return fv_player_colorbox_rel(this) },
     current: "{current} of {total}",      
@@ -47,7 +53,8 @@ jQuery(document).ready(function(){
     onCleanup: fv_lightbox_flowplayer_shutdown,
     title: function() { return fv_player_colorbox_title(this) },
     href: function() { return fv_player_colorbox_scrset(this) },
-    className: function() { return fv_player_colorbox_class(this) }
+    className: function() { return fv_player_colorbox_class(this) },    
+    arrowKey: function() { return fv_player_colorbox_keyboard(this) }
   };
 
   /*
