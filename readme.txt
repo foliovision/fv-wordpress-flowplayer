@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.9 - 2017/11/08 =
+
+* Safari 11 - disabling autoplay as it was failing to play the video without user interaction, in case of Vimeo failing to play at all. Proper fix coming in FV Player 7.
+
 = 6.3.8 - 2017/11/06 =
 
 * Bugfix - comas in post content not appearing on site for some users
