@@ -370,11 +370,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
+    if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
+    
     $sHTML = "\t\t<a href='#' onclick='return false'";
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
-    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4></a>\n";
+    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4>";
+    $sHTML .= "</a>\n";
     
     $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
     
@@ -1673,12 +1676,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     ?>    
     <style>
-      html {overflow-y: auto;}
+      html {overflow: hidden;}
     </style>    
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
         if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+          global $fv_fp;
+          $aAtts = shortcode_parse_atts($shortcode);
+          if( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
+            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+          }
           echo do_shortcode($shortcode);          
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>

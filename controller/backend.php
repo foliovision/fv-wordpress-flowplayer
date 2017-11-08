@@ -130,7 +130,7 @@ function fv_wp_flowplayer_check_template() {
 			}
       
 			if( stripos( $response['body'], '/html5.js') === FALSE && stripos( $response['body'], '/html5shiv.js') === FALSE ) {
-        $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Read our instrutions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
+        $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Please follow our instructions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
 			}      
 			
       $ok[] = __('Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
@@ -836,5 +836,42 @@ function fv_player_admin_notice_expired_license() {
         <?php if( !empty($aCheck->changelog) ) echo $aCheck->changelog; ?>
       </div>
     <?php }
+  }
+}
+
+
+add_action( 'admin_footer', 'fv_player_block_update', 999 );
+
+function fv_player_block_update( $arg ) {
+  global $pagenow;
+  if( isset($pagenow) && $pagenow == 'plugins.php' ) {
+    $plugin_path = str_replace( trailingslashit(plugins_url()), '', plugins_url('',dirname(__FILE__)) ).'/flowplayer.php';
+    $aUpdates = get_site_transient('update_plugins');
+    if( !$aUpdates || empty($aUpdates->response) || empty($aUpdates->response[$plugin_path]) ) return;
+    
+    $sMessage = 'You are about to upgrade to FV Player 7 which uses the new core video player with some visual changes.\n\n';
+    $aCheckProLicense = get_transient( 'fv_flowplayer_license' );
+    $aCheckPlayerLicense = get_transient( 'fv-player-pro_license' );
+    if( !empty($aCheckProLicense->expired) || !empty($aCheckProLicense->error) ) {
+      $sMessage .= 'Since your license is expired, so you will loose your custom logo and Pro features might not work.\n\n';
+    } if( !empty($aCheckPlayerLicense->expired) || !empty($aCheckPlayerLicense->error) ) {
+      $sMessage .= 'Since your license is expired, so you will loose your custom logo.\n\nAre you sure you want to upgrade?\n\n';
+    }
+    
+    $sMessage .= 'Are you sure you want to upgrade?';
+    
+    if( stripos($aUpdates->response[$plugin_path]->new_version,'7.') === 0 ) {
+      ?>
+      <script>
+      ( function($) {        
+        $('[data-plugin=<?php echo str_replace( array('/','.'), array('\\\/','\\\.'), $plugin_path ); ?>]').find('.update-link').click( function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          return confirm("<?php echo $sMessage; ?>");
+        });
+      })(jQuery);
+      </script>
+      <?php
+    }
   }
 }

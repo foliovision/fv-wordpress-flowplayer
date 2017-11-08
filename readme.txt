@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.8
+Tested up to: 4.8.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,13 +18,13 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 
 * **NEW** easy AB looped playback for your visitors (great for teaching sites)
 * **NEW** improved and more powerful playlists (more playlist features coming soon).
-* Automated checking of video mime type for logged in admins on MP4 videos
+* Automated checking of video encoding for logged in admins
 * FV Player is a completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Player all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
 * Single site pro license available (JW Player requires five pack for full features)
-* Ultra-efficient player: just 129kB of JavaScript and 9.9kB of Flash code. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* Ultra-efficient player: just 161kB of JavaScript and 10kB of Flash code. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
@@ -327,6 +327,17 @@ No worries.
 
 The problem is probably in AdBlock. If it's active, the overlay ads will be blocked. Once AdBlock is deactivated for the particular domain where the video is played, the overlay ads will be displayed (page refresh needed).
 
+= 34. My YouTube video doesn't show properly in fullscreen =
+
+There is an possible issue with some themes: YouTube video opens in fullscreen, but after minimizing and opening fullscreen again, the video is shrinked in the left part of the screen (as in [this example](http://screenshots.foliovision.com/431J0P0z0v3s)). You need to copy this CSS into your theme style sheet:
+
+`iframe.fvyoutube-engine {`
+    `width: 100% !important;`
+`}`
+
+You can optionally edit your theme's JS to prevent the shrinking.
+
+
 FV Player Pro comes with a money back guarantee so you can even try the commercial no-branding version risk free. Or make it work first with the free versions.
 
 Thank you for being part of the HMTL 5 mobile video revolution!
@@ -343,9 +354,39 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7 - 2017/10/?? =
+= 6.4 - 2017/11/?? =
 
-* Video linking - fix for bad URL when switching quality on Vimeo MP4 files
+* Flowplayer 7 core for beta testers
+
+= 6.3.9 - 2017/11/08 =
+
+* Safari 11 - disabling autoplay as it was failing to play the video without user interaction, in case of Vimeo failing to play at all. Proper fix coming in FV Player 7.
+
+= 6.3.8 - 2017/11/06 =
+
+* Bugfix - comas in post content not appearing on site for some users
+* CSS - avoiding FOUC when loading playlist tabs
+* Lightbox - fix for WebP images and responsive image picking
+* Lightbox - keyboard arrow keys no longer switch to next video/image if the video is playing
+
+= 6.3.7 - 2017/10/17 =
+
+* Mobile - iPhone iOS 11 fix for AWS hosted videos (CORS issue)
+
+= 6.3.6 - 2017/10/12 =
+
+* Fix for PHP warnings
+* Mobile - iPhone iOS 11 fullscreen fix
+
+= 6.3.5 - 2017/10/11 =
+
+* Bugfix - Playlist markup bug
+* Bugfix - Playlist alignment issue when using vertical playlist together with align shortcode attribute
+
+= 6.3.4 - 2017/10/09 =
+
+* HLS - updated the HLS.js library
+* Shortcode Editor - preview reworked due to stability issues
 
 = 6.3.3 - 2017/09/26 =
 

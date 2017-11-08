@@ -68,6 +68,30 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
     include dirname( __FILE__ ) . '/../view/wizard.old.php';
   } else {
     include dirname( __FILE__ ) . '/../view/wizard.php';
+    
+    // todo: will some of this break page builders?
+    global $fv_fp_scripts, $fv_fp;
+    $fv_fp_scripts = array( 'fv_player_admin_load' => array( 'load' => true ) ); //  without this or option js-everywhere the JS won't load
+    $fv_fp->load_hlsjs= true;
+    $fv_fp->load_dash = true;
+    $fv_fp->load_tabs = true;
+    
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+      $FV_Player_Pro->bYoutube = true;
+      //  todo: there should be a better way than this
+      add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
+      add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
+    }
+
+    global $FV_Player_VAST ;
+    if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
+      //  todo: there should be a better way than this
+      add_action('admin_footer', array( $FV_Player_VAST , 'styles' ) );
+      add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
+    }
+  
+    add_action('admin_footer','flowplayer_prepare_scripts');    
   }
 }
 
@@ -222,7 +246,3 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 }
 
-
-
-
-add_action('the_content', 'flowplayer_content_remove_commas');

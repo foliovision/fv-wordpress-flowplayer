@@ -40,6 +40,12 @@ jQuery(document).ready(function(){
     }    
   }
   
+  function fv_player_colorbox_keyboard( that ) {
+    var api = jQuery('#fv_player_pro_boxLoadedContent').find('.flowplayer').data("flowplayer");
+    if( api && api.ready ) return false;
+    return true;
+  }
+  
   var defaults = {
     rel: function() { return fv_player_colorbox_rel(this) },
     current: "{current} of {total}",      
@@ -47,7 +53,8 @@ jQuery(document).ready(function(){
     onCleanup: fv_lightbox_flowplayer_shutdown,
     title: function() { return fv_player_colorbox_title(this) },
     href: function() { return fv_player_colorbox_scrset(this) },
-    className: function() { return fv_player_colorbox_class(this) }
+    className: function() { return fv_player_colorbox_class(this) },    
+    arrowKey: function() { return fv_player_colorbox_keyboard(this) }
   };
 
   /*
@@ -67,7 +74,7 @@ jQuery(document).ready(function(){
     args.initialWidth = 96;
     args.scrolling = false;
     jQuery(".colorbox").filter(function() {
-        return this.href.match(/\.(png|jpg|jpeg|gif)/i);
+        return this.href.match(/\.(png|jpg|jpeg|gif|webp)/i);
     }).fv_player_pro_colorbox( args );
     
     //Lightbox for non image divs href="#loginForm"
@@ -81,7 +88,7 @@ jQuery(document).ready(function(){
     args2.iframe = true;
     
     jQuery(".colorbox").filter(function() {
-      return !this.href.match(/\.(png|jpg|jpeg|gif)/i)
+      return !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
     }).not('[href^="#"]').fv_player_pro_colorbox( args2 );
     
   }
@@ -281,9 +288,14 @@ if ( typeof(parseSrcset) == "undefined") {
 
 }
 
+/*
+ *  Check if any of the retina images is not big enough for full-screen lightbox view.
+ *  However, if the found image is not at least 2/3 of the screen size, it won't be used.
+ *  Then it simply uses href image
+ */
 function fv_player_colorbox_scrset(args) {
   var src = jQuery(args).attr('href');
-  if( src.match(/\.(png|jpg|jpeg|gif)/i) ){
+  if( src.match(/\.(png|jpg|jpeg|gif|webp)/i) ){
     var aSources = false;
     var srcset = jQuery(args).find('img[srcset]');
     if ( srcset.length > 0 ) {
@@ -307,7 +319,9 @@ function fv_player_colorbox_scrset(args) {
         }
       });
       
-      src = aSources[win].url;
+      if( jQuery(args).width()*1.5 > find ) {
+        src = aSources[win].url;
+      }
     }
     
   }

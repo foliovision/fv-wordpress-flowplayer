@@ -91,6 +91,10 @@
 	background-position: center center;
 }
 
+#fv_player_pro_boxClose:active {
+	top: auto;
+}
+
 #fv_player_pro_boxMiddleLeft,
 #fv_player_pro_boxMiddleRight,
 #fv_player_pro_boxTopLeft,
