@@ -876,7 +876,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( is_admin() &&  did_action('admin_footer') ) {
       echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
-      $sPath = $fv_fp->is_beta() ? 'admin-beta' : 'admin';
+      $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/".$sPath.".css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
     } else {
