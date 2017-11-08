@@ -167,7 +167,7 @@ class flowplayer_frontend extends flowplayer
     
     if( !$this->_get_option('old_code')  && count($aPlaylistItems) == 1 ) {
       $playlist_items_external_html = false;
-      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
+      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ), JSON_HEX_APOS );
     }
     
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
@@ -311,7 +311,10 @@ class flowplayer_frontend extends flowplayer
   
         
         
-        $attributes['class'] = 'flowplayer no-brand is-splash '.$this->_get_option('design-timeline').' '.$this->_get_option('design-icons');
+        $attributes['class'] = 'flowplayer no-brand is-splash';
+        if( $this->is_beta() ) {
+          $attributes['class'] .= ' '.$this->_get_option('design-timeline').' '.$this->_get_option('design-icons');
+        }
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
@@ -349,17 +352,11 @@ class flowplayer_frontend extends flowplayer
             $bPlayButton = false;
           }
         }
+        if( !$this->is_beta() && $bPlayButton ) {
+          $attributes['class'] .= ' fvp-play-button';
+        }
         
         //  Align
-        if( isset($this->aCurArgs['align']) ) {
-          if( $this->aCurArgs['align'] == 'left' ) {
-            $attributes['class'] .= ' alignleft';
-          } else if( $this->aCurArgs['align'] == 'right' ) {
-            $attributes['class'] .= ' alignright';
-          } else if( $this->aCurArgs['align'] == 'center' ) {
-            $attributes['class'] .= ' aligncenter';
-          } 
-        }
         $attributes['class'] .= $this->get_align();
         
         if( $this->_get_option('engine') || $this->aCurArgs['engine'] == 'flash' ) {
@@ -489,16 +486,14 @@ class flowplayer_frontend extends flowplayer
           }
         }
         
-        add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
+        if( $this->is_beta() ) {
+          add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
+        }
         
         $attributes_html = '';
         $attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
         foreach( $attributes AS $attr_key => $attr_value ) {
-          if( $attr_key == 'data-item' ) {
-            $attributes_html .= ' '.$attr_key.'=\''.$attr_value.'\'';
-          } else {
-            $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
-          }
+          $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
         }
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
@@ -762,7 +757,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_align() {
     $sClass = false;
-    if( isset($this->aCurArgs['align']) ) {
+    if( isset($this->aCurArgs['align']) && ( empty($this->aCurArgs['liststyle']) || $this->aCurArgs['liststyle'] != 'vertical' ) ) {
       if( $this->aCurArgs['align'] == 'left' ) {
         $sClass .= ' alignleft';
       } else if( $this->aCurArgs['align'] == 'right' ) {
@@ -775,7 +770,9 @@ class flowplayer_frontend extends flowplayer
   }
   
     
-  function get_buttons() {    
+  function get_buttons() {
+    if( !$this->is_beta() ) add_filter( 'fv_flowplayer_buttons_center', array( $this, 'get_speed_buttons' ) );
+    
     $sHTML = false;
     foreach( array('left','center','right','controlbar') AS $key ) {
       $aButtons = apply_filters( 'fv_flowplayer_buttons_'.$key, array() );
@@ -886,7 +883,7 @@ class flowplayer_frontend extends flowplayer
   
   
   
-  function get_speed_attribute( $attributes ) {
+  function get_speed_buttons( $aButtons ) {
     $bShow = false;
     if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
       $bShow = true;
@@ -897,6 +894,24 @@ class flowplayer_frontend extends flowplayer
     }
 
     if( $bShow ) {   
+      $aButtons[] = "<ul class='fv-player-speed'><li><a class='fv_sp_slower'>&#45;</a></li><li><a class='fv_sp_faster'>&#43;</a></li></ul>";
+    }
+    
+    return $aButtons;
+  }
+  
+  
+  function get_speed_attribute( $attributes ) {
+    $bShow = false;
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+      $bShow = true;
+    }
+    
+    if( isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'no' ) {
+      $bShow = false;
+    }
+    
+    if( $bShow ) {
       $attributes['data-speedb'] = true;
     }
     
@@ -988,7 +1003,7 @@ class flowplayer_frontend extends flowplayer
     $this->count_tabs++;
     $output = new stdClass;
     $output->ret = array();
-    $output->ret['html'] = '<div class="fv_flowplayer_tabs tabs woocommerce-tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
+    $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
     $output->ret['script'] = '';
     
     $output->ret['html'] .= '<ul>';
@@ -998,7 +1013,11 @@ class flowplayer_frontend extends flowplayer
     }
     $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
 
+    $aStartend = !empty($this->aCurArgs['startend']) ? explode(";",$this->aCurArgs['startend']) : false;  //  todo: somehow move to Pro?
+    
     foreach( $aPlaylistItems AS $key => $aSrc ) {
+      $this->aCurArgs['startend'] = isset($aStartend[$key]) ? $aStartend[$key] : false;
+      
       unset($this->aCurArgs['playlist']);
       $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
       
@@ -1007,7 +1026,8 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle']='none';
       
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
-      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$aPlayer['html'].'</div>';
+      $sClass = $key == 0 ? ' class="fv_flowplayer_tabs_first"' : '';
+      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'"'.$sClass.'>'.$aPlayer['html'].'</div>';
       foreach( $aPlayer['script'] AS $key => $value ) {
         $output->ret['script'][$key] = array_merge( isset($output->ret['script'][$key]) ? $output->ret['script'][$key] : array(), $aPlayer['script'][$key] );
       }

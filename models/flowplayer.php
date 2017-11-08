@@ -617,9 +617,100 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sHTML = "\t<div$attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
       
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
-  }  
+  }
   
   function css_generate( $skip_style_tag = true ) {
+    global $fv_fp;
+    
+    $iMarginBottom = intval($this->_get_option('marginBottom')) > -1 ? intval( $this->_get_option('marginBottom') ) : '28';
+    
+    $sSubtitleBgColor = $this->_get_option('subtitleBgColor');
+    
+    if( !$skip_style_tag ) : ?>
+      <style type="text/css">
+    <?php endif;
+    
+    if ( $fv_fp->_get_option('key') && $fv_fp->_get_option('logo') ) : ?>    
+      .flowplayer .fp-logo { display: block; opacity: 1; }                                              
+    <?php endif;
+  
+    if( $fv_fp->_get_option('hasBorder') ) : ?>
+      .flowplayer { border: 1px solid <?php echo $fv_fp->_get_option('borderColor'); ?> !important; }
+    <?php endif; ?>
+  
+    .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
+    .flowplayer.fixed-controls { margin: 0 auto <?php echo $iMarginBottom+30; ?>px auto; display: block; }
+    .flowplayer.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
+    .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
+    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; background-color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
+    .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
+    .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
+    .flowplayer .fp-elapsed { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
+    .flowplayer .fp-volumelevel { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }  
+    .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
+    .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }
+    .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
+    .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }
+    .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
+    #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
+    .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important }
+    
+    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>!important; } 
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; } 
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $fv_fp->_get_option('bufferColor'); ?>!important; } 
+    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; } 
+    .fvplayer .me-cannotplay span { padding: 5px; }
+    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
+  
+    .wpfp_custom_background { display: none; }  
+    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
+    .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
+    .is-finished .wpfp_custom_background { display: block; }  
+    .fv_player_popup {  background: <?php echo $fv_fp->_get_option('backgroundColor') ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
+  
+    <?php echo $fv_fp->_get_option('ad_css'); ?>
+    .wpfp_custom_ad { color: <?php echo $fv_fp->_get_option('adTextColor'); ?>; z-index: 20 !important; }
+    .wpfp_custom_ad a { color: <?php echo $fv_fp->_get_option('adLinksColor'); ?> }
+    
+    .fv-wp-flowplayer-notice-small { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
+    
+    .fvfp_admin_error { color: <?php echo $fv_fp->_get_option('durationColor'); ?>; }
+    .fvfp_admin_error a { color: <?php echo $fv_fp->_get_option('durationColor'); ?>; }
+    #content .fvfp_admin_error a { color: <?php echo $fv_fp->_get_option('durationColor'); ?>; }
+    .fvfp_admin_error_content {  background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
+    
+    .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }
+    <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    <?php if ( $fv_fp->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }<?php endif; ?>    
+
+    <?php if( $fv_fp->_get_option('subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
+    <?php if( $fv_fp->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo $fv_fp->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $fv_fp->_get_option('logoPosition') ) :
+      $value = $fv_fp->_get_option('logoPosition');
+      if( $value == 'bottom-left' ) {
+        $sCSS = "bottom: 30px; left: 15px";
+      } else if( $value == 'bottom-right' ) {
+        $sCSS = "bottom: 30px; right: 15px; left: auto";
+      } else if( $value == 'top-left' ) {
+        $sCSS = "top: 30px; left: 15px; bottom: auto";
+      } else if( $value == 'top-right' ) {
+        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
+      }
+      ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $fv_fp->_get_option('subtitleBgAlpha'); ?>); }
+  
+    <?php if( $fv_fp->_get_option('player-position') && 'left' == $fv_fp->_get_option('player-position') ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
+    <?php echo apply_filters('fv_player_custom_css',''); ?>
+    <?php if( !$skip_style_tag ) : ?>
+      </style>  
+    <?php endif;
+  }  
+  
+  function css_generate_beta( $skip_style_tag = true ) {
     global $fv_fp;
     
     $iMarginBottom = intval($this->_get_option('marginBottom')) > -1 ? intval( $this->_get_option('marginBottom') ) : '28';
@@ -782,7 +873,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( is_admin() &&  did_action('admin_footer') ) {
       echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
-      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
+      $sPath = $fv_fp->is_beta() ? 'admin-beta' : 'admin';
+      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/".$sPath.".css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
     } else {
       $aDeps = array();
@@ -796,7 +888,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       
       
-      if( $this->bCSSInline ) {
+      if( $this->is_beta() && $this->bCSSInline ) {
+        add_action( 'wp_head', array( $this, 'css_generate_beta' ) );
+        add_action( 'admin_head', array( $this, 'css_generate_beta' ) );
+      } else if( $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate' ) );
         add_action( 'admin_head', array( $this, 'css_generate' ) );
       }
@@ -854,7 +949,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     ob_start();
-    $this->css_generate(true);
+    if( $this->is_beta() ) {
+      $this->css_generate_beta(true);
+    } else {
+      $this->css_generate(true);
+    }
+    
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
     if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
       return false;
@@ -1408,7 +1508,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $media = apply_filters( 'fv_flowplayer_media', $media, $this );
     
     return $media;
-  }  
+  }
+  
+  
+  public static function is_beta() {
+    if( get_option('fv-player-pro-release') == 'beta' ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   
   
   public static function is_licensed() {
