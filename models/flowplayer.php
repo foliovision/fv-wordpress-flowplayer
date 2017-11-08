@@ -855,7 +855,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     global $fv_wp_flowplayer_ver;
     $this->bCSSInline = true;
-    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
+    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer'.($this->is_beta() ? '-beta': '').'.css';
     $sVer = $fv_wp_flowplayer_ver;
     
     if( is_multisite() ) {
@@ -959,7 +959,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
-    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer'.($this->is_beta() ? '-beta': '').'.css' ) ) {
       return false;
     }
     $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
