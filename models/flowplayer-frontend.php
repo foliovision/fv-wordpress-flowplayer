@@ -607,6 +607,11 @@ class flowplayer_frontend extends flowplayer
         if( !$bIsAudio ) {
           $this->ret['html'] .= $this->get_sharing_html()."\n";
         }
+        
+        if( !empty($this->aCurArgs['splash_text']) ) {
+          $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'>".$aSplashText[0]."</div>\n";
+        }
 
         if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') ) {
           $this->ret['html'] .= $this->get_video_checker_html()."\n";

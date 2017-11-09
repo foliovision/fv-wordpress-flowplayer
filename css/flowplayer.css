@@ -974,3 +974,5 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 @media only screen and (max-width: 22.44em) {
   .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:100%;float:none;margin:0.75% 0.5%}
 }
+
+.fv-fp-splash-text { position: absolute;bottom:20%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 5px #000;background-color: rgba(255,255,255,0.5)}
