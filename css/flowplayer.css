@@ -974,3 +974,47 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 @media only screen and (max-width: 22.44em) {
   .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:100%;float:none;margin:0.75% 0.5%}
 }
+
+@media screen and (min-width: 1020px) {
+  div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
+  	transform: translateX(-20px);
+  }
+  div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom  {
+  	transition: width .5s ease-in-out, height .5s ease-in-out, transform .20s ease-in-out;
+  }
+  div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
+  	position: fixed;
+  	top: 50px;
+  	right: 50px;
+  	left: auto;
+  	width: 380px;
+  	height: 214px;
+  	max-width: 380px;
+  	max-height: 214px;
+    z-index: 999;
+  }
+  div.fp-player.is-sticky-left-top {
+  	top: 50px;
+  	left: 50px;
+  	right: auto;
+    bottom: auto;
+  }
+  div.fp-player.is-sticky-right-top {
+  	top: 50px;
+  	right: 50px;
+  	left: auto;
+    bottom: auto;
+  }
+  div.fp-player.is-sticky-left-bottom {
+  	bottom: 30px;
+  	left: 50px;
+  	right: auto;
+    top: auto;
+  }
+  div.fp-player.is-sticky-right-bottom {
+  	bottom: 30px;
+  	right: 50px;
+  	left: auto;
+    top: auto;
+  }
+}

@@ -1221,7 +1221,43 @@ function fv_flowplayer_admin_skin_subtitles() {
   <div style="clear: both"></div>
 <?php
 }
+function fv_flowplayer_admin_skin_sticky() {
+	global $fv_fp;
+?>
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+      <tr>
+      <td><label for="stickyVideo"><?php _e('Sticky Video', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input type="hidden" name="stickyVideo" value="false" />
+          <input type="checkbox" name="stickyVideo" id="stickyVideo" value="true" <?php if( $fv_fp->_get_option('stickyVideo') == 'true' ) echo 'checked="checked"'; ?> />
+      </td>      
+    </tr>
+    <tr>  
+      <td><label for="sticky-place"><?php _e('Select place', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <select id="sticky-place" name="stickyPlace">
+          <option value="Default"<?php if( $fv_fp->_get_option('stickyPlace') == 'Default'  ) echo ' selected="selected"'; ?>><?php _e('Default', 'fv-wordpress-flowplayer'); ?></option>          
+          <option value="left-top"<?php if( $fv_fp->_get_option('stickyPlace') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>										  
+          <option value="right-top"<?php if( $fv_fp->_get_option('stickyPlace') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>
+          <option value="left-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>  
+          <option value="right-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>            
+        </select>
+      </td>   
+    </tr>    
+    <tr>
+      <td><label for="stickyWidth"><?php _e('Object Width', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="stickyWidth" name="stickyWidth" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('stickyWidth') ); ?>"/></td>
+    </tr>
+    
 
+    <tr>    		
+      <td colspan="2">
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
 
 function fv_flowplayer_admin_usage() {
 ?>
@@ -1343,6 +1379,7 @@ add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_sticky', 'fv_flowplayer_settings_skin', 'normal' );
 
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
