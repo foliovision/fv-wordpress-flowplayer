@@ -729,6 +729,7 @@ function fv_wp_flowplayer_edit() {
     var sspeed = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'speed' );
     var ssplash = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splash' );    
     var ssplashend = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'splashend' );
+    var ssticky = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'sticky' );
     
     var splaylist_advance = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'playlist_advance' );
         
@@ -821,7 +822,14 @@ function fv_wp_flowplayer_edit() {
       jQuery(".fv_wp_flowplayer_field_subtitles").eq(0).val( aSubtitles[0] );
       aSubtitles.shift();  //  the first item is no longer needed for playlist parsing which will follow
   	}
-    
+
+  	if( ssticky != null && ssticky[1] != null ) {
+  		if (ssticky[1] == 'true') 
+        document.getElementById("fv_wp_flowplayer_field_sticky").selectedIndex = 1;
+      if (ssticky[1] == 'false') 
+        document.getElementById("fv_wp_flowplayer_field_sticky").selectedIndex = 2;
+    }
+        
   	if( sad != null && sad[1] != null ) {
   		sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
   		sad = sad.replace(/&amp;/g,'&');
@@ -1082,7 +1090,7 @@ function fv_wp_flowplayer_submit( preview ) {
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_speed', 'speed', false, false, ['buttons', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_playlist_advance', 'playlist_advance', false, false, ['true', 'false'] );
-  
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_sticky', 'sticky', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_share', 'share', false, false, ['yes', 'no', jQuery('#fv_wp_flowplayer_field_share_title').val().replace(/;/,'').replace(/(\S)$/,'$1;')+jQuery('#fv_wp_flowplayer_field_share_url').val().replace(/;/,'')] );  
 
   
