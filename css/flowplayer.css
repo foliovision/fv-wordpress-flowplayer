@@ -974,3 +974,21 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 @media only screen and (max-width: 22.44em) {
   .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:100%;float:none;margin:0.75% 0.5%}
 }
+
+/* Profile viedeo fix for EDD */
+.edd_form .fv-player-custom-video-list {
+    clear: both;
+    position: relative;
+    top: -26px;
+}
+a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
+    margin: 0 6px 0 0;
+    padding: 2px 8px;
+    background: #999;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 15px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-radius: 3px;
+}
