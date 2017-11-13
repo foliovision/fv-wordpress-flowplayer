@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.10 - 2017/11/?? =
+
+* Video linking - simplifying the link format from http://site.com/my-video/#fvp_example?t=1m33s to http://site.com/my-video/#fvp_example,1m33s to increase compatibility
+
 = 6.3.9 - 2017/11/08 =
 
 * Safari 11 - disabling autoplay as it was failing to play the video without user interaction, in case of Vimeo failing to play at all. Proper fix coming in FV Player 7.
