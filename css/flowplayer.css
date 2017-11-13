@@ -975,45 +975,51 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:100%;float:none;margin:0.75% 0.5%}
 }
 
-@media screen and (min-width: 1020px) {
+  @media screen and (min-width: 1020px) {
   div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
-  	transform: translateX(-20px);
-  }
-  div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom  {
-  	transition: width .5s ease-in-out, height .5s ease-in-out, transform .20s ease-in-out;
+    transform: translateX(-20px);
+    -ms-transform: translateX(-20px);
+    -webkit-transform: translateX(-20px);
+   	transition: width 0.5s ease-in-out, height 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transition: transform 0.5s;
+    
   }
   div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
   	position: fixed;
+    background-color: black;
   	top: 50px;
-  	right: 50px;
+  	right: 30px;
   	left: auto;
-  	width: 380px;
-  	height: 214px;
-  	max-width: 380px;
-  	max-height: 214px;
+    max-width: 50%;
     z-index: 999;
   }
   div.fp-player.is-sticky-left-top {
+    transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    -webkit-transform: translateX(20px);
   	top: 50px;
-  	left: 50px;
+  	left: 30px;
   	right: auto;
     bottom: auto;
   }
   div.fp-player.is-sticky-right-top {
   	top: 50px;
-  	right: 50px;
+  	right: 30px;
   	left: auto;
     bottom: auto;
   }
   div.fp-player.is-sticky-left-bottom {
-  	bottom: 30px;
-  	left: 50px;
+    transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    -webkit-transform: translateX(20px);
+  	bottom: 50px;
+  	left: 30px;
   	right: auto;
     top: auto;
   }
   div.fp-player.is-sticky-right-bottom {
-  	bottom: 30px;
-  	right: 50px;
+  	bottom: 50px;
+  	right: 30px;
   	left: auto;
     top: auto;
   }
