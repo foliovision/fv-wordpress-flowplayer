@@ -612,9 +612,9 @@ class flowplayer_frontend extends flowplayer
           $sSplashText = false;
           if( !empty($this->aCurArgs['splash_text']) ) {
             $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );
-            $sSplashText = '<span>'.$aSplashText[0].'</span>';
+            $sSplashText = $aSplashText[0];
           }          
-          $this->ret['html'] .= "<div class='fv-fp-splash-text'>".$sSplashText."</div>\n";
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$sSplashText."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
         if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') ) {
