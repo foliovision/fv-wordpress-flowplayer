@@ -1235,12 +1235,11 @@ function fv_flowplayer_admin_skin_sticky() {
     <tr>  
       <td><label for="sticky-place"><?php _e('Select place', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
-        <select id="sticky-place" name="stickyPlace">
-          <option value="Default"<?php if( $fv_fp->_get_option('stickyPlace') == 'Default'  ) echo ' selected="selected"'; ?>><?php _e('Default', 'fv-wordpress-flowplayer'); ?></option>          
+        <select id="sticky-place" name="stickyPlace">   
+          <option value="right-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
+          <option value="left-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>         
           <option value="left-top"<?php if( $fv_fp->_get_option('stickyPlace') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>										  
-          <option value="right-top"<?php if( $fv_fp->_get_option('stickyPlace') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>
-          <option value="left-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>  
-          <option value="right-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>            
+          <option value="right-top"<?php if( $fv_fp->_get_option('stickyPlace') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>                     
         </select>
       </td>   
     </tr>    

@@ -275,10 +275,6 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' autoplay';  
           }
           
-           if( $sticky == true ) {
-            $this->ret['html'] .= ' sticky';  
-          }
-          
           if( stripos($width,'%') == false && intval($width) > 0 ) {
             $this->ret['html'] .= ' width="'.$width.'"'; 
           }

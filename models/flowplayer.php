@@ -225,7 +225,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
-
+ 
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
     
     $conf = apply_filters('fv_player_conf_defaults', $conf);
