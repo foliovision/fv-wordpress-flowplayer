@@ -1227,25 +1227,25 @@ function fv_flowplayer_admin_skin_sticky() {
 ?>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
       <tr>
-      <td><label for="stickyVideo"><?php _e('Sticky Video', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input type="hidden" name="stickyVideo" value="false" />
-          <input type="checkbox" name="stickyVideo" id="stickyVideo" value="true" <?php if( $fv_fp->_get_option('stickyVideo') == 'true' ) echo 'checked="checked"'; ?> />
+      <td><label for="sticky_video"><?php _e('Sticky Video', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input type="hidden" name="sticky_video" value="false" />
+          <input type="checkbox" name="sticky_video" id="sticky_video" value="true" <?php if( $fv_fp->_get_option('sticky_video') == 'true' ) echo 'checked="checked"'; ?> />
       </td>      
     </tr>
     <tr>  
-      <td><label for="sticky-place"><?php _e('Select place', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="sticky_place"><?php _e('Select place', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
-        <select id="sticky-place" name="stickyPlace">   
-          <option value="right-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
-          <option value="left-bottom"<?php if( $fv_fp->_get_option('stickyPlace') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>         
-          <option value="left-top"<?php if( $fv_fp->_get_option('stickyPlace') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>										  
-          <option value="right-top"<?php if( $fv_fp->_get_option('stickyPlace') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>                     
+        <select id="sticky_place" name="sticky_place">   
+          <option value="right-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
+          <option value="left-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>         
+          <option value="left-top"<?php if( $fv_fp->_get_option('sticky_place') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>										  
+          <option value="right-top"<?php if( $fv_fp->_get_option('sticky_place') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>                     
         </select>
       </td>   
     </tr>    
     <tr>
-      <td><label for="stickyWidth"><?php _e('Object Width', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="stickyWidth" name="stickyWidth" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('stickyWidth') ); ?>"/></td>
+      <td><label for="sticky_width"><?php _e('Object Width', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
     </tr>
     
 

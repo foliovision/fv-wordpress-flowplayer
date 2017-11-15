@@ -361,11 +361,9 @@ function flowplayer_prepare_scripts() {
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
 
-    $aConf['sticky_video'] = $fv_fp->_get_option('stickyVideo');
-    $aConf['sticky_place'] = $fv_fp->_get_option('stickyPlace');
-    $aConf['sticky_width'] = $fv_fp->_get_option('stickyWidth'); 
-    if(!$aConf['sticky_place']) $aConf['sticky_place'] = 'right-bottom';
-    if(!$aConf['sticky_place']) $aConf['sticky_width'] = '380';
+    $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
+    $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
+    $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width'); 
 
        
     global $post;
