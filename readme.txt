@@ -358,7 +358,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Splash Text - new optional shortcode editor field to insert text below the play button
 * Video linking - simplifying the link format from http://site.com/my-video/#fvp_example?t=1m33s to http://site.com/my-video/#fvp_example,1m33s to increase compatibility
-* Video linking - bug fix for Vimeo quality switching (Pro)
+* Bugfix - Popup styling for mobile screens
+* Bugfix - Video linking - bug fix for Vimeo quality switching (Pro)
 
 = 6.3.9 - 2017/11/08 =
 
