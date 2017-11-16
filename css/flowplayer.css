@@ -331,7 +331,7 @@
 @media (max-width: 30em) {
 .flowplayer .fp-subtitle{bottom:4px;line-height:12px !important}
 .flowplayer .fp-subtitle .fp-subtitle-line{font-size:12px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
-.flowplayer .fv_player_popup {width:99%;font-size:14px;top:50%;}
+.flowplayer .fv_player_popup {width:99%;font-size:14px;top:0;}
 .flowplayer.is-fv-narrow .fv_player_popup{font-size:0.8em}
 }
 @media (max-width: 22.5em) {
