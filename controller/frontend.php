@@ -360,7 +360,11 @@ function flowplayer_prepare_scripts() {
     
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
-    
+
+    if (is_user_logged_in()) {
+        $aConf['is_logged_in'] = 1;
+    }
+
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {
       if( get_post_meta($post->ID, 'fv_player_mobile_native_fullscreen', true) ) $aConf['mobile_native_fullscreen'] = true;
