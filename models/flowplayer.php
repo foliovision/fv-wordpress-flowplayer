@@ -365,7 +365,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     return $sHTML;
   }
-  
+
+  private function setLastPosition(&$aItemArray) {
+      if ($metaPosition = get_user_meta(get_current_user_id(), 'fv_wp_flowplayer_position_'.$aItemArray['src'], true)) {
+          $aItemArray['position'] = $metaPosition;
+      }
+  }
+
   //  todo: this could be parsing rtmp://host/path/mp4:rtmp_path links as well
   function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
 
@@ -423,13 +429,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
           if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
             $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
-            $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+            $arr = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+            $this->setLastPosition($arr);
+            $aItem[] = $arr;
           } else {
-            $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+            $arr = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+            $this->setLastPosition($arr);
+            $aItem[] = $arr;
           }
         } else {
-          $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
-        }        
+            $arr = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
+            $this->setLastPosition($arr);;
+            $aItem[] = $arr;
+        }
       }
       
       if( count($flash_media) ) {
@@ -458,7 +470,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $mobile = $this->get_video_url($aArgs['mobile']);
         $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
-      
+
+      // check if we don't have last play position stored
+      if (isset($aItem['src'])) {
+          $aItem['path_filename'] = pathinfo($aItem['src'], PATHINFO_FILENAME);
+          //get_user_meta( get_current_user_id() );
+      }
+
       $aPlayer = array( 'sources' => $aItem );      
       if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
       
