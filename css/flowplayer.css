@@ -998,9 +998,11 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
     font-size: 15px !important;
     text-align: center !important;
     line-height: 30px !important;
+    pointer-events: auto !important;
+    background-color: rgba(0, 0, 0, 0.7);
 }
 .flowplayer.is-stickable .fp-fullscreen {
-    right: 24px;
+    right: 30px;
 }
 
 .flowplayer a.fp-sticky:before {
