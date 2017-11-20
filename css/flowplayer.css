@@ -296,8 +296,8 @@
 .flowplayer .fp-context-menu li.copyright{margin:0;padding-left:110px;background-image:url("img/flowplayer.png");background-repeat:no-repeat;background-size:100px 20px;background-position:5px 5px;border-bottom:1px solid #bbb;}
 /* Mailchimp integration */
 .flowplayer .fv_player_popup p{margin:0 12px 6px;line-height:1.35}
-.flowplayer .wpfp_custom_popup{width:100%;top:0;bottom:-4px}
-.flowplayer.is-finished.is-mouseover .wpfp_custom_popup{bottom:30px}
+.flowplayer .wpfp_custom_popup{width:100%;top:0;bottom:-4px;margin-bottom:34px;-webkit-transition:all 0.2s;-moz-transition:all 0.2s;transition:all 0.2s}
+.flowplayer.is-finished.is-mouseover .wpfp_custom_popup{bottom:30px;margin-bottom:0}
 .flowplayer .fv_player_popup {background-color:#222;position:relative;top:0;width:100%;height:100%;padding:2em 0 1%}
 .flowplayer .fv_player_popup h1,.flowplayer .fv_player_popup h2,.flowplayer .fv_player_popup h3,.flowplayer .fv_player_popup h4,.flowplayer .fv_player_popup h5,.flowplayer .fv_player_popup h6{margin:0 0 6px !important}
 .mailchimp-form input{width:31.33333333%;max-width:31.33333333%;margin:0 1%}
