@@ -130,7 +130,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'liststyle' => '',
     'playlist_advance' => '',
     'linking' => '',
-    'end_popup_preview' => ''
+    'end_popup_preview' => '',
+    'splash_text'
   ), $atts ) );
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
@@ -172,6 +173,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $arguments['playlist_advance'] = $playlist_advance;
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
     $arguments['linking'] = $linking;
+    $arguments['splash_text'] = $splash_text;
 
 	} else {
 		$arguments = shortcode_atts( array(
@@ -214,6 +216,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
       'playlist_advance' => '',
       'linking' => '',
       'end_popup_preview' => '',
+      'splash_text' => ''
 		), $atts );
 	}
   

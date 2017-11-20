@@ -330,8 +330,11 @@ class flowplayer_frontend extends flowplayer
         
         if( $sticky ) {
           $attributes['data-fvsticky'] = 'true';
-        }        
-       
+        }
+        
+        if( !empty($this->aCurArgs['splash_text']) ) {
+          $attributes['class'] .= ' has-splash-text';
+        }
 
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
           $attributes['class'] .= ' playlist-hidden';
@@ -622,6 +625,11 @@ class flowplayer_frontend extends flowplayer
         
         if( !$bIsAudio ) {
           $this->ret['html'] .= $this->get_sharing_html()."\n";
+        }
+        
+        if( !empty($this->aCurArgs['splash_text']) ) {
+          $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );         
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
         if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') ) {
