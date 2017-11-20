@@ -99,6 +99,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'width' => '',
     'height' => '',
     'autoplay' => '',
+    'sticky' => '',
     'splash' => '',
     'splashend' => '',
     'popup' => '',
@@ -137,6 +138,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
 		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
+    $arguments['sticky'] = preg_replace('/\,/', '', $sticky);
 		$arguments['splash'] = preg_replace('/\,/', '', $splash);
 		$arguments['src1'] = preg_replace('/\,/', '', $src1);
 		$arguments['src2'] = preg_replace('/\,/', '', $src2);
@@ -182,6 +184,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 			'width' => '',
 			'height' => '',
 			'autoplay' => '',
+      'sticky' => '',
 			'splash' => '',
 			'splashend' => '',
 			'popup' => '',
@@ -337,6 +340,7 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   if( $vars['auto_play'] == 'Y' ) {
     $shortcode .= ' autoplay="true"';
   }  
+
   
   $shortcode .= ' width="'.$vars['width'].'"';
   $shortcode .= ' height="'.$vars['height'].'"';

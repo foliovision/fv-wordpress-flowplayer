@@ -204,7 +204,17 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
       $autoplay = true;
     }
-    
+
+    /*
+     *  Sticky
+     */
+    $sticky = false;  //  todo: should be changed into a property
+    if( $this->_get_option('sticky') && $this->aCurArgs['sticky'] != 'false'  ) {
+      $sticky = true;
+    }  
+    if( isset($this->aCurArgs['sticky']) && $this->aCurArgs['sticky'] == 'true') {
+      $sticky = true;
+    }    
     
     /*
      *  Video player
@@ -260,6 +270,7 @@ class flowplayer_frontend extends flowplayer
           if (isset($splash_img) && !empty($splash_img)) {
             $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
           } 
+          
           if( $autoplay == true ) {
             $this->ret['html'] .= ' autoplay';  
           }
@@ -315,6 +326,10 @@ class flowplayer_frontend extends flowplayer
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
+        } 
+        
+        if( $sticky ) {
+          $attributes['data-fvsticky'] = 'true';
         }
         
         if( !empty($this->aCurArgs['splash_text']) ) {
