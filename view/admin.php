@@ -1228,12 +1228,7 @@ function fv_flowplayer_admin_skin_sticky() {
 ?>
   <p><?php _e('This feature lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-      <tr>
-      <td><label for="sticky_video"><?php _e('Enable', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input type="hidden" name="sticky_video" value="false" />
-          <input type="checkbox" name="sticky_video" id="sticky_video" value="true" <?php if( $fv_fp->_get_option('sticky_video') == 'true' ) echo 'checked="checked"'; ?> />
-      </td>      
-    </tr>
+    <?php $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'sticky_video'); ?>
     <tr>  
       <td><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
