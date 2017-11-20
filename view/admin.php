@@ -1226,15 +1226,16 @@ function fv_flowplayer_admin_skin_subtitles() {
 function fv_flowplayer_admin_skin_sticky() {
 	global $fv_fp;
 ?>
+  <p><?php _e('This feature lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
       <tr>
-      <td><label for="sticky_video"><?php _e('Sticky Video', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="sticky_video"><?php _e('Enable', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input type="hidden" name="sticky_video" value="false" />
           <input type="checkbox" name="sticky_video" id="sticky_video" value="true" <?php if( $fv_fp->_get_option('sticky_video') == 'true' ) echo 'checked="checked"'; ?> />
       </td>      
     </tr>
     <tr>  
-      <td><label for="sticky_place"><?php _e('Select place', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="sticky_place" name="sticky_place">   
           <option value="right-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
@@ -1245,7 +1246,7 @@ function fv_flowplayer_admin_skin_sticky() {
       </td>   
     </tr>    
     <tr>
-      <td><label for="sticky_width"><?php _e('Object Width', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="sticky_width"><?php _e('Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
     </tr>
     
