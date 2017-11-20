@@ -1227,12 +1227,7 @@ function fv_flowplayer_admin_skin_sticky() {
 	global $fv_fp;
 ?>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-      <tr>
-      <td><label for="sticky_video"><?php _e('Sticky Video', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input type="hidden" name="sticky_video" value="false" />
-          <input type="checkbox" name="sticky_video" id="sticky_video" value="true" <?php if( $fv_fp->_get_option('sticky_video') == 'true' ) echo 'checked="checked"'; ?> />
-      </td>      
-    </tr>
+	   <?php $fv_fp->_get_checkbox(__('Sticky Video', 'fv-wordpress-flowplayer'), 'sticky_video'); ?>
     <tr>  
       <td><label for="sticky_place"><?php _e('Select place', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
