@@ -1256,6 +1256,25 @@ function fv_flowplayer_admin_skin_sticky() {
 <?php
 }
 
+
+function fv_flowplayer_admin_export() {
+?>
+				<table class="form-table">
+					<tr>
+						<td colspan="4">  						
+								<p><?php _e('Export your settings', 'fv-wordpress-flowplayer'); ?>:</p>
+								<div class="clear"></div>
+			
+						</td>
+				<td>
+                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-settings-export=all'.$key ); ?>' target="_blank" ><?php _e('Download JSON', 'fv-wordpress-flowplayer'); ?></a>
+                  <br />
+                </td>
+					</tr>
+				</table>
+<?php
+}
+
 function fv_flowplayer_admin_usage() {
 ?>
 				<table class="form-table">
@@ -1393,6 +1412,9 @@ if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_video_ads', 'fv_flowplayer_settings_video_ads', 'normal', 'high' );
   add_meta_box( 'fv_flowplayer_ads', __('Video Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
 }
+
+/* Export import tab */
+add_meta_box( 'fv_flowplayer_export', __('Export', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_export', 'fv_flowplayer_settings_exip', 'normal', 'high' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
