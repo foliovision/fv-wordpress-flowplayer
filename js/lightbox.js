@@ -307,6 +307,12 @@ function fv_player_colorbox_scrset(args) {
       }
     }
     
+    var original_width = 0;
+    if( jQuery('img',args).length > 0 ) {
+      aSources.push( { url: jQuery('img',args)[0].src, d: 1, w: jQuery('img',args)[0].naturalWidth, h: jQuery('img',args)[0].naturalHeight } );
+      original_width = jQuery('img',args)[0].naturalWidth;
+    }
+    
     if( aSources ) {    
       var find = jQuery(window).width() > jQuery(window).height() ? jQuery(window).width() : jQuery(window).height();
       var ratio = typeof(window.devicePixelRatio) != "undefined" ? window.devicePixelRatio : 1;
@@ -314,12 +320,13 @@ function fv_player_colorbox_scrset(args) {
       var win = -1;      
       
       jQuery(aSources).each( function(k,v) {
-        if( win == -1 || Math.abs(v.w - find) < Math.abs(aSources[win].w - find) ){
+        if( !v.w && original_width > 0 && v.d > 0 ) aSources[k].w = original_width * v.d;
+        if( win == -1 || Math.abs(aSources[k].w - find) < Math.abs(aSources[win].w - find) ){
           win = k;
         }
       });
       
-      if( jQuery(args).width()*1.5 > find ) {
+      if( aSources[win].w*1.5 > find ) {
         src = aSources[win].url;
       }
     }

@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.8.2
+Tested up to: 4.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -357,6 +357,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.4 - 2017/11/?? =
 
 * Flowplayer 7 core for beta testers
+
+= 6.3.11 - 2017/11/20 =
+
+* New feature - Sticky Video - lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1200 pixels.
+* Lightbox - improving retina image parsing
+
+= 6.3.10 - 2017/11/13 =
+
+* Splash Text - new optional shortcode editor field to insert text below the play button
+* Video linking - simplifying the link format from http://site.com/my-video/#fvp_example?t=1m33s to http://site.com/my-video/#fvp_example,1m33s to increase compatibility
+* Bugfix - Popup styling for mobile screens
+* Bugfix - Video linking - bug fix for Vimeo quality switching (Pro)
 
 = 6.3.9 - 2017/11/08 =
 

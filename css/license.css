@@ -133,7 +133,8 @@ td.aligntop > label { margin-top:4px; }
 }
 #flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
 #fv_flowplayer_skin_playlist input[type=text], #fv_flowplayer_skin_playlist select,
-#fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select {
+#fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select,
+#fv_flowplayer_skin_sticky input[type=text], #fv_flowplayer_skin_sticky select {
   width: 95%;
 }
 
@@ -143,7 +144,8 @@ td.aligntop > label { margin-top:4px; }
 
 #wpfp_options #flowplayer-wrapper .button-primary,
 #wpfp_options #fv_flowplayer_skin_playlist .button-primary,
-#wpfp_options #fv_flowplayer_skin_subtitles .button-primary {
+#wpfp_options #fv_flowplayer_skin_subtitles .button-primary,
+#wpfp_options #fv_flowplayer_skin_sticky .button-primary {
   float: none;
 }
 

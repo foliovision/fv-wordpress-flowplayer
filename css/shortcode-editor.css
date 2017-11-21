@@ -98,6 +98,9 @@
 .fv-player-playlist-item[data-index="0"] .first-item-only {
   display: table-row;
 }
+.fv-player-playlist-item[data-index="0"] .first-item-only.fv_player_interface_hide {
+  display: none;
+}
 
 .fv-player-tabs th { width: 21%; text-align: right; }
 .fv-player-tabs .fv-player-tab-playlist th { text-align: left; }
