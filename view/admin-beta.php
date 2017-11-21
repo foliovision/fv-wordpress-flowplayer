@@ -268,6 +268,8 @@ function fv_flowplayer_admin_default_options() {
                 </select>
               </td>
 						</tr>
+            
+            <?php $fv_fp->_get_checkbox(__('No Picture Button', 'fv-wordpress-flowplayer'), 'ui_no_picture_button', __('Adds a button to turn the video picture on and off.', 'fv-wordpress-flowplayer') ); ?>
 
             <?php $fv_fp->_get_checkbox(__('Play Button', 'fv-wordpress-flowplayer'), 'ui_play_button', __('Adds play button to player controlbar.', 'fv-wordpress-flowplayer') ); ?>
 
@@ -290,6 +292,8 @@ function fv_flowplayer_admin_default_options() {
 						</tr>
 
             <?php $fv_fp->_get_checkbox(__('Popup Box', 'fv-wordpress-flowplayer'), 'popupbox', __('Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-wordpress-flowplayer') ); ?>
+            
+            <?php $fv_fp->_get_checkbox(__('Repeat Button', 'fv-wordpress-flowplayer'), 'ui_repeat_button', __('Adds a button to set playlist/track repeat and shuffle.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
               <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>

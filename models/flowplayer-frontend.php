@@ -356,6 +356,13 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' fvp-play-button';
         }
         
+        if( $this->is_beta() && $this->_get_option('ui_no_picture_button') ) {
+          $attributes['data-button-no-picture'] = true;
+        }
+        if( $this->is_beta() && $this->_get_option('ui_repeat_button') ) {
+          $attributes['data-button-repeat'] = true;
+        }
+        
         //  Align
         $attributes['class'] .= $this->get_align();
         
