@@ -1748,32 +1748,11 @@ article .entry-content .fvfp_admin_error p { line-height: 18px; }
   }
   .flowplayer.is-stickable a.fp-sticky {
       display: block;
-      z-index: 999999;
-      position: absolute;
-      top: 0px;
-      left: auto;
-      right: 0px;
-      display: block;
-      width: 30px;
-      height: 23px;
-      text-align: center;
-      cursor: pointer;
-      height: 30px;
-      width: 30px;
-      font-family: 'fpicons' !important;
-      color: #fff !important;
-      font-size: 15px !important;
-      text-align: center !important;
-      line-height: 30px !important;
-      pointer-events: auto !important;
-      background-color: rgba(0, 0, 0, 0.7);
-  }
-  .flowplayer.is-stickable .fp-fullscreen {
-      right: 30px;
+      float: right;
   }
   
   .flowplayer a.fp-sticky:before {
-      content: "\e600";
+      content: "\e10f";
   }
 
   div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
