@@ -4,7 +4,8 @@ class FV_Player_Position_Save {
 
   public function __construct() {
     add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save') );
-    add_filter('fv_player_item', array($this, 'set_last_position'), 10, 1 );
+    add_filter('fv_player_item', array($this, 'set_last_position') );
+    add_filter('fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );
   }
 
   private function get_extensionless_file_name($path) {
@@ -36,6 +37,15 @@ class FV_Player_Position_Save {
     }
 
     exit;
+  }
+
+  function player_position_save_admin_default_options_html() {
+    global $fv_fp;
+    ?>
+    <tr>
+      <?php $fv_fp->_get_checkbox(__('Remember last video position', 'fv-wordpress-flowplayer'), 'video_position_save_enable', __('Stores the last video play position for logged-in users, so they can continue watching from where they left.')); ?>:
+    </tr>
+      <?php
   }
 
 }
