@@ -366,10 +366,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $sHTML;
   }
 
-  private function setLastPosition(&$aItemArray) {
+  private function setLastPosition($aItemArray) {
       if ($metaPosition = get_user_meta(get_current_user_id(), 'fv_wp_flowplayer_position_'.$aItemArray['src'], true)) {
           $aItemArray['position'] = $metaPosition;
       }
+
+      return $aItemArray;
   }
 
   //  todo: this could be parsing rtmp://host/path/mp4:rtmp_path links as well
@@ -430,16 +432,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
             $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
             $arr = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
-            $this->setLastPosition($arr);
+            $arr = $this->setLastPosition($arr);
             $aItem[] = $arr;
           } else {
             $arr = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
-            $this->setLastPosition($arr);
+            $arr = $this->setLastPosition($arr);
             $aItem[] = $arr;
           }
         } else {
             $arr = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
-            $this->setLastPosition($arr);;
+            $arr = $this->setLastPosition($arr);
             $aItem[] = $arr;
         }
       }
@@ -468,7 +470,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       if( !empty($aArgs['mobile']) ) {
         $mobile = $this->get_video_url($aArgs['mobile']);
-        $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
+        $arr = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
+        $arr = $this->setLastPosition($arr);
+        $aItem[] = $arr;
       }
 
       $aPlayer = array( 'sources' => $aItem );      
