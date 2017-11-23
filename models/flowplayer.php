@@ -366,60 +366,52 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     return $sHTML;
   }
 
-  private function setLastPosition($aItemArray) {
-      if ($metaPosition = get_user_meta(get_current_user_id(), 'fv_wp_flowplayer_position_'.$aItemArray['src'], true)) {
-          $aItemArray['position'] = $metaPosition;
-      }
-
-      return $aItemArray;
-  }
-
   //  todo: this could be parsing rtmp://host/path/mp4:rtmp_path links as well
   function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
 
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
       $sCaption = isset($aArgs['caption']) ? $aArgs['caption'] : false;
-  
-      $replace_from = array('&amp;','\;', '\,');        
-      $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');        
-      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );      
+
+      $replace_from = array('&amp;','\;', '\,');
+      $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');
+      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );
       $sItems = explode( ';', $sShortcode );
 
       if( $sCaption ) {
-        $replace_from = array('&amp;quot;','&amp;','\;','&quot;');        
-        $replace_to = array('"','<!--amp-->','<!--semicolon-->','"');        
+        $replace_from = array('&amp;quot;','&amp;','\;','&quot;');
+        $replace_to = array('"','<!--amp-->','<!--semicolon-->','"');
         $sCaption = str_replace( $replace_from, $replace_to, $sCaption );
-        $aCaption = explode( ';', $sCaption );        
+        $aCaption = explode( ';', $sCaption );
       }
       if( isset($aCaption) && count($aCaption) > 0 ) {
         foreach( $aCaption AS $key => $item ) {
           $aCaption[$key] = str_replace('<!--amp-->','&',$item);
         }
-      } 
-                 
-      $aItem = array();      
-      $flash_media = array();
-      
-      if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
-        $rtmp = 'rtmp:'.$rtmp;  
       }
-      
+
+      $aItem = array();
+      $flash_media = array();
+
+      if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
+        $rtmp = 'rtmp:'.$rtmp;
+      }
+
       foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
         if( !$media_item ) continue;
-        
+
         if( stripos($media_item,'rtmp:') === 0 && stripos($media_item,'rtmp://') === false ) {
           $media_item_tmp = preg_replace( '~^rtmp:~', '', $media_item );
         } else {
           $media_item_tmp = $media_item;
         }
-        
+
         $media_url = $this->get_video_src( $media_item_tmp, array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
-        
+
         //  add domain for relative video URLs if it's not RTMP
         if( stripos($media_item,'rtmp://') === false && $key != 3 ) {
           $media_url = $this->get_video_url($media_url);
         }
-        
+
         if( is_array($media_url) ) {
           $actual_media_url = $media_url['media'];
           if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
@@ -431,21 +423,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
           if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
             $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
-            $arr = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
-            $arr = $this->setLastPosition($arr);
-            $aItem[] = $arr;
+            $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           } else {
-            $arr = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
-            $arr = $this->setLastPosition($arr);
-            $aItem[] = $arr;
+            $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
           }
         } else {
-            $arr = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
-            $arr = $this->setLastPosition($arr);
-            $aItem[] = $arr;
+          $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
         }
       }
-      
+
       if( count($flash_media) ) {
         $bHaveFlash = false;
         foreach( $aItem AS $key => $aItemFile ) { //  how to avoid duplicates?
@@ -453,26 +439,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             $bHaveFlash = true;
           }
         }
-        
+
         if( !$bHaveFlash ) {
           foreach( $flash_media AS $flash_media_items ) {
             $aItem[] = array( 'flash' => $flash_media_items );
           }
-        }      
+        }
       }
-      
+
       $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
       $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
-      
+
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
-      
+
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
-      
+
       if( !empty($aArgs['mobile']) ) {
         $mobile = $this->get_video_url($aArgs['mobile']);
-        $arr = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
-        $arr = $this->setLastPosition($arr);
-        $aItem[] = $arr;
+        $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
 
       $aPlayer = array( 'sources' => $aItem );      
