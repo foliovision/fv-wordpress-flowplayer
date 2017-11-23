@@ -95,7 +95,6 @@ function flowplayer_content( $content ) {
 	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
   
 	// process all found tags
-    $arguments = [];
 	foreach ($content_matches[0] as $tag) {
 		$ntag = str_replace("\'",'&#039;',$tag);
 		//search for URL
