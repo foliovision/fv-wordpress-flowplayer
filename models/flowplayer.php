@@ -471,12 +471,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
 
-      // check if we don't have last play position stored
-      if (isset($aItem['src'])) {
-          $aItem['path_filename'] = pathinfo($aItem['src'], PATHINFO_FILENAME);
-          //get_user_meta( get_current_user_id() );
-      }
-
       $aPlayer = array( 'sources' => $aItem );      
       if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
       
