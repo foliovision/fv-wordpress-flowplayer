@@ -95,6 +95,7 @@ function flowplayer_content( $content ) {
 	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
   
 	// process all found tags
+    $arguments = [];
 	foreach ($content_matches[0] as $tag) {
 		$ntag = str_replace("\'",'&#039;',$tag);
 		//search for URL
@@ -361,8 +362,8 @@ function flowplayer_prepare_scripts() {
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
 
-    if (is_user_logged_in()) {
-        $aConf['is_logged_in'] = 1;
+    if ( is_user_logged_in() && $fv_fp->conf['video_position_save_enable'] ) {
+        $aConf['video_position_save_enable'] = true;
     }
 
     global $post;
