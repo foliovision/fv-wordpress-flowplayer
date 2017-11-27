@@ -810,9 +810,8 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sticky', 'fv-wordpress-flowplayer'), array('interface', 'sticky') ); ?>
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
-
+          
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
-
           <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
 					<tr>
@@ -1256,25 +1255,6 @@ function fv_flowplayer_admin_skin_sticky() {
 <?php
 }
 
-
-function fv_flowplayer_admin_export() {
-?>
-				<table class="form-table">
-					<tr>
-						<td colspan="4">  						
-								<p><?php _e('Export your settings', 'fv-wordpress-flowplayer'); ?>:</p>
-								<div class="clear"></div>
-			
-						</td>
-				<td>
-                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-settings-export=all'.$key ); ?>' target="_blank" ><?php _e('Download JSON', 'fv-wordpress-flowplayer'); ?></a>
-                  <br />
-                </td>
-					</tr>
-				</table>
-<?php
-}
-
 function fv_flowplayer_admin_usage() {
 ?>
 				<table class="form-table">
@@ -1352,6 +1332,32 @@ function fv_flowplayer_admin_usage() {
 <?php			
 }
 
+function fv_flowplayer_admin_description_imp_exp() {
+?>
+	<table class="form-table">
+		<tr>
+			<td colspan="4">  						
+				<p><?php _e('You can export your player settings as an JSON file that you can later import into FV-player.', 'fv-wordpress-flowplayer'); ?></p>
+				<div class="clear"></div>
+			</td>
+		</tr>
+	</table>
+<?php
+}
+
+function fv_flowplayer_admin_export() {
+		?>
+		<table class="form-table2" style="margin: 5px; ">
+			<tr>
+				<td style="width: 160px"><?php _e( 'Export your settings', 'fv-wordpress-flowplayer' ); ?>:</td>
+				<td>
+					<a class='fv-player-list-export' href='<?php echo admin_url( 'options-general.php?page=fvplayer&fv-settings-export=all' ); ?>' target="_blank" ><?php _e( 'Download JSON', 'fv-wordpress-flowplayer' ); ?></a>
+					<br />
+				</td>
+			</tr>
+		</table>
+		<?php
+}
 
 function fv_flowplayer_admin_checkbox( $name ) {
 	global $fv_fp;
@@ -1368,6 +1374,7 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting',  	'name' => __('Hosting', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions',  	'name' => __('Actions', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_video_ads',	'hash' => 'tab_video_ads', 	'name' => __('Video Ads', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_exip',      'hash' => 'tab_exip',     	'name' => __('Import / Export', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') ),
 );
 
@@ -1395,7 +1402,6 @@ add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
-add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_sticky', 'fv_flowplayer_settings_skin', 'normal' );
 
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
@@ -1412,9 +1418,9 @@ if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_video_ads', 'fv_flowplayer_settings_video_ads', 'normal', 'high' );
   add_meta_box( 'fv_flowplayer_ads', __('Video Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
 }
-
-/* Export import tab */
-add_meta_box( 'fv_flowplayer_export', __('Export', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_export', 'fv_flowplayer_settings_exip', 'normal', 'high' );
+/* Import Export tab */
+add_meta_box( 'fv_flowplayer_description_imp_exp', ' ', 'fv_flowplayer_admin_description_imp_exp', 'fv_flowplayer_settings_exip', 'normal', 'high' );
+add_meta_box( 'fv_flowplayer_export', __('Export  settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_export', 'fv_flowplayer_settings_exip', 'normal', 'high' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
