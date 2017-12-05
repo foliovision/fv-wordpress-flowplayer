@@ -1029,14 +1029,15 @@ function fv_flowplayer_admin_skin() {
     <?php _e('Hint: play the video to see live preview of the color settings', 'fv-wordpress-flowplayer') ?>
   </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-    <tr>
-      <td><label for="hasBorder"><?php _e('Border', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input type="hidden" name="hasBorder" value="false" />
-          <input type="checkbox" name="hasBorder" id="hasBorder" value="true" <?php if( $fv_fp->_get_option('hasBorder') == 'true' ) echo 'checked="checked"'; ?> 
-                 data-fv-preview=".flowplayer{border:%val%px solid!important;}"/>
-      </td>
-      
-    </tr>       
+    <?php
+      echo $fv_fp->_get_checkbox(array(
+        'key' => 'hasBorder',
+        'name' => 'Border',
+        'data' => array(
+          'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
+        )
+      ));
+    ?>
     <tr>
       <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="borderColor" name="borderColor" type="text"  value="<?php echo esc_attr( $fv_fp->_get_option('borderColor') ); ?>" 

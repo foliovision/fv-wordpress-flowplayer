@@ -116,28 +116,71 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
   }
   
-  
-  public function _get_checkbox( $name, $key, $help = false, $more = false ) {
-    $checked = $this->_get_option($key);
-    if($checked === 'false' ) $checked = false;
-    if( is_array($key) && count($key) > 1 ) {
+
+  public function _get_checkbox() {
+    $args_num = func_num_args();
+
+    // new method syntax with all options in the first parameter (which will be an array)
+    if ($args_num == 1) {
+      $options = func_get_arg(0);
+
+      // options must be an array
+      if (!is_array($options)) {
+          throw new Exception('Options parameter passed to the _get_checkbox() method needs to be an array!');
+      }
+
+      $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+      $key            = (!empty($options['key']) ? $options['key'] : '');
+      $name           = (!empty($options['name']) ? $options['name'] : '');
+      $help           = (!empty($options['help']) ? $options['help'] : '');
+      $more           = (!empty($options['more']) ? $options['more'] : '');
+
+      if (!$key || !$name) {
+        throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
+      }
+    } else if ($args_num >= 2) {
+      // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
+      $name = func_get_arg(0);
+      $key = func_get_arg(1);
+      $help = ($args_num >= 3 ? func_get_arg(2) : false);
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);
+    } else {
+        throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
+    }
+
+    $checked = $this->_get_option( $key );
+    if ( $checked === 'false' ) {
+      $checked = false;
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
-    ?>
+      ?>
       <tr>
-        <td class="first"><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
-        <td>
-          <p class="description">
-            <input type="hidden" name="<?php echo $key; ?>" value="false" />
-            <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true" <?php if( $checked ) echo 'checked="checked"'; ?> />
-            <?php if( $help ) echo $help; ?>
-            <?php if( $more ) : ?>
-              <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
-            <?php endif; ?>
-          </p>
-        </td>
+          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo _e($name, 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="<?php echo $key; ?>" value="false"/>
+                  <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true"<?php
+                    if ( $checked ) { echo ' checked="checked"'; }
+
+                    if (isset($options) && isset($options['data']) && is_array($options['data'])) {
+                        foreach ($options['data'] as $data_item => $data_value) {
+                            echo ' data-'.$data_item.'="'.$data_value.'"';
+                        }
+                    }
+                  ?> />
+                  <?php if ( $help ) {
+                      echo $help;
+                  } ?>
+                  <?php if ( $more ) { ?>
+                      <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                  <?php } ?>
+              </p>
+          </td>
       </tr>
-    <?php
+      <?php
   }
   
   
