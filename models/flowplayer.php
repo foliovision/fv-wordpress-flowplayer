@@ -140,6 +140,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
     } else if ($args_num >= 2) {
       // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
+      $first_td_class = '';
       $name = func_get_arg(0);
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
@@ -158,7 +159,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
       ?>
       <tr>
-          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo _e($name, 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="<?php echo $key; ?>" value="false"/>
@@ -184,19 +185,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
 
 
-  public function _get_input($options = array()) {
+  public function _get_input_text($options = array()) {
     // options must be an array
     if (!is_array($options)) {
-      throw new Exception('Options parameter passed to the _get_input() method needs to be an array!');
+      throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
     }
 
     $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
     $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
+    $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
 
     if (!$key || !$name) {
-      throw new Exception('Both, "name" and "key" options need to be set for _get_input()!');
+      throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
     }
 
     if ( is_array( $key ) && count( $key ) > 1 ) {
@@ -204,8 +206,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     ?>
       <tr>
-          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php _e($name, 'fv-wordpress-flowplayer'); ?></label></td>
-          <td><input <?php echo $class_name; ?>id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="text"  value="<?php echo esc_attr( $this->_get_option($key) ); ?>"<?php
+          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?></label></td>
+          <td><input <?php echo $class_name; ?>id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr( $this->_get_option($key) ); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -213,24 +215,102 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             }
           ?> /></td>
       </tr>
+
+    <?php
+  }
+
+
+  public function _get_input_hidden($options = array()) {
+    // options must be an array
+    if (!is_array($options)) {
+      throw new Exception('Options parameter passed to the _get_input_hidden() method needs to be an array!');
+    }
+
+    $key            = (!empty($options['key']) ? $options['key'] : '');
+    $name           = (!empty($options['name']) ? $options['name'] : '');
+
+    if (!$key || !$name) {
+      throw new Exception('Both, "name" and "key" options need to be set for _get_input_hidden()!');
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+    ?>
+      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo esc_attr( $this->_get_option($key) ); ?>"<?php
+            if (isset($options['data']) && is_array($options['data'])) {
+              foreach ($options['data'] as $data_item => $data_value) {
+                echo ' data-'.$data_item.'="'.$data_value.'"';
+              }
+            }
+            ?> />
+
     <?php
   }
   
   
-  public function _get_select( $name, $key, $help = false, $more = false, $aOptions ) {
+  public function _get_select() {
+    $args_num = func_num_args();
+
+    // new method syntax with all options in the first parameter (which will be an array)
+    if ($args_num == 1) {
+      $options = func_get_arg(0);
+
+      // options must be an array
+      if (!is_array($options)) {
+        throw new Exception('Options parameter passed to the _get_select() method needs to be an array!');
+      }
+
+      $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+      $key            = (!empty($options['key']) ? $options['key'] : '');
+      $name           = (!empty($options['name']) ? $options['name'] : '');
+      $aOptions       = (!empty($options['options']) ? $options['options'] : '');
+      $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+      $help           = (!empty($options['help']) ? $options['help'] : '');
+      $more           = (!empty($options['more']) ? $options['more'] : '');
+
+      if (!$key || !$name || !$aOptions) {
+        throw new Exception('The items "name", "key" and "options" need to be set in options for _get_select()!');
+      }
+    } else if ($args_num >= 5) {
+      // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
+      $first_td_class = '';
+      $name = func_get_arg(0);
+      $key = func_get_arg(1);
+      $aOptions = func_get_arg(4);
+      $help = ($args_num >= 3 ? func_get_arg(2) : false);
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);
+      $class_name = '';
+    } else {
+      throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+
     $option = $this->_get_option($key);
     $key = esc_attr($key);
     ?>
       <tr>  
-        <td><label for="<?php echo $key ?>"><?php echo $name ?></label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key ?>"><?php echo $name ?></label></td>
         <td>
-          <select id="<?php echo $key ?>" name="<?php echo $key ?>" data-fv-preview="">
+          <select <?php echo $class_name; ?>id="<?php echo $key ?>" name="<?php echo $key ?>"<?php
+            if (!isset($options) || !isset($options['data']) || !isset($options['data']['fv-preview'])) { echo ' data-fv-preview=""'; }
+
+            if (isset($options) && isset($options['data']) && is_array($options['data'])) {
+              foreach ($options['data'] as $data_item => $data_value) {
+                echo ' data-'.$data_item.'="'.$data_value.'"';
+              }
+            }
+          ?>>
             <?php foreach( $aOptions AS $k => $v ) : ?>
               <option value="<?php echo esc_attr($k); ?>"<?php if( $option == $k ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
             <?php endforeach; ?>      
           </select>
         </td>   
       </tr>
+
     <?php
   }  
   

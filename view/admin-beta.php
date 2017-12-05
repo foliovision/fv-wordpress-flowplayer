@@ -1033,90 +1033,130 @@ function fv_flowplayer_admin_skin() {
       // show border checkbox
       echo $fv_fp->_get_checkbox(array(
         'key' => 'hasBorder',
-        'name' => 'Border',
+        'name' => translate('Border', 'fv-wordpress-flowplayer'),
         'data' => array(
           'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
         )
       ));
 
-    // border color input / colorpicker
-    $fv_fp->_get_input(array(
+    // [colorpicker] > border color
+    $fv_fp->_get_input_text(array(
       'key' => 'borderColor',
-      'name' => 'Border color',
+      'name' => translate('Border color', 'fv-wordpress-flowplayer'),
       'class' => 'color',
       'data' => array(
         'fv-preview' => '.flowplayer{border-color:#%val%!important;}'
       )
     ));
-    ?>
-    <tr>
-      <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="marginBottom" name="marginBottom" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo esc_attr($fv_fp->_get_option('marginBottom')); ?>" 
-                 data-fv-preview=".flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
+
+    // bottom margin input
+    $fv_fp->_get_input_text(array(
+      'key' => 'marginBottom',
+      'name' => translate('Bottom Margin', 'fv-wordpress-flowplayer'),
+      'title' => translate('Enter value in pixels', 'fv-wordpress-flowplayer'),
+      'data' => array(
+        'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
     .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
     .flowplayer.has-abloop { margin-bottom: %val%px!important; }
-    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }"/></td>      
-    </tr>
-    <tr>
-      <td><label for="bufferColor"><?php _e('Buffer', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="bufferColor" name="bufferColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('bufferColor') ); ?>" 
-                 data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
-                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" /></td>
-    </tr>
-    <tr>
-      <td><label for="canvas"><?php _e('Canvas', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="canvas" name="canvas" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('canvas') ); ?>" 
-                 data-fv-preview=".flowplayer { background-color: #%val%!important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="backgroundColor"><?php _e('Controlbar', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="backgroundColor" name="backgroundColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('backgroundColor') ); ?>" 
-                 data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }'
+      )
+    ));
+
+    // [colorpicker] > buffer
+    $fv_fp->_get_input_text(array(
+      'key' => 'bufferColor',
+      'name' => translate('Buffer', 'fv-wordpress-flowplayer'),
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }'
+      )
+    ));
+
+    // [colorpicker] > canvas
+    $fv_fp->_get_input_text(array(
+      'key' => 'canvas',
+      'name' => translate('Canvas', 'fv-wordpress-flowplayer'),
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer { background-color: #%val%!important; }'
+      )
+    ));
+
+    // [colorpicker] > controlbar
+    $fv_fp->_get_input_text(array(
+      'key' => 'backgroundColor',
+      'name' => translate('Controlbar', 'fv-wordpress-flowplayer'),
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
                  .fv_player_popup {  background: #%val%!important;}
                  .fvfp_admin_error_content {  background: #%val%!important; }
-                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td>
-        <?php
-        $value = $fv_fp->_get_option('font-face');
-        ?>
-        <select id="font-face" name="font-face" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }">
-          <option value="inherit"<?php if( $value == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit from template)', 'fv-wordpress-flowplayer'); ?></option>
-          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $value == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
-          <option value="Tahoma, Geneva, sans-serif"<?php if( $value == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
-        </select>
-      </td>      
-    </tr>
-    <tr>
-      <td class="second-column"><label for="player-position"><?php _e('Player position', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td>
-        <select id="player-position" name="player-position" data-fv-preview=".flowplayer { margin-left: 0; }">
-          <option value=""<?php if( $fv_fp->_get_option('player-position') == "" ) echo ' selected="selected"'; ?>><?php _e('Centered', 'fv-wordpress-flowplayer'); ?></option>
-          <option value="left"<?php if( $fv_fp->_get_option('player-position') == 'left'  ) echo ' selected="selected"'; ?>><?php _e('Left (no text-wrap)', 'fv-wordpress-flowplayer'); ?></option>
-        </select>
-      </td>      
-    </tr>
-    <tr>
-      <td><label for="progressColor"><?php _e('Progress', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('progressColor') ); ?>" 
-           data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val%!important; }
+                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }'
+      )
+    ));
+
+    // font face dropdown
+    $fv_fp->_get_select(array(
+      'key' => 'font-face',
+      'name' => translate('Font Face', 'fv-wordpress-flowplayer'),
+      'options' => array(
+        'inherit' => translate('(inherit from template)', 'fv-wordpress-flowplayer'),
+        '&quot;Courier New&quot;, Courier, monospace' => 'Courier New',
+        'Tahoma, Geneva, sans-serif' => 'Tahoma, Geneva'
+      ),
+      'data' => array(
+        'fv-preview' => '#content .flowplayer, .flowplayer { font-family: %val%; }'
+      )
+    ));
+
+    // font face dropdown
+    $fv_fp->_get_select(array(
+      'key' => 'player-position',
+      'first_td_class' => 'second-column',
+      'name' => translate('Player position', 'fv-wordpress-flowplayer'),
+      'options' => array(
+        '' => translate('Centerer', 'fv-wordpress-flowplayer'),
+        'left' => 'Left (no text-wrap)'
+      ),
+      'data' => array(
+        'fv-preview' => '.flowplayer { margin-left: 0!important; }'
+      )
+    ));
+
+    // [colorpicker] > progress bar
+    $fv_fp->_get_input_text(array(
+      'key' => 'progressColor',
+      'name' => translate('Progress', 'fv-wordpress-flowplayer'),
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val%!important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
-          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }"/></td>
-    </tr>
-    <tr>
-      <td><label for="timeColor"><?php _e('Time', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="timeColor" name="timeColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('timeColor') ); ?>" 
-                 data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
-                 .fv-wp-flowplayer-notice-small { color: #%val% !important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="durationColor"><?php _e('Buttons', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="durationColor" name="durationColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('durationColor') ); ?>" 
-                 data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }"/></td>
-    </tr>
-	<?php
+          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }'
+      )
+    ));
+
+    // [colorpicker] > time
+    $fv_fp->_get_input_text(array(
+      'key' => 'timeColor',
+      'name' => translate('Time', 'fv-wordpress-flowplayer'),
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
+                 .fv-wp-flowplayer-notice-small { color: #%val% !important; }'
+      )
+    ));
+
+    // [colorpicker] > buttons
+    $fv_fp->_get_input_text(array(
+      'key' => 'durationColor',
+      'name' => translate('Buttons', 'fv-wordpress-flowplayer'),
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }'
+      )
+    ));
+
 	$fv_fp->_get_select(
 						__('Timeline', 'fv-wordpress-flowplayer'),
 						'design-timeline',
