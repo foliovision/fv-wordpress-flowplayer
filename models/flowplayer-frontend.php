@@ -349,12 +349,13 @@ class flowplayer_frontend extends flowplayer
         }
         
         //  Fixed control bar
-        $bFixedControlbar = $this->_get_option('ui_fixed_controlbar');
+        $bFixedControlbar = $this->_get_option('show_controlbar');
         if( isset($this->aCurArgs['controlbar']) ) {
           if( strcmp($this->aCurArgs['controlbar'],'yes') == 0 || strcmp($this->aCurArgs['controlbar'],'show') == 0 ) {
             $bFixedControlbar = true;
           } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 ) {
             $attributes['class'] .= ' no-controlbar';
+            $bFixedControlbar = false;
           }
         }
         if( $bFixedControlbar ) {

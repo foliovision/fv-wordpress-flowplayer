@@ -1042,6 +1042,14 @@
 /*
  *  FV Player Additions
  */
+.flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.is-loading .fp-ui .fp-controls { opacity: 1; filter: alpha(opacity=100); }
+.flowplayer.fixed-controls { overflow: visible; margin-bottom: 4em; }  
+.flowplayer.fixed-controls .fp-controls {
+	bottom: -2.4em;
+}
+.flowplayer.fixed-controls.is-fullscreen .fp-controls {
+	bottom: 0;
+}
 
 .fv-fp-splash-text { position: absolute;bottom:20%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 2px #333;background-color: rgba(0,0,0,0.5); font-size: 18px; padding: 5px 36px; pointer-events: none }
 .flowplayer.is-error .fv-fp-splash-text {display: none;}
