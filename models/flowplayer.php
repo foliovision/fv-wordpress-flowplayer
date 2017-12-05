@@ -182,6 +182,39 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       </tr>
       <?php
   }
+
+
+  public function _get_input($options = array()) {
+    // options must be an array
+    if (!is_array($options)) {
+      throw new Exception('Options parameter passed to the _get_input() method needs to be an array!');
+    }
+
+    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+    $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+    $key            = (!empty($options['key']) ? $options['key'] : '');
+    $name           = (!empty($options['name']) ? $options['name'] : '');
+
+    if (!$key || !$name) {
+      throw new Exception('Both, "name" and "key" options need to be set for _get_input()!');
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+    ?>
+      <tr>
+          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php _e($name, 'fv-wordpress-flowplayer'); ?></label></td>
+          <td><input <?php echo $class_name; ?>id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="text"  value="<?php echo esc_attr( $this->_get_option($key) ); ?>"<?php
+            if (isset($options['data']) && is_array($options['data'])) {
+              foreach ($options['data'] as $data_item => $data_value) {
+                echo ' data-'.$data_item.'="'.$data_value.'"';
+              }
+            }
+          ?> /></td>
+      </tr>
+    <?php
+  }
   
   
   public function _get_select( $name, $key, $help = false, $more = false, $aOptions ) {

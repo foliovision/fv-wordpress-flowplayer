@@ -1030,6 +1030,7 @@ function fv_flowplayer_admin_skin() {
   </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <?php
+      // show border checkbox
       echo $fv_fp->_get_checkbox(array(
         'key' => 'hasBorder',
         'name' => 'Border',
@@ -1037,12 +1038,17 @@ function fv_flowplayer_admin_skin() {
           'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
         )
       ));
+
+    // border color input / colorpicker
+    $fv_fp->_get_input(array(
+      'key' => 'borderColor',
+      'name' => 'Border color',
+      'class' => 'color',
+      'data' => array(
+        'fv-preview' => '.flowplayer{border-color:#%val%!important;}'
+      )
+    ));
     ?>
-    <tr>
-      <td><label for="borderColor"><?php _e('Border color', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="borderColor" name="borderColor" type="text"  value="<?php echo esc_attr( $fv_fp->_get_option('borderColor') ); ?>" 
-                 data-fv-preview=".flowplayer{border-color:#%val%!important;}"/></td>
-    </tr>
     <tr>
       <td><label for="marginBottom"><?php _e('Bottom Margin', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="marginBottom" name="marginBottom" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo esc_attr($fv_fp->_get_option('marginBottom')); ?>" 
