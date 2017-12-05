@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.3.12 - 2017/12/?? =
+
+* Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
+
 = 6.3.11 - 2017/11/20 =
 
 * New feature - Sticky Video - lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1200 pixels. See Setting -> FV Player -> Skin -> Sticky Video
