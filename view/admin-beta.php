@@ -1094,8 +1094,8 @@ function fv_flowplayer_admin_skin() {
     <tr>
       <td><label for="progressColor"><?php _e('Progress', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="progressColor" name="progressColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('progressColor') ); ?>" 
-           data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val%!important; }  
-          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+           data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val%!important; }
+          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }"/></td>
     </tr>
     <tr>
