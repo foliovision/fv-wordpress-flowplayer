@@ -396,7 +396,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
-        if( $this->_get_option('liststyle') == 'horizontal' || isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'horizontal' ) {
+        if( !empty($this->aCurArgs['playlist']) && ( $this->_get_option('liststyle') == 'horizontal' || isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'horizontal' ) ) {
           //  no player dimensions for playlists
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
