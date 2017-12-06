@@ -1231,8 +1231,7 @@
 .fvp-share-bar .sharing-link{
     float: left;
     color: #fff;
-    line-height: 24px;
-    margin: .5em 0;
+    line-height: 22px;
     padding: .5em;
     font-weight:bold;
 }
@@ -1243,7 +1242,7 @@
 .flowplayer.is-mouseout .fvp-share-bar.visible{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.is-mouseover.is-ready .fvp-share-bar{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)} */
 .flowplayer .fp-fullscreen {z-index:1}
-/*.flowplayer .fvp-share-bar {display:none;}*/
+.flowplayer .fvp-share-bar {display:none;}
 .flowplayer .embed-code {padding: 0 10px 10px; display: none; clear: both; background-color: rgba(0, 0, 0, 0); }
 .flowplayer .embed-code label {clear: both; padding-left: 0px; padding-top: 0; line-height: 16px;}
 #content .flowplayer .fvp-share-bar textarea, .flowplayer .fvp-share-bar textarea { padding: 3px; line-height: 1.4; white-space: pre-wrap; color: black !important; height: auto; min-height: 130px; width: 99%; font-size: 10px; background-color:rgba(255, 255, 255, 1); box-shadow: none; border-radius: 0; cursor: text; }
