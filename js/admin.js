@@ -103,8 +103,8 @@
           replacement.push($('#subtitleBgAlpha').val());
           var newStyle = $this.data('fv-preview').replace(/%val%/g, replacement.join(', '));
 
-          if (newStyle.indexOf('#transparent') > -1) {
-            newStyle = newStyle.replace(/#transparent/g, 'transparent');
+          if (newStyle.indexOf('#rgba') > -1) {
+            newStyle = newStyle.replace(/#rgba/g, 'rgba');
           }
 
           style += newStyle;
@@ -117,16 +117,16 @@
             newStyle = $this.data('fv-preview').replace(/%val%/g, '0');
           }
 
-          if (newStyle.indexOf('#transparent') > -1) {
-            newStyle = newStyle.replace(/#transparent/g, 'transparent');
+          if (newStyle.indexOf('#rgba') > -1) {
+            newStyle = newStyle.replace(/#rgba/g, 'rgba');
           }
 
           style += newStyle;
         } else {
           var newStyle = $this.data('fv-preview').replace(/%val%/g, $this.val());;
 
-          if (newStyle.indexOf('#transparent') > -1) {
-            newStyle = newStyle.replace(/#transparent/g, 'transparent');
+          if (newStyle.indexOf('#rgba') > -1) {
+            newStyle = newStyle.replace(/#rgba/g, 'rgba');
           }
 
           style += newStyle;
@@ -134,8 +134,6 @@
       }, 0);
       $('#fv-style-preview').html(style);
 
-      // update progressbar & icons styles
-      skinPreviewDropdownChanged();
     }
 
     // color inputs + checkbox changes
@@ -143,6 +141,8 @@
 
     $('[data-fv-preview]').on('select change', skinPreviewDropdownChanged);
 
+    // update player with current options
+    skinPreviewInputChanged();
   });
 
   

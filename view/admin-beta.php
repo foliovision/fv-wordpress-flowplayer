@@ -1162,7 +1162,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_hidden',
         'key'     => 'slimbackgroundColor',
-        'default' => 'transparent',
+        'default' => 'rgba(255, 255, 255, 0)',
         'data'    => array(
           'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
                  .fv_player_popup {  background: #%val%!important;}
@@ -1241,6 +1241,148 @@ function fv_flowplayer_admin_skin() {
 
     )
   ) );
+
+
+
+  // YouTubey skin settings
+  fv_flowplayer_admin_skin_get_table( array(
+    'skin_name'               => 'YouTubey',
+    'skin_radio_button_value' => 1,
+    'items'                   => array(
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeyhasBorder',
+        'default' => 'false',
+        'data' => array(
+          'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeyborderColor',
+        'default' => '666666',
+        'data'    => array(
+          'fv-preview' => '.flowplayer{border-color:#%val%!important;}'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeymarginBottom',
+        'default' => '28',
+        'data'    => array(
+          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
+    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
+    .flowplayer.has-abloop { margin-bottom: %val%px!important; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeybufferColor',
+        'default' => 'EEEEEE',
+        'data'    => array(
+          'fv-preview' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeycanvas',
+        'default' => '000000',
+        'data'    => array(
+          'fv-preview' => '.flowplayer { background-color: #%val%!important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeybackgroundColor',
+        'default' => 'rgba(0, 0, 0, 0.25)',
+        'data'    => array(
+          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
+                 .fv_player_popup {  background: #%val%!important;}
+                 .fvfp_admin_error_content {  background: #%val%!important; }
+                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeyfont-face',
+        'default' => 'Tahoma, Geneva, sans-serif',
+        'data'    => array(
+          'fv-preview' => '#content .flowplayer, .flowplayer { font-family: %val%; }'
+        )
+      ),
+
+      array(
+        'type'           => 'input_hidden',
+        'key'            => 'player-position',
+        'default'        => '',
+        'data'           => array(
+          'fv-preview' => '.flowplayer { margin-left: 0!important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_text',
+        'key'     => 'youtubeyprogressColor',
+        'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
+        'class'   => 'color',
+        'default' => 'BB0000',
+        'data'    => array(
+          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val%!important; }
+          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
+          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeytimeColor',
+        'default' => 'EEEEEE',
+        'data'    => array(
+          'fv-preview' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
+                 .fv-wp-flowplayer-notice-small { color: #%val% !important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeydurationColor',
+        'default' => 'EEEEEE',
+        'data'    => array(
+          'fv-preview' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }'
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeydesign-timeline',
+        'default' => 'fp-full',
+        'data'    => array(
+          'fv-preview' => ''
+        )
+      ),
+
+      array(
+        'type'    => 'input_hidden',
+        'key'     => 'youtubeydesign-icons',
+        'default' => ' ',
+        'data'    => array(
+          'fv-preview' => ''
+        )
+      ),
+
+    )
+  ) );
+
+
 
   // custom skin settings
   fv_flowplayer_admin_skin_get_table( array(
