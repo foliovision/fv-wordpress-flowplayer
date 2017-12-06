@@ -358,7 +358,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $key = $key[0] . '[' . $key[1] . ']';
     }
     ?>
-      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo $v = esc_attr( $this->_get_option($key) ); echo (!empty($v) ? $v : $default); ?>"<?php
+      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php $v = esc_attr( $this->_get_option($key) ); echo (!empty($v) ? $v : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
