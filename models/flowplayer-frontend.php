@@ -313,7 +313,14 @@ class flowplayer_frontend extends flowplayer
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
         if( $this->is_beta() ) {
-          $attributes['class'] .= ' '.$this->_get_option('design-timeline').' '.$this->_get_option('design-icons');
+          $skin = $this->_get_option('skin');
+          if ($skin === false) {
+            $skin = 'skin-2';
+          } else {
+            $skin = 'skin-'.$skin;
+          }
+
+          $attributes['class'] .= ' '.$this->_get_option(array($skin, 'design-timeline')).' '.$this->_get_option(array($skin, 'design-icons'));
         }
       
         if( $autoplay ) {

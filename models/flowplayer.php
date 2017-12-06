@@ -486,7 +486,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['bufferColor'] ) ) $conf['bufferColor'] = '#eeeeee';
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
-    if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
+    if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
     if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = '#000000';
@@ -540,8 +540,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
     // apply existing colors from old config values to the new, skin-based config array
-    if (!isset($conf['skin-custom'])) {
-      $conf['skin-custom'] = array();
+    if (!isset($conf['skin-2'])) {
+      $conf['skin-2'] = array();
 
       // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
@@ -552,9 +552,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
       foreach ($old_skinless_settings_array as $configKey) {
         if (isset($conf[$configKey])) {
-          $conf['skin-custom'][ $configKey ] = $conf[$configKey];
+          $conf['skin-2'][ $configKey ] = $conf[$configKey];
         }
       }
+    }
+
+    // set to custom, if no skin set
+    if (!isset($conf['skin'])) {
+      $conf['skin'] = '2';
     }
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
@@ -611,6 +616,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
+
+        // now that we have skin colors separated in an arrayed sub-values,
+        // we also need to check their values for HEX colors
+        foreach ($value as $sub_array_key => $sub_array_value) {
+          if( ((strpos( $sub_array_key, 'Color' ) !== FALSE )||(strpos( $sub_array_key, 'canvas' ) !== FALSE)) && strpos($sub_array_value, 'rgba') === FALSE) {
+            $aNewOptions[$key][$sub_array_key] = '#'.strtolower($sub_array_value);
+          }
+        }
       } else if( in_array( $key, array('width', 'height') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
       } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design') ) ) {
@@ -618,7 +631,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
       }
-      if( (strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) {
+      if( ((strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
         $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
       }
     }
@@ -948,7 +961,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       .flowplayer .fp-logo { display: block; opacity: 1; }                                              
     <?php endif;
   
-    if( $fv_fp->_get_option('hasBorder') ) : ?>
+    if( $fv_fp->_get_option('hasBorder')) : ?>
       .flowplayer { border: 1px solid <?php echo $fv_fp->_get_option('borderColor'); ?> !important; }
     <?php endif; ?>
   
@@ -961,7 +974,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
     .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
     .flowplayer .fp-elapsed { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
-    .flowplayer .fp-volumelevel { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }  
+    .flowplayer .fp-volumelevel { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }
     .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }
     .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
@@ -970,10 +983,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important }
     
-    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>!important; } 
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; } 
+    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>!important; }
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; }
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $fv_fp->_get_option('bufferColor'); ?>!important; } 
-    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; } 
+    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; }
     .fvplayer .me-cannotplay span { padding: 5px; }
     #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
   
@@ -1028,24 +1041,26 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     global $fv_fp;
 
     $skin = $this->_get_option('skin');
-    if (!$skin) {
-        $skin = '';
+    if ($skin === false) {
+      $skin = 'skin-2';
+    } else {
+        $skin = 'skin-'.$skin;
     }
 
-    $iMarginBottom = intval($this->_get_option($skin.'marginBottom')) > -1 ? intval( $this->_get_option($skin.'marginBottom') ) : '28';
-    
-    $sSubtitleBgColor = $this->_get_option($skin.'subtitleBgColor');
+    $iMarginBottom = intval($this->_get_option(array($skin, 'marginBottom'))) > -1 ? intval( $this->_get_option(array($skin, 'marginBottom')) ) : '28';
+
+    $sSubtitleBgColor = $this->_get_option('subtitleBgColor');
 
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
     <?php endif;
 
-    if ( $fv_fp->_get_option($skin.'key') && $fv_fp->_get_option($skin.'logo') ) : ?>
+    if ( $fv_fp->_get_option('key') && $fv_fp->_get_option('logo') ) : ?>
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif;
 
-    if( $fv_fp->_get_option($skin.'hasBorder') ) : ?>
-      .flowplayer { border: 1px solid <?php echo $fv_fp->_get_option($skin.'borderColor'); ?> !important; }
+    if( $fv_fp->_get_option(array($skin, 'hasBorder')) ) : ?>
+      .flowplayer { border: 1px solid <?php echo $fv_fp->_get_option(array($skin, 'borderColor')); ?> !important; }
     <?php endif; ?>
   
     .flowplayer { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
@@ -1053,53 +1068,53 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
     .flowplayer.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
-    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option($skin.'durationColor'); ?> !important; background-color: <?php echo $fv_fp->_get_option($skin.'backgroundColor'); ?> !important; }
-    .flowplayer { background-color: <?php echo $fv_fp->_get_option($skin.'canvas'); ?> !important; }
-    .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option($skin.'durationColor'); ?> !important; }
-    .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: <?php echo $fv_fp->_get_option($skin.'timeColor'); ?> !important; }
-    .flowplayer .fp-color { background-color: <?php echo $fv_fp->_get_option($skin.'progressColor'); ?> !important; }
-    .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option($skin.'bufferColor'); ?> !important; }
-    .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option($skin.'timelineColor'); ?> !important; }
-    .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option($skin.'backgroundColor'); ?> !important; }
-    .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $fv_fp->_get_option($skin.'progressColor'); ?> !important; }
-    .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo $fv_fp->_get_option($skin.'bufferColor'); ?> !important; }
-    #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option($skin.'font-face'); ?>; }
-    .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option($skin.'progressColor'); ?> !important }
+    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?> !important; background-color: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?> !important; }
+    .flowplayer { background-color: <?php echo $fv_fp->_get_option(array($skin, 'canvas')); ?> !important; }
+    .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?> !important; }
+    .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: <?php echo $fv_fp->_get_option(array($skin, 'timeColor')); ?> !important; }
+    .flowplayer .fp-color { background-color: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?> !important; }
+    .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option(array($skin, 'bufferColor')); ?> !important; }
+    .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }
+    .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?> !important; }
+    .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?> !important; }
+    .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo $fv_fp->_get_option(array($skin, 'bufferColor')); ?> !important; }
+    #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option(array($skin, 'font-face')); ?>; }
+    .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?> !important }
     
-    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option($skin.'backgroundColor'); ?>!important; }
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option($skin.'progressColor'); ?>!important; }
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $fv_fp->_get_option($skin.'bufferColor'); ?>!important; }
-    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option($skin.'progressColor'); ?>!important; }
+    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?>!important; }
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?>!important; }
+    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $fv_fp->_get_option(array($skin, 'bufferColor')); ?>!important; }
+    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?>!important; }
     .fvplayer .me-cannotplay span { padding: 5px; }
-    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $fv_fp->_get_option($skin.'font-face'); ?>; }
+    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $fv_fp->_get_option(array($skin, 'font-face')); ?>; }
   
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }  
-    .fv_player_popup {  background: <?php echo $fv_fp->_get_option($skin.'backgroundColor') ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
+    .fv_player_popup {  background: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
   
-    <?php echo $fv_fp->_get_option($skin.'ad_css'); ?>
-    .wpfp_custom_ad { color: <?php echo $fv_fp->_get_option($skin.'adTextColor'); ?>; z-index: 20 !important; }
-    .wpfp_custom_ad a { color: <?php echo $fv_fp->_get_option($skin.'adLinksColor'); ?> }
+    <?php echo $fv_fp->_get_option('ad_css'); ?>
+    .wpfp_custom_ad { color: <?php echo $fv_fp->_get_option('adTextColor'); ?>; z-index: 20 !important; }
+    .wpfp_custom_ad a { color: <?php echo $fv_fp->_get_option('adLinksColor'); ?> }
     
-    .fv-wp-flowplayer-notice-small { color: <?php echo $fv_fp->_get_option($skin.'timeColor'); ?> !important; }
+    .fv-wp-flowplayer-notice-small { color: <?php echo $fv_fp->_get_option(array($skin, 'timeColor')); ?> !important; }
     
-    .fvfp_admin_error { color: <?php echo $fv_fp->_get_option($skin.'durationColor'); ?>; }
-    .fvfp_admin_error a { color: <?php echo $fv_fp->_get_option($skin.'durationColor'); ?>; }
-    #content .fvfp_admin_error a { color: <?php echo $fv_fp->_get_option($skin.'durationColor'); ?>; }
-    .fvfp_admin_error_content {  background: <?php echo $fv_fp->_get_option($skin.'backgroundColor'); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
+    .fvfp_admin_error { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?>; }
+    .fvfp_admin_error a { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?>; }
+    #content .fvfp_admin_error a { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?>; }
+    .fvfp_admin_error_content {  background: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
     
-    .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->_get_option($skin.'playlistBgColor');?>; }
-    <?php if ( $fv_fp->_get_option($skin.'playlistFontColor') && $fv_fp->_get_option($skin.'playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option($skin.'playlistFontColor');?>; }<?php endif; ?>
-    .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option($skin.'playlistSelectedColor');?>; }
-    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $fv_fp->_get_option($skin.'playlistSelectedColor');?>; }
-    <?php if ( $fv_fp->_get_option($skin.'playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option($skin.'playlistBgColor');?>; }<?php endif; ?>
+    .fp-playlist-external > a > span { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }
+    <?php if ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $fv_fp->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $fv_fp->_get_option('playlistSelectedColor');?>; }
+    <?php if ( $fv_fp->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $fv_fp->_get_option('playlistBgColor');?>; }<?php endif; ?>
 
-    <?php if( $fv_fp->_get_option($skin.'subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->_get_option($skin.'subtitleSize')); ?>px; }<?php endif; ?>
-    <?php if( $fv_fp->_get_option($skin.'subtitleFontFace') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo $fv_fp->_get_option($skin.'subtitleFontFace'); ?>; }<?php endif; ?>
-    <?php if( $fv_fp->_get_option($skin.'logoPosition') ) :
-      $value = $fv_fp->_get_option($skin.'logoPosition');
+    <?php if( $fv_fp->_get_option('subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($fv_fp->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
+    <?php if( $fv_fp->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo $fv_fp->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $fv_fp->_get_option('logoPosition') ) :
+      $value = $fv_fp->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
         $sCSS = "bottom: 30px; left: 15px";
       } else if( $value == 'bottom-right' ) {
@@ -1111,9 +1126,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $fv_fp->_get_option($skin.'subtitleBgAlpha'); ?>); }
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $fv_fp->_get_option('subtitleBgAlpha'); ?>); }
   
-    <?php if( $fv_fp->_get_option($skin.'player-position') && 'left' == $fv_fp->_get_option($skin.'player-position') ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
+    <?php if( $fv_fp->_get_option(array($skin, 'player-position')) && 'left' == $fv_fp->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
     <?php if( !$skip_style_tag ) : ?>
       </style>  
