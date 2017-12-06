@@ -1217,8 +1217,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       wp_enqueue_style( 'fv_flowplayer', $sURL, $aDeps, $sVer );
       
       if(is_user_logged_in()){
-        //TODO: is this needed?
-        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+        $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
+        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/'.$sPath.'.css', array(), $fv_wp_flowplayer_ver );
       }
       
       

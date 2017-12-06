@@ -1090,7 +1090,7 @@ function fv_flowplayer_admin_skin() {
         // skin change radios
         $fv_fp->_get_radio(array(
           'key' => 'skin',
-          'name' => translate('Skin', 'fv-wordpress-flowplayer'),
+          'name' => __('Skin', 'fv-wordpress-flowplayer'),
           'style' => 'columns',
           'values' => array(
             0 => 'Slim',
@@ -1193,7 +1193,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-0', 'progressColor'),
-        'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
         'data'    => array(
@@ -1333,7 +1333,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-1', 'progressColor'),
-        'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
         'data'    => array(
@@ -1394,7 +1394,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type' => 'checkbox',
         'key'  => array('skin-2', 'hasBorder'),
-        'name' => translate( 'Border', 'fv-wordpress-flowplayer' ),
+        'name' => __( 'Border', 'fv-wordpress-flowplayer' ),
         'data' => array(
           'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
         )
@@ -1403,7 +1403,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'borderColor'),
-        'name'    => translate( 'Border color', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Border color', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '666666',
         'data'    => array(
@@ -1414,9 +1414,9 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'marginBottom'),
-        'name'    => translate( 'Bottom Margin', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Bottom Margin', 'fv-wordpress-flowplayer' ),
         'default' => '28',
-        'title'   => translate( 'Enter value in pixels', 'fv-wordpress-flowplayer' ),
+        'title'   => __( 'Enter value in pixels', 'fv-wordpress-flowplayer' ),
         'data'    => array(
           'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
     .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
@@ -1428,7 +1428,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'bufferColor'),
-        'name'    => translate( 'Buffer', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Buffer', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
         'data'    => array(
@@ -1440,7 +1440,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'canvas'),
-        'name'    => translate( 'Canvas', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Canvas', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '000000',
         'data'    => array(
@@ -1451,7 +1451,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'backgroundColor'),
-        'name'    => translate( 'Controlbar', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Controlbar', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '333333',
         'data'    => array(
@@ -1465,9 +1465,9 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'select',
         'key'     => array('skin-2', 'font-face'),
-        'name'    => translate( 'Font Face', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Font Face', 'fv-wordpress-flowplayer' ),
         'options' => array(
-          'inherit'                                     => translate( '(inherit from template)', 'fv-wordpress-flowplayer' ),
+          'inherit'                                     => __( '(inherit from template)', 'fv-wordpress-flowplayer' ),
           '&quot;Courier New&quot;, Courier, monospace' => 'Courier New',
           'Tahoma, Geneva, sans-serif'                  => 'Tahoma, Geneva'
         ),
@@ -1481,10 +1481,10 @@ function fv_flowplayer_admin_skin() {
         'type'           => 'select',
         'key'            => array('skin-2', 'player-position'),
         'first_td_class' => 'second-column',
-        'name'           => translate( 'Player position', 'fv-wordpress-flowplayer' ),
+        'name'           => __( 'Player position', 'fv-wordpress-flowplayer' ),
         'default'        => '',
         'options'        => array(
-          ''     => translate( 'Centered', 'fv-wordpress-flowplayer' ),
+          ''     => __( 'Centered', 'fv-wordpress-flowplayer' ),
           'left' => 'Left (no text-wrap)'
         ),
         'data'           => array(
@@ -1495,7 +1495,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'progressColor'),
-        'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
         'data'    => array(
@@ -1508,7 +1508,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'timeColor'),
-        'name'    => translate( 'Time', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Time', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
         'data'    => array(
@@ -1520,7 +1520,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_text',
         'key'     => array('skin-2', 'durationColor'),
-        'name'    => translate( 'Buttons', 'fv-wordpress-flowplayer' ),
+        'name'    => __( 'Buttons', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
         'data'    => array(
@@ -1532,14 +1532,14 @@ function fv_flowplayer_admin_skin() {
         'type'           => 'select',
         'key'            => array('skin-2', 'design-timeline'),
         'first_td_class' => 'second-column',
-        'name'           => translate( 'Timeline', 'fv-wordpress-flowplayer' ),
+        'name'           => __( 'Timeline', 'fv-wordpress-flowplayer' ),
         'default'        => ' ',
         'options'        => array(
-          ' '          => translate( 'Default', 'fv-wordpress-flowplayer' ),
-          'fp-slim'    => translate( 'Slim', 'fv-wordpress-flowplayer' ),
-          'fp-full'    => translate( 'Full', 'fv-wordpress-flowplayer' ),
-          'fp-fat'     => translate( 'Fat', 'fv-wordpress-flowplayer' ),
-          'fp-minimal' => translate( 'Minimal', 'fv-wordpress-flowplayer' ),
+          ' '          => __( 'Default', 'fv-wordpress-flowplayer' ),
+          'fp-slim'    => __( 'Slim', 'fv-wordpress-flowplayer' ),
+          'fp-full'    => __( 'Full', 'fv-wordpress-flowplayer' ),
+          'fp-fat'     => __( 'Fat', 'fv-wordpress-flowplayer' ),
+          'fp-minimal' => __( 'Minimal', 'fv-wordpress-flowplayer' ),
         )
       ),
 
@@ -1547,7 +1547,7 @@ function fv_flowplayer_admin_skin() {
         'type'           => 'select',
         'key'            => array('skin-2', 'design-icons'),
         'first_td_class' => 'second-column',
-        'name'           => translate( 'Icons', 'fv-wordpress-flowplayer' ),
+        'name'           => __( 'Icons', 'fv-wordpress-flowplayer' ),
         'default'        => ' ',
         'options'        => array(
           ' '           => __( 'Default', 'fv-wordpress-flowplayer' ),
