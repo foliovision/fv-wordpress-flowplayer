@@ -134,15 +134,14 @@
       }, 0);
       $('#fv-style-preview').html(style);
 
+      // update progressbar & icons styles
+      skinPreviewDropdownChanged();
     }
 
     // color inputs + checkbox changes
     $previewElements.on('input change', skinPreviewInputChanged).trigger('input');
 
     $('[data-fv-preview]').on('select change', skinPreviewDropdownChanged);
-
-    // update player with current options
-    skinPreviewInputChanged();
   });
 
   
