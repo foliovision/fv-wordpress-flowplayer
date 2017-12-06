@@ -218,41 +218,90 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
-    ?>
-      <tr>
-          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
-          <td>
-              <fieldset>
-                  <p>
-                    <?php
-                        foreach ($values as $index => $input_value) {
-                    ?>
 
-                      &nbsp;<input type="radio" name="<?php echo $key; ?>" id="<?php echo $key.'-'.$input_value; ?>" value="<?php echo $index; ?>"<?php
-                          if (($selected == $index)) { echo ' checked="checked"'; }
+    // determine style (display all checkboxes below each other or next to each other in multiple columns
+    $style = (!empty($options['style']) ? $options['style'] : 'rows');
 
-                          if (isset($options) && isset($options['data']) && is_array($options['data'])) {
-                            foreach ($options['data'] as $data_item => $data_value) {
-                              echo ' data-'.$data_item.'="'.$data_value.'"';
-                            }
-                          }
-                      ?> /> <?php echo $input_value ?><br />
-
+    // rows style
+    if ($style == 'rows') {
+      ?>
+        <tr>
+            <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
+            <td>
+                <fieldset>
+                    <p>
                       <?php
-                        }
-                    ?>
+                      foreach ( $values as $index => $input_value ) {
+                        ?>
 
-                  </p>
-              </fieldset>
-            <?php if ( $help ) {
-              echo $help;
-            } ?>
-            <?php if ( $more ) { ?>
-                <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
-            <?php } ?>
-          </td>
-      </tr>
-    <?php
+                          &nbsp;<input type="radio" name="<?php echo $key; ?>"
+                                       id="<?php echo $key . '-' . $input_value; ?>" value="<?php echo $index; ?>"<?php
+                        if ( ( $selected == $index ) ) {
+                          echo ' checked="checked"';
+                        }
+
+                        if ( isset( $options ) && isset( $options['data'] ) && is_array( $options['data'] ) ) {
+                          foreach ( $options['data'] as $data_item => $data_value ) {
+                            echo ' data-' . $data_item . '="' . $data_value . '"';
+                          }
+                        }
+                        ?> /> <?php echo $input_value ?><br/>
+
+                        <?php
+                      }
+                      ?>
+
+                    </p>
+                </fieldset>
+              <?php if ( $help ) {
+                echo $help;
+              } ?>
+              <?php if ( $more ) { ?>
+                  <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              <?php } ?>
+            </td>
+        </tr>
+      <?php
+    } else {
+
+      // columns style
+?>
+          <tr>
+<?php
+      foreach ( $values as $index => $input_value ) {
+        ?>
+              <td style="white-space: nowrap">
+                  <fieldset>
+                      <p>
+                        &nbsp;<input type="radio" name="<?php echo $key; ?>"
+                                     id="<?php echo $key . '-' . $input_value; ?>"
+                                     value="<?php echo $index; ?>"<?php
+                      if ( ( $selected == $index ) ) {
+                        echo ' checked="checked"';
+                      }
+
+                      if ( isset( $options ) && isset( $options['data'] ) && is_array( $options['data'] ) ) {
+                        foreach ( $options['data'] as $data_item => $data_value ) {
+                          echo ' data-' . $data_item . '="' . $data_value . '"';
+                        }
+                      }
+                      ?> /> <?php echo $input_value ?><br/>
+                      </p>
+                  </fieldset>
+                <?php if ( $help ) {
+                  echo $help;
+                } ?>
+                <?php if ( $more ) { ?>
+                    <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                <?php } ?>
+              </td>
+        <?php
+      }
+?>
+          </tr>
+
+<?php
+    }
   }
 
 

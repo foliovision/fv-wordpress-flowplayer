@@ -1091,6 +1091,7 @@ function fv_flowplayer_admin_skin() {
         $fv_fp->_get_radio(array(
           'key' => 'skin',
           'name' => translate('Skin', 'fv-wordpress-flowplayer'),
+          'style' => 'columns',
           'values' => array(
             0 => 'Slim',
             1 => 'YouTubey',
