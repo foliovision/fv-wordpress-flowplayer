@@ -1429,6 +1429,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public static function get_core_version() {
+    global $fv_wp_flowplayer_core_ver, $fv_wp_flowplayer_core_ver_beta;
+    return self::is_beta() ? $fv_wp_flowplayer_core_ver_beta : $fv_wp_flowplayer_core_ver;
+  }
+  
+  
   public static function get_video_key( $sURL ) {
     $sURL = str_replace( '?v=', '-v=', $sURL );
     $sURL = preg_replace( '~\?.*$~', '', $sURL );
