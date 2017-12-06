@@ -208,9 +208,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $selected = 0;
 
     // check if any of the given values match the saved one and store it for a pre-select
-    foreach ($values as $input_value) {
-        if ($saved_value == $input_value) {
-            $selected = $input_value;
+    foreach ($values as $index => $input_value) {
+        if ($saved_value == $index) {
+            $selected = $index;
             break;
         }
     }
