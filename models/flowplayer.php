@@ -492,7 +492,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = '#000000';
     if( !isset( $conf['subtitleBgAlpha'] ) ) $conf['subtitleBgAlpha'] = 0.5;
     if( !isset( $conf['subtitleSize'] ) ) $conf['subtitleSize'] = 16;
-    
+
     //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
@@ -538,7 +538,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
 
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
-    
+
+    // apply existing colors from old config values to the new, skin-based config array
+    if (!isset($conf['skin-custom'])) {
+      $conf['skin-custom'] = array();
+
+      // iterate over old keys and bring them in to the new
+      $old_skinless_settings_array = array(
+        'hasBorder', 'borderColor', 'marginBottom', 'bufferColor', 'canvas', 'backgroundColor',
+        'font-face', 'player-position', 'progressColor', 'timeColor', 'durationColor',
+        'design-timeline', 'design-icons'
+      );
+
+      foreach ($old_skinless_settings_array as $configKey) {
+        if (isset($conf[$configKey])) {
+          $conf['skin-custom'][ $configKey ] = $conf[$configKey];
+        }
+      }
+    }
+
     $conf = apply_filters('fv_player_conf_defaults', $conf);
 
     update_option( 'fvwpflowplayer', $conf );
