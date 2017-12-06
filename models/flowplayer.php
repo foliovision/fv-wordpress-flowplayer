@@ -322,13 +322,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
     }
 
+    $saved_value = esc_attr( $this->_get_option($key) );
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
     ?>
       <tr>
           <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?></label></td>
-          <td><input <?php echo $class_name; ?>id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php $v = esc_attr( $this->_get_option($key) ); echo (!empty($v) ? $v : $default); ?>"<?php
+          <td><input <?php echo $class_name; ?>id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -354,11 +355,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       throw new Exception('The "key" option need to be set for _get_input_hidden()!');
     }
 
+    $saved_value = esc_attr( $this->_get_option($key) );
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
     ?>
-      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php $v = esc_attr( $this->_get_option($key) ); echo (!empty($v) ? $v : $default); ?>"<?php
+      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -408,10 +410,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
     }
 
-    if ( is_array( $key ) && count( $key ) > 1 ) {
-      $key = $key[0] . '[' . $key[1] . ']';
-    }
-
     // check which option should be selected by default
     $option = $this->_get_option($key);
     foreach( $aOptions AS $k => $v ) {
@@ -423,6 +421,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     // if no option is selected, make a default one selected
     if (!isset($selected) && $default) {
         $selected = $default;
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
     }
 
     $key = esc_attr($key);

@@ -67,12 +67,12 @@
             .removeClass('visible-captions')
             .addClass('fv-playlist-design-' + $this.val());
 
-        } else if ($this.attr('name').endsWith('design-timeline')) {
+        } else if ($this.attr('name').endsWith('design-timeline]')) {
           // timeline design style change
           $('.flowplayer')
             .removeClass('fp-slim fp-full fp-fat fp-minimal')
             .addClass($this.val());
-        } else if ($this.attr('name').endsWith('design-icons')) {
+        } else if ($this.attr('name').endsWith('design-icons]')) {
           $('.flowplayer')
             .removeClass('fp-edgy fp-outlined fp-playful')
             .addClass($this.val());
@@ -94,7 +94,7 @@
           return;
         }
 
-        if ($this.attr('name').endsWith('player-position')) {
+        if ($this.attr('name').endsWith('player-position]')) {
           if ($this.val() === 'left')
             style += $this.data('fv-preview');
 
@@ -108,7 +108,7 @@
           }
 
           style += newStyle;
-        } else if($this.attr('name').endsWith('hasBorder')) {
+        } else if($this.attr('name').endsWith('hasBorder]')) {
           var newStyle = '';
 
           if ($this.prop('checked')) {

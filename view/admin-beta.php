@@ -1113,37 +1113,37 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimhasBorder',
+        'key'     => array('skin-slim', 'hasBorder'),
         'default' => 'false',
         'data' => array(
-          'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
+          'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimborderColor',
+        'key'     => array('skin-slim', 'borderColor'),
         'default' => '666666',
         'data'    => array(
-          'fv-preview' => '.flowplayer{border-color:#%val%!important;}'
+          'fv-preview' => '.flowplayer{border-color:#%val% !important;}'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimmarginBottom',
+        'key'     => array('skin-slim', 'marginBottom'),
         'default' => '28',
         'data'    => array(
-          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
-    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
-    .flowplayer.has-abloop { margin-bottom: %val%px!important; }
-    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }'
+          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
+    .flowplayer.has-abloop { margin-bottom: %val%px !important; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimbufferColor',
+        'key'     => array('skin-slim', 'bufferColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
@@ -1153,28 +1153,28 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimcanvas',
+        'key'     => array('skin-slim', 'canvas'),
         'default' => '000000',
         'data'    => array(
-          'fv-preview' => '.flowplayer { background-color: #%val%!important; }'
+          'fv-preview' => '.flowplayer { background-color: #%val% !important; }'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimbackgroundColor',
+        'key'     => array('skin-slim', 'backgroundColor'),
         'default' => 'rgba(255, 255, 255, 0)',
         'data'    => array(
-          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
-                 .fv_player_popup {  background: #%val%!important;}
-                 .fvfp_admin_error_content {  background: #%val%!important; }
+          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                 .fv_player_popup {  background: #%val% !important;}
+                 .fvfp_admin_error_content {  background: #%val% !important; }
                  .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimfont-face',
+        'key'     => array('skin-slim', 'font-face'),
         'default' => 'Tahoma, Geneva, sans-serif',
         'data'    => array(
           'fv-preview' => '#content .flowplayer, .flowplayer { font-family: %val%; }'
@@ -1183,21 +1183,21 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'input_hidden',
-        'key'            => 'player-position',
+        'key'            => array('skin-slim', 'player-position'),
         'default'        => '',
         'data'           => array(
-          'fv-preview' => '.flowplayer { margin-left: 0!important; }'
+          'fv-preview' => '.flowplayer { margin-left: 0 !important; }'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'slimprogressColor',
+        'key'     => array('skin-slim', 'progressColor'),
         'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
         'data'    => array(
-          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val%!important; }
+          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }'
         )
@@ -1205,7 +1205,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimtimeColor',
+        'key'     => array('skin-slim', 'timeColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
@@ -1215,7 +1215,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimdurationColor',
+        'key'     => array('skin-slim', 'durationColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }'
@@ -1224,7 +1224,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimdesign-timeline',
+        'key'     => array('skin-slim', 'design-timeline'),
         'default' => 'fp-slim',
         'data'    => array(
           'fv-preview' => ''
@@ -1233,7 +1233,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'slimdesign-icons',
+        'key'     => array('skin-slim', 'design-icons'),
         'default' => ' ',
         'data'    => array(
           'fv-preview' => ''
@@ -1253,37 +1253,37 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeyhasBorder',
+        'key'     => array('skin-youtubey', 'hasBorder'),
         'default' => 'false',
         'data' => array(
-          'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
+          'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeyborderColor',
+        'key'     => array('skin-youtubey', 'borderColor'),
         'default' => '666666',
         'data'    => array(
-          'fv-preview' => '.flowplayer{border-color:#%val%!important;}'
+          'fv-preview' => '.flowplayer{border-color:#%val% !important;}'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeymarginBottom',
+        'key'     => array('skin-youtubey', 'marginBottom'),
         'default' => '28',
         'data'    => array(
-          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
-    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
-    .flowplayer.has-abloop { margin-bottom: %val%px!important; }
-    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }'
+          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
+    .flowplayer.has-abloop { margin-bottom: %val%px !important; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeybufferColor',
+        'key'     => array('skin-youtubey', 'bufferColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
@@ -1293,28 +1293,28 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeycanvas',
+        'key'     => array('skin-youtubey', 'canvas'),
         'default' => '000000',
         'data'    => array(
-          'fv-preview' => '.flowplayer { background-color: #%val%!important; }'
+          'fv-preview' => '.flowplayer { background-color: #%val% !important; }'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeybackgroundColor',
+        'key'     => array('skin-youtubey', 'backgroundColor'),
         'default' => 'rgba(0, 0, 0, 0.25)',
         'data'    => array(
-          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
-                 .fv_player_popup {  background: #%val%!important;}
-                 .fvfp_admin_error_content {  background: #%val%!important; }
+          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                 .fv_player_popup {  background: #%val% !important;}
+                 .fvfp_admin_error_content {  background: #%val% !important; }
                  .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }'
         )
       ),
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeyfont-face',
+        'key'     => array('skin-youtubey', 'font-face'),
         'default' => 'Tahoma, Geneva, sans-serif',
         'data'    => array(
           'fv-preview' => '#content .flowplayer, .flowplayer { font-family: %val%; }'
@@ -1323,21 +1323,21 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'input_hidden',
-        'key'            => 'player-position',
+        'key'            => array('skin-youtubey', 'player-position'),
         'default'        => '',
         'data'           => array(
-          'fv-preview' => '.flowplayer { margin-left: 0!important; }'
+          'fv-preview' => '.flowplayer { margin-left: 0 !important; }'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'youtubeyprogressColor',
+        'key'     => array('skin-youtubey', 'progressColor'),
         'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
         'data'    => array(
-          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val%!important; }
+          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }'
         )
@@ -1345,7 +1345,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeytimeColor',
+        'key'     => array('skin-youtubey', 'timeColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
@@ -1355,7 +1355,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeydurationColor',
+        'key'     => array('skin-youtubey', 'durationColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }'
@@ -1364,7 +1364,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeydesign-timeline',
+        'key'     => array('skin-youtubey', 'design-timeline'),
         'default' => 'fp-full',
         'data'    => array(
           'fv-preview' => ''
@@ -1373,7 +1373,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => 'youtubeydesign-icons',
+        'key'     => array('skin-youtubey', 'design-icons'),
         'default' => ' ',
         'data'    => array(
           'fv-preview' => ''
@@ -1393,41 +1393,41 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type' => 'checkbox',
-        'key'  => 'hasBorder',
+        'key'  => array('skin-custom', 'hasBorder'),
         'name' => translate( 'Border', 'fv-wordpress-flowplayer' ),
         'data' => array(
-          'fv-preview' => '.flowplayer{border:%val%px solid!important;}'
+          'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'borderColor',
+        'key'     => array('skin-custom', 'borderColor'),
         'name'    => translate( 'Border color', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '666666',
         'data'    => array(
-          'fv-preview' => '.flowplayer{border-color:#%val%!important;}'
+          'fv-preview' => '.flowplayer{border-color:#%val% !important;}'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'marginBottom',
+        'key'     => array('skin-custom', 'marginBottom'),
         'name'    => translate( 'Bottom Margin', 'fv-wordpress-flowplayer' ),
         'default' => '28',
         'title'   => translate( 'Enter value in pixels', 'fv-wordpress-flowplayer' ),
         'data'    => array(
-          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
-    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
-    .flowplayer.has-abloop { margin-bottom: %val%px!important; }
-    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }'
+          'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
+    .flowplayer.has-abloop { margin-bottom: %val%px !important; }
+    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'bufferColor',
+        'key'     => array('skin-custom', 'bufferColor'),
         'name'    => translate( 'Buffer', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
@@ -1439,32 +1439,32 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => 'canvas',
+        'key'     => array('skin-custom', 'canvas'),
         'name'    => translate( 'Canvas', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '000000',
         'data'    => array(
-          'fv-preview' => '.flowplayer { background-color: #%val%!important; }'
+          'fv-preview' => '.flowplayer { background-color: #%val% !important; }'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'backgroundColor',
+        'key'     => array('skin-custom', 'backgroundColor'),
         'name'    => translate( 'Controlbar', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '333333',
         'data'    => array(
-          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
-                 .fv_player_popup {  background: #%val%!important;}
-                 .fvfp_admin_error_content {  background: #%val%!important; }
+          'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                 .fv_player_popup {  background: #%val% !important;}
+                 .fvfp_admin_error_content {  background: #%val% !important; }
                  .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }'
         )
       ),
 
       array(
         'type'    => 'select',
-        'key'     => 'font-face',
+        'key'     => array('skin-custom', 'font-face'),
         'name'    => translate( 'Font Face', 'fv-wordpress-flowplayer' ),
         'options' => array(
           'inherit'                                     => translate( '(inherit from template)', 'fv-wordpress-flowplayer' ),
@@ -1479,7 +1479,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'select',
-        'key'            => 'player-position',
+        'key'            => array('skin-custom', 'player-position'),
         'first_td_class' => 'second-column',
         'name'           => translate( 'Player position', 'fv-wordpress-flowplayer' ),
         'default'        => '',
@@ -1488,18 +1488,18 @@ function fv_flowplayer_admin_skin() {
           'left' => 'Left (no text-wrap)'
         ),
         'data'           => array(
-          'fv-preview' => '.flowplayer { margin-left: 0!important; }'
+          'fv-preview' => '.flowplayer { margin-left: 0 !important; }'
         )
       ),
 
       array(
         'type'    => 'input_text',
-        'key'     => 'progressColor',
+        'key'     => array('skin-custom', 'progressColor'),
         'name'    => translate( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
         'data'    => array(
-          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val%!important; }
+          'fv-preview' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }'
         )
@@ -1507,7 +1507,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => 'timeColor',
+        'key'     => array('skin-custom', 'timeColor'),
         'name'    => translate( 'Time', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
@@ -1519,7 +1519,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => 'durationColor',
+        'key'     => array('skin-custom', 'durationColor'),
         'name'    => translate( 'Buttons', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
@@ -1530,7 +1530,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'select',
-        'key'            => 'design-timeline',
+        'key'            => array('skin-custom', 'design-timeline'),
         'first_td_class' => 'second-column',
         'name'           => translate( 'Timeline', 'fv-wordpress-flowplayer' ),
         'default'        => ' ',
@@ -1545,7 +1545,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'select',
-        'key'            => 'design-icons',
+        'key'            => array('skin-custom', 'design-icons'),
         'first_td_class' => 'second-column',
         'name'           => translate( 'Icons', 'fv-wordpress-flowplayer' ),
         'default'        => ' ',
@@ -1628,7 +1628,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>  
       <td><label for="subtitle-font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
-        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-family: %val%!important; }">
+        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-family: %val% !important; }">
           <option value="inherit"<?php if( $fv_fp->_get_option('subtitleFontFace') == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit)', 'fv-wordpress-flowplayer'); ?></option>          
           <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->_get_option('subtitleFontFace') == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
           <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
@@ -1638,12 +1638,12 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
-                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px!important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor' ) ); ?>"
-                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%)!important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%) !important; }"/></td>
     </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
