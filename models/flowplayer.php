@@ -1475,7 +1475,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     global $post;
     $aArgs = func_get_args();
     
-    if( isset($aArgs[1][0]) && is_array($aArgs[1][0]) ) {        
+    if( $post && isset($aArgs[1][0]) && is_array($aArgs[1][0]) ) {        
       $sItemKeys = array_keys($aArgs[1][0]);
       if( $sDuration = flowplayer::get_duration( $post->ID, $aArgs[1][0][$sItemKeys[0]] ) ) {
         $caption .= '<i class="dur">'.$sDuration.'</i>';

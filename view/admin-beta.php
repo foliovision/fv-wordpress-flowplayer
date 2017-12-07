@@ -1021,11 +1021,15 @@ function fv_flowplayer_admin_skin_get_table($options) {
     <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
       foreach ($options['items'] as $item) {
-        // every type of element has name and key
+        // every type of element has key
         $setup = array(
-          'key' => $item['key'],
-          'name' => $item['name']
+          'key' => $item['key']
         );
+        
+        // most of them have name
+        if (isset($item['name'])) {
+          $setup['name'] = $item['name'];
+        }        
 
         // most of them have data
         if (isset($item['data'])) {
