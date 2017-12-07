@@ -1078,11 +1078,15 @@
 .flowplayer .fp-subtitle .fp-subtitle-line u{text-decoration:underline}
 */
 
+/* making ther header bar more visible and slim */
+.flowplayer .fp-header { background-color: rgba(0, 0, 0, 0.5); height: 2em; padding-left: 0 }
+.flowplayer .fp-header .fp-icon { margin: 0.5em 0.2em 0 0; }
+
 .flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
 
 /*this might be needed some day: .flowplayer .fp-menu{z-index:21;}*/
 /*this might be needed some day: .flowplayer .fp-volume{align-items:normal;display:block}*/
-/*this might be needed some day: .flowplayer.is-fullscreen{ max-height:100% !important; } */
+.flowplayer.is-fullscreen{ max-height:100% !important; }
 /*this might be needed some day: .flowplayer.is-error h2{color: #000;}*/
 /*this might be needed some day: .flowplayer.is-mouseout .fp-volume{top:12px}*/
 
@@ -1139,7 +1143,7 @@
 
 
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
-/*this might be needed some day: .flowplayer.is-fullscreen .fp-player{background-color:#000}*/
+.flowplayer.is-fullscreen .fp-player{background-color:#000}
 
 
 
@@ -1174,8 +1178,7 @@
 .fvp-share-bar ul,
 .fvp-share-bar .fvp-sharing, 
 #content .fvp-share-bar .fvp-sharing {
-	min-height: 24px;
-	margin: 1em 0 0 0;
+	margin: 0.4em 0 0 0;
   	padding: 0 !important;
 	float: left;
   	font-family: "Lucida Console", Monaco, monospace;
@@ -1241,19 +1244,18 @@
 .fvp-share-bar .sharing-link{
     float: left;
     color: #fff;
-    line-height: 24px;
-    margin: .5em 0;
+    line-height: 22px;
     padding: .5em;
     font-weight:bold;
 }
-.flowplayer .fvp-share-bar label{float:left;color:#fff;margin: .5em 0;padding: .5em;line-height:24px;}
+.flowplayer .fvp-share-bar label{float:left;color:#fff;line-height: 22px;padding: .5em;}
 .flowplayer .fp-embed{display:none}
 /*.flowplayer.is-mouseover.is-ready .fp-embed-code{display:block}*/
 /*.flowplayer.is-mouseout .fvp-share-bar{opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0);-webkit-transition:opacity .15s .3s;-moz-transition:opacity .15s .3s;transition:opacity .15s .3s}
 .flowplayer.is-mouseout .fvp-share-bar.visible{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 .flowplayer.is-mouseover.is-ready .fvp-share-bar{opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)} */
 .flowplayer .fp-fullscreen {z-index:1}
-/*.flowplayer .fvp-share-bar {display:none;}*/
+.flowplayer .fvp-share-bar {display:none;}
 .flowplayer .embed-code {padding: 0 10px 10px; display: none; clear: both; background-color: rgba(0, 0, 0, 0); }
 .flowplayer .embed-code label {clear: both; padding-left: 0px; padding-top: 0; line-height: 16px;}
 #content .flowplayer .fvp-share-bar textarea, .flowplayer .fvp-share-bar textarea { padding: 3px; line-height: 1.4; white-space: pre-wrap; color: black !important; height: auto; min-height: 130px; width: 99%; font-size: 10px; background-color:rgba(255, 255, 255, 1); box-shadow: none; border-radius: 0; cursor: text; }
