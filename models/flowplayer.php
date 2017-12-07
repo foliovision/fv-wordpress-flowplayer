@@ -195,17 +195,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $values         = (!empty($options['values']) ? $options['values'] : '');
+    $value_keys     = (is_array($values) ? array_keys($values) : array());
     $help           = (!empty($options['help']) ? $options['help'] : '');
     $more           = (!empty($options['more']) ? $options['more'] : '');
+    $default        = (!empty($options['default']) ? $options['default'] : reset($value_keys));
 
     if (!$key || !$name || !$values) {
       throw new Exception('The "name", "key" and "values" options need to be set for _get_radio()!');
     }
 
     $saved_value = $this->_get_option( $key );
-
-    // the default value for a selected radio button is always 0
-    $selected = 0;
+    $selected = $default;
 
     // check if any of the given values match the saved one and store it for a pre-select
     foreach ($values as $index => $input_value) {
@@ -544,8 +544,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
     // apply existing colors from old config values to the new, skin-based config array
-    if (!isset($conf['skin-2'])) {
-      $conf['skin-2'] = array();
+    if (!isset($conf['skin-slim'])) {
+      $conf['skin-slim'] = array();
 
       // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
@@ -556,14 +556,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
       foreach ($old_skinless_settings_array as $configKey) {
         if (isset($conf[$configKey])) {
-          $conf['skin-2'][ $configKey ] = $conf[$configKey];
+          $conf['skin-slim'][ $configKey ] = $conf[$configKey];
         }
       }
     }
 
     // set to custom, if no skin set
     if (!isset($conf['skin'])) {
-      $conf['skin'] = '2';
+      $conf['skin'] = 'slim';
     }
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
@@ -1046,7 +1046,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
     $skin = $this->_get_option('skin');
     if ($skin === false) {
-      $skin = 'skin-2';
+      $skin = 'skin-slim';
     } else {
         $skin = 'skin-'.$skin;
     }

@@ -29,7 +29,7 @@
     $('[data-fv-skin]').on('input click', function () {
 
       // hide currently visible settings tables
-      $('#skin-Custom-settings, #skin-Slim-settings, #skin-YouTubey-settings').hide();
+      $('#skin-Custom-settings, #skin-Slim-settings, #skin-YouTuby-settings').hide();
 
       // show the relevant settings table
       $('#' + this.id + '-settings').show();

@@ -325,7 +325,7 @@ class flowplayer_frontend extends flowplayer
         if( $this->is_beta() ) {
           $skin = $this->_get_option('skin');
           if ($skin === false) {
-            $skin = 'skin-2';
+            $skin = 'skin-slim';
           } else {
             $skin = 'skin-'.$skin;
           }

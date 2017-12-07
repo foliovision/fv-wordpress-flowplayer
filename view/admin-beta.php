@@ -1018,7 +1018,7 @@ function fv_flowplayer_admin_skin_get_table($options) {
 
     $selected_skin = $fv_fp->_get_option( 'skin' );
 ?>
-    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['skin_radio_button_value'] != 0)) { echo ' style="display: none"'; } ?>>
+    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
       foreach ($options['items'] as $item) {
         // every type of element has name and key
@@ -1100,10 +1100,11 @@ function fv_flowplayer_admin_skin() {
           'name' => __('Skin', 'fv-wordpress-flowplayer'),
           'style' => 'columns',
           'values' => array(
-            0 => 'Slim',
-            1 => 'YouTubey',
-            2 => 'Custom'
+            'slim' => 'Slim',
+            'youtuby' => 'YouTuby',
+            'custom' => 'Custom'
           ),
+          'default' => 'custom',
           'data' => array(
             'fv-skin' => ''
           )
@@ -1115,12 +1116,13 @@ function fv_flowplayer_admin_skin() {
   // slim skin settings
   fv_flowplayer_admin_skin_get_table( array(
     'skin_name'               => 'Slim',
-    'skin_radio_button_value' => 0,
+    'skin_radio_button_value' => 'slim',
+    'default' => true,
     'items'                   => array(
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'hasBorder'),
+        'key'     => array('skin-slim', 'hasBorder'),
         'default' => 'false',
         'data' => array(
           'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
@@ -1129,7 +1131,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'borderColor'),
+        'key'     => array('skin-slim', 'borderColor'),
         'default' => '666666',
         'data'    => array(
           'fv-preview' => '.flowplayer{border-color:#%val% !important;}'
@@ -1138,7 +1140,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'marginBottom'),
+        'key'     => array('skin-slim', 'marginBottom'),
         'default' => '28',
         'data'    => array(
           'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
@@ -1150,7 +1152,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'bufferColor'),
+        'key'     => array('skin-slim', 'bufferColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
@@ -1160,7 +1162,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'canvas'),
+        'key'     => array('skin-slim', 'canvas'),
         'default' => '000000',
         'data'    => array(
           'fv-preview' => '.flowplayer { background-color: #%val% !important; }'
@@ -1169,7 +1171,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'backgroundColor'),
+        'key'     => array('skin-slim', 'backgroundColor'),
         'default' => 'rgba(0, 0, 0, 0.50)',
         'data'    => array(
           'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
@@ -1181,7 +1183,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'font-face'),
+        'key'     => array('skin-slim', 'font-face'),
         'default' => 'Tahoma, Geneva, sans-serif',
         'data'    => array(
           'fv-preview' => '#content .flowplayer, .flowplayer { font-family: %val%; }'
@@ -1190,7 +1192,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'input_hidden',
-        'key'            => array('skin-0', 'player-position'),
+        'key'            => array('skin-slim', 'player-position'),
         'default'        => '',
         'data'           => array(
           'fv-preview' => '.flowplayer { margin-left: 0 !important; }'
@@ -1199,7 +1201,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-0', 'progressColor'),
+        'key'     => array('skin-slim', 'progressColor'),
         'name'    => __( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
@@ -1212,7 +1214,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'timeColor'),
+        'key'     => array('skin-slim', 'timeColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
@@ -1222,7 +1224,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'durationColor'),
+        'key'     => array('skin-slim', 'durationColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }'
@@ -1231,7 +1233,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'design-timeline'),
+        'key'     => array('skin-slim', 'design-timeline'),
         'default' => 'fp-slim',
         'data'    => array(
           'fv-preview' => ''
@@ -1240,7 +1242,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-0', 'design-icons'),
+        'key'     => array('skin-slim', 'design-icons'),
         'default' => ' ',
         'data'    => array(
           'fv-preview' => ''
@@ -1252,15 +1254,16 @@ function fv_flowplayer_admin_skin() {
 
 
 
-  // YouTubey skin settings
+  // YouTuby skin settings
   fv_flowplayer_admin_skin_get_table( array(
-    'skin_name'               => 'YouTubey',
-    'skin_radio_button_value' => 1,
+    'skin_name'               => 'YouTuby',
+    'skin_radio_button_value' => 'youtuby',
+    'default' => false,
     'items'                   => array(
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'hasBorder'),
+        'key'     => array('skin-youtuby', 'hasBorder'),
         'default' => 'false',
         'data' => array(
           'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
@@ -1269,7 +1272,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'borderColor'),
+        'key'     => array('skin-youtuby', 'borderColor'),
         'default' => '666666',
         'data'    => array(
           'fv-preview' => '.flowplayer{border-color:#%val% !important;}'
@@ -1278,7 +1281,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'marginBottom'),
+        'key'     => array('skin-youtuby', 'marginBottom'),
         'default' => '28',
         'data'    => array(
           'fv-preview' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
@@ -1290,7 +1293,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'bufferColor'),
+        'key'     => array('skin-youtuby', 'bufferColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
@@ -1300,7 +1303,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'canvas'),
+        'key'     => array('skin-youtuby', 'canvas'),
         'default' => '000000',
         'data'    => array(
           'fv-preview' => '.flowplayer { background-color: #%val% !important; }'
@@ -1309,7 +1312,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'backgroundColor'),
+        'key'     => array('skin-youtuby', 'backgroundColor'),
         'default' => 'rgba(0, 0, 0, 0.50)',
         'data'    => array(
           'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
@@ -1321,7 +1324,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'font-face'),
+        'key'     => array('skin-youtuby', 'font-face'),
         'default' => 'Tahoma, Geneva, sans-serif',
         'data'    => array(
           'fv-preview' => '#content .flowplayer, .flowplayer { font-family: %val%; }'
@@ -1330,7 +1333,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'input_hidden',
-        'key'            => array('skin-1', 'player-position'),
+        'key'            => array('skin-youtuby', 'player-position'),
         'default'        => '',
         'data'           => array(
           'fv-preview' => '.flowplayer { margin-left: 0 !important; }'
@@ -1339,7 +1342,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-1', 'progressColor'),
+        'key'     => array('skin-youtuby', 'progressColor'),
         'name'    => __( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
@@ -1352,7 +1355,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'timeColor'),
+        'key'     => array('skin-youtuby', 'timeColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
@@ -1362,7 +1365,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'durationColor'),
+        'key'     => array('skin-youtuby', 'durationColor'),
         'default' => 'EEEEEE',
         'data'    => array(
           'fv-preview' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }'
@@ -1371,7 +1374,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'design-timeline'),
+        'key'     => array('skin-youtuby', 'design-timeline'),
         'default' => 'fp-full',
         'data'    => array(
           'fv-preview' => ''
@@ -1380,7 +1383,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_hidden',
-        'key'     => array('skin-1', 'design-icons'),
+        'key'     => array('skin-youtuby', 'design-icons'),
         'default' => ' ',
         'data'    => array(
           'fv-preview' => ''
@@ -1395,12 +1398,13 @@ function fv_flowplayer_admin_skin() {
   // custom skin settings
   fv_flowplayer_admin_skin_get_table( array(
     'skin_name'               => 'Custom',
-    'skin_radio_button_value' => 2,
+    'skin_radio_button_value' => 'custom',
+    'default' => false,
     'items'                   => array(
 
       array(
         'type' => 'checkbox',
-        'key'  => array('skin-2', 'hasBorder'),
+        'key'  => array('skin-custom', 'hasBorder'),
         'name' => __( 'Border', 'fv-wordpress-flowplayer' ),
         'data' => array(
           'fv-preview' => '.flowplayer{border:%val%px solid !important;}'
@@ -1409,7 +1413,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'borderColor'),
+        'key'     => array('skin-custom', 'borderColor'),
         'name'    => __( 'Border color', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '666666',
@@ -1420,7 +1424,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'marginBottom'),
+        'key'     => array('skin-custom', 'marginBottom'),
         'name'    => __( 'Bottom Margin', 'fv-wordpress-flowplayer' ),
         'default' => '28',
         'title'   => __( 'Enter value in pixels', 'fv-wordpress-flowplayer' ),
@@ -1434,7 +1438,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'bufferColor'),
+        'key'     => array('skin-custom', 'bufferColor'),
         'name'    => __( 'Buffer', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
@@ -1446,7 +1450,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'canvas'),
+        'key'     => array('skin-custom', 'canvas'),
         'name'    => __( 'Canvas', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '000000',
@@ -1457,7 +1461,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'backgroundColor'),
+        'key'     => array('skin-custom', 'backgroundColor'),
         'name'    => __( 'Controlbar', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => '333333',
@@ -1471,7 +1475,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'select',
-        'key'     => array('skin-2', 'font-face'),
+        'key'     => array('skin-custom', 'font-face'),
         'name'    => __( 'Font Face', 'fv-wordpress-flowplayer' ),
         'options' => array(
           'inherit'                                     => __( '(inherit from template)', 'fv-wordpress-flowplayer' ),
@@ -1486,7 +1490,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'select',
-        'key'            => array('skin-2', 'player-position'),
+        'key'            => array('skin-custom', 'player-position'),
         'first_td_class' => 'second-column',
         'name'           => __( 'Player position', 'fv-wordpress-flowplayer' ),
         'default'        => '',
@@ -1501,7 +1505,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'progressColor'),
+        'key'     => array('skin-custom', 'progressColor'),
         'name'    => __( 'Progress', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'BB0000',
@@ -1514,7 +1518,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'timeColor'),
+        'key'     => array('skin-custom', 'timeColor'),
         'name'    => __( 'Time', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
@@ -1526,7 +1530,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'    => 'input_text',
-        'key'     => array('skin-2', 'durationColor'),
+        'key'     => array('skin-custom', 'durationColor'),
         'name'    => __( 'Buttons', 'fv-wordpress-flowplayer' ),
         'class'   => 'color',
         'default' => 'EEEEEE',
@@ -1537,7 +1541,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'select',
-        'key'            => array('skin-2', 'design-timeline'),
+        'key'            => array('skin-custom', 'design-timeline'),
         'first_td_class' => 'second-column',
         'name'           => __( 'Timeline', 'fv-wordpress-flowplayer' ),
         'default'        => ' ',
@@ -1552,7 +1556,7 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type'           => 'select',
-        'key'            => array('skin-2', 'design-icons'),
+        'key'            => array('skin-custom', 'design-icons'),
         'first_td_class' => 'second-column',
         'name'           => __( 'Icons', 'fv-wordpress-flowplayer' ),
         'default'        => ' ',
