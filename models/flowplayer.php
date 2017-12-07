@@ -544,8 +544,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
     // apply existing colors from old config values to the new, skin-based config array
-    if (!isset($conf['skin-slim'])) {
-      $conf['skin-slim'] = array();
+    if (!isset($conf['skin-custom'])) {
+      $conf['skin-custom'] = array();
 
       // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
@@ -556,12 +556,43 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
       foreach ($old_skinless_settings_array as $configKey) {
         if (isset($conf[$configKey])) {
-          $conf['skin-slim'][ $configKey ] = $conf[$configKey];
+          $conf['skin-custom'][ $configKey ] = $conf[$configKey];
+
+          // update slim config
+          if ($configKey == 'borderColor') {
+              $slim_value = '#666666';
+          } else if ($configKey == 'marginBottom') {
+              $slim_value = '28';
+          } else if ($configKey == 'bufferColor') {
+              $slim_value = '#eeeeee';
+          } else if ($configKey == 'canvas') {
+              $slim_value = '#000000';
+          } else if ($configKey == 'backgroundColor') {
+              $slim_value = 'rgba(0, 0, 0, 0.50)';
+          } else if ($configKey == 'font-face') {
+              $slim_value = 'Tahoma, Geneva, sans-serif';
+          } else if ($configKey == 'player-position') {
+              $slim_value = '';
+          } else if ($configKey == 'progressColor') {
+              $slim_value = '#bb0000';
+          } else if ($configKey == 'timeColor') {
+              $slim_value = '#eeeeee';
+          } else if ($configKey == 'durationColor') {
+              $slim_value = '#eeeeee';
+          } else if ($configKey == 'design-timeline') {
+              $slim_value = 'fp-slim';
+          } else if ($configKey == 'design-icons') {
+              $slim_value = ' ';
+          } else {
+            $slim_value = $conf[$configKey];
+          }
+
+          $conf['skin-slim'][$configKey] = $slim_value;
         }
       }
     }
 
-    // set to custom, if no skin set
+    // set to slim, if no skin set
     if (!isset($conf['skin'])) {
       $conf['skin'] = 'slim';
     }
