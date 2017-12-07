@@ -536,7 +536,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
-
+    
+    if( !isset( $conf['sticky_video'] ) ) $conf['sticky_video'] = 'false';
+    if( !isset( $conf['sticky_place'] ) ) $conf['sticky_place'] = 'right-bottom';
+    if( !isset( $conf['sticky_width'] ) ) $conf['sticky_width'] = '380';
+    
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
     // apply existing colors from old config values to the new, skin-based config array
@@ -1753,6 +1757,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     } else {
       return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
     }
+  }
+  
+  
+  public static function get_core_version() {
+    global $fv_wp_flowplayer_core_ver, $fv_wp_flowplayer_core_ver_beta;
+    return self::is_beta() ? $fv_wp_flowplayer_core_ver_beta : $fv_wp_flowplayer_core_ver;
   }
   
   

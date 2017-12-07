@@ -99,6 +99,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'width' => '',
     'height' => '',
     'autoplay' => '',
+    'sticky' => '',
     'splash' => '',
     'splashend' => '',
     'popup' => '',
@@ -129,13 +130,15 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'liststyle' => '',
     'playlist_advance' => '',
     'linking' => '',
-    'end_popup_preview' => ''
+    'end_popup_preview' => '',
+    'splash_text'
   ), $atts ) );
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
 		$arguments['width'] = preg_replace('/\,/', '', $width);
 		$arguments['height'] = preg_replace('/\,/', '', $height);
 		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
+        $arguments['sticky'] = preg_replace('/\,/', '', $sticky);
 		$arguments['splash'] = preg_replace('/\,/', '', $splash);
 		$arguments['src1'] = preg_replace('/\,/', '', $src1);
 		$arguments['src2'] = preg_replace('/\,/', '', $src2);
@@ -143,7 +146,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 		$arguments['splashend'] = preg_replace('/\,/', '', $splashend);
 		$arguments['popup'] = $popup;
 		$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
-    $arguments['play_button'] = preg_replace('/\,/', '', $play_button);
+        $arguments['play_button'] = preg_replace('/\,/', '', $play_button);
 		$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
 		$arguments['loop'] = preg_replace('/\,/', '', $loop);
 		$arguments['engine'] = preg_replace('/\,/', '', $engine);
@@ -170,6 +173,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $arguments['playlist_advance'] = $playlist_advance;
 		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
     $arguments['linking'] = $linking;
+    $arguments['splash_text'] = $splash_text;
 
 	} else {
 		$arguments = shortcode_atts( array(
@@ -180,6 +184,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 			'width' => '',
 			'height' => '',
 			'autoplay' => '',
+            'sticky' => '',
 			'splash' => '',
 			'splashend' => '',
 			'popup' => '',
@@ -211,6 +216,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
       'playlist_advance' => '',
       'linking' => '',
       'end_popup_preview' => '',
+      'splash_text' => ''
 		), $atts );
 	}
   

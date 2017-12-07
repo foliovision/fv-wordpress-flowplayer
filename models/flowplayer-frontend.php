@@ -204,7 +204,17 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
       $autoplay = true;
     }
-    
+
+    /*
+     *  Sticky
+     */
+    $sticky = false;  //  todo: should be changed into a property
+    if( $this->_get_option('sticky') && $this->aCurArgs['sticky'] != 'false'  ) {
+      $sticky = true;
+    }  
+    if( isset($this->aCurArgs['sticky']) && $this->aCurArgs['sticky'] == 'true') {
+      $sticky = true;
+    }    
     
     /*
      *  Video player
@@ -325,7 +335,15 @@ class flowplayer_frontend extends flowplayer
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
-        }        
+        } 
+        
+        if( $sticky ) {
+          $attributes['data-fvsticky'] = 'true';
+        }
+        
+        if( !empty($this->aCurArgs['splash_text']) ) {
+          $attributes['class'] .= ' has-splash-text';
+        }
 
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
           $attributes['class'] .= ' playlist-hidden';
@@ -338,12 +356,13 @@ class flowplayer_frontend extends flowplayer
         }
         
         //  Fixed control bar
-        $bFixedControlbar = $this->_get_option('ui_fixed_controlbar');
+        $bFixedControlbar = $this->_get_option('show_controlbar');
         if( isset($this->aCurArgs['controlbar']) ) {
           if( strcmp($this->aCurArgs['controlbar'],'yes') == 0 || strcmp($this->aCurArgs['controlbar'],'show') == 0 ) {
             $bFixedControlbar = true;
           } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 ) {
             $attributes['class'] .= ' no-controlbar';
+            $bFixedControlbar = false;
           }
         }
         if( $bFixedControlbar ) {
@@ -361,6 +380,13 @@ class flowplayer_frontend extends flowplayer
         }
         if( !$this->is_beta() && $bPlayButton ) {
           $attributes['class'] .= ' fvp-play-button';
+        }
+        
+        if( $this->is_beta() && $this->_get_option('ui_no_picture_button') ) {
+          $attributes['data-button-no-picture'] = true;
+        }
+        if( $this->is_beta() && $this->_get_option('ui_repeat_button') ) {
+          $attributes['data-button-repeat'] = true;
         }
         
         //  Align
@@ -387,7 +413,9 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
-        if( !$bIsAudio ) {
+        if( !empty($this->aCurArgs['playlist']) && ( $this->_get_option('liststyle') == 'horizontal' || isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'horizontal' ) ) {
+          //  no player dimensions for playlists
+        } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
           if( intval($height) == 0 ) $height = '100%';
           $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
@@ -620,6 +648,11 @@ class flowplayer_frontend extends flowplayer
         
         if( !$bIsAudio ) {
           $this->ret['html'] .= $this->get_sharing_html()."\n";
+        }
+        
+        if( !empty($this->aCurArgs['splash_text']) ) {
+          $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );         
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
         if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') ) {

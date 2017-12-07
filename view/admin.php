@@ -806,7 +806,9 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Playlist Captions', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
           <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Sticky', 'fv-wordpress-flowplayer'), array('interface', 'sticky') ); ?>
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
@@ -1221,7 +1223,38 @@ function fv_flowplayer_admin_skin_subtitles() {
   <div style="clear: both"></div>
 <?php
 }
+function fv_flowplayer_admin_skin_sticky() {
+	global $fv_fp;
+?>
+  <p><?php _e('This feature lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
+  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <?php $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'sticky_video'); ?>
+    <tr>  
+      <td><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <select id="sticky_place" name="sticky_place">   
+          <option value="right-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
+          <option value="left-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>         
+          <option value="left-top"<?php if( $fv_fp->_get_option('sticky_place') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>										  
+          <option value="right-top"<?php if( $fv_fp->_get_option('sticky_place') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>                     
+        </select>
+      </td>   
+    </tr>    
+    <tr>
+      <td><label for="sticky_width"><?php _e('Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
+    </tr>
+    
 
+    <tr>    		
+      <td colspan="2">
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
 
 function fv_flowplayer_admin_usage() {
 ?>
@@ -1343,6 +1376,7 @@ add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_sticky', 'fv_flowplayer_settings_skin', 'normal' );
 
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
