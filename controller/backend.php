@@ -386,7 +386,11 @@ function fv_player_admin_update() {
     
     fv_wp_flowplayer_delete_extensions_transients();
     delete_option('fv_flowplayer_extension_install');
-  }  
+  }
+  
+  if( isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ) {
+    $fv_fp->css_writeout();
+  }
 }
 
 function fv_wp_flowplayer_pro_settings_update_for_lightbox(){

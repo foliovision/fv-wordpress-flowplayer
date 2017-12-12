@@ -1176,7 +1176,7 @@ function fv_flowplayer_admin_skin() {
       array(
         'type'    => 'input_hidden',
         'key'     => array('skin-slim', 'backgroundColor'),
-        'default' => 'rgba(0, 0, 0, 0.50)',
+        'default' => 'rgba(0, 0, 0, 0.25)',
         'data'    => array(
           'fv-preview' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
                  .fv_player_popup {  background: #%val% !important;}
