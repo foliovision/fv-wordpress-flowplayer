@@ -656,7 +656,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         // we also need to check their values for HEX colors
         foreach ($value as $sub_array_key => $sub_array_value) {
           if( ((strpos( $sub_array_key, 'Color' ) !== FALSE )||(strpos( $sub_array_key, 'canvas' ) !== FALSE)) && strpos($sub_array_value, 'rgba') === FALSE) {
-            $aNewOptions[$key][$sub_array_key] = '#'.strtolower($sub_array_value);
+            $aNewOptions[$key][$sub_array_key] = (strpos($sub_array_value, '#') === FALSE ? '#' : '').strtolower($sub_array_value);
           }
         }
       } else if( in_array( $key, array('width', 'height') ) ) {
@@ -667,7 +667,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $aNewOptions[$key] = stripslashes(trim($value));
       }
       if( ((strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
-        $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
+        $aNewOptions[$key] = (strpos($aNewOptions[$key], '#') === FALSE ? '#' : '').strtolower($aNewOptions[$key]);
       }
     }
     
