@@ -62,6 +62,37 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public $bCSSLoaded = false;
   
+  public $aDefaultSkins = array(
+      'skin-slim' => array(
+          'hasBorder' => false,
+          'borderColor' => false,
+          'marginBottom' => '28',
+          'bufferColor' => false,
+          'canvas' => '#000000',
+          'backgroundColor' => 'rgba(0, 0, 0, 0.25)',
+          'font-face' => 'Tahoma, Geneva, sans-serif',
+          'player-position' => '',
+          'timeColor' => false,
+          'durationColor' => false,
+          'design-timeline' => 'fp-slim',
+          'design-icons' => 'fp-edgy'
+        ),
+      'skin-youtuby' => array(
+          'hasBorder' => false,
+          'borderColor' => false,        
+          'marginBottom' => '28',
+          'bufferColor' => false,          
+          'canvas' => '#000000',
+          'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
+          'font-face' =>'Tahoma, Geneva, sans-serif',
+          'player-position' => '',
+          'timeColor' => false,
+          'durationColor' => false,          
+          'design-timeline' => 'fp-full',
+          'design-icons' => ' '
+        )      
+    );
+  
 
   public function __construct() {
     //load conf data into stack
@@ -245,7 +276,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
                             echo ' data-' . $data_item . '="' . $data_value . '"';
                           }
                         }
-                        ?> /> <?php echo $input_value ?><br/>
+                        ?> /> <label for="<?php echo $key . '-' . $input_value; ?>"><?php echo $input_value ?></label><br/>
 
                         <?php
                       }
@@ -285,7 +316,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
                           echo ' data-' . $data_item . '="' . $data_value . '"';
                         }
                       }
-                      ?> /> <?php echo $input_value ?><br/>
+                      ?> /> <label for="<?php echo $key . '-' . $input_value; ?>"><?php echo $input_value ?></label><br/>
                       </p>
                   </fieldset>
                 <?php if ( $help ) {
@@ -363,7 +394,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.$data_value.'"';
+                echo ' data-'.$data_item.'="'.esc_attr($data_value).'"';
               }
             }
             ?> />
@@ -557,39 +588,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       foreach ($old_skinless_settings_array as $configKey) {
         if (isset($conf[$configKey])) {
           $conf['skin-custom'][ $configKey ] = $conf[$configKey];
-
-          // update slim config
-          if ($configKey == 'borderColor') {
-              $slim_value = '#666666';
-          } else if ($configKey == 'marginBottom') {
-              $slim_value = '28';
-          } else if ($configKey == 'bufferColor') {
-              $slim_value = '#eeeeee';
-          } else if ($configKey == 'canvas') {
-              $slim_value = '#000000';
-          } else if ($configKey == 'backgroundColor') {
-              $slim_value = 'rgba(0, 0, 0, 0.50)';
-          } else if ($configKey == 'font-face') {
-              $slim_value = 'Tahoma, Geneva, sans-serif';
-          } else if ($configKey == 'player-position') {
-              $slim_value = '';
-          } else if ($configKey == 'progressColor') {
-              $slim_value = '#bb0000';
-          } else if ($configKey == 'timeColor') {
-              $slim_value = '#eeeeee';
-          } else if ($configKey == 'durationColor') {
-              $slim_value = '#eeeeee';
-          } else if ($configKey == 'design-timeline') {
-              $slim_value = 'fp-slim';
-          } else if ($configKey == 'design-icons') {
-              $slim_value = ' ';
-          } else {
-            $slim_value = $conf[$configKey];
-          }
-
-          $conf['skin-slim'][$configKey] = $slim_value;
         }
       }
+      
+      $conf['skin-slim']['progressColor'] = '#bb0000';
+      $conf['skin-youtuby']['progressColor'] = '#bb0000';
     }
 
     // set to slim, if no skin set
@@ -598,8 +601,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
-
+    
     update_option( 'fvwpflowplayer', $conf );
+    
+    //  hard-coded defaults for the skin preset
+    $conf['skin-slim'] = array_merge( $conf['skin-slim'], $this->aDefaultSkins['skin-slim'] );
+    $conf['skin-youtuby'] = array_merge( $conf['skin-youtuby'], $this->aDefaultSkins['skin-youtuby'] );
+    
+    $conf = apply_filters('fv_player_conf_loaded', $conf);
+    
     $this->conf = $conf;
     return true;   
     /// End of addition
@@ -635,6 +645,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public function _set_conf() {
     $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
+    
+    //  make sure the preset Skin properties are not over-written
+    foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
+      foreach( $aSettings AS $k => $v ) {
+        unset($aNewOptions[$skin][$k]);
+      }
+    }    
 
     if(isset($aNewOptions['popups'])){
       unset($aNewOptions['popups']['#fv_popup_dummy_key#']);
@@ -672,6 +689,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     $aNewOptions['key'] = trim($sKey);
+
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
     if( isset($aNewOptions['db_duration']) && $aNewOptions['db_duration'] == "true" && ( !isset($aOldOptions['db_duration']) || $aOldOptions['db_duration'] == "false" ) ) {
@@ -1103,16 +1121,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
     .flowplayer.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
-    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?> !important; background-color: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?> !important; }
     .flowplayer { background-color: <?php echo $fv_fp->_get_option(array($skin, 'canvas')); ?> !important; }
-    .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?> !important; }
-    .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: <?php echo $fv_fp->_get_option(array($skin, 'timeColor')); ?> !important; }
     .flowplayer .fp-color { background-color: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?> !important; }
-    .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option(array($skin, 'bufferColor')); ?> !important; }
-    .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }
+    .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?> !important; }
+    <?php if( $fv_fp->_get_option(array($skin, 'durationColor') ) ) : ?>
+      .flowplayer a.fp-play, .flowplayer a.fp-mute, .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $fv_fp->_get_option(array($skin, 'durationColor')); ?> !important; }
+    <?php endif; ?>
+    <?php if( $fv_fp->_get_option(array($skin, 'bufferColor') ) ) : ?>
+      .flowplayer .fp-volumeslider, .flowplayer .fp-buffer, .flowplayer .noUi-background, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo $fv_fp->_get_option(array($skin, 'bufferColor')); ?> !important; }
+    <?php endif; ?>
+    <?php if( $fv_fp->_get_option(array($skin, 'timelineColor') ) ) : ?>
+      .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option(array($skin, 'timelineColor')); ?> !important; }
+      .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: <?php echo $fv_fp->_get_option(array($skin, 'timeColor')); ?> !important; }
+    <?php endif; ?>
     .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option(array($skin, 'backgroundColor')); ?> !important; }
     .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?> !important; }
-    .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: <?php echo $fv_fp->_get_option(array($skin, 'bufferColor')); ?> !important; }
     #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option(array($skin, 'font-face')); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option(array($skin, 'progressColor')); ?> !important }
     
