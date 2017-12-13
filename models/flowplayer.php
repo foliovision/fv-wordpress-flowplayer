@@ -360,7 +360,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     ?>
       <tr>
           <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?></label></td>
-          <td><input <?php echo $class_name; ?>id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+          <td><input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';

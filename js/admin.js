@@ -123,7 +123,8 @@
 
           style += newStyle;
         } else {
-          var newStyle = $this.data('fv-preview').replace(/%val%/g, $this.val());;
+          var value = $this.val().replace(/^#/,'');
+          var newStyle = $this.data('fv-preview').replace(/%val%/g, value);;
 
           if (newStyle.indexOf('#rgba') > -1) {
             newStyle = newStyle.replace(/#rgba/g, 'rgba');
