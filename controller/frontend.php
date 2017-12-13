@@ -361,11 +361,14 @@ function flowplayer_prepare_scripts() {
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
 
+    if ( is_user_logged_in() && $fv_fp->conf['video_position_save_enable'] ) {
+        $aConf['video_position_save_enable'] = true;
+    }
+
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width'); 
 
-       
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {
       if( get_post_meta($post->ID, 'fv_player_mobile_native_fullscreen', true) ) $aConf['mobile_native_fullscreen'] = true;

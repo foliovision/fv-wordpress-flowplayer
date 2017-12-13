@@ -55,6 +55,7 @@ include_once(dirname( __FILE__ ) . '/models/widget.php');
 
 include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
+include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
 
 
