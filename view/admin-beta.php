@@ -1392,7 +1392,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>  
       <td><label for="subtitle-font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
-        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-family: %val% !important; }">
+        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-captions { font-family: %val% !important; }">
           <option value="inherit"<?php if( $fv_fp->_get_option('subtitleFontFace') == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit)', 'fv-wordpress-flowplayer'); ?></option>          
           <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->_get_option('subtitleFontFace') == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
           <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
@@ -1402,12 +1402,12 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
-                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-captions { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor' ) ); ?>"
-                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%) !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-captions p { background-color: rgba(%val%) !important; }"/></td>
     </tr>    
     <tr>
       <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
@@ -1421,11 +1421,10 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>
   </table>
   <div id="fp-preview-wrapper">
-    <div class="flowplayer"id="preview"> 
-      <div class="fp-subtitle fp-active">
-        <span class="fp-subtitle-line">
-          <?php _e('The quick brown fox jumps over the lazy dog.', 'fv-wordpress-flowplayer'); ?>
-        </span>
+    <div class="flowplayer" id="preview"> 
+      <div class="fp-captions fp-shown">
+        <p><?php _e('The quick brown fox jumps over the lazy dog.', 'fv-wordpress-flowplayer'); ?></p>
+        <p><?php _e('Second line.', 'fv-wordpress-flowplayer'); ?></p>
       </div>
     </div>
   </div>

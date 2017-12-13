@@ -1073,21 +1073,32 @@
 /*this might be needed some day: .flowplayer .fp-dropdown li{ line-height: 16px;text-align:center; } */
 /*this might be needed some day: .flowplayer .fp-tooltip{z-index:22;padding:4px 6px 6px;line-height:1} */
 
-/*all this subtitle styling needs to be checked:
-.flowplayer.is-mouseover .fp-subtitle{bottom:34px;}
-.flowplayer.is-mouseout .fp-subtitle{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
-.flowplayer .fp-subtitle .fp-subtitle-line{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px;}
-.flowplayer.is-fullscreen .fp-subtitle .fp-subtitle-line{font-size:125%;line-height:1.2}
-.flowplayer .fp-subtitle.is-wide br{display:none}
-.flowplayer .fp-subtitle .fp-subtitle-line:after{content:'';clear:both}
-.flowplayer .fp-subtitle .fp-subtitle-line:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
-.flowplayer .fp-subtitle .fp-subtitle-line:last-of-type{padding-left:0;-webkit-border-radius:0 4px 4px 0;-moz-border-radius:0 4px 4px 0;border-radius:0 4px 4px 0}
-.flowplayer .fp-subtitle:not(.is-wide) .fp-subtitle-line{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
-.flowplayer .fp-subtitle:not(.is-wide) .fp-subtitle-line{padding-left:0.4em}
-.flowplayer .fp-subtitle .fp-subtitle-line b{font-weight:bold}
-.flowplayer .fp-subtitle .fp-subtitle-line i{font-style:italic}
-.flowplayer .fp-subtitle .fp-subtitle-line u{text-decoration:underline}
-*/
+.flowplayer.is-mouseout .fp-captions{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
+.flowplayer .fp-captions p{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px; margin: 0}
+.flowplayer.is-fullscreen .fp-captions p{font-size:125%;line-height:1.2}
+.flowplayer .fp-captions.is-wide br{display:none}
+.flowplayer .fp-captions p:after{content:'';clear:both}
+.flowplayer .fp-captions p:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
+.flowplayer .fp-captions p:last-of-type{padding-left:0;-webkit-border-radius:0 4px 4px 0;-moz-border-radius:0 4px 4px 0;border-radius:0 4px 4px 0}
+.flowplayer .fp-captions:not(.is-wide) p{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
+.flowplayer .fp-captions:not(.is-wide) p{padding-left:0.4em}
+.flowplayer .fp-captions p b{font-weight:bold}
+.flowplayer .fp-captions p i{font-style:italic}
+.flowplayer .fp-captions p u{text-decoration:underline}
+@media (max-width: 56.25em){
+  .flowplayer .fp-captions br{display:block}
+  .flowplayer .fp-captions p:first-of-type,.flowplayer .fp-captions p:last-of-type{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
+  .flowplayer .fp-captions p:last-of-type{padding-left:0.4em}
+}
+@media (max-width: 40em){
+  .flowplayer .fp-captions{line-height:14px !important}
+  .flowplayer .fp-captions p{font-size:14px !important;line-height:20px !important}
+}
+@media (max-width: 30em) {
+  .flowplayer .fp-captions{bottom:4px;line-height:12px !important}
+  .flowplayer .fp-captions p{font-size:12px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
+}
+
 
 /* making ther header bar more visible and slim */
 .flowplayer .fp-header { background-color: rgba(0, 0, 0, 0.5); height: 2em; padding-left: 0 }
@@ -1127,20 +1138,12 @@
 .flowplayer.is-fullscreen .fv_player_popup{padding-top:10%}
 .flowplayer.is-fullscreen .fv_player_popup p{margin:0 auto 6px}
 .flowplayer.is-fullscreen .mailchimp-form{padding:30px 25%}
-@media (max-width: 56.25em){
-.flowplayer .fp-subtitle br{display:block}
-.flowplayer .fp-subtitle .fp-subtitle-line:first-of-type,.flowplayer .fp-subtitle .fp-subtitle-line:last-of-type{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
-.flowplayer .fp-subtitle .fp-subtitle-line:last-of-type{padding-left:0.4em}
-}
+
 @media (max-width: 40em){
 .flowplayer .fp-help p{font-size:9px;}
 .flowplayer .fp-logo{max-width: 130px;}
-.flowplayer .fp-subtitle{line-height:14px !important}
-.flowplayer .fp-subtitle .fp-subtitle-line{font-size:14px !important;line-height:20px !important}
 }
 @media (max-width: 30em) {
-.flowplayer .fp-subtitle{bottom:4px;line-height:12px !important}
-.flowplayer .fp-subtitle .fp-subtitle-line{font-size:12px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
 .flowplayer .fv_player_popup {width:99%;font-size:14px;top:0;}
 .flowplayer.is-fv-narrow .fv_player_popup{font-size:0.8em}
 }
