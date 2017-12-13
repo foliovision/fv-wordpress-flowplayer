@@ -1042,6 +1042,17 @@
 /*
  *  FV Player Additions
  */
+
+/*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
+.flowplayer.fp-slim .fp-controls:hover .fp-timeline {
+    height: .2em; }
+.flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
+    content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
+.flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
+    height: .2em; }
+.flowplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
+    content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
+
 .flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.is-loading .fp-ui .fp-controls { opacity: 1; filter: alpha(opacity=100); }
 .flowplayer.fixed-controls { overflow: visible; margin-bottom: 4em; }  
 .flowplayer.fixed-controls .fp-controls {
