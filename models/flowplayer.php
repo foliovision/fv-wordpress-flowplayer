@@ -1144,6 +1144,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
     .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
+    .flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin: 0 auto 30px auto; }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo $this->_get_option(array($skin, 'backgroundColor')); ?>!important; }
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $this->_get_option(array($skin, 'progressColor')); ?>!important; }

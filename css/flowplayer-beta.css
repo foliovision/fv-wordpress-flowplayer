@@ -1047,6 +1047,13 @@
     background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.25), transparent 15%);
     background-image: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 15%);
 }
+.flowplayer.fixed-controls.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.fixed-controls.skin-slim.is-paused.is-ready .fp-ui {
+    background-image: none;
+}
+.flowplayer.fixed-controls.skin-slim .fp-controls {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
@@ -1058,10 +1065,20 @@
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
     content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
 
+.flowplayer.fixed-controls.is-splash .fp-ui .fp-controls, .flowplayer.fixed-controls.is-poster .fp-ui .fp-controls { display: flex; }
+.flowplayer.fixed-controls.is-splash .fp-timestamp, .flowplayer.fixed-controls.is-poster .fp-timestamp { display: none; }
+.flowplayer.fixed-controls.is-splash .fp-elapsed, .flowplayer.fixed-controls.is-poster .fp-elapsed { display: none; }
+.flowplayer.fixed-controls.is-splash .fp-duration, .flowplayer.fixed-controls.is-poster .fp-duration { display: none; }
+.flowplayer.fixed-controls.is-splash .fp-bar, .flowplayer.fixed-controls.is-poster .fp-bar { cursor: pointer; pointer-events: none }
+.flowplayer.fixed-controls.is-splash .fp-bar-slider, .flowplayer.fixed-controls.is-poster .fp-bar-slider { cursor: pointer; pointer-events: none }
+
 .flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.is-loading .fp-ui .fp-controls { opacity: 1; filter: alpha(opacity=100); }
 .flowplayer.fixed-controls { overflow: visible; margin-bottom: 4em; }  
 .flowplayer.fixed-controls .fp-controls {
 	bottom: -2.4em;
+}
+.flowplayer.fixed-controls.skin-youtuby .fp-controls {
+  bottom: -2.8em;
 }
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {
 	bottom: 0;
@@ -1105,9 +1122,9 @@
 }
 
 
-/* reducing the spacing in .fp-header
+/* reducing the spacing in .fp-header */
 .flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
-.flowplayer .fp-header .fp-icon { margin: 0.5em 0.2em 0 0; }
+.flowplayer .fp-header .fp-icon { margin: 0em 0.5em 0 0; }
 
 .flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
 
