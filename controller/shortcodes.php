@@ -89,146 +89,23 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     }    
     
   }
-  /// End of addition                                  
-
-  extract( shortcode_atts( array(
-    'src' => '',
-    'src1' => '',
-    'src2' => '',
-    'mobile' => '',
-    'width' => '',
-    'height' => '',
-    'autoplay' => '',
-    'sticky' => '',
-    'splash' => '',
-    'splashend' => '',
-    'popup' => '',
-    'controlbar' => '',
-    'play_button' => '',
-    'redirect' => '',
-    'loop' => '',
-    'engine' => '',
-    'embed' => '',
-    'subtitles' => '',
-    'ad' => '',
-    'ad_width' => '',
-    'ad_height' => '',
-    'ad_skip' => '',
-    'align' => '',
-    'rtmp' => '',
-    'rtmp_path' => '',
-    'playlist' => '',
-    'playlist_hide' => '',
-    'admin_warning' => '',
-    'live' => '',
-    'caption' => '',
-    'caption_html' => '',
-    'logo' => '',
-    'share' => '',
-    'post' => '',
-    'speed' => '',
-    'liststyle' => '',
-    'playlist_advance' => '',
-    'linking' => '',
-    'end_popup_preview' => '',
-    'splash_text'
-  ), $atts ) );
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
-		$arguments['width'] = preg_replace('/\,/', '', $width);
-		$arguments['height'] = preg_replace('/\,/', '', $height);
-		$arguments['autoplay'] = preg_replace('/\,/', '', $autoplay);
-        $arguments['sticky'] = preg_replace('/\,/', '', $sticky);
-		$arguments['splash'] = preg_replace('/\,/', '', $splash);
-		$arguments['src1'] = preg_replace('/\,/', '', $src1);
-		$arguments['src2'] = preg_replace('/\,/', '', $src2);
-		$arguments['mobile'] = preg_replace('/\,/', '', $mobile);  
-		$arguments['splashend'] = preg_replace('/\,/', '', $splashend);
-		$arguments['popup'] = $popup;
-		$arguments['controlbar'] = preg_replace('/\,/', '', $controlbar);
-        $arguments['play_button'] = preg_replace('/\,/', '', $play_button);
-		$arguments['redirect'] = preg_replace('/\,/', '', $redirect);
-		$arguments['loop'] = preg_replace('/\,/', '', $loop);
-		$arguments['engine'] = preg_replace('/\,/', '', $engine);
-		$arguments['embed'] = preg_replace('/\,/', '', $embed);
-		$arguments['subtitles'] = preg_replace('/\,/', '', $subtitles);
-		$arguments['ad'] = preg_replace('/\,/', '', $ad);  
-		$arguments['ad_width'] = preg_replace('/\,/', '', $ad_width);  
-		$arguments['ad_height'] = preg_replace('/\,/', '', $ad_height);   
-		$arguments['ad_skip'] = preg_replace('/\,/', '', $ad_skip); 
-		$arguments['align'] = preg_replace('/\,/', '', $align);   
-		$arguments['rtmp'] = preg_replace('/\,/', '', $rtmp);   
-		$arguments['rtmp_path'] = preg_replace('/\,/', '', $rtmp_path);    
-		$arguments['playlist'] = $playlist;
-    $arguments['playlist_hide'] = $playlist_hide;
-    $arguments['admin_warning'] = $admin_warning;
-    $arguments['live'] = $live;
-    $arguments['caption'] = $caption;
-    $arguments['caption_html'] = $caption_html;
-    $arguments['logo'] = $logo;
-    $arguments['share'] = $share;
-    $arguments['post'] = $post;
-    $arguments['speed'] = $speed;
-    $arguments['liststyle'] = $liststyle;
-    $arguments['playlist_advance'] = $playlist_advance;
-		$arguments['src'] = trim( preg_replace('/\,/', '', $src) );
-    $arguments['linking'] = $linking;
-    $arguments['splash_text'] = $splash_text;
-
+		foreach( $atts AS $k => $v ) {
+			if( in_array($k, array('admin_warning','caption','caption_html','playlist','popup','share') ) ) {
+				$arguments[$k] = $v;
+			} else {
+				$arguments[$k] = preg_replace('/\,/', '', $v);
+			}
+		}
+		
 	} else {
-		$arguments = shortcode_atts( array(
-			'src' => '',
-			'src1' => '',
-			'src2' => '',
-			'mobile' => '',
-			'width' => '',
-			'height' => '',
-			'autoplay' => '',
-            'sticky' => '',
-			'splash' => '',
-			'splashend' => '',
-			'popup' => '',
-			'controlbar' => '',
-      'play_button' => '',
-			'redirect' => '',
-			'loop' => '',
-			'engine' => '',
-			'embed' => '',
-			'subtitles' => '',
-			'ad' => '',
-			'ad_width' => '',
-			'ad_height' => '',
-			'ad_skip' => '',
-			'align' => '',
-			'rtmp' => '',
-			'rtmp_path' => '',
-			'playlist' => '',
-      'playlist_hide' => '',
-      'admin_warning' => '',
-      'live' => '',
-      'caption' => '',
-      'caption_html' => '',
-      'logo' => '',
-      'share' => '',
-      'post' => '',
-      'speed' => '',
-      'liststyle' => '',
-      'playlist_advance' => '',
-      'linking' => '',
-      'end_popup_preview' => '',
-      'splash_text' => ''
-		), $atts );
+		$arguments = $atts;
 	}
   
   if( ( !isset($arguments['src']) || strlen(trim($arguments['src'])) == 0 ) && isset($arguments['mobile']) && strlen(trim($arguments['mobile'])) ) {
     $arguments['src'] = $arguments['mobile'];
     unset($arguments['mobile']);
-  }
-  
-  foreach( $atts AS $key => $val ) {
-    if( stripos($key,'subtitles_') === 0 ) {
-      $arguments[$key] = $val;
-    }
   }
   
   $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );

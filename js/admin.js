@@ -66,7 +66,7 @@
       $previewElements.each(function() {
         var
           $this = $(this),
-          $parent = $this.closest('table')
+          $parent = $this.closest('table');
 
         // don't change to values of another skin but to our currently visible skin type
         if ($parent.css('display') == 'none') {
@@ -105,11 +105,13 @@
       var style = '';
 
       $previewElements.each(function () {
-
+        
         var
           newStyle = '',
           $this = $(this),
           $parent = $this.closest('table');
+          
+        var preview = $this.data('fv-preview').replace(/\.flowplayer/g,'.flowplayer.skin-'+jQuery('[data-fv-skin]:checked').val() );
 
         if ($parent.css('display') == 'none') {
           return;
@@ -117,25 +119,25 @@
 
         if ($this.attr('name').endsWith('player-position]')) {
           if ($this.val() === 'left')
-            style += $this.data('fv-preview');
+            style += preview;
 
         } else if ($this.attr('name').endsWith('subtitleBgColor')) {
           var replacement = hexToRgb($this.val());
           replacement.push($('#subtitleBgAlpha').val());
-          newStyle = $this.data('fv-preview').replace(/%val%/g, replacement.join(', '));
+          newStyle = preview.replace(/%val%/g, replacement.join(', '));
           style += sanitizeCSS(newStyle);
           
         } else if($this.attr('type') == 'checkbox' ) {          
           if ($this.prop('checked')) {
-            newStyle = $this.data('fv-preview').replace(/%val%/g, '1');
+            newStyle = preview.replace(/%val%/g, '1');
           } else {
-            newStyle = $this.data('fv-preview').replace(/%val%/g, '0');
+            newStyle = preview.replace(/%val%/g, '0');
           }
           style += sanitizeCSS(newStyle);
           
         } else {
           var value = $this.val().replace(/^#/,'');
-          newStyle = $this.data('fv-preview').replace(/%val%/g, value);
+          newStyle = preview.replace(/%val%/g, value);
           style += sanitizeCSS(newStyle);
           
         }

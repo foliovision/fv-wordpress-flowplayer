@@ -1113,8 +1113,9 @@ function fv_flowplayer_admin_skin() {
     'font-face' => '#content .flowplayer, .flowplayer { font-family: %val%; }',
     'player-position' => '.flowplayer { margin-left: 0 !important; }',
     'progressColor' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
-          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current, .flowplayer .fp-bar-slider em { background-color: #%val% !important; }
-          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }',
+          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
+					.flowplayer .fp-color { background-color: #%val% !important }',
     'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
                  .fv-wp-flowplayer-notice-small { color: #%val% !important; }',
     'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }',
