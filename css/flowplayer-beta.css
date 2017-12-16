@@ -1105,8 +1105,8 @@
 }
 
 
-/* making ther header bar more slim */
-.flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5);*/ height: 2em; padding-left: 0 }
+/* reducing the spacing in .fp-header
+.flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
 .flowplayer .fp-header .fp-icon { margin: 0.5em 0.2em 0 0; }
 
 .flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
