@@ -69,7 +69,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           'marginBottom' => '28',
           'bufferColor' => false,
           'canvas' => '#000000',
-          'backgroundColor' => 'rgba(0, 0, 0, 0.25)',
+          'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
           'player-position' => '',
           'timeColor' => false,
@@ -596,9 +596,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
 
     // set to slim, if no skin set
-    if (!isset($conf['skin'])) {
-      $conf['skin'] = 'slim';
-    }
+    if (!isset($conf['skin'])) $conf['skin'] = 'slim';
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     

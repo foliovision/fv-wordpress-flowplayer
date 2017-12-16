@@ -1827,7 +1827,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     } );  
     
     /*
-     * Coor Picker Default  
+     * Color Picker Default  
      */	
     jQuery('.playlistFontColor-show').click(function(e){
       e.preventDefault();

@@ -12,6 +12,20 @@
       parseInt(result[3], 16)
     ] : null;
   }
+  
+  function sanitizeCSS(val) {
+    if (val.indexOf('#rgba') > -1) {
+      val = val.replace(/#rgba/g, 'rgba');
+    } else if (val.indexOf('#transparent') > -1) {
+      val = val.replace(/#transparent/g, 'transparent');
+    }
+    
+    if( val.match(/# !/) ) {
+      val = false;
+    }
+    
+    return val;
+  }
 
   if (!String.prototype.endsWith)
     String.prototype.endsWith = function(searchStr, Position) {
@@ -27,12 +41,18 @@
 
   $(document).ready(function () {
     $('[data-fv-skin]').on('input click', function () {
-
+      $('[data-fv-skin]').each( function() {
+        $('.flowplayer').removeClass( 'skin-'+$(this).val() );
+      });
+      $('.flowplayer').addClass( 'skin-'+$(this).val() );
+      
       // hide currently visible settings tables
       $('#skin-Custom-settings, #skin-Slim-settings, #skin-YouTuby-settings').hide();
 
       // show the relevant settings table
       $('#' + this.id + '-settings').show();
+      
+      
 
       // update CSS
       skinPreviewInputChanged();
@@ -87,6 +107,7 @@
       $previewElements.each(function () {
 
         var
+          newStyle = '',
           $this = $(this),
           $parent = $this.closest('table');
 
@@ -101,38 +122,25 @@
         } else if ($this.attr('name').endsWith('subtitleBgColor')) {
           var replacement = hexToRgb($this.val());
           replacement.push($('#subtitleBgAlpha').val());
-          var newStyle = $this.data('fv-preview').replace(/%val%/g, replacement.join(', '));
-
-          if (newStyle.indexOf('#rgba') > -1) {
-            newStyle = newStyle.replace(/#rgba/g, 'rgba');
-          }
-
-          style += newStyle;
-        } else if($this.attr('name').endsWith('hasBorder]')) {
-          var newStyle = '';
-
+          newStyle = $this.data('fv-preview').replace(/%val%/g, replacement.join(', '));
+          style += sanitizeCSS(newStyle);
+          
+        } else if($this.attr('type') == 'checkbox' ) {          
           if ($this.prop('checked')) {
             newStyle = $this.data('fv-preview').replace(/%val%/g, '1');
           } else {
             newStyle = $this.data('fv-preview').replace(/%val%/g, '0');
           }
-
-          if (newStyle.indexOf('#rgba') > -1) {
-            newStyle = newStyle.replace(/#rgba/g, 'rgba');
-          }
-
-          style += newStyle;
+          style += sanitizeCSS(newStyle);
+          
         } else {
           var value = $this.val().replace(/^#/,'');
-          var newStyle = $this.data('fv-preview').replace(/%val%/g, value);;
-
-          if (newStyle.indexOf('#rgba') > -1) {
-            newStyle = newStyle.replace(/#rgba/g, 'rgba');
-          }
-
-          style += newStyle;
+          newStyle = $this.data('fv-preview').replace(/%val%/g, value);
+          style += sanitizeCSS(newStyle);
+          
         }
       }, 0);
+      
       $('#fv-style-preview').html(style);
 
       // update progress bar + icons style
