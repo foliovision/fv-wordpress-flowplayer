@@ -1097,45 +1097,57 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       <style type="text/css">
     <?php endif;
     
+    $css = '';
+    
     //  generate CSS for all the available skin settings
     foreach( array('skin-slim','skin-youtuby','skin-custom') AS $skin ) {
-      $sSelector = '.flowplayer.'.$skin;
+      $sel = '.flowplayer.'.$skin;
       
-      $iMarginBottom = intval($this->_get_option(array($skin, 'marginBottom'))) > -1 ? intval( $this->_get_option(array($skin, 'marginBottom')) ) : '28';
+      $sBackground = $this->_get_option( array($skin, 'backgroundColor') );
+      $sBuffer = $this->_get_option(array($skin, 'bufferColor') );
+      $sDuration = $this->_get_option( array($skin, 'durationColor') );
+      $sProgress = $this->_get_option(array($skin, 'progressColor'));
+      $sTime = $this->_get_option( array($skin, 'timeColor') );
+      $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
       
-      if( $this->_get_option(array($skin, 'hasBorder')) ) : ?>
-        <?php echo $sSelector; ?> { border: 1px solid <?php echo $this->_get_option(array($skin, 'borderColor')); ?> !important; }
-      <?php endif; ?>
+      if( $this->_get_option(array($skin, 'hasBorder')) ) {
+        $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))." !important; }\n";
+      }
   
-      <?php echo $sSelector; ?> { margin: 0 auto <?php echo $iMarginBottom; ?>px auto; display: block; }
-      <?php echo $sSelector; ?>.fixed-controls { margin: 0 auto <?php echo $iMarginBottom+30; ?>px auto; display: block; }
-      <?php echo $sSelector; ?>.has-abloop { margin-bottom: <?php echo $iMarginBottom+24; ?>px; }
-      <?php echo $sSelector; ?>.fixed-controls.has-abloop { margin-bottom: <?php echo $iMarginBottom+30+24; ?>px; }
+      $iMargin = intval($this->_get_option(array($skin, 'marginBottom'))) > -1 ? intval( $this->_get_option(array($skin, 'marginBottom')) ) : '28';
+      $css .= $sel." { margin: 0 auto ". $iMargin."px auto; display: block; }\n";
+      $css .= $sel.".fixed-controls { margin: 0 auto ".($iMargin+30)."px auto; display: block; }\n";
+      $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+24)."px; }\n";
+      $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+30+24)."px; }\n";
       
-      <?php echo $sSelector; ?> { background-color: <?php echo $this->_get_option(array($skin, 'canvas')); ?> !important; }
-      <?php echo $sSelector; ?> .fp-color { background-color: <?php echo $this->_get_option(array($skin, 'progressColor')); ?> !important; }
-      <?php echo $sSelector; ?> .fp-controls, <?php echo $sSelector; ?> .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: <?php echo $this->_get_option(array($skin, 'backgroundColor')); ?> !important; }
-      <?php if( $this->_get_option(array($skin, 'durationColor') ) ) : ?>
-        <?php echo $sSelector; ?> a.fp-play, <?php echo $sSelector; ?> a.fp-mute, <?php echo $sSelector; ?> .fp-controls, <?php echo $sSelector; ?> .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: <?php echo $this->_get_option(array($skin, 'durationColor')); ?> !important; }
-        <?php echo $sSelector; ?> .fvfp_admin_error, <?php echo $sSelector; ?> .fvfp_admin_error a, #content <?php echo $sSelector; ?> .fvfp_admin_error a { color: <?php echo $this->_get_option(array($skin, 'durationColor')); ?>; }
-      <?php endif; ?>
-      <?php if( $this->_get_option(array($skin, 'bufferColor') ) ) : ?>
-        <?php echo $sSelector; ?> .fp-volumeslider, <?php echo $sSelector; ?> .fp-buffer, <?php echo $sSelector; ?> .noUi-background, <?php echo $sSelector; ?> .fv-ab-loop .noUi-handle { background-color: <?php echo $this->_get_option(array($skin, 'bufferColor')); ?> !important; }
-      <?php endif; ?>
-      <?php if( $this->_get_option(array($skin, 'timelineColor') ) ) : ?>
-        <?php echo $sSelector; ?> .fp-timeline { background-color: <?php echo $this->_get_option(array($skin, 'timelineColor')); ?> !important; }
-        <?php echo $sSelector; ?> .fp-elapsed, <?php echo $sSelector; ?> .fp-duration { color: <?php echo $this->_get_option(array($skin, 'timeColor')); ?> !important; }
-        <?php echo $sSelector; ?> .fv-wp-flowplayer-notice-small { color: <?php echo $this->_get_option(array($skin, 'timeColor')); ?> !important; }
-      <?php endif; ?>
-      <?php echo $sSelector; ?> .fv-ab-loop .noUi-handle  { color: <?php echo $this->_get_option(array($skin, 'backgroundColor')); ?> !important; }
-      <?php echo $sSelector; ?> .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: <?php echo $this->_get_option(array($skin, 'progressColor')); ?> !important; }
-      #content <?php echo $sSelector; ?>, <?php echo $sSelector; ?> { font-family: <?php echo $this->_get_option(array($skin, 'font-face')); ?>; }
-      <?php echo $sSelector; ?> .fp-dropdown li.active { background-color: <?php echo $this->_get_option(array($skin, 'progressColor')); ?> !important }
-      <?php echo $sSelector; ?> .fv_player_popup {  background: <?php echo $this->_get_option(array($skin, 'backgroundColor')) ?>; padding: 1% 5%; width: 65%; margin: 0 auto; }
+      $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
+      $css .= $sel." .fp-color { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
+      $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
+      if( $sDuration ) {
+        $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
+      }
+      if( $sBuffer ) {
+        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background, ".$sel." .fv-ab-loop .noUi-handle { background-color: ".$sBuffer." !important; }\n";
+      }
+      if( $sTimeline ) {
+        $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
+        $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
+        $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
+      }
+      if( $sBackground != 'transparent' ) {
+        $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
+        $css .= $sel." .fv-ab-loop .noUi-handle { color: ".$sBackground." !important; }\n";
+      }
+      $css .= $sel." .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
+      $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
+      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
+      $css .= $sel." .fv_player_popup {  background: ".$sBackground."; padding: 1% 5%; width: 65%; margin: 0 auto; }\n";  //  todo: should not be transparent!
+      $css .= $sel." .fvfp_admin_error_content {  background: ".$sBackground." ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }\n"; //  todo: same as above!
       
-      <?php echo $sSelector; ?> .fvfp_admin_error_content {  background: <?php echo $this->_get_option(array($skin, 'backgroundColor')); ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }
-      
-    <?php }
+    }
+    
+    echo $css;
     
     //  rest is not depending of the skin settings or can use the default skin
     $skin = 'skin-'.$this->_get_option('skin');
