@@ -1209,8 +1209,8 @@ function fv_flowplayer_admin_skin() {
         'type'    => 'input_text',
         'key'     => array('skin-custom', 'marginBottom'),
         'name'    => __( 'Bottom Margin', 'fv-wordpress-flowplayer' ),
-        'default' => '28',
-        'title'   => __( 'Enter value in pixels', 'fv-wordpress-flowplayer' ),
+        'default' => '2.8',
+        'title'   => __( 'Enter value in em', 'fv-wordpress-flowplayer' ),
         'data'    => array( 'fv-preview' => $aPreview['marginBottom'] )
       ),
 

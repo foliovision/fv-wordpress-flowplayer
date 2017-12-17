@@ -66,7 +66,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       'skin-slim' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'marginBottom' => '28',
           'bufferColor' => false,
           'canvas' => '#000000',
           'backgroundColor' => 'transparent',
@@ -80,7 +79,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       'skin-youtuby' => array(
           'hasBorder' => false,
           'borderColor' => false,        
-          'marginBottom' => '28',
           'bufferColor' => false,          
           'canvas' => '#000000',
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
@@ -578,9 +576,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = array();
 
-      // iterate over old keys and bring them in to the new
+      // iterate over old keys and bring them in to the new, but skin marginBottom as it's in em units now
       $old_skinless_settings_array = array(
-        'hasBorder', 'borderColor', 'marginBottom', 'bufferColor', 'canvas', 'backgroundColor',
+        'hasBorder', 'borderColor', /*'marginBottom',*/ 'bufferColor', 'canvas', 'backgroundColor',
         'font-face', 'player-position', 'progressColor', 'timeColor', 'durationColor',
         'design-timeline', 'design-icons'
       );
@@ -1114,11 +1112,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))." !important; }\n";
       }
   
-      $iMargin = intval($this->_get_option(array($skin, 'marginBottom'))) > -1 ? intval( $this->_get_option(array($skin, 'marginBottom')) ) : '28';
-      $css .= $sel." { margin: 0 auto ". $iMargin."px auto; display: block; }\n";
-      $css .= $sel.".fixed-controls { margin: 0 auto ".($iMargin+30)."px auto; display: block; }\n";
-      $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+24)."px; }\n";
-      $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+30+24)."px; }\n";
+      if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
+        $iMargin = intval($this->_get_option(array($skin, 'marginBottom')));
+        $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
+        $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
+        $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+        $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+      }
       
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
       $css .= $sel." .fp-color { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
@@ -1155,8 +1155,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
-    .flowplayer.has-caption, flowplayer.has-caption * { margin: 0 auto; }
-    .flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin: 0 auto 30px auto; }
     
     .fvplayer .mejs-container .mejs-controls { background: <?php echo $this->_get_option(array($skin, 'backgroundColor')); ?>!important; }
     .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $this->_get_option(array($skin, 'progressColor')); ?>!important; }
