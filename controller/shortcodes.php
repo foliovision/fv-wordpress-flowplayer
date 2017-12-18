@@ -89,6 +89,50 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     }    
     
   }
+  
+  $atts = shortcode_atts( array(
+    'ad' => '',
+    'ad_width' => '',
+    'ad_height' => '',
+    'ad_skip' => '',    
+    'admin_warning' => '',
+    'align' => '',
+    'autoplay' => '',
+    'caption' => '',
+    'caption_html' => '',
+    'controlbar' => '',
+    'embed' => '',    
+    'end_popup_preview' => '',
+    'engine' => '',    
+    'height' => '',
+    'mobile' => '',
+    'linking' => '',
+    'liststyle' => '',    
+    'live' => '',
+    'logo' => '',
+    'loop' => '',
+    'play_button' => '',
+    'playlist' => '',    
+    'playlist_advance' => '',
+    'playlist_hide' => '',
+    'popup' => '',    
+    'post' => '',
+    'redirect' => '',    
+    'rtmp' => '',
+    'rtmp_path' => '',    
+    'share' => '',    
+    'skin' => '',
+    'speed' => '',
+    'splash' => '',
+    'splash_text' => '',
+    'splashend' => '',    
+    'src' => '',
+    'src1' => '',
+    'src2' => '',
+    'sticky' => '',    
+    'subtitles' => '',    
+    'width' => '',
+  ), $atts );
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
 		foreach( $atts AS $k => $v ) {
@@ -110,11 +154,11 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   
   $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
 	
-  if( $post == 'this' ) {
-    $post = get_the_ID();
+  if( $arguments['post'] == 'this' ) {
+    $arguments['post'] = get_the_ID();
   }
   
-  if( intval($post) > 0 ) {
+  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
     if( $objVideoQuery->have_posts() ) {
       $sHTML = '';
