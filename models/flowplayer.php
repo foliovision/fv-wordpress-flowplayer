@@ -2060,7 +2060,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   <style>
     body { margin: 0; padding: 0; overflow:hidden; background:white;}
     body:before { height: 0px!important;}
-    html {margin-top: 0px !important;}
+    html {margin-top: 0px !important; overflow:hidden; }
   </style>
 </head>
 <body class="fv-player-preview">
@@ -2081,10 +2081,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $height = 'min-height:'.$matches[1].'px;';
     }
     
-    ?>    
-    <style>
-      html {overflow: hidden;}
-    </style>    
+    ?> 
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php

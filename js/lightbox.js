@@ -307,13 +307,13 @@ function fv_player_colorbox_scrset(args) {
       }
     }
     
-    var original_width = 0;
-    if( jQuery('img',args).length > 0 ) {
-      aSources.push( { url: jQuery('img',args)[0].src, d: 1, w: jQuery('img',args)[0].naturalWidth, h: jQuery('img',args)[0].naturalHeight } );
-      original_width = jQuery('img',args)[0].naturalWidth;
-    }
-    
-    if( aSources ) {    
+    if( aSources ) {
+      var original_width = 0;
+      if( jQuery('img',args).length > 0 ) {
+        aSources.push( { url: jQuery('img',args)[0].src, d: 1, w: jQuery('img',args)[0].naturalWidth, h: jQuery('img',args)[0].naturalHeight } );
+        original_width = jQuery('img',args)[0].naturalWidth;
+      }      
+      
       var find = jQuery(window).width() > jQuery(window).height() ? jQuery(window).width() : jQuery(window).height();
       var ratio = typeof(window.devicePixelRatio) != "undefined" ? window.devicePixelRatio : 1;
       find = find * ratio;

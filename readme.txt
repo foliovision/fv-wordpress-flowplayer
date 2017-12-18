@@ -354,13 +354,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4 - 2017/11/?? =
+= 6.4 - 2017/12/?? =
 
-* Flowplayer 7 core for beta testers
+* Iframe embedding - fix for scrollbars showing up
+* Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
+* Flowplayer 7 core for beta testers!
 
 = 6.3.11 - 2017/11/20 =
 
-* New feature - Sticky Video - lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1200 pixels.
+* New feature - Sticky Video - lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1200 pixels. See Setting -> FV Player -> Skin -> Sticky Video
 * Lightbox - improving retina image parsing
 
 = 6.3.10 - 2017/11/13 =

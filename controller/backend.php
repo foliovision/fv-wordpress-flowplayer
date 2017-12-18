@@ -25,7 +25,7 @@
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
 
 function fv_wp_flowplayer_support_mail() {
-  if( isset( $_POST['notice'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
+  if( isset( $_POST['notice'] ) ) {
 
   	$current_user = wp_get_current_user();    
 
@@ -104,86 +104,82 @@ function fv_wp_flowplayer_check_template() {
 	$ok = array();
 	$errors = array();
 	
-  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-  	$response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
-  	if( is_wp_error( $response ) ) {
-			$error_message = $response->get_error_message();
-			$output = array( 'error' => $error_message );
-		} else {
-      
-      $active_plugins = get_option( 'active_plugins' );
-			foreach( $active_plugins AS $plugin ) {
-				if( stripos( $plugin, 'wp-minify' ) !== false ) {
-					$errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
-					$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-					echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
-					die();
-				}
-			}
-			
-			if( function_exists( 'w3_instance' ) && $minify = w3_instance('W3_Plugin_Minify') ) {			
-				if( $minify->_config->get_boolean('minify.js.enable') ) {
-					$errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
-          $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-					echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
-				}
-			}
-      
-			if( stripos( $response['body'], '/html5.js') === FALSE && stripos( $response['body'], '/html5shiv.js') === FALSE ) {
-        $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Please follow our instructions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
-			}      
-			
-      $ok[] = __('Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
-      
-			$response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
-			
-			//	check Flowplayer scripts
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
-			if( count($flowplayer_scripts[1]) > 0 ) {
-				if( count($flowplayer_scripts[1]) > 1 ) {
-					$errors[] = "It appears there are <strong>multiple</strong> Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.";
-				}
-				foreach( $flowplayer_scripts[1] AS $flowplayer_script ) {
-					$check = fv_wp_flowplayer_check_script_version( $flowplayer_script );
-					if( $check == - 1 ) {
-						$errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
-					} else if( $check == 1 ) {
-            $ok[] = __('FV Flowplayer script found: ', 'fv-wordpress-flowplayer') . "<code>$flowplayer_script</code>!";
-						$fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
-					}
-				}
-			} else if( count($flowplayer_scripts[1]) < 1 ) {
-				$errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your template's header.php file if it contains wp_head() function call and footer.php should contain wp_footer()!";			
-			}
-			
+  $response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
+  if( is_wp_error( $response ) ) {
+    $error_message = $response->get_error_message();
+    $output = array( 'error' => $error_message );
+  } else {
+    
+    $active_plugins = get_option( 'active_plugins' );
+    foreach( $active_plugins AS $plugin ) {
+      if( stripos( $plugin, 'wp-minify' ) !== false ) {
+        $errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
+        $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
+        echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+        die();
+      }
+    }
+    
+    if( function_exists( 'w3_instance' ) && $minify = w3_instance('W3_Plugin_Minify') ) {			
+      if( $minify->_config->get_boolean('minify.js.enable') ) {
+        $errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
+        $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
+        echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+      }
+    }
+    
+    if( stripos( $response['body'], '/html5.js') === FALSE && stripos( $response['body'], '/html5shiv.js') === FALSE ) {
+      $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Please follow our instructions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
+    }      
+    
+    $ok[] = __('Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
+    
+    $response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
+    
+    //	check Flowplayer scripts
+    preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
+    if( count($flowplayer_scripts[1]) > 0 ) {
+      if( count($flowplayer_scripts[1]) > 1 ) {
+        $errors[] = "It appears there are <strong>multiple</strong> Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.";
+      }
+      foreach( $flowplayer_scripts[1] AS $flowplayer_script ) {
+        $check = fv_wp_flowplayer_check_script_version( $flowplayer_script );
+        if( $check == - 1 ) {
+          $errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
+        } else if( $check == 1 ) {
+          $ok[] = __('FV Flowplayer script found: ', 'fv-wordpress-flowplayer') . "<code>$flowplayer_script</code>!";
+          $fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
+        }
+      }
+    } else if( count($flowplayer_scripts[1]) < 1 ) {
+      $errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your template's header.php file if it contains wp_head() function call and footer.php should contain wp_footer()!";			
+    }
+    
 
-			//	check jQuery scripts						
-			preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
-			if( count($jquery_scripts[1]) > 0 ) {   
-				foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
-          $ok[] = __('jQuery library found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
-					$jquery_pos = strpos( $response['body'], $jquery_script );
-				}
-      
-				if( count($jquery_scripts[1]) > 1 ) {
-					$errors[] = "It appears there are <strong>multiple</strong> jQuery libraries on your site, your videos might not be playing or may play with defects, please check.\n";
-				}
-			} else if( count($jquery_scripts[1]) < 1 ) {
-				$errors[] = "It appears there are <strong>no</strong> jQuery library on your site, your videos might not be playing, please check.\n";			
-			}
-			
-						
-			if( $fv_flowplayer_pos > 0 && $jquery_pos > 0 && $jquery_pos > $fv_flowplayer_pos && count($jquery_scripts[1]) < 1 ) {
-				$errors[] = "It appears your Flowplayer JavaScript library is loading before jQuery. Your videos probably won't work. Please make sure your jQuery library is loading using the standard Wordpress function - wp_enqueue_scripts(), or move it above wp_head() in your header.php template.";
-			}
-      
-			$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-		}
-		echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
-		die();
+    //	check jQuery scripts						
+    preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
+    if( count($jquery_scripts[1]) > 0 ) {   
+      foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
+        $ok[] = __('jQuery library found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
+        $jquery_pos = strpos( $response['body'], $jquery_script );
+      }
+    
+      if( count($jquery_scripts[1]) > 1 ) {
+        $errors[] = "It appears there are <strong>multiple</strong> jQuery libraries on your site, your videos might not be playing or may play with defects, please check.\n";
+      }
+    } else if( count($jquery_scripts[1]) < 1 ) {
+      $errors[] = "It appears there are <strong>no</strong> jQuery library on your site, your videos might not be playing, please check.\n";			
+    }
+    
+          
+    if( $fv_flowplayer_pos > 0 && $jquery_pos > 0 && $jquery_pos > $fv_flowplayer_pos && count($jquery_scripts[1]) < 1 ) {
+      $errors[] = "It appears your Flowplayer JavaScript library is loading before jQuery. Your videos probably won't work. Please make sure your jQuery library is loading using the standard Wordpress function - wp_enqueue_scripts(), or move it above wp_head() in your header.php template.";
+    }
+    
+    $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
   }
-  
-  die('-1');
+  echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+  die();
 }
 
 //	enter script URL, return false if it's not version 5
@@ -235,104 +231,101 @@ function fv_wp_flowplayer_check_jquery_version( $url, &$array, $key ) {
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files');
 
 function fv_wp_flowplayer_check_files() {
-  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-  	global $wpdb;
-  	define('VIDEO_DIR', '/videos/');
+  global $wpdb;
+  define('VIDEO_DIR', '/videos/');
+  
+  $bNotDone = false;
+  $tStart = microtime(true);
+  $tMax = ( @ini_get('max_execution_time') ) ? @ini_get('max_execution_time') - 5 : 25;
+  
+  $videos1 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_status != 'trash' AND post_content LIKE '%[flowplayer %'" );
+  $videos2 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_status != 'trash' AND post_content LIKE '%[fvplayer %'" );  
+  
+  $videos = array_merge( $videos1, $videos2 );
     
-    $bNotDone = false;
-    $tStart = microtime(true);
-    $tMax = ( @ini_get('max_execution_time') ) ? @ini_get('max_execution_time') - 5 : 25;
-  	
-  	$videos1 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_status != 'trash' AND post_content LIKE '%[flowplayer %'" );
-  	$videos2 = $wpdb->get_results( "SELECT ID, post_content FROM $wpdb->posts WHERE post_type != 'revision' AND post_status != 'trash' AND post_content LIKE '%[fvplayer %'" );  
-  	
-  	$videos = array_merge( $videos1, $videos2 );
-  		
-  	$source_servers = array();
-  	
-  	$shortcodes_count = 0;
-  	$src_count = 0;
-  	if( count($videos) ) {
-			foreach( $videos AS $post ) {
-			
-				$shortcodes_count += preg_match_all( '!\[(?:flowplayer|fvplayer)[^\]]+\]!', $post->post_content, $post_videos );
-				if( count($post_videos[0]) ) {
-					foreach( $post_videos[0] AS $post_video ) {
-						$post_video = preg_replace( '!popup=\'.*\'!', '', $post_video );
-						$src_count += preg_match_all( '!(?:src|src1|src2|src3|mp4|webm|ogv)=[\'"](.*?(?:mp4|m4v))[\'"]!', $post_video, $sources1 );
-						$src_count += preg_match_all( '!(?:src|src1|src2|src3|mp4|webm|ogv)=([^\'"].*?(?:mp4|m4v|flv))[\s\]]!', $post_video, $sources2 );
-						$sources = array_merge( $sources1[1], $sources2[1] );
-						if( count($sources) ) {
-							foreach($sources AS $src ) {
-								if( strpos( $src, '//' ) === 0 ) {
-									$src = 'http:'.$src;
-								} else if( strpos( $src, '/' ) === 0 ) {
-									$src = home_url().$src;
-								} else if( !preg_match( '!^\S+://!', $src ) )  {
-									$src = home_url().VIDEO_DIR.$src;
-								} 
-								
-								$server = preg_replace( '!(.*?//.*?)/.+!', '$1', $src );
-																
-								$source_servers[$server][] = array( 'src' => $src, 'post_id' => $post->ID );
-							}
-						}
-					}
-				}
-				
-			}
-  	}
-  	
-  	$ok = array();
-  	$errors = array();
-
-  	$count = 0;
-  	foreach( $source_servers AS $server => $videos ) {
-      
-      $tCurrent = microtime(true);
-      if( $tCurrent - $tStart > $tMax ) {
-        $bNotDone = true;
-        break;
-      }
-      
-      if( stripos( $videos[0]['src'], '.mp4' ) === FALSE /*&& stripos( $videos[0]['src'], '.m4v' ) === FALSE*/ ) {
-        continue;
-      }
-      
-      global $FV_Player_Checker;
- 
-			if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
-        list( $header, $message_out ) = $FV_Player_Checker->http_request( trim($videos[0]['src']), array( 'quick_check' => 10, 'size' => 65536 ) );
-        if( $header ) {        
-          $headers = WP_Http::processHeaders( $header );          
-          list( $new_errors, $mime_type, $fatal ) = $FV_Player_Checker->check_headers( $headers, trim($videos[0]['src']), rand(0,999), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
-          if( $fatal ) {            
-            continue;
-          }
-          if( $new_errors ) {
-            $sPostsLinks = false;
-            foreach( $videos AS $video ) {
-              $sPostsLinks .= '<a href="'.home_url().'?p='.$video['post_id'].'">'.$video['post_id'].'</a> ';	
+  $source_servers = array();
+  
+  $shortcodes_count = 0;
+  $src_count = 0;
+  if( count($videos) ) {
+    foreach( $videos AS $post ) {
+    
+      $shortcodes_count += preg_match_all( '!\[(?:flowplayer|fvplayer)[^\]]+\]!', $post->post_content, $post_videos );
+      if( count($post_videos[0]) ) {
+        foreach( $post_videos[0] AS $post_video ) {
+          $post_video = preg_replace( '!popup=\'.*\'!', '', $post_video );
+          $src_count += preg_match_all( '!(?:src|src1|src2|src3|mp4|webm|ogv)=[\'"](.*?(?:mp4|m4v))[\'"]!', $post_video, $sources1 );
+          $src_count += preg_match_all( '!(?:src|src1|src2|src3|mp4|webm|ogv)=([^\'"].*?(?:mp4|m4v|flv))[\s\]]!', $post_video, $sources2 );
+          $sources = array_merge( $sources1[1], $sources2[1] );
+          if( count($sources) ) {
+            foreach($sources AS $src ) {
+              if( strpos( $src, '//' ) === 0 ) {
+                $src = 'http:'.$src;
+              } else if( strpos( $src, '/' ) === 0 ) {
+                $src = home_url().$src;
+              } else if( !preg_match( '!^\S+://!', $src ) )  {
+                $src = home_url().VIDEO_DIR.$src;
+              } 
+              
+              $server = preg_replace( '!(.*?//.*?)/.+!', '$1', $src );
+                              
+              $source_servers[$server][] = array( 'src' => $src, 'post_id' => $post->ID );
             }
-            $errors[] = implode( " ",$new_errors ).'(<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$sPostsLinks.'</div>';
-            $count++;
-            continue;           
-          } else {
-            $ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_type.'</code> for MP4 videos.';
           }
         }
-  		}    						
-  	}
-    
-    if( $bNotDone ) {
-      $ok[] = '<strong>Not all the servers were checked as you use a lot of them, increase your PHP execution time or check your other videos by hand.</strong>';
+      }
+      
     }
-  	
-  	$output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-		echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
-		die();
   }
-  die('-1');
+  
+  $ok = array();
+  $errors = array();
+
+  $count = 0;
+  foreach( $source_servers AS $server => $videos ) {
+    
+    $tCurrent = microtime(true);
+    if( $tCurrent - $tStart > $tMax ) {
+      $bNotDone = true;
+      break;
+    }
+    
+    if( stripos( $videos[0]['src'], '.mp4' ) === FALSE /*&& stripos( $videos[0]['src'], '.m4v' ) === FALSE*/ ) {
+      continue;
+    }
+    
+    global $FV_Player_Checker;
+
+    if( stripos( trim($videos[0]['src']), 'rtmp://' ) === false ) {
+      list( $header, $message_out ) = $FV_Player_Checker->http_request( trim($videos[0]['src']), array( 'quick_check' => 10, 'size' => 65536 ) );
+      if( $header ) {        
+        $headers = WP_Http::processHeaders( $header );          
+        list( $new_errors, $mime_type, $fatal ) = $FV_Player_Checker->check_headers( $headers, trim($videos[0]['src']), rand(0,999), array( 'talk_bad_mime' => 'Server <code>'.$server.'</code> uses incorrect mime type for MP4 ', 'wrap' => false ) );
+        if( $fatal ) {            
+          continue;
+        }
+        if( $new_errors ) {
+          $sPostsLinks = false;
+          foreach( $videos AS $video ) {
+            $sPostsLinks .= '<a href="'.home_url().'?p='.$video['post_id'].'">'.$video['post_id'].'</a> ';	
+          }
+          $errors[] = implode( " ",$new_errors ).'(<a href="#" onclick="jQuery(\'#fv-flowplayer-warning-'.$count.'\').toggle(); return false">click to see a list of posts</a>) <div id="fv-flowplayer-warning-'.$count.'" style="display: none; ">'.$sPostsLinks.'</div>';
+          $count++;
+          continue;           
+        } else {
+          $ok[] = 'Server <code>'.$server.'</code> appears to serve correct mime type <code>'.$mime_type.'</code> for MP4 videos.';
+        }
+      }
+    }    						
+  }
+  
+  if( $bNotDone ) {
+    $ok[] = '<strong>Not all the servers were checked as you use a lot of them, increase your PHP execution time or check your other videos by hand.</strong>';
+  }
+  
+  $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
+  echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+  die();
 }
 
 
@@ -344,19 +337,16 @@ function fv_wp_flowplayer_check_files() {
 add_action('wp_ajax_fv_wp_flowplayer_check_license', 'fv_wp_flowplayer_check_license');
 
 function fv_wp_flowplayer_check_license() {
-  if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
-    if( fv_wp_flowplayer_admin_key_update() ) {
-      $output = array( 'errors' => false, 'ok' => array(__('License key acquired successfully. <a href="">Reload</a>', 'fv-wordpress-flowplayer')) );
-      fv_wp_flowplayer_install_extension();
-    } else {
-      $message = get_option('fv_wordpress_flowplayer_deferred_notices');
-      if( !$message ) $message = get_option('fv_wordpress_flowplayer_persistent_notices');
-      $output = array( 'errors' => array($message), 'ok' => false );            
-    }
-    echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
-		die();
+  if( fv_wp_flowplayer_admin_key_update() ) {
+    $output = array( 'errors' => false, 'ok' => array(__('License key acquired successfully. <a href="">Reload</a>', 'fv-wordpress-flowplayer')) );
+    fv_wp_flowplayer_install_extension();
+  } else {
+    $message = get_option('fv_wordpress_flowplayer_deferred_notices');
+    if( !$message ) $message = get_option('fv_wordpress_flowplayer_persistent_notices');
+    $output = array( 'errors' => array($message), 'ok' => false );            
   }
-  die('-1');
+  echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+  die();
 }
 
 
