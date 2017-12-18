@@ -90,7 +90,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     
   }
   
-  $atts = shortcode_atts( array(
+  $atts = wp_parse_args( $atts, array(
     'ad' => '',
     'ad_width' => '',
     'ad_height' => '',
@@ -132,7 +132,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'sticky' => '',    
     'subtitles' => '',    
     'width' => '',
-  ), $atts );
+  ) );
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
 		foreach( $atts AS $k => $v ) {
