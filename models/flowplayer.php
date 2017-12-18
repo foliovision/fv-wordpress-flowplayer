@@ -71,7 +71,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
           'player-position' => '',
-          'timeColor' => false,
+          'timeColor' => '#ffffff',
           'durationColor' => false,
           'design-timeline' => 'fp-slim',
           'design-icons' => 'fp-edgy'
@@ -84,7 +84,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
           'font-face' =>'Tahoma, Geneva, sans-serif',
           'player-position' => '',
-          'timeColor' => false,
+          'timeColor' => '#ffffff',
           'durationColor' => false,          
           'design-timeline' => 'fp-full',
           'design-icons' => ' '
@@ -1132,9 +1132,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
-        $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
-        $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
       }
+      
+      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
+      
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
         $css .= $sel." .fv-ab-loop .noUi-handle { color: ".$sBackground." !important; }\n";

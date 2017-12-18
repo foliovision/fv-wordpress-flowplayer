@@ -1091,6 +1091,8 @@
 	bottom: 0;
 }
 
+.flowplayer.has-video-checker { overflow: visible; }
+
 .fv-fp-splash-text { position: absolute;bottom:20%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 2px #333;background-color: rgba(0,0,0,0.5); font-size: 18px; padding: 5px 36px; pointer-events: none }
 .flowplayer.is-error .fv-fp-splash-text {display: none;}
 
@@ -1131,7 +1133,7 @@
 
 /* reducing the spacing in .fp-header */
 .flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
-.flowplayer .fp-header .fp-icon { margin: 0em 0.5em 0 0; }
+.flowplayer .fp-header .fp-icon { margin: 0.5em 0.5em 0 0; }
 
 .flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
 
