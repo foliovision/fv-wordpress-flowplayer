@@ -552,7 +552,7 @@
     background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.25), transparent);
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent);
     text-align: left;
-    height: 3.25em;
+    height: 3em;
     -webkit-transition: opacity 0.3s;
     transition: opacity 0.3s;
     padding-left: .65em; }
@@ -1133,7 +1133,7 @@
 
 /* reducing the spacing in .fp-header */
 .flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
-.flowplayer .fp-header .fp-icon { margin: 0.5em 0.5em 0 0; }
+.flowplayer .fp-header .fp-icon { margin: 0.5em 0.5em 0 0;line-height: 1 }
 
 .flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
 
