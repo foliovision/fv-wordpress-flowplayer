@@ -572,6 +572,10 @@
 .fp-playlist-only-captions.fp-playlist-vertical a h4 {position:relative;top:auto;background-color:transparent;opacity:1;text-shadow:none}
 .fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
 
+.fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px}
+.fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal a  { width: 200px }
+
 @-moz-keyframes blending{
   to { opacity: 1; }
 }@-webkit-keyframes blending{
@@ -897,6 +901,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   .fp-playlist-horizontal a,.entry-content .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fp-playlist-horizontal a {width: 50%}
   .fp-playlist-horizontal a:nth-child(3n+1) {clear:none}
   .fp-playlist-horizontal a:nth-child(2n+1) {clear:both}
+  .fv-playlist-slider-wrapper .fp-playlist-horizontal a,.entry-content .fv-playlist-slider-wrapper .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fv-playlist-slider-wrapper .fp-playlist-horizontal a {width: 200px}
 }
 @media only screen and (max-width: 40em) {
   .fv_fp_close a {width:24px;height:24px;background-size:24px 24px}

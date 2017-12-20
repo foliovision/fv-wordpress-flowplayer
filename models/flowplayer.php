@@ -571,7 +571,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       
       $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
       
-      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'horizontal' ){
+      if( isset($aArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
         $sPlaylistClass .= ' fp-playlist-horizontal';
       } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
         $sPlaylistClass .= ' fp-playlist-vertical';
@@ -597,6 +597,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $attributes_html = '';
       $attributes['class'] = 'fp-playlist-external '.$sPlaylistClass;
       $attributes['rel'] = 'wpfp_'.$this->hash;
+      if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
+        $attributes['style'] = "width: ".(count($aPlaylistItems)*201)."px";
+      }
       
       $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
       foreach( $attributes AS $attr_key => $attr_value ) {
@@ -604,6 +607,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
 
       $sHTML = "\t<div$attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
+      
+      if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
+        $sHTML = "<div class='fv-playlist-slider-wrapper'>".$sHTML."</div>\n";
+      }
       
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
   }  

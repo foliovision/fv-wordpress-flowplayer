@@ -283,6 +283,7 @@ function fv_flowplayer_admin_default_options() {
                     <option value="tabs"      <?php if( $value == 'tabs' ) echo ' selected="selected"'; ?> ><?php _e('Tabs', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="prevnext"  <?php if( $value == 'prevnext' ) echo ' selected="selected"'; ?> ><?php _e('Prev/Next', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="vertical"  <?php if( $value == 'vertical' ) echo ' selected="selected"'; ?> ><?php _e('Vertical', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="slider"  <?php if( $value == 'slider' ) echo ' selected="selected"'; ?> ><?php _e('Slider', 'fv-wordpress-flowplayer'); ?></option>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv-wordpress-flowplayer'); ?>
                 </p>

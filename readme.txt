@@ -358,6 +358,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Iframe embedding - fix for scrollbars showing up
 * Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
+* Playlist - new style: Slider!
 
 = 6.3.11 - 2017/11/20 =
 
