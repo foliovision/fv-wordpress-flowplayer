@@ -1109,7 +1109,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
       
       if( $this->_get_option(array($skin, 'hasBorder')) ) {
-        $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))." !important; }\n";
+        $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))."; }\n";
       }
   
       if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
