@@ -1057,7 +1057,8 @@
 .flowplayer { margin: 0 auto 2.8em auto; display: block; }
 .flowplayer.has-caption { margin: 0 auto; }
 .flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin-bottom: 2.8em; }
-.flowplayer.fixed-controls { margin-bottom: 5.2em; }
+.flowplayer.fixed-controls { margin-bottom: 5.2em }
+.flowplayer.fixed-controls.skin-custom {border: none}
 .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 
