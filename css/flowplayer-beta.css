@@ -1905,13 +1905,18 @@ a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
 	width: 16px;
 	height: 16px;
 }
-.fv-fp-playlist .fvp-icon {
+#fvp-playlist-play {
+	display: block;
+	text-align: center;
+}
+.fv-fp-playlist .fvp-icon,
+.fv-fp-playlist #fvp-playlist-play {
 	display: none;
 }
 .fv-fp-playlist.mode-repeat-playlist .fvp-icon.fvp-replay-list,
 .fv-fp-playlist.mode-shuffle-playlist .fvp-icon.fvp-shuffle,
 .fv-fp-playlist.mode-repeat-track .fvp-icon.fvp-replay-track,
-.fv-fp-playlist.mode-normal .fvp-icon.fvp-playlist-play {
+.fv-fp-playlist.mode-normal #fvp-playlist-play {
 	display: block;
 }
 .fv-fp-playlist.mode-normal .fvp-icon.fvp-playlist-play {
