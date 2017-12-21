@@ -92,7 +92,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     
-    add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
+    //add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
@@ -363,6 +363,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
     if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4>";
+    
+    global $post;
+    if( $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
+      if( $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] ) ) {
+        $sHTML .= '<i class="dur">'.$sDuration.'</i>';
+      } 
+    }
+    
     $sHTML .= "</a>\n";
     
     $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
