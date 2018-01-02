@@ -638,7 +638,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
         }
         
-        if ($this->aCurArgs['liststyle'] == 'prevnext' && count($aPlaylistItems)) {
+        if ($this->aCurArgs['liststyle'] == 'prevnext' && count($aPlaylistItems) > 1 ) {
           $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
         }          
         
