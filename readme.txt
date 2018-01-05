@@ -358,6 +358,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Iframe embedding - fix for scrollbars showing up
 * Iframe embedding - allowing native fullscreen for iOS as it's the way of getting fullscreen from iframe on it
+* Lightbox - improving support for responsive images by adding data-colorbox-srcset on image anchors which lists all the bigger image sizes
 * Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
 * Playlist - new style: Slider!
 * Playlist - removing Prev/Next arrows if it's not actually a playlist

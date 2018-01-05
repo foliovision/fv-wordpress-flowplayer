@@ -281,6 +281,8 @@ class FV_Player_lightbox {
   }
 
   function html_lightbox_images_callback($matches) {
+    if( stripos($matches[1],'colorbox') ) return $matches[0];
+    
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
@@ -290,7 +292,49 @@ class FV_Player_lightbox {
       $matches[1] = preg_replace('~(class=[\'"])~', '$1colorbox ', $matches[1]);
     }
     
+    //  since the srcset on img doesn't contain all the image sizes we need to create a our own srcset on the anchor which will only have proper aspect ratio image at least the size of the thumbnail
+    if( stripos($matches[0],'srcset') !== false ) {
+      if( preg_match( '~gallery-\d+-(\d+)~', $matches[2], $attachment_id ) ) {  //  todo: support individual images as well!
+        if( preg_match( '~size-([^\'" ]+)~', $matches[2], $size ) ) {
+          $size = $size[1];
+          
+          $this->tmp_size = $size;
+          
+          add_filter( 'wp_calculate_image_srcset_meta', array( $this, 'limit_image_size' ) );
+
+          $attachment_id = $attachment_id[1];
+          $image = wp_get_attachment_image_src($attachment_id, 'full');
+          list($src, $width, $height) = $image;
+          $size_array = array( absint( $width ), absint( $height ) );
+          $image_meta = wp_get_attachment_metadata( $attachment_id );
+          $srcset = wp_calculate_image_srcset( $size_array, $src, $image_meta, $attachment_id );
+          
+          remove_filter( 'wp_calculate_image_srcset_meta', array( $this, 'limit_image_size' ) );
+          
+          $srcset = trim( preg_replace( '~^(.*?w,)~', '', $srcset ) );  //  removing the full size image
+          
+          $matches[1] = str_replace('<a ', '<a data-colorbox-srcset="'.esc_attr($srcset).'" ', $matches[1]);
+        }
+      }      
+    }
+    
     return $matches[1] . $matches[2];
+  }
+  
+  //  this filters out the too small image sizes
+  function limit_image_size( $image_meta ) {    
+    if( !empty($image_meta['sizes'][$this->tmp_size]) ) {
+      $min_width = $image_meta['sizes'][$this->tmp_size]['width'];
+      $min_height = $image_meta['sizes'][$this->tmp_size]['height'];
+      
+      foreach( $image_meta['sizes'] AS $k => $v ) {
+        if( $v['width'] < 480 || $v['height'] < 360 || $v['width'] < $min_width || $v['height'] < $min_height ) {
+          unset( $image_meta['sizes'][$k] );
+        }
+      }
+    }
+    
+    return $image_meta;
   }
 
   function disable_autoplay($aArgs) {
