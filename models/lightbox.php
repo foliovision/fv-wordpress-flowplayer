@@ -184,7 +184,7 @@ class FV_Player_lightbox {
     }
 
     global $FV_Player_Pro;
-    if( count($FV_Player_Pro->bVideoAdsStatus) || count($FV_Player_Pro->bVideoAdsStatus['postroll']) ) return $output;
+    if( count($FV_Player_Pro->bVideoAdsStatus) ) return $output;
 
     global $fv_fp;
     $output = array();
