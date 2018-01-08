@@ -1537,6 +1537,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
+      
+      if( function_exists('rocket_insert_load_css') ) rocket_insert_load_css();
 
       remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
       //remove_action('wp_head', '_admin_bar_bump_cb');
