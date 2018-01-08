@@ -307,6 +307,11 @@ function fv_player_colorbox_scrset(args) {
       }
     }
     
+    if( jQuery(args).attr('data-colorbox-srcset') ) {
+      var aHrefSources = parseSrcset(jQuery(args).attr('data-colorbox-srcset'));
+      aSources = aSources.concat(aHrefSources);
+    }
+    
     if( aSources ) {
       var original_width = 0;
       if( jQuery('img',args).length > 0 ) {
@@ -320,6 +325,8 @@ function fv_player_colorbox_scrset(args) {
       var win = -1;      
       
       jQuery(aSources).each( function(k,v) {
+        //  todo: ignore crop sizes!
+        
         if( !v.w && original_width > 0 && v.d > 0 ) aSources[k].w = original_width * v.d;
         if( win == -1 || Math.abs(aSources[k].w - find) < Math.abs(aSources[win].w - find) ){
           win = k;

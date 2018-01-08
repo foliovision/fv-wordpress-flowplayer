@@ -356,9 +356,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.4 - 2017/12/?? =
 
-* Iframe embedding - fix for scrollbars showing up
-* Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
 * Flowplayer 7 core for beta testers!
+
+= 6.3.12 - 2017/12/?? =
+
+* Iframe embedding - fix for scrollbars showing up
+* Iframe embedding - allowing native fullscreen for iOS as it's the way of getting fullscreen from iframe on it
+* Iframe embedding - WP Rocket Critical CSS fix
+* Lightbox - improving support for responsive images by adding data-colorbox-srcset on image anchors which lists all the bigger image sizes
+* Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
+* Playlist - new style: Slider!
+* Playlist - removing Prev/Next arrows if it's not actually a playlist
 
 = 6.3.11 - 2017/11/20 =
 

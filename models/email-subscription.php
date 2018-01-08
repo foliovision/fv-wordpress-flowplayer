@@ -652,6 +652,11 @@ class FV_Player_Email_Subscription {
     }
     
     $aLists[$key] = $_POST['email_lists'][$key];
+    foreach ($aLists as $index => $values) {
+      foreach ($values as $key => $value) {
+        $aLists[$index][$key] = stripslashes($value);
+      }
+    }
     update_option('fv_player_email_lists',$aLists);
     
     fv_player_admin_page();
