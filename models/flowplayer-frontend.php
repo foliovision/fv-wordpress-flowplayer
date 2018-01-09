@@ -660,7 +660,11 @@ class flowplayer_frontend extends flowplayer
         }
         
         if ($this->aCurArgs['liststyle'] == 'prevnext' && count($aPlaylistItems) > 1 ) {
-          $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
+          if( $this->is_beta() ) {
+            $this->ret['html'].='<a class="fp-prev" title="prev"></a><a class="fp-next" title="next"></a>'; 
+          } else {
+            $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
+          }
         }          
         
         $this->ret['html'] .= '</div>'."\n";
