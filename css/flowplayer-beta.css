@@ -1446,6 +1446,8 @@
         .fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions a {width:100%;float:none;display:block} 
 	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4, .entry-content .fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 { text-align: left; }
 
+.fp-playlist-text-wrapper i.dur { display: none }
+
 /*  Some mobiles stuff, todo: check!  */        
 @media only screen and (max-width: 48em) {
   .fp-playlist-horizontal {margin-left:-1px;margin-right:-1px}
