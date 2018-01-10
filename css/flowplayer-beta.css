@@ -1413,7 +1413,6 @@
 .fp-playlist-vertical-wrapper {margin-bottom:24px;overflow:hidden;display:block}
 .fp-playlist-vertical-wrapper:before,.fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:before,.fp-playlist-text-wrapper:after {content:"";display:table}
 .fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:after {clear:both}
-.fp-playlist-vertical.fp-playlist-only-captions a {padding:8px 4px}
 .fp-playlist-vertical.fp-playlist-only-captions a h4 span {line-height:1}
 .fp-playlist-vertical a div {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
 .fp-playlist-vertical a h4 {margin:0;font-size:13px;color:#000}
@@ -1445,9 +1444,10 @@
         .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}
         .fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions a {width:100%;float:none;display:block} 
 	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4, .entry-content .fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 { text-align: left; }
-
-.fp-playlist-text-wrapper i.dur { display: none }
-
+	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 span { position:relative;top:auto;left:auto;right:auto;-webkit-transform:none;transform:none;padding:0 }
+	.fp-playlist-only-captions.fp-playlist-external .dur { opacity:1;color:#999;position:relative;right:auto;top:auto;text-shadow:none;font-size:13px;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;margin-left:6px; }
+	.fp-playlist-only-captions.fp-playlist-external a:hover .dur { color:#999; }
+	
 /*  Some mobiles stuff, todo: check!  */        
 @media only screen and (max-width: 48em) {
   .fp-playlist-horizontal {margin-left:-1px;margin-right:-1px}
@@ -1638,9 +1638,9 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 
 /*  Duration, todo: check!*/
-.fvfp_duration { position: absolute; bottom: 0px; right: 1%; z-index: 2; text-align: center; color: #fff; display: none }
+.fvfp_duration { position: absolute; bottom: 0px; right: 1%; z-index: 2; text-align: center; color: #fff; display:none }
 .is-ready .fvfp_duration, .is-loading .fvfp_duration  { display: none }
-.fp-playlist-external .dur { opacity: 0; font-style: normal; position: absolute; top: 6px; right: 6px; color: #fff; text-shadow: 0 0 3px #333; opacity: 0; -webkit-transition:all 0.3s ease-in-out 0.1s; -moz-transition:all 0.3s ease-in-out 0.1s; transition:all 0.3s ease-in-out 0.1s }
+.fp-playlist-external .dur { font-style:normal;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
 
 
 /*  No animation, todo: check!  */

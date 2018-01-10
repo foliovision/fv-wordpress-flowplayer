@@ -749,13 +749,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
-    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4>";
-    
-    global $post;
-    if( $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
-      if( $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] ) ) {
-        $sHTML .= '<i class="dur">'.$sDuration.'</i>';
-      } 
+    if( $sItemCaption ) {
+      $sHTML .= "<h4><span>".$sItemCaption."</span>";
+      global $post;
+      if( $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
+        if( $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] ) ) {
+          $sHTML .= '<i class="dur">'.$sDuration.'</i>';
+        } 
+      }      
+      $sHTML .= "</h4>";
     }
     
     $sHTML .= "</a>\n";
