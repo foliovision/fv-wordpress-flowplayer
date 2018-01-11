@@ -560,7 +560,6 @@
 .fp-playlist-vertical-wrapper {margin-bottom:24px;overflow:hidden;display:block}
 .fp-playlist-vertical-wrapper:before,.fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:before,.fp-playlist-text-wrapper:after {content:"";display:table}
 .fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:after {clear:both}
-.fp-playlist-vertical.fp-playlist-only-captions a {padding:8px 4px}
 .fp-playlist-vertical.fp-playlist-only-captions a h4 span {line-height:1}
 .fp-playlist-vertical a div {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
 .fp-playlist-vertical a h4 {margin:0;font-size:13px;color:#000}
@@ -571,8 +570,12 @@
 .fp-playlist-external.fp-playlist-vertical a:hover .now-playing {opacity:0}
 .fp-playlist-only-captions.fp-playlist-vertical a h4 {position:relative;top:auto;background-color:transparent;opacity:1;text-shadow:none}
 .fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
+	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4, .entry-content .fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 { text-align:left;padding:2px 8px }
+	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 span { position:relative;top:auto;left:auto;right:auto;-webkit-transform:none;transform:none;padding:0 }
+	.fp-playlist-only-captions.fp-playlist-external .dur { opacity:1;color:#999;position:relative;right:auto;top:auto;text-shadow:none;margin-left:6px; }
+	.fp-playlist-only-captions.fp-playlist-external a:hover .dur { color:#999; }
 
-.fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px}
+.fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px;-webkit-overflow-scrolling:touch;display:block}
 .fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px }
 .fv-playlist-slider-wrapper .fp-playlist-horizontal a  { width: 200px }
 
