@@ -1940,6 +1940,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   public static function is_beta() {
+    global $FV_Player_Pro;
+    if( !isset($FV_Player_Pro) ) return false;
+    
+    if( version_compare('0.9.20', str_replace('.beta','',$FV_Player_Pro->version) ) == 1 ) return false;
+    
     $version = isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ? $_POST['fv-player-pro-release'] : get_option('fv-player-pro-release');
     if( $version == 'beta' ) {
       return true;
