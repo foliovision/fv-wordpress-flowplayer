@@ -1204,7 +1204,7 @@
 .flowplayer video.fp-engine { visibility:visible; }
 .flowplayer .fp-engine { max-width:100%; }
 .flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
-
+.flowplayer .fp-logo{pointer-events: none;}
 
 /* Share bar, todo: check!  */
 .flowplayer .fp-embed-code{display:none;}
