@@ -354,8 +354,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.3.12 - 2017/12/?? =
+= 6.3.12 - 2018/01/?? =
 
+* Amazon S3 - applying the signature to splash images too
 * Iframe embedding - fix for scrollbars showing up
 * Iframe embedding - allowing native fullscreen for iOS as it's the way of getting fullscreen from iframe on it
 * Iframe embedding - WP Rocket Critical CSS fix

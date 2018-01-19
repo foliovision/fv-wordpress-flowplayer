@@ -97,6 +97,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
     
+    add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
+    add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
+    
     add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
     
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
@@ -882,7 +885,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
     
     $aArgs = func_get_args();
-    $aArgs = $aArgs[1];
+    $aArgs = isset($aArgs[1]) ? $aArgs[1] : array();
+    
     global $fv_fp;
   
     $amazon_key = -1;
@@ -931,7 +935,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
       $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
           
-      $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
+      $sGlue = ( !empty($aArgs['url_only']) && $aArgs['url_only'] ) ? '&' : '&amp;';
       
       if( $iAWSVersion == 4 ) {
         $sXAMZDate = gmdate('Ymd\THis\Z');
