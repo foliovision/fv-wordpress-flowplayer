@@ -364,6 +364,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
 * Playlist - new style: Slider!
 * Playlist - removing Prev/Next arrows if it's not actually a playlist
+* Bugfix - video URL showing to users in error messages, which should only show up for admins
 
 = 6.3.11 - 2017/11/20 =
 
