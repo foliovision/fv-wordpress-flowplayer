@@ -354,12 +354,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4 - 2017/12/?? =
+= 6.4 - 2018/01/22 =
 
-* Flowplayer 7 core for beta testers!
-
-= 6.3.12 - 2017/12/?? =
-
+* Amazon S3 - applying the signature to splash images too
 * Iframe embedding - fix for scrollbars showing up
 * Iframe embedding - allowing native fullscreen for iOS as it's the way of getting fullscreen from iframe on it
 * Iframe embedding - WP Rocket Critical CSS fix
@@ -367,6 +364,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Playlist - disregarding player dimensions when using horizontal playlist - to make sure they line up nicely
 * Playlist - new style: Slider!
 * Playlist - removing Prev/Next arrows if it's not actually a playlist
+* Bugfix - video URL showing to users in error messages, which should only show up for admins
 
 = 6.3.11 - 2017/11/20 =
 

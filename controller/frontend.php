@@ -89,33 +89,33 @@ function fv_flowplayer_get_js_translations() {
  * @return string Modified content string
  */
 function flowplayer_content( $content ) {
-	global $fv_fp;
+  global $fv_fp;
 
-	$content_matches = array();
-	preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
+  $content_matches = array();
+  preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
   
-	// process all found tags
-	foreach ($content_matches[0] as $tag) {
-		$ntag = str_replace("\'",'&#039;',$tag);
-		//search for URL
-		preg_match("/src='([^']*?)'/i",$ntag,$tmp);
-		if( $tmp[1] == NULL ) {
-			preg_match_all("/src=([^,\s\]]*)/i",$ntag,$tmp);
-			$media = $tmp[1][0];
-		}
-		else
+  // process all found tags
+  foreach ($content_matches[0] as $tag) {
+    $ntag = str_replace("\'",'&#039;',$tag);
+    //search for URL
+    preg_match("/src='([^']*?)'/i",$ntag,$tmp);
+    if( $tmp[1] == NULL ) {
+      preg_match_all("/src=([^,\s\]]*)/i",$ntag,$tmp);
+      $media = $tmp[1][0];
+    }
+    else
       $media = $tmp[1]; 
-		
-    //strip the additional /videos/ from the beginning if present	
-		preg_match('/(.*)\/videos\/(.*)/',$media,$matches);
- 		if ($matches[0] == NULL)
+    
+    //strip the additional /videos/ from the beginning if present  
+    preg_match('/(.*)\/videos\/(.*)/',$media,$matches);
+    if ($matches[0] == NULL)
       $media = $media;
- 		else if ($matches[1] == NULL) {
+    else if ($matches[1] == NULL) {
       $media = $matches[2];
     }
- 		else {
-		   $media = $matches[2];
-	  }
+    else {
+      $media = $matches[2];
+    }
     
     unset($arguments['src']);
     unset($arguments['src1']);
@@ -129,166 +129,166 @@ function flowplayer_content( $content ) {
     unset($arguments['controlbar']);
     unset($arguments['redirect']);
     unset($arguments['loop']);
-		
+    
     //width and heigth
-		preg_match("/width=(\d*)/i",$ntag,$width);
-		preg_match("/height=(\d*)/i",$ntag,$height);
-		if( $width[1] != NULL)
-			$arguments['width'] = $width[1];
-		if( $height[1] != NULL)
-			$arguments['height'] = $height[1];
+    preg_match("/width=(\d*)/i",$ntag,$width);
+    preg_match("/height=(\d*)/i",$ntag,$height);
+    if( $width[1] != NULL)
+      $arguments['width'] = $width[1];
+    if( $height[1] != NULL)
+      $arguments['height'] = $height[1];
       
     //search for redirect
     preg_match("/redirect='([^']*?)'/i",$ntag,$tmp);
-		if ($tmp[1])
+    if ($tmp[1])
       $arguments['redirect'] = $tmp[1];
     
     //search for autoplay
-		preg_match("/[\s]+autoplay([\s]|])+/i",$ntag,$tmp);
-		if (isset($tmp[0])){
+    preg_match("/[\s]+autoplay([\s]|])+/i",$ntag,$tmp);
+    if (isset($tmp[0])){
       $arguments['autoplay'] = true;
     }
-		else {
+    else {
       preg_match("/autoplay='([A-Za-z]*)'/i",$ntag,$tmp);
-		  if ( $tmp[1] == NULL )
-		    preg_match("/autoplay=([A-Za-z]*)/i",$ntag,$tmp);
-		  if (isset($tmp[1]))
+      if ( $tmp[1] == NULL )
+        preg_match("/autoplay=([A-Za-z]*)/i",$ntag,$tmp);
+      if (isset($tmp[1]))
         $arguments['autoplay'] = $tmp[1];
-		}
+    }
     
     //search for popup in quotes
-		preg_match("/popup='([^']*?)'/i",$ntag,$tmp);
-		if ($tmp[1])
+    preg_match("/popup='([^']*?)'/i",$ntag,$tmp);
+    if ($tmp[1])
       $arguments['popup'] = $tmp[1];
     
     //search for loop
-		preg_match("/[\s]+loop([\s]|])+/i",$ntag,$tmp);
-		if (isset($tmp[0])){
+    preg_match("/[\s]+loop([\s]|])+/i",$ntag,$tmp);
+    if (isset($tmp[0])){
       $arguments['loop'] = true;
     }
-		else {
+    else {
       preg_match("/loop='([A-Za-z]*)'/i",$ntag,$tmp);
-		  if ( $tmp[1] == NULL )
-		    preg_match("/loop=([A-Za-z]*)/i",$ntag,$tmp);
-		  if (isset($tmp[1]))
+      if ( $tmp[1] == NULL )
+        preg_match("/loop=([A-Za-z]*)/i",$ntag,$tmp);
+      if (isset($tmp[1]))
         $arguments['loop'] = $tmp[1];
-		}
+    }
     
-		//	search for splash image
-		preg_match("/splash='([^']*?)'/i",$ntag,$tmp);   //quotes version
-   	if( $tmp[1] == NULL ) {
-			preg_match_all("/splash=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
-			preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
-   		if ($matches[0] == NULL)
+    //  search for splash image
+    preg_match("/splash='([^']*?)'/i",$ntag,$tmp);   //quotes version
+     if( $tmp[1] == NULL ) {
+      preg_match_all("/splash=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
+      preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
+       if ($matches[0] == NULL)
         $arguments['splash'] = $tmp[1][0];
-   		else if ($matches[1] == NULL) {
+       else if ($matches[1] == NULL) {
         $arguments['splash'] = $matches[2];//$tmp[1][0];
       }
-   		else {
+       else {
         $arguments['splash'] = $matches[2];
-		  }
+      }
     }
-		else {
+    else {
       preg_match('/(.*)\/videos\/(.*)/',$tmp[1],$matches);
       if ($matches[0] == NULL)
         $arguments['splash'] = $tmp[1];
       elseif ($matches[1] == NULL)
         $arguments['splash'] = $matches[2];
-  	  else
+      else
         $arguments['splash'] = $matches[2];//$tmp[1];
-		}
+    }
     
-    //	search for src1
-		preg_match("/src1='([^']*?)'/i",$ntag,$tmp);   //quotes version
-   	if( $tmp[1] == NULL ) {
-			preg_match_all("/src1=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
-			preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
-   		if ($matches[0] == NULL)
+    //  search for src1
+    preg_match("/src1='([^']*?)'/i",$ntag,$tmp);   //quotes version
+     if( $tmp[1] == NULL ) {
+      preg_match_all("/src1=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
+      preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
+       if ($matches[0] == NULL)
         $arguments['src1'] = $tmp[1][0];
-   		else if ($matches[1] == NULL) {
+       else if ($matches[1] == NULL) {
         $arguments['src1'] = $matches[2];//$tmp[1][0];
       }
-   		else {
+       else {
         $arguments['src1'] = $matches[2];
-		  }
+      }
     }
-		else {
+    else {
       preg_match('/(.*)\/videos\/(.*)/',$tmp[1],$matches);
       if ($matches[0] == NULL)
         $arguments['src1'] = $tmp[1];
       elseif ($matches[1] == NULL)
         $arguments['src1'] = $matches[2];
-  	  else
+      else
         $arguments['src1'] = $matches[2];//$tmp[1];
-		}
+    }
     
-    //	search for src1
-		preg_match("/src2='([^']*?)'/i",$ntag,$tmp);   //quotes version
-   	if( $tmp[1] == NULL ) {
-			preg_match_all("/src2=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
-			preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
-   		if ($matches[0] == NULL)
+    //  search for src1
+    preg_match("/src2='([^']*?)'/i",$ntag,$tmp);   //quotes version
+     if( $tmp[1] == NULL ) {
+      preg_match_all("/src2=([^,\s\]]*)/i",$ntag,$tmp);  //non quotes version
+      preg_match('/(.*)\/videos\/(.*)/i',$tmp[1][0],$matches);
+       if ($matches[0] == NULL)
         $arguments['src2'] = $tmp[1][0];
-   		else if ($matches[1] == NULL) {
+       else if ($matches[1] == NULL) {
         $arguments['src2'] = $matches[2];//$tmp[1][0];
       }
-   		else {
+       else {
         $arguments['src2'] = $matches[2];
-		  }
+      }
     }
-		else {
+    else {
       preg_match('/(.*)\/videos\/(.*)/',$tmp[1],$matches);
       if ($matches[0] == NULL)
         $arguments['src2'] = $tmp[1];
       elseif ($matches[1] == NULL)
         $arguments['src2'] = $matches[2];
-  	  else
+      else
         $arguments['src2'] = $matches[2];//$tmp[1];
-		}
+    }
     
     //search for splashend
-		preg_match("/[\s]+splashend([\s]|])+/i",$ntag,$tmp);
-		if (isset($tmp[0])){
+    preg_match("/[\s]+splashend([\s]|])+/i",$ntag,$tmp);
+    if (isset($tmp[0])){
       $arguments['splashend'] = true;
     }
-		else {
+    else {
       preg_match("/splashend='([A-Za-z]*)'/i",$ntag,$tmp);
-		  if ( $tmp[1] == NULL )
-		    preg_match("/splashend=([A-Za-z]*)/i",$ntag,$tmp);
-		  if (isset($tmp[1]))
+      if ( $tmp[1] == NULL )
+        preg_match("/splashend=([A-Za-z]*)/i",$ntag,$tmp);
+      if (isset($tmp[1]))
         $arguments['splashend'] = $tmp[1];
-		}
+    }
     
     //search for controlbar
-		preg_match("/[\s]+controlbar([\s]|])+/i",$ntag,$tmp);
-		if (isset($tmp[0])){
+    preg_match("/[\s]+controlbar([\s]|])+/i",$ntag,$tmp);
+    if (isset($tmp[0])){
       $arguments['controlbar'] = true;
     }
-		else {
+    else {
       preg_match("/controlbar='([A-Za-z]*)'/i",$ntag,$tmp);
-		  if ( $tmp[1] == NULL )
-		    preg_match("/controlbar=([A-Za-z]*)/i",$ntag,$tmp);
-		  if (isset($tmp[1]))
+      if ( $tmp[1] == NULL )
+        preg_match("/controlbar=([A-Za-z]*)/i",$ntag,$tmp);
+      if (isset($tmp[1]))
         $arguments['controlbar'] = $tmp[1];
-		}
+    }
     
-		if (trim($media) != '') {
-			// build new player
+    if (trim($media) != '') {
+      // build new player
       $new_player = $fv_fp->build_min_player($media,$arguments);
-			$content = str_replace($tag, $new_player['html'],$content);
-			if (!empty($new_player['script'])) {
+      $content = str_replace($tag, $new_player['html'],$content);
+      if (!empty($new_player['script'])) {
         $GLOBALS['fv_fp_scripts'] = $new_player['script'];
       }
-		}
-	}
-	return $content;
+    }
+  }
+  return $content;
 }
 
 /**
  * Figure out if we need to include MediaElement.js
  */
 function flowplayer_prepare_scripts() {
-	global $fv_fp, $fv_wp_flowplayer_ver;
+  global $fv_fp, $fv_wp_flowplayer_ver;
   
   //  don't load script in Optimize Press 2 preview
   if( flowplayer::is_special_editor() ) {
@@ -443,16 +443,16 @@ function flowplayer_display_scripts() {
     return;  
   }  
 
-	if( is_user_logged_in() || isset($_GET['fv_wp_flowplayer_check_template']) ) {
-		echo "\n<!--fv-flowplayer-footer-->\n\n";
-	}
+  if( is_user_logged_in() || isset($_GET['fv_wp_flowplayer_check_template']) ) {
+    echo "\n<!--fv-flowplayer-footer-->\n\n";
+  }
 }
 
 /**
  * This is the template tag. Use the standard Flowplayer shortcodes
  */
 function flowplayer($shortcode) {
-	echo apply_filters('the_content',$shortcode);
+  echo apply_filters('the_content',$shortcode);
 }
 
 
@@ -464,9 +464,9 @@ function fv_flowplayer_the_content( $c ) {
     return $c;  
   }    
   
-	$c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?[^\\\]\])</p>!', "\n".'$1'."\n", $c );
+  $c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?[^\\\]\])</p>!', "\n".'$1'."\n", $c );
   $c = preg_replace_callback( '!\[(?:fvplayer|flowplayer).*?[^\\\]\]!', 'fv_flowplayer_shortfcode_fix_attrs', $c );
-	return $c;
+  return $c;
 }
 add_filter( 'the_content', 'fv_flowplayer_the_content', 0 );
 
@@ -487,7 +487,7 @@ function fv_flowplayer_shortfcode_fix_attr( $aMatch ) {
 Handle attachment pages which contain videos
 */
 function fv_flowplayer_attachment_page_video( $c ) {
-	global $post;
+  global $post;
   if( stripos($post->post_mime_type, 'video/') !== 0 && stripos($post->post_mime_type, 'audio/') !== 0 ) {
     return $c;
   }
@@ -504,7 +504,7 @@ function fv_flowplayer_attachment_page_video( $c ) {
   $c = preg_replace( '~<p class=.attachment.[\s\S]*?</p>~', $shortcode, $c );
   $c = preg_replace( '~<div[^>]*?class="[^"]*?wp-video[^"]*?"[^>]*?>[\s\S]*?<video.*?</video></div>~', $shortcode, $c );
 
-	return $c;
+  return $c;
 }
 add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
 
@@ -539,14 +539,14 @@ add_filter( 'bbp_get_reply_content', 'fv_player_comment_text', 0 );
 function fv_player_comment_text( $comment_text ) {
   if( is_admin() ) return $comment_text;
   
-	global $fv_fp;
-	if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
+  global $fv_fp;
+  if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
     add_filter('comment_text', 'do_shortcode');
     add_filter('bbp_get_topic_content', 'do_shortcode', 11);
     add_filter('bbp_get_reply_content', 'do_shortcode', 11);
 
     if( stripos($comment_text,'youtube.com') !== false || stripos($comment_text,'youtu.be') !== false ) {
-  		$pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
+      $pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
                . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
                . '(?:'                 #  Group host alternatives:
                .   'youtu\.be/'        #    Either youtu.be,
@@ -560,15 +560,15 @@ function fv_player_comment_text( $comment_text ) {
                . ')'                   #  End host alternatives.
                . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
                . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
-  		$comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
+      $comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
     }
 
     if( stripos($comment_text,'vimeo.com') !== false ) {
       $pattern = '#(?:https?://)?(?:www.)?(?:player.)?vimeo.com/(?:[/a-z]*/)*([0-9]{6,11})[?]?.*#';
       $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
     }
-	}
+  }
   
-	return $comment_text;
+  return $comment_text;
 }
 

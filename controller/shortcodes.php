@@ -261,6 +261,7 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   if( $vars['auto_play'] == 'Y' ) {
     $shortcode .= ' autoplay="true"';
   }  
+
   
   $shortcode .= ' width="'.$vars['width'].'"';
   $shortcode .= ' height="'.$vars['height'].'"';

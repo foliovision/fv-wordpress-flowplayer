@@ -126,6 +126,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
     
+    add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
+    add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
+    
     add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
     
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
@@ -1400,7 +1403,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
     
     $aArgs = func_get_args();
-    $aArgs = $aArgs[1];
+    $aArgs = isset($aArgs[1]) ? $aArgs[1] : array();
+    
     global $fv_fp;
   
     $amazon_key = -1;
@@ -1449,7 +1453,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
       $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
           
-      $sGlue = ( $aArgs['url_only'] ) ? '&' : '&amp;';
+      $sGlue = ( !empty($aArgs['url_only']) && $aArgs['url_only'] ) ? '&' : '&amp;';
       
       if( $iAWSVersion == 4 ) {
         $sXAMZDate = gmdate('Ymd\THis\Z');
@@ -2060,8 +2064,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       ob_start();
       
-      if( function_exists('rocket_insert_load_css') ) rocket_insert_load_css();
-      
       global $fvseo;
       if( isset($_REQUEST['fv_player_preview']) ) {
         global $fvseo;
@@ -2078,6 +2080,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
+      
+      if( function_exists('rocket_insert_load_css') ) rocket_insert_load_css();
 
       remove_action( 'wp_footer', array( $this, 'template_embed' ),0 );
       //remove_action('wp_head', '_admin_bar_bump_cb');
