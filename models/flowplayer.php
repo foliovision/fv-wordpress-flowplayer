@@ -36,10 +36,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
    * Configuration variables array
    */
   public $conf = array();
-  /**
-   * We set this to true in shortcode parsing and then determine if we need to enqueue the JS, or if it's already included
-   */
-  public $load_mediaelement = false;
+  
   public $load_tabs = false;    
   /**
    * Store scripts to load in footer
@@ -61,6 +58,35 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public $load_hlsjs = false;
   
   public $bCSSLoaded = false;
+  
+  public $aDefaultSkins = array(
+      'skin-slim' => array(
+          'hasBorder' => false,
+          'borderColor' => false,
+          'bufferColor' => false,
+          'canvas' => '#000000',
+          'backgroundColor' => 'transparent',
+          'font-face' => 'Tahoma, Geneva, sans-serif',
+          'player-position' => '',
+          'timeColor' => '#ffffff',
+          'durationColor' => false,
+          'design-timeline' => 'fp-slim',
+          'design-icons' => 'fp-edgy'
+        ),
+      'skin-youtuby' => array(
+          'hasBorder' => false,
+          'borderColor' => false,        
+          'bufferColor' => false,          
+          'canvas' => '#000000',
+          'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
+          'font-face' =>'Tahoma, Geneva, sans-serif',
+          'player-position' => '',
+          'timeColor' => '#ffffff',
+          'durationColor' => false,          
+          'design-timeline' => 'fp-full',
+          'design-icons' => ' '
+        )      
+    );
   
 
   public function __construct() {
@@ -119,29 +145,340 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
   }
   
-  
-  public function _get_checkbox( $name, $key, $help = false, $more = false ) {
-    $checked = $this->_get_option($key);
-    if($checked === 'false' ) $checked = false;
-    if( is_array($key) && count($key) > 1 ) {
+
+  public function _get_checkbox() {
+    $args_num = func_num_args();
+
+    // new method syntax with all options in the first parameter (which will be an array)
+    if ($args_num == 1) {
+      $options = func_get_arg(0);
+
+      // options must be an array
+      if (!is_array($options)) {
+          throw new Exception('Options parameter passed to the _get_checkbox() method needs to be an array!');
+      }
+
+      $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+      $key            = (!empty($options['key']) ? $options['key'] : '');
+      $name           = (!empty($options['name']) ? $options['name'] : '');
+      $help           = (!empty($options['help']) ? $options['help'] : '');
+      $more           = (!empty($options['more']) ? $options['more'] : '');
+
+      if (!$key || !$name) {
+        throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
+      }
+    } else if ($args_num >= 2) {
+      // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
+      $first_td_class = '';
+      $name = func_get_arg(0);
+      $key = func_get_arg(1);
+      $help = ($args_num >= 3 ? func_get_arg(2) : false);
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);
+    } else {
+        throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
+    }
+
+    $checked = $this->_get_option( $key );
+    if ( $checked === 'false' ) {
+      $checked = false;
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+      ?>
+      <tr>
+          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="<?php echo $key; ?>" value="false"/>
+                  <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true"<?php
+                    if ( $checked ) { echo ' checked="checked"'; }
+
+                    if (isset($options) && isset($options['data']) && is_array($options['data'])) {
+                        foreach ($options['data'] as $data_item => $data_value) {
+                            echo ' data-'.$data_item.'="'.$data_value.'"';
+                        }
+                    }
+                  ?> />
+                  <?php if ( $help ) {
+                      echo $help;
+                  } ?>
+                  <?php if ( $more ) { ?>
+                      <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                  <?php } ?>
+              </p>
+          </td>
+      </tr>
+      <?php
+  }
+
+
+  public function _get_radio($options) {
+    // options must be an array
+    if (!is_array($options)) {
+      throw new Exception('Options parameter passed to the _get_radio() method needs to be an array!');
+    }
+
+    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+    $key            = (!empty($options['key']) ? $options['key'] : '');
+    $name           = (!empty($options['name']) ? $options['name'] : '');
+    $values         = (!empty($options['values']) ? $options['values'] : '');
+    $value_keys     = (is_array($values) ? array_keys($values) : array());
+    $help           = (!empty($options['help']) ? $options['help'] : '');
+    $more           = (!empty($options['more']) ? $options['more'] : '');
+    $default        = (!empty($options['default']) ? $options['default'] : reset($value_keys));
+
+    if (!$key || !$name || !$values) {
+      throw new Exception('The "name", "key" and "values" options need to be set for _get_radio()!');
+    }
+
+    $saved_value = $this->_get_option( $key );
+    $selected = $default;
+
+    // check if any of the given values match the saved one and store it for a pre-select
+    foreach ($values as $index => $input_value) {
+        if ($saved_value == $index) {
+            $selected = $index;
+            break;
+        }
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+
+    // determine style (display all checkboxes below each other or next to each other in multiple columns
+    $style = (!empty($options['style']) ? $options['style'] : 'rows');
+
+    // rows style
+    if ($style == 'rows') {
+      ?>
+        <tr>
+            <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
+            <td>
+                <fieldset>
+                    <p>
+                      <?php
+                      foreach ( $values as $index => $input_value ) {
+                        ?>
+
+                          &nbsp;<input type="radio" name="<?php echo $key; ?>"
+                                       id="<?php echo $key . '-' . $input_value; ?>" value="<?php echo $index; ?>"<?php
+                        if ( ( $selected == $index ) ) {
+                          echo ' checked="checked"';
+                        }
+
+                        if ( isset( $options ) && isset( $options['data'] ) && is_array( $options['data'] ) ) {
+                          foreach ( $options['data'] as $data_item => $data_value ) {
+                            echo ' data-' . $data_item . '="' . $data_value . '"';
+                          }
+                        }
+                        ?> /> <label for="<?php echo $key . '-' . $input_value; ?>"><?php echo $input_value ?></label><br/>
+
+                        <?php
+                      }
+                      ?>
+
+                    </p>
+                </fieldset>
+              <?php if ( $help ) {
+                echo $help;
+              } ?>
+              <?php if ( $more ) { ?>
+                  <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+              <?php } ?>
+            </td>
+        </tr>
+      <?php
+    } else {
+
+      // columns style
+?>
+          <tr>
+<?php
+      foreach ( $values as $index => $input_value ) {
+        ?>
+              <td style="white-space: nowrap">
+                  <fieldset>
+                      <p>
+                        &nbsp;<input type="radio" name="<?php echo $key; ?>"
+                                     id="<?php echo $key . '-' . $input_value; ?>"
+                                     value="<?php echo $index; ?>"<?php
+                      if ( ( $selected == $index ) ) {
+                        echo ' checked="checked"';
+                      }
+
+                      if ( isset( $options ) && isset( $options['data'] ) && is_array( $options['data'] ) ) {
+                        foreach ( $options['data'] as $data_item => $data_value ) {
+                          echo ' data-' . $data_item . '="' . $data_value . '"';
+                        }
+                      }
+                      ?> /> <label for="<?php echo $key . '-' . $input_value; ?>"><?php echo $input_value ?></label><br/>
+                      </p>
+                  </fieldset>
+                <?php if ( $help ) {
+                  echo $help;
+                } ?>
+                <?php if ( $more ) { ?>
+                    <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                <?php } ?>
+              </td>
+        <?php
+      }
+?>
+          </tr>
+
+<?php
+    }
+  }
+
+
+  public function _get_input_text($options = array()) {
+    // options must be an array
+    if (!is_array($options)) {
+      throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
+    }
+
+    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+    $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+    $key            = (!empty($options['key']) ? $options['key'] : '');
+    $name           = (!empty($options['name']) ? $options['name'] : '');
+    $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
+    $default        = (!empty($options['default']) ? $options['default'] : '');
+
+    if (!$key || !$name) {
+      throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
+    }
+
+    $saved_value = esc_attr( $this->_get_option($key) );
+    if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
     ?>
       <tr>
-        <td class="first"><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
-        <td>
-          <p class="description">
-            <input type="hidden" name="<?php echo $key; ?>" value="false" />
-            <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true" <?php if( $checked ) echo 'checked="checked"'; ?> />
-            <?php if( $help ) echo $help; ?>
-            <?php if( $more ) : ?>
-              <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
-            <?php endif; ?>
-          </p>
-        </td>
+          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?></label></td>
+          <td><input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+            if (isset($options['data']) && is_array($options['data'])) {
+              foreach ($options['data'] as $data_item => $data_value) {
+                echo ' data-'.$data_item.'="'.$data_value.'"';
+              }
+            }
+          ?> /></td>
       </tr>
+
     <?php
   }
+
+
+  public function _get_input_hidden($options = array()) {
+    // options must be an array
+    if (!is_array($options)) {
+      throw new Exception('Options parameter passed to the _get_input_hidden() method needs to be an array!');
+    }
+
+    $key     = (!empty($options['key']) ? $options['key'] : '');
+    $default = (isset($options['default']) ? $options['default'] : '');
+
+    if (!$key) {
+      throw new Exception('The "key" option need to be set for _get_input_hidden()!');
+    }
+
+    $saved_value = esc_attr( $this->_get_option($key) );
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+    ?>
+      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+            if (isset($options['data']) && is_array($options['data'])) {
+              foreach ($options['data'] as $data_item => $data_value) {
+                echo ' data-'.$data_item.'="'.esc_attr($data_value).'"';
+              }
+            }
+            ?> />
+
+    <?php
+  }
+  
+  
+  public function _get_select() {
+    $args_num = func_num_args();
+
+    // new method syntax with all options in the first parameter (which will be an array)
+    if ($args_num == 1) {
+      $options = func_get_arg(0);
+
+      // options must be an array
+      if (!is_array($options)) {
+        throw new Exception('Options parameter passed to the _get_select() method needs to be an array!');
+      }
+
+      $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+      $key            = (!empty($options['key']) ? $options['key'] : '');
+      $name           = (!empty($options['name']) ? $options['name'] : '');
+      $aOptions       = (!empty($options['options']) ? $options['options'] : '');
+      $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+      $help           = (!empty($options['help']) ? $options['help'] : '');
+      $more           = (!empty($options['more']) ? $options['more'] : '');
+      $default        = (isset($options['default']) ? $options['default'] : '');
+
+      if (!$key || !$name || !$aOptions) {
+        throw new Exception('The items "name", "key" and "options" need to be set in options for _get_select()!');
+      }
+    } else if ($args_num >= 5) {
+      // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
+      $first_td_class = '';
+      $name = func_get_arg(0);
+      $key = func_get_arg(1);
+      $aOptions = func_get_arg(4);
+      $help = ($args_num >= 3 ? func_get_arg(2) : false);
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);
+      $class_name = '';
+      $default = '';
+    } else {
+      throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
+    }
+
+    // check which option should be selected by default
+    $option = $this->_get_option($key);
+    foreach( $aOptions AS $k => $v ) {
+        if ($k == $option) {
+            $selected = $k;
+        }
+    }
+
+    // if no option is selected, make a default one selected
+    if (!isset($selected) && $default) {
+        $selected = $default;
+    }
+
+    if ( is_array( $key ) && count( $key ) > 1 ) {
+      $key = $key[0] . '[' . $key[1] . ']';
+    }
+
+    $key = esc_attr($key);
+    ?>
+      <tr>  
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key ?>"><?php echo $name ?></label></td>
+        <td>
+          <select <?php echo $class_name; ?>id="<?php echo $key ?>" name="<?php echo $key ?>"<?php
+            if (!isset($options) || !isset($options['data']) || !isset($options['data']['fv-preview'])) { echo ' data-fv-preview=""'; }
+
+            if (isset($options) && isset($options['data']) && is_array($options['data'])) {
+              foreach ($options['data'] as $data_item => $data_value) {
+                echo ' data-'.$data_item.'="'.$data_value.'"';
+              }
+            }
+          ?>>
+            <?php foreach( $aOptions AS $k => $v ) : ?>
+              <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && $selected == $k) || ($option == $k) ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
+            <?php endforeach; ?>      
+          </select>
+        </td>   
+      </tr>
+
+    <?php
+  }  
   
   
   private function _get_conf() {
@@ -178,13 +515,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['bufferColor'] ) ) $conf['bufferColor'] = '#eeeeee';
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
-    if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';    
+    if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
     if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = '#000000';
     if( !isset( $conf['subtitleBgAlpha'] ) ) $conf['subtitleBgAlpha'] = 0.5;
     if( !isset( $conf['subtitleSize'] ) ) $conf['subtitleSize'] = 16;
-    
+
     //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
     if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
@@ -234,10 +571,41 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['sticky_width'] ) ) $conf['sticky_width'] = '380';
     
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
-    
-    $conf = apply_filters('fv_player_conf_defaults', $conf);
 
+    // apply existing colors from old config values to the new, skin-based config array
+    if (!isset($conf['skin-custom'])) {
+      $conf['skin-custom'] = array();
+
+      // iterate over old keys and bring them in to the new, but skin marginBottom as it's in em units now
+      $old_skinless_settings_array = array(
+        'hasBorder', 'borderColor', /*'marginBottom',*/ 'bufferColor', 'canvas', 'backgroundColor',
+        'font-face', 'player-position', 'progressColor', 'timeColor', 'durationColor',
+        'design-timeline', 'design-icons'
+      );
+
+      foreach ($old_skinless_settings_array as $configKey) {
+        if (isset($conf[$configKey])) {
+          $conf['skin-custom'][ $configKey ] = $conf[$configKey];
+        }
+      }
+      
+      $conf['skin-slim']['progressColor'] = '#bb0000';
+      $conf['skin-youtuby']['progressColor'] = '#bb0000';
+    }
+
+    // set to slim, if no skin set
+    if (!isset($conf['skin'])) $conf['skin'] = 'slim';
+
+    $conf = apply_filters('fv_player_conf_defaults', $conf);
+    
     update_option( 'fvwpflowplayer', $conf );
+    
+    //  hard-coded defaults for the skin preset
+    $conf['skin-slim'] = array_merge( $conf['skin-slim'], $this->aDefaultSkins['skin-slim'] );
+    $conf['skin-youtuby'] = array_merge( $conf['skin-youtuby'], $this->aDefaultSkins['skin-youtuby'] );
+    
+    $conf = apply_filters('fv_player_conf_loaded', $conf);
+    
     $this->conf = $conf;
     return true;   
     /// End of addition
@@ -273,6 +641,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public function _set_conf() {
     $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
+    
+    //  make sure the preset Skin properties are not over-written
+    foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
+      foreach( $aSettings AS $k => $v ) {
+        unset($aNewOptions[$skin][$k]);
+      }
+    }    
 
     if(isset($aNewOptions['popups'])){
       unset($aNewOptions['popups']['#fv_popup_dummy_key#']);
@@ -289,6 +664,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     foreach( $aNewOptions AS $key => $value ) {
       if( is_array($value) ) {
         $aNewOptions[$key] = $value;
+
+        // now that we have skin colors separated in an arrayed sub-values,
+        // we also need to check their values for HEX colors
+        foreach ($value as $sub_array_key => $sub_array_value) {
+          if( ((strpos( $sub_array_key, 'Color' ) !== FALSE )||(strpos( $sub_array_key, 'canvas' ) !== FALSE)) && strpos($sub_array_value, 'rgba') === FALSE) {
+            $aNewOptions[$key][$sub_array_key] = (strpos($sub_array_value, '#') === FALSE ? '#' : '').strtolower($sub_array_value);
+          }
+        }
       } else if( in_array( $key, array('width', 'height') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
       } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design') ) ) {
@@ -296,12 +679,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
       }
-      if( (strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) {
-        $aNewOptions[$key] = '#'.strtolower($aNewOptions[$key]);
+      if( ((strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
+        $aNewOptions[$key] = (strpos($aNewOptions[$key], '#') === FALSE ? '#' : '').strtolower($aNewOptions[$key]);
       }
     }
     
     $aNewOptions['key'] = trim($sKey);
+
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
     if( isset($aNewOptions['db_duration']) && $aNewOptions['db_duration'] == "true" && ( !isset($aOldOptions['db_duration']) || $aOldOptions['db_duration'] == "false" ) ) {
@@ -322,7 +706,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
-    $this->conf = $aNewOptions;    
+    $this->_get_conf();   
     
     $this->css_writeout();
     
@@ -365,13 +749,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
-    if( $sItemCaption ) $sHTML .= "<h4><span>".$sItemCaption."</span></h4>";
+    
+    if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
     
     global $post;
     if( $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
       if( $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] ) ) {
-        $sHTML .= '<i class="dur">'.$sDuration.'</i>';
+        $sItemCaption .= '<i class="dur">'.$sDuration.'</i>';
       } 
+    }   
+    
+    if( $sItemCaption ) {
+      $sHTML .= "<h4>".$sItemCaption."</h4>";
     }
     
     $sHTML .= "</a>\n";
@@ -624,7 +1013,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
       
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );      
-  }  
+  }
   
   function css_generate( $skip_style_tag = true ) {
     global $fv_fp;
@@ -641,7 +1030,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       .flowplayer .fp-logo { display: block; opacity: 1; }                                              
     <?php endif;
   
-    if( $fv_fp->_get_option('hasBorder') ) : ?>
+    if( $fv_fp->_get_option('hasBorder')) : ?>
       .flowplayer { border: 1px solid <?php echo $fv_fp->_get_option('borderColor'); ?> !important; }
     <?php endif; ?>
   
@@ -654,7 +1043,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer { background-color: <?php echo $fv_fp->_get_option('canvas'); ?> !important; }
     .flowplayer .fp-duration, .flowplayer a.fp-play, .flowplayer a.fp-mute { color: <?php echo $fv_fp->_get_option('durationColor'); ?> !important; }
     .flowplayer .fp-elapsed { color: <?php echo $fv_fp->_get_option('timeColor'); ?> !important; }
-    .flowplayer .fp-volumelevel { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }  
+    .flowplayer .fp-volumelevel { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important; }
     .flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: <?php echo $fv_fp->_get_option('bufferColor'); ?> !important; }
     .flowplayer .fp-timeline { background-color: <?php echo $fv_fp->_get_option('timelineColor'); ?> !important; }
     .flowplayer .fv-ab-loop .noUi-handle  { color: <?php echo $fv_fp->_get_option('backgroundColor'); ?> !important; }
@@ -663,13 +1052,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important }
     
-    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>!important; } 
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; } 
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $fv_fp->_get_option('bufferColor'); ?>!important; } 
-    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; } 
-    .fvplayer .me-cannotplay span { padding: 5px; }
-    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
-  
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
@@ -711,6 +1093,119 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $fv_fp->_get_option('subtitleBgAlpha'); ?>); }
   
     <?php if( $fv_fp->_get_option('player-position') && 'left' == $fv_fp->_get_option('player-position') ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
+    <?php echo apply_filters('fv_player_custom_css',''); ?>
+    <?php if( !$skip_style_tag ) : ?>
+      </style>  
+    <?php endif;
+  }  
+  
+  function css_generate_beta( $skip_style_tag = true ) {
+    $this->_get_conf(); //  todo: without this the colors for skin-slim might end up empty, why?
+    
+    $sSubtitleBgColor = $this->_get_option('subtitleBgColor');
+
+    if( !$skip_style_tag ) : ?>
+      <style type="text/css">
+    <?php endif;
+    
+    $css = '';
+    
+    //  generate CSS for all the available skin settings
+    foreach( array('skin-slim','skin-youtuby','skin-custom') AS $skin ) {
+      $sel = '.flowplayer.'.$skin;
+      
+      $sBackground = $this->_get_option( array($skin, 'backgroundColor') );
+      $sBuffer = $this->_get_option(array($skin, 'bufferColor') );
+      $sDuration = $this->_get_option( array($skin, 'durationColor') );
+      $sProgress = $this->_get_option(array($skin, 'progressColor'));
+      $sTime = $this->_get_option( array($skin, 'timeColor') );
+      $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
+      
+      if( $this->_get_option(array($skin, 'hasBorder')) ) {
+        $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))."; }\n";
+      }
+  
+      if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
+        $iMargin = intval($this->_get_option(array($skin, 'marginBottom')));
+        $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
+        $css .= $sel.".has-caption { margin: 0 auto; }\n";
+        $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
+        $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+        $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+      }
+      
+      $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
+      $css .= $sel." .fp-color, ".$sel." .fp-selected { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
+      $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
+      $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
+      if( $sDuration ) {
+        $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
+      }
+      if( $sBuffer ) {
+        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background, ".$sel." .fv-ab-loop .noUi-handle { background-color: ".$sBuffer." !important; }\n";
+      }
+      if( $sTimeline ) {
+        $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
+      }
+      
+      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
+      
+      if( $sBackground != 'transparent' ) {
+        $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
+        $css .= $sel." .fv-ab-loop .noUi-handle { color: ".$sBackground." !important; }\n";
+      }
+      $css .= $sel." .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
+      $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
+      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
+      $css .= $sel." .fv_player_popup {  background: ".$sBackground."; padding: 1% 5%; width: 65%; margin: 0 auto; }\n";  //  todo: should not be transparent!
+      $css .= $sel." .fvfp_admin_error_content {  background: ".$sBackground." ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }\n"; //  todo: same as above!
+      
+    }
+    
+    echo $css;
+    
+    //  rest is not depending of the skin settings or can use the default skin
+    $skin = 'skin-'.$this->_get_option('skin');
+    
+    if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
+      .flowplayer .fp-logo { display: block; opacity: 1; }
+    <?php endif; ?>
+      
+    .wpfp_custom_background { display: none; }  
+    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
+    .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
+    .is-finished .wpfp_custom_background { display: block; }  
+    
+    <?php echo $this->_get_option('ad_css'); ?>
+    .wpfp_custom_ad { color: <?php echo $this->_get_option('adTextColor'); ?>; z-index: 20 !important; }
+    .wpfp_custom_ad a { color: <?php echo $this->_get_option('adLinksColor'); ?> }
+    
+    .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
+    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
+    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
+    <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
+
+    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-subtitle span.fp-subtitle-line { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $this->_get_option('logoPosition') ) :
+      $value = $this->_get_option('logoPosition');
+      if( $value == 'bottom-left' ) {
+        $sCSS = "bottom: 30px; left: 15px";
+      } else if( $value == 'bottom-right' ) {
+        $sCSS = "bottom: 30px; right: 15px; left: auto";
+      } else if( $value == 'top-left' ) {
+        $sCSS = "top: 30px; left: 15px; bottom: auto";
+      } else if( $value == 'top-right' ) {
+        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
+      }
+      ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      
+    .flowplayer .fp-subtitle span.fp-subtitle-line { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $this->_get_option('subtitleBgAlpha'); ?>); }
+  
+    <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
     <?php if( !$skip_style_tag ) : ?>
       </style>  
@@ -768,7 +1263,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     global $fv_wp_flowplayer_ver;
     $this->bCSSInline = true;
-    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
+    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer'.($this->is_beta() ? '-beta': '').'.css';
     $sVer = $fv_wp_flowplayer_ver;
     
     if( is_multisite() ) {
@@ -789,7 +1284,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( is_admin() &&  did_action('admin_footer') ) {
       echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
-      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
+      $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
+      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/".$sPath.".css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
     } else {
       $aDeps = array();
@@ -798,12 +1294,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       wp_enqueue_style( 'fv_flowplayer', $sURL, $aDeps, $sVer );
       
       if(is_user_logged_in()){
-        //TODO: is this needed?
-        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+        $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
+        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/'.$sPath.'.css', array(), $fv_wp_flowplayer_ver );
       }
       
       
-      if( $this->bCSSInline ) {
+      if( $this->is_beta() && $this->bCSSInline ) {
+        add_action( 'wp_head', array( $this, 'css_generate_beta' ) );
+        add_action( 'admin_head', array( $this, 'css_generate_beta' ) );
+      } else if( $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate' ) );
         add_action( 'admin_head', array( $this, 'css_generate' ) );
       }
@@ -861,9 +1360,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     ob_start();
-    $this->css_generate(true);
+    if( $this->is_beta() ) {
+      $this->css_generate_beta(true);
+    } else {
+      $this->css_generate(true);
+    }
+    
     $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
-    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer'.($this->is_beta() ? '-beta': '').'.css' ) ) {
       return false;
     }
     $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
@@ -875,7 +1379,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     } else {
       $aOptions[$this->css_option()] = date('U');
       update_option( 'fvwpflowplayer', $aOptions );
-      $this->conf = $aOptions;
+      $this->_get_conf();
     }
   }
   
@@ -1045,7 +1549,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     global $post;
     $aArgs = func_get_args();
     
-    if( isset($aArgs[1][0]) && is_array($aArgs[1][0]) ) {        
+    if( $post && isset($aArgs[1][0]) && is_array($aArgs[1][0]) ) {        
       $sItemKeys = array_keys($aArgs[1][0]);
       if( $sDuration = flowplayer::get_duration( $post->ID, $aArgs[1][0][$sItemKeys[0]] ) ) {
         $caption .= '<i class="dur">'.$sDuration.'</i>';
@@ -1330,6 +1834,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public static function get_core_version() {
+    global $fv_wp_flowplayer_core_ver, $fv_wp_flowplayer_core_ver_beta;
+    return self::is_beta() ? $fv_wp_flowplayer_core_ver_beta : $fv_wp_flowplayer_core_ver;
+  }
+  
+  
   public static function get_video_key( $sURL ) {
     $sURL = str_replace( '?v=', '-v=', $sURL );
     $sURL = preg_replace( '~\?.*$~', '', $sURL );
@@ -1416,7 +1926,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $media = apply_filters( 'fv_flowplayer_media', $media, $this );
     
     return $media;
-  }  
+  }
+  
+  
+  public static function is_beta() {
+    global $FV_Player_Pro;
+    if( !isset($FV_Player_Pro) ) return false;
+    
+    if( version_compare('0.9.20', str_replace('.beta','',$FV_Player_Pro->version) ) == 1 ) return false;
+    
+    $version = isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ? $_POST['fv-player-pro-release'] : get_option('fv-player-pro-release');
+    if( $version == 'beta' ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   
   
   public static function is_licensed() {
@@ -1714,3 +2239,4 @@ function fv_wp_flowplayer_save_post( $post_id ) {
     }
   }
 }
+

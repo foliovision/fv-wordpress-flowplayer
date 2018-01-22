@@ -284,9 +284,6 @@ function flowplayer_content( $content ) {
   return $content;
 }
 
-/**
- * Figure out if we need to include MediaElement.js
- */
 function flowplayer_prepare_scripts() {
   global $fv_fp, $fv_wp_flowplayer_ver;
   
@@ -309,18 +306,17 @@ function flowplayer_prepare_scripts() {
     
     if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
     
-    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+    $sPath = $fv_fp->is_beta() ? 'flowplayer-beta' : 'flowplayer';
+    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/'.$sPath.'/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
     $sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
+    $sCommercialKey = $fv_fp->is_beta() && !empty($fv_fp->conf['key7']) ? $fv_fp->conf['key7'] : $sCommercialKey;
     $sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
     
-    if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
-      wp_enqueue_script( 'flowplayer-mediaelement', flowplayer::get_plugin_url().'/mediaelement/mediaelement-and-player.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
-    }
-    
-    $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
+    $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/'.$sPath.'/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/'.$sPath.'/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
     if( !empty($fv_fp->conf['rtmp-live-buffer']) && $fv_fp->conf['rtmp-live-buffer'] == 'true' ) {
       $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
@@ -329,7 +325,7 @@ function flowplayer_prepare_scripts() {
     if( !empty($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) {
       $aConf['embed'] = false;
     } else {
-      $aConf['embed'] = array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
+      $aConf['embed'] = array( 'library' => $sPluginUrl.'/'.$sPath.'/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/'.$sPath.'/embed.min.js', 'skin' => $sPluginUrl.'/css/'.$sPath.'.css', 'swf' => $sPluginUrl.'/'.$sPath.'/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/'.$sPath.'/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     }
    
     if( !isset($fv_fp->conf['ui_speed_increment']) || empty($fv_fp->conf['ui_speed_increment']) || $fv_fp->conf['ui_speed_increment'] == 0.25){
@@ -405,11 +401,11 @@ function flowplayer_prepare_scripts() {
     }
     
     if( $fv_fp->load_dash ) {
-      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     
     if( $fv_fp->load_hlsjs && isset($fv_fp->conf['hlsjs']) && $fv_fp->conf['hlsjs'] == 'true'  ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     
   }
@@ -432,6 +428,10 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
+  if( flowplayer::is_beta() && file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) { //  todo: only include if it's going to be used!
+    include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
+  }
+  
   if( flowplayer::is_special_editor() ) {
     return;  
   }  

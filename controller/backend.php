@@ -357,15 +357,15 @@ function fv_wp_flowplayer_check_license() {
 add_action('admin_init', 'fv_player_admin_update');
 
 function fv_player_admin_update() {
-  global $fv_fp, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
+  global $fv_fp, $fv_wp_flowplayer_ver;
   
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
     
-    if( $aOptions['version'] == '6.0.5.20' && $aOptions['playlist_advance'] == 'true' ) { //  version 6.0.5 used reverse login for this option!
+    if( $aOptions['version'] == '6.0.5.20' && $aOptions['playlist_advance'] == 'true' ) { //  version 6.0.5 used reverse logic for this option!
       $aOptions['playlist_advance'] = false;
-      $fv_fp->conf = $aOptions;
+      $fv_fp->_get_conf();
     }
     
     $aOptions['version'] = $fv_wp_flowplayer_ver;
@@ -376,7 +376,11 @@ function fv_player_admin_update() {
     
     fv_wp_flowplayer_delete_extensions_transients();
     delete_option('fv_flowplayer_extension_install');
-  }  
+  }
+  
+  if( isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ) {
+    $fv_fp->css_writeout();
+  }
 }
 
 function fv_wp_flowplayer_pro_settings_update_for_lightbox(){
@@ -435,11 +439,10 @@ function fv_player_lchecks() {
     //license will expire in 5 seconds in the function:
     fv_wp_flowplayer_admin_key_update();
 	}
-
-  global $fv_fp, $fv_wp_flowplayer_core_ver;
+  
+  global $fv_fp;
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {    
-    $version = get_option( 'fvwpflowplayer_core_ver' );
-    if( version_compare( $fv_wp_flowplayer_core_ver, $version ) == 1 ) {
+    if( version_compare( flowplayer::get_core_version(), get_option( 'fvwpflowplayer_core_ver' ) ) == 1 ) {
       fv_wp_flowplayer_admin_key_update();
       fv_wp_flowplayer_delete_extensions_transients();
     }      
@@ -484,14 +487,15 @@ function fv_player_remove_update( $objUpdates ) {
 }
 
 function fv_wp_flowplayer_admin_key_update() {
-	global $fv_fp, $fv_wp_flowplayer_core_ver;
+	global $fv_fp;
 	
 	$data = fv_wp_flowplayer_license_check( array('action' => 'key_update') );
 	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
+            $fv_fp->conf['key7'] = $data->key7;
 			update_option( 'fvwpflowplayer', $fv_fp->conf );
-			update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver );
+			update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
       
       fv_wp_flowplayer_change_transient_expiration("fv_flowplayer_license",5);
       fv_wp_flowplayer_delete_extensions_transients(5);
@@ -499,22 +503,22 @@ function fv_wp_flowplayer_admin_key_update() {
 		}                            
 	} else if( isset($data->expired) && $data->expired && isset($data->message) ){
     update_option( 'fv_wordpress_flowplayer_persistent_notices', $data->message );
-    update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+    update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() ); 
     return false;
 	} else {
     update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer License upgrade failed - please check if you are running the plugin on your licensed domain.' );
-    update_option( 'fvwpflowplayer_core_ver', $fv_wp_flowplayer_core_ver ); 
+    update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() ); 
 		return false;
 	}
 }
 
 function fv_wp_flowplayer_license_check( $aArgs ) {
-	global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;  
+	global $fv_wp_flowplayer_ver;  
   
 	$args = array(
-		'body' => array( 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => $fv_wp_flowplayer_core_ver, 'type' => home_url(), 'action' => $aArgs['action'], 'admin-url' => admin_url() ),
+		'body' => array( 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => flowplayer::get_core_version(), 'type' => home_url(), 'action' => $aArgs['action'], 'admin-url' => admin_url() ),
 		'timeout' => 10,
-		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.$fv_wp_flowplayer_core_ver.')'
+		'user-agent' => 'fv-wordpress-flowplayer-'.$fv_wp_flowplayer_ver.' ('.flowplayer::get_core_version().')'
 	);
 	$resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
 

@@ -16,7 +16,11 @@ function fv_player_admin_menu () {
 
 function fv_player_admin_page() {
 	global $fv_fp;
-	include dirname( __FILE__ ) . '/../view/admin.php';
+  if( $fv_fp->is_beta() ) {
+    include dirname( __FILE__ ) . '/../view/admin-beta.php';
+  } else {
+    include dirname( __FILE__ ) . '/../view/admin.php';
+  }
 }
 
 

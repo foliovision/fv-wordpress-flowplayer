@@ -100,14 +100,7 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Which player should be used
      */
-    foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-      if( !$this->_get_option('audio') ) {
-        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
-          $player_type = 'audio';
-          break;
-        }
-      }
-        
+    foreach( array( $media, $src1, $src2 ) AS $media_item ) {        
       global $post;
       if( $post ) {
         $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
@@ -323,6 +316,15 @@ class flowplayer_frontend extends flowplayer
         
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
+        if( $this->is_beta() ) {
+          if( !empty($this->aCurArgs['skin']) ) {
+            $skin = 'skin-'.$this->aCurArgs['skin'];
+          } else {
+            $skin = 'skin-'.$this->_get_option('skin');
+          }
+          $attributes['class'] .= ' '.$skin;
+          $attributes['class'] .= ' '.$this->_get_option(array($skin, 'design-timeline')).' '.$this->_get_option(array($skin, 'design-icons'));
+        }
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
@@ -347,12 +349,13 @@ class flowplayer_frontend extends flowplayer
         }
         
         //  Fixed control bar
-        $bFixedControlbar = $this->_get_option('ui_fixed_controlbar');
+        $bFixedControlbar = $this->_get_option('show_controlbar');
         if( isset($this->aCurArgs['controlbar']) ) {
           if( strcmp($this->aCurArgs['controlbar'],'yes') == 0 || strcmp($this->aCurArgs['controlbar'],'show') == 0 ) {
             $bFixedControlbar = true;
           } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 ) {
             $attributes['class'] .= ' no-controlbar';
+            $bFixedControlbar = false;
           }
         }
         if( $bFixedControlbar ) {
@@ -368,8 +371,15 @@ class flowplayer_frontend extends flowplayer
             $bPlayButton = false;
           }
         }
-        if( $bPlayButton ) {
+        if( !$this->is_beta() && $bPlayButton ) {
           $attributes['class'] .= ' fvp-play-button';
+        }
+        
+        if( $this->is_beta() && $this->_get_option('ui_no_picture_button') ) {
+          $attributes['data-button-no-picture'] = true;
+        }
+        if( $this->is_beta() && $this->_get_option('ui_repeat_button') ) {
+          $attributes['data-button-repeat'] = true;
         }
         
         //  Align
@@ -502,6 +512,10 @@ class flowplayer_frontend extends flowplayer
               $attributes['data-advance'] = 'false';
             }
           }
+        }
+        
+        if( $this->is_beta() ) {
+          add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
         }
         
         $attributes_html = '';
@@ -639,7 +653,11 @@ class flowplayer_frontend extends flowplayer
         }
         
         if ($this->aCurArgs['liststyle'] == 'prevnext' && count($aPlaylistItems) > 1 ) {
-          $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
+          if( $this->is_beta() ) {
+            $this->ret['html'].='<a class="fp-prev" title="prev"></a><a class="fp-next" title="next"></a>'; 
+          } else {
+            $this->ret['html'].='<a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a>'; 
+          }
         }          
         
         $this->ret['html'] .= '</div>'."\n";
@@ -691,13 +709,6 @@ class flowplayer_frontend extends flowplayer
     }
     
     
-    /*
-     *  Audio player
-     */
-    else {  //  $player_type == 'video' ends
-      $this->build_audio_player( $media, $width, $autoplay );
-    }
-    
     if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
     }
@@ -708,18 +719,6 @@ class flowplayer_frontend extends flowplayer
     $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
       
       return $this->ret;
-  }
-  
-  
-  function build_audio_player( $media, $width, $autoplay ) {          
-      $this->load_mediaelement = true;
-      
-      $preload = ($autoplay == true) ? '' : ' preload="none"'; 
-          
-      $this->ret['script']['mediaelementplayer'][$this->hash] = true;
-      $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";      
-      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_mime_type($media, false, true).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
-      $this->ret['html'] .= '</div>'."\n";  
   }
   
   
@@ -787,7 +786,7 @@ class flowplayer_frontend extends flowplayer
   
     
   function get_buttons() {
-    add_filter( 'fv_flowplayer_buttons_center', array( $this, 'get_speed_buttons' ) );
+    if( !$this->is_beta() ) add_filter( 'fv_flowplayer_buttons_center', array( $this, 'get_speed_buttons' ) );
     
     $sHTML = false;
     foreach( array('left','center','right','controlbar') AS $key ) {
@@ -914,6 +913,24 @@ class flowplayer_frontend extends flowplayer
     }
     
     return $aButtons;
+  }
+  
+  
+  function get_speed_attribute( $attributes ) {
+    $bShow = false;
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+      $bShow = true;
+    }
+    
+    if( isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'no' ) {
+      $bShow = false;
+    }
+    
+    if( $bShow ) {
+      $attributes['data-speedb'] = true;
+    }
+    
+    return $attributes;
   }
   
   
