@@ -36,10 +36,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
    * Configuration variables array
    */
   public $conf = array();
-  /**
-   * We set this to true in shortcode parsing and then determine if we need to enqueue the JS, or if it's already included
-   */
-  public $load_mediaelement = false;
+  
   public $load_tabs = false;    
   /**
    * Store scripts to load in footer
@@ -1055,13 +1052,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     #content .flowplayer, .flowplayer { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
     .flowplayer .fp-dropdown li.active { background-color: <?php echo $fv_fp->_get_option('progressColor'); ?> !important }
     
-    .fvplayer .mejs-container .mejs-controls { background: <?php echo $fv_fp->_get_option('backgroundColor'); ?>!important; }
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; }
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $fv_fp->_get_option('bufferColor'); ?>!important; } 
-    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $fv_fp->_get_option('progressColor'); ?>!important; }
-    .fvplayer .me-cannotplay span { padding: 5px; }
-    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $fv_fp->_get_option('font-face'); ?>; }
-  
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
@@ -1182,14 +1172,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
-    
-    .fvplayer .mejs-container .mejs-controls { background: <?php echo $this->_get_option(array($skin, 'backgroundColor')); ?>!important; }
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-current { background: <?php echo $this->_get_option(array($skin, 'progressColor')); ?>!important; }
-    .fvplayer .mejs-controls .mejs-time-rail .mejs-time-loaded { background: <?php echo $this->_get_option(array($skin, 'bufferColor')); ?>!important; }
-    .fvplayer .mejs-horizontal-volume-current { background: <?php echo $this->_get_option(array($skin, 'progressColor')); ?>!important; }
-    .fvplayer .me-cannotplay span { padding: 5px; }
-    #content .fvplayer .mejs-container .mejs-controls div { font-family: <?php echo $this->_get_option(array($skin, 'font-face')); ?>; }
-  
+      
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }

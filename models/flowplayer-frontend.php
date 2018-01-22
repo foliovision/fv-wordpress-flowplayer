@@ -100,14 +100,7 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Which player should be used
      */
-    foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-      if( !$this->_get_option('audio') ) {
-        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media_item ) ) {
-          $player_type = 'audio';
-          break;
-        }
-      }
-        
+    foreach( array( $media, $src1, $src2 ) AS $media_item ) {        
       global $post;
       if( $post ) {
         $fv_flowplayer_meta = get_post_meta( $post->ID, '_fv_flowplayer', true );
@@ -716,13 +709,6 @@ class flowplayer_frontend extends flowplayer
     }
     
     
-    /*
-     *  Audio player
-     */
-    else {  //  $player_type == 'video' ends
-      $this->build_audio_player( $media, $width, $autoplay );
-    }
-    
     if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
     }
@@ -733,18 +719,6 @@ class flowplayer_frontend extends flowplayer
     $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
       
       return $this->ret;
-  }
-  
-  
-  function build_audio_player( $media, $width, $autoplay ) {          
-      $this->load_mediaelement = true;
-      
-      $preload = ($autoplay == true) ? '' : ' preload="none"'; 
-          
-      $this->ret['script']['mediaelementplayer'][$this->hash] = true;
-      $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '" class="fvplayer fv-mediaelement">'."\n";      
-      $this->ret['html'] .= "\t".'<audio src="'.$this->get_video_src( $media, array( 'url_only' => true ) ).'" type="audio/'.$this->get_mime_type($media, false, true).'" controls="controls" '.$preload.' style="width:100%;height:100%"></audio>'."\n";  
-      $this->ret['html'] .= '</div>'."\n";  
   }
   
   

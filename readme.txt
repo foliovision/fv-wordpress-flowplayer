@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9
+Tested up to: 4.9.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -35,7 +35,7 @@ Back to school special 25% off pro licenses until end of September.
 
 **Additional Technical information**
 
-* Core video engine: open source Flowplayer 6. 
+* Core video engine: open source Flowplayer 6. Flowplayer 7 in beta testing.
 * Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
 * Supported video streaming formats are HLS (Flash and JavaScript fallback available for incompatible devices), MPEG DASH and RTMP.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
@@ -357,6 +357,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.4 - 2018/01/22 =
 
 * Amazon S3 - applying the signature to splash images too
+* Audio suport - getting rid of the Media Element component
 * Iframe embedding - fix for scrollbars showing up
 * Iframe embedding - allowing native fullscreen for iOS as it's the way of getting fullscreen from iframe on it
 * Iframe embedding - WP Rocket Critical CSS fix

@@ -284,9 +284,6 @@ function flowplayer_content( $content ) {
   return $content;
 }
 
-/**
- * Figure out if we need to include MediaElement.js
- */
 function flowplayer_prepare_scripts() {
   global $fv_fp, $fv_wp_flowplayer_ver;
   
@@ -318,10 +315,6 @@ function flowplayer_prepare_scripts() {
     $sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
     $sCommercialKey = $fv_fp->is_beta() && !empty($fv_fp->conf['key7']) ? $fv_fp->conf['key7'] : $sCommercialKey;
     $sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
-    
-    if( $fv_fp->load_mediaelement && !wp_script_is('wp-mediaelement') ) {
-      wp_enqueue_script( 'flowplayer-mediaelement', flowplayer::get_plugin_url().'/mediaelement/mediaelement-and-player.min.js', array('jquery'), $fv_wp_flowplayer_ver, true );
-    }
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/'.$sPath.'/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/'.$sPath.'/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
