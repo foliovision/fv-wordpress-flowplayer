@@ -1004,7 +1004,7 @@ function fv_wp_flowplayer_on_close() {
 }   
 
 
-function fv_wp_flowplayer_set_html( html ) {
+function fv_wp_flowplayer_set_html( html ) {console.log('fv_wp_flowplayer_set_html',FVFP_sWidgetId,jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length,html);
   if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val(html);      
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );

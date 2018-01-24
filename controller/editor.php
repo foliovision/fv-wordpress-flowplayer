@@ -7,9 +7,14 @@ function fv_player_shortcode_editor_scripts( $page ) {
     return;
   }
   
+  fv_player_shortcode_editor_scripts_enqueue();
+}
+
+
+
+
+function fv_player_shortcode_editor_scripts_enqueue() {  
   global $fv_wp_flowplayer_ver;
-  
-  
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   

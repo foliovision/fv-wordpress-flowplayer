@@ -13,7 +13,7 @@ class FV_Player_Widget extends WP_Widget {
 
   function widget_init() {
     register_widget('FV_Player_widget');
-    add_action('admin_footer-widgets.php', array($this, 'formFooter') );
+    add_action('admin_footer', array($this, 'formFooter'), 0 );
   }
 
   /**
@@ -110,17 +110,13 @@ class FV_Player_Widget extends WP_Widget {
   }
 
   function formFooter() {
-    if( function_exists('get_current_screen') ) { // fix for wp-page-widget
-      $ojbScreen = get_current_screen();
-      if( $ojbScreen && $ojbScreen->base == 'post' ) return;
+    if( function_exists('get_current_screen') ) {
+      $objScreen = get_current_screen();
+      if( $objScreen && $objScreen->base != 'widgets' ) return;
     }
     
-    include dirname(__FILE__) . '/../view/wizard.php';
-    ?>    
-    <script src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/shortcode-editor.js"></script>
-    <script src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jquery.colorbox-min.js"></script>
-    <link rel = "stylesheet" type = "text/css" href = "<?php echo FV_FP_RELATIVE_PATH; ?>/css/colorbox.css"/>
-    <?php
+    fv_wp_flowplayer_edit_form_after_editor();
+    fv_player_shortcode_editor_scripts_enqueue();
   }
 
 }
