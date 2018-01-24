@@ -110,22 +110,22 @@ class FV_Player_Custom_Videos {
     global $FV_Player_Custom_Videos_count;
     $this->instance_id = ++$FV_Player_Custom_Videos_count;
     
-    $html = "<div id='fv_edit_video-".$this->instance_id."'>
-      <div class='fv_video_wrapper'>
+    //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
+    
+    $html = "<div class='fv-player-editor-wrapper'>
         <div class='inside inside-child'>    
-          <div class='video-preview'>".($video ? 'Loading...' : '')."</div>
-          <input class='attachement-shortcode' id='widget-widget_fvplayer-".$this->instance_id."-text' name='fv_player_videos[".$this->meta."]' data-number='".$this->instance_id."' type='hidden' value='".esc_attr($video)."' />
+          <div class='fv-player-editor-preview".($video ? ' loading' : '')."'></div>
+          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."]' type='hidden' value='".esc_attr($video)."' />
           <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
-            <button class='button fv-wordpress-flowplayer-button' data-number='".$this->instance_id."'>Edit Video</button>
-            <button class='button remove-video' onclick='fv_remove_video( ".$this->instance_id." ); return false'>Remove Video</button>
+            <button class='button fv-player-editor-button'>Edit Video</button>
+            <button class='button remove-video' onclick='fv_remove_video(); return false'>Remove Video</button>
           </div>
 
           <div class='add-video' ".($video ? 'style="display:none"' : '').">
-            <button class='button fv-wordpress-flowplayer-button' data-number='". $this->instance_id."'>Add Video</button>
+            <button class='button fv-player-editor-button'>Add Video</button>
           </div>
         </div>
-      </div>
-    </div>";
+      </div>";
     return $html;
   }
 
@@ -176,7 +176,7 @@ class FV_Player_Custom_Videos {
       foreach( $aMeta AS $aVideo ) {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) {
           $aVideos[] = '[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]';
-        } else if( is_string($aVideo) && stripos($aVideo,'[fvplayer ]') === 0 ) {
+        } else if( is_string($aVideo) && stripos($aVideo,'[fvplayer ') === 0 ) {
           $aVideos[] = $aVideo;
         }
       }
@@ -190,37 +190,33 @@ class FV_Player_Custom_Videos {
   }
   
   public function scripts() {
-    ?>
-      <script>
-        jQuery(".fv_player_field_insert-button").click( function() {
-          if( <?php echo $this->instance_id; ?> == FVFP_sWidgetId ) fv_load_video_preview( FVFP_sWidgetId );
-        } );
-      
-        jQuery(document).ready( function() {
-          if( typeof(fv_wp_flowplayer_init) != "undefined" ) {
-            fv_wp_flowplayer_init();
-            for( var i=1; i < <?php echo $this->instance_id; ?>+1; i++ ) {  //  todo: stupid
-              fv_load_video_preview(i);
-            }
-          }
-        });
-      
-      </script>
-    <?php
-    
     global $FV_Player_Custom_Videos_loaded;
     if( $FV_Player_Custom_Videos_loaded == 0 ) :
       $FV_Player_Custom_Videos_loaded = 1;
       ?>
       <script>
-      function fv_show_video( id, show ) {
+      jQuery(document).ready( function() {
+        if( typeof(fv_wp_flowplayer_init) != "undefined" ) {
+          fv_wp_flowplayer_init();
+          jQuery('.fv-player-editor-preview.loading').each( function(k,v) {
+            fv_load_video_preview(jQuery(v).parents('.fv-player-editor-wrapper'));
+          });
+        }
+      });      
+      
+      jQuery(".fv-player-editor-field").on( 'fv_flowplayer_shortcode_insert', function() {
+        console.log('fv_flowplayer_shortcode_insert',fv_player_editor_button_clicked);
+        fv_load_video_preview( jQuery(this).parents('.fv-player-editor-wrapper'));
+      } );
+      
+      function fv_show_video( wrapper, show ) {
         if( show ) {
-          jQuery('#fv_edit_video-'+id+' .edit-video').show();
-          jQuery('#fv_edit_video-'+id+' .add-video').hide();
+          jQuery(wrapper).find('.edit-video').show();
+          jQuery(wrapper).find('.add-video').hide();
         }
         else {
-          jQuery('#fv_edit_video-'+id+' .edit-video').hide();
-          jQuery('#fv_edit_video-'+id+' .add-video').show();
+          jQuery(wrapper).find('.edit-video').hide();
+          jQuery(wrapper).find('.add-video').show();
         }
       }
 
@@ -230,23 +226,23 @@ class FV_Player_Custom_Videos {
         jQuery('#fv_edit_video-'+id+' .video-preview').html('');
       }
 
-      function fv_load_video_preview( id ) {
-        var shortcode = jQuery('#widget-widget_fvplayer-'+id+'-text').val();
-        if( shortcode.length === 0 ) {
+      function fv_load_video_preview( wrapper ) {
+        var shortcode = jQuery(wrapper).find('.fv-player-editor-field').val();
+        console.log('fv_load_video_preview',shortcode);
+        if( shortcode && shortcode.length === 0 ) {
           return false;
         }
 
         shortcode     = shortcode.replace( /(width=[\'"])\d*([\'"])/, "$1320$2" );  // 320
         shortcode     = shortcode.replace( /(height=[\'"])\d*([\'"])/, "$1240$2" ); // 240
-
-        var preview_div = jQuery('#fv_edit_video-'+id+' .video-preview');
+        
         var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(shortcode);
-        jQuery.get(url, function(response) {
-          preview_div.html( jQuery('#wrapper',response ) );
+        jQuery.get(url, function(response) {          
+          jQuery(wrapper).find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
           jQuery(document).trigger('fvp-preview-complete');
         } );
 
-        fv_show_video( id, true );
+        fv_show_video( wrapper, true );
       }
 
       ( function($) {
@@ -276,6 +272,8 @@ class FV_Player_Custom_Videos {
 
 class FV_Player_Custom_Videos_Master {
   
+  var $aMetaBoxes = array();
+  
   function __construct() {
     
     add_action( 'init', array( $this, 'save' ) ); //  saving of user profile, both front and back end    
@@ -297,9 +295,24 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function add_meta_boxes() {
+    global $post;
+    if( !empty($this->aMetaBoxes[$post->post_type]) ) {
+      foreach( $this->aMetaBoxes[$post->post_type] AS $meta_key => $name ) {
+        $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $meta_key, 'type' => 'post' ) );
+        add_meta_box( 'fv_player_custom_videos-field_'.$meta_key,
+                    $name,
+                    array( $this, 'meta_box' ),
+                    null,
+                    'normal',
+                    'high',
+                    $objVideos );
+      }
+    }
+    
+    //  todo: following code should not add the meta boxes added by the above again!
+    
     global $fv_fp;
     if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {
-      global $post;
       $aMeta = get_post_custom($post->ID);      
       if( $aMeta ) {
         foreach( $aMeta AS $key => $aMetas ) {
@@ -363,6 +376,12 @@ class FV_Player_Custom_Videos_Master {
           
     $objVideos = $args['args'];   
     echo $objVideos->get_form();
+  }
+  
+  function register_metabox( $name, $meta_key, $post_type ) {
+    if( !isset($this->aMetaBoxes[$post_type]) ) $this->aMetaBoxes[$post_type] = array();
+    
+    $this->aMetaBoxes[$post_type][$meta_key] = $name;
   }
   
   //  todo: fix for new code
@@ -481,3 +500,15 @@ class FV_Player_Custom_Videos_Master {
 
 
 $FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
+
+
+
+
+class FV_Player_MetaBox {
+  
+  function __construct( $name, $meta_key, $post_type ) {
+    global $FV_Player_Custom_Videos_Master;
+    $FV_Player_Custom_Videos_Master->register_metabox( $name, $meta_key, $post_type );
+  }
+  
+}

@@ -14,7 +14,7 @@ var fv_wp_fp_shortcode;
 var fv_player_preview_single = -1;
 var fv_player_preview_window;
 
-
+var fv_player_editor_button_clicked = 0;
 
 var fv_player_shortcode_preview_unsupported = false;
 
@@ -24,7 +24,8 @@ jQuery(document).ready(function($){
   fv_player_shortcode_preview_unsupported = ua.match(/edge/i) || ua.match(/safari/i) && !ua.match(/chrome/i) ;
   
   if( jQuery().fv_player_box ) {     
-    $(document).on( 'click', '.fv-wordpress-flowplayer-button', function(e) {
+    $(document).on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button', function(e) {
+      fv_player_editor_button_clicked = this;
       e.preventDefault();
       $.fv_player_box( {
         top: "100px",
@@ -386,7 +387,11 @@ function fv_wp_flowplayer_init() {
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
   
-  if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
+  if( field.length ) {    
+    fv_wp_flowplayer_content = jQuery(field).val();
+    
+  } else if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val();
   } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
     fv_wp_flowplayer_content = jQuery('#content:not([aria-hidden=true])').val();
@@ -456,7 +461,8 @@ function fv_wp_flowplayer_insert( shortcode ) {
       fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );
     } else {
       fv_wp_flowplayer_content = shortcode;
-      send_to_editor( shortcode );
+      //send_to_editor( shortcode );  //  todo: is this breaking anything?
+      fv_wp_flowplayer_set_html( shortcode );
     }
   }
 }
@@ -636,7 +642,9 @@ function fv_wp_flowplayer_edit() {
   jQuery("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
   jQuery(".fv_player_field_insert-button").attr( 'value', 'Insert' );
   
-  if(jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
+  if( field.length || jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
+    //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
     if(fv_wp_flowplayer_content.match(/\[/) ) {
       fv_wp_flowplayer_content = '[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+'';
     } else {
@@ -998,14 +1006,21 @@ function fv_wp_flowplayer_dialog_resize() {
 
 
 function fv_wp_flowplayer_on_close() {
+  //fv_player_editor_button_clicked = false;  //  todo: is it not too early?
+  
   fv_wp_flowplayer_init();
   fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
   jQuery('#fv-player-shortcode-editor-preview-target').html('');
 }   
 
 
-function fv_wp_flowplayer_set_html( html ) {console.log('fv_wp_flowplayer_set_html',FVFP_sWidgetId,jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length,html);
-  if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
+function fv_wp_flowplayer_set_html( html ) {  
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');  
+  if( field.length ) {
+    field.val(html);
+    field.trigger('fv_flowplayer_shortcode_insert', [ html ] );
+    
+  } else if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val(html);      
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
   }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
