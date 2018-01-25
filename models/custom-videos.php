@@ -24,7 +24,6 @@ class FV_Player_Custom_Videos {
     $this->id = $args['id'];
     $this->meta = $args['meta'];
     $this->type = $args['type'];
-        
   }
   
   private function esc_shortcode( $arg ) {
@@ -114,7 +113,7 @@ class FV_Player_Custom_Videos {
     
     $html = "<div class='fv-player-editor-wrapper'>
         <div class='inside inside-child'>    
-          <div class='fv-player-editor-preview".($video ? ' loading' : '')."'></div>
+          <div class='fv-player-editor-preview".($video ? ' loading' : '')."'>".($video ? 'Loading...' : '')."</div>
           <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."]' type='hidden' value='".esc_attr($video)."' />
           <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
             <button class='button fv-player-editor-button'>Edit Video</button>
@@ -372,9 +371,8 @@ class FV_Player_Custom_Videos_Master {
   
   function meta_box( $aPosts, $args ) {
     global $FV_Player_Custom_Videos_form_instances;
-    unset($FV_Player_Custom_Videos_form_instances[$this->meta]);
-          
     $objVideos = $args['args'];   
+    unset($FV_Player_Custom_Videos_form_instances[$objVideos->meta]);
     echo $objVideos->get_form();
   }
   

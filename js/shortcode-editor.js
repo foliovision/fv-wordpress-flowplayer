@@ -448,7 +448,12 @@ function fv_wp_flowplayer_init() {
  * Sends new shortcode to editor
  */
 function fv_wp_flowplayer_insert( shortcode ) {
-  if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ) {
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');  
+  if( field.length ) {
+    field.val(shortcode);
+    field.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
+    
+  } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_content .replace(/#fvp_placeholder#/,shortcode);
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );
   }else if( fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_edit ) ) {
@@ -461,8 +466,7 @@ function fv_wp_flowplayer_insert( shortcode ) {
       fv_wp_flowplayer_set_html( fv_wp_flowplayer_content );
     } else {
       fv_wp_flowplayer_content = shortcode;
-      //send_to_editor( shortcode );  //  todo: is this breaking anything?
-      fv_wp_flowplayer_set_html( shortcode );
+      send_to_editor( shortcode );
     }
   }
 }
