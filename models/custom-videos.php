@@ -96,7 +96,7 @@ class FV_Player_Custom_Videos {
     
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
     
-    $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."''>
+    $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
         <div class='inside inside-child'>    
           <div class='fv-player-editor-preview".($video ? ' loading' : '')."'>".($video ? 'Loading...' : '')."</div>
           <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
@@ -121,16 +121,17 @@ class FV_Player_Custom_Videos {
     $html = '';
     $count = 0;
     if( $this->have_videos() ) {
+      
+      if( $args['wrapper'] ) $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
+      
       foreach( $this->get_videos() AS $video ) {
         $count++;
-        
-        if( $args['wrapper'] ) $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
-        
         $html .= $this->get_html_part($video);
-        
-        if( $args['wrapper'] ) $html .= '</'.$args['wrapper'].'>'."\n";
-        
       }
+      
+      $html .= '<div style="clear: both"></div>'."\n";
+      
+      if( $args['wrapper'] ) $html .= '</'.$args['wrapper'].'>'."\n";
       
     } else if( $args['edit'] ) {
       $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
