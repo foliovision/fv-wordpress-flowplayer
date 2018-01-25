@@ -1,9 +1,5 @@
 <?php
 
-global $FV_Player_Custom_Videos_count, $FV_Player_Custom_Videos_loaded;
-$FV_Player_Custom_Videos_count = 0;
-$FV_Player_Custom_Videos_loaded = false;
-
 class FV_Player_Custom_Videos {
   
   var $did_form = false;
@@ -93,31 +89,21 @@ class FV_Player_Custom_Videos {
       $html .= '</div>';
     }
     
-    if( $args['edit'] ) {
-      if( is_admin() ) {
-        add_action( 'admin_footer', array( $this, 'scripts' ) );
-      } else {
-        add_action( 'wp_footer', array( $this, 'scripts' ) );
-      }
-    }    
-    
     return $html;
   }
   
   public function get_html_part( $video ) {
     
-    global $FV_Player_Custom_Videos_count;
-    $this->instance_id = ++$FV_Player_Custom_Videos_count;
-    
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
     
-    $html = "<div class='fv-player-editor-wrapper'>
+    $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."''>
         <div class='inside inside-child'>    
           <div class='fv-player-editor-preview".($video ? ' loading' : '')."'>".($video ? 'Loading...' : '')."</div>
-          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."]' type='hidden' value='".esc_attr($video)."' />
+          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
           <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
             <button class='button fv-player-editor-button'>Edit Video</button>
-            <button class='button remove-video' onclick='fv_remove_video(); return false'>Remove Video</button>
+            <button class='button fv-player-editor-remove'>Remove Video</button>
+            <button class='button fv-player-editor-more'>Add Another Video</button>
           </div>
 
           <div class='add-video' ".($video ? 'style="display:none"' : '').">
@@ -186,75 +172,7 @@ class FV_Player_Custom_Videos {
   
   public function have_videos() {
     return count($this->get_videos()) ? true : false;
-  }
-  
-  public function scripts() {
-    global $FV_Player_Custom_Videos_loaded;
-    if( $FV_Player_Custom_Videos_loaded == 0 ) :
-      $FV_Player_Custom_Videos_loaded = 1;
-      ?>
-      <script>
-      jQuery(document).ready( function() {
-        if( typeof(fv_wp_flowplayer_init) != "undefined" ) {
-          fv_wp_flowplayer_init();
-          jQuery('.fv-player-editor-preview.loading').each( function(k,v) {
-            fv_load_video_preview(jQuery(v).parents('.fv-player-editor-wrapper'));
-          });
-        }
-      });      
-      
-      jQuery(".fv-player-editor-field").on( 'fv_flowplayer_shortcode_insert', function() {
-        console.log('fv_flowplayer_shortcode_insert',fv_player_editor_button_clicked);
-        fv_load_video_preview( jQuery(this).parents('.fv-player-editor-wrapper'));
-      } );
-      
-      function fv_show_video( wrapper, show ) {
-        if( show ) {
-          jQuery(wrapper).find('.edit-video').show();
-          jQuery(wrapper).find('.add-video').hide();
-        }
-        else {
-          jQuery(wrapper).find('.edit-video').hide();
-          jQuery(wrapper).find('.add-video').show();
-        }
-      }
-
-      function fv_remove_video( id ) {
-        jQuery( '#widget-widget_fvplayer-'+id+'-text' ).val("");
-        fv_show_video( id, false );
-        jQuery('#fv_edit_video-'+id+' .video-preview').html('');
-      }
-
-      function fv_load_video_preview( wrapper ) {
-        var shortcode = jQuery(wrapper).find('.fv-player-editor-field').val();
-        console.log('fv_load_video_preview',shortcode);
-        if( shortcode && shortcode.length === 0 ) {
-          return false;
-        }
-
-        shortcode     = shortcode.replace( /(width=[\'"])\d*([\'"])/, "$1320$2" );  // 320
-        shortcode     = shortcode.replace( /(height=[\'"])\d*([\'"])/, "$1240$2" ); // 240
-        
-        var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(shortcode);
-        jQuery.get(url, function(response) {          
-          jQuery(wrapper).find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
-          jQuery(document).trigger('fvp-preview-complete');
-        } );
-
-        fv_show_video( wrapper, true );
-      }
-
-      ( function($) {
-        $(window).resize( function() {
-          $('.iframe_video_wrapper iframe').each( function() {
-            if( $(this).data('ratio') ) $(this).height( $(this).width() * $(this).data('ratio') + 20 );
-          });
-        });
-      })(jQuery);
-      </script>
-    <?php endif;
-  }
-  
+  }  
   
   function shortcode_editor_load() {
     if( !function_exists('fv_flowplayer_admin_select_popups') ) {
@@ -285,11 +203,11 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
     //  EDD
-    add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor'));
+    add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor')); //  todo: check
     add_action('edd_pre_update_user_profile', array($this, 'save'));
     
     //  bbPress
-    add_filter( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10, 2 );
+    add_filter( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10, 2 );  //  todo: check
     add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
   }
   
@@ -417,9 +335,13 @@ class FV_Player_Custom_Videos_Master {
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' ) {
         delete_post_meta( $post_id, $meta );
 
-        if( strlen($value) == 0 ) continue;
-                
-        add_post_meta( $post_id, $meta, $value );
+        if( is_array($value) && count($value) > 0 ) {
+          foreach( $value AS $k => $v ) {            
+            if( strlen($v) == 0 ) continue;
+            
+            add_post_meta( $post_id, $meta, $v );
+          }
+        }
       } 
       
     }
