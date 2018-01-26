@@ -92,25 +92,28 @@ class FV_Player_Custom_Videos {
     return $html;
   }
   
-  public function get_html_part( $video ) {
+  public function get_html_part( $video, $edit = false ) {
     
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
-    
-    $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
-        <div class='inside inside-child'>    
-          <div class='fv-player-editor-preview".($video ? ' loading' : '')."'>".($video ? 'Loading...' : '')."</div>
-          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
-          <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
-            <button class='button fv-player-editor-button'>Edit Video</button>
-            <button class='button fv-player-editor-remove'>Remove Video</button>
-            <button class='button fv-player-editor-more'>Add Another Video</button>
-          </div>
+    if( $edit ) {
+      $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
+          <div class='inside inside-child'>    
+            <div class='fv-player-editor-preview'>".($video ? do_shortcode($video) : '')."</div>
+            <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
+            <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
+              <button class='button fv-player-editor-button'>Edit Video</button>
+              <button class='button fv-player-editor-remove'>Remove Video</button>
+              <button class='button fv-player-editor-more'>Add Another Video</button>
+            </div>
 
-          <div class='add-video' ".($video ? 'style="display:none"' : '').">
-            <button class='button fv-player-editor-button'>Add Video</button>
+            <div class='add-video' ".($video ? 'style="display:none"' : '').">
+              <button class='button fv-player-editor-button'>Add Video</button>
+            </div>
           </div>
-        </div>
-      </div>";
+        </div>";
+    } else {
+      $html = do_shortcode($video);      
+    }
     return $html;
   }
 
@@ -126,7 +129,7 @@ class FV_Player_Custom_Videos {
       
       foreach( $this->get_videos() AS $video ) {
         $count++;
-        $html .= $this->get_html_part($video);
+        $html .= $this->get_html_part($video, $args['edit']);
       }
       
       $html .= '<div style="clear: both"></div>'."\n";
