@@ -31,7 +31,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   if( !$fv_fp ) return false;
 
   // check for new playlist tag format with video data saved in DB
-  if (isset($atts['playlist']) && strpos($atts['playlist'], ',') !== false) {
+  if (isset($atts['playlist']) && preg_match('/^[\d,]+$/m', $atts['playlist'])) {
     // update playlist data and add src tag to be compatible with the old HTML generation code
     $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . $atts['playlist'] . ')');
 
