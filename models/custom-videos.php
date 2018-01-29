@@ -138,12 +138,8 @@ class FV_Player_Custom_Videos {
       
     } else if( $args['edit'] ) {
       $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
-        $html .= $this->get_html_part(false);
-        
-        /*$html .= "<input class='fv_player_custom_video fv_player_custom_video_url regular-text' placeholder='URL' type='text' name='fv_player_videos[".$this->meta."][]' /><br />\n";
-        $html .= "<input class='fv_player_custom_video regular-text' placeholder='Title' type='text' name='fv_player_videos_titles[".$this->meta."][]' /><br />\n";
-        if( 1 < $args['limit'] ) $html .= "<a class='fv-player-custom-video-add' href='#'>Add more</a>\n";*/
-      
+        $html .= $this->get_html_part(false, true);        
+        $html .= '<div style="clear: both"></div>'."\n";      
       $html .= '</'.$args['wrapper'].'>';      
     }
     
@@ -293,7 +289,7 @@ class FV_Player_Custom_Videos_Master {
   
   function meta_box( $aPosts, $args ) {
     global $FV_Player_Custom_Videos_form_instances;
-    $objVideos = $args['args'];   
+    $objVideos = $args['args'];
     unset($FV_Player_Custom_Videos_form_instances[$objVideos->meta]);
     echo $objVideos->get_form();
   }
