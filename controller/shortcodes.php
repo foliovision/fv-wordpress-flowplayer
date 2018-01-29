@@ -27,9 +27,32 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 add_shortcode('fv_time','fv_player_time');
 
 function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
-	global $fv_fp;
-  if( !$fv_fp ) return false;	
-  
+	global $fv_fp, $wpdb;
+  if( !$fv_fp ) return false;
+
+  // check for new playlist tag format with video data saved in DB
+  if (isset($atts['playlist']) && strpos($atts['playlist'], ',') !== false) {
+    // update playlist data and add src tag to be compatible with the old HTML generation code
+    $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . $atts['playlist'] . ')');
+
+    // add src and splash tags
+    $atts['src'] = $videos[0]->src;
+
+    if ($videos[0]->splash) {
+      $atts['splash'] = $videos[0]->src;
+    }
+
+    // add the rest of the videos to the playlist tag
+    array_shift($videos);
+    $new_playlist_tag = array();
+
+    foreach ($videos as $vid) {
+      $new_playlist_tag[] = $vid->src . ($vid->splash ? ','.$vid->splash : '');
+    }
+
+    $atts['playlist'] = implode(';', $new_playlist_tag);
+  }
+
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     
     if( !isset( $atts['src'] ) ) {     
