@@ -294,10 +294,12 @@ class FV_Player_Custom_Videos_Master {
     echo $objVideos->get_form();
   }
   
-  function register_metabox( $name, $meta_key, $post_type ) {
+  function register_metabox( $name, $meta_key, $post_type, $display ) {
     if( !isset($this->aMetaBoxes[$post_type]) ) $this->aMetaBoxes[$post_type] = array();
+    if( !isset($this->aMetaBoxesDisplay[$post_type]) ) $this->aMetaBoxesDisplay[$post_type] = array();
     
     $this->aMetaBoxes[$post_type][$meta_key] = $name;
+    $this->aMetaBoxesDisplay[$post_type][$meta_key] = $display;
   }
   
   //  todo: fix for new code
@@ -354,9 +356,11 @@ class FV_Player_Custom_Videos_Master {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
         foreach( $aMeta AS $key => $aMetas ) {
-          $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
-          if( $objVideos->have_videos() ) {
-            $content .= $objVideos->get_html();
+          if( !empty($this->aMetaBoxesDisplay[$post->post_type][$key]) && $this->aMetaBoxesDisplay[$post->post_type][$key] ) {
+            $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
+            if( $objVideos->have_videos() ) {
+              $content .= $objVideos->get_html();
+            }
           }
         }
       }
@@ -426,9 +430,9 @@ $FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
 
 class FV_Player_MetaBox {
   
-  function __construct( $name, $meta_key, $post_type ) {
+  function __construct( $name, $meta_key, $post_type, $display = false ) {
     global $FV_Player_Custom_Videos_Master;
-    $FV_Player_Custom_Videos_Master->register_metabox( $name, $meta_key, $post_type );
+    $FV_Player_Custom_Videos_Master->register_metabox( $name, $meta_key, $post_type, $display );
   }
   
 }
