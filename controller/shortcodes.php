@@ -39,7 +39,23 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $atts['src'] = $videos[0]->src;
 
     if ($videos[0]->splash) {
-      $atts['splash'] = $videos[0]->src;
+      $atts['splash'] = $videos[0]->splash;
+    }
+
+    if ($videos[0]->src1) {
+      $atts['src1'] = $videos[0]->src1;
+    }
+
+    if ($videos[0]->src2) {
+      $atts['src2'] = $videos[0]->src2;
+    }
+
+    if ($videos[0]->rtmp) {
+      $atts['rtmp'] = $videos[0]->rtmp;
+    }
+
+    if ($videos[0]->rtmp_path) {
+      $atts['rtmp_path'] = $videos[0]->rtmp_path;
     }
 
     // add the rest of the videos to the playlist tag
@@ -47,7 +63,25 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $new_playlist_tag = array();
 
     foreach ($videos as $vid) {
-      $new_playlist_tag[] = $vid->src . ($vid->splash ? ','.$vid->splash : '');
+      $item = $vid->src;
+
+      if ($vid->src1) {
+        $item .= ',' . $vid->src1;
+      }
+
+      if ($vid->src2) {
+        $item .= ',' . $vid->src2;
+      }
+
+      if ($vid->rtmp_path) {
+        $item .= ',rtmp:' . $vid->rtmp_path;
+      }
+
+      if ($vid->splash) {
+        $item .= ',' . $vid->splash;
+      }
+
+      $new_playlist_tag[] = $item;
     }
 
     $atts['playlist'] = implode(';', $new_playlist_tag);
