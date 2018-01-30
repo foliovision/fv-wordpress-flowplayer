@@ -26,66 +26,138 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 
 add_shortcode('fv_time','fv_player_time');
 
-function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
-	global $fv_fp, $wpdb;
-  if( !$fv_fp ) return false;
+add_filter( 'fv_flowplayer_playlist_format', 'generateFullPlaylistCode', 10, 2);
 
-  // check for new playlist tag format with video data saved in DB
+
+/**
+ * Retrieves attributes data and updates it with the first video
+ * for player shortcode.
+ *
+ * @param $atts Attributes of the player.
+ * @param $data Data object to update the player attributes with.
+ *
+ * @return mixed Returns the same set of attributes, augmented with the data for the first video in a playlist.
+ */
+function updatePlaylistAttsForFirstVideo($atts, $data) {
+  // add src and splash tags
+  $atts['src'] = $data->src;
+
+  if ($data->splash) {
+    $atts['splash'] = $data->splash;
+  }
+
+  if ($data->src1) {
+    $atts['src1'] = $data->src1;
+  }
+
+  if ($data->src2) {
+    $atts['src2'] = $data->src2;
+  }
+
+  if ($data->rtmp) {
+    $atts['rtmp'] = $data->rtmp;
+  }
+
+  if ($data->rtmp_path) {
+    $atts['rtmp_path'] = $data->rtmp_path;
+  }
+
+  return $atts;
+}
+
+/**
+ * Returns playlist video item formatted for a shortcode,
+ * so it's in the form of "video-src,video-src1,rtmp:abcd,..."
+ * and can be added to the playlist section of that shortcode.
+ *
+ * @param $vid The video object from which to prepare the string data.
+ *
+ * @return string Returns the string data for a playlist item.
+ */
+function getPlaylistItemData($vid) {
+  $item = $vid->src;
+
+  if ($vid->src1) {
+    $item .= ',' . $vid->src1;
+  }
+
+  if ($vid->src2) {
+    $item .= ',' . $vid->src2;
+  }
+
+  if ($vid->rtmp_path) {
+    $item .= ',rtmp:' . $vid->rtmp_path;
+  }
+
+  if ($vid->splash) {
+    $item .= ',' . $vid->splash;
+  }
+
+  return $item;
+}
+
+/**
+ * Generates a full code for a playlist from one that uses video IDs
+ * stored in the database to one that conforms to the original long
+ * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
+ */
+function generateFullPlaylistCode($atts) {
+  global $wpdb;
+  static $cache = array();
+
+  // check if we should change anything in the playlist code
   if (isset($atts['playlist']) && preg_match('/^[\d,]+$/m', $atts['playlist'])) {
-    // update playlist data and add src tag to be compatible with the old HTML generation code
-    $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . $atts['playlist'] . ')');
-
-    // add src and splash tags
-    $atts['src'] = $videos[0]->src;
-
-    if ($videos[0]->splash) {
-      $atts['splash'] = $videos[0]->splash;
-    }
-
-    if ($videos[0]->src1) {
-      $atts['src1'] = $videos[0]->src1;
-    }
-
-    if ($videos[0]->src2) {
-      $atts['src2'] = $videos[0]->src2;
-    }
-
-    if ($videos[0]->rtmp) {
-      $atts['rtmp'] = $videos[0]->rtmp;
-    }
-
-    if ($videos[0]->rtmp_path) {
-      $atts['rtmp_path'] = $videos[0]->rtmp_path;
-    }
-
-    // add the rest of the videos to the playlist tag
-    array_shift($videos);
+    // serve what we can from the cache
+    $ids = explode(',', $atts['playlist']);
+    $newids = array();
     $new_playlist_tag = array();
+    $first_video_data_cached = false;
 
+    // check the first video, which is the main one for the playlist
+    if (isset($cache[$ids[0]])) {
+      $first_video_data_cached = true;
+      $atts = updatePlaylistAttsForFirstVideo($atts, $cache[$ids[0]]);
+    }
+
+    foreach ($ids as $id) {
+      if (isset($cache[$id])) {
+        $new_playlist_tag[] = getPlaylistItemData($cache[$id]);
+      } else {
+        $newids[] = $id;
+      }
+    }
+
+    // update playlist data and add src tag to be compatible with the old HTML generation code
+    $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . implode(',', $newids) . ')');
+
+    if (!$first_video_data_cached) {
+      $atts = updatePlaylistAttsForFirstVideo($atts, $videos[0]);
+      $cache[$videos[0]->id] = $videos[0];
+
+      // remove the first video and keep adding the rest of the videos to the playlist tag
+      array_shift( $videos );
+    }
+
+    // add rest of the videos into the playlist tag
     foreach ($videos as $vid) {
-      $item = $vid->src;
-
-      if ($vid->src1) {
-        $item .= ',' . $vid->src1;
-      }
-
-      if ($vid->src2) {
-        $item .= ',' . $vid->src2;
-      }
-
-      if ($vid->rtmp_path) {
-        $item .= ',rtmp:' . $vid->rtmp_path;
-      }
-
-      if ($vid->splash) {
-        $item .= ',' . $vid->splash;
-      }
-
-      $new_playlist_tag[] = $item;
+      $cache[$vid->id] = $vid;
+      $new_playlist_tag[] = getPlaylistItemData($vid);
     }
 
     $atts['playlist'] = implode(';', $new_playlist_tag);
   }
+
+  return $atts;
+}
+
+
+
+function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
+	global $fv_fp;
+  if( !$fv_fp ) return false;
+
+  // check for new playlist tag format with video data saved in DB
+  $atts = apply_filters('fv_flowplayer_playlist_format', $atts);
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     
