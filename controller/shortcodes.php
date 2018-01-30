@@ -26,7 +26,9 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 
 add_shortcode('fv_time','fv_player_time');
 
-add_filter( 'fv_flowplayer_playlist_format', 'generateFullPlaylistCode', 10, 2);
+add_filter( 'fv_flowplayer_attributes_retrieve', 'getPlayerAttsFromDb', 10, 2);
+
+add_action( 'wp_ajax_expand_player_shortcode', 'expand_player_shortcode' );
 
 
 /**
@@ -65,6 +67,8 @@ function updatePlaylistAttsForFirstVideo($atts, $data) {
   return $atts;
 }
 
+
+
 /**
  * Returns playlist video item formatted for a shortcode,
  * so it's in the form of "video-src,video-src1,rtmp:abcd,..."
@@ -95,6 +99,8 @@ function getPlaylistItemData($vid) {
 
   return $item;
 }
+
+
 
 /**
  * Generates a full code for a playlist from one that uses video IDs
@@ -139,15 +145,93 @@ function generateFullPlaylistCode($atts) {
     }
 
     // add rest of the videos into the playlist tag
-    foreach ($videos as $vid) {
-      $cache[$vid->id] = $vid;
-      $new_playlist_tag[] = getPlaylistItemData($vid);
-    }
+    if (count($videos)) {
+      foreach ( $videos as $vid ) {
+        $cache[ $vid->id ]  = $vid;
+        $new_playlist_tag[] = getPlaylistItemData( $vid );
+      }
 
-    $atts['playlist'] = implode(';', $new_playlist_tag);
+      $atts['playlist'] = implode(';', $new_playlist_tag);
+    } else {
+      // only one video found, therefore this is not a playlist
+      unset($atts['playlist']);
+    }
   }
 
   return $atts;
+}
+
+
+/**
+ * Retrieves player attributes from the database
+ * as opposed to getting them from the old full-text
+ * shortcode format.
+ *
+ * @param $id ID of the player to get attributes for.
+ *
+ * @return array|mixed Returns an array with all player attributes in it.
+ *                     If the player ID is not found, an empty array is returned.
+ */
+function getPlayerAttsFromDb($atts) {
+  global $wpdb;
+  static $cache = array();
+
+  if (isset($atts['id'])) {
+    if ( isset( $cache[ $atts['id'] ] ) ) {
+      return $cache[ $atts['id'] ];
+    }
+
+    $data = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'fv_player_players WHERE id = ' . (int) $atts['id'] );
+    $atts = array();
+
+    // did we find the player?
+    if ( $data && count( $data ) ) {
+      $atts = array(
+        'width'  => $data[0]->width,
+        'height' => $data[0]->height
+      );
+
+      // add playlist / single video data
+      $atts = array_merge( $atts, generateFullPlaylistCode(
+      // we need to prepare the same attributes array here
+      // as is ingested by generateFullPlaylistCode()
+      // when parsing the new playlist code on the front-end
+        array(
+          'playlist' => $data[0]->videos
+        )
+      ) );
+    }
+
+    $cache[ $atts['id'] ] = $atts;
+  }
+
+  return $atts;
+}
+
+
+
+/**
+ * AJAX method to generate expanded textual shortcode from database information
+ * to build the shortcode editor UI on the front-end.
+ */
+function expand_player_shortcode() {
+  if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
+      $atts = $atts = apply_filters('fv_flowplayer_attributes_retrieve', array( 'id' => $_POST['playerID']));
+
+      if (count($atts)) {
+        $out = '[fvplayer';
+
+        foreach ( $atts as $att_name => $att_value ) {
+          $out .= ' ' . $att_name . '="' . $att_value . '"';
+        }
+
+        $out .= ']';
+
+        echo $out;
+      }
+  }
+
+  wp_die();
 }
 
 
@@ -157,7 +241,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   if( !$fv_fp ) return false;
 
   // check for new playlist tag format with video data saved in DB
-  $atts = apply_filters('fv_flowplayer_playlist_format', $atts);
+  $atts = apply_filters('fv_flowplayer_attributes_retrieve', $atts);
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     
