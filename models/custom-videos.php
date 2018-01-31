@@ -103,7 +103,7 @@ class FV_Player_Custom_Videos {
             <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
               <button class='button fv-player-editor-button'>Edit Video</button>
               <button class='button fv-player-editor-remove'>Remove Video</button>
-              <button class='button fv-player-editor-more'>Add Another Video</button>
+              <button class='button fv-player-editor-more' style='display:none'>Add Another Video</button>
             </div>
 
             <div class='add-video' ".($video ? 'style="display:none"' : '').">

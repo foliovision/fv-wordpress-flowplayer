@@ -1524,22 +1524,17 @@ jQuery(document).on('fv_flowplayer_shortcode_insert', function(e) {
 
 
 jQuery( function($) {
-  $(document).ready( function() {
-    if( typeof(fv_wp_flowplayer_init) != "undefined" ) {
-      fv_wp_flowplayer_init();
-      $('.fv-player-editor-preview.loading').each( function(k,v) {
-        fv_load_video_preview(jQuery(v).parents('.fv-player-editor-wrapper'));
-      });
-    }
-  });      
+  $(document).ready( 'fv_wp_flowplayer_init' );
+  
+  jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only     
 
   $(document).on( 'fv_flowplayer_shortcode_insert', '.fv-player-editor-field', function() {
     console.log('fv_flowplayer_shortcode_insert',fv_player_editor_button_clicked);
     fv_load_video_preview( jQuery(this).parents('.fv-player-editor-wrapper'));
   } );
 
-  function fv_show_video( wrapper, show ) {
-    if( show ) {
+  function fv_show_video( wrapper ) {
+    if( wrapper.find('.fv-player-editor-field').val() ) {
       wrapper.find('.edit-video').show();
       wrapper.find('.add-video').hide();
     }
@@ -1548,11 +1543,13 @@ jQuery( function($) {
       wrapper.find('.add-video').show();
       wrapper.find('.fv-player-editor-preview').html('');
     }
+    
+    jQuery('[data-key='+wrapper.data('key')+'] .fv-player-editor-more').last().show();  //  show last add more button only
   }
 
   function fv_remove_video( id ) {
     $( '#widget-widget_fvplayer-'+id+'-text' ).val("");
-    fv_show_video( id, false );
+    fv_show_video(id);
     $('#fv_edit_video-'+id+' .video-preview').html('');
   }
 
@@ -1572,14 +1569,17 @@ jQuery( function($) {
       $(document).trigger('fvp-preview-complete');
     } );
 
-    fv_show_video( wrapper, true );
+    fv_show_video(wrapper);
   }
   
-  $(document).on('click','.fv-player-editor-remove', function(e) {
+  $(document).on('click','.fv-player-editor-remove', function(e) {console.log('.fv-player-editor-remove');
     var wrapper = $(this).parents('.fv-player-editor-wrapper');    
-    if( $('[data-key='+wrapper.data('key')+']').length == 1 ) {
+    if( $('[data-key='+wrapper.data('key')+']').length == 1 ) { //  if there is only single video
       wrapper.find('.fv-player-editor-field').val('');
-      fv_show_video(wrapper,false);
+      fv_show_video(wrapper);
+    } else {
+      wrapper.remove();
+      jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only  
     }
     return false;
   });
@@ -1588,8 +1588,8 @@ jQuery( function($) {
     var wrapper = $(this).parents('.fv-player-editor-wrapper'); 
     var new_wrapper = wrapper.clone();   
     new_wrapper.find('.fv-player-editor-field').val('');
-    fv_show_video(new_wrapper,false);
-    new_wrapper.insertAfter( $('[data-key='+wrapper.data('key')+']:last') );
+    fv_show_video(new_wrapper);
+    new_wrapper.insertAfter( $('[data-key='+wrapper.data('key')+']:last') );  //  insert after last of the kind
     $(this).hide();
 
     return false;
