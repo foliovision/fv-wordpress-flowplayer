@@ -354,6 +354,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.4.1 - 2018/01/?? =
+
+* CSS - fullscreen subtitles font increased to 175% of the base size
+* Fix for protocol relative splash screen URLs
+
 = 6.4 - 2018/01/22 =
 
 * Amazon S3 - applying the signature to splash images too

@@ -938,7 +938,8 @@ class flowplayer_frontend extends flowplayer
     $splash_img = false;
     if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
       $splash_img = $this->aCurArgs['splash'];
-      if( strpos($splash_img,'http://') === false && strpos($splash_img,'https://') === false ) {
+      
+      if( strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
         $http = is_ssl() ? 'https://' : 'http://';
         
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
