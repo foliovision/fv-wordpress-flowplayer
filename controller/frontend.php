@@ -428,7 +428,8 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-  if( flowplayer::is_beta() && file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) { //  todo: only include if it's going to be used!
+  global $fv_fp;
+  if( $fv_fp->is_beta() && ( $fv_fp->_get_option('ui_repeat_button') || $fv_fp->_get_option('ui_no_picture_button') ) && file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) { //  todo: only include if it's going to be used!
     include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
   }
   
