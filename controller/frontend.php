@@ -299,7 +299,7 @@ function flowplayer_prepare_scripts() {
   ){
     
     $aDependencies = array('jquery');
-    if( $fv_fp->load_tabs ) {
+    if( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
