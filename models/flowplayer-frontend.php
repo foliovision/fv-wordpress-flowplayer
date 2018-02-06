@@ -183,7 +183,7 @@ class flowplayer_frontend extends flowplayer
      */
  
     if( $player_type == 'video'  && $this->aCurArgs['liststyle'] == 'tabs' && count($aPlaylistItems) > 1 ) {
-      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions);            
+      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width);            
     }
     
     
@@ -1013,13 +1013,16 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions) {
+  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
     global $post;
+    
+    if( intval($width) == 0 ) $width = '100%';
+    $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
     
     $this->count_tabs++;
     $output = new stdClass;
     $output->ret = array();
-    $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
+    $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs" style="max-width: '.$cssWidth.'"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
     $output->ret['script'] = '';
     
     $output->ret['html'] .= '<ul>';

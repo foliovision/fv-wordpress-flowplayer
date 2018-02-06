@@ -815,6 +815,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 /*
  *  FV Flowplayer Tabs
  */
+.fv_flowplayer_tabs { margin: 0 auto; }
 .fv_flowplayer_tabs ul.ui-tabs,.fv_flowplayer_tabs ul.ui-tabs-nav{margin:0 !important;font-size:13px;font-family:Arial, Helvetica, sans-serif;font-weight:bold;line-height:24px !important}
 .fv_flowplayer_tabs .ui-tabs { padding: 0; zoom: 1; }
 .fv_flowplayer_tabs .ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 1px 0; }
