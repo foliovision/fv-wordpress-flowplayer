@@ -1884,6 +1884,10 @@ a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
     border-radius: 3px;
 }
 
+/* hide tabs during loading */
+body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div, body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > ul { display: none }
+body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tabs_first { display: block }
+
 
 
 /*
