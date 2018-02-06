@@ -597,7 +597,7 @@
 .fv-playlist-design-2014.fp-playlist-external a:hover h4,.fv-playlist-design-2014.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper .fv-playlist-design-2014 a:hover h4 {color:inherit}
 
 /* Playlist 2017 - text only */ 
-.fp-playlist-text.fp-playlist-external a h4,.visible-captions.fp-playlist-external a h4 {background-color:transparent;opacity:1;text-align:left}
+.fp-playlist-text.fp-playlist-external a h4,.visible-captions.fp-playlist-external a h4 {background-color:transparent;opacity:1}
 .visible-captions.fp-playlist-external a h4 span {color: #fff;background-color:rgb(0, 0, 0);background-color:rgba(0, 0, 0, 0.5)}
 .fp-playlist-text.fp-playlist-external a:hover div {background-color:#666}
 .fp-playlist-text.fp-playlist-vertical a {margin-bottom:12px;}
@@ -606,6 +606,7 @@
 	.fp-playlist-text-wrapper .fp-playlist-vertical {width:35%}
         .fp-playlist-text-wrapper .fp-playlist-only-captions a .now-playing {display:none}
         .fp-playlist-only-captions.fp-playlist-vertical a {display:block;}
+        .fp-playlist-text.fp-playlist-vertical a h4 {text-align:left}
         .fp-playlist-text-wrapper.is-fv-narrow .flowplayer,.fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-text,.fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions,.fp-playlist-vertical-wrapper.is-fv-narrow .flowplayer,.fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical {width:100%;float:none;margin-bottom:0}
         .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}
         .fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions a {width:100%;float:none;display:block}
