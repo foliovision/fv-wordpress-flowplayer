@@ -1,4 +1,11 @@
 <?php
+require_once(dirname(__FILE__) . "/../includes/aws/aws-autoloader.php");
+
+use Aws\S3\S3Client;
+use Aws\Credentials\Credentials;
+use Aws\S3\Exception\S3Exception;
+
+
 
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
@@ -246,3 +253,151 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 }
 
+
+add_action( 'wp_ajax_load_s3_assets', 'fv_wp_flowplayer_ajax_load_s3_assets' );
+add_action( 'wp_enqueue_scripts', 'fv_wp_flowplayer_s3_browse_register_scripts' );
+
+
+
+function fv_wp_flowplayer_s3_browse_register_scripts() {
+  wp_register_script( 'browse-s3-js', plugins_url( '/js/s3-browser.js' , __FILE__ ), array(), '', true );
+  wp_enqueue_script( 'browse-s3-js' );
+}
+
+
+
+function fv_wp_flowplayer_ajax_load_s3_assets() {
+  global $fv_fp, $s3Client;
+
+  $regions = $fv_fp->_get_option('amazon_region');
+  $secrets = $fv_fp->_get_option('amazon_secret');
+  $keys    = $fv_fp->_get_option('amazon_key');
+  $buckets = $fv_fp->_get_option('amazon_bucket');
+
+  if (isset($_POST['bucket']) && in_array($_POST['bucket'], $buckets)) {
+    $array_id = array_search($_POST['bucket'], $buckets);
+  } else {
+    $array_id = 0;
+  }
+
+  $region = $regions[$array_id];
+  $secret = $secrets[$array_id];
+  $key    = $keys[$array_id];
+  $bucket = $buckets[$array_id];
+
+  $credentials = new Credentials($key, $secret);
+
+  // instantiate the S3 client with AWS credentials
+  $s3Client = S3Client::factory(array(
+    'credentials' => $credentials,
+    'region' => $region,
+    'version' => 'latest' ));
+
+  try {
+    $objects = $s3Client->getIterator('ListObjects', array('Bucket' => $bucket));
+
+    $path_array=array();
+    $size_array=array();
+    $link_array=array();
+
+    foreach ($objects as $object) {
+      if (!isset($objectarray)) { $objectarray = array(); }
+      //print_r($object);
+      $name = $object['Key'];
+      $size = $object['Size'];
+
+      if ($object['Size'] != '0') {
+
+        $link = (string) $s3Client->getObjectUrl($bucket, $name);
+        $path = 'Home/'.$name;
+
+        $path_array[] = $path;
+        $size_array[] = $size;
+        $link_array[] = $link;
+
+      }
+
+    }
+
+    function &placeInArray(array &$dest, array $path_array, $size, $pathorig,$link) {
+      // If we're at the leaf of the tree, just push it to the array and return
+      //echo $pathorig;
+      //echo $size."<br>";
+
+      global $folders_added;
+      if (count($path_array) === 1) {
+        if ($path_array[0] !== '') {
+          $file_array = array();
+          $file_array['name'] = $path_array[0];
+          $file_array['size'] = $size;
+          $file_array['type'] = 'file';
+          $file_array['path'] = $pathorig;
+          $file_array['link'] = $link;
+          array_push($dest['items'], $file_array);
+        }
+        return $dest;
+      }
+
+      // If not (if multiple elements exist in path_array) then shift off the next path-part...
+      // (this removes $path_array's first element off, too)
+      $path = array_shift($path_array);
+
+      if ($path) {
+
+        $newpath_temp = explode($path,$pathorig);
+        $newpath = $newpath_temp[0].$path.'/';
+        // ...make a new sub-array for it...
+
+
+        //if (!isset($dest['items'][$path])) {
+        if(!in_array($newpath,$folders_added,true)) {
+          $dest['items'][] = array(
+
+            'name' => $path,
+            'type' => 'folder',
+            'path' => $newpath,
+            'items' => array()
+
+          );
+          $folders_added[] = $newpath;
+          //print_r($folders_added);
+        }
+        $count = count($dest['items']);
+        $count--;
+        //echo $count.'<br>';
+        //print_r($dest['items'][$path]);
+
+        // ...and continue the process on the sub-array
+        return placeInArray($dest['items'][$count], $path_array, $size, $pathorig,$link);
+      }
+
+      // This is just here to blow past multiple slashes (an empty path-part), like
+      // /path///to///thing
+      return placeInArray($dest, $path_array, $size, $pathorig,$link);
+    }
+
+    $output = array();
+    $folders_added = array();
+    $i=0;
+    foreach ($path_array as $path) {
+      $size = $size_array[$i];
+      $link = $link_array[$i];
+      placeInArray($output, explode('/', $path), $size, $path, $link);
+      $i++;
+    }
+
+    $json_final = array(
+      'buckets' => $buckets,
+      'active_bucket' => $bucket,
+      'items' => $output['items'][0]
+    );
+
+    wp_send_json($json_final);
+
+  }
+  catch (S3Exception $e) {
+    echo $e->getMessage() . "\n";
+  }
+
+  wp_die();
+}
