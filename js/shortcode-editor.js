@@ -218,8 +218,38 @@ jQuery(document).ready(function($){
           },
           multiple: false
       });
-      
+
+      fv_flowplayer_s3_browser_add_tab = function() {
+        if (!jQuery('#fv_flowplayer_s3_browser_media_tab').length) {
+          // add S3 service browser tab
+          var
+            $router = jQuery('.media-router:visible'),
+            $item = $router.find('.media-menu-item:last').clone();
+
+            $item
+              .attr('id', 'fv_flowplayer_s3_browser_media_tab')
+              .text('Amazon S3')
+              .on('click', fv_flowplayer_s3_browser_load_assets);
+
+            $router.append($item);
+        }
+      };
+
+      fv_flowplayer_s3_browser_load_assets = function () {
+        var
+          $media_frame_content = jQuery('.media-frame-content:visible'),
+          $overlay_div = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
+            'height' : '100%'
+          });
+
+        $media_frame_content.html($overlay_div);
+
+        alert('load S3 assets via AJAX');
+        return false;
+      };
+
       fv_flowplayer_uploader.on('open', function() {
+        fv_flowplayer_s3_browser_add_tab();
         jQuery('.media-router .media-menu-item').eq(0).click();
         jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
       });      
