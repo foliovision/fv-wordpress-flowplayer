@@ -354,10 +354,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4.1 - 2018/01/?? =
+= 6.4.1 - 2018/02/08 =
 
 * CSS - fullscreen subtitles font increased to 175% of the base size
 * Fix for protocol relative splash screen URLs
+* Playlist tabs - fix for appearance when using narrow player in wide container
 
 = 6.4 - 2018/01/22 =
 
