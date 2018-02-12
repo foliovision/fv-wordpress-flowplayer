@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.4.2 - 2018/02/?? =
+
+* Lightbox - fix for Ajax loaded content
+
 = 6.4.1 - 2018/02/08 =
 
 * CSS - fullscreen subtitles font increased to 175% of the base size

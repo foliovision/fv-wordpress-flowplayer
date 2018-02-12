@@ -11,7 +11,10 @@
 /*
  *  Lightbox
  */
-jQuery(document).ready(function(){
+jQuery(document).ready(fv_player_lightbox_bind);
+jQuery(document).ajaxComplete(fv_player_lightbox_bind);
+
+function fv_player_lightbox_bind(){
  
   if( typeof(jQuery().fv_player_pro_colorbox) == "undefined" ) return;
   
