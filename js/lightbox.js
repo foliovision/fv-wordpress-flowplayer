@@ -141,7 +141,7 @@ function fv_player_lightbox_bind(){
   jQuery(document).bind('fv_player_pro_box_closed', function(e){
     fv_player_lightbox_fresh = true;
   });  
-});
+}
 
 
 //  todo: move to new code style
