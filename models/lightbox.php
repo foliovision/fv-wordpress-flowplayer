@@ -167,7 +167,7 @@ class FV_Player_lightbox {
           $sTitle = "title='" . esc_attr($aLightbox[1]) . "'";
         }
 
-        $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
+        $lightboxed_player = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         /* $html = preg_replace( '~max-width: \d+px;~', 'max-width: '.$iWidth.'px;', $html );
           $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
 
@@ -175,7 +175,7 @@ class FV_Player_lightbox {
         if ($iWidth > 0) {
           $html .= '<div class="fp-ratio" style="padding-top: '.str_replace(',','.',round($iHeight / $iWidth, 4) * 100).'%"></div>';
         }
-        $html .= "</div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $html . "</div>";
+        $html .= "</div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $lightboxed_player . "</div>";
       }
     }
     return $html;
