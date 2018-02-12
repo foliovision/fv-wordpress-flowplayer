@@ -1476,8 +1476,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $resource .= $sGlue."X-Amz-Expires=$time";
         $resource .= $sGlue."X-Amz-SignedHeaders=$sSignedHeaders";
         $resource .= $sGlue."X-Amz-Signature=".$sSignature;              
-        
-        $this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
+
+        //$this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
   
       } else {
         $expires = time() + $time;

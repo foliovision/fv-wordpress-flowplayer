@@ -235,27 +235,43 @@ jQuery(document).ready(function($){
         }
       };
 
-      fv_flowplayer_s3_browser_load_assets = function () {
+      fv_flowplayer_s3_browser_load_assets = function (bucket) {
         var
           $this = jQuery(this),
           $media_frame_content = jQuery('.media-frame-content:visible'),
           $overlay_div = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
             'height' : '100%'
-          });
+          }),
+          ajax_data = {
+            action: "load_s3_assets",
+            cookie: encodeURIComponent(document.cookie)
+          };
 
         $this.addClass('active').siblings().removeClass('active')
         $media_frame_content.html($overlay_div);
 
-        jQuery.post(ajaxurl, {
-          action: "load_s3_assets",
-          cookie: encodeURIComponent(document.cookie)
-        }, function(ret){
-          $media_frame_content.html('<div class="files-div"><div class="filemanager">\n' +
-            '\n' +
-            '\t\t<div class="search">\n' +
-            '\t\t\t<input type="search" placeholder="Find a file.." />\n' +
-            '\t\t</div>\n' +
-            '\n' +
+        if (typeof bucket === 'string' && bucket) {
+          ajax_data['bucket'] = bucket;
+        }
+
+        jQuery.post(ajaxurl, ajax_data, function(ret) {
+          var html = '<div class="files-div"><div class="filemanager">';
+
+          if (ret.buckets){
+            html += '<div class="bucket-dropdown">' +
+            '<strong>S3 Bucket:</strong> &nbsp; <select name="bucket-dropdown" id="bucket-dropdown">';
+
+            for (var i in ret.buckets) {
+              html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
+            }
+
+            html += '</select>';
+          }
+
+          html += '</div><hr /><br />' +
+            '<div class="search">' +
+            '<input type="search" placeholder="Find a file.." />' +
+            '</div>' +
             '\t\t<div class="breadcrumbs"></div>\n' +
             '\n' +
             '\t\t<ul class="data"></ul>\n' +
@@ -266,7 +282,13 @@ jQuery(document).ready(function($){
             '\t\t</div>\n' +
             '\n' +
             '\t</div>\n' +
-            '\t</div>');
+            '\t</div>';
+
+          $media_frame_content.html(html);
+
+          jQuery('#bucket-dropdown').on('change', function() {
+            fv_flowplayer_s3_browser_load_assets(this.value);
+          });
 
           fv_flowplayer_s3_browse( ret.items );
         } );

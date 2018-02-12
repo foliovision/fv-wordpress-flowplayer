@@ -273,9 +273,10 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
   $secrets = $fv_fp->_get_option('amazon_secret');
   $keys    = $fv_fp->_get_option('amazon_key');
   $buckets = $fv_fp->_get_option('amazon_bucket');
+  $region_names = fv_player_get_aws_regions();
 
-  if (isset($_POST['bucket']) && in_array($_POST['bucket'], $buckets)) {
-    $array_id = array_search($_POST['bucket'], $buckets);
+  if (isset($_POST['bucket']) && isset($buckets[$_POST['bucket']])) {
+    $array_id = $_POST['bucket'];
   } else {
     $array_id = 0;
   }
@@ -386,9 +387,19 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
       $i++;
     }
 
+    // prepare list of buckets for the selection dropdown
+    $buckets_output = array();
+    foreach ($buckets as $bucket_index => $bucket_name) {
+      $buckets_output[] = array(
+        'id' => $bucket_index,
+        'name' => $bucket_name . ' (' . $regions[$bucket_index] . ')'
+      );
+    }
+
     $json_final = array(
-      'buckets' => $buckets,
-      'active_bucket' => $bucket,
+      'buckets' => $buckets_output,
+      'region_names' => $region_names,
+      'active_bucket_id' => $array_id,
       'items' => $output['items'][0]
     );
 
