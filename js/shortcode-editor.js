@@ -257,30 +257,33 @@ jQuery(document).ready(function($){
         jQuery.post(ajaxurl, ajax_data, function(ret) {
           var
             html = '<div class="files-div"><div class="filemanager">',
-            firstBucket = null;
+            last_selected_bucket = null;
 
           if (ret.buckets){
             html += '<div class="bucket-dropdown">';
 
-            // objects don't have length, so we need to check this way
+            // prepare dropdown HTML
+            var
+              select_html = '<strong>S3 Bucket:</strong> &nbsp; <select name="bucket-dropdown" id="bucket-dropdown">',
+              one_bucket_enabled = false;
+
             for (var i in ret.buckets) {
-              firstBucket = ret.buckets[i];
-              break;
-            }
+              select_html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
 
-            if (firstBucket !== null) {
-              html += '<strong>S3 Bucket:</strong> &nbsp; <select name="bucket-dropdown" id="bucket-dropdown">';
-
-              for (var i in ret.buckets) {
-                html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
+              if (ret.buckets[i].id > 0) {
+                one_bucket_enabled = true;
               }
-
-              html += '</select>';
-            } else {
-              html += '<strong>You have no S3 buckets configured in settings or none of them has a region assigned.</strong>';
             }
 
-            html += '</div>' +
+            select_html += '</select>';
+
+            // check if we have at least a single enabled bucket
+            // and if not, replace the whole select HTML with a warning message
+            if (!one_bucket_enabled) {
+              select_html = '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has a region assigned.</strong>';
+            }
+
+            html += select_html + '</div>' +
             '<hr /><br />';
           }
 
@@ -301,8 +304,23 @@ jQuery(document).ready(function($){
 
           $media_frame_content.html(html);
 
+          jQuery('#bucket-dropdown').on('click', function() {
+            last_selected_bucket = this.selectedIndex;
+          });
+
           jQuery('#bucket-dropdown').on('change', function() {
-            fv_flowplayer_s3_browser_load_assets(this.value);
+            if (this.value > 0) {
+              fv_flowplayer_s3_browser_load_assets(this.value);
+              last_selected_bucket = this.selectedIndex;
+            } else {
+              window.alert('This bucket has no region assigned in settings.');
+
+              if (last_selected_bucket !== null) {
+                this.selectedIndex = last_selected_bucket;
+              }
+
+              return false;
+            }
           });
 
           fv_flowplayer_s3_browse( ret.items );

@@ -283,39 +283,21 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
     $array_id = 0;
   }
 
-  // remove all buckets that have no regions assigned
-  $keep_checking = true;
-  while ($keep_checking) {
-    // break here if there are no buckets left
-    if (!count($buckets)) {
-      break;
-    } else {
-      // remove any bucket without region selected
-      $all_ok = true;
-      foreach ($buckets as $bucket_id => $unused) {
-        if (!$regions[$bucket_id]) {
-          unset($buckets[$bucket_id], $regions[$bucket_id], $secrets[$bucket_id], $keys[$bucket_id]);
-
-          // adjust the selected bucket to the first array ID if we just
-          // removed the one we chose to display
-          if ($array_id == $bucket_id) {
-            reset($buckets);
-            $array_id = key($buckets);
-          }
-
-          $all_ok = false;
-          break;
-        }
-      }
-
-      // all buckets have regions, we can stop the check now
-      if ($all_ok) {
-        $keep_checking = false;
+  // if the selected bucket is a region-less one, change the $array_id variable
+  // to one that has a region
+  $regioned_bucket_found = (count($buckets) ? true : false);
+  if (!$regions[$array_id]) {
+    $regioned_bucket_found = false;
+    foreach ($buckets as $bucket_id => $unused) {
+      if ($regions[$bucket_id]) {
+        $array_id = $bucket_id;
+        $regioned_bucket_found = true;
+        break;
       }
     }
   }
 
-  if (count($buckets)) {
+  if ($regioned_bucket_found) {
     $region = $regions[ $array_id ];
     $secret = $secrets[ $array_id ];
     $key    = $keys[ $array_id ];
@@ -425,42 +407,37 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
         placeInArray( $output, explode( '/', $path ), $size, $path, $link );
         $i ++;
       }
-
-      // prepare list of buckets for the selection dropdown
-      $buckets_output = array();
-      foreach ( $buckets as $bucket_index => $bucket_name ) {
-        $buckets_output[] = array(
-          'id'   => $bucket_index,
-          'name' => $bucket_name . ' (' . $regions[ $bucket_index ] . ')'
-        );
-      }
-
-      $json_final = array(
-        'buckets'          => $buckets_output,
-        'region_names'     => $region_names,
-        'active_bucket_id' => $array_id,
-        'items'            => $output['items'][0]
-      );
-
-      wp_send_json( $json_final );
-
     } catch ( S3Exception $e ) {
       echo $e->getMessage() . "\n";
     }
-  } else {
-    // no buckets left (either none defined or none have regions assigned
-    wp_send_json( array(
-      'buckets'          => array(),
-      'region_names'     => $region_names,
-      'active_bucket_id' => -1,
-      'items'            => array(
-        'items' => array(),
-        'name' => '/',
-        'path' => '/',
-        'type' => 'folder'
-      )
-    ) );
   }
 
+  // prepare list of buckets for the selection dropdown
+  $buckets_output = array();
+  $negative_ids = -1;
+  foreach ( $buckets as $bucket_index => $bucket_name ) {
+    $buckets_output[] = array(
+      'id'   => ($regions[ $bucket_index ] ? $bucket_index : $negative_ids--),
+      'name' => $bucket_name . ' (' . ($regions[ $bucket_index ] ? $regions[ $bucket_index ] : translate('no region', 'fv-wordpress-flowplayer')) . ')'
+    );
+  }
+
+  $json_final = array(
+    'buckets'          => $buckets_output,
+    'region_names'     => $region_names,
+    'active_bucket_id' => $array_id,
+    'items'            => (
+      $regioned_bucket_found ?
+        $output['items'][0] :
+        array(
+          'items' => array(),
+          'name' => '/',
+          'path' => '/',
+          'type' => 'folder'
+        )
+    )
+  );
+
+  wp_send_json( $json_final );
   wp_die();
 }
