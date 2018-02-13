@@ -259,6 +259,10 @@ jQuery(document).ready(function($){
             html = '<div class="files-div"><div class="filemanager">',
             last_selected_bucket = null;
 
+          if (ret.err) {
+            window.alert(ret.err);
+          }
+
           if (ret.buckets){
             html += '<div class="bucket-dropdown">';
 
@@ -280,7 +284,7 @@ jQuery(document).ready(function($){
             // check if we have at least a single enabled bucket
             // and if not, replace the whole select HTML with a warning message
             if (!one_bucket_enabled) {
-              select_html = '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has a region assigned.</strong>';
+              select_html = '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has complete settings (region, key ID and secret key).</strong>';
             }
 
             html += select_html + '</div>' +
@@ -309,11 +313,11 @@ jQuery(document).ready(function($){
           });
 
           jQuery('#bucket-dropdown').on('change', function() {
-            if (this.value > 0) {
+            if (this.value >= 0) {
               fv_flowplayer_s3_browser_load_assets(this.value);
               last_selected_bucket = this.selectedIndex;
             } else {
-              window.alert('This bucket has no region assigned in settings.');
+              window.alert('Bucket is missing settings. Please make sure you assigned region, key ID and secret key to this bucket.');
 
               if (last_selected_bucket !== null) {
                 this.selectedIndex = last_selected_bucket;

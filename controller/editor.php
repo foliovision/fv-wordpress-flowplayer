@@ -283,6 +283,38 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
     $array_id = 0;
   }
 
+  // remove all buckets with missing name
+  $keep_checking = true;
+  while ($keep_checking) {
+    // break here if there are no buckets left
+    if (!count($buckets)) {
+      break;
+    } else {
+      // remove any bucket without a name
+      $all_ok = true;
+      foreach ($buckets as $bucket_id => $bucket_name) {
+        if (!$bucket_name) {
+          unset($buckets[$bucket_id], $regions[$bucket_id], $secrets[$bucket_id], $keys[$bucket_id]);
+
+          // adjust the selected bucket to the first array ID if we just
+          // removed the one we chose to display
+          if ($array_id == $bucket_id) {
+            reset($buckets);
+            $array_id = key($buckets);
+          }
+
+          $all_ok = false;
+          break;
+        }
+      }
+
+      // all buckets have regions, we can stop the check now
+      if ($all_ok) {
+        $keep_checking = false;
+      }
+    }
+  }
+
   // if the selected bucket is a region-less one, change the $array_id variable
   // to one that has a region
   $regioned_bucket_found = (count($buckets) ? true : false);
@@ -408,7 +440,14 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
         $i ++;
       }
     } catch ( S3Exception $e ) {
-      echo $e->getMessage() . "\n";
+      //echo $e->getMessage() . "\n";
+      $err = $e->getMessage();
+      $output['items'] = array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder'
+      );
     }
   }
 
@@ -416,8 +455,9 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
   $buckets_output = array();
   $negative_ids = -1;
   foreach ( $buckets as $bucket_index => $bucket_name ) {
+    $has_all_data = ($regions[ $bucket_index ] && $keys[ $bucket_index ] && $secrets[ $bucket_index ]);
     $buckets_output[] = array(
-      'id'   => ($regions[ $bucket_index ] ? $bucket_index : $negative_ids--),
+      'id'   => ($has_all_data ? $bucket_index : $negative_ids--),
       'name' => $bucket_name . ' (' . ($regions[ $bucket_index ] ? $regions[ $bucket_index ] : translate('no region', 'fv-wordpress-flowplayer')) . ')'
     );
   }
@@ -437,6 +477,10 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
         )
     )
   );
+
+  if (isset($err) && $err) {
+    $json_final['err'] = $err;
+  }
 
   wp_send_json( $json_final );
   wp_die();
