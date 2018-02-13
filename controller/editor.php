@@ -1,5 +1,7 @@
 <?php
-require_once(dirname(__FILE__) . "/../includes/aws/aws-autoloader.php");
+if (!class_exists('Aws\S3\S3Client')) {
+  require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
+}
 
 use Aws\S3\S3Client;
 use Aws\Credentials\Credentials;
