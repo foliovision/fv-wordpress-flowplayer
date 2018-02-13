@@ -255,21 +255,36 @@ jQuery(document).ready(function($){
         }
 
         jQuery.post(ajaxurl, ajax_data, function(ret) {
-          var html = '<div class="files-div"><div class="filemanager">';
+          var
+            html = '<div class="files-div"><div class="filemanager">',
+            firstBucket = null;
 
           if (ret.buckets){
-            html += '<div class="bucket-dropdown">' +
-            '<strong>S3 Bucket:</strong> &nbsp; <select name="bucket-dropdown" id="bucket-dropdown">';
+            html += '<div class="bucket-dropdown">';
 
+            // objects don't have length, so we need to check this way
             for (var i in ret.buckets) {
-              html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
+              firstBucket = ret.buckets[i];
+              break;
             }
 
-            html += '</select>';
+            if (firstBucket !== null) {
+              html += '<strong>S3 Bucket:</strong> &nbsp; <select name="bucket-dropdown" id="bucket-dropdown">';
+
+              for (var i in ret.buckets) {
+                html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
+              }
+
+              html += '</select>';
+            } else {
+              html += '<strong>You have no S3 buckets configured in settings or none of them has a region assigned.</strong>';
+            }
+
+            html += '</div>' +
+            '<hr /><br />';
           }
 
-          html += '</div><hr /><br />' +
-            '<div class="search">' +
+          html += '<div class="search">' +
             '<input type="search" placeholder="Find a file.." />' +
             '</div>' +
             '\t\t<div class="breadcrumbs"></div>\n' +

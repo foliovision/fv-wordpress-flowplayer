@@ -283,133 +283,183 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
     $array_id = 0;
   }
 
-  $region = $regions[$array_id];
-  $secret = $secrets[$array_id];
-  $key    = $keys[$array_id];
-  $bucket = $buckets[$array_id];
+  // remove all buckets that have no regions assigned
+  $keep_checking = true;
+  while ($keep_checking) {
+    // break here if there are no buckets left
+    if (!count($buckets)) {
+      break;
+    } else {
+      // remove any bucket without region selected
+      $all_ok = true;
+      foreach ($buckets as $bucket_id => $unused) {
+        if (!$regions[$bucket_id]) {
+          unset($buckets[$bucket_id], $regions[$bucket_id], $secrets[$bucket_id], $keys[$bucket_id]);
 
-  $credentials = new Credentials($key, $secret);
+          // adjust the selected bucket to the first array ID if we just
+          // removed the one we chose to display
+          if ($array_id == $bucket_id) {
+            reset($buckets);
+            $array_id = key($buckets);
+          }
 
-  // instantiate the S3 client with AWS credentials
-  $s3Client = S3Client::factory(array(
-    'credentials' => $credentials,
-    'region' => $region,
-    'version' => 'latest' ));
-
-  try {
-    $objects = $s3Client->getIterator('ListObjects', array('Bucket' => $bucket));
-
-    $path_array=array();
-    $size_array=array();
-    $link_array=array();
-
-    foreach ($objects as $object) {
-      if (!isset($objectarray)) { $objectarray = array(); }
-      //print_r($object);
-      $name = $object['Key'];
-      $size = $object['Size'];
-
-      if ($object['Size'] != '0') {
-
-        $link = (string) $s3Client->getObjectUrl($bucket, $name);
-        $path = 'Home/'.$name;
-
-        $path_array[] = $path;
-        $size_array[] = $size;
-        $link_array[] = $link;
-
-      }
-
-    }
-
-    function &placeInArray(array &$dest, array $path_array, $size, $pathorig,$link) {
-      // If we're at the leaf of the tree, just push it to the array and return
-      //echo $pathorig;
-      //echo $size."<br>";
-
-      global $folders_added;
-      if (count($path_array) === 1) {
-        if ($path_array[0] !== '') {
-          $file_array = array();
-          $file_array['name'] = $path_array[0];
-          $file_array['size'] = $size;
-          $file_array['type'] = 'file';
-          $file_array['path'] = $pathorig;
-          $file_array['link'] = $link;
-          array_push($dest['items'], $file_array);
+          $all_ok = false;
+          break;
         }
-        return $dest;
       }
 
-      // If not (if multiple elements exist in path_array) then shift off the next path-part...
-      // (this removes $path_array's first element off, too)
-      $path = array_shift($path_array);
-
-      if ($path) {
-
-        $newpath_temp = explode($path,$pathorig);
-        $newpath = $newpath_temp[0].$path.'/';
-        // ...make a new sub-array for it...
-
-
-        //if (!isset($dest['items'][$path])) {
-        if(!in_array($newpath,$folders_added,true)) {
-          $dest['items'][] = array(
-
-            'name' => $path,
-            'type' => 'folder',
-            'path' => $newpath,
-            'items' => array()
-
-          );
-          $folders_added[] = $newpath;
-          //print_r($folders_added);
-        }
-        $count = count($dest['items']);
-        $count--;
-        //echo $count.'<br>';
-        //print_r($dest['items'][$path]);
-
-        // ...and continue the process on the sub-array
-        return placeInArray($dest['items'][$count], $path_array, $size, $pathorig,$link);
+      // all buckets have regions, we can stop the check now
+      if ($all_ok) {
+        $keep_checking = false;
       }
-
-      // This is just here to blow past multiple slashes (an empty path-part), like
-      // /path///to///thing
-      return placeInArray($dest, $path_array, $size, $pathorig,$link);
     }
-
-    $output = array();
-    $folders_added = array();
-    $i=0;
-    foreach ($path_array as $path) {
-      $size = $size_array[$i];
-      $link = $link_array[$i];
-      placeInArray($output, explode('/', $path), $size, $path, $link);
-      $i++;
-    }
-
-    // prepare list of buckets for the selection dropdown
-    $buckets_output = array();
-    foreach ($buckets as $bucket_index => $bucket_name) {
-      $buckets_output[] = array(
-        'id' => $bucket_index,
-        'name' => $bucket_name . ' (' . $regions[$bucket_index] . ')'
-      );
-    }
-
-    $json_final = array(
-      'buckets' => $buckets_output,
-      'region_names' => $region_names,
-      'active_bucket_id' => $array_id,
-      'items' => $output['items'][0]
-    );
-
-    wp_send_json($json_final);
-
   }
-  catch (S3Exception $e) {
-    echo $e->getMessage() . "\n";
+
+  if (count($buckets)) {
+    $region = $regions[ $array_id ];
+    $secret = $secrets[ $array_id ];
+    $key    = $keys[ $array_id ];
+    $bucket = $buckets[ $array_id ];
+
+    $credentials = new Credentials( $key, $secret );
+
+    // instantiate the S3 client with AWS credentials
+    $s3Client = S3Client::factory( array(
+      'credentials' => $credentials,
+      'region'      => $region,
+      'version'     => 'latest'
+    ) );
+
+    try {
+      $objects = $s3Client->getIterator( 'ListObjects', array( 'Bucket' => $bucket ) );
+
+      $path_array = array();
+      $size_array = array();
+      $link_array = array();
+
+      foreach ( $objects as $object ) {
+        if ( ! isset( $objectarray ) ) {
+          $objectarray = array();
+        }
+        //print_r($object);
+        $name = $object['Key'];
+        $size = $object['Size'];
+
+        if ( $object['Size'] != '0' ) {
+
+          $link = (string) $s3Client->getObjectUrl( $bucket, $name );
+          $path = 'Home/' . $name;
+
+          $path_array[] = $path;
+          $size_array[] = $size;
+          $link_array[] = $link;
+
+        }
+
+      }
+
+      function &placeInArray( array &$dest, array $path_array, $size, $pathorig, $link ) {
+        // If we're at the leaf of the tree, just push it to the array and return
+        //echo $pathorig;
+        //echo $size."<br>";
+
+        global $folders_added;
+        if ( count( $path_array ) === 1 ) {
+          if ( $path_array[0] !== '' ) {
+            $file_array         = array();
+            $file_array['name'] = $path_array[0];
+            $file_array['size'] = $size;
+            $file_array['type'] = 'file';
+            $file_array['path'] = $pathorig;
+            $file_array['link'] = $link;
+            array_push( $dest['items'], $file_array );
+          }
+
+          return $dest;
+        }
+
+        // If not (if multiple elements exist in path_array) then shift off the next path-part...
+        // (this removes $path_array's first element off, too)
+        $path = array_shift( $path_array );
+
+        if ( $path ) {
+
+          $newpath_temp = explode( $path, $pathorig );
+          $newpath      = $newpath_temp[0] . $path . '/';
+          // ...make a new sub-array for it...
+
+
+          //if (!isset($dest['items'][$path])) {
+          if ( ! in_array( $newpath, $folders_added, true ) ) {
+            $dest['items'][] = array(
+
+              'name'  => $path,
+              'type'  => 'folder',
+              'path'  => $newpath,
+              'items' => array()
+
+            );
+            $folders_added[] = $newpath;
+            //print_r($folders_added);
+          }
+          $count = count( $dest['items'] );
+          $count --;
+          //echo $count.'<br>';
+          //print_r($dest['items'][$path]);
+
+          // ...and continue the process on the sub-array
+          return placeInArray( $dest['items'][ $count ], $path_array, $size, $pathorig, $link );
+        }
+
+        // This is just here to blow past multiple slashes (an empty path-part), like
+        // /path///to///thing
+        return placeInArray( $dest, $path_array, $size, $pathorig, $link );
+      }
+
+      $output        = array();
+      $folders_added = array();
+      $i             = 0;
+      foreach ( $path_array as $path ) {
+        $size = $size_array[ $i ];
+        $link = $link_array[ $i ];
+        placeInArray( $output, explode( '/', $path ), $size, $path, $link );
+        $i ++;
+      }
+
+      // prepare list of buckets for the selection dropdown
+      $buckets_output = array();
+      foreach ( $buckets as $bucket_index => $bucket_name ) {
+        $buckets_output[] = array(
+          'id'   => $bucket_index,
+          'name' => $bucket_name . ' (' . $regions[ $bucket_index ] . ')'
+        );
+      }
+
+      $json_final = array(
+        'buckets'          => $buckets_output,
+        'region_names'     => $region_names,
+        'active_bucket_id' => $array_id,
+        'items'            => $output['items'][0]
+      );
+
+      wp_send_json( $json_final );
+
+    } catch ( S3Exception $e ) {
+      echo $e->getMessage() . "\n";
+    }
+  } else {
+    // no buckets left (either none defined or none have regions assigned
+    wp_send_json( array(
+      'buckets'          => array(),
+      'region_names'     => $region_names,
+      'active_bucket_id' => -1,
+      'items'            => array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder'
+      )
+    ) );
   }
 
   wp_die();
