@@ -259,10 +259,6 @@ jQuery(document).ready(function($){
             html = '<div class="files-div"><div class="filemanager">',
             last_selected_bucket = null;
 
-          if (ret.err) {
-            window.alert(ret.err);
-          }
-
           if (ret.buckets){
             html += '<div class="bucket-dropdown">';
 
@@ -291,6 +287,10 @@ jQuery(document).ready(function($){
             '<hr /><br />';
           }
 
+          if (ret.err) {
+            html += '<div class="errors"><strong>' + ret.err + '</strong></div><hr /><br />';
+          }
+
           html += '<div class="search">' +
             '<input type="search" placeholder="Find a file.." />' +
             '</div>' +
@@ -308,21 +308,19 @@ jQuery(document).ready(function($){
 
           $media_frame_content.html(html);
 
-          jQuery('#bucket-dropdown').on('click', function() {
-            last_selected_bucket = this.selectedIndex;
-          });
-
           jQuery('#bucket-dropdown').on('change', function() {
             if (this.value >= 0) {
               fv_flowplayer_s3_browser_load_assets(this.value);
-              last_selected_bucket = this.selectedIndex;
             } else {
-              window.alert('Bucket is missing settings. Please make sure you assigned region, key ID and secret key to this bucket.');
+              var $err_div = jQuery('.filemanager .errors');
 
-              if (last_selected_bucket !== null) {
-                this.selectedIndex = last_selected_bucket;
+              if (!$err_div.length) {
+                $err_div = jQuery('<div class="errors"></div>');
+                $err_div.insertBefore(jQuery('.filemanager .search'));
+                $err_div.after('<hr /><br />');
               }
 
+              $err_div.html('<strong>Bucket is missing settings. Please make sure you assigned region, key ID and secret key to this bucket.</strong>');
               return false;
             }
           });
