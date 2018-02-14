@@ -1768,6 +1768,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     if ($first.is(':visible')) {
       var new_inputs = $first.clone();
       new_inputs.find('input').attr('value', '');
+      new_inputs.find('select').val('-1');
       new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_cloudfront_domains_count);
       new_inputs.insertBefore('.amazon-cloudfront-domain-last');
     } else {
