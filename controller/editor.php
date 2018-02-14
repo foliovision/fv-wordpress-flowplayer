@@ -335,6 +335,27 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
     $key    = $keys[ $array_id ];
     $bucket = $buckets[ $array_id ];
 
+    // load CloudFront setttings
+    $cfDomains = $fv_fp->_get_option( array('pro','cf_domains_list') );
+    $cfBuckets = $fv_fp->_get_option( array('pro','cf_buckets_list') );
+    $cf_domain_to_use = null;
+
+    // check if we have current bucket assigned to an URL
+    if (is_array($cfBuckets) && count($cfBuckets)) {
+      foreach ($cfBuckets as $cf_bucket_index => $cf_bucket_id) {
+        if ($cf_bucket_id == $array_id) {
+          $cf_domain_to_use = strtolower($cfDomains[$cf_bucket_index]);
+
+          // add HTTP, if not set
+          if (substr($cf_domain_to_use, 0, 4) !== 'http') {
+            $cf_domain_to_use = 'http://' . $cf_domain_to_use;
+          }
+
+          break;
+        }
+      }
+    }
+
     $credentials = new Credentials( $key, $secret );
 
     // instantiate the S3 client with AWS credentials
@@ -362,6 +383,16 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
         if ( $object['Size'] != '0' ) {
 
           $link = (string) $s3Client->getObjectUrl( $bucket, $name );
+
+          // replace link with CloudFront URL, if we have one
+          if ($cf_domain_to_use !== null) {
+            // replace S3 URLs with buckets in the S3 subdomain
+            $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($cf_domain_to_use, '/').'/$1', $link);
+
+            // replace S3 URLs with bucket name as a subfolder
+            $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($cf_domain_to_use, '/').'/$1', $link);
+          }
+
           $path = 'Home/' . $name;
 
           $path_array[] = $path;
