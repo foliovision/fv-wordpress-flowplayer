@@ -572,6 +572,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
+    if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();
+    if (!isset($conf['skin-youtuby'])) $conf['skin-youtuby'] = array();
+
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = array();
@@ -2239,4 +2242,3 @@ function fv_wp_flowplayer_save_post( $post_id ) {
     }
   }
 }
-

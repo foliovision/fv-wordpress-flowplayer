@@ -49,8 +49,10 @@ function get_calling_class() {
   // we're calling a method of a class in this mock file, handle it as such
   if (isset($trace[2]['class']) && in_array($trace[2]['class'], $mocked_classes)) {
     $class = $trace[4]['class'];
-  } else {
+  } else if (isset($trace[3]['class'])){
     $class = $trace[3]['class'];
+  } else {
+    $class = false;
   }
 
   // +1 to i cos we have to account for calling this function
@@ -113,8 +115,48 @@ function add_filter() {
   return checkAndReturnRequestedValue();
 }
 
+function apply_filters( $hook, $value ) {
+  return $value;
+}
+
+function current_user_can( $capability ) {
+  return false;
+}
+
 function get_option() {
   return checkAndReturnRequestedValue();
+}
+
+function home_url( $url = false ) {
+  return 'https://site.com/'.$url;
+}
+
+function is_multisite() {
+  return false;
+}
+
+function is_user_logged_in() {
+  return false;
+}
+
+function sanitize_title( $title ) {
+  return preg_replace( '~[^a-z0-9_-]~', '-', $title );
+}
+
+function site_url( $url = false ) {
+  return 'https://site.com/wp/'.$url;
+}
+
+function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer ) {
+  echo "Registering $handle for $src?ver=$ver footer? $in_footer\n";
+}
+
+function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
+  echo "Registering $handle for $src?ver=$ver\n";
+}
+
+function wp_localize_script( $handle, $name, $data ) {
+  echo "Localizing $handle with $name = ".var_export($data,true)."\n";
 }
 
 function wp_remote_get() {
@@ -131,6 +173,10 @@ function add_shortcode() {
 
 function is_admin() {
   return checkAndReturnRequestedValue();
+}
+
+function plugins_url( $value, $file ) {
+  return $value;
 }
 
 function update_option() {
@@ -173,16 +219,7 @@ class wpdb {
 global $wpdb;
 $wpdb = new wpdb();
 
-// mocks for the fv_fp player configuration class
-class fvfp {
+global $fv_wp_flowplayer_ver;
+$fv_wp_flowplayer_ver = '1.2.3.4';
 
-  public $conf = array();
-
-  public function get_mime_type() {
-    return checkAndReturnRequestedValue();
-  }
-
-}
-
-global $fv_fp;
-$fv_fp = new fvfp();
+define( 'WP_CONTENT_URL', 'https://site.com/wp-content' );
