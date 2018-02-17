@@ -77,7 +77,7 @@ final class FV_Player_Controller extends PHPUnit_Framework_TestCase {
     global $testReturnValue;
     $testReturnValue = '';
 
-    /*include_once "../../models/flowplayer.php";
+    include_once "../../models/flowplayer.php";
     global $fv_fp;
     $fv_fp = new flowplayer();
     
@@ -85,8 +85,7 @@ final class FV_Player_Controller extends PHPUnit_Framework_TestCase {
     $fv_fp->aAds = array();
     $fv_fp->aPopups = array();
     
-    include_once "../../controller/frontend.php";*/
-    include_once "../../flowplayer.php";
+    include_once "../../controller/frontend.php";
   }
 
   public function tearDown() {
