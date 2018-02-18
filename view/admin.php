@@ -596,7 +596,10 @@ function fv_flowplayer_admin_integrations() {
                     $htmlQueue .= "<a href='".get_edit_post_link($k)."'>$k</a> ";
                   }
                   $htmlQueue .= ") <a href='".site_url()."/wp-admin/options-general.php?page=fvplayer&fv_flowplayer_checker'>Scan now!</a></span>";
+                } else {
+                  $htmlQueue = '';
                 }
+                
                 if( $iCount && $iQueue ) {
                   printf(__('Currently %d videos in database and %s posts in queue.', 'fv-wordpress-flowplayer'), $iCount, $htmlQueue);
                 } else if( $iCount ) {
