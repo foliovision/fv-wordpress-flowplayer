@@ -1,13 +1,13 @@
 <phpunit bootstrap="bootstrap.php">
     <testsuites>
-        <testsuite name="Beta">
-            <directory suffix="Test.php">beta</directory>
+        <testsuite name="Shortcode">
+            <directory suffix="Test.php">shortcode</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix="Test.php">beta</directory>
+            <directory suffix="Test.php">shortcode</directory>
         </whitelist>
     </filter>
 </phpunit>
