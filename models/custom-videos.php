@@ -199,7 +199,7 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'show_password_fields', array( $this, 'user_profile' ), 10, 2 );
     add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 999, 2 );
     
-    add_filter( 'the_content', array( $this, 'show' ) );
+    add_filter( 'the_content', array( $this, 'show' ) );  //  adding post videos after content automatically
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
     //  EDD
@@ -312,14 +312,15 @@ class FV_Player_Custom_Videos_Master {
     
     
     //  todo: permission check!
-    
-    foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
+    foreach( $_POST['fv_player_videos'] AS $meta => $videos ) {
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'user' ) {
         delete_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta );
 
-        if( strlen($value) == 0 ) continue;
+        foreach( $videos AS $video ) {
+          if( strlen($video) == 0 ) continue;
               
-        add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $value );
+          add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $video );
+        }
       } 
       
     }
@@ -355,9 +356,10 @@ class FV_Player_Custom_Videos_Master {
     if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' && isset($post->ID) ) {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
-        foreach( $aMeta AS $key => $aMetas ) {
+        foreach( $aMeta AS $key => $aMetas ) {var_dump($this->aMetaBoxesDisplay);
           if( !empty($this->aMetaBoxesDisplay[$post->post_type][$key]) && $this->aMetaBoxesDisplay[$post->post_type][$key] ) {
             $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
+            var_dump('objVideos',$objVideos);
             if( $objVideos->have_videos() ) {
               $content .= $objVideos->get_html();
             }
