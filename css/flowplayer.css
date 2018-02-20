@@ -82,7 +82,7 @@
 .flowplayer.is-mouseover .fp-subtitle{bottom:34px;}
 .flowplayer.is-mouseout .fp-subtitle{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
 .flowplayer .fp-subtitle .fp-subtitle-line{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px;}
-.flowplayer.is-fullscreen .fp-subtitle .fp-subtitle-line{font-size:125%;line-height:1.2}
+.flowplayer.is-fullscreen .fp-subtitle .fp-subtitle-line{font-size:175%;line-height:1.2}
 .flowplayer .fp-subtitle.is-wide br{display:none}
 .flowplayer .fp-subtitle .fp-subtitle-line:after{content:'';clear:both}
 .flowplayer .fp-subtitle .fp-subtitle-line:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
