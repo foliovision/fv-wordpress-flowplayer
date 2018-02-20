@@ -270,7 +270,7 @@ jQuery(document).ready(function($){
             for (var i in ret.buckets) {
               select_html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
 
-              if (ret.buckets[i].id > 0) {
+              if (ret.buckets[i].id > -1) {
                 one_bucket_enabled = true;
               }
             }
@@ -332,7 +332,9 @@ jQuery(document).ready(function($){
       };
 
       fv_flowplayer_uploader.on('open', function() {
-        fv_flowplayer_s3_browser_add_tab();
+        if (fv_player_pro.cf_domains_count > 0) {
+          fv_flowplayer_s3_browser_add_tab();
+        }
         jQuery('.media-router .media-menu-item').eq(0).click();
         jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
       });      
