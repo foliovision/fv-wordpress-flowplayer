@@ -1,14 +1,4 @@
 <?php
-if (!class_exists('Aws\S3\S3Client')) {
-  require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
-}
-
-use Aws\S3\S3Client;
-use Aws\Credentials\Credentials;
-use Aws\S3\Exception\S3Exception;
-
-
-
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
@@ -268,7 +258,16 @@ function fv_wp_flowplayer_s3_browse_register_scripts() {
 
 
 
+function fv_wp_flowplayer_include_aws_sdk() {
+  if (!class_exists('Aws\S3\S3Client')) {
+    require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
+  }
+}
+
+
+
 function fv_wp_flowplayer_ajax_load_s3_assets() {
+  fv_wp_flowplayer_include_aws_sdk();
   global $fv_fp, $s3Client;
 
   $regions = $fv_fp->_get_option('amazon_region');
@@ -356,10 +355,10 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
       }
     }
 
-    $credentials = new Credentials( $key, $secret );
+    $credentials = new Aws\Credentials\Credentials( $key, $secret );
 
     // instantiate the S3 client with AWS credentials
-    $s3Client = S3Client::factory( array(
+    $s3Client = Aws\S3\S3Client::factory( array(
       'credentials' => $credentials,
       'region'      => $region,
       'version'     => 'latest'
@@ -470,7 +469,7 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
         placeInArray( $output, explode( '/', $path ), $size, $path, $link );
         $i ++;
       }
-    } catch ( S3Exception $e ) {
+    } catch ( Aws\S3\Exception\S3Exception $e ) {
       //echo $e->getMessage() . "\n";
       $err = $e->getMessage();
       $output['items'] = array(
