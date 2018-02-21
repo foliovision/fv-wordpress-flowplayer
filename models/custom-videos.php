@@ -73,15 +73,13 @@ class FV_Player_Custom_Videos {
     
     $html .= $this->get_html( $args );
     
-    //  todo: buttons to add more videos
-    
     if( !is_admin() ) {
       $html .= wp_nonce_field( 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), true, false );
     }
     
     if( !is_admin() && !$args['no_form'] ) {      
       $html .= "<input type='hidden' name='action' value='fv-player-custom-videos-save' />";
-      $html .= "<input type='submit' value='Save Videos' />"; //  todo: don't show when in post form      
+      $html .= "<input type='submit' value='Save Videos' />";   
       $html .= "</form>";
     }
     
@@ -203,11 +201,11 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
     //  EDD
-    add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor')); //  todo: check
+    add_action('edd_profile_editor_after_email', array($this, 'EDD_profile_editor'));
     add_action('edd_pre_update_user_profile', array($this, 'save'));
     
     //  bbPress
-    add_filter( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10, 2 );  //  todo: check
+    add_action( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10 );
     add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
   }
   
@@ -260,12 +258,18 @@ class FV_Player_Custom_Videos_Master {
       
       <div>
         <?php
-        $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('id'), 'type' => 'user' ));
+        $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('ID'), 'type' => 'user' ));
         echo $objVideos->get_form( array('no_form' => true) );
         ?>
       </div>
   
     <?php
+    
+    if( !function_exists('is_plugin_active') ) include( ABSPATH . 'wp-admin/includes/plugin.php' );
+    if( !function_exists('fv_wp_flowplayer_edit_form_after_editor') ) include( dirname( __FILE__ ) . '/../controller/editor.php' );
+    
+    fv_wp_flowplayer_edit_form_after_editor();
+    fv_player_shortcode_editor_scripts_enqueue();
   }
   
   function bbpress_profile() {
@@ -274,7 +278,7 @@ class FV_Player_Custom_Videos_Master {
     if( !isset($fv_fp->conf['profile_videos_enable_bio']) || $fv_fp->conf['profile_videos_enable_bio'] !== 'true' ) 
       return;
     
-    $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('id'), 'type' => 'user' ));
+    $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('ID'), 'type' => 'user' ));
     if( $objVideos->have_videos() ) : ?>
       <div id="bbp-user-profile" class="bbp-user-profile">
         <h2 class="entry-title"><?php _e( 'Videos', 'bbpress' ); ?></h2>
@@ -302,7 +306,7 @@ class FV_Player_Custom_Videos_Master {
     $this->aMetaBoxesDisplay[$post_type][$meta_key] = $display;
   }
   
-  //  todo: fix for new code
+  
   function save() {
     
     if( !isset($_POST['fv_player_videos']) || !isset($_POST['fv-player-custom-videos-entity-type']) || !isset($_POST['fv-player-custom-videos-entity-id']) ) {
@@ -356,10 +360,9 @@ class FV_Player_Custom_Videos_Master {
     if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' && isset($post->ID) ) {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
-        foreach( $aMeta AS $key => $aMetas ) {var_dump($this->aMetaBoxesDisplay);
+        foreach( $aMeta AS $key => $aMetas ) {
           if( !empty($this->aMetaBoxesDisplay[$post->post_type][$key]) && $this->aMetaBoxesDisplay[$post->post_type][$key] ) {
             $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
-            var_dump('objVideos',$objVideos);
             if( $objVideos->have_videos() ) {
               $content .= $objVideos->get_html();
             }
@@ -420,6 +423,12 @@ class FV_Player_Custom_Videos_Master {
             <?php echo $user->get_form(array('no_form' => true));?>
         </p>
     <?php
+    
+    if( !function_exists('is_plugin_active') ) include( ABSPATH . 'wp-admin/includes/plugin.php' );
+    if( !function_exists('fv_wp_flowplayer_edit_form_after_editor') ) include( dirname( __FILE__ ) . '/../controller/editor.php' );
+    
+    fv_wp_flowplayer_edit_form_after_editor();
+    fv_player_shortcode_editor_scripts_enqueue();
   }
 
 }
