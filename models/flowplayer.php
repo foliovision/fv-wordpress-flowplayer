@@ -1384,6 +1384,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
+  public static function esc_caption( $caption ) {
+    return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
+  }
+  
+  
   function get_amazon_secure( $media ) {
     
     if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;

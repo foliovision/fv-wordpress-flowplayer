@@ -357,6 +357,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.4.2 - 2018/02/?? =
 
 * HLS.js - making it pick the initial quality automatically, rather than using the first stream
+* JW Player Conversion - adding support for [jwplayer player="3" mediaid="538527"] kind of shortcodes
 * Lightbox - fix for Ajax loaded content
 
 = 6.4.1 - 2018/02/08 =

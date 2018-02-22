@@ -158,11 +158,30 @@ public function settings_box_conversion () {
             $aFVPlaylist[] = $src;
           }
           
-          $aFVCaptions[] = str_replace( array('"',';'), '', $objAttachment->post_title );
+          $aFVCaptions[] = str_replace( array('"',';'), '', flowplayer::esc_caption($objAttachment->post_title) );
           $iCount++;
         }
         $aFVPlayer['playlist'] = implode(';',$aFVPlaylist);
         $aFVPlayer['caption'] = implode(';',$aFVCaptions);
+        $bGotSomething = true;
+      }
+    
+    } else if( !empty($aJW['mediaid']) ) {
+      $objAttachment = get_post($aJW['mediaid']);
+      if( $objAttachment ) {
+        $src = get_post_meta($objAttachment->ID,'_wp_attached_file',true);
+        $src = $this->get_full_url($src);
+        
+        $splash = get_post_meta($objAttachment->ID,'jwplayermodule_thumbnail',true);
+        if( !$splash ) {
+          if( $featured_image = wp_get_attachment_image_src( get_post_thumbnail_id($objAttachment->ID), 'large' ) ) {
+            $splash = $featured_image[0];
+          }
+        }
+        
+        $aFVPlayer['src'] = $src;
+        if( $splash ) $aFVPlayer['splash'] = $this->get_full_url($splash);;
+        $aFVPlayer['caption'] = flowplayer::esc_caption($objAttachment->post_title);
         $bGotSomething = true;
       }
     }
