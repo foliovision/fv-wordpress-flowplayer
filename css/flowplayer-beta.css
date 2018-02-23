@@ -1501,9 +1501,8 @@
 
 
 
-/*  Alignment, todo: check! */
-.flowplayer.alignleft { margin-left: 10px; margin-bottom: 10px;  }
-.flowplayer.alignright { margin-right: 10px; margin-bottom: 10px; }
+.flowplayer.alignleft { margin-right: 10px; margin-bottom: 10px;  }
+.flowplayer.alignright { margin-left: 10px; margin-bottom: 10px; }
 
 
 
