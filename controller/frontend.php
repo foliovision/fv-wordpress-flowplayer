@@ -312,9 +312,9 @@ function flowplayer_prepare_scripts() {
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
-    $sCommercialKey = !empty($fv_fp->_get_option('key')) ? $fv_fp->_get_option('key') : '';
-    $sCommercialKey = $fv_fp->is_beta() && !empty($fv_fp->_get_option('key7')) ? $fv_fp->_get_option('key7') : $sCommercialKey;
-    $sLogo = ($sCommercialKey && !empty($fv_fp->_get_option('logo')) ) ? $fv_fp->_get_option('logo') : '';
+    $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
+    $sCommercialKey = $fv_fp->is_beta() && $fv_fp->_get_option('key7') ? $fv_fp->_get_option('key7') : $sCommercialKey;
+    $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/'.$sPath.'/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/'.$sPath.'/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     

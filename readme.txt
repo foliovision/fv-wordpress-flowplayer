@@ -354,8 +354,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4.2 - 2018/02/?? =
+= 6.4.2 - 2018/02/23 =
 
+* CSS - fixing the left and right alignment margin
 * HLS.js - making it pick the initial quality automatically, rather than using the first stream
 * JW Player Conversion - adding support for [jwplayer player="3" mediaid="538527"] kind of shortcodes
 * Lightbox - fix for Ajax loaded content
