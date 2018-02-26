@@ -235,6 +235,21 @@ function expand_player_shortcode() {
 }
 
 
+/**
+ * AJAX method that parses and stores player data into database.
+ * This method is used when new, shorter shortcodes are turned ON in settings.
+ */
+function save_player_data() {
+  if (isset($_POST['data'])) {
+    global $wpdb;
+
+
+  }
+
+  wp_die();
+}
+
+
 
 function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 	global $fv_fp;
