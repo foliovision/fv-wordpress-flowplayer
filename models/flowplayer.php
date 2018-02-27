@@ -2155,30 +2155,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ?>
     <?php endwhile; 
   endif;
-  ?>
-</body>
-
-<?php wp_footer(); ?>
-
-<?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
   
-  <script>
-  jQuery(document).ready( function(){
-    var parent = window.parent.jQuery(window.parent.document);
-    if( typeof(flowplayer) != "undefined" ) {      
-      parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+  wp_footer();
+  
+  if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
+    <script>
+    jQuery(document).ready( function(){
+      var parent = window.parent.jQuery(window.parent.document);
+      if( typeof(flowplayer) != "undefined" ) {      
+        parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+      
+      } else {
+        parent.trigger('fvp-preview-error');
+      }
     
-    } else {
-      parent.trigger('fvp-preview-error');
-    }
-  
-  });
-  
-  if (window.top===window.self) {
-    jQuery('#wrapper').css('margin','25px 50px 0 50px');
-  } 
-  </script>
-<?php endif; ?>
+    });
+    
+    if (window.top===window.self) {
+      jQuery('#wrapper').css('margin','25px 50px 0 50px');
+    } 
+    </script>
+  <?php endif; ?>
+
+</body>
 
 </html>       
       <?php

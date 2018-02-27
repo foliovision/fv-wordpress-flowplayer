@@ -354,6 +354,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.4.3 - 2018/02/?? =
+
+* Bugfix - iframe embed code placing body closing tag in bad place
+
 = 6.4.2 - 2018/02/23 =
 
 * CSS - fixing the left and right alignment margin
