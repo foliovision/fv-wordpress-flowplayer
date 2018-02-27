@@ -1855,7 +1855,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   
-  function get_video_src($media, $aArgs ) {
+  function get_video_src($media, $aArgs = array() ) {
     $aArgs = wp_parse_args( $aArgs, array(
           'dynamic' => false,
           'flash' => true,
