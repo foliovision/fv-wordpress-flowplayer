@@ -356,7 +356,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.4.3 - 2018/02/?? =
 
+* DASH - updating to latest tested Dash.js version
 * Bugfix - iframe embed code placing body closing tag in bad place
+* Bugfix - fix for PHP warnings on AMP pages
 
 = 6.4.2 - 2018/02/23 =
 
