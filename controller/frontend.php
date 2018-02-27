@@ -299,7 +299,7 @@ function flowplayer_prepare_scripts() {
   ){
     
     $aDependencies = array('jquery');
-    if( $fv_fp->load_tabs ) {
+    if( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
@@ -430,7 +430,8 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-  if( flowplayer::is_beta() && file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) { //  todo: only include if it's going to be used!
+  global $fv_fp;
+  if( $fv_fp->is_beta() && ( $fv_fp->_get_option('ui_repeat_button') || $fv_fp->_get_option('ui_no_picture_button') ) && file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) { //  todo: only include if it's going to be used!
     include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
   }
   

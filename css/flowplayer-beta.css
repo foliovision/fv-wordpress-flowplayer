@@ -1656,6 +1656,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 /*
  *  FV Flowplayer Tabs, todo: check!
  */
+.fv_flowplayer_tabs { margin: 0 auto; }
 .fv_flowplayer_tabs ul.ui-tabs,.fv_flowplayer_tabs ul.ui-tabs-nav{margin:0 !important;font-size:13px;font-family:Arial, Helvetica, sans-serif;font-weight:bold;line-height:24px !important}
 .fv_flowplayer_tabs .ui-tabs { padding: 0; zoom: 1; }
 .fv_flowplayer_tabs .ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: 1px 0; }
@@ -1690,7 +1691,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 
 /* Notices, todo: check!  */
-.fvfp-notices { position: absolute;top:10%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 1px #000}
+.fvfp-notices { position: absolute;top:10%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 1px #000; opacity: 1 }
+.flowplayer.is-splash .fvfp-notices { display: block }
 
 
 /* Disable selection, todo: check!  */
@@ -1883,6 +1885,10 @@ a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
     font-weight: 600;
     border-radius: 3px;
 }
+
+/* hide tabs during loading */
+body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div, body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > ul { display: none }
+body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tabs_first { display: block }
 
 
 
