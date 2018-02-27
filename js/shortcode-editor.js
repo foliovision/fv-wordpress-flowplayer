@@ -1056,14 +1056,14 @@ function fv_wp_flowplayer_set_html( html ) {
 function fv_wp_flowplayer_build_ajax_data() {
   var
       $editor = jQuery('#fv-player-shortcode-editor')
-      $inputs = $editor.find('input'),
+      $inputs = $editor.find('input, select'),
       regex   = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
       data    = {};
 
   $inputs.each(function() {
     var m;
 
-    while ((m = regex.exec(this.id)) !== null) {
+    while ((m = regex.exec(this.name)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
       if (m.index === regex.lastIndex) {
         regex.lastIndex++;
