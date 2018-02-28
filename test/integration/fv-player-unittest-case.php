@@ -8,6 +8,12 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     $html = preg_replace( '/(id|rel)="wpfp_[^"]+"/', '$1="some-test-hash"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
     $html = preg_replace( "~nonce: '([^']*?)'~", "nonce: 'XYZ'", $html);
+    
+    // testProfileScreen
+    $html = preg_replace( '~fv_ytplayer_[a-z0-9]+~', 'fv_ytplayer_XYZ', $html);
+    $html = preg_replace( '~fv_vimeo_[a-z0-9]+~', 'fv_vimeo_XYZ', $html);
+    $html = preg_replace( '~<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="[^"]*?" />~', '<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="XYZ" />', $html);
+    
     $html = explode("\n",$html);
     $html = implode( "\n", array_map('trim',$html) );
     return $html;
