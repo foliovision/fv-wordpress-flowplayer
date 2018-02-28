@@ -1056,22 +1056,70 @@ function fv_wp_flowplayer_set_html( html ) {
 function fv_wp_flowplayer_build_ajax_data() {
   var
       $editor = jQuery('#fv-player-shortcode-editor')
-      $inputs = $editor.find('input, select'),
+      $tabs = $editor.find('.fv-player-tab'),
       regex   = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
-      data    = {};
+      data    = {},
+      result_keys_to_adjust = ['videos']; // videos and subtitles in the resulting data are a separate beast
+                                                       // and we regroup them at the end
 
-  $inputs.each(function() {
-    var m;
+  $tabs.each(function() {
+    var
+      $tab = jQuery(this),
+      is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
+      is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
+      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select'));
 
-    while ((m = regex.exec(this.name)) !== null) {
-      // This is necessary to avoid infinite loops with zero-width matches
-      if (m.index === regex.lastIndex) {
-        regex.lastIndex++;
-      }
-
-      data[m[1]] = this.value;
+    // prepare video and subtitles data, which are duplicated through their input names
+    if (is_videos_tab) {
+      data['videos'] = {};
+    } else if (is_subtitles_tab) {
+      data['subtitles'] = {};
     }
 
+    $tables.each(function(table_index) {
+      // only videos and subtitles tabs have tables, so we only need to search for their inputs when working with those
+      var $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select') : jQuery(this));
+
+      $inputs.each(function() {
+        var $this = jQuery(this);
+
+        while ((m = regex.exec(this.name)) !== null) {
+          // This is necessary to avoid infinite loops with zero-width matches
+          if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+          }
+
+          // videos tab
+          if (is_videos_tab) {
+            if (!data['videos'][table_index]) {
+              data['videos'][table_index] = {};
+            }
+
+            data['videos'][table_index][m[1]] = this.value;
+          }
+
+          // subtitles tab
+          else if (is_subtitles_tab) {
+            if (!data['subtitles'][table_index]) {
+              data['subtitles'][table_index] = [];
+            }
+
+            // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
+            if (this.tagName == 'INPUT') {
+              data['subtitles'][table_index].push({
+                code : $this.siblings('select:first').val(),
+                file : this.value
+              });
+            }
+          }
+
+          // all other tabs
+          else {
+            data[m[1]] = this.value;
+          }
+        }
+      });
+    });
   });
 
   return data;
