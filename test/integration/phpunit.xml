@@ -1,13 +1,8 @@
 <phpunit bootstrap="bootstrap.php">
     <testsuites>
-        <testsuite name="Shortcode">
-            <directory suffix="Test.php">shortcode</directory>
+        <testsuite name="FVPlayer">
+            <directory suffix="Test.php">frontend</directory>
+            <directory suffix="Test.php">backend</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix="Test.php">shortcode</directory>
-        </whitelist>
-    </filter>
 </phpunit>
