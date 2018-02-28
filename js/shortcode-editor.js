@@ -1105,7 +1105,7 @@ function fv_wp_flowplayer_build_ajax_data() {
             }
 
             // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
-            if (this.tagName == 'INPUT') {
+            if (this.nodeName == 'INPUT') {
               data['subtitles'][table_index].push({
                 code : $this.siblings('select:first').val(),
                 file : this.value
@@ -1115,7 +1115,11 @@ function fv_wp_flowplayer_build_ajax_data() {
 
           // all other tabs
           else {
-            data[m[1]] = this.value;
+            if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
+              data[m[1]] = this.checked ? 1 : 0;
+            } else {
+              data[m[1]] = this.value;
+            }
           }
         }
       });
