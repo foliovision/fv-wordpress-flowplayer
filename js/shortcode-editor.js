@@ -1244,11 +1244,9 @@ function fv_wp_flowplayer_submit( preview ) {
 
   // if we're using the new DB-related shortcode, let's handle it here
   if (fv_flowplayer_conf.new_shortcode) {
-	  var
-      ajax_data = fv_wp_flowplayer_build_ajax_data(),
-      ajax_url  = (preview ? 'preview-ajax-url' : 'insert-ajax-url');
+	  var ajax_data = fv_wp_flowplayer_build_ajax_data();
 
-    console.log(ajax_data);
+    //console.log(ajax_data);
 	  if (preview) {
       var previewDimensions = fv_wp_flowplayer_calculatePreviewDimensions(divPreview);
       previewWidth = previewDimensions.width;
@@ -1256,7 +1254,13 @@ function fv_wp_flowplayer_submit( preview ) {
       fv_wp_flowplayer_show_preview(true, JSON.stringify(ajax_data));
 	    alert('we need to update preview here');
     } else {
-	    alert('we need to insert new, DB-based shortcode here');
+      jQuery.post(ajaxurl, {
+        action: 'fv_wp_flowplayer_db_store_player_data',
+        data: ajax_data,
+        cookie: encodeURIComponent(document.cookie)
+      }, function(str){
+        console.log(str);
+      });
     }
 
     return;

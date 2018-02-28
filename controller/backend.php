@@ -869,3 +869,98 @@ function fv_player_block_update( $arg ) {
     }
   }
 }
+
+/*
+ *  DB based player data saving
+ */
+
+add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', 'fv_wp_flowplayer_db_store_player_data');
+
+function fv_wp_flowplayer_db_store_player_data() {
+  global $wpdb;
+
+  $player_options_int_fields = array(
+    'ab', 'ad_height', 'ad_width', 'ad_skip', 'height', 'hflip', 'lightbox', 'lightbox_height', 'lightbox_width',
+    'live', 'width'
+  );
+
+  $player_db_fields = array();
+  $player_db_values = array();
+  $video_ids        = array();
+  $sql_players      = 'INSERT INTO '.$wpdb->prefix.'fv_player_players SET ';
+
+  if (isset($_POST['data']) && is_array($_POST['data'])) {
+    foreach ($_POST['data'] as $field_name => $field_value) {
+      // global player or local video setting field
+      if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
+        $option_name = str_replace('fv_wp_flowplayer_field_', '', $field_name);
+        // global player option
+        $int_field = in_array($option_name, $player_options_int_fields);
+        $player_db_fields[] = $option_name . ' = ' . ($int_field ? (int) $field_value : '%s');
+
+        if (!$int_field) {
+          $player_db_values[] = $field_value;
+        }
+      } else if ($field_name == 'videos' && is_array($field_value)) {
+        // iterate over all videos for the player
+        foreach ($field_value as $video_data) {
+
+          $sql = 'INSERT INTO '.$wpdb->prefix.'fv_player_videos SET ';
+          $video_db_fields = array();
+          $video_db_values = array();
+
+          // prepare all options for this video
+          foreach ( $video_data as $video_field_name => $video_field_value ) {
+            // width and height are global options but are sent out for shortcode compatibility
+            if ( $video_field_name != 'fv_wp_flowplayer_field_width' && $video_field_name != 'fv_wp_flowplayer_field_height' ) {
+              $video_db_fields[] = str_replace('fv_wp_flowplayer_field_', '', $video_field_name) . ' = %s';
+              $video_db_values[] = $video_field_value;
+            }
+          }
+
+          // insert this video separately to make sure we don't go over network threshold
+          // and the MySQL server really saves the data
+          $sql .= implode( ', ', $video_db_fields );
+          $wpdb->query( $wpdb->prepare( $sql, $video_db_values ) );
+          $video_ids[] = $wpdb->insert_id;
+        }
+      } else {
+        // here should be all other fields from plugins etc. (i.e. fv_player_field_ppv_price for PPV...)
+      }
+    }
+
+    // work out subtitles now that we have videos inserted into the DB
+    if (isset($_POST['data']['subtitles']) && is_array($_POST['data']['subtitles'])) {
+      // iterate over all subtitles for each video
+      foreach ($_POST['data']['subtitles'] as $video_index => $subtitle_data) {
+
+        $sql = 'INSERT INTO '.$wpdb->prefix.'fv_player_videometa (id_video, meta_key, meta_value) VALUES ';
+        $inserts = array();
+        $insert_sqls = array();
+
+        // prepare all options for this video
+        foreach ( $subtitle_data as $subtitle_values ) {
+          if ($subtitle_values['code'] && $subtitle_values['file']) {
+            $insert_sqls[] = '(' . $video_ids[ $video_index ] . ', %s, %s)';
+            $inserts[]     = $subtitle_values['code'];
+            $inserts[]     = $subtitle_values['file'];
+          }
+        }
+
+        // insert all subtitles for this video
+        $sql .= implode( ', ', $insert_sqls );
+        $wpdb->query( $wpdb->prepare( $sql, $inserts ) );
+      }
+    }
+
+    // insert player data into the DB now
+    $sql_players .= implode( ', ', $player_db_fields);
+
+    // add all videos into this player
+    $sql_players .= ', videos = %s';
+    $player_db_values[] = implode(',', $video_ids);
+
+    $wpdb->query( $wpdb->prepare( $sql_players, $player_db_values) );
+  }
+  die();
+}
