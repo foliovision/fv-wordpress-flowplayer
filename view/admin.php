@@ -1023,7 +1023,7 @@ function fv_flowplayer_admin_skin() {
       'autoplay' => false,
       'preroll' => 'no',
       'postroll' => 'no',
-      'subtitles' =>  plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
+      'subtitles' =>  flowplayer::get_plugin_url().'/images/test-subtitles.vtt',
       'caption' => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
       'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843_295x166.jpg;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053_295x166.jpg',
 			'liststyle' => 'horizontal'
@@ -1492,7 +1492,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
 				?>
-			</div>
+      
+      </div>
       <?php endforeach;?>
       <div style="clear: both"></div>
 		</div>

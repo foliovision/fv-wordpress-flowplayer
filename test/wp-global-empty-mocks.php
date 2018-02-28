@@ -156,7 +156,7 @@ function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $m
 }
 
 function wp_localize_script( $handle, $name, $data ) {
-  echo "Localizing $handle with $name = ".var_export($data,true)."\n";
+  echo "Localizing $handle with $name = ".print_r($data,true)."\n";
 }
 
 function wp_remote_get() {

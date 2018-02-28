@@ -1832,7 +1832,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {
-      return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
+      $plugin_folder = basename(dirname(dirname(__FILE__))); // make fv-wordpress-flowplayer out of {anything}/fv-wordpress-flowplayer/models/flowplayer.php
+      return plugins_url($plugin_folder);
     }
   }
   
