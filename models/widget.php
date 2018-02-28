@@ -1,5 +1,7 @@
 <?php
 
+if( class_exists('WP_Widget') ) :
+
 class FV_Player_Widget extends WP_Widget {
 
   public function __construct() {
@@ -122,3 +124,5 @@ class FV_Player_Widget extends WP_Widget {
 }
 
 $FV_Player_Widget = new FV_Player_Widget();
+
+endif;
