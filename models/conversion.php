@@ -209,7 +209,7 @@ public function settings_box_conversion () {
     $splash_id = get_post_meta($attachment_id,'jwplayermodule_thumbnail',true);
     $splash_url = false;
     
-    if( is_int($splash_id) ) {
+    if( is_numeric($splash_id) ) {
       if( $featured_image = wp_get_attachment_image_src( $splash_id, 'large' ) ) {
         $splash_url = $featured_image[0];
       }
