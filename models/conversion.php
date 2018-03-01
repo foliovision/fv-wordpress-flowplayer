@@ -143,8 +143,7 @@ public function settings_box_conversion () {
           $src = get_post_meta($objAttachment->ID,'_wp_attached_file',true);
           $src = $this->get_full_url($src);
           
-          $splash = get_post_meta($objAttachment->ID,'jwplayermodule_thumbnail',true);
-          $splash = $this->get_full_url($splash);
+          $splash = $this->parse_jwplayer_image($objAttachment->ID);
           
           if( $iCount == 0 ) {
             $aFVPlayer['src'] = $src;
@@ -172,15 +171,10 @@ public function settings_box_conversion () {
         $src = get_post_meta($objAttachment->ID,'_wp_attached_file',true);
         $src = $this->get_full_url($src);
         
-        $splash = get_post_meta($objAttachment->ID,'jwplayermodule_thumbnail',true);
-        if( !$splash ) {
-          if( $featured_image = wp_get_attachment_image_src( get_post_thumbnail_id($objAttachment->ID), 'large' ) ) {
-            $splash = $featured_image[0];
-          }
-        }
+        $splash = $this->parse_jwplayer_image($objAttachment->ID);
         
         $aFVPlayer['src'] = $src;
-        if( $splash ) $aFVPlayer['splash'] = $this->get_full_url($splash);;
+        if( $splash ) $aFVPlayer['splash'] = $splash;
         $aFVPlayer['caption'] = flowplayer::esc_caption($objAttachment->post_title);
         $bGotSomething = true;
       }
@@ -208,6 +202,25 @@ public function settings_box_conversion () {
       $url = trailingslashit($aUploads['baseurl']).$url;
     }
     return $url;
+  }
+  
+  
+  function parse_jwplayer_image( $attachment_id ) {
+    $splash_id = get_post_meta($attachment_id,'jwplayermodule_thumbnail',true);
+    $splash_url = false;
+    
+    if( is_int($splash_id) ) {
+      if( $featured_image = wp_get_attachment_image_src( $splash_id, 'large' ) ) {
+        $splash_url = $featured_image[0];
+      }
+    } else if( !$splash_id ) {
+      if( $featured_image = wp_get_attachment_image_src( get_post_thumbnail_id($attachment_id), 'large' ) ) {
+        $splash_url = $featured_image[0];
+      }
+    } else {
+      $splash_url = $this->get_full_url($splash_id);
+    }
+    return $splash_url;
   }
 
 }
