@@ -30,6 +30,8 @@ add_filter( 'fv_flowplayer_attributes_retrieve', 'getPlayerAttsFromDb', 10, 2);
 
 add_action( 'wp_ajax_expand_player_shortcode', 'expand_player_shortcode' );
 
+add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
+
 
 /**
  * Retrieves attributes data and updates it with the first video
@@ -134,6 +136,8 @@ function generateFullPlaylistCode($atts) {
     }
 
     // update playlist data and add src tag to be compatible with the old HTML generation code
+    
+    //  todo: more to some function
     $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . implode(',', $newids) . ')');
 
     if (!$first_video_data_cached) {
@@ -181,30 +185,36 @@ function getPlayerAttsFromDb($atts) {
       return $cache[ $atts['id'] ];
     }
 
-    $data = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'fv_player_players WHERE id = ' . (int) $atts['id'] );
-    $atts = array();
-
+    $data = $wpdb->get_row( 'SELECT * FROM ' . $wpdb->prefix . 'fv_player_players WHERE id = '.intval($atts['id']).' LIMIT 1', ARRAY_A );
+    
     // did we find the player?
-    if ( $data && count( $data ) ) {
-      $atts = array(
-        'width'  => $data[0]->width,
-        'height' => $data[0]->height
-      );
-
+    if ( $data ) {
+      foreach( $data AS $k => $v ) {
+        if( $v == "1" ) {
+          $atts[$k] = "true";
+        } else if( $v == "0" ) {
+          //$atts[$k] = ""; //  should not be present at all
+        } else {
+          $atts[$k] = $v;          
+        }
+      }
+      
       // add playlist / single video data
       $atts = array_merge( $atts, generateFullPlaylistCode(
       // we need to prepare the same attributes array here
       // as is ingested by generateFullPlaylistCode()
       // when parsing the new playlist code on the front-end
         array(
-          'playlist' => $data[0]->videos
+          'playlist' => $data['videos']
         )
       ) );
+      
     }
+    
+    $cache[ $atts['id'] ] = $atts;    
 
-    $cache[ $atts['id'] ] = $atts;
   }
-
+  
   return $atts;
 }
 
@@ -701,4 +711,20 @@ function fv_flowplayer_shortcode_fix_fancy_quotes( $aArgs ) {
   }
   
   return $aArgs;
+}
+
+
+
+
+function fv_player_db_playlist_item( $aPlayer, $index, $aArgs ) {
+  $ids = explode(',', $aArgs['videos']);
+  
+  //  todo: move to some function
+  global $wpdb;
+  $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id = '.$ids[$index]);
+  $meta = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videometa WHERE id_video = '.$ids[$index]);
+    
+  $aPlayer['subtitles'] = $meta;
+  
+  return $aPlayer;
 }
