@@ -1060,7 +1060,7 @@ function fv_wp_flowplayer_build_ajax_data() {
       regex   = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
       data    = {},
       result_keys_to_adjust = ['videos']; // videos and subtitles in the resulting data are a separate beast
-                                                       // and we regroup them at the end
+                                          // and we regroup them at the end
 
   $tabs.each(function() {
     var
@@ -1081,7 +1081,17 @@ function fv_wp_flowplayer_build_ajax_data() {
       var $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select') : jQuery(this));
 
       $inputs.each(function() {
-        var $this = jQuery(this);
+        var
+          $this           = jQuery(this),
+          useIndexAsValue = false; // will become true for dropdown options without values
+
+        // check for a select without options, in which case we'll have to post selectedIndex from it
+        if (this.nodeName == 'SELECT') {
+          // it's all options without value or none in our dropdowns
+          if ($this.find('option:not([value])').length == this.length) {
+            useIndexAsValue = true;
+          }
+        }
 
         while ((m = regex.exec(this.name)) !== null) {
           // This is necessary to avoid infinite loops with zero-width matches
@@ -1095,7 +1105,7 @@ function fv_wp_flowplayer_build_ajax_data() {
               data['videos'][table_index] = {};
             }
 
-            data['videos'][table_index][m[1]] = this.value;
+            data['videos'][table_index][m[1]] = (!useIndexAsValue ? this.value : this.selectedIndex);
           }
 
           // subtitles tab
@@ -1118,7 +1128,7 @@ function fv_wp_flowplayer_build_ajax_data() {
             if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
               data[m[1]] = this.checked ? 1 : 0;
             } else {
-              data[m[1]] = this.value;
+              data[m[1]] = (!useIndexAsValue ? this.value : this.selectedIndex);
             }
           }
         }
@@ -1252,7 +1262,7 @@ function fv_wp_flowplayer_submit( preview ) {
       previewWidth = previewDimensions.width;
       previewHeight = previewDimensions.height;
       fv_wp_flowplayer_show_preview(true, JSON.stringify(ajax_data));
-	    alert('we need to update preview here');
+	    //alert('we need to update preview here');
     } else {
       jQuery.post(ajaxurl, {
         action: 'fv_wp_flowplayer_db_store_player_data',
