@@ -961,6 +961,7 @@ function fv_wp_flowplayer_db_store_player_data() {
     $player_db_values[] = implode(',', $video_ids);
 
     $wpdb->query( $wpdb->prepare( $sql_players, $player_db_values) );
+    echo $wpdb->insert_id;
   }
   die();
 }
