@@ -57,6 +57,8 @@ include_once(dirname( __FILE__ ) . '/models/widget.php');
 include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 
+include_once(dirname( __FILE__ ) . '/models/db-shortcode-player.php');
+
 
 
 $fv_fp = new flowplayer_frontend();

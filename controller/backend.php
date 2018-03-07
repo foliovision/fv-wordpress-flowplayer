@@ -884,10 +884,8 @@ function fv_wp_flowplayer_db_store_player_data() {
     'live', 'width'
   );
 
-  $player_db_fields = array();
-  $player_db_values = array();
+  $player_options   = array();
   $video_ids        = array();
-  $sql_players      = 'INSERT INTO '.$wpdb->prefix.'fv_player_players SET ';
 
   if (isset($_POST['data']) && is_array($_POST['data'])) {
     foreach ($_POST['data'] as $field_name => $field_value) {
@@ -895,12 +893,7 @@ function fv_wp_flowplayer_db_store_player_data() {
       if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
         $option_name = str_replace('fv_wp_flowplayer_field_', '', $field_name);
         // global player option
-        $int_field = in_array($option_name, $player_options_int_fields);
-        $player_db_fields[] = $option_name . ' = ' . ($int_field ? (int) $field_value : '%s');
-
-        if (!$int_field) {
-          $player_db_values[] = $field_value;
-        }
+        $player_options[$option_name] = $field_value;
       } else if ($field_name == 'videos' && is_array($field_value)) {
         // iterate over all videos for the player
         foreach ($field_value as $video_data) {
@@ -953,15 +946,18 @@ function fv_wp_flowplayer_db_store_player_data() {
       }
     }
 
-    // insert player data into the DB now
-    $sql_players .= implode( ', ', $player_db_fields);
-
     // add all videos into this player
-    $sql_players .= ', videos = %s';
-    $player_db_values[] = implode(',', $video_ids);
+    $player_options['videos'] = implode(',', $video_ids);
 
-    $wpdb->query( $wpdb->prepare( $sql_players, $player_db_values) );
-    echo $wpdb->insert_id;
+    // create and save the player
+    $player = new FV_Player_Db_Shortcode_Player(null, $player_options);
+    $id     = $player->save();
+
+    if ($id) {
+      echo $id;
+    } else {
+      echo -1;
+    }
   }
   die();
 }
