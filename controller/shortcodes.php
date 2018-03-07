@@ -91,11 +91,11 @@ function fv_flowplayer_getPlaylistItemData($vid) {
     $item .= ',' . $vid->src2;
   }
 
-  if !empty(($vid->rtmp_path)) {
+  if (!empty($vid->rtmp_path)) {
     $item .= ',rtmp:' . $vid->rtmp_path;
   }
 
-  if !empty(($vid->splash)) {
+  if (!empty($vid->splash)) {
     $item .= ',' . $vid->splash;
   }
 
