@@ -914,13 +914,12 @@ function fv_wp_flowplayer_db_store_player_data() {
           /***
            * SUBTITLES META DATA
            */
-          //
           if (isset($_POST['data']['subtitles']) && isset($_POST['data']['subtitles'][$video_index])) {
             // prepare all options for this video
             foreach ( $_POST['data']['subtitles'][$video_index] as $subtitle_values ) {
-              if ($subtitle_values['code'] && $subtitle_values['file']) {
+              if ($subtitle_values['file']) {
                 $video_meta[] = array(
-                    'meta_key' => 'subs_' . $subtitle_values['code'],
+                   'meta_key' => 'subtitles' . ($subtitle_values['code'] ? '_'.$subtitle_values['code'] : ''),
                    'meta_value' => $subtitle_values['file']
                 );
               }

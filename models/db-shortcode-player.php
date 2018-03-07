@@ -433,8 +433,8 @@ CREATE TABLE `".$this->db_table_name."` (
     if (!$wpdb->last_error) {
       return $this->id;
     } else {
-      var_export($wpdb->last_error);
-      var_export($wpdb->last_query);
+      /*var_export($wpdb->last_error);
+      var_export($wpdb->last_query);*/
       return false;
     }
   }
