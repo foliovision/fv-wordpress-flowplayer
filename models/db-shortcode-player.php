@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// the actual player instance with options that's stored in a DB
+// player instance with options that's stored in a DB
 class FV_Player_Db_Shortcode_Player {
 
   private
@@ -346,6 +346,12 @@ class FV_Player_Db_Shortcode_Player {
     }
   }
 
+  /**
+   * Stores new player instance or updates and existing one
+   * in the database.
+   *
+   * @return bool|int Returns record ID if successful, false otherwise.
+   */
   public function save() {
     global $wpdb;
 

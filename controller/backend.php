@@ -896,53 +896,48 @@ function fv_wp_flowplayer_db_store_player_data() {
         $player_options[$option_name] = $field_value;
       } else if ($field_name == 'videos' && is_array($field_value)) {
         // iterate over all videos for the player
-        foreach ($field_value as $video_data) {
+        foreach ($field_value as $video_index => $video_data) {
+          // width and height are global options but are sent out for shortcode compatibility
+          unset($video_data['fv_wp_flowplayer_field_width'], $video_data['fv_wp_flowplayer_field_height']);
 
-          $sql = 'INSERT INTO '.$wpdb->prefix.'fv_player_videos SET ';
-          $video_db_fields = array();
-          $video_db_values = array();
+          // strip video data of the prefix
+          $new_video_data = array();
+          foreach ($video_data as $key => $value) {
+            $new_video_data[str_replace('fv_wp_flowplayer_field_', '', $key)] = $value;
+          }
+          $video_data = $new_video_data;
+          unset($new_video_data);
 
-          // prepare all options for this video
-          foreach ( $video_data as $video_field_name => $video_field_value ) {
-            // width and height are global options but are sent out for shortcode compatibility
-            if ( $video_field_name != 'fv_wp_flowplayer_field_width' && $video_field_name != 'fv_wp_flowplayer_field_height' ) {
-              $video_db_fields[] = str_replace('fv_wp_flowplayer_field_', '', $video_field_name) . ' = %s';
-              $video_db_values[] = $video_field_value;
+          // add any video meta data that we can gather
+          $video_meta = array();
+
+          /***
+           * SUBTITLES META DATA
+           */
+          //
+          if (isset($_POST['data']['subtitles']) && isset($_POST['data']['subtitles'][$video_index])) {
+            // prepare all options for this video
+            foreach ( $_POST['data']['subtitles'][$video_index] as $subtitle_values ) {
+              if ($subtitle_values['code'] && $subtitle_values['file']) {
+                $video_meta[] = array(
+                    'meta_key' => 'subs_' . $subtitle_values['code'],
+                   'meta_value' => $subtitle_values['file']
+                );
+              }
             }
           }
 
-          // insert this video separately to make sure we don't go over network threshold
-          // and the MySQL server really saves the data
-          $sql .= implode( ', ', $video_db_fields );
-          $wpdb->query( $wpdb->prepare( $sql, $video_db_values ) );
-          $video_ids[] = $wpdb->insert_id;
-        }
-      } else {
-        // here should be all other fields from plugins etc. (i.e. fv_player_field_ppv_price for PPV...)
-      }
-    }
+          // save the video
+          $video = new FV_Player_Db_Shortcode_Player_Video(null, $video_data);
+          $id_video = $video->save($video_meta);
 
-    // work out subtitles now that we have videos inserted into the DB
-    if (isset($_POST['data']['subtitles']) && is_array($_POST['data']['subtitles'])) {
-      // iterate over all subtitles for each video
-      foreach ($_POST['data']['subtitles'] as $video_index => $subtitle_data) {
-
-        $sql = 'INSERT INTO '.$wpdb->prefix.'fv_player_videometa (id_video, meta_key, meta_value) VALUES ';
-        $inserts = array();
-        $insert_sqls = array();
-
-        // prepare all options for this video
-        foreach ( $subtitle_data as $subtitle_values ) {
-          if ($subtitle_values['code'] && $subtitle_values['file']) {
-            $insert_sqls[] = '(' . $video_ids[ $video_index ] . ', %s, %s)';
-            $inserts[]     = $subtitle_values['code'];
-            $inserts[]     = $subtitle_values['file'];
+          if ($id_video !== false) {
+            $video_ids[] = $id_video;
           }
         }
-
-        // insert all subtitles for this video
-        $sql .= implode( ', ', $insert_sqls );
-        $wpdb->query( $wpdb->prepare( $sql, $inserts ) );
+      } else {
+        // TODO:
+        // here should be all other fields from plugins etc. (i.e. fv_player_field_ppv_price for PPV...)
       }
     }
 
@@ -951,7 +946,7 @@ function fv_wp_flowplayer_db_store_player_data() {
 
     // create and save the player
     $player = new FV_Player_Db_Shortcode_Player(null, $player_options);
-    $id     = $player->save();
+    $id = $player->save();
 
     if ($id) {
       echo $id;

@@ -58,7 +58,8 @@ include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 
 include_once(dirname( __FILE__ ) . '/models/db-shortcode-player.php');
-
+include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-video.php');
+include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-video-meta.php');
 
 
 $fv_fp = new flowplayer_frontend();
