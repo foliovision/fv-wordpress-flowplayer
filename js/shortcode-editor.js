@@ -1049,14 +1049,38 @@ function fv_wp_flowplayer_set_html( html ) {
 }
 
 
+
+function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
+  // at least one option is value-less
+  if ($valueLessOptions.length) {
+    if (optionsHaveNoValue) {
+      // all options are value-less - the first one is always default and should be sent as ''
+      return (dropdown_element.selectedIndex === 0 ? '' : dropdown_element.value);
+    } else {
+      // some options are value-less
+      if ($valueLessOptions.length > 1) {
+        // multiple value-less options, while some other options do have a value - this should never be
+        console.log('ERROR - Unhandled exception occurred while trying to get player values: more than 1 value-less options found');
+        return false;
+      } else {
+        // single option is value-less (
+        return (dropdown_element.selectedIndex === 0 ? '' : dropdown_element.value);
+      }
+    }
+  } else {
+    // normal dropdown - all options have a value, return this.value (option's own value)
+    return dropdown_element.value;
+  }
+}
+
+
+
 function fv_wp_flowplayer_build_ajax_data() {
   var
       $editor = jQuery('#fv-player-shortcode-editor')
       $tabs = $editor.find('.fv-player-tab'),
-      regex   = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
-      data    = {},
-      result_keys_to_adjust = ['videos']; // videos and subtitles in the resulting data are a separate beast
-                                          // and we regroup them at the end
+      regex = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
+      data  = {};
 
   $tabs.each(function() {
     var
@@ -1078,14 +1102,16 @@ function fv_wp_flowplayer_build_ajax_data() {
 
       $inputs.each(function() {
         var
-          $this           = jQuery(this),
-          useIndexAsValue = false; // will become true for dropdown options without values
+          $this               = jQuery(this),
+          optionsHaveNoValue = false, // will become true for dropdown options without values
+          $valueLessOptions   = null,
+          isDropdown          = this.nodeName == 'SELECT';
 
-        // check for a select without options, in which case we'll have to post selectedIndex from it
-        if (this.nodeName == 'SELECT') {
-          // it's all options without value or none in our dropdowns
-          if ($this.find('option:not([value])').length == this.length) {
-            useIndexAsValue = true;
+        // check for a select without any option values, in which case we'll use their text
+        if (isDropdown) {
+          $valueLessOptions = $this.find('option:not([value])');
+          if ($valueLessOptions.length == this.length) {
+            optionsHaveNoValue = true;
           }
         }
 
@@ -1101,7 +1127,18 @@ function fv_wp_flowplayer_build_ajax_data() {
               data['videos'][table_index] = {};
             }
 
-            data['videos'][table_index][m[1]] = (!useIndexAsValue ? this.value : this.selectedIndex);
+            // check dropdown for its value based on values in it
+            if (isDropdown) {
+              var opt_value = fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, this);
+              // if there were any problems, just return an empty object
+              if (opt_value === false) {
+                return {};
+              } else {
+                data['videos'][table_index][m[1]] = opt_value;
+              }
+            } else {
+              data['videos'][table_index][m[1]] = this.value;
+            }
           }
 
           // subtitles tab
@@ -1122,9 +1159,20 @@ function fv_wp_flowplayer_build_ajax_data() {
           // all other tabs
           else {
             if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
-              data[m[1]] = this.checked ? 1 : 0;
+              data[m[1]] = this.checked ? 1 : '';
             } else {
-              data[m[1]] = (!useIndexAsValue ? this.value : this.selectedIndex);
+              // check dropdown for its value based on values in it
+              if (isDropdown) {
+                var opt_value = fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, this);
+                // if there were any problems, just return an empty object
+                if (opt_value === false) {
+                  return {};
+                } else {
+                  data[m[1]] = opt_value;
+                }
+              } else {
+                data[m[1]] = this.value;
+              }
             }
           }
         }
@@ -1281,7 +1329,7 @@ function fv_wp_flowplayer_submit( preview ) {
         action: 'fv_wp_flowplayer_db_store_player_data',
         data: ajax_data,
         cookie: encodeURIComponent(document.cookie)
-      }, function(playerID){
+      }, function(playerID) {
         fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
         jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
       });
