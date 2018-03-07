@@ -81,21 +81,21 @@ function fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $data) {
  * @return string Returns the string data for a playlist item.
  */
 function fv_flowplayer_getPlaylistItemData($vid) {
-  $item = $vid->src;
+  $item = (!empty($vid->src) ? $vid->src : '');
 
-  if ($vid->src1) {
+  if (!empty($vid->src1)) {
     $item .= ',' . $vid->src1;
   }
 
-  if ($vid->src2) {
+  if (!empty($vid->src2)) {
     $item .= ',' . $vid->src2;
   }
 
-  if ($vid->rtmp_path) {
+  if !empty(($vid->rtmp_path)) {
     $item .= ',rtmp:' . $vid->rtmp_path;
   }
 
-  if ($vid->splash) {
+  if !empty(($vid->splash)) {
     $item .= ',' . $vid->splash;
   }
 
@@ -131,7 +131,7 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
       if (isset($cache[$id])) {
         $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData($cache[$id]);
       } else {
-        $newids[] = $id;
+        $newids[] = (int) $id;
       }
     }
 
@@ -192,10 +192,8 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
       foreach( $data AS $k => $v ) {
         if( $v == "1" ) {
           $atts[$k] = "true";
-        } else if( $v == "0" ) {
-          //$atts[$k] = ""; //  should not be present at all
-        } else {
-          $atts[$k] = $v;          
+        } else if( $v ) {
+          $atts[$k] = $v;
         }
       }
       
