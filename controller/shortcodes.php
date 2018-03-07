@@ -26,9 +26,9 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 
 add_shortcode('fv_time','fv_player_time');
 
-add_filter( 'fv_flowplayer_attributes_retrieve', 'getPlayerAttsFromDb', 10, 2);
+add_filter( 'fv_flowplayer_attributes_retrieve', 'fv_flowplayer_getPlayerAttsFromDb', 10, 2);
 
-add_action( 'wp_ajax_expand_player_shortcode', 'expand_player_shortcode' );
+add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shortcode' );
 
 add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
 
@@ -42,7 +42,7 @@ add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
  *
  * @return mixed Returns the same set of attributes, augmented with the data for the first video in a playlist.
  */
-function updatePlaylistAttsForFirstVideo($atts, $data) {
+function fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $data) {
   // add src and splash tags
   $atts['src'] = $data->src;
 
@@ -80,7 +80,7 @@ function updatePlaylistAttsForFirstVideo($atts, $data) {
  *
  * @return string Returns the string data for a playlist item.
  */
-function getPlaylistItemData($vid) {
+function fv_flowplayer_getPlaylistItemData($vid) {
   $item = $vid->src;
 
   if ($vid->src1) {
@@ -109,7 +109,7 @@ function getPlaylistItemData($vid) {
  * stored in the database to one that conforms to the original long
  * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
  */
-function generateFullPlaylistCode($atts) {
+function fv_flowplayer_generateFullPlaylistCode($atts) {
   global $wpdb;
   static $cache = array();
 
@@ -124,12 +124,12 @@ function generateFullPlaylistCode($atts) {
     // check the first video, which is the main one for the playlist
     if (isset($cache[$ids[0]])) {
       $first_video_data_cached = true;
-      $atts = updatePlaylistAttsForFirstVideo($atts, $cache[$ids[0]]);
+      $atts = fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $cache[$ids[0]]);
     }
 
     foreach ($ids as $id) {
       if (isset($cache[$id])) {
-        $new_playlist_tag[] = getPlaylistItemData($cache[$id]);
+        $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData($cache[$id]);
       } else {
         $newids[] = $id;
       }
@@ -141,7 +141,7 @@ function generateFullPlaylistCode($atts) {
     $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . implode(',', $newids) . ')');
 
     if (!$first_video_data_cached) {
-      $atts = updatePlaylistAttsForFirstVideo($atts, $videos[0]);
+      $atts = fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $videos[0]);
       $cache[$videos[0]->id] = $videos[0];
 
       // remove the first video and keep adding the rest of the videos to the playlist tag
@@ -152,7 +152,7 @@ function generateFullPlaylistCode($atts) {
     if (count($videos)) {
       foreach ( $videos as $vid ) {
         $cache[ $vid->id ]  = $vid;
-        $new_playlist_tag[] = getPlaylistItemData( $vid );
+        $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
       }
 
       $atts['playlist'] = implode(';', $new_playlist_tag);
@@ -176,7 +176,7 @@ function generateFullPlaylistCode($atts) {
  * @return array|mixed Returns an array with all player attributes in it.
  *                     If the player ID is not found, an empty array is returned.
  */
-function getPlayerAttsFromDb($atts) {
+function fv_flowplayer_getPlayerAttsFromDb($atts) {
   global $wpdb;
   static $cache = array();
 
@@ -200,7 +200,7 @@ function getPlayerAttsFromDb($atts) {
       }
       
       // add playlist / single video data
-      $atts = array_merge( $atts, generateFullPlaylistCode(
+      $atts = array_merge( $atts, fv_flowplayer_generateFullPlaylistCode(
       // we need to prepare the same attributes array here
       // as is ingested by generateFullPlaylistCode()
       // when parsing the new playlist code on the front-end
@@ -224,7 +224,7 @@ function getPlayerAttsFromDb($atts) {
  * AJAX method to generate expanded textual shortcode from database information
  * to build the shortcode editor UI on the front-end.
  */
-function expand_player_shortcode() {
+function fv_flowplayer_expand_player_shortcode() {
   if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
       $atts = $atts = apply_filters('fv_flowplayer_attributes_retrieve', array( 'id' => $_POST['playerID']));
 
@@ -239,21 +239,6 @@ function expand_player_shortcode() {
 
         echo $out;
       }
-  }
-
-  wp_die();
-}
-
-
-/**
- * AJAX method that parses and stores player data into database.
- * This method is used when new, shorter shortcodes are turned ON in settings.
- */
-function save_player_data() {
-  if (isset($_POST['data'])) {
-    global $wpdb;
-
-
   }
 
   wp_die();
