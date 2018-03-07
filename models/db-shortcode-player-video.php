@@ -33,7 +33,8 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src, // the main video source
     $src_1, // alternative source path #1 for the video
     $src_2, // alternative source path #2 for the video
-    $start;
+    $start,
+    $db_table_name;
 
   /**
    * @return int
@@ -137,6 +138,29 @@ class FV_Player_Db_Shortcode_Player_Video {
   function __construct($id, $options = array()) {
     global $wpdb;
 
+    $this->db_table_name = $wpdb->prefix.'fv_player_videos';
+    if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
+      $sql = "
+CREATE TABLE `".$this->db_table_name."` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `caption` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'optional video caption',
+  `chapters` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'URL for a VTT file for displaying captions',
+  `end` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `mobile` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
+  `rtmp` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'optional RTMP server URL',
+  `rtmp_path` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
+  `splash` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'URL to the splash screen picture',
+  `splash_text` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'an optional splash screen text',
+  `src` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'the main video source',
+  `src_1` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'alternative source path #1 for the video',
+  `src_2` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'alternative source path #2 for the video',
+  `start` varchar(255) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`id`)
+)" . $wpdb->get_charset_collate() . ";";
+      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+      dbDelta($sql);
+    }
+
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video into the DB in such case
     if (is_array($options) && count($options)) {
@@ -155,7 +179,7 @@ class FV_Player_Db_Shortcode_Player_Video {
       }
     } else if (is_int($id) && $id > 0) {
       // no options, load data from DB
-      $video_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$wpdb->prefix.'fv_player_videos WHERE id = '. $id));
+      $video_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
       if ($video_data) {
         // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
         foreach ($video_data as $key => $value) {
@@ -183,12 +207,12 @@ class FV_Player_Db_Shortcode_Player_Video {
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$wpdb->prefix.'fv_player_videos SET ';
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$this->db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = $value;
       }

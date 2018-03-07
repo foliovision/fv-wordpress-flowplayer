@@ -24,7 +24,8 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
     $is_valid = true, // used when loading meta data from DB to determine whether we've found it
     $id_video, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
-    $meta_value; // arbitrary meta value
+    $meta_value, // arbitrary meta value
+    $db_table_name;
 
   /**
    * @return int
@@ -65,6 +66,22 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
   function __construct($id, $options = array()) {
     global $wpdb;
 
+    $this->db_table_name = $wpdb->prefix.'fv_player_videometa';
+    if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
+      $sql = "
+CREATE TABLE `".$this->db_table_name."` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_video` int(10) UNSIGNED NOT NULL,
+  `meta_key` varchar(25) CHARACTER SET latin1 NOT NULL,
+  `meta_value` varchar(255) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_video` (`id_video`),
+  KEY `meta_key` (`meta_key`)
+)" . $wpdb->get_charset_collate() . ";";
+      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+      dbDelta($sql);
+    }
+
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video meta data into the DB in such case
     if (is_array($options) && count($options)) {
@@ -83,7 +100,7 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
       }
     } else if (is_int($id) && $id > 0) {
       // no options, load data from DB
-      $meta_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$wpdb->prefix.'fv_player_videometa WHERE id = '. $id));
+      $meta_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
       if ($meta_data) {
         // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
         foreach ($meta_data as $key => $value) {
@@ -108,12 +125,12 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$wpdb->prefix.'fv_player_videometa SET ';
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$this->db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name') {
         $is_video_id = ($property == 'id_video');
         $data_keys[] = $property . ' = '.($is_video_id ? (int) $value : '%s');
 

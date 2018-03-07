@@ -56,7 +56,8 @@ class FV_Player_Db_Shortcode_Player {
     $width, // with of the player on page
     $hlskey,
     $videos,
-    $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width');
+    $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
+    $db_table_name;
 
   /**
    * @return int
@@ -314,6 +315,51 @@ class FV_Player_Db_Shortcode_Player {
   function __construct($id, $options = array()) {
     global $wpdb;
 
+    $this->db_table_name = $wpdb->prefix.'fv_player_players';
+    if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
+      $sql = "
+CREATE TABLE `".$this->db_table_name."` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ab` varchar(3) CHARACTER SET latin1 NOT NULL COMMENT 'whether to show AB loop',
+  `ad_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of advertisement for this player',
+  `ad_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width of advertisement for this player',
+  `ad_skip` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether or not to skip ads for this player',
+  `align` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'alignment position',
+  `autoplay` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to autoplay videos on page load',
+  `controlbar` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
+  `copy_text` varchar(120) CHARACTER SET latin1 NOT NULL,
+  `drm_text` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether to show DRM text on the player',
+  `email_list` varchar(5) CHARACTER SET latin1 NOT NULL COMMENT 'ID of the e-mail list to collect e-mails to at the end of playlist',
+  `embed` varchar(12) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
+  `end_actions` varchar(10) CHARACTER SET latin1 NOT NULL COMMENT 'what do to when the playlist in this player ends',
+  `height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of this player on page',
+  `hflip` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether to horizontally flip the player',
+  `lightbox` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether to enable displaying this player in a lightbox',
+  `lightbox_caption` varchar(120) CHARACTER SET latin1 NOT NULL COMMENT 'title for the lightbox popup',
+  `lightbox_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height for the lightbox popup',
+  `lightbox_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width for the lightbox popup',
+  `live` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether this video is a live stream',
+  `playlist` varchar(10) CHARACTER SET latin1 NOT NULL DEFAULT 'Default',
+  `playlist_advance` varchar(7) CHARACTER SET latin1 NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
+  `popup_id` varchar(6) CHARACTER SET latin1 NOT NULL COMMENT 'ID of the popup to show at the end of playlist',
+  `qsel` varchar(25) CHARACTER SET latin1 NOT NULL,
+  `redirect` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'where to redirect after the end of playlist',
+  `share` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to display sharing buttons (On / Off / Default)',
+  `share_title` varchar(120) CHARACTER SET latin1 NOT NULL COMMENT 'title for sharing buttons',
+  `share_url` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `speed` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `sticky` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
+  `video_ads` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `video_ads_post` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page',
+  `hlskey` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `videos` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'comma-separated list of video IDs for this player',
+  PRIMARY KEY (`id`)
+)" . $wpdb->get_charset_collate() . ";";
+      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+      dbDelta($sql);
+    }
+
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
     if (is_array($options) && count($options)) {
@@ -332,7 +378,7 @@ class FV_Player_Db_Shortcode_Player {
       }
     } else if (is_int($id) && $id > 0) {
       // no options, load data from DB
-      $player_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$wpdb->prefix.'fv_player_players WHERE id = '. $id));
+      $player_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
       if ($player_data) {
         // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
         foreach ($player_data as $key => $value) {
@@ -357,12 +403,12 @@ class FV_Player_Db_Shortcode_Player {
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$wpdb->prefix.'fv_player_players SET ';
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$this->db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid') {
+      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid' && $property != 'db_table_name') {
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 
@@ -387,8 +433,8 @@ class FV_Player_Db_Shortcode_Player {
     if (!$wpdb->last_error) {
       return $this->id;
     } else {
-      /*var_export($wpdb->last_error);
-      var_export($wpdb->last_query);*/
+      var_export($wpdb->last_error);
+      var_export($wpdb->last_query);
       return false;
     }
   }
