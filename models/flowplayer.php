@@ -2121,10 +2121,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       </div>
     </div>
     
-  <?php else : ?>
-    <?php while ( have_posts() ) : the_post(); //is this needed? ?>
-      <?php
-  
+  <?php else :
+    
+    if( stripos($content,'<!--fv player end-->') !== false ) {
+      
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
@@ -2133,10 +2133,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
-      //$content = apply_filters( 'the_content', get_the_content() );
-      
-      
-              
+            
       $aPlayers = explode( '<!--fv player end-->', $content );
       if( $aPlayers ) {
         foreach( $aPlayers AS $k => $v ) {
@@ -2152,8 +2149,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
       }    
       
-      ?>
-    <?php endwhile; 
+    }
   endif;
   
   wp_footer();
