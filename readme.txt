@@ -354,8 +354,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4.2 - 2018/02/?? =
+= 6.4.3 - 2018/02/?? =
 
+* DASH - updating to latest tested Dash.js version
+* Bugfix - iframe embed code placing body closing tag in bad place
+* Bugfix - fix for PHP warnings on AMP pages
+
+= 6.4.2 - 2018/02/23 =
+
+* CSS - fixing the left and right alignment margin
+* HLS.js - making it pick the initial quality automatically, rather than using the first stream
+* JW Player Conversion - adding support for [jwplayer player="3" mediaid="538527"] kind of shortcodes
 * Lightbox - fix for Ajax loaded content
 
 = 6.4.1 - 2018/02/08 =
@@ -379,7 +388,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.3.11 - 2017/11/20 =
 
-* New feature - Sticky Video - lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1200 pixels. See Setting -> FV Player -> Skin -> Sticky Video
+* New feature - Sticky Video - lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1200 pixels. See Setting -> FV Player -> Skin -> Sticky Video, thanks to Dan Hostettler
 * Lightbox - improving retina image parsing
 
 = 6.3.10 - 2017/11/13 =
