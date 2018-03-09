@@ -1233,10 +1233,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }         
       
       foreach( $posts AS $objPost ) {
-        if(
-          stripos($objPost->post_content,'[fvplayer') !== false ||
-          stripos($objPost->post_content,'[flowplayer') !== false ||
-          stripos($objPost->post_content,'[video') !== false
+        if( !empty($objPost->post_content) && (
+            stripos($objPost->post_content,'[fvplayer') !== false ||
+            stripos($objPost->post_content,'[flowplayer') !== false ||
+            stripos($objPost->post_content,'[video') !== false
+          )
         ) {
           $bFound = true;
           break;
