@@ -305,16 +305,11 @@ class FV_Player_Db_Shortcode_Player {
   } // comma-separated list of video IDs for this player
 
   /**
-   * FV_Player_Db_Shortcode_Player constructor.
+   * Checks for DB tables existence and creates it as necessary.
    *
-   * @param int $id         ID of player to load data from the DB for.
-   * @param array $options  Options for a newly created player that will be stored in a DB.
-   *
-   * @throws Exception When no valid ID nor options are provided.
+   * @param $wpdb The global WordPress database object.
    */
-  function __construct($id, $options = array()) {
-    global $wpdb;
-
+  private function initDB($wpdb) {
     $this->db_table_name = $wpdb->prefix.'fv_player_players';
     if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
       $sql = "
@@ -359,6 +354,20 @@ CREATE TABLE `".$this->db_table_name."` (
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       dbDelta($sql);
     }
+  }
+
+  /**
+   * FV_Player_Db_Shortcode_Player constructor.
+   *
+   * @param int $id         ID of player to load data from the DB for.
+   * @param array $options  Options for a newly created player that will be stored in a DB.
+   *
+   * @throws Exception When no valid ID nor options are provided.
+   */
+  function __construct($id, $options = array()) {
+    global $wpdb;
+
+    $this->initDB($wpdb);
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
@@ -376,9 +385,9 @@ CREATE TABLE `".$this->db_table_name."` (
           trigger_error('Unknown property for new DB player: ' . $key);
         }
       }
-    } else if (is_int($id) && $id > 0) {
+    } else if (is_numeric($id) && $id > 0) {
       // no options, load data from DB
-      $player_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
+      $player_data = $wpdb->get_row('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id);
       if ($player_data) {
         // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
         foreach ($player_data as $key => $value) {
@@ -390,6 +399,22 @@ CREATE TABLE `".$this->db_table_name."` (
     } else {
       throw new \Exception('No options nor a valid ID was provided for DB player instance.');
     }
+  }
+
+  /**
+   * Returns all global options data for this player.
+   *
+   * @return array Returns all global options data for this player.
+   */
+  public function getAllDataValues() {
+    $data = array();
+    foreach (get_object_vars($this) as $property => $value) {
+      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid' && $property != 'db_table_name') {
+        $data[$property] = $value;
+      }
+    }
+
+    return $data;
   }
 
   /**

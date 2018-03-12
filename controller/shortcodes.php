@@ -34,44 +34,6 @@ add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
 
 
 /**
- * Retrieves attributes data and updates it with the first video
- * for player shortcode.
- *
- * @param $atts Attributes of the player.
- * @param $data Data object to update the player attributes with.
- *
- * @return mixed Returns the same set of attributes, augmented with the data for the first video in a playlist.
- */
-function fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $data) {
-  // add src and splash tags
-  $atts['src'] = $data->src;
-
-  if ($data->splash) {
-    $atts['splash'] = $data->splash;
-  }
-
-  if ($data->src1) {
-    $atts['src1'] = $data->src1;
-  }
-
-  if ($data->src2) {
-    $atts['src2'] = $data->src2;
-  }
-
-  if ($data->rtmp) {
-    $atts['rtmp'] = $data->rtmp;
-  }
-
-  if ($data->rtmp_path) {
-    $atts['rtmp_path'] = $data->rtmp_path;
-  }
-
-  return $atts;
-}
-
-
-
-/**
  * Returns playlist video item formatted for a shortcode,
  * so it's in the form of "video-src,video-src1,rtmp:abcd,..."
  * and can be added to the playlist section of that shortcode.
@@ -124,9 +86,10 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
     // check the first video, which is the main one for the playlist
     if (isset($cache[$ids[0]])) {
       $first_video_data_cached = true;
-      $atts = fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $cache[$ids[0]]);
+      $atts = array_merge($atts, $cache[$ids[0]]);
     }
 
+    // prepare cached data and IDs that still need loading from DB
     foreach ($ids as $id) {
       if (isset($cache[$id])) {
         $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData($cache[$id]);
@@ -135,30 +98,36 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
       }
     }
 
-    // update playlist data and add src tag to be compatible with the old HTML generation code
-    
-    //  todo: more to some function
-    $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id IN(' . implode(',', $newids) . ')');
+    if (count($newids)) {
+      // load data from DB
+      $videos = new FV_Player_Db_Shortcode_Player_Video($newids);
+      $videos = $videos->getAllLoadedVideos();
 
-    if (!$first_video_data_cached) {
-      $atts = fv_flowplayer_updatePlaylistAttsForFirstVideo($atts, $videos[0]);
-      $cache[$videos[0]->id] = $videos[0];
+      // cache first vid
+      if (!$first_video_data_cached) {
+        $vid = $videos[0]->getAllDataValues();
+        $atts = array_merge($atts, $vid);
+        $cache[$vid->id] = $vid;
 
-      // remove the first video and keep adding the rest of the videos to the playlist tag
-      array_shift( $videos );
-    }
-
-    // add rest of the videos into the playlist tag
-    if (count($videos)) {
-      foreach ( $videos as $vid ) {
-        $cache[ $vid->id ]  = $vid;
-        $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
+        // remove the first video and keep adding the rest of the videos to the playlist tag
+        array_shift( $videos );
       }
 
-      $atts['playlist'] = implode(';', $new_playlist_tag);
+      // add rest of the videos into the playlist tag
+      if (count($videos)) {
+        foreach ( $videos as $vid_object ) {
+          $vid = $vid_object->getAllDataValues();
+          $cache[ $vid->id ]  = $vid;
+          $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
+        }
+
+        $atts['playlist'] = implode(';', $new_playlist_tag);
+      } else {
+        // only one video found, therefore this is not a playlist
+        unset($atts['playlist']);
+      }
     } else {
-      // only one video found, therefore this is not a playlist
-      unset($atts['playlist']);
+      $atts['playlist'] = implode(';', $new_playlist_tag);
     }
   }
 
@@ -175,6 +144,7 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
  *
  * @return array|mixed Returns an array with all player attributes in it.
  *                     If the player ID is not found, an empty array is returned.
+ * @throws Exception When the underlying video object throws.
  */
 function fv_flowplayer_getPlayerAttsFromDb($atts) {
   global $wpdb;
@@ -185,7 +155,8 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
       return $cache[ $atts['id'] ];
     }
 
-    $data = $wpdb->get_row( 'SELECT * FROM ' . $wpdb->prefix . 'fv_player_players WHERE id = '.intval($atts['id']).' LIMIT 1', ARRAY_A );
+    $player = new FV_Player_Db_Shortcode_Player($atts['id']);
+    $data = $player->getAllDataValues();
     
     // did we find the player?
     if ( $data ) {
@@ -193,6 +164,7 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
         if( $v == "1" ) {
           $atts[$k] = "true";
         } else if( $v ) {
+          // we omit empty values and they will get set to defaults if necessary
           $atts[$k] = $v;
         }
       }

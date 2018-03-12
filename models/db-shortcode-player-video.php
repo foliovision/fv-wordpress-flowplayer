@@ -34,7 +34,8 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src_1, // alternative source path #1 for the video
     $src_2, // alternative source path #2 for the video
     $start,
-    $db_table_name;
+    $db_table_name,
+    $additional_objects = array();
 
   /**
    * @return int
@@ -128,16 +129,11 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
-   * FV_Player_Db_Shortcode_Player_Video constructor.
+   * Checks for DB tables existence and creates it as necessary.
    *
-   * @param int $id         ID of video to load data from the DB for.
-   * @param array $options  Options for a newly created video that will be stored in a DB.
-   *
-   * @throws Exception When no valid ID nor options are provided.
+   * @param $wpdb The global WordPress database object.
    */
-  function __construct($id, $options = array()) {
-    global $wpdb;
-
+  private function initDB($wpdb) {
     $this->db_table_name = $wpdb->prefix.'fv_player_videos';
     if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
       $sql = "
@@ -160,6 +156,21 @@ CREATE TABLE `".$this->db_table_name."` (
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       dbDelta($sql);
     }
+  }
+
+  /**
+   * FV_Player_Db_Shortcode_Player_Video constructor.
+   *
+   * @param int $id         ID of video to load data from the DB for.
+   * @param array $options  Options for a newly created video that will be stored in a DB.
+   *
+   * @throws Exception When no valid ID nor options are provided.
+   */
+  function __construct($id, $options = array()) {
+    global $wpdb;
+
+    $this->initDB($wpdb);
+    $multiID = is_array($id);
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video into the DB in such case
@@ -177,13 +188,52 @@ CREATE TABLE `".$this->db_table_name."` (
           trigger_error('Unknown property for new DB video: ' . $key);
         }
       }
-    } else if (is_int($id) && $id > 0) {
+    } else if ($multiID || (is_numeric($id) && $id > 0)) {
       // no options, load data from DB
-      $video_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
+      if ($multiID) {
+        // make sure we have numeric IDs
+        foreach ($id as $id_key => $id_value) {
+          $id[$id_key] = (int) $id_value;
+        }
+
+        // load multiple videos via their IDs but a single query and return their values
+        $video_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE id IN('. implode(',', $id).')');
+      } else {
+        // load a single video
+        $video_data = $wpdb->get_row('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id);
+      }
+
       if ($video_data) {
-        // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
-        foreach ($video_data as $key => $value) {
-          $this->$key = $value;
+        // single ID, just populate our own data
+        if (!$multiID) {
+          // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
+          foreach ( $video_data as $key => $value ) {
+            $this->$key = $value;
+          }
+        } else {
+          // multiple IDs, create new video objects for each of them except the first one,
+          // for which we'll use this instance
+          $first_done = false;
+          foreach ($video_data as $db_record) {
+            if (!$first_done) {
+              // fill-in our internal variables
+              foreach ( $db_record as $key => $value ) {
+                $this->$key = $value;
+              }
+              $this->additional_objects[] = $this;
+              $first_done = true;
+            } else {
+              // create a new video object and populate it with DB values
+              $record_id = $db_record->id;
+              // if we don't unset this, we'll get warnings
+              unset($db_record->id);
+              $video_object = new FV_Player_Db_Shortcode_Player_Video(null, get_object_vars($db_record));
+              $video_object->link2db($record_id);
+
+              // cache is in the list of all loaded video objects
+              $this->additional_objects[] = $video_object;
+            }
+          }
         }
       } else {
         $this->is_valid = false;
@@ -194,6 +244,49 @@ CREATE TABLE `".$this->db_table_name."` (
   }
 
   /**
+   * Makes this video linked to a record in database.
+   * This is used when loading multiple videos in the constructor,
+   * so we can return them as objects from the DB and any saving will
+   * not insert their duplicates.
+   *
+   * @param $id The DB ID to which we'll link this video.
+   */
+  public function link2db($id) {
+    $this->id = $id;
+  }
+
+  /**
+   * Returns a list of videos that were potentially loaded
+   * via multiple IDs in the constructor. If there are none,
+   * null will be returned.
+   *
+   * @return array|null Returns list of loaded video objects or null if none were loaded.
+   */
+  public function getAllLoadedVideos() {
+    if (count($this->additional_objects)) {
+      return $this->additional_objects;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Returns all options data for this video.
+   *
+   * @return array Returns all options data for this video.
+   */
+  public function getAllDataValues() {
+    $data = array();
+    foreach (get_object_vars($this) as $property => $value) {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
+        $data[$property] = $value;
+      }
+    }
+
+    return $data;
+  }
+
+  /**
    * Stores new video instance or updates and existing one
    * in the database.
    *
@@ -201,6 +294,7 @@ CREATE TABLE `".$this->db_table_name."` (
    *                         with possible meta data for this video.
    *
    * @return bool|int Returns record ID if successful, false otherwise.
+   * @throws Exception When the underlying metadata object throws.
    */
   public function save($meta_data = array()) {
     global $wpdb;
@@ -212,7 +306,7 @@ CREATE TABLE `".$this->db_table_name."` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = $value;
       }
