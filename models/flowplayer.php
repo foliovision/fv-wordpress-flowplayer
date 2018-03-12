@@ -1233,10 +1233,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }         
       
       foreach( $posts AS $objPost ) {
-        if(
-          stripos($objPost->post_content,'[fvplayer') !== false ||
-          stripos($objPost->post_content,'[flowplayer') !== false ||
-          stripos($objPost->post_content,'[video') !== false
+        if( !empty($objPost->post_content) && (
+            stripos($objPost->post_content,'[fvplayer') !== false ||
+            stripos($objPost->post_content,'[flowplayer') !== false ||
+            stripos($objPost->post_content,'[video') !== false
+          )
         ) {
           $bFound = true;
           break;
@@ -1381,6 +1382,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       update_option( 'fvwpflowplayer', $aOptions );
       $this->_get_conf();
     }
+  }
+  
+  
+  public static function esc_caption( $caption ) {
+    return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
   }
   
   
@@ -1850,7 +1856,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   
   
-  function get_video_src($media, $aArgs ) {
+  function get_video_src($media, $aArgs = array() ) {
     $aArgs = wp_parse_args( $aArgs, array(
           'dynamic' => false,
           'flash' => true,
@@ -2116,10 +2122,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       </div>
     </div>
     
-  <?php else : ?>
-    <?php while ( have_posts() ) : the_post(); //is this needed? ?>
-      <?php
-  
+  <?php else :
+    
+    if( stripos($content,'<!--fv player end-->') !== false ) {
+      
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
@@ -2128,10 +2134,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
-      //$content = apply_filters( 'the_content', get_the_content() );
-      
-      
-              
+            
       $aPlayers = explode( '<!--fv player end-->', $content );
       if( $aPlayers ) {
         foreach( $aPlayers AS $k => $v ) {
@@ -2147,33 +2150,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
       }    
       
-      ?>
-    <?php endwhile; 
-  endif;
-  ?>
-</body>
-
-<?php wp_footer(); ?>
-
-<?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
-  
-  <script>
-  jQuery(document).ready( function(){
-    var parent = window.parent.jQuery(window.parent.document);
-    if( typeof(flowplayer) != "undefined" ) {      
-      parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
-    
-    } else {
-      parent.trigger('fvp-preview-error');
     }
+  endif;
   
-  });
+  wp_footer();
   
-  if (window.top===window.self) {
-    jQuery('#wrapper').css('margin','25px 50px 0 50px');
-  } 
-  </script>
-<?php endif; ?>
+  if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
+    <script>
+    jQuery(document).ready( function(){
+      var parent = window.parent.jQuery(window.parent.document);
+      if( typeof(flowplayer) != "undefined" ) {      
+        parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+      
+      } else {
+        parent.trigger('fvp-preview-error');
+      }
+    
+    });
+    
+    if (window.top===window.self) {
+      jQuery('#wrapper').css('margin','25px 50px 0 50px');
+    } 
+    </script>
+  <?php endif; ?>
+
+</body>
 
 </html>       
       <?php

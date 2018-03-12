@@ -1436,7 +1436,14 @@ function fv_wp_flowplayer_submit( preview ) {
       
       aSplashText.push(jQuery('[name=fv_wp_flowplayer_field_splash_text]', this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
       
-      aPlaylistSubtitles.push(jQuery('[name=fv_wp_flowplayer_field_subtitles]', jQuery('.fv-player-tab-subtitles table').eq(i)).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
+      var video_subtitles = jQuery('.fv-player-tab-subtitles table').eq(i);
+      video_subtitles.find('[name=fv_wp_flowplayer_field_subtitles]').each( function() {
+        if( jQuery(this).prev('.fv_wp_flowplayer_field_subtitles_lang').val() ) {
+          aPlaylistSubtitles.push('');
+          return;
+        }
+        aPlaylistSubtitles.push( jQuery(this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
+      });
       
 		  if( i == 0 ) return;  
       var aPlaylistItem = new Array();      
