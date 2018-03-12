@@ -35,7 +35,7 @@ add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
 
 /**
  * Returns playlist video item formatted for a shortcode,
- * so it's in the form of "video-src,video-src1,rtmp:abcd,..."
+ * so it's in the form of "video-src, video-src1, video-src2, rtmp:some-path, splash:some-url"
  * and can be added to the playlist section of that shortcode.
  *
  * @param $vid The video object from which to prepare the string data.
