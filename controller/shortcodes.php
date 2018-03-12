@@ -43,22 +43,22 @@ add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
  * @return string Returns the string data for a playlist item.
  */
 function fv_flowplayer_getPlaylistItemData($vid) {
-  $item = (!empty($vid->src) ? $vid->src : '');
+  $item = (!empty($vid['src']) ? $vid['src'] : '');
 
-  if (!empty($vid->src1)) {
-    $item .= ',' . $vid->src1;
+  if (!empty($vid['src1'])) {
+    $item .= ',' . $vid['src1'];
   }
 
-  if (!empty($vid->src2)) {
-    $item .= ',' . $vid->src2;
+  if (!empty($vid['src2'])) {
+    $item .= ',' . $vid['src2'];
   }
 
-  if (!empty($vid->rtmp_path)) {
-    $item .= ',rtmp:' . $vid->rtmp_path;
+  if (!empty($vid['rtmp_path'])) {
+    $item .= ',rtmp:' . $vid['rtmp_path'];
   }
 
-  if (!empty($vid->splash)) {
-    $item .= ',' . $vid->splash;
+  if (!empty($vid['splash'])) {
+    $item .= ',' . $vid['splash'];
   }
 
   return $item;
