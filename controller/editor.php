@@ -313,7 +313,7 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
         }
       }
 
-      // all buckets have regions, we can stop the check now
+      // all buckets have names, we can stop the check now
       if ($all_ok) {
         $keep_checking = false;
       }

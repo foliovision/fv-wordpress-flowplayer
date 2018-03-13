@@ -332,7 +332,7 @@ jQuery(document).ready(function($){
       };
 
       fv_flowplayer_uploader.on('open', function() {
-        if (fv_player_pro.cf_domains_count > 0) {
+        if (fv_player_pro.enable_s3_browser > 0) {
           fv_flowplayer_s3_browser_add_tab();
         }
         jQuery('.media-router .media-menu-item').eq(0).click();
