@@ -136,6 +136,22 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
 
 
 /**
+ * Maps attributes from database into their respective shortcode names.
+ *
+ * @param $att_name Attribute name from the database to map into shortcode format.
+ *
+ * @return mixed Returns the correct attribute name for shortcode use.
+ */
+function fv_flowplayer_mapDbAttributes2Shortcode($att_name) {
+  $atts_map = array(
+    'playlist' => 'liststyle'
+  );
+
+  return (isset($atts_map[$att_name]) ? $atts_map[$att_name] : $att_name);
+}
+
+
+/**
  * Retrieves player attributes from the database
  * as opposed to getting them from the old full-text
  * shortcode format.
@@ -161,6 +177,7 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
     // did we find the player?
     if ( $data ) {
       foreach( $data AS $k => $v ) {
+        $k = fv_flowplayer_mapDbAttributes2Shortcode($k);
         if( $v == "1" ) {
           $atts[$k] = "true";
         } else if( $v ) {
@@ -222,6 +239,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 
   // check for new playlist tag format with video data saved in DB
   $atts = apply_filters('fv_flowplayer_attributes_retrieve', $atts);
+  var_dump($atts);
+  echo '<br><br>';
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     

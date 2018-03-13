@@ -1107,6 +1107,8 @@ function fv_wp_flowplayer_build_ajax_data() {
           $valueLessOptions   = null,
           isDropdown          = this.nodeName == 'SELECT';
 
+        console.log($this.attr('name'), $this.is(':visible'));
+
         // check for a select without any option values, in which case we'll use their text
         if (isDropdown) {
           $valueLessOptions = $this.find('option:not([value])');
@@ -1168,7 +1170,7 @@ function fv_wp_flowplayer_build_ajax_data() {
                 if (opt_value === false) {
                   return {};
                 } else {
-                  data[m[1]] = opt_value;
+                  data[m[1]] = opt_value.toLowerCase();
                 }
               } else {
                 data[m[1]] = this.value;
@@ -1321,6 +1323,8 @@ function fv_wp_flowplayer_submit( preview ) {
       fv_wp_flowplayer_show_preview(true, JSON.stringify(ajax_data));
 	    //alert('we need to update preview here');
     } else {
+	    console.log(ajax_data);
+	    return;
 	    // show saving loader
       fv_wp_flowplayer_big_loader_show();
 
