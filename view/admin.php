@@ -1550,47 +1550,6 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   function fv_fp_amazon_s3_remove(a) {
   	jQuery( '.'+jQuery(a).parents('tr').attr('class') ).remove();
   }
-
-  var fv_flowplayer_amazon_cloudfront_domains_count = 0;
-  jQuery('#amazon-cloudfront-domain-add').click( function() {
-
-    var $first = jQuery('tr.amazon-cloudfront-domain-first')
-
-    if ($first.is(':visible')) {
-      var new_inputs = $first.clone();
-      new_inputs.find('input').attr('value', '');
-      new_inputs.find('select').val('-1');
-      new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_cloudfront_domains_count);
-      new_inputs.insertBefore('.amazon-cloudfront-domain-last');
-    } else {
-      $first.show();
-    }
-
-    fv_flowplayer_amazon_cloudfront_domains_count++;
-    return false;
-  } );
-
-  function fv_fp_amazon_cloudfront_domain_remove(a, counter) {
-    $rows = jQuery('.' + jQuery(a).parents('tr').attr('class'));
-    if (counter > 1) {
-      $rows.remove();
-    } else {
-      $rows.find('input, select').val('');
-      $rows.hide();
-    }
-  }
-
-  function fv_fp_amazon_cloudfront_domain_check_bucket_duplication(dropdown) {
-    if (dropdown.selectedIndex > 0) {
-      jQuery('.cloudfront-buckets-dropdown').each(function() {
-        if (this !== dropdown && this.selectedIndex == dropdown.selectedIndex) {
-          dropdown.selectedIndex = 0;
-          window.alert('You can only assign a single S3 Bucket to a single CloudFront Domain.');
-          return false;
-        }
-      });
-    }
-  }
 </script>
 
 
