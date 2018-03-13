@@ -312,50 +312,56 @@ function flowplayer_prepare_scripts() {
 
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
-    $sCommercialKey = (isset($fv_fp->conf['key']) && $fv_fp->conf['key'] != 'false' && strlen($fv_fp->conf['key']) > 0) ? $fv_fp->conf['key'] : '';
-    $sCommercialKey = $fv_fp->is_beta() && !empty($fv_fp->conf['key7']) ? $fv_fp->conf['key7'] : $sCommercialKey;
-    $sLogo = ($sCommercialKey && isset($fv_fp->conf['logo']) && $fv_fp->conf['logo'] != 'false' && strlen($fv_fp->conf['logo']) > 0) ? $fv_fp->conf['logo'] : '';
+    $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
+    $sCommercialKey = $fv_fp->is_beta() && $fv_fp->_get_option('key7') ? $fv_fp->_get_option('key7') : $sCommercialKey;
+    $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/'.$sPath.'/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/'.$sPath.'/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
-    if( !empty($fv_fp->conf['rtmp-live-buffer']) && $fv_fp->conf['rtmp-live-buffer'] == 'true' ) {
+    if( $fv_fp->_get_option('rtmp-live-buffer') ) {
       $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
     }
 
-    if( !empty($fv_fp->conf['integrations']['embed_iframe']) && $fv_fp->conf['integrations']['embed_iframe'] == 'true' ) {
+    if( $fv_fp->_get_option( array( 'integrations', 'embed_iframe') ) ) {
       $aConf['embed'] = false;
     } else {
       $aConf['embed'] = array( 'library' => $sPluginUrl.'/'.$sPath.'/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/'.$sPath.'/embed.min.js', 'skin' => $sPluginUrl.'/css/'.$sPath.'.css', 'swf' => $sPluginUrl.'/'.$sPath.'/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/'.$sPath.'/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     }
    
-    if( !isset($fv_fp->conf['ui_speed_increment']) || empty($fv_fp->conf['ui_speed_increment']) || $fv_fp->conf['ui_speed_increment'] == 0.25){
+    if( $fv_fp->_get_option('ui_speed_increment') == 0.25){
       $aConf['speeds'] = array( 0.25,0.5,0.75,1,1.25,1.5,1.75,2 );
-    }elseif($fv_fp->conf['ui_speed_increment'] == 0.1){
+    }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.1){
       $aConf['speeds'] = array( 0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2 );
-    }elseif($fv_fp->conf['ui_speed_increment'] == 0.5){
+    }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.5){
       $aConf['speeds'] = array( 0.25,0.5,1,1.5,2 );
     }
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
     
     if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
-    if( apply_filters( 'fv_flowplayer_safety_resize', true) && !isset($fv_fp->conf['fixed_size']) || strcmp($fv_fp->conf['fixed_size'],'true') != 0 ) {
+    if( apply_filters( 'fv_flowplayer_safety_resize', true) && !$fv_fp->_get_option('fixed_size') ) {
       $aConf['safety_resize'] = true;
     }
-    if( isset($fv_fp->conf['cbox_compatibility']) && strcmp($fv_fp->conf['cbox_compatibility'],'true') == 0 ) {
+    if( $fv_fp->_get_option('cbox_compatibility') ) {
       $aConf['cbox_compatibility'] = true;
     }    
-    if( current_user_can('manage_options') && $fv_fp->conf['disable_videochecker'] != 'true' ) {
+    if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') ) {
       $aConf['video_checker_site'] = home_url();
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;
-    $aConf['volume'] = floatval($fv_fp->conf['volume']);
+    $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
     
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
+
+    if ( $fv_fp->conf['video_position_save_enable'] !== 'false' ) {
+      $aConf['video_position_save_enable'] = $fv_fp->conf['video_position_save_enable'];
+    }
+
+    if( is_user_logged_in() ) $aConf['is_logged_in'] = true;
 
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
@@ -368,6 +374,10 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
+    if( $fv_fp->load_hlsjs && $fv_fp->_get_option('hlsjs') ) {
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      $aConf['hlsjs'] = array('startLevel' => -1);
+    }
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
@@ -402,10 +412,6 @@ function flowplayer_prepare_scripts() {
     
     if( $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
-    }
-    
-    if( $fv_fp->load_hlsjs && isset($fv_fp->conf['hlsjs']) && $fv_fp->conf['hlsjs'] == 'true'  ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     
   }
