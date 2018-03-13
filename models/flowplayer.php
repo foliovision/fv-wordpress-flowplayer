@@ -572,6 +572,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
+    if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();
+    if (!isset($conf['skin-youtuby'])) $conf['skin-youtuby'] = array();
+
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = array();
@@ -1835,7 +1838,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {
-      return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
+      $plugin_folder = basename(dirname(dirname(__FILE__))); // make fv-wordpress-flowplayer out of {anything}/fv-wordpress-flowplayer/models/flowplayer.php
+      return plugins_url($plugin_folder);
     }
   }
   
@@ -2240,4 +2244,3 @@ function fv_wp_flowplayer_save_post( $post_id ) {
     }
   }
 }
-

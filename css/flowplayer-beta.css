@@ -1871,7 +1871,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .edd_form .fv-player-custom-video-list {
     clear: both;
     position: relative;
-    top: -26px;
 }
 a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
     margin: 0 6px 0 0;

@@ -417,7 +417,7 @@ function flowplayer_prepare_scripts() {
   }
   
   global $FV_Player_lightbox;
-  if( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') ) {
+  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') ) ) {
     $aConf = array();
     $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
     
@@ -571,4 +571,3 @@ function fv_player_comment_text( $comment_text ) {
   
   return $comment_text;
 }
-
