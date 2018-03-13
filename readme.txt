@@ -354,8 +354,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4.3 - 2018/02/?? =
+= 6.4.3 - 2018/03/13 =
 
+* New feature - Video position saving for both guest and logged in users
 * DASH - updating to latest tested Dash.js version
 * Bugfix - iframe embed code placing body closing tag in bad place
 * Bugfix - fix for PHP warnings on AMP pages
