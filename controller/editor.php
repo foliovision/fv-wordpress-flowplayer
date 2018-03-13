@@ -281,6 +281,7 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
   $keys    = $fv_fp->_get_option('amazon_key');
   $buckets = $fv_fp->_get_option('amazon_bucket');
   $region_names = fv_player_get_aws_regions();
+  $domains = array();
 
   if (isset($_POST['bucket']) && isset($buckets[$_POST['bucket']])) {
     $array_id = $_POST['bucket'];
@@ -355,6 +356,8 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
           if (substr($cf_domain_to_use, 0, 4) !== 'http') {
             $cf_domain_to_use = 'http://' . $cf_domain_to_use;
           }
+
+          $domains[ $array_id ] = $cf_domain_to_use;
 
           break;
         }
@@ -494,7 +497,7 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
     $has_all_data = ($regions[ $bucket_index ] && $keys[ $bucket_index ] && $secrets[ $bucket_index ]);
     $buckets_output[] = array(
       'id'   => ($has_all_data ? $bucket_index : $negative_ids--),
-      'name' => $bucket_name . ' (' . ($regions[ $bucket_index ] ? $regions[ $bucket_index ] : translate('no region', 'fv-wordpress-flowplayer')) . ')'
+      'name' => $bucket_name . ' (' . ($regions[ $bucket_index ] ? $regions[ $bucket_index ] : translate('no region', 'fv-wordpress-flowplayer')) . ')' . (!empty($domains[$bucket_index]) ? ' - '. $domains[$bucket_index] : '')
     );
   }
 
