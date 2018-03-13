@@ -1920,7 +1920,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	text-align: center;
 }
 .fv-fp-playlist .fvp-icon,
-.fv-fp-playlist #fvp-playlist-play {
+.fv-fp-playlist #fvp-playlist-play,
+.flowplayer .fp-menu.fv-fp-playlist-menu .fp-selected::before {
 	display: none;
 }
 .fv-fp-playlist.mode-repeat-playlist .fvp-icon.fvp-replay-list,
