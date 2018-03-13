@@ -253,16 +253,6 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 
 add_action( 'wp_ajax_load_s3_assets', 'fv_wp_flowplayer_ajax_load_s3_assets' );
-add_action( 'wp_enqueue_scripts', 'fv_wp_flowplayer_s3_browse_register_scripts' );
-
-
-
-function fv_wp_flowplayer_s3_browse_register_scripts() {
-  wp_register_script( 'browse-s3-js', plugins_url( '/js/s3-browser.js' , __FILE__ ), array(), '', true );
-  wp_enqueue_script( 'browse-s3-js' );
-}
-
-
 
 function fv_wp_flowplayer_include_aws_sdk() {
   if (!class_exists('Aws\S3\S3Client')) {
@@ -275,6 +265,15 @@ function fv_wp_flowplayer_include_aws_sdk() {
 function fv_wp_flowplayer_ajax_load_s3_assets() {
   fv_wp_flowplayer_include_aws_sdk();
   global $fv_fp, $s3Client;
+
+  // load CloudFront setttings
+  $cfDomains = $fv_fp->_get_option( array('pro','cf_domains_list') );
+  $cfBuckets = $fv_fp->_get_option( array('pro','cf_buckets_list') );
+
+  // no CloudFront domains defined - there is nothing to do for us here
+  if (!is_array($cfDomains) || !count($cfDomains)) {
+    die();
+  }
 
   $regions = $fv_fp->_get_option('amazon_region');
   $secrets = $fv_fp->_get_option('amazon_secret');
@@ -340,10 +339,6 @@ function fv_wp_flowplayer_ajax_load_s3_assets() {
     $secret = $secrets[ $array_id ];
     $key    = $keys[ $array_id ];
     $bucket = $buckets[ $array_id ];
-
-    // load CloudFront setttings
-    $cfDomains = $fv_fp->_get_option( array('pro','cf_domains_list') );
-    $cfBuckets = $fv_fp->_get_option( array('pro','cf_buckets_list') );
     $cf_domain_to_use = null;
 
     // check if we have current bucket assigned to an URL
