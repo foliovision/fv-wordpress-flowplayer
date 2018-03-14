@@ -27,7 +27,7 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
     apply_filters( 'show_password_fields', true, $profileuser );
     $output = ob_get_clean();
         
-    $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testProfileScreen.html'));
+    $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testProfileScreen.html')); // this contains user ID of '4'
     $two = explode("\n",$this->fix_newlines($output));
     foreach( explode("\n",$one) as $k => $v ) {
       
