@@ -35,6 +35,7 @@ class FV_Player_Db_Shortcode_Player {
     $email_list, // ID of the e-mail list to collect e-mails to at the end of playlist
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
+    $end_action_value, // the actual shortcode value for end_actions field
     $engine, // enforces the Flash engine for the playback of the video
     $height, // height of this player on page
     $hflip, // whether to horizontally flip the player
@@ -67,6 +68,13 @@ class FV_Player_Db_Shortcode_Player {
     $videos,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
     $db_table_name;
+
+  /**
+   * @return string
+   */
+  public function getEndActionValue() {
+    return $this->end_action_value;
+  }
 
   /**
    * @return string
@@ -400,6 +408,7 @@ CREATE TABLE `".$this->db_table_name."` (
   `email_list` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID of the e-mail list to collect e-mails to at the end of playlist',
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
+  `end_action_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'the actual shortcode value for end_actions field',
   `engine` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'enforces the Flash engine for the playback of the video',
   `height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of this player on page',
   `hflip` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to horizontally flip the player',

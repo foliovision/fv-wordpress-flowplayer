@@ -1077,10 +1077,35 @@ function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueL
 
 function fv_wp_flowplayer_build_ajax_data() {
   var
-      $editor = jQuery('#fv-player-shortcode-editor')
-      $tabs = $editor.find('.fv-player-tab'),
-      regex = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
-      data  = {};
+      $editor                = jQuery('#fv-player-shortcode-editor')
+      $tabs                  = $editor.find('.fv-player-tab'),
+      regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
+      data                   = {},
+      start_time             = jQuery('#fv_wp_flowplayer_field_start').val(),
+      end_time               = jQuery('#fv_wp_flowplayer_field_end').val(),
+      end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
+
+  // special processing for start + end times for a video
+  if (start_time || end_time) {
+    data['fv_wp_flowplayer_field_startend'] = start_time + '-' + end_time;
+  }
+
+  // special processing for end video actions
+  if (end_of_playlist_action && end_of_playlist_action != 'Nothing') {
+    switch (end_of_playlist_action) {
+      case 'redirect':
+        data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_redirect').val();
+        break;
+
+      case 'popup':
+        data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_popup_id').val();
+        break;
+
+      case 'email_list':
+        data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_email_list').val();
+        break;
+    }
+  }
 
   $tabs.each(function() {
     var
@@ -1096,6 +1121,7 @@ function fv_wp_flowplayer_build_ajax_data() {
       data['subtitles'] = {};
     }
 
+    // iterate over all tables in tabs
     $tables.each(function(table_index) {
       // only videos and subtitles tabs have tables, so we only need to search for their inputs when working with those
       var $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select') : jQuery(this));
