@@ -1327,8 +1327,6 @@ function fv_wp_flowplayer_submit( preview ) {
       fv_wp_flowplayer_show_preview(true, JSON.stringify(ajax_data));
 	    //alert('we need to update preview here');
     } else {
-	    console.log(ajax_data);
-	    return;
 	    // show saving loader
       fv_wp_flowplayer_big_loader_show();
 

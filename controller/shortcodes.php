@@ -239,8 +239,6 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 
   // check for new playlist tag format with video data saved in DB
   $atts = apply_filters('fv_flowplayer_attributes_retrieve', $atts);
-  var_dump($atts);
-  echo '<br><br>';
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     

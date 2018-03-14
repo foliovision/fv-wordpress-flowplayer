@@ -72,8 +72,8 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
 CREATE TABLE `".$this->db_table_name."` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_video` int(10) UNSIGNED NOT NULL,
-  `meta_key` varchar(25) CHARACTER SET latin1 NOT NULL,
-  `meta_value` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `meta_key` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_video` (`id_video`),
   KEY `meta_key` (`meta_key`)

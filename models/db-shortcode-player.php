@@ -23,6 +23,7 @@ class FV_Player_Db_Shortcode_Player {
     $id, // automatic ID for the player
     $is_valid = true, // used when loading the player from DB to determine whether we've found it
     $ab, // whether to show AB loop
+    $ad, // any HTML ad text
     $ad_height, // height of advertisement for this player
     $ad_width, // width of advertisement for this player
     $ad_skip, // whether or not to skip ads for this player
@@ -34,6 +35,7 @@ class FV_Player_Db_Shortcode_Player {
     $email_list, // ID of the e-mail list to collect e-mails to at the end of playlist
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
+    $engine, // enforces the Flash engine for the playback of the video
     $height, // height of this player on page
     $hflip, // whether to horizontally flip the player
     $lightbox, // whether to enable displaying this player in a lightbox
@@ -41,8 +43,12 @@ class FV_Player_Db_Shortcode_Player {
     $lightbox_height, // height for the lightbox popup
     $lightbox_width, // width for the lightbox popup
     $live, // whether this video is a live stream
+    $logo, // adds a logo to the video or hides the globally preset one
+    $midroll, // manually sets the second in which the VAST ad will start
     $playlist,
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
+    $playlist_hide, // whether to hide the playlist items below the video box
+    $play_button, // whether to hide the play/pause button on the control bar
     $popup_id, // ID of the popup to show at the end of playlist
     $qsel,
     $redirect, // where to redirect after the end of playlist
@@ -50,14 +56,80 @@ class FV_Player_Db_Shortcode_Player {
     $share_title, // title for sharing buttons
     $share_url,
     $speed,
+    $startend, // allows you to show only a specific part of a video
     $sticky, // whether or not to enable sticky functionality for this player
     $video_ads,
     $video_ads_post,
     $width, // with of the player on page
     $hlskey,
+    $vast, // manual VAST ad tag
+    $vast_engine, // type of the VAST engine set manually
     $videos,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
     $db_table_name;
+
+  /**
+   * @return string
+   */
+  public function getAd() {
+    return $this->ad;
+  }
+
+  /**
+   * @return string
+   */
+  public function getEngine() {
+    return $this->engine;
+  }
+
+  /**
+   * @return string
+   */
+  public function getLogo() {
+    return $this->logo;
+  }
+
+  /**
+   * @return string
+   */
+  public function getMidroll() {
+    return $this->midroll;
+  }
+
+  /**
+   * @return string
+   */
+  public function getPlaylistHide() {
+    return $this->playlist_hide;
+  }
+
+  /**
+   * @return string
+   */
+  public function getPlayButton() {
+    return $this->play_button;
+  }
+
+  /**
+   * @return string
+   */
+  public function getVast() {
+    return $this->vast;
+  }
+
+  /**
+   * @return string
+   */
+  public function getVastEngine() {
+    return $this->vast_engine;
+  }
+
+  /**
+   * @return string
+   */
+  public function getStartend() {
+    return $this->startend;
+  }
 
   /**
    * @return int
@@ -315,40 +387,49 @@ class FV_Player_Db_Shortcode_Player {
       $sql = "
 CREATE TABLE `".$this->db_table_name."` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ab` varchar(3) CHARACTER SET latin1 NOT NULL COMMENT 'whether to show AB loop',
+  `ab` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to show AB loop',
+  `ad` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'any HTML ad text',
   `ad_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of advertisement for this player',
   `ad_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width of advertisement for this player',
-  `ad_skip` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether or not to skip ads for this player',
-  `align` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'alignment position',
-  `autoplay` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to autoplay videos on page load',
-  `controlbar` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
-  `copy_text` varchar(120) CHARACTER SET latin1 NOT NULL,
-  `drm_text` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether to show DRM text on the player',
-  `email_list` varchar(5) CHARACTER SET latin1 NOT NULL COMMENT 'ID of the e-mail list to collect e-mails to at the end of playlist',
-  `embed` varchar(12) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
-  `end_actions` varchar(10) CHARACTER SET latin1 NOT NULL COMMENT 'what do to when the playlist in this player ends',
+  `ad_skip` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether or not to skip ads for this player',
+  `align` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'alignment position',
+  `autoplay` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to autoplay videos on page load',
+  `controlbar` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
+  `copy_text` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `drm_text` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to show DRM text on the player',
+  `email_list` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID of the e-mail list to collect e-mails to at the end of playlist',
+  `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
+  `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
+  `engine` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'enforces the Flash engine for the playback of the video',
   `height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of this player on page',
-  `hflip` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether to horizontally flip the player',
-  `lightbox` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether to enable displaying this player in a lightbox',
-  `lightbox_caption` varchar(120) CHARACTER SET latin1 NOT NULL COMMENT 'title for the lightbox popup',
+  `hflip` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to horizontally flip the player',
+  `lightbox` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to enable displaying this player in a lightbox',
+  `lightbox_caption` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for the lightbox popup',
   `lightbox_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height for the lightbox popup',
   `lightbox_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width for the lightbox popup',
-  `live` varchar(1) CHARACTER SET latin1 NOT NULL COMMENT 'whether this video is a live stream',
-  `playlist` varchar(10) CHARACTER SET latin1 NOT NULL DEFAULT 'Default',
-  `playlist_advance` varchar(7) CHARACTER SET latin1 NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
-  `popup_id` varchar(6) CHARACTER SET latin1 NOT NULL COMMENT 'ID of the popup to show at the end of playlist',
-  `qsel` varchar(25) CHARACTER SET latin1 NOT NULL,
-  `redirect` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'where to redirect after the end of playlist',
-  `share` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether to display sharing buttons (On / Off / Default)',
-  `share_title` varchar(120) CHARACTER SET latin1 NOT NULL COMMENT 'title for sharing buttons',
-  `share_url` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `speed` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `sticky` varchar(7) CHARACTER SET latin1 NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
-  `video_ads` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `video_ads_post` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `live` varchar(1) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether this video is a live stream',
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'adds a logo to the video or hides the globally preset one',
+  `midroll` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'manually sets the second in which the VAST ad will start',
+  `playlist` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT '[liststyle in shortcode] style of the playlist',
+  `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
+  `playlist_hide` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the playlist items below the video box',
+  `play_button` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the play/pause button on the control bar',
+  `popup_id` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID of the popup to show at the end of playlist',
+  `qsel` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `redirect` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'where to redirect after the end of playlist',
+  `share` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to display sharing buttons (On / Off / Default)',
+  `share_title` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for sharing buttons',
+  `share_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `speed` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `startend` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
+  `sticky` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
+  `video_ads` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[preroll in shortcode] ID of a saved video ad to be played as a pre-roll',
+  `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[postroll in shortcode] ID of a saved video ad to be played as a pre-roll',
   `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page',
-  `hlskey` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `videos` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'comma-separated list of video IDs for this player',
+  `hlskey` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `vast` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'manual VAST ad tag',
+  `vast_engine` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'type of the VAST engine set manually',
+  `videos` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'comma-separated list of video IDs for this player',
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
