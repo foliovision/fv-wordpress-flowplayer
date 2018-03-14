@@ -175,7 +175,7 @@ function is_admin() {
   return checkAndReturnRequestedValue();
 }
 
-function plugins_url( $value, $file ) {
+function plugins_url( $value, $file = false ) {
   return $value;
 }
 

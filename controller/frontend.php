@@ -357,8 +357,8 @@ function flowplayer_prepare_scripts() {
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
 
-    if ( $fv_fp->conf['video_position_save_enable'] !== 'false' ) {
-      $aConf['video_position_save_enable'] = $fv_fp->conf['video_position_save_enable'];
+    if ( $fv_fp->_get_option('video_position_save_enable') ) {
+      $aConf['video_position_save_enable'] = $fv_fp->_get_option('video_position_save_enable');
     }
 
     if( is_user_logged_in() ) $aConf['is_logged_in'] = true;

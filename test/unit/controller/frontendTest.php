@@ -101,20 +101,20 @@ final class FV_Player_Controller extends PHPUnit_Framework_TestCase {
     $output = ob_get_clean();
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
-Registering fv_flowplayer for /css/flowplayer.css?ver=1.2.3.4
-Registering flowplayer for /flowplayer/fv-flowplayer.min.js?ver=1.2.3.4 footer? 1
+Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
+Registering flowplayer for fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fullscreen] => 1
-    [swf] => /flowplayer/flowplayer.swf?ver=1.2.3.4
-    [swfHls] => /flowplayer/flowplayerhls.swf?ver=1.2.3.4
+    [swf] => fv-wordpress-flowplayer/flowplayer/flowplayer.swf?ver=1.2.3.4
+    [swfHls] => fv-wordpress-flowplayer/flowplayer/flowplayerhls.swf?ver=1.2.3.4
     [embed] => Array
         (
-            [library] => /flowplayer/fv-flowplayer.min.js
-            [script] => /flowplayer/embed.min.js
-            [skin] => /css/flowplayer.css
-            [swf] => /flowplayer/flowplayer.swf?ver=1.2.3.4
-            [swfHls] => /flowplayer/flowplayerhls.swf?ver=1.2.3.4
+            [library] => fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js
+            [script] => fv-wordpress-flowplayer/flowplayer/embed.min.js
+            [skin] => fv-wordpress-flowplayer/css/flowplayer.css
+            [swf] => fv-wordpress-flowplayer/flowplayer/flowplayer.swf?ver=1.2.3.4
+            [swfHls] => fv-wordpress-flowplayer/flowplayer/flowplayerhls.swf?ver=1.2.3.4
         )
 
     [speeds] => Array
