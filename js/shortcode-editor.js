@@ -1081,14 +1081,7 @@ function fv_wp_flowplayer_build_ajax_data() {
       $tabs                  = $editor.find('.fv-player-tab'),
       regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
       data                   = {},
-      start_time             = jQuery('#fv_wp_flowplayer_field_start').val(),
-      end_time               = jQuery('#fv_wp_flowplayer_field_end').val(),
       end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
-
-  // special processing for start + end times for a video
-  if (start_time || end_time) {
-    data['fv_wp_flowplayer_field_startend'] = start_time + '-' + end_time;
-  }
 
   // special processing for end video actions
   if (end_of_playlist_action && end_of_playlist_action != 'Nothing') {

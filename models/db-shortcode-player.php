@@ -57,7 +57,6 @@ class FV_Player_Db_Shortcode_Player {
     $share_title, // title for sharing buttons
     $share_url,
     $speed,
-    $startend, // allows you to show only a specific part of a video
     $sticky, // whether or not to enable sticky functionality for this player
     $video_ads,
     $video_ads_post,
@@ -130,13 +129,6 @@ class FV_Player_Db_Shortcode_Player {
    */
   public function getVastEngine() {
     return $this->vast_engine;
-  }
-
-  /**
-   * @return string
-   */
-  public function getStartend() {
-    return $this->startend;
   }
 
   /**
@@ -430,7 +422,6 @@ CREATE TABLE `".$this->db_table_name."` (
   `share_title` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for sharing buttons',
   `share_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `speed` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `startend` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
   `sticky` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
   `video_ads` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[preroll in shortcode] ID of a saved video ad to be played as a pre-roll',
   `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[postroll in shortcode] ID of a saved video ad to be played as a pre-roll',

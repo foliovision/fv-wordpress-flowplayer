@@ -67,6 +67,44 @@ function fv_flowplayer_getPlaylistItemData($vid) {
 
 
 /**
+ * Returns caption formatted for a shortcode, so it can be used there.
+ * Also, this function is used on 2 places, so that's why it's a function :P
+ *
+ * @param $vid The video object from which to prepare the string data.
+ *
+ * @return string Returns the string data for a captions item.
+ */
+function fv_flowplayer_getCaptionData($vid) {
+  return (!empty($vid['caption']) ? $vid['caption'] : '');
+}
+
+
+
+/**
+ * Returns startend tag formatted for a shortcode, so it can be used there.
+ * Also, this function is used on 2 places, so that's why it's a function :P
+ *
+ * @param $vid The video object from which to prepare the string data.
+ *
+ * @return string Returns the string data for a startend item.
+ */
+function fv_flowplayer_getStartEndData($vid) {
+  $str = (!empty($vid['start']) ? $vid['start'] : '');
+
+  if ($str) {
+    $str .= (!empty($vid['end']) ? '-' . $vid['end'] : '');
+  }
+
+  if (!$str) {
+    $str = '-';
+  }
+
+  return $str;
+}
+
+
+
+/**
  * Generates a full code for a playlist from one that uses video IDs
  * stored in the database to one that conforms to the original long
  * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
@@ -81,6 +119,8 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
     $ids = explode(',', $atts['playlist']);
     $newids = array();
     $new_playlist_tag = array();
+    $new_caption_tag = array();
+    $new_startend_tag = array();
     $first_video_data_cached = false;
 
     // check the first video, which is the main one for the playlist
@@ -93,6 +133,8 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
     foreach ($ids as $id) {
       if (isset($cache[$id])) {
         $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData($cache[$id]);
+        $new_caption_tag[] = fv_flowplayer_getCaptionData($cache[$id]);
+        $new_startend_tag[] = fv_flowplayer_getStartEndData($cache[$id]);
       } else {
         $newids[] = (int) $id;
       }
@@ -109,25 +151,79 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
         $atts = array_merge($atts, $vid);
         $cache[$vid->id] = $vid;
 
+        $caption = fv_flowplayer_getCaptionData($vid);
+        if ($caption) {
+          $new_caption_tag[] = $caption;
+        }
+
+        $startend = fv_flowplayer_getStartEndData($vid);
+        if ($startend != '-') {
+          $new_startend_tag[] = $startend;
+        }
+
         // remove the first video and keep adding the rest of the videos to the playlist tag
         array_shift( $videos );
       }
 
       // add rest of the videos into the playlist tag
       if (count($videos)) {
+        // if this remains false, the caption tag does not need to be present
+        $has_captions = false;
+
+        // if this remains false, the startend tag does not need to be present
+        $has_timings = false;
+
         foreach ( $videos as $vid_object ) {
           $vid = $vid_object->getAllDataValues();
           $cache[ $vid->id ]  = $vid;
           $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
+
+          $caption = fv_flowplayer_getCaptionData($vid);
+          if ($caption) {
+            $has_captions = true;
+          }
+          $new_caption_tag[] = $caption;
+
+          $startend = fv_flowplayer_getStartEndData($vid);
+          if ($startend != '-') {
+            $has_timings = true;
+          }
+          $new_startend_tag[] = $startend;
         }
 
         $atts['playlist'] = implode(';', $new_playlist_tag);
+
+        if ($has_captions) {
+          $atts['caption'] = implode( ';', $new_caption_tag );
+        }
+
+        if ($has_timings) {
+          $atts['startend'] = implode( ';', $new_startend_tag );
+        }
       } else {
         // only one video found, therefore this is not a playlist
         unset($atts['playlist']);
+
+        $caption = fv_flowplayer_getCaptionData($vid);
+        if ($caption) {
+          $atts['caption'] = $caption;
+        }
+
+        $startend = fv_flowplayer_getStartEndData($vid);
+        if ($startend != '-') {
+          $atts['startend'] = $startend;
+        }
       }
     } else {
       $atts['playlist'] = implode(';', $new_playlist_tag);
+
+      if (count($new_caption_tag)) {
+        $atts['caption'] = implode( ';', $new_caption_tag );
+      }
+
+      if (count($new_startend_tag)) {
+        $atts['startend'] = implode( ';', $new_startend_tag );
+      }
     }
   }
 

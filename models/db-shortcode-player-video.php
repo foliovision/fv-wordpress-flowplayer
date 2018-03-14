@@ -24,7 +24,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $is_valid = true, // used when loading the video from DB to determine whether we've found it
     $caption, // optional video caption
     $chapters, // URL for a VTT file for displaying captions
-    $end,
+    $end, // allows you to show only a specific part of a video
     $mobile, // mobile (smaller-sized) version of this video
     $rtmp, // optional RTMP server URL
     $rtmp_path, // if RTMP is set, this will have the path on the server to the RTMP stream
@@ -33,7 +33,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src, // the main video source
     $src_1, // alternative source path #1 for the video
     $src_2, // alternative source path #2 for the video
-    $start,
+    $start, // allows you to show only a specific part of a video
     $db_table_name,
     $additional_objects = array();
 
@@ -141,7 +141,7 @@ CREATE TABLE `".$this->db_table_name."` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
   `chapters` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL for a VTT file for displaying captions',
-  `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
   `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
   `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
   `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
@@ -150,7 +150,7 @@ CREATE TABLE `".$this->db_table_name."` (
   `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
   `src_1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
   `src_2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
-  `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
