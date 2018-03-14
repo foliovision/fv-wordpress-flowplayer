@@ -354,11 +354,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4.3 - 2018/02/?? =
+= 6.5 - 2018/03/14 =
 
+* New feature - Video position saving for both guest and logged in users
+* Custom video fields are now easy to add with the FV_Player_MetaBox PHP class
 * DASH - updating to latest tested Dash.js version
 * Bugfix - iframe embed code placing body closing tag in bad place
 * Bugfix - fix for PHP warnings on AMP pages
+* Bugfix - Shortcode editor bug when you select the subtitle language and it adds the subtitles twice
+* Bugfix - Subtitles in playlist - making sure multilingual subtitles work for the first item at least 
 
 = 6.4.2 - 2018/02/23 =
 

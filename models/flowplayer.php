@@ -572,6 +572,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
+    if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();
+    if (!isset($conf['skin-youtuby'])) $conf['skin-youtuby'] = array();
+
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = array();
@@ -1233,10 +1236,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }         
       
       foreach( $posts AS $objPost ) {
-        if(
-          stripos($objPost->post_content,'[fvplayer') !== false ||
-          stripos($objPost->post_content,'[flowplayer') !== false ||
-          stripos($objPost->post_content,'[video') !== false
+        if( !empty($objPost->post_content) && (
+            stripos($objPost->post_content,'[fvplayer') !== false ||
+            stripos($objPost->post_content,'[flowplayer') !== false ||
+            stripos($objPost->post_content,'[video') !== false
+          )
         ) {
           $bFound = true;
           break;
@@ -1834,7 +1838,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {
-      return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
+      $plugin_folder = basename(dirname(dirname(__FILE__))); // make fv-wordpress-flowplayer out of {anything}/fv-wordpress-flowplayer/models/flowplayer.php
+      return plugins_url($plugin_folder);
     }
   }
   
@@ -2121,10 +2126,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       </div>
     </div>
     
-  <?php else : ?>
-    <?php while ( have_posts() ) : the_post(); //is this needed? ?>
-      <?php
-  
+  <?php else :
+    
+    if( stripos($content,'<!--fv player end-->') !== false ) {
+      
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
@@ -2133,10 +2138,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
-      //$content = apply_filters( 'the_content', get_the_content() );
-      
-      
-              
+            
       $aPlayers = explode( '<!--fv player end-->', $content );
       if( $aPlayers ) {
         foreach( $aPlayers AS $k => $v ) {
@@ -2152,8 +2154,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
       }    
       
-      ?>
-    <?php endwhile; 
+    }
   endif;
   
   wp_footer();
@@ -2243,4 +2244,3 @@ function fv_wp_flowplayer_save_post( $post_id ) {
     }
   }
 }
-

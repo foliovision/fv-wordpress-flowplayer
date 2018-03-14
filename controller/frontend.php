@@ -357,6 +357,12 @@ function flowplayer_prepare_scripts() {
     $aConf['mobile_native_fullscreen'] = $fv_fp->_get_option('mobile_native_fullscreen');
     $aConf['mobile_force_fullscreen'] = $fv_fp->_get_option('mobile_force_fullscreen');
 
+    if ( $fv_fp->_get_option('video_position_save_enable') ) {
+      $aConf['video_position_save_enable'] = $fv_fp->_get_option('video_position_save_enable');
+    }
+
+    if( is_user_logged_in() ) $aConf['is_logged_in'] = true;
+
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width'); 
@@ -411,7 +417,7 @@ function flowplayer_prepare_scripts() {
   }
   
   global $FV_Player_lightbox;
-  if( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') ) {
+  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') ) ) {
     $aConf = array();
     $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
     
@@ -565,4 +571,3 @@ function fv_player_comment_text( $comment_text ) {
   
   return $comment_text;
 }
-

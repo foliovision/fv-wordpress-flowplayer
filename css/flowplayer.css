@@ -1068,7 +1068,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .edd_form .fv-player-custom-video-list {
     clear: both;
     position: relative;
-    top: -26px;
 }
 a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
     margin: 0 6px 0 0;
