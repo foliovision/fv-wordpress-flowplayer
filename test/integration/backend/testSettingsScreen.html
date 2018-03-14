@@ -514,6 +514,16 @@
         })
       })
     </script>
+          <tr>
+          <td><label for="video_position_save_enable">Remember video position (beta):</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="video_position_save_enable" value="false"/>
+                  <input type="checkbox" name="video_position_save_enable" id="video_position_save_enable" value="true" />
+                  Stores the last video play position for users, so they can continue watching from where they left.                                        <span class="more">It stored in usermeta for logged in users and in a localStorage or cookie for guest users.</span> <a href="#" class="show-more">(&hellip;)</a>
+                                </p>
+          </td>
+      </tr>    
               </table>
           <small class="alignright">
                 Missing settings? Check <a class="fv-settings-anchor" href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.          </small>

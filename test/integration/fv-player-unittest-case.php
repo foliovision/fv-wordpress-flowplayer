@@ -4,6 +4,13 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   
   protected $backupGlobals = false;
   
+  public function setUp() {
+    parent::setUp();
+    
+    global $fv_fp;
+    $this->restore = $fv_fp->conf;
+  }  
+  
   public function fix_newlines( $html ) {
     $html = preg_replace( '/(id|rel)="wpfp_[^"]+"/', '$1="some-test-hash"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
@@ -36,5 +43,12 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     // save initial settings
     //$fv_fp->_set_conf();
   }
+  
+  public function tearDown() {
+    parent::tearDown();
+    
+    global $fv_fp;
+    $fv_fp->conf = $this->restore;
+  }  
 
 }

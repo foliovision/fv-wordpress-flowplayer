@@ -9,9 +9,7 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
 final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
     
   public function testProfileScreen() {
-    
     global $fv_fp;
-    $temp = $fv_fp;
     $fv_fp->conf['profile_videos_enable_bio'] = true;
     
     // add new user and create last saved position metadata for this new user
@@ -43,6 +41,7 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
     }
     
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testProfileScreen.html')), $this->fix_newlines($output) );
+        
   }
 
 }
