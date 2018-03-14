@@ -144,7 +144,9 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
  */
 function fv_flowplayer_mapDbAttributes2Shortcode($att_name) {
   $atts_map = array(
-    'playlist' => 'liststyle'
+    'playlist'       => 'liststyle',
+    'video_ads'      => 'preroll',
+    'video_ads_post' => 'postroll'
   );
 
   return (isset($atts_map[$att_name]) ? $atts_map[$att_name] : $att_name);
