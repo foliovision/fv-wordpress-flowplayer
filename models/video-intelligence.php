@@ -23,35 +23,45 @@ class FV_Player_video_intelligence_Installer {
       </ul>
       <?php $current_user = wp_get_current_user(); ?>
       <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo urlencode(home_url()); ?>" target="_blank" class="button">Signup</a>
-      <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store this login information, only the auth token valid for 30 days is stored.</p>
-      <table class="form-table2" style="margin: 5px; ">  
-        <tbody>
-          <tr>
-            <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
-            <td>
-              <p class="description">
-                <input type="text" name="vi_login" id="vi_login" />
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td><label for="sharing_text"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
-            <td>
-              <p class="description">
-                <input type="text" name="vi_pass" id="vi_pass" />
-              </p>
-            </td>
-          </tr>                        
-          <tr>    		
-            <td>
-              <input type="submit" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
-            </td>
-          </tr>         
-        </tbody>
-      </table>
+      
+      <?php      
+      $option = get_option('fv-player-video-intelligence');
+      if( $option && !empty($option['jwt']) ) {
+        ?>
+        <p>We found an existing video intelligence token found. Click below to attempt the FV Player video intelligence plugin installation again: <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button"></p>        
+        <?php
+      } else {
+        ?>
+        <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store this login information, only the auth token valid for 30 days is stored.</p>
+        <table class="form-table2" style="margin: 5px; ">  
+          <tbody>
+            <tr>
+              <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td>
+                <p class="description">
+                  <input type="text" name="vi_login" id="vi_login" />
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td><label for="sharing_text"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td>
+                <p class="description">
+                  <input type="password" name="vi_pass" id="vi_pass" />
+                </p>
+              </td>
+            </tr>                        
+            <tr>    		
+              <td>
+                <input type="submit" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
+              </td>
+            </tr>         
+          </tbody>
+        </table>
 
 
-    <?php
+      <?php
+    }
   }
   
   function settings_register() {
@@ -65,6 +75,8 @@ class FV_Player_video_intelligence_Installer {
   }
   
   function start() {
+    $should_install = false;
+    
     if( !empty($_POST['vi_login']) && !empty($_POST['vi_pass']) ) {
       remove_action('admin_init', 'fv_player_settings_save', 9);
       
@@ -114,8 +126,16 @@ class FV_Player_video_intelligence_Installer {
       $this->notice = 'video intelligence login successful!';
       
       //  attempt plugin auto install!
-      
+      $should_install = true;
     }    
+    
+    if( !empty($_POST['fv-player-vi-install']) ) {
+      $should_install = true;
+    }
+    
+    if( $should_install ) {
+      die('hehe');
+    }
   }
 }
 
