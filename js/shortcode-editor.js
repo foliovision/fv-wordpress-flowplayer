@@ -1103,11 +1103,15 @@ function fv_wp_flowplayer_build_ajax_data() {
       $inputs.each(function() {
         var
           $this               = jQuery(this),
+          $parent_tr          = $this.closest('tr'),
           optionsHaveNoValue = false, // will become true for dropdown options without values
           $valueLessOptions   = null,
           isDropdown          = this.nodeName == 'SELECT';
 
-        console.log($this.attr('name'), $this.is(':visible'));
+        // exceptions for selectively hidden fields
+        if ($parent_tr.hasClass('fv_player_interface_hide') && $parent_tr.css('display') == 'none') {
+          return;
+        }
 
         // check for a select without any option values, in which case we'll use their text
         if (isDropdown) {
