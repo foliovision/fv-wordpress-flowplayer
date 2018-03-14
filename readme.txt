@@ -354,7 +354,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.5 - 2018/03/13 =
+= 6.5 - 2018/03/14 =
 
 * New feature - Video position saving for both guest and logged in users
 * Custom video fields are now easy to add with the FV_Player_MetaBox PHP class
