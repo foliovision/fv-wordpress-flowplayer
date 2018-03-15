@@ -16,6 +16,8 @@ Custom HTML 5 video on your own site with Flash fallback for legacy browsers is 
 
 FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
+* Remembering video position both both guest users and members
+* API for custom video fields
 * **NEW** easy AB looped playback for your visitors (great for teaching sites)
 * **NEW** improved and more powerful playlists (more playlist features coming soon).
 * Automated checking of video encoding for logged in admins
@@ -356,7 +358,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 6.5 - 2018/03/14 =
 
-* New feature - Video position saving for both guest and logged in users
+* New feature - Video position saving for both guest and logged in users - see Settings -> FV Player -> Sidewide Flowplayer Defaults -> Remember video position
 * Custom video fields are now easy to add with the FV_Player_MetaBox PHP class
 * DASH - updating to latest tested Dash.js version
 * Bugfix - iframe embed code placing body closing tag in bad place
