@@ -389,9 +389,9 @@ class FV_Wordpress_Flowplayer_Plugin
     
     if( !$aPluginSlugs )
       return false;
-
+      
     foreach( $aActivePlugins as $item ){
-      if( stripos($item,$slug.'.php') !== false )
+      if( stripos($item,$slug.'.php') !== false && !is_wp_error(validate_plugin($item)) )
         return $item;
     }
     

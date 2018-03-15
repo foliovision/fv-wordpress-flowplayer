@@ -22,7 +22,7 @@ class FV_Player_video_intelligence_Installer {
         <li>Relevant, topical videos, sourced from:</li>
       </ul>
       <?php $current_user = wp_get_current_user(); ?>
-      <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo urlencode(home_url()); ?>" target="_blank" class="button">Signup</a>
+      <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo urlencode(home_url()); ?>&invtype=3" target="_blank" class="button">Signup</a>
       
       <?php      
       $option = get_option('fv-player-video-intelligence');
@@ -134,7 +134,15 @@ class FV_Player_video_intelligence_Installer {
     }
     
     if( $should_install ) {
-      die('hehe');
+      $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
+        "FV Player Video Intelligence",
+        "fv-player-video-intelligence",
+        "fv-player-video-intelligence.php",
+        "https://foliovision.com/plugins/public/fv-player-video-intelligence-0.1.zip",
+        '/wp-admin/options-general.php?page=fvplayer',
+        'fv_wordpress_flowplayer_deferred_notices'
+      );
+      var_dump($result,get_option('fv_wordpress_flowplayer_deferred_notices'));
     }
   }
 }
