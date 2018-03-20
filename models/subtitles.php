@@ -7,10 +7,10 @@ class FV_Player_Subtitles {
 
   }
 
-  function add_subtitles( $aItem, $index ) {
+  function add_subtitles( $aItem, $index, $video_args = null ) {
     global $fv_fp;
     
-    $aSubtitles = $fv_fp->get_subtitles($index);
+    $aSubtitles = $fv_fp->get_subtitles($index, $video_args);
     if( count($aSubtitles) == 0 ) return $aItem;
         
     $aLangs = flowplayer::get_languages();

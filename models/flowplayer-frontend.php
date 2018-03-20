@@ -969,12 +969,15 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_subtitles($index = 0) {
+  function get_subtitles($index = 0, $video_args = null) {
     $aSubtitles = array();
 
-    if( $this->aCurArgs && count($this->aCurArgs) > 0 ) {
+    // if we come from a DB-based playlist, we use arguments that we have from the DB
+    $args = ( $video_args !== null ? $video_args : $this->aCurArgs);
+
+    if( $args && count($args) > 0 ) {
       $protocol = is_ssl() ? 'https' : 'http';
-      foreach( $this->aCurArgs AS $key => $subtitles ) {
+      foreach( $args AS $key => $subtitles ) {
         if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
           continue;
         }
@@ -985,7 +988,7 @@ class flowplayer_frontend extends flowplayer
         $subtitles = $subtitles[$index];
   
         if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-          //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
+          //$splash_img = VIDEO_PATH.trim($args['splash']);
           if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
             if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
               $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;

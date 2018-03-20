@@ -35,7 +35,8 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src_2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
     $db_table_name,
-    $additional_objects = array();
+    $additional_objects = array(),
+    $meta_data = null; // object of this video's meta data
 
   /**
    * @return int
@@ -210,6 +211,9 @@ CREATE TABLE `".$this->db_table_name."` (
           foreach ( $video_data as $key => $value ) {
             $this->$key = $value;
           }
+
+          // load meta data
+          $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($video_data->id)));
         } else {
           // multiple IDs, create new video objects for each of them except the first one,
           // for which we'll use this instance
@@ -220,6 +224,11 @@ CREATE TABLE `".$this->db_table_name."` (
               foreach ( $db_record as $key => $value ) {
                 $this->$key = $value;
               }
+
+              // load meta data
+              $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($db_record->id)));
+
+              // add this to all the loaded video objects
               $this->additional_objects[] = $this;
               $first_done = true;
             } else {
@@ -228,7 +237,7 @@ CREATE TABLE `".$this->db_table_name."` (
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
               $video_object = new FV_Player_Db_Shortcode_Player_Video(null, get_object_vars($db_record));
-              $video_object->link2db($record_id);
+              $video_object->link2db($record_id, true);
 
               // cache is in the list of all loaded video objects
               $this->additional_objects[] = $video_object;
@@ -249,10 +258,18 @@ CREATE TABLE `".$this->db_table_name."` (
    * so we can return them as objects from the DB and any saving will
    * not insert their duplicates.
    *
-   * @param $id The DB ID to which we'll link this video.
+   * @param $id        The DB ID to which we'll link this video.
+   * @param $load_meta If true, the meta data will be loaded for the video from database.
+   *                   Used when loading multiple videos at once with the array $id constructor parameter.
+   *
+   * @throws Exception When the underlying Meta object throws.
    */
-  public function link2db($id) {
+  public function link2db($id, $load_meta = false) {
     $this->id = $id;
+
+    if ($load_meta) {
+      $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($id)));
+    }
   }
 
   /**
@@ -278,12 +295,45 @@ CREATE TABLE `".$this->db_table_name."` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'meta_data') {
         $data[$property] = $value;
       }
     }
 
     return $data;
+  }
+
+  /**
+   * Returns meta data for this video.
+   *
+   * @return array Returns all meta data for this video.
+   */
+  public function getMetaData() {
+    if ($this->meta_data->getAllLoadedMeta()) {
+      return $this->meta_data->getAllLoadedMeta();
+    } else {
+      return array($this->meta_data);
+    }
+  }
+
+  /**
+   * Returns subtitles formatted for the shortcode
+   * in the form of array('subtitles' => 'subs1;subs2;subs3...')
+   *
+   * @return string Returns shortcode-formatted subtitles string.
+   */
+  public function getSubtitlesShortcodeData() {
+    $subtitles = array();
+
+    if (count($this->getMetaData())) {
+      foreach ($this->getMetaData() as $meta_record) {
+        if (strpos($meta_record->getMetaKey(), 'subtitles') !== false) {
+          $subtitles[] = $meta_record->getMetaValue();
+        }
+      }
+    }
+
+    return implode(';', $subtitles);
   }
 
   /**
@@ -306,7 +356,7 @@ CREATE TABLE `".$this->db_table_name."` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = $value;
       }
@@ -335,6 +385,7 @@ CREATE TABLE `".$this->db_table_name."` (
           // create new record in DB
           $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record);
           $meta_object->save();
+          $this->meta_data = $meta_object;
         }
       }
 

@@ -30,8 +30,6 @@ add_filter( 'fv_flowplayer_attributes_retrieve', 'fv_flowplayer_getPlayerAttsFro
 
 add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shortcode' );
 
-add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 1, 3 );
-
 
 /**
  * Returns playlist video item formatted for a shortcode,
@@ -110,7 +108,6 @@ function fv_flowplayer_getStartEndData($vid) {
  * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
  */
 function fv_flowplayer_generateFullPlaylistCode($atts) {
-  global $wpdb;
   static $cache = array();
 
   // check if we should change anything in the playlist code
@@ -148,8 +145,9 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
       // cache first vid
       if (!$first_video_data_cached) {
         $vid = $videos[0]->getAllDataValues();
+        $vid['subtitles'] = $videos[0]->getSubtitlesShortcodeData();
         $atts = array_merge($atts, $vid);
-        $cache[$vid->id] = $vid;
+        $cache[$vid['id']] = $vid;
 
         $caption = fv_flowplayer_getCaptionData($vid);
         if ($caption) {
@@ -175,7 +173,8 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
 
         foreach ( $videos as $vid_object ) {
           $vid = $vid_object->getAllDataValues();
-          $cache[ $vid->id ]  = $vid;
+          $vid['subtitles'] = $vid_object->getSubtitlesShortcodeData();
+          $cache[ $vid['id'] ]  = $vid;
           $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
 
           $caption = fv_flowplayer_getCaptionData($vid);
@@ -250,6 +249,24 @@ function fv_flowplayer_mapDbAttributes2Shortcode($att_name) {
 
 
 /**
+ * Maps attributes values from database into their respective shortcode values.
+ *
+ * @param $att_name  Attribute name from the database.
+ * @param $att_value Attribute value from the database.
+ *
+ * @return mixed Returns the correct attribute value for shortcode use.
+ */
+function fv_flowplayer_mapDbAttributeValue2Shortcode($att_name, $att_value) {
+  switch ($att_name) {
+    case 'playlist_advance':
+      return ($att_value == 'off' ? 'false' : 'true');
+  }
+
+  return $att_value;
+}
+
+
+/**
  * Retrieves player attributes from the database
  * as opposed to getting them from the old full-text
  * shortcode format.
@@ -261,7 +278,6 @@ function fv_flowplayer_mapDbAttributes2Shortcode($att_name) {
  * @throws Exception When the underlying video object throws.
  */
 function fv_flowplayer_getPlayerAttsFromDb($atts) {
-  global $wpdb;
   static $cache = array();
 
   if (isset($atts['id'])) {
@@ -276,14 +292,13 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
     if ( $data ) {
       foreach( $data AS $k => $v ) {
         $k = fv_flowplayer_mapDbAttributes2Shortcode($k);
-        if( $v == "1" ) {
-          $atts[$k] = "true";
-        } else if( $v ) {
+        $v = fv_flowplayer_mapDbAttributeValue2Shortcode($k, $v);
+        if( $v ) {
           // we omit empty values and they will get set to defaults if necessary
           $atts[$k] = $v;
         }
       }
-      
+
       // add playlist / single video data
       $atts = array_merge( $atts, fv_flowplayer_generateFullPlaylistCode(
       // we need to prepare the same attributes array here
@@ -781,20 +796,4 @@ function fv_flowplayer_shortcode_fix_fancy_quotes( $aArgs ) {
   }
   
   return $aArgs;
-}
-
-
-
-
-function fv_player_db_playlist_item( $aPlayer, $index, $aArgs ) {
-  $ids = explode(',', $aArgs['videos']);
-  
-  //  todo: move to some function
-  global $wpdb;
-  $videos = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videos WHERE id = '.$ids[$index]);
-  $meta = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'fv_player_videometa WHERE id_video = '.$ids[$index]);
-    
-  $aPlayer['subtitles'] = $meta;
-  
-  return $aPlayer;
 }

@@ -1184,7 +1184,7 @@ function fv_wp_flowplayer_build_ajax_data() {
           // all other tabs
           else {
             if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
-              data[m[1]] = this.checked ? 1 : '';
+              data[m[1]] = this.checked ? 'true' : '';
             } else {
               // check dropdown for its value based on values in it
               if (isDropdown) {
