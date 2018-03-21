@@ -13,6 +13,7 @@ class FV_Player_video_intelligence_Installer {
 
   function settings() {
     $option = get_option('fv_player_video_intelligence');
+    wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
     ?>
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
@@ -35,7 +36,7 @@ class FV_Player_video_intelligence_Installer {
                 <td></td>
                 <td>
                   <?php if( $option && !empty($option['jwt']) && !empty($option['time']) && ( $option['time'] + 30 * 24 * 3600 ) > time() ) : ?>
-                    <p>We found an existing video intelligence token found. Click below to attempt the FV Player video intelligence plugin installation again.</p> <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button">
+                    <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p> <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button">
                   <?php else : ?>
                     <?php $current_user = wp_get_current_user(); ?>
                     <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
@@ -64,7 +65,7 @@ class FV_Player_video_intelligence_Installer {
                   <td>
                   </td>
                   <td>
-                    <input type="submit" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
+                    <input type="submit" name="fv_player_vi_install" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
                   </td>
                 </tr>
               <?php endif; ?>
@@ -93,7 +94,9 @@ class FV_Player_video_intelligence_Installer {
   function start() {
     $should_install = false;
 
-    if( current_user_can('install_plugins') && !empty($_POST['vi_login']) && !empty($_POST['vi_pass']) ) {
+    if( current_user_can('install_plugins') && !empty($_POST['vi_login']) && !empty($_POST['vi_pass']) && !empty($_POST['fv_player_vi_install']) ) {
+      check_admin_referer( 'fv_player_vi_install', '_wpnonce_fv_player_vi_install' );
+      
       remove_action('admin_init', 'fv_player_settings_save', 9);
 
       $request = wp_remote_get( 'https://dashboard-api.vidint.net/v1/api/widget/settings' );
