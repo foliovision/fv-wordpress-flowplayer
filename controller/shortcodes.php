@@ -491,8 +491,10 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   if( $arguments['post'] == 'this' ) {
     $arguments['post'] = get_the_ID();
   }
-  
-  if( intval($arguments['post']) > 0 ) {
+
+  if( intval($arguments['id']) > 0 ) {
+    $new_player = $fv_fp->build_min_player(false,$arguments);
+  } else  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
     if( $objVideoQuery->have_posts() ) {
       $sHTML = '';
