@@ -26,10 +26,15 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 
 add_shortcode('fv_time','fv_player_time');
 
-add_filter( 'fv_flowplayer_attributes_retrieve', 'fv_flowplayer_getPlayerAttsFromDb', 10, 2);
+add_filter( 'fv_flowplayer_args_pre', 'fv_flowplayer_getPlayerAttsFromDb', 10, 1);
+add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 10, 3 );
 
 add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shortcode' );
 
+
+function fv_player_db_playlist_item($aPlayer, $index, $aArgs) {
+  var_dump($aArgs);
+}
 
 /**
  * Returns playlist video item formatted for a shortcode,
@@ -146,7 +151,8 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
       if (!$first_video_data_cached) {
         $vid = $videos[0]->getAllDataValues();
         $vid['subtitles'] = $videos[0]->getSubtitlesShortcodeData();
-        $atts = array_merge($atts, $vid);
+        //$atts = array_merge($atts, $vid);
+        $atts = array_merge($atts, array('videos' => $vid));
         $cache[$vid['id']] = $vid;
 
         $caption = fv_flowplayer_getCaptionData($vid);
@@ -174,6 +180,7 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
         foreach ( $videos as $vid_object ) {
           $vid = $vid_object->getAllDataValues();
           $vid['subtitles'] = $vid_object->getSubtitlesShortcodeData();
+          $atts = array_merge($atts, array('videos' => $vid));
           $cache[ $vid['id'] ]  = $vid;
           $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
 
@@ -314,7 +321,9 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
     $cache[ $atts['id'] ] = $atts;    
 
   }
-  
+
+  //var_dump($atts);
+
   return $atts;
 }
 
@@ -326,7 +335,7 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
  */
 function fv_flowplayer_expand_player_shortcode() {
   if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-      $atts = $atts = apply_filters('fv_flowplayer_attributes_retrieve', array( 'id' => $_POST['playerID']));
+      $atts = fv_flowplayer_attributes_retrieve(array( 'id' => $_POST['playerID'] ));
 
       if (count($atts)) {
         $out = '[fvplayer';
@@ -351,7 +360,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   if( !$fv_fp ) return false;
 
   // check for new playlist tag format with video data saved in DB
-  $atts = apply_filters('fv_flowplayer_attributes_retrieve', $atts);
+  //$atts = apply_filters('fv_flowplayer_attributes_retrieve', $atts);
+  //$atts = apply_filters('fv_flowplayer_args_pre', $atts);
+  //var_dump($atts);
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     
