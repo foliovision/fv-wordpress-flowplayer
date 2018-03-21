@@ -81,9 +81,9 @@ a.red-button {
 #wpfp_options #fv_flowplayer_integrations table tr > td:first-child { padding-top: 4px; vertical-align: top; }
 #wpfp_options table.flowplayer-settings { width: 29%; }
 
-div.clear { clear: both }  
-div.column { float: left; width: 49% }  
-div.green { background-color: #e0ffe0; border-color: #88AA88; } 
+div.clear { clear: both }
+div.column { float: left; width: 49% }
+div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .amazon-s3-first .fv_fp_amazon_remove { display: none; }
 .form-table2 td p { line-height: 20px; }
 .meta-box-sortables input[type=text] { width: 100%; }
@@ -145,7 +145,8 @@ td.aligntop > label { margin-top:4px; }
 #wpfp_options #flowplayer-wrapper .button-primary,
 #wpfp_options #fv_flowplayer_skin_playlist .button-primary,
 #wpfp_options #fv_flowplayer_skin_subtitles .button-primary,
-#wpfp_options #fv_flowplayer_skin_sticky .button-primary {
+#wpfp_options #fv_flowplayer_skin_sticky .button-primary,
+#wpfp_options #fv_flowplayer_video_intelligence .button-primary {
   float: none;
 }
 
@@ -155,7 +156,7 @@ td.aligntop > label { margin-top:4px; }
 }
 
 #wpfp_options .inside input + label {
-	display: inline-block;	
+	display: inline-block;
 }
 
 #fv-player-popups-settings th {
@@ -173,4 +174,9 @@ td.aligntop > label { margin-top:4px; }
 
 .description .more {
   display: none;
+}
+
+#fv_flowplayer_video_intelligence ul {
+	list-style: initial;
+	padding-left: 1.5em;
 }
