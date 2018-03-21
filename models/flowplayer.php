@@ -163,6 +163,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $help           = (!empty($options['help']) ? $options['help'] : '');
       $more           = (!empty($options['more']) ? $options['more'] : '');
+      $data           = (!empty($options['data']) ? $options['data'] : false);
 
       if (!$key || !$name) {
         throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
@@ -174,11 +175,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
       $more = ($args_num >= 4 ? func_get_arg(3) : false);
+      $data = ($args_num >= 5 ? func_get_arg(4) : false);
     } else {
         throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
     }
 
-    $checked = $this->_get_option( $key );
+    $checked = $this->_get_option( $key, $data );
     if ( $checked === 'false' ) {
       $checked = false;
     }
@@ -615,15 +617,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
 
 
-  public function _get_option($key) {
+  public function _get_option($key, $conf = false ) {
+    
+    if( !$conf ) $conf = $this->conf;
 
     $value = false;
     if( is_array($key) && count($key) === 2) {
-      if( isset($this->conf[$key[0]]) && isset($this->conf[$key[0]][$key[1]]) ) {
-        $value = $this->conf[$key[0]][$key[1]];
+      if( isset($conf[$key[0]]) && isset($conf[$key[0]][$key[1]]) ) {
+        $value = $conf[$key[0]][$key[1]];
       }
-    } elseif( isset($this->conf[$key]) ) {
-      $value = $this->conf[$key];
+    } elseif( isset($conf[$key]) ) {
+      $value = $conf[$key];
     }
 
     if( is_string($value) ) $value = trim($value);
