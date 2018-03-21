@@ -348,12 +348,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
+    $data           = (!empty($options['data']) ? $options['data'] : false);
 
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
     }
 
-    $saved_value = esc_attr( $this->_get_option($key) );
+    $saved_value = esc_attr( $this->_get_option($key,$data) );
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
