@@ -33,7 +33,7 @@ add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shor
 
 
 function fv_player_db_playlist_item($aPlayer, $index, $aArgs) {
-  var_dump($aArgs);
+  var_dump($aArgs['video_objects'][$index]);
 }
 
 /**
@@ -151,8 +151,8 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
       if (!$first_video_data_cached) {
         $vid = $videos[0]->getAllDataValues();
         $vid['subtitles'] = $videos[0]->getSubtitlesShortcodeData();
-        //$atts = array_merge($atts, $vid);
-        $atts = array_merge($atts, array('videos' => $vid));
+        $atts = array_merge($atts, $vid);
+        $atts['video_objects'] = array($vid);
         $cache[$vid['id']] = $vid;
 
         $caption = fv_flowplayer_getCaptionData($vid);
@@ -180,7 +180,7 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
         foreach ( $videos as $vid_object ) {
           $vid = $vid_object->getAllDataValues();
           $vid['subtitles'] = $vid_object->getSubtitlesShortcodeData();
-          $atts = array_merge($atts, array('videos' => $vid));
+          $atts['video_objects'][] = $vid;
           $cache[ $vid['id'] ]  = $vid;
           $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
 
@@ -493,7 +493,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   }
 
   if( intval($arguments['id']) > 0 ) {
-    $new_player = $fv_fp->build_min_player(false,$arguments);
+    return $fv_fp->build_min_player(false, $arguments);
   } else  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
     if( $objVideoQuery->have_posts() ) {
