@@ -1106,7 +1106,7 @@
 
 .flowplayer.is-mouseout .fp-captions{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
 .flowplayer .fp-captions p{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px; margin: 0}
-.flowplayer.is-fullscreen .fp-captions p{line-height:1.2}
+.flowplayer.is-fullscreen .fp-captions p{font-size:125%;line-height:1.2}
 .flowplayer .fp-captions.is-wide br{display:none}
 .flowplayer .fp-captions p:after{content:'';clear:both}
 .flowplayer .fp-captions p:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
