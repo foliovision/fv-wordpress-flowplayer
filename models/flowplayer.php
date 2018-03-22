@@ -162,8 +162,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $key            = (!empty($options['key']) ? $options['key'] : '');
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $help           = (!empty($options['help']) ? $options['help'] : '');
-      $more           = (!empty($options['more']) ? $options['more'] : '');
-      $data           = (!empty($options['data']) ? $options['data'] : false);
+      $more           = (!empty($options['more']) ? $options['more'] : '');      
 
       if (!$key || !$name) {
         throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
@@ -174,13 +173,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $name = func_get_arg(0);
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
-      $more = ($args_num >= 4 ? func_get_arg(3) : false);
-      $data = ($args_num >= 5 ? func_get_arg(4) : false);
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);      
     } else {
         throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
     }
 
-    $checked = $this->_get_option( $key, $data );
+    $checked = $this->_get_option( $key );
     if ( $checked === 'false' ) {
       $checked = false;
     }
@@ -348,13 +346,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
-    $data           = (!empty($options['data']) ? $options['data'] : false);
 
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
     }
 
-    $saved_value = esc_attr( $this->_get_option($key,$data) );
+    $saved_value = esc_attr( $this->_get_option($key) );
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
@@ -618,9 +615,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
 
 
-  public function _get_option($key, $conf = false ) {
-    
-    if( !$conf ) $conf = $this->conf;
+  public function _get_option($key) {    
+    $conf = $this->conf;
 
     $value = false;
     if( is_array($key) && count($key) === 2) {
@@ -646,8 +642,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   
-  public function _set_conf() {
-    $aNewOptions = $_POST;
+  public function _set_conf( $aNewOptions = false ) {
+    if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
     
     //  make sure the preset Skin properties are not over-written
