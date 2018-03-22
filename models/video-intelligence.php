@@ -12,7 +12,8 @@ class FV_Player_video_intelligence_Installer {
   }
 
   function settings() {
-    $option = get_option('fv_player_video_intelligence');
+    global $fv_fp; 
+    $jwt = $fv_fp->_get_option(array('addon-video-intelligence', 'jwt'));
     wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
     ?>
         <table class="form-table2" style="margin: 5px; ">
@@ -22,12 +23,13 @@ class FV_Player_video_intelligence_Installer {
                 <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" style="width: 95%" />
               </td>
               <td>
-                <p><strong>vi stories</strong> creates in-stream ad opportunities on your site</p>
+                <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
+                <p>Advertisers pay more for video advertising when it's matched with video content. This new video player will insert both on your page. It increases time on site, and commands a higher CPM than display advertising.</p>
+                <p>You'll see video content that is matched to your sites keywords straight away. A few days after activation you'll begin to receive revenue from advertising served before this video content.</p>
                 <ul>
-                  <li>Introduce contextual video content that your users are interested in</li>
-                  <li>Create a great user experience and longer time-on-site</li>
-                  <li>Monetize with in-stream video ads at a high CPM</li>
-                  <li>Relevant, topical videos</li>
+                  <li>The set up takes only a few minutes</li>
+                  <li>Up to 10x higher CPM than traditional display advertising</li>
+                  <li>Users spend longer on your site thanks to professional video content</li>
                 </ul>                
               </td>
             </tr>
@@ -35,16 +37,17 @@ class FV_Player_video_intelligence_Installer {
               <tr>
                 <td></td>
                 <td>
-                  <?php if( $option && !empty($option['jwt']) && !empty($option['time']) && ( $option['time'] + 30 * 24 * 3600 ) > time() ) : ?>
+                  <?php if( $jwt && ( $fv_fp->_get_option(array('addon-video-intelligence', 'jwt-time')) + 30 * 24 * 3600 ) > time() ) : ?>
                     <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p> <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button">
                   <?php else : ?>
+                    <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
                     <?php $current_user = wp_get_current_user(); ?>
                     <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
                     <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store your login information, only the auth token (valid for 30 days) is stored.</p>
                   <?php endif; ?>
                 </td>
               </tr>
-              <?php if( !$option || empty($option['jwt']) ) : ?>
+              <?php if( !class_exists('FV_Player_Video_Intelligence') || !$jwt ) : ?>
                 <tr>
                   <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
                   <td>
@@ -54,7 +57,7 @@ class FV_Player_video_intelligence_Installer {
                   </td>
                 </tr>
                 <tr>
-                  <td><label for="sharing_text"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                  <td><label for="vi_pass"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
                   <td>
                     <p class="description">
                       <input type="password" name="vi_pass" id="vi_pass" class="medium" />
@@ -139,7 +142,10 @@ class FV_Player_video_intelligence_Installer {
         return;
       }
 
-      update_option('fv_player_video_intelligence', array( 'jwt' => $data->data, 'time' => time() ) );
+      global $fv_fp;
+      $aNew = $fv_fp->conf;
+      $aNew['addon-video-intelligence'] = array( 'jwt' => $data->data, 'time' => time() );
+      $fv_fp->_set_conf( $aNew );
 
       $this->notice_status = 'updated';
       $this->notice = 'video intelligence login successful!';
