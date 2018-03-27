@@ -9,13 +9,30 @@ class FV_Player_video_intelligence_Installer {
     add_action( 'admin_menu', array( $this, 'start' ), 8 ) ;
     add_action( 'admin_init', array( $this, 'settings_register' ) ) ;
     add_action( 'admin_notices', array( $this, 'show_notice' ) );
+    add_action( 'fv_player_admin_settings_tabs', array( $this, 'settings_tab' ) );
+    add_action( 'wp_ajax_fv-player-vi-add', array( $this, 'settings_remove' ) );
+    add_action( 'wp_ajax_fv-player-vi-remove', array( $this, 'settings_remove' ) );
   }
 
   function settings() {
     global $fv_fp; 
+    
+    if( $fv_fp->_get_option('hide-tab-video-intelligence') && !class_exists('FV_Player_Video_Intelligence') ) : ?>
+      <style>
+      a[href$=postbox-container-tab_video_intelligence] { display: none }
+      #fv_flowplayer_video_intelligence { display: none }
+      #fv_flowplayer_video_intelligence_revival { display: block }
+      </style>
+    <?php else : ?>
+      <style>
+      #fv_flowplayer_video_intelligence_revival { display: none }
+      </style>
+    <?php endif;
+    
     $jwt = $fv_fp->_get_option(array('addon-video-intelligence', 'jwt'));
     wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
     ?>
+        <a id="fv-player-vi-remove" href="#" style="position: absolute;right: 12px;"><span class="dashicons dashicons-no-alt"></span></a>
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
             <tr>
@@ -36,8 +53,14 @@ class FV_Player_video_intelligence_Installer {
             <tr>
               <td></td>
               <td>
-                <?php if( $jwt && ( $fv_fp->_get_option(array('addon-video-intelligence', 'jwt-time')) + 30 * 24 * 3600 ) > time() ) : ?>
-                  <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p> <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button">
+                <?php
+                $data = explode( '.', $jwt );
+                $data = !empty($data[1]) ? json_decode( base64_decode($data[1]) ) : false;
+                
+                if( $jwt && $data && !empty($data->exp) && $data->exp > time() ) : ?>
+                  <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p>
+                  <input type="submit" name="fv_player_vi_install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
+                  <input type="submit" name="fv_player_vi_reset" value="<?php _e('Reset', 'fv-wordpress-flowplayer'); ?>" class="button">
                 <?php else : ?>
                   <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
                   <?php $current_user = wp_get_current_user(); ?>
@@ -46,7 +69,7 @@ class FV_Player_video_intelligence_Installer {
                 <?php endif; ?>
               </td>
             </tr>
-            <?php if( !$jwt ) : ?>
+            <?php if( !$jwt || empty($data->exp) || $data->exp < time() ) : ?>
               <tr>
                 <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
                 <td>
@@ -73,15 +96,59 @@ class FV_Player_video_intelligence_Installer {
             <?php endif; ?>
           </tbody>
         </table>
-
+        
+        <script>
+        jQuery( function($) {
+          $('#fv-player-vi-remove').click( function() {
+            $('[href=#postbox-container-tab_video_intelligence]').hide();
+            $('#fv_flowplayer_video_intelligence').hide();
+            $('[href=#postbox-container-tab_video_ads]').click();
+            $('#fv_flowplayer_video_intelligence_revival').show();
+            $.post(ajaxurl, {action:'fv-player-vi-remove'});
+          });
+        });
+        </script>
 
       <?php
   }
 
   function settings_register() {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
-      add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings' ), 'fv_flowplayer_settings_video_ads', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
     }
+  }
+  
+  function settings_remove() {
+    if( current_user_can('manage_options') ) {
+      global $fv_fp;
+      $aNew = $fv_fp->conf;
+      $aNew['hide-tab-video-intelligence'] = $_POST['action'] == 'fv-player-vi-remove';
+      $fv_fp->_set_conf( $aNew );
+      die();
+    }
+  }
+  
+  function settings_revival() {
+    echo __('Show video intelligence tab again by clicking <a href="#">here</a>', 'fv-wordpress-flowplayer');
+    ?>
+    <script>
+    jQuery( function($) {
+      $('#fv_flowplayer_video_intelligence_revival a').click( function() {
+        $('[href=#postbox-container-tab_video_intelligence]').show();
+        $('#fv_flowplayer_video_intelligence').show();
+        $('[href=#postbox-container-tab_video_intelligence]').click();
+        $('#fv_flowplayer_video_intelligence_revival').hide();
+        $.post(ajaxurl, {action:'fv-player-vi-add'});
+      });
+    });
+    </script>
+    <?php
+  }
+  
+  function settings_tab( $tabs ) {
+    $tabs[] = array('id' => 'fv_flowplayer_settings_video_intelligence',	'hash' => 'tab_video_intelligence',	'name' => __('Video Intelligence', 'fv-player-vi') );
+    return $tabs;
   }
 
   function show_notice() {
@@ -150,8 +217,18 @@ class FV_Player_video_intelligence_Installer {
       $should_install = true;
     }
 
-    if( !empty($_POST['fv-player-vi-install']) ) {
+    else if( current_user_can('install_plugins') && !empty($_POST['fv_player_vi_install']) ) {
+      check_admin_referer( 'fv_player_vi_install', '_wpnonce_fv_player_vi_install' );
       $should_install = true;
+    }
+    
+    else if( current_user_can('install_plugins') && !empty($_POST['fv_player_vi_reset']) ) {
+      check_admin_referer( 'fv_player_vi_install', '_wpnonce_fv_player_vi_install' );
+      global $fv_fp;      
+      $fv_fp->conf['addon-video-intelligence'] = array();
+      $fv_fp->_set_conf( $fv_fp->conf );
+      $this->notice_status = 'updated';
+      $this->notice = 'video intelligence login reset!';
     }
 
     if( $should_install ) {
