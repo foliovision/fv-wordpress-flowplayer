@@ -64,7 +64,7 @@ class FV_Player_video_intelligence_Installer {
                 <?php else : ?>
                   <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
                   <?php $current_user = wp_get_current_user(); ?>
-                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
+                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
                   <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store your login information, only the auth token (valid for 30 days) is stored.</p>
                 <?php endif; ?>
               </td>
