@@ -33,45 +33,43 @@ class FV_Player_video_intelligence_Installer {
                 </ul>                
               </td>
             </tr>
-            <?php if( !class_exists('FV_Player_Video_Intelligence') ) : ?>
+            <tr>
+              <td></td>
+              <td>
+                <?php if( $jwt && ( $fv_fp->_get_option(array('addon-video-intelligence', 'jwt-time')) + 30 * 24 * 3600 ) > time() ) : ?>
+                  <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p> <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button">
+                <?php else : ?>
+                  <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
+                  <?php $current_user = wp_get_current_user(); ?>
+                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
+                  <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store your login information, only the auth token (valid for 30 days) is stored.</p>
+                <?php endif; ?>
+              </td>
+            </tr>
+            <?php if( !$jwt ) : ?>
               <tr>
-                <td></td>
+                <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
                 <td>
-                  <?php if( $jwt && ( $fv_fp->_get_option(array('addon-video-intelligence', 'jwt-time')) + 30 * 24 * 3600 ) > time() ) : ?>
-                    <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p> <input type="submit" name="fv-player-vi-install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button">
-                  <?php else : ?>
-                    <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
-                    <?php $current_user = wp_get_current_user(); ?>
-                    <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
-                    <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store your login information, only the auth token (valid for 30 days) is stored.</p>
-                  <?php endif; ?>
+                  <p class="description">
+                    <input type="text" name="vi_login" id="vi_login" class="medium" />
+                  </p>
                 </td>
               </tr>
-              <?php if( !class_exists('FV_Player_Video_Intelligence') || !$jwt ) : ?>
-                <tr>
-                  <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                  <td>
-                    <p class="description">
-                      <input type="text" name="vi_login" id="vi_login" class="medium" />
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><label for="vi_pass"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                  <td>
-                    <p class="description">
-                      <input type="password" name="vi_pass" id="vi_pass" class="medium" />
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                  </td>
-                  <td>
-                    <input type="submit" name="fv_player_vi_install" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
-                  </td>
-                </tr>
-              <?php endif; ?>
+              <tr>
+                <td><label for="vi_pass"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                <td>
+                  <p class="description">
+                    <input type="password" name="vi_pass" id="vi_pass" class="medium" />
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                </td>
+                <td>
+                  <input type="submit" name="fv_player_vi_install" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
+                </td>
+              </tr>
             <?php endif; ?>
           </tbody>
         </table>
@@ -83,8 +81,6 @@ class FV_Player_video_intelligence_Installer {
   function settings_register() {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
       add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings' ), 'fv_flowplayer_settings_video_ads', 'normal' );
-    } else {
-      add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings' ), 'fv_flowplayer_settings_video_intelligence', 'normal', 'high' );
     }
   }
 
