@@ -13,62 +13,30 @@ class FV_Player_video_intelligence_Installer {
     add_action( 'wp_ajax_fv-player-vi-add', array( $this, 'settings_remove' ) );
     add_action( 'wp_ajax_fv-player-vi-remove', array( $this, 'settings_remove' ) );
   }
-
-  function settings() {
+  
+  function screen_account() {
     global $fv_fp; 
-    
-    if( $fv_fp->_get_option('hide-tab-video-intelligence') && !class_exists('FV_Player_Video_Intelligence') ) : ?>
-      <style>
-      a[href$=postbox-container-tab_video_intelligence] { display: none }
-      #fv_flowplayer_video_intelligence { display: none }
-      #fv_flowplayer_video_intelligence_revival { display: block }
-      </style>
-    <?php else : ?>
-      <style>
-      #fv_flowplayer_video_intelligence_revival { display: none }
-      </style>
-    <?php endif;
     
     $jwt = $fv_fp->_get_option(array('addon-video-intelligence', 'jwt'));
     wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
     ?>
-        <a id="fv-player-vi-remove" href="#" style="position: absolute;right: 12px;"><span class="dashicons dashicons-no-alt"></span></a>
+        
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
-            <tr>
-              <td style="width: 25%">
-                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" style="width: 95%" />
-              </td>
-              <td>
-                <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
-                <p>Advertisers pay more for video advertising when it's matched with video content. This new video player will insert both on your page. It increases time on site, and commands a higher CPM than display advertising.</p>
-                <p>You'll see video content that is matched to your sites keywords straight away. A few days after activation you'll begin to receive revenue from advertising served before this video content.</p>
-                <ul>
-                  <li>The set up takes only a few minutes</li>
-                  <li>Up to 10x higher CPM than traditional display advertising</li>
-                  <li>Users spend longer on your site thanks to professional video content</li>
-                </ul>                
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <?php
-                $data = explode( '.', $jwt );
-                $data = !empty($data[1]) ? json_decode( base64_decode($data[1]) ) : false;
-                
-                if( $jwt && $data && !empty($data->exp) && $data->exp > time() ) : ?>
+            <?php
+            $data = explode( '.', $jwt );
+            $data = !empty($data[1]) ? json_decode( base64_decode($data[1]) ) : false;
+
+            if( $jwt && $data && !empty($data->exp) && $data->exp > time() ) : ?>            
+              <tr>
+                <td></td>
+                <td>
                   <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p>
-                  <input type="submit" name="fv_player_vi_install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
-                  <input type="submit" name="fv_player_vi_reset" value="<?php _e('Reset', 'fv-wordpress-flowplayer'); ?>" class="button">
-                <?php else : ?>
-                  <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
-                  <?php $current_user = wp_get_current_user(); ?>
-                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>                  
-                  <p>Once you complete the signup above, please enter your login information below. FV Player doesn't store your login information, only the auth token (valid for 30 days) is stored.</p>
-                <?php endif; ?>
-              </td>
-            </tr>
+                    <input type="submit" name="fv_player_vi_install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
+                    <input type="submit" name="fv_player_vi_reset" value="<?php _e('Reset', 'fv-wordpress-flowplayer'); ?>" class="button">
+                </td>
+              </tr>
+            <?php endif; ?>
             <?php if( !$jwt || empty($data->exp) || $data->exp < time() ) : ?>
               <tr>
                 <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -97,9 +65,12 @@ class FV_Player_video_intelligence_Installer {
           </tbody>
         </table>
         
+        <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label></a>
+        
         <script>
         jQuery( function($) {
           $('#fv-player-vi-remove').click( function() {
+            $('#fv-player-vi-give-back').prop('checked',false);
             $('[href=#postbox-container-tab_video_intelligence]').hide();
             $('#fv_flowplayer_video_intelligence').hide();
             $('[href=#postbox-container-tab_video_ads]').click();
@@ -110,11 +81,62 @@ class FV_Player_video_intelligence_Installer {
         </script>
 
       <?php
+  }  
+
+  function screen_ad() {
+    global $fv_fp; 
+    
+    if( $fv_fp->_get_option('hide-tab-video-intelligence') && !class_exists('FV_Player_Video_Intelligence') ) : ?>
+      <style>
+      a[href$=postbox-container-tab_video_intelligence] { display: none }
+      #fv_flowplayer_video_intelligence { display: none }
+      #fv_flowplayer_video_intelligence_account { display: none }
+      #fv_flowplayer_video_intelligence_revival { display: block }
+      </style>
+    <?php else : ?>
+      <style>
+      #fv_flowplayer_video_intelligence_revival { display: none }
+      </style>
+    <?php endif;
+    
+    $jwt = $fv_fp->_get_option(array('addon-video-intelligence', 'jwt'));
+    wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
+    ?>        
+        <table class="form-table2" style="margin: 5px; ">
+          <tbody>
+            <tr>
+              <td style="width: 25%">
+                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" style="width: 95%" />
+              </td>
+              <td>
+                <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
+                <p>Advertisers pay more for video advertising when it's matched with video content. This new video player will insert both on your page. It increases time on site, and commands a higher CPM than display advertising.</p>
+                <p>You'll see video content that is matched to your sites keywords straight away. A few days after activation you'll begin to receive revenue from advertising served before this video content.</p>
+                <ul>
+                  <li>The set up takes only a few minutes</li>
+                  <li>Up to 10x higher CPM than traditional display advertising</li>
+                  <li>Users spend longer on your site thanks to professional video content</li>
+                </ul>                
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                  <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
+                  <?php $current_user = wp_get_current_user(); ?>
+                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      <?php
   }
 
   function settings_register() {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
-      add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
     }
   }
@@ -129,14 +151,16 @@ class FV_Player_video_intelligence_Installer {
     }
   }
   
-  function settings_revival() {
-    echo __('Show video intelligence tab again by clicking <a href="#">here</a>', 'fv-wordpress-flowplayer');
+  function settings_revival() {    
     ?>
+    <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e('Show the Video Intelligence tab again', 'fv-wordpress-flowplayer'); ?></label></a>
     <script>
     jQuery( function($) {
-      $('#fv_flowplayer_video_intelligence_revival a').click( function() {
+      $('#fv-player-vi-give-back').click( function() {
+        $('#fv-player-vi-remove').prop('checked',false);
         $('[href=#postbox-container-tab_video_intelligence]').show();
         $('#fv_flowplayer_video_intelligence').show();
+        $('#fv_flowplayer_video_intelligence_account').show();
         $('[href=#postbox-container-tab_video_intelligence]').click();
         $('#fv_flowplayer_video_intelligence_revival').hide();
         $.post(ajaxurl, {action:'fv-player-vi-add'});
