@@ -26,9 +26,20 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 
 add_shortcode('fv_time','fv_player_time');
 
-add_filter( 'fv_flowplayer_args_pre', 'fv_flowplayer_getPlayerAttsFromDb', 10, 1);
+add_filter('fv_flowplayer_args_pre', 'fv_flowplayer_getPlayerAttsFromDb', 10, 1);
+add_filter('fv_player_item', 'fv_flowplayer_setCurrentVideo', 10, 3 );
 
 add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shortcode' );
+
+function fv_flowplayer_setCurrentVideo($aItem, $index, $aPlayer) {
+  global $fv_fp;
+
+  if (!empty($aPlayer['video_objects'][$index])) {
+    $fv_fp->currentVideoObject = $aPlayer['video_objects'][$index];
+  }
+
+  return $aItem;
+}
 
 /**
  * Returns playlist video item formatted for a shortcode,
@@ -285,6 +296,7 @@ function fv_flowplayer_mapDbAttributeValue2Shortcode($att_name, $att_value) {
  * @throws Exception When the underlying video object throws.
  */
 function fv_flowplayer_getPlayerAttsFromDb($atts) {
+  global $fv_fp;
   static $cache = array();
 
   if (isset($atts['id'])) {
@@ -293,6 +305,8 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
     }
 
     $player = new FV_Player_Db_Shortcode_Player($atts['id']);
+    $fv_fp->currentPlayerObject = $player;
+
     $data = $player->getAllDataValues();
     
     // did we find the player?
@@ -356,11 +370,6 @@ function fv_flowplayer_expand_player_shortcode() {
 function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 	global $fv_fp;
   if( !$fv_fp ) return false;
-
-  // check for new playlist tag format with video data saved in DB
-  //$atts = apply_filters('fv_flowplayer_attributes_retrieve', $atts);
-  //$atts = apply_filters('fv_flowplayer_args_pre', $atts);
-  //var_dump($atts);
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
     

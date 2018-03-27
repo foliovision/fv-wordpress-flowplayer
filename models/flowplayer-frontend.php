@@ -41,7 +41,19 @@ class flowplayer_frontend extends flowplayer
   var $sHTMLAfter = false;
   
   var $count_tabs = 0;
+
+  var $currentPlayerObject = null;
+
+  var $currentVideoObject = null;
   
+
+  function current_player() {
+    return $this->currentPlayerObject;
+  }
+
+  function current_video() {
+    return $this->currentVideoObject;
+  }
 
   /**
    * Builds the HTML and JS code of single flowplayer instance on a page/post.
