@@ -972,11 +972,9 @@ class flowplayer_frontend extends flowplayer
   }
   
   
-  function get_subtitles($index = 0, $video_args = null) {
+  function get_subtitles($index = 0) {
     $aSubtitles = array();
-
-    // if we come from a DB-based playlist, we use arguments that we have from the DB
-    $args = ( $video_args !== null ? $video_args : $this->aCurArgs);
+    $args = $this->aCurArgs;
 
     if( $args && count($args) > 0 ) {
       $protocol = is_ssl() ? 'https' : 'http';

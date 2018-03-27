@@ -27,15 +27,8 @@ add_shortcode('fvplayer','flowplayer_content_handle');
 add_shortcode('fv_time','fv_player_time');
 
 add_filter( 'fv_flowplayer_args_pre', 'fv_flowplayer_getPlayerAttsFromDb', 10, 1);
-add_filter( 'fv_player_item', 'fv_player_db_playlist_item', 10, 3 );
 
 add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shortcode' );
-
-
-function fv_player_db_playlist_item($aPlayer, $index, $aArgs) {
-  //var_dump($aArgs['video_objects'][$index]);
-  return $aPlayer;
-}
 
 /**
  * Returns playlist video item formatted for a shortcode,
@@ -125,6 +118,7 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
     $new_caption_tag = array();
     $new_startend_tag = array();
     $first_video_data_cached = false;
+    $subtitles = array();
 
     // check the first video, which is the main one for the playlist
     if (isset($cache[$ids[0]])) {
@@ -151,9 +145,9 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
       // cache first vid
       if (!$first_video_data_cached) {
         $vid = $videos[0]->getAllDataValues();
-        $vid['subtitles'] = $videos[0]->getSubtitlesShortcodeData();
+        $subtitles[] = $videos[0]->getSubtitlesShortcodeData();
         $atts = array_merge($atts, $vid);
-        $atts['video_objects'] = array($vid);
+        $atts['video_objects'] = array($videos[0]);
         $cache[$vid['id']] = $vid;
 
         $caption = fv_flowplayer_getCaptionData($vid);
@@ -180,8 +174,8 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
 
         foreach ( $videos as $vid_object ) {
           $vid = $vid_object->getAllDataValues();
-          $vid['subtitles'] = $vid_object->getSubtitlesShortcodeData();
-          $atts['video_objects'][] = $vid;
+          $subtitles[] = $vid_object->getSubtitlesShortcodeData();
+          $atts['video_objects'][] = $vid_object;
           $cache[ $vid['id'] ]  = $vid;
           $new_playlist_tag[] = fv_flowplayer_getPlaylistItemData( $vid );
 
@@ -232,6 +226,11 @@ function fv_flowplayer_generateFullPlaylistCode($atts) {
         $atts['startend'] = implode( ';', $new_startend_tag );
       }
     }
+
+    if (count($subtitles)) {
+      $atts['subtitles'] = implode(';', $subtitles);
+    }
+
   }
 
   return $atts;

@@ -3,20 +3,20 @@
 class FV_Player_Subtitles {
   
   public function __construct() {
-    add_filter('fv_player_item', array($this, 'add_subtitles'), 10, 2 );
+    add_filter('fv_player_item', array($this, 'add_subtitles'), 10, 3 );
 
   }
 
-  function add_subtitles( $aItem, $index, $video_args = null ) {
+  function add_subtitles( $aItem, $index ) {
     global $fv_fp;
-    
-    $aSubtitles = $fv_fp->get_subtitles($index, $video_args);
+
+    $aSubtitles = $fv_fp->get_subtitles($index);
     if( count($aSubtitles) == 0 ) return $aItem;
         
     $aLangs = flowplayer::get_languages();
     $countSubtitles = 0;
     $aOutput = array();
-    
+
     foreach( $aSubtitles AS $key => $subtitles ) {
       $objSubtitle = new stdClass;
       if( $key == 'subtitles' ) {                   
@@ -59,7 +59,7 @@ class FV_Player_Subtitles {
     if( count($aSubtitles) ) {
       $aItem['subtitles'] = $aOutput;
     }
-    
+
     return $aItem;
   }
 
