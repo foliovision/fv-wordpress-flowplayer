@@ -1043,6 +1043,7 @@ class flowplayer_frontend extends flowplayer
     foreach( $aPlaylistItems AS $key => $aSrc ) {
       $this->aCurArgs['startend'] = isset($aStartend[$key]) ? $aStartend[$key] : false;
       
+      unset($this->aCurArgs['id']);
       unset($this->aCurArgs['playlist']);
       $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
       

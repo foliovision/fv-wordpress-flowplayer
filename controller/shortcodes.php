@@ -33,7 +33,8 @@ add_action( 'wp_ajax_expand_player_shortcode', 'fv_flowplayer_expand_player_shor
 
 
 function fv_player_db_playlist_item($aPlayer, $index, $aArgs) {
-  var_dump($aArgs['video_objects'][$index]);
+  //var_dump($aArgs['video_objects'][$index]);
+  return $aPlayer;
 }
 
 /**
@@ -322,8 +323,6 @@ function fv_flowplayer_getPlayerAttsFromDb($atts) {
 
   }
 
-  //var_dump($atts);
-
   return $atts;
 }
 
@@ -493,7 +492,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   }
 
   if( intval($arguments['id']) > 0 ) {
-    return $fv_fp->build_min_player(false, $arguments);
+    $new_player = $fv_fp->build_min_player(false, $arguments);
+    if (!empty($new_player['script'])) {
+      $GLOBALS['fv_fp_scripts'] = $new_player['script'];
+    }
+    return $new_player['html'];
+        
   } else  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
     if( $objVideoQuery->have_posts() ) {
@@ -526,6 +530,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
     return $new_player['html'];
+    
 	}
   return false;
 }
