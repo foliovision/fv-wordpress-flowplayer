@@ -242,7 +242,7 @@ class FV_Player_video_intelligence_Installer {
       );
 
       if( $result ) {
-        echo "<script>location.href='".admin_url('options-general.php?page=fvplayer#postbox-container-tab_video_intelligence')."'; location.reload();</script>";
+        echo "<script>location.href='".admin_url('options-general.php?page=fvplayer&reload#postbox-container-tab_video_intelligence')."';</script>";
       }
     }
   }
