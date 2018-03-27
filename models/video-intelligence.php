@@ -61,21 +61,25 @@ class FV_Player_video_intelligence_Installer {
                   <input type="submit" name="fv_player_vi_install" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
                 </td>
               </tr>
+              <tr>
+                <td></td>
+                <td><p><input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label></p></td>
+              </tr>
             <?php endif; ?>
           </tbody>
-        </table>
-        
-        <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label></a>
+        </table>                
         
         <script>
         jQuery( function($) {
           $('#fv-player-vi-remove').click( function() {
-            $('#fv-player-vi-give-back').prop('checked',false);
-            $('[href=#postbox-container-tab_video_intelligence]').hide();
-            $('#fv_flowplayer_video_intelligence').hide();
-            $('[href=#postbox-container-tab_video_ads]').click();
-            $('#fv_flowplayer_video_intelligence_revival').show();
-            $.post(ajaxurl, {action:'fv-player-vi-remove'});
+            $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
+              $('#fv-player-vi-give-back').prop('checked',false);
+              $('[href=#postbox-container-tab_video_intelligence]').hide();
+              $('#fv_flowplayer_video_intelligence').hide();
+              $('[href=#postbox-container-tab_video_ads]').click();
+              $('#fv_flowplayer_video_intelligence_revival').show();
+            });
+            
           });
         });
         </script>
@@ -105,8 +109,8 @@ class FV_Player_video_intelligence_Installer {
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
             <tr>
-              <td style="width: 25%">
-                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" style="width: 95%" />
+              <td >
+                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" width="300" />
               </td>
               <td>
                 <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
@@ -137,7 +141,7 @@ class FV_Player_video_intelligence_Installer {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
       add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
-      add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
     }
   }
   
@@ -157,13 +161,14 @@ class FV_Player_video_intelligence_Installer {
     <script>
     jQuery( function($) {
       $('#fv-player-vi-give-back').click( function() {
-        $('#fv-player-vi-remove').prop('checked',false);
-        $('[href=#postbox-container-tab_video_intelligence]').show();
-        $('#fv_flowplayer_video_intelligence').show();
-        $('#fv_flowplayer_video_intelligence_account').show();
-        $('[href=#postbox-container-tab_video_intelligence]').click();
-        $('#fv_flowplayer_video_intelligence_revival').hide();
-        $.post(ajaxurl, {action:'fv-player-vi-add'});
+        $.post(ajaxurl, {action:'fv-player-vi-add'}, function() {
+          $('#fv-player-vi-remove').prop('checked',false);
+          $('[href=#postbox-container-tab_video_intelligence]').show();
+          $('#fv_flowplayer_video_intelligence').show();
+          $('#fv_flowplayer_video_intelligence_account').show();
+          $('[href=#postbox-container-tab_video_intelligence]').click();
+          $('#fv_flowplayer_video_intelligence_revival').hide();
+        });
       });
     });
     </script>
