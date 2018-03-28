@@ -67,28 +67,11 @@ class FV_Player_video_intelligence_Installer {
                   <p><a href="mailto:support@vi.ai?Subject=Issues%20with%20account%20activation%20for%20<?php echo urlencode(home_url()); ?>">I'm having issues with the account activation</a></p>
                 </td>
               </tr>              
-              <tr>
-                <td></td>
-                <td><p><input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label></p></td>
-              </tr>
             <?php endif; ?>
           </tbody>
         </table>                
         
-        <script>
-        jQuery( function($) {
-          $('#fv-player-vi-remove').click( function() {
-            $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
-              $('#fv-player-vi-give-back').prop('checked',false);
-              $('[href=#postbox-container-tab_video_intelligence]').hide();
-              $('#fv_flowplayer_video_intelligence').hide();
-              $('[href=#postbox-container-tab_video_ads]').click();
-              $('#fv_flowplayer_video_intelligence_revival').show();
-            });
-            
-          });
-        });
-        </script>
+
 
       <?php
   }  
@@ -117,6 +100,7 @@ class FV_Player_video_intelligence_Installer {
             <tr>
               <td class="first">
                 <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" />
+            	<a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More</a>
               </td>
               <td>
                 <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
@@ -134,7 +118,7 @@ class FV_Player_video_intelligence_Installer {
               <td>
                   <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
                   <?php $current_user = wp_get_current_user(); ?>
-                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>
+                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More or Create an Account</a>
               </td>
             </tr>
           </tbody>
@@ -142,11 +126,32 @@ class FV_Player_video_intelligence_Installer {
 
       <?php
   }
+  
+  function settings_hide() { 
+    ?>
+    <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label>
+    <script>
+    jQuery( function($) {
+      $('#fv-player-vi-remove').click( function() {
+        $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
+          $('#fv-player-vi-give-back').prop('checked',false);
+          $('[href=#postbox-container-tab_video_intelligence]').hide();
+          $('#fv_flowplayer_video_intelligence').hide();
+          $('[href=#postbox-container-tab_video_ads]').click();
+          $('#fv_flowplayer_video_intelligence_revival').show();
+        });
+        
+      });
+    });
+    </script>
+    <?php
+  }  
 
   function settings_register() {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
       add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_hide', __('Hide vi', 'fv-wordpress-flowplayer'), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
     }
   }

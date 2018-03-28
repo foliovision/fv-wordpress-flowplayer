@@ -81,6 +81,33 @@ a.red-button {
 #wpfp_options #fv_flowplayer_integrations table tr > td:first-child { padding-top: 4px; vertical-align: top; }
 #wpfp_options table.flowplayer-settings { width: 29%; }
 
+.wp-core-ui .vi-register {
+	box-shadow: none;
+	border: 2px solid #FFF200;
+	border-radius: 20px;
+	background-color: #FFF200;
+	color: #000;
+	text-align: center;
+	-webkit-appearance: none;
+	margin: 8px 0;
+	padding: 10px 30px;
+	line-height: 1;
+	height: auto;
+	font-size: 16px;
+	font-weight: 700;
+	box-sizing: border-box;
+	position: relative;
+	transition: all 0.2s ease-in-out;
+}
+.wp-core-ui .vi-register:hover {
+	background-color: #000;
+	color: #FFF200;
+	border: 2px solid #FFF200;
+}
+#fv_flowplayer_video_intelligence_hide .inside {
+	padding-left: 270px;
+}
+
 div.clear { clear: both }
 div.column { float: left; width: 49% }
 div.green { background-color: #e0ffe0; border-color: #88AA88; }
