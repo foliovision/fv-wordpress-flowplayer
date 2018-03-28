@@ -140,17 +140,17 @@ class FV_Player_Db_Shortcode_Player_Video {
       $sql = "
 CREATE TABLE `".$this->db_table_name."` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
+  `src_1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
+  `src_2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
+  `splash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL to the splash screen picture',
+  `splash_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'an optional splash screen text',
   `caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
   `chapters` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL for a VTT file for displaying captions',
   `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
   `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
   `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
   `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
-  `splash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL to the splash screen picture',
-  `splash_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'an optional splash screen text',
-  `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
-  `src_1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
-  `src_2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
   `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
