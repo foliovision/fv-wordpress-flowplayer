@@ -2087,7 +2087,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 </head>
 <body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
-    
+
     if( !is_user_logged_in() || !current_user_can('manage_options') ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
       wp_die('Please log in.');
@@ -2116,14 +2116,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if(preg_match('/"fv_wp_flowplayer_field_height":"([0-9.,]*)"/', $shortcode, $matches)){
       $height = 'min-height:'.$matches[1].'px;';
     }
-    
+
     ?> 
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
         // regular shortcode data with source
         global $fv_fp;
-        if (preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+        if (preg_match('/src="[^"][^"]*"/i',$shortcode) && strpos($shortcode, 'db_preview') === false) {
           $aAtts = shortcode_parse_atts($shortcode);
           if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
@@ -2140,7 +2140,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
           }
 
-          echo do_shortcode('[fvplayer id="'.$_GET['fv_player_preview'].'"]');
+          // note: we need to put "src" into the code or it won't get parsed at all
+          echo do_shortcode('[fvplayer src="none" id="'.$_GET['fv_player_preview'].'"]');
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php

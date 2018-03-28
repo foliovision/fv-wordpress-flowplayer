@@ -273,6 +273,26 @@ CREATE TABLE `".$this->db_table_name."` (
   }
 
   /**
+   * This method will manually link meta data to the video.
+   * Used when not using save() method to link meta data to video while saving it
+   * into the database (i.e. while previewing etc.)
+   *
+   * @param FV_Player_Db_Shortcode_Player_Video_Meta $meta_data The meta data object to link to this video.
+   *
+   * @throws Exception When an underlying meta data object throws an exception.
+   */
+  public function link2meta($meta_data) {
+    if (is_array($meta_data) && count($meta_data)) {
+      // we have meta, let's insert that
+      foreach ($meta_data as $meta_record) {
+        // create new record in DB
+        $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record);
+        $this->meta_data = $meta_object;
+      }
+    }
+  }
+
+  /**
    * Returns a list of videos that were potentially loaded
    * via multiple IDs in the constructor. If there are none,
    * null will be returned.
@@ -309,10 +329,14 @@ CREATE TABLE `".$this->db_table_name."` (
    * @return array Returns all meta data for this video.
    */
   public function getMetaData() {
-    if ($this->meta_data->getAllLoadedMeta()) {
-      return $this->meta_data->getAllLoadedMeta();
+    if ($this->meta_data) {
+      if ( $this->meta_data->getAllLoadedMeta() ) {
+        return $this->meta_data->getAllLoadedMeta();
+      } else {
+        return array( $this->meta_data );
+      }
     } else {
-      return array($this->meta_data);
+      return array();
     }
   }
 

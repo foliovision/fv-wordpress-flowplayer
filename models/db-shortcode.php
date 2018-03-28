@@ -109,53 +109,71 @@ class FV_Player_Db_Shortcode {
   }
 
 
-
   /**
    * Generates a full code for a playlist from one that uses video IDs
    * stored in the database to one that conforms to the original long
    * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
+   *
+   * @param array $atts Player attributes to build the actual playlist from.
+   * @param array $preview_data Alternative data to use instead of the $atts array
+   *                            when we want to show previews etc.
+   *
+   * @return array Returns augmented array of attributes that get picked up
+   *               on the front-end side.
+   * @throws Exception When any of the underlying classes throw an exception.
    */
-  private function generateFullPlaylistCode($atts) {
+  private function generateFullPlaylistCode($atts, $preview_data = null) {
     static $cache = array();
 
     // check if we should change anything in the playlist code
-    if (isset($atts['playlist']) && preg_match('/^[\d,]+$/m', $atts['playlist'])) {
-      // serve what we can from the cache
-      $ids = explode(',', $atts['playlist']);
-      $newids = array();
+    if ($preview_data || (isset($atts['playlist']) && preg_match('/^[\d,]+$/m', $atts['playlist']))) {
       $new_playlist_tag = array();
       $new_caption_tag = array();
       $new_startend_tag = array();
       $first_video_data_cached = false;
 
-      // check the first video, which is the main one for the playlist
-      if (isset($cache[$ids[0]])) {
-        $first_video_data_cached = true;
-        $atts = array_merge($atts, $cache[$ids[0]]);
-      }
+      // serve what we can from the cache
+      if (!$preview_data) {
+        $ids    = explode( ',', $atts['playlist'] );
+        $newids = array();
 
-      // prepare cached data and IDs that still need loading from DB
-      foreach ($ids as $id) {
-        if (isset($cache[$id])) {
-          $new_playlist_tag[] = $this->getPlaylistItemData($cache[$id]);
-          $new_caption_tag[] = $this->getCaptionData($cache[$id]);
-          $new_startend_tag[] = $this->getStartEndData($cache[$id]);
-        } else {
-          $newids[] = (int) $id;
+        // check the first video, which is the main one for the playlist
+        if ( isset( $cache[ $ids[0] ] ) ) {
+          $first_video_data_cached = true;
+          $atts                    = array_merge( $atts, $cache[ $ids[0] ] );
+        }
+
+        // prepare cached data and IDs that still need loading from DB
+        foreach ( $ids as $id ) {
+          if ( isset( $cache[ $id ] ) ) {
+            $new_playlist_tag[] = $this->getPlaylistItemData( $cache[ $id ] );
+            $new_caption_tag[]  = $this->getCaptionData( $cache[ $id ] );
+            $new_startend_tag[] = $this->getStartEndData( $cache[ $id ] );
+          } else {
+            $newids[] = (int) $id;
+          }
         }
       }
 
-      if (count($newids)) {
-        // load data from DB
-        $videos = new FV_Player_Db_Shortcode_Player_Video($newids);
-        $videos = $videos->getAllLoadedVideos();
+      if ($preview_data || count($newids)) {
+        if ($preview_data) {
+          $videos = $preview_data['videos'];
+        } else {
+          // load data from DB
+          $videos = new FV_Player_Db_Shortcode_Player_Video( $newids );
+          $videos = $videos->getAllLoadedVideos();
+        }
 
         // cache first vid
         if (!$first_video_data_cached) {
           $vid = $videos[0]->getAllDataValues();
           $atts = array_merge($atts, $vid);
           $atts['video_objects'] = array($videos[0]);
-          $cache[$vid['id']] = $vid;
+
+          // don't cache if we're previewing
+          if (!$preview_data) {
+            $cache[ $vid['id'] ] = $vid;
+          }
 
           $caption = $this->getCaptionData($vid);
           if ($caption) {
@@ -286,7 +304,7 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When the underlying video object throws.
    */
   public function getPlayerAttsFromDb($atts) {
-    global $fv_fp;
+    global $fv_fp, $FV_Db_Shortcode;
     static $cache = array();
 
     if (isset($atts['id'])) {
@@ -325,9 +343,9 @@ class FV_Player_Db_Shortcode {
         }
       } else {
         // when ID is not numeric, it's most probably a preview that we need to build
-        if ( ($data = json_decode(base64_decode($_GET['fv_player_preview']))) !== false) {
-          // valid preview data detected, build the player
-
+        if ( ($data = json_decode(base64_decode($_GET['fv_player_preview']), true)) !== false) {
+          // valid preview data detected, fill POST data and build the player
+          $atts = array_merge( $atts, $FV_Db_Shortcode->generateFullPlaylistCode(array(), $this->db_store_player_data($data)));
         } else {
           return $atts;
         }
@@ -345,17 +363,20 @@ class FV_Player_Db_Shortcode {
    * Stored player data in a database from the POST data sent via AJAX
    * from the shortcode editor.
    *
-   * @param bool $return_not_save If true, this method will be used to return
-   *                              the generated playlist to build a preview from it.
+   * @param array $data Alternative data to work with rather than getting these from $_POST.
+   *                    Used when previews are being made.
    *
+   * @return void|array Returns nothing when we're saving a new player into the DB,
+   *                    otherwise returns a new unsaved player and video instances to be used as needed.
    * @throws Exception When any of the underlying objects throw.
    */
-  public function db_store_player_data($return_not_save = false) {
+  public function db_store_player_data($data = null) {
     $player_options   = array();
     $video_ids        = array();
+    $post_data        = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
 
-    if (isset($_POST['data']) && is_array($_POST['data'])) {
-      foreach ($_POST['data'] as $field_name => $field_value) {
+    if ($post_data) {
+      foreach ($post_data as $field_name => $field_value) {
         // global player or local video setting field
         if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
           $option_name = str_replace('fv_wp_flowplayer_field_', '', $field_name);
@@ -381,9 +402,9 @@ class FV_Player_Db_Shortcode {
             /***
              * SUBTITLES META DATA
              */
-            if (isset($_POST['data']['subtitles']) && isset($_POST['data']['subtitles'][$video_index])) {
+            if (isset($post_data['subtitles']) && isset($post_data['subtitles'][$video_index])) {
               // prepare all options for this video
-              foreach ( $_POST['data']['subtitles'][$video_index] as $subtitle_values ) {
+              foreach ( $post_data['subtitles'][$video_index] as $subtitle_values ) {
                 if ($subtitle_values['file']) {
                   $video_meta[] = array(
                     'meta_key' => 'subtitles' . ($subtitle_values['code'] ? '_'.$subtitle_values['code'] : ''),
@@ -395,10 +416,19 @@ class FV_Player_Db_Shortcode {
 
             // save the video
             $video = new FV_Player_Db_Shortcode_Player_Video(null, $video_data);
-            $id_video = $video->save($video_meta);
 
-            if ($id_video !== false) {
+            // save only if we're not requesting new instances for preview purposes
+            if (!$data) {
+              $id_video = $video->save( $video_meta );
+            } else {
+              $video->link2meta( $video_meta );
+            }
+
+            // return videos as well as the full player
+            if (!$data) {
               $video_ids[] = $id_video;
+            } else {
+              $video_ids[] = $video;
             }
           }
         } else {
@@ -408,19 +438,33 @@ class FV_Player_Db_Shortcode {
       }
 
       // add all videos into this player
-      $player_options['videos'] = implode(',', $video_ids);
+      if (!$data) {
+        $player_options['videos'] = implode( ',', $video_ids );
+      }
 
       // create and save the player
       $player = new FV_Player_Db_Shortcode_Player(null, $player_options);
-      $id = $player->save();
 
-      if ($id) {
-        echo $id;
+      // save only if we're not requesting new instances for preview purposes
+      if (!$data) {
+        $id = $player->save();
+
+        if ($id) {
+          echo $id;
+        } else {
+          echo -1;
+        }
       } else {
-        echo -1;
+        return array(
+          'player' => $player,
+          'videos' => $video_ids
+        );
       }
     }
-    die();
+
+    if (!$data) {
+      die();
+    }
   }
 
 
