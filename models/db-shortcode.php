@@ -21,7 +21,7 @@ class FV_Player_Db_Shortcode {
 
   function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 10, 1);
-    add_filter('fv_player_item', array($this, 'setCurrentVideo'), 10, 3 );
+    add_filter('fv_player_item', array($this, 'setCurrentVideo'), 1, 3 );
 
     add_action( 'wp_ajax_expand_player_shortcode', array($this, 'expand_player_shortcode') );
   }
@@ -31,6 +31,8 @@ class FV_Player_Db_Shortcode {
 
     if (!empty($aPlayer['video_objects'][$index])) {
       $fv_fp->currentVideoObject = $aPlayer['video_objects'][$index];
+    } else {
+      $fv_fp->currentVideoObject = null;
     }
 
     return $aItem;
@@ -124,7 +126,6 @@ class FV_Player_Db_Shortcode {
       $new_caption_tag = array();
       $new_startend_tag = array();
       $first_video_data_cached = false;
-      $subtitles = array();
 
       // check the first video, which is the main one for the playlist
       if (isset($cache[$ids[0]])) {
@@ -151,7 +152,6 @@ class FV_Player_Db_Shortcode {
         // cache first vid
         if (!$first_video_data_cached) {
           $vid = $videos[0]->getAllDataValues();
-          $subtitles[] = $videos[0]->getSubtitlesShortcodeData();
           $atts = array_merge($atts, $vid);
           $atts['video_objects'] = array($videos[0]);
           $cache[$vid['id']] = $vid;
@@ -180,7 +180,6 @@ class FV_Player_Db_Shortcode {
 
           foreach ( $videos as $vid_object ) {
             $vid = $vid_object->getAllDataValues();
-            $subtitles[] = $vid_object->getSubtitlesShortcodeData();
             $atts['video_objects'][] = $vid_object;
             $cache[ $vid['id'] ]  = $vid;
             $new_playlist_tag[] = $this->getPlaylistItemData( $vid );
@@ -232,11 +231,6 @@ class FV_Player_Db_Shortcode {
           $atts['startend'] = implode( ';', $new_startend_tag );
         }
       }
-
-      if (count($subtitles)) {
-        $atts['subtitles'] = implode(';', $subtitles);
-      }
-
     }
 
     return $atts;

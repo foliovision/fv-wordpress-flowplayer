@@ -982,46 +982,63 @@ class flowplayer_frontend extends flowplayer
     $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
     return $splash_img;
   }
-  
-  
-  function get_subtitles($index = 0) {
-    $aSubtitles = array();
-    $args = $this->aCurArgs;
 
-    if( $args && count($args) > 0 ) {
-      $protocol = is_ssl() ? 'https' : 'http';
-      foreach( $args AS $key => $subtitles ) {
-        if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
-          continue;
-        }
-        
-        $subtitles = explode( ";",$subtitles);
-        if( empty($subtitles[$index]) ) continue;
-        
-        $subtitles = $subtitles[$index];
-  
-        if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-          //$splash_img = VIDEO_PATH.trim($args['splash']);
-          if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-            if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-              $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
-            }
-            else
-            if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-              $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-            }
-            else {
-              //if the videos are not in the videos directory but they are adressed relatively
-              $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-              $subtitles = $protocol.'://'.$subtitles;
-            }
+  function get_subtitles_url($protocol, $subtitles) {
+    if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
+      //$splash_img = VIDEO_PATH.trim($args['splash']);
+      if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
+      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+        $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+      }
+      else
+        if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
         }
         else {
-          $subtitles = trim($subtitles);
+          //if the videos are not in the videos directory but they are adressed relatively
+          $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+          $subtitles = $protocol.'://'.$subtitles;
         }
-        
-        $aSubtitles[str_replace( 'subtitles_', '', $key )] = $subtitles;
-        
+    }
+    else {
+      $subtitles = trim($subtitles);
+    }
+
+    return $subtitles;
+  }
+  
+  function get_subtitles($index = 0) {
+    global $fv_fp;
+
+    $aSubtitles = array();
+    $args = $this->aCurArgs;
+    $protocol = is_ssl() ? 'https' : 'http';
+
+    // each video can have subtitles in any language with new DB-based shortcodes
+    if ($fv_fp->_get_option('new_shortcode') && $this->current_video()) {
+      if ($this->current_video()->getMetaData()) {
+        foreach ($this->current_video()->getMetaData() as $meta_object) {
+          if ($meta_object->getIsValid() && strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
+            // subtitles meta data found, create URL from it
+            // note: we ignore $index here, as it's used to determine an index
+            //       for a single subtitle file from all subtitles set for the whole
+            //       playlist, which was the old way of doing stuff
+            $aSubtitles[str_replace( 'subtitles_', '', $meta_object->getMetaKey() )] = $this->get_subtitles_url($protocol, $meta_object->getMetaValue());
+          }
+        }
+      }
+    } else {
+      if( $args && count($args) > 0 ) {
+        foreach( $args AS $key => $subtitles ) {
+          if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
+            continue;
+          }
+
+          $subtitles = explode( ";",$subtitles);
+          if( empty($subtitles[$index]) ) continue;
+
+          $aSubtitles[str_replace( 'subtitles_', '', $key )] = $this->get_subtitles_url($protocol, $subtitles[$index]);
+        }
       }
     }
 

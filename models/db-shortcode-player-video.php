@@ -317,26 +317,6 @@ CREATE TABLE `".$this->db_table_name."` (
   }
 
   /**
-   * Returns subtitles formatted for the shortcode
-   * in the form of array('subtitles' => 'subs1;subs2;subs3...')
-   *
-   * @return string Returns shortcode-formatted subtitles string.
-   */
-  public function getSubtitlesShortcodeData() {
-    $subtitles = array();
-
-    if (count($this->getMetaData())) {
-      foreach ($this->getMetaData() as $meta_record) {
-        if (strpos($meta_record->getMetaKey(), 'subtitles') !== false) {
-          $subtitles[] = $meta_record->getMetaValue();
-        }
-      }
-    }
-
-    return implode(';', $subtitles);
-  }
-
-  /**
    * Stores new video instance or updates and existing one
    * in the database.
    *
