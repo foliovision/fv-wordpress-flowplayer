@@ -115,8 +115,8 @@ class FV_Player_video_intelligence_Installer {
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
             <tr>
-              <td >
-                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" width="240" />
+              <td class="first">
+                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" />
               </td>
               <td>
                 <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
