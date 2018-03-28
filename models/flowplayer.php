@@ -2096,10 +2096,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $matches = null;
     $width ='';
     $height ='';
+
+    // width from regular shortcdode data
     if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
       $width = 'width:'.$matches[1].'px;';
     }
+
+    // width from DB shortcdode data
+    if(preg_match('/"fv_wp_flowplayer_field_width":"([0-9.,]*)"/', $shortcode, $matches)){
+      $width = 'width:'.$matches[1].'px;';
+    }
+
+    // height from regular shortcdode data
     if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+      $height = 'min-height:'.$matches[1].'px;';
+    }
+
+    // height from DB shortcdode data
+    if(preg_match('/"fv_wp_flowplayer_field_height":"([0-9.,]*)"/', $shortcode, $matches)){
       $height = 'min-height:'.$matches[1].'px;';
     }
     
@@ -2107,13 +2121,26 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
-        if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
-          global $fv_fp;
+        // regular shortcode data with source
+        global $fv_fp;
+        if (preg_match('/src="[^"][^"]*"/i',$shortcode)) {
           $aAtts = shortcode_parse_atts($shortcode);
-          if( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
+          if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
           }
           echo do_shortcode($shortcode);          
+        } else if (strpos($shortcode, 'db_preview') !== false) {
+          // DB-based shortcode data
+          if (
+              preg_match('/"fv_wp_flowplayer_field_playlist":"([^"]*)"/', $shortcode, $matches) &&
+              !empty($matches[1]) &&
+              $matches[1] == 'vertical' ||
+              $fv_fp->_get_option('liststyle') == 'vertical'
+          ) {
+            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+          }
+
+          echo do_shortcode('[fvplayer id="'.$_GET['fv_player_preview'].'"]');
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php

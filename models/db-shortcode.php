@@ -19,20 +19,21 @@
 // class handling database shortcode generation and saving
 class FV_Player_Db_Shortcode {
 
-  function __construct() {
+  public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 10, 1);
-    add_filter('fv_player_item', array($this, 'setCurrentVideo'), 1, 3 );
+    add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
 
     add_action( 'wp_ajax_expand_player_shortcode', array($this, 'expand_player_shortcode') );
   }
 
-  function setCurrentVideo($aItem, $index, $aPlayer) {
+  public function setCurrentVideoAndPlayer($aItem, $index, $aPlayer) {
     global $fv_fp;
 
     if (!empty($aPlayer['video_objects'][$index])) {
       $fv_fp->currentVideoObject = $aPlayer['video_objects'][$index];
     } else {
       $fv_fp->currentVideoObject = null;
+      $fv_fp->currentPlayerObject = null;
     }
 
     return $aItem;
@@ -47,7 +48,7 @@ class FV_Player_Db_Shortcode {
    *
    * @return string Returns the string data for a playlist item.
    */
-  function getPlaylistItemData($vid) {
+  private function getPlaylistItemData($vid) {
     $item = (!empty($vid['src']) ? $vid['src'] : '');
 
     if (!empty($vid['src1'])) {
@@ -79,7 +80,7 @@ class FV_Player_Db_Shortcode {
    *
    * @return string Returns the string data for a captions item.
    */
-  function getCaptionData($vid) {
+  private function getCaptionData($vid) {
     return (!empty($vid['caption']) ? $vid['caption'] : '');
   }
 
@@ -93,7 +94,7 @@ class FV_Player_Db_Shortcode {
    *
    * @return string Returns the string data for a startend item.
    */
-  function getStartEndData($vid) {
+  private function getStartEndData($vid) {
     $str = (!empty($vid['start']) ? $vid['start'] : '');
 
     if ($str) {
@@ -114,7 +115,7 @@ class FV_Player_Db_Shortcode {
    * stored in the database to one that conforms to the original long
    * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
    */
-  function generateFullPlaylistCode($atts) {
+  private function generateFullPlaylistCode($atts) {
     static $cache = array();
 
     // check if we should change anything in the playlist code
@@ -244,7 +245,7 @@ class FV_Player_Db_Shortcode {
    *
    * @return mixed Returns the correct attribute name for shortcode use.
    */
-  function mapDbAttributes2Shortcode($att_name) {
+  private function mapDbAttributes2Shortcode($att_name) {
     $atts_map = array(
       'playlist'       => 'liststyle',
       'video_ads'      => 'preroll',
@@ -263,7 +264,7 @@ class FV_Player_Db_Shortcode {
    *
    * @return mixed Returns the correct attribute value for shortcode use.
    */
-  function mapDbAttributeValue2Shortcode($att_name, $att_value) {
+  private function mapDbAttributeValue2Shortcode($att_name, $att_value) {
     switch ($att_name) {
       case 'playlist_advance':
         return ($att_value == 'off' ? 'false' : 'true');
@@ -284,41 +285,52 @@ class FV_Player_Db_Shortcode {
    *                     If the player ID is not found, an empty array is returned.
    * @throws Exception When the underlying video object throws.
    */
-  function getPlayerAttsFromDb($atts) {
+  public function getPlayerAttsFromDb($atts) {
     global $fv_fp;
     static $cache = array();
 
     if (isset($atts['id'])) {
-      if ( isset( $cache[ $atts['id'] ] ) ) {
-        return $cache[ $atts['id'] ];
-      }
-
-      $player = new FV_Player_Db_Shortcode_Player($atts['id']);
-      $fv_fp->currentPlayerObject = $player;
-
-      $data = $player->getAllDataValues();
-
-      // did we find the player?
-      if ( $data ) {
-        foreach( $data AS $k => $v ) {
-          $k = $this->mapDbAttributes2Shortcode($k);
-          $v = $this->mapDbAttributeValue2Shortcode($k, $v);
-          if( $v ) {
-            // we omit empty values and they will get set to defaults if necessary
-            $atts[$k] = $v;
-          }
+      // numeric ID means we're coming from a shortcode somewhere in a post
+      if (is_numeric($atts['id'])) {
+        if ( isset( $cache[ $atts['id'] ] ) ) {
+          return $cache[ $atts['id'] ];
         }
 
-        // add playlist / single video data
-        $atts = array_merge( $atts, $this->generateFullPlaylistCode(
-        // we need to prepare the same attributes array here
-        // as is ingested by generateFullPlaylistCode()
-        // when parsing the new playlist code on the front-end
-          array(
-            'playlist' => $data['videos']
-          )
-        ) );
+        $player                     = new FV_Player_Db_Shortcode_Player( $atts['id'] );
+        $fv_fp->currentPlayerObject = $player;
 
+        $data = $player->getAllDataValues();
+
+        // did we find the player?
+        if ( $data ) {
+          foreach ( $data AS $k => $v ) {
+            $k = $this->mapDbAttributes2Shortcode( $k );
+            $v = $this->mapDbAttributeValue2Shortcode( $k, $v );
+            if ( $v ) {
+              // we omit empty values and they will get set to defaults if necessary
+              $atts[ $k ] = $v;
+            }
+          }
+
+          // add playlist / single video data
+          $atts = array_merge( $atts, $this->generateFullPlaylistCode(
+          // we need to prepare the same attributes array here
+          // as is ingested by generateFullPlaylistCode()
+          // when parsing the new playlist code on the front-end
+            array(
+              'playlist' => $data['videos']
+            )
+          ) );
+
+        }
+      } else {
+        // when ID is not numeric, it's most probably a preview that we need to build
+        if ( ($data = json_decode(base64_decode($_GET['fv_player_preview']))) !== false) {
+          // valid preview data detected, build the player
+
+        } else {
+          return $atts;
+        }
       }
 
       $cache[ $atts['id'] ] = $atts;
@@ -329,14 +341,97 @@ class FV_Player_Db_Shortcode {
   }
 
 
+  /**
+   * Stored player data in a database from the POST data sent via AJAX
+   * from the shortcode editor.
+   *
+   * @param bool $return_not_save If true, this method will be used to return
+   *                              the generated playlist to build a preview from it.
+   *
+   * @throws Exception When any of the underlying objects throw.
+   */
+  public function db_store_player_data($return_not_save = false) {
+    $player_options   = array();
+    $video_ids        = array();
+
+    if (isset($_POST['data']) && is_array($_POST['data'])) {
+      foreach ($_POST['data'] as $field_name => $field_value) {
+        // global player or local video setting field
+        if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
+          $option_name = str_replace('fv_wp_flowplayer_field_', '', $field_name);
+          // global player option
+          $player_options[$option_name] = $field_value;
+        } else if ($field_name == 'videos' && is_array($field_value)) {
+          // iterate over all videos for the player
+          foreach ($field_value as $video_index => $video_data) {
+            // width and height are global options but are sent out for shortcode compatibility
+            unset($video_data['fv_wp_flowplayer_field_width'], $video_data['fv_wp_flowplayer_field_height']);
+
+            // strip video data of the prefix
+            $new_video_data = array();
+            foreach ($video_data as $key => $value) {
+              $new_video_data[str_replace('fv_wp_flowplayer_field_', '', $key)] = $value;
+            }
+            $video_data = $new_video_data;
+            unset($new_video_data);
+
+            // add any video meta data that we can gather
+            $video_meta = array();
+
+            /***
+             * SUBTITLES META DATA
+             */
+            if (isset($_POST['data']['subtitles']) && isset($_POST['data']['subtitles'][$video_index])) {
+              // prepare all options for this video
+              foreach ( $_POST['data']['subtitles'][$video_index] as $subtitle_values ) {
+                if ($subtitle_values['file']) {
+                  $video_meta[] = array(
+                    'meta_key' => 'subtitles' . ($subtitle_values['code'] ? '_'.$subtitle_values['code'] : ''),
+                    'meta_value' => $subtitle_values['file']
+                  );
+                }
+              }
+            }
+
+            // save the video
+            $video = new FV_Player_Db_Shortcode_Player_Video(null, $video_data);
+            $id_video = $video->save($video_meta);
+
+            if ($id_video !== false) {
+              $video_ids[] = $id_video;
+            }
+          }
+        } else {
+          // TODO:
+          // here should be all other fields from plugins etc. (i.e. fv_player_field_ppv_price for PPV...)
+        }
+      }
+
+      // add all videos into this player
+      $player_options['videos'] = implode(',', $video_ids);
+
+      // create and save the player
+      $player = new FV_Player_Db_Shortcode_Player(null, $player_options);
+      $id = $player->save();
+
+      if ($id) {
+        echo $id;
+      } else {
+        echo -1;
+      }
+    }
+    die();
+  }
+
+
 
   /**
    * AJAX method to generate expanded textual shortcode from database information
    * to build the shortcode editor UI on the front-end.
    */
-  function expand_player_shortcode() {
+  public function expand_player_shortcode() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-      $atts = fv_flowplayer_attributes_retrieve(array( 'id' => $_POST['playerID'] ));
+      $atts = $this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ));
 
       if (count($atts)) {
         $out = '[fvplayer';

@@ -1339,13 +1339,12 @@ function fv_wp_flowplayer_submit( preview ) {
   if (fv_flowplayer_conf.new_shortcode) {
 	  var ajax_data = fv_wp_flowplayer_build_ajax_data();
 
-    //console.log(ajax_data);
 	  if (preview) {
       var previewDimensions = fv_wp_flowplayer_calculatePreviewDimensions(divPreview);
       previewWidth = previewDimensions.width;
       previewHeight = previewDimensions.height;
+      ajax_data['db_preview'] = 1;
       fv_wp_flowplayer_show_preview(true, JSON.stringify(ajax_data));
-	    //alert('we need to update preview here');
     } else {
 	    // show saving loader
       fv_wp_flowplayer_big_loader_show();
