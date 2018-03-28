@@ -45,7 +45,8 @@ class FV_Player_Db_Shortcode_Player {
     $lightbox_width, // width for the lightbox popup
     $live, // whether this video is a live stream
     $logo, // adds a logo to the video or hides the globally preset one
-    $midroll, // manually sets the second in which the VAST ad will start
+    $player_name, // custom name for the player
+    $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
     $playlist_hide, // whether to hide the playlist items below the video box
@@ -62,11 +63,23 @@ class FV_Player_Db_Shortcode_Player {
     $video_ads_post,
     $width, // with of the player on page
     $hlskey,
-    $vast, // manual VAST ad tag
-    $vast_engine, // type of the VAST engine set manually
     $videos,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
     $db_table_name;
+
+  /**
+   * @return string
+   */
+  public function getPlayerName() {
+    return $this->player_name;
+  }
+
+  /**
+   * @return string
+   */
+  public function getPlayerSlug() {
+    return $this->player_slug;
+  }
 
   /**
    * @return string
@@ -99,13 +112,6 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getMidroll() {
-    return $this->midroll;
-  }
-
-  /**
-   * @return string
-   */
   public function getPlaylistHide() {
     return $this->playlist_hide;
   }
@@ -115,20 +121,6 @@ class FV_Player_Db_Shortcode_Player {
    */
   public function getPlayButton() {
     return $this->play_button;
-  }
-
-  /**
-   * @return string
-   */
-  public function getVast() {
-    return $this->vast;
-  }
-
-  /**
-   * @return string
-   */
-  public function getVastEngine() {
-    return $this->vast_engine;
   }
 
   /**
@@ -410,7 +402,8 @@ CREATE TABLE `".$this->db_table_name."` (
   `lightbox_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width for the lightbox popup',
   `live` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether this video is a live stream',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'adds a logo to the video or hides the globally preset one',
-  `midroll` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'manually sets the second in which the VAST ad will start',
+  `player_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'custom name for the player',
+  `player_slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '	short slug to be used as a unique identifier for this player that can be used instead of an ID',
   `playlist` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT '[liststyle in shortcode] style of the playlist',
   `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
   `playlist_hide` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the playlist items below the video box',
@@ -427,8 +420,6 @@ CREATE TABLE `".$this->db_table_name."` (
   `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[postroll in shortcode] ID of a saved video ad to be played as a pre-roll',
   `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page',
   `hlskey` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vast` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'manual VAST ad tag',
-  `vast_engine` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'type of the VAST engine set manually',
   `videos` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'comma-separated list of video IDs for this player',
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
