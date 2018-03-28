@@ -29,7 +29,7 @@ class FV_Player_video_intelligence_Installer {
 
             if( $jwt && $data && !empty($data->exp) && $data->exp > time() ) : ?>            
               <tr>
-                <td></td>
+                <td class="first"></td>
                 <td>
                   <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p>
                     <input type="submit" name="fv_player_vi_install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
@@ -39,7 +39,7 @@ class FV_Player_video_intelligence_Installer {
             <?php endif; ?>
             <?php if( !$jwt || empty($data->exp) || $data->exp < time() ) : ?>
               <tr>
-                <td><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                <td class="first"><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
                 <td>
                   <p class="description">
                     <input type="text" name="vi_login" id="vi_login" class="medium" />
@@ -61,6 +61,12 @@ class FV_Player_video_intelligence_Installer {
                   <input type="submit" name="fv_player_vi_install" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
                 </td>
               </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <p><a href="mailto:support@vi.ai?Subject=Issues%20with%20account%20activation%20for%20<?php echo urlencode(home_url()); ?>">I'm having issues with the account activation</a></p>
+                </td>
+              </tr>              
               <tr>
                 <td></td>
                 <td><p><input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label></p></td>
@@ -110,7 +116,7 @@ class FV_Player_video_intelligence_Installer {
           <tbody>
             <tr>
               <td >
-                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" width="300" />
+                <img src="<?php echo flowplayer::get_plugin_url(); ?>/images/vi-logo.svg" alt="video intelligence logo" width="240" />
               </td>
               <td>
                 <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
@@ -128,7 +134,7 @@ class FV_Player_video_intelligence_Installer {
               <td>
                   <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
                   <?php $current_user = wp_get_current_user(); ?>
-                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo urlencode($current_user->user_email); ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>
+                  <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button">Register</a>
               </td>
             </tr>
           </tbody>
