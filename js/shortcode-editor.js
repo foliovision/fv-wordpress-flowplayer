@@ -106,7 +106,7 @@ jQuery(document).ready(function($){
     /*
      * temporary untill we fix multilang subs for playlist
      */
-    if(new_index > 1){
+    if( !fv_flowplayer_conf.new_shortcode && new_index > 1){
       $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').hide();
     }else{
       $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').attr('style',false);
@@ -589,7 +589,8 @@ function fv_flowplayer_playlist_show() {
  */
 function fv_flowplayer_language_add( sInput, sLang ,iTabIndex ) {
   if(!iTabIndex){
-    iTabIndex = 0;
+    var current = jQuery('.fv-player-tab-subtitles table:visible');
+    iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
   }
   var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
   oTab.append( fv_player_playlist_subtitles_template ); 
