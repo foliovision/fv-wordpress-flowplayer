@@ -972,33 +972,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
       }
       
-      $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
       
-      if( isset($aArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
-        $sPlaylistClass .= ' fp-playlist-horizontal';
-      } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
-        $sPlaylistClass .= ' fp-playlist-vertical';
-      } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ){
-        $sPlaylistClass = 'fp-playlist-vertical';
-      }
-      //var_dump($aCaptions);
-      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ){
-        $sPlaylistClass .= ' fp-playlist-only-captions';
-      } else if( isset($aArgs['liststyle']) && sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ){
-        $sPlaylistClass .= ' fp-playlist-has-captions';
-      }
-      
-      if(isset($aArgs['liststyle']) && $aArgs['liststyle'] != 'tabs'){
+      if(isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] != 'tabs'){
         $aPlaylistItems = apply_filters('fv_flowplayer_playlist_items',$aPlaylistItems,$this);
-      }
-    
+      } 
       
       
       $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
       
       $attributes = array();
       $attributes_html = '';
-      $attributes['class'] = 'fp-playlist-external '.$sPlaylistClass;
+      $attributes['class'] = 'fp-playlist-external '.$this->get_playlist_class($aCaptions);
       $attributes['rel'] = 'wpfp_'.$this->hash;
       if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $attributes['style'] = "width: ".(count($aPlaylistItems)*201)."px";
@@ -1841,6 +1825,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $plugin_folder = basename(dirname(dirname(__FILE__))); // make fv-wordpress-flowplayer out of {anything}/fv-wordpress-flowplayer/models/flowplayer.php
       return plugins_url($plugin_folder);
     }
+  }
+  
+  
+  public function get_playlist_class($aCaptions) {
+    $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
+
+    if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
+      $sPlaylistClass .= ' fp-playlist-horizontal';
+    } else if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' ){
+      $sPlaylistClass .= ' fp-playlist-vertical';
+    } else if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' ){
+      $sPlaylistClass = 'fp-playlist-vertical';
+    }
+    //var_dump($aCaptions);
+    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' ){
+      $sPlaylistClass .= ' fp-playlist-only-captions';
+    } else if( isset($aArgs['liststyle']) && sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ){
+      $sPlaylistClass .= ' fp-playlist-has-captions';
+    }
+
+    return $sPlaylistClass;
   }
   
   
