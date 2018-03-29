@@ -980,7 +980,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $subtitles = explode( ";",$subtitles);
-        if( empty($subtitles[$index]) ) return $aSubtitles;
+        if( empty($subtitles[$index]) ) continue;
         
         $subtitles = $subtitles[$index];
   
@@ -1004,7 +1004,7 @@ class flowplayer_frontend extends flowplayer
           $subtitles = trim($subtitles);
         }
         
-        $aSubtitles[str_replace( 'subtitles_', '', $key )] = $subtitles;
+        $aSubtitles[str_replace( 'subtitles_', '', $key )] = apply_filters( 'fv_flowplayer_resource', $subtitles );
         
       }
     }

@@ -82,7 +82,7 @@
 .flowplayer.is-mouseover .fp-subtitle{bottom:34px;}
 .flowplayer.is-mouseout .fp-subtitle{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
 .flowplayer .fp-subtitle .fp-subtitle-line{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px;}
-.flowplayer.is-fullscreen .fp-subtitle .fp-subtitle-line{font-size:175%;line-height:1.2}
+.flowplayer.is-fullscreen .fp-subtitle .fp-subtitle-line{font-size:125%;line-height:1.2}
 .flowplayer .fp-subtitle.is-wide br{display:none}
 .flowplayer .fp-subtitle .fp-subtitle-line:after{content:'';clear:both}
 .flowplayer .fp-subtitle .fp-subtitle-line:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
@@ -331,7 +331,7 @@
 }
 @media (max-width: 30em) {
 .flowplayer .fp-subtitle{bottom:4px;line-height:12px !important}
-.flowplayer .fp-subtitle .fp-subtitle-line{font-size:12px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
+.flowplayer .fp-subtitle .fp-subtitle-line{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
 .flowplayer .fv_player_popup {width:99%;font-size:14px;top:0;}
 .flowplayer.is-fv-narrow .fv_player_popup{font-size:0.8em}
 }
@@ -340,6 +340,23 @@
 .flowplayer.is-fv-narrow .mailchimp-form{padding:10px 1.5%}
 .flowplayer.is-fv-narrow .fv_player_popup{font-size:0.7em}	
 }
+/* Fullscreen captions on large screens */
+@media (min-width: 64.063em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:135%}
+}
+@media (min-width: 90.063em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:175%}
+}
+@media (min-width: 120.063em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:225%}
+}
+@media (min-width: 128em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:300%}
+}
+@media (min-width: 160em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:350%}
+}
+
 @media (-webkit-min-device-pixel-ratio: 2),(min-resolution: 2dppx){.flowplayer .fp-context-menu li.copyright{background-image:url("img/flowplayer-2x.png")}
 }@-moz-keyframes pulse{0%{opacity:0}
 100%{opacity:1}
@@ -1068,7 +1085,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .edd_form .fv-player-custom-video-list {
     clear: both;
     position: relative;
-    top: -26px;
 }
 a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
     margin: 0 6px 0 0;
