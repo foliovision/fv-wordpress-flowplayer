@@ -8,26 +8,10 @@ require_once( dirname(__FILE__).'/../fv-player-ajax-unittest-case.php');
  */
 final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase {
 
-  // we need to set up PRO player with an appropriate key, or the PRO player won't work
+  //  we need to make sure FV Player loads as if it's wp-admin
   public static function wpSetUpBeforeClass() {
-    global $fv_fp;
-
-    // without this included, wp_ajax_load_s3_assets action would not be found
-    include_once "../../../fv-wordpress-flowplayer/controller/editor.php";
-    // include the flowplayer loader
-    include_once "../../../fv-wordpress-flowplayer/flowplayer.php";
-    $fv_fp = new flowplayer_frontend();
-  }
-
-  public function setUp() {
-    parent::setUp();
-    global $fv_fp;
-    // without this included, wp_ajax_load_s3_assets action would not be found
-    include_once "../../../fv-wordpress-flowplayer/controller/editor.php";
-    include_once "../../../fv-wordpress-flowplayer/models/flowplayer.php";
-    include_once "../../../fv-wordpress-flowplayer/models/flowplayer-frontend.php";
-    $fv_fp = new flowplayer_frontend();
-
+    set_current_screen( 'edit-post' );
+    parent::wpSetUpBeforeClass();
   }
 
   public function testNoSaveForNotLoggedInUsers() {

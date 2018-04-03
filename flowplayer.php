@@ -36,6 +36,8 @@ if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
 }
 
 include( dirname( __FILE__ ) . '/models/checker.php' );
+
+global $FV_Player_Checker;
 $FV_Player_Checker = new FV_Player_Checker();
 
 include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
