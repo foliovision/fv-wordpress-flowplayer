@@ -129,7 +129,7 @@ class FV_Player_video_intelligence_Installer {
   
   function settings_hide() { 
     ?>
-    <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the Video Intelligence tab', 'fv-wordpress-flowplayer'); ?></label>
+    <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the vi Ads tab', 'fv-wordpress-flowplayer'); ?></label>
     <script>
     jQuery( function($) {
       $('#fv-player-vi-remove').click( function() {
@@ -168,7 +168,7 @@ class FV_Player_video_intelligence_Installer {
   
   function settings_revival() {    
     ?>
-    <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e('Show the Video Intelligence tab again', 'fv-wordpress-flowplayer'); ?></label></a>
+    <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e('Show the vi Ads tab again', 'fv-wordpress-flowplayer'); ?></label></a>
     <script>
     jQuery( function($) {
       $('#fv-player-vi-give-back').click( function() {
@@ -187,7 +187,7 @@ class FV_Player_video_intelligence_Installer {
   }
   
   function settings_tab( $tabs ) {
-    $tabs[] = array('id' => 'fv_flowplayer_settings_video_intelligence',	'hash' => 'tab_video_intelligence',	'name' => __('Video Intelligence', 'fv-player-vi') );
+    $tabs[] = array('id' => 'fv_flowplayer_settings_video_intelligence',	'hash' => 'tab_video_intelligence',	'name' => __('vi Ads', 'fv-player-vi') );
     return $tabs;
   }
 
@@ -273,7 +273,7 @@ class FV_Player_video_intelligence_Installer {
 
     if( $should_install ) {
       $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
-        "FV Player Video Intelligence",
+        "FV Player video intelligence",
         "fv-player-video-intelligence",
         "fv-player-video-intelligence.php",
         "https://foliovision.com/plugins/public/fv-player-video-intelligence.zip",
