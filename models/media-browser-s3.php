@@ -10,11 +10,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     $cfDomains = $fv_fp->_get_option( array('pro','cf_domains_list') );
     $cfBuckets = $fv_fp->_get_option( array('pro','cf_buckets_list') );
 
-    // no CloudFront domains defined - there is nothing to do for us here
-    if (!is_array($cfDomains) || !count($cfDomains)) {
-      die();
-    }
-
     $regions = $fv_fp->_get_option('amazon_region');
     $secrets = $fv_fp->_get_option('amazon_secret');
     $keys    = $fv_fp->_get_option('amazon_key');
