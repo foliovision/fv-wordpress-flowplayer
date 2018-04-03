@@ -59,6 +59,8 @@ include_once(dirname( __FILE__ ) . '/models/widget.php');
 include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
+include_once(dirname( __FILE__ ) . '/models/media-browser.php');
+include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
 
 
 $fv_fp = new flowplayer_frontend();
