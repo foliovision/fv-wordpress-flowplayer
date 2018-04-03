@@ -264,8 +264,17 @@
             p.description { font-style: normal; }
           </style>
 					<table class="form-table2">
-            
+
                   <tr>
+          <td><label for="s3_browser">Amazon S3 Browser:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="s3_browser" value="false"/>
+                  <input type="checkbox" name="s3_browser" id="s3_browser" value="true" />
+                  Show Amazon S3 Browser in the "Add Video" dialog.                                </p>
+          </td>
+      </tr>
+                        <tr>
           <td><label for="autoplay">Autoplay:</label></td>
           <td>
               <p class="description">
@@ -1287,21 +1296,34 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             <td>
               <select id="amazon_region[]" name="amazon_region[]">
                 <option value="">Select the region</option>
-                <option value="us-east-1">US East (N. Virginia)</option>
-                <option value="us-east-2">US East (Ohio)</option>
-                <option value="us-west-1">US West (N. California)</option>
-                <option value="us-west-2">US West (Oregon)</option>
-                <option value="ca-central-1">Canada (Central)</option>
-                <option value="ap-south-1">Asia Pacific (Mumbai)</option>
-                <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
-                <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
-                <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
-                <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>                
-                <option value="eu-central-1">EU (Frankfurt)</option>
-                <option value="eu-west-1">EU (Ireland)</option>
-                <option value="eu-west-2">EU (London)</option>                
-                <option value="sa-east-1">South America (S&atilde;o Paulo)</option>
-              </select>
+                  <option value="us-east-1">US East (N. Virginia)</option>
+                  
+                  <option value="us-east-2">US East (Ohio)</option>
+                  
+                  <option value="us-west-1">US West (N. California)</option>
+                  
+                  <option value="us-west-2">US West (Oregon)</option>
+                  
+                  <option value="ca-central-1">Canada (Central)</option>
+                  
+                  <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                  
+                  <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
+                  
+                  <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                  
+                  <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+                  
+                  <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                  
+                  <option value="eu-central-1">EU (Frankfurt)</option>
+                  
+                  <option value="eu-west-1">EU (Ireland)</option>
+                  
+                  <option value="eu-west-2">EU (London)</option>
+                  
+                  <option value="sa-east-1">South America (S&atilde;o Paulo)</option>
+                                </select>
             </td>
         </tr>
         <tr class="amazon-s3-first">
@@ -1359,7 +1381,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
           <p class="description">  <select id="popups_default" name="popups_default">
         <option selected value="no">None</option>
     <option value="random">Random</option>
-      </select>
+    <option  value="email-1">email-1 - Subscribe to list one</option>  </select>      
    You can set a default popup here and then skip it for individual videos.</p>
         </td>
       </tr>
@@ -1508,11 +1530,11 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                   <table>
                     <tr>
                       <td style="width:16%"><label>Header</label></td>
-                      <td><input type='text' name='email_lists[1][title]' value='' /></td>
+                      <td><input type='text' name='email_lists[1][title]' value='Subscribe to list one' /></td>
                     </tr>
                     <tr>
                       <td><label>Message</label></td>
-                      <td><input type='text' name='email_lists[1][description]' value='' /></td>
+                      <td><input type='text' name='email_lists[1][description]' value='Two good reasons to subscribe right now' /></td>
                     </tr>
                   </table>
                 </td>                
@@ -1523,7 +1545,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[1][first_name]' value='0' />
-                    <input id='list-first-name-1' title="first name" type='checkbox' name='email_lists[1][first_name]' value='1'  />
+                    <input id='list-first-name-1' title="first name" type='checkbox' name='email_lists[1][first_name]' value='1' checked="checked" />
                     <label for='list-first-name-1'>First Name</label>
                     <br />
                     <input type='hidden' name='email_lists[1][last_name]' value='0' />

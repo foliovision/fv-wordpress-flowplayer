@@ -30,12 +30,12 @@ $fv_wp_flowplayer_ver = '6.5';
 $fv_wp_flowplayer_core_ver = '6.0.5';
 $fv_wp_flowplayer_core_ver_beta = '7.2.4';
 
-include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
+include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
-  include( dirname( __FILE__ ) . '/includes/module.php' );
+  include_once( dirname( __FILE__ ) . '/includes/module.php' );
 }
 
-include( dirname( __FILE__ ) . '/models/checker.php' );
+include_once( dirname( __FILE__ ) . '/models/checker.php' );
 
 global $FV_Player_Checker;
 $FV_Player_Checker = new FV_Player_Checker();
@@ -74,5 +74,5 @@ if( is_admin() ) {
 
 } 
 	
-include( dirname( __FILE__ ) . '/controller/frontend.php' );
-require_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
+include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
