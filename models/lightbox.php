@@ -513,4 +513,5 @@ class FV_Player_lightbox {
 
 }
 
+global $FV_Player_lightbox;
 $FV_Player_lightbox = new FV_Player_lightbox();

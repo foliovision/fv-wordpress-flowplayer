@@ -32,7 +32,7 @@ final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
     
     $this->playlist_slider = $this->factory->post->create( array(      
       'post_content' => '[fvplayer '.$shortcode_body.' liststyle="slider"]'
-    ) );    
+    ) );
 
   }
 
@@ -139,8 +139,9 @@ HTML;
   }
   
   public function tearDown() {
-    global $fv_fp;
+    global $fv_fp, $FV_Player_lightbox;
     $fv_fp->load_tabs = false;
+    $FV_Player_lightbox = new FV_Player_lightbox(); // reset the lightbox loading flag and footer lightboxed players HTML
     
     parent::tearDown();
   }

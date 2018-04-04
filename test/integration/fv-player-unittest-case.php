@@ -31,6 +31,14 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     $html = implode( "\n", array_map('trim',$html) );
     
     $html = preg_replace( '~\t~', '', $html );
+    
+    //  playlist in lightbox test
+    $html = preg_replace( "/(href|data-fv-lightbox)='#wpfp_[^']+'/", "$1='#some-test-hash'", $html);
+    $html = preg_replace( '~fv_flowplayer_[a-z0-9]+_lightbox_starter~', 'fv_flowplayer_XYZ_lightbox_starter', $html);
+    
+    //  tabbed playlist test
+    $html = preg_replace( '~tabs-\d+~', 'tabs-1', $html);
+    
     return $html;
   }
 
