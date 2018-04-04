@@ -21,7 +21,7 @@ class FV_Player_Db_Shortcode_Player_Video {
 
   private
     $id, // automatic ID for the video
-    $is_valid = true, // used when loading the video from DB to determine whether we've found it
+    $is_valid = false, // used when loading the video from DB to determine whether we've found it
     $caption, // optional video caption
     $chapters, // URL for a VTT file for displaying captions
     $end, // allows you to show only a specific part of a video
@@ -130,6 +130,13 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
+   * @return bool
+   */
+  public function getIsValid() {
+    return $this->is_valid;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.
@@ -189,6 +196,8 @@ CREATE TABLE `".$this->db_table_name."` (
           trigger_error('Unknown property for new DB video: ' . $key);
         }
       }
+
+      $this->is_valid = true;
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
       // no options, load data from DB
       if ($multiID) {
@@ -211,9 +220,6 @@ CREATE TABLE `".$this->db_table_name."` (
           foreach ( $video_data as $key => $value ) {
             $this->$key = $value;
           }
-
-          // load meta data
-          $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($video_data->id)));
         } else {
           // multiple IDs, create new video objects for each of them except the first one,
           // for which we'll use this instance
@@ -225,9 +231,6 @@ CREATE TABLE `".$this->db_table_name."` (
                 $this->$key = $value;
               }
 
-              // load meta data
-              $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($db_record->id)));
-
               // add this to all the loaded video objects
               $this->additional_objects[] = $this;
               $first_done = true;
@@ -237,15 +240,14 @@ CREATE TABLE `".$this->db_table_name."` (
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
               $video_object = new FV_Player_Db_Shortcode_Player_Video(null, get_object_vars($db_record));
-              $video_object->link2db($record_id, true);
+              $video_object->link2db($record_id);
 
-              // cache is in the list of all loaded video objects
+              // cache it in the list of all loaded video objects
               $this->additional_objects[] = $video_object;
             }
           }
         }
-      } else {
-        $this->is_valid = false;
+        $this->is_valid = true;
       }
     } else {
       throw new \Exception('No options nor a valid ID was provided for DB video instance.');
@@ -327,13 +329,26 @@ CREATE TABLE `".$this->db_table_name."` (
    * Returns meta data for this video.
    *
    * @return array Returns all meta data for this video.
+   * @throws Exception When an underlying meta data object throws an exception.
    */
   public function getMetaData() {
-    if ($this->meta_data) {
+    // meta data already loaded and present, return them
+    if ($this->meta_data && $this->meta_data !== -1) {
       if ( $this->meta_data->getAllLoadedMeta() ) {
         return $this->meta_data->getAllLoadedMeta();
       } else {
         return array( $this->meta_data );
+      }
+    } else if ($this->meta_data === null) {
+      // meta data not loaded yet - load them now
+      $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($this->id)));
+
+      // set meta data to -1, so we know we didn't get any meta data for this video
+      if (!$this->meta_data->getIsValid()) {
+        $this->meta_data = -1;
+        return array();
+      } else {
+        return $this->meta_data;
       }
     } else {
       return array();

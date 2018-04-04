@@ -123,6 +123,7 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When any of the underlying classes throw an exception.
    */
   private function generateFullPlaylistCode($atts, $preview_data = null) {
+    global $fv_fp;
     static $cache = array();
 
     // check if we should change anything in the playlist code
@@ -159,9 +160,7 @@ class FV_Player_Db_Shortcode {
         if ($preview_data) {
           $videos = $preview_data['videos'];
         } else {
-          // load data from DB
-          $videos = new FV_Player_Db_Shortcode_Player_Video( $newids );
-          $videos = $videos->getAllLoadedVideos();
+          $videos = $fv_fp->current_player()->getVideos();
         }
 
         // cache first vid
@@ -315,6 +314,7 @@ class FV_Player_Db_Shortcode {
         }
 
         $player                     = new FV_Player_Db_Shortcode_Player( $atts['id'] );
+        $player->getVideos();
         $fv_fp->currentPlayerObject = $player;
 
         $data = $player->getAllDataValues();

@@ -158,7 +158,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $arguments['post'] = get_the_ID();
   }
 
-  if( intval($arguments['id']) > 0 ) {
+  if( !empty($arguments['id']) && intval($arguments['id']) > 0 ) {
     $new_player = $fv_fp->build_min_player(false, $arguments);
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];

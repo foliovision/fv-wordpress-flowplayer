@@ -64,6 +64,7 @@ class FV_Player_Db_Shortcode_Player {
     $width, // with of the player on page
     $hlskey,
     $videos,
+    $video_objects = null,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
     $db_table_name;
 
@@ -364,7 +365,7 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getVideos() {
+  public function getVideoIds() {
     return $this->videos;
   } // comma-separated list of video IDs for this player
 
@@ -487,6 +488,33 @@ CREATE TABLE `".$this->db_table_name."` (
     }
 
     return $data;
+  }
+
+  /**
+   * Returns all video objects for this player.
+   *
+   * @return array Returns all video objects for this player.
+   * @throws Exception When an underlying video object throws an exception.
+   */
+  public function getVideos() {
+    // video data already loaded and present, return them
+    if ($this->video_objects && $this->video_objects !== -1) {
+      return $this->video_objects;
+    } else if ($this->video_objects === null) {
+      // video objects not loaded yet - load them now
+      $videos = new FV_Player_Db_Shortcode_Player_Video(explode(',', $this->videos));
+
+      // set meta data to -1, so we know we didn't get any meta data for this video
+      if (!$videos->getIsValid()) {
+        $this->video_objects = -1;
+        return array();
+      } else {
+        $this->video_objects = $videos->getAllLoadedVideos();
+        return $this->video_objects;
+      }
+    } else {
+      return array();
+    }
   }
 
   /**
