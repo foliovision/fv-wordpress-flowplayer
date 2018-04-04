@@ -9,6 +9,11 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     
     global $fv_fp;
     $this->restore = $fv_fp->conf;
+    
+    //  somehow this got hooked in again after being removed in WP_Ajax_UnitTestCase::setUpBeforeClass() already
+    remove_action( 'admin_init', '_maybe_update_core' );
+    remove_action( 'admin_init', '_maybe_update_plugins' );
+    remove_action( 'admin_init', '_maybe_update_themes' );    
   }  
   
   public function fix_newlines( $html ) {
@@ -21,8 +26,16 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     $html = preg_replace( '~fv_vimeo_[a-z0-9]+~', 'fv_vimeo_XYZ', $html);
     $html = preg_replace( '~<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="[^"]*?" />~', '<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="XYZ" />', $html);
     
+    $html = preg_replace( '~convert_jwplayer=[a-z0-9]+~', 'convert_jwplayer=XYZ', $html);
+    $html = preg_replace( '~_wpnonce=[a-z0-9]+~', '_wpnonce=XYZ', $html);
+    
     $html = explode("\n",$html);
+    foreach( $html AS $k => $v ) {
+      if( trim($v) == '' ) unset($html[$k]);
+    }
     $html = implode( "\n", array_map('trim',$html) );
+    
+    $html = preg_replace( '~\t~', '', $html );
     return $html;
   }
 
