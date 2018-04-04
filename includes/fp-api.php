@@ -421,7 +421,14 @@ class FV_Wordpress_Flowplayer_Plugin
     
     $plugin_path = self::get_plugin_path( str_replace( '_', '-', $plugin_package ) );
     if( $plugin_path ) {
-      return; //  already installed
+      $result = activate_plugin( $plugin_path, site_url().$settings_url );
+      if ( is_wp_error( $result ) ) {
+        update_option( $option, $name.' extension activation error: '.$result->get_error_message() );
+        return false;
+      } else {
+        update_option( $option, $name.' extension activated' );
+        return true; //  already installed
+      }
     }
 
     $plugin_basename = $plugin_path ? $plugin_path : $plugin_basename;
