@@ -25,7 +25,12 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     $html = preg_replace( '~_wpnonce=[a-z0-9]+~', '_wpnonce=XYZ', $html);
     
     $html = explode("\n",$html);
+    foreach( $html AS $k => $v ) {
+      if( trim($v) == '' ) unset($html[$k]);
+    }
     $html = implode( "\n", array_map('trim',$html) );
+    
+    $html = preg_replace( '~\t~', '', $html );
     return $html;
   }
 
