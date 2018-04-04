@@ -2092,29 +2092,30 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
       wp_die('Please log in.');
     }
-    $shortcode = base64_decode($_GET['fv_player_preview']);
+    $dataInPost = ($_GET['fv_player_preview'] === 'POST');
+    $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : $_POST);
     $matches = null;
     $width ='';
     $height ='';
 
     // width from regular shortcdode data
-    if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
+    if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
       $width = 'width:'.$matches[1].'px;';
     }
 
     // width from DB shortcdode data
-    if(preg_match('/"fv_wp_flowplayer_field_width":"([0-9.,]*)"/', $shortcode, $matches)){
-      $width = 'width:'.$matches[1].'px;';
+    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])){
+      $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
     }
 
     // height from regular shortcdode data
-    if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+    if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
       $height = 'min-height:'.$matches[1].'px;';
     }
 
     // height from DB shortcdode data
-    if(preg_match('/"fv_wp_flowplayer_field_height":"([0-9.,]*)"/', $shortcode, $matches)){
-      $height = 'min-height:'.$matches[1].'px;';
+    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])){
+      $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
     }
 
     ?> 
@@ -2123,25 +2124,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         <?php
         // regular shortcode data with source
         global $fv_fp;
-        if (preg_match('/src="[^"][^"]*"/i',$shortcode) && strpos($shortcode, 'db_preview') === false) {
+        if (!$dataInPost && preg_match('/src="[^"][^"]*"/i',$shortcode)) {
           $aAtts = shortcode_parse_atts($shortcode);
           if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
           }
           echo do_shortcode($shortcode);          
-        } else if (strpos($shortcode, 'db_preview') !== false) {
+        } else if ($dataInPost) {
           // DB-based shortcode data
           if (
-              preg_match('/"fv_wp_flowplayer_field_playlist":"([^"]*)"/', $shortcode, $matches) &&
-              !empty($matches[1]) &&
-              $matches[1] == 'vertical' ||
-              $fv_fp->_get_option('liststyle') == 'vertical'
+            !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
+            $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
+            $fv_fp->_get_option('liststyle') == 'vertical'
           ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
           }
 
           // note: we need to put "src" into the code or it won't get parsed at all
-          echo do_shortcode('[fvplayer src="none" id="'.$_GET['fv_player_preview'].'"]');
+          echo do_shortcode('[fvplayer src="none" id="POST"]');
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php

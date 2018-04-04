@@ -343,12 +343,7 @@ class FV_Player_Db_Shortcode {
         }
       } else {
         // when ID is not numeric, it's most probably a preview that we need to build
-        if ( ($data = json_decode(base64_decode($_GET['fv_player_preview']), true)) !== false) {
-          // valid preview data detected, fill POST data and build the player
-          $atts = array_merge( $atts, $FV_Db_Shortcode->generateFullPlaylistCode(array(), $this->db_store_player_data($data)));
-        } else {
-          return $atts;
-        }
+        $atts = array_merge( $atts, $FV_Db_Shortcode->generateFullPlaylistCode(array(), $this->db_store_player_data($_POST)));
       }
 
       $cache[ $atts['id'] ] = $atts;
