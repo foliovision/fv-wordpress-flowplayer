@@ -356,6 +356,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.5.1 - 2018/04/04 =
+
+* Amazon S3 - Adding URL signature for subtitles
+* CSS - Responsive sizing of subtitles in fullscreen mode for large retina displays
+* Bugfix - Google Analytics - fixing label of "Unknown" to say "Unknown engine" which occurs when the video fails to play before engines are initialized
+* Bugfix - Lightbox - when used for playlist the first item was appearing twice in the lightbox view
+* Bugfix - Lightbox - when using the "text" lightbox with playlist it was rendering the playlist items as thumbnails
+* Bugfix - Lightbox - stopping the playlist styles from interfering - forcing horizontal playlist style for lightboxed playlist
+
 = 6.5 - 2018/03/14 =
 
 * New feature - Video position saving for both guest and logged in users - see Settings -> FV Player -> Sidewide Flowplayer Defaults -> Remember video position
