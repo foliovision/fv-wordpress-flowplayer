@@ -9,6 +9,11 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     
     global $fv_fp;
     $this->restore = $fv_fp->conf;
+    
+    //  somehow this got hooked in again after being removed in WP_Ajax_UnitTestCase::setUpBeforeClass() already
+    remove_action( 'admin_init', '_maybe_update_core' );
+    remove_action( 'admin_init', '_maybe_update_plugins' );
+    remove_action( 'admin_init', '_maybe_update_themes' );    
   }  
   
   public function fix_newlines( $html ) {
