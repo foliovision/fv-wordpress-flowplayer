@@ -348,7 +348,7 @@ CREATE TABLE `".$this->db_table_name."` (
         $this->meta_data = -1;
         return array();
       } else {
-        return $this->meta_data;
+        return array($this->meta_data);
       }
     } else {
       return array();

@@ -23,7 +23,7 @@ class FV_Player_Db_Shortcode {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 10, 1);
     add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
 
-    add_action( 'wp_ajax_expand_player_shortcode', array($this, 'expand_player_shortcode') );
+    add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
   }
 
   public function setCurrentVideoAndPlayer($aItem, $index, $aPlayer) {
@@ -465,24 +465,41 @@ class FV_Player_Db_Shortcode {
 
 
   /**
-   * AJAX method to generate expanded textual shortcode from database information
-   * to build the shortcode editor UI on the front-end.
+   * AJAX method to return database data for the player ID given
    */
-  public function expand_player_shortcode() {
+  public function return_shortcode_db_data() {
+    global $fv_fp;
+
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-      $atts = $this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ));
+      $out = array();
 
-      if (count($atts)) {
-        $out = '[fvplayer';
+      // load player and its videos from DB
+      $this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ));
 
-        foreach ( $atts as $att_name => $att_value ) {
-          $out .= ' ' . $att_name . '="' . $att_value . '"';
+      // fill the $out variable with player data
+      $out = array_merge($out, $fv_fp->current_player()->getAllDataValues());
+      unset($out['video_objects'], $out['videos']);
+
+      // fill the $out variable with video data
+      $out['videos'] = array();
+      foreach ($fv_fp->current_player()->getVideos() as $video) {
+        // load video values
+        $vid = $video->getAllDataValues();
+        $vid['meta'] = array();
+
+        // load all meta data
+        $meta = $video->getMetaData();
+        foreach ($meta as $meta_object) {
+          if ($meta_object->getIsValid()) {
+            $vid['meta'][] = $meta_object->getAllDataValues();
+          }
         }
 
-        $out .= ']';
-
-        echo $out;
+        $out['videos'][] = $vid;
       }
+
+      header('Content-Type: application/json');
+      echo json_encode($out, true);
     }
 
     wp_die();

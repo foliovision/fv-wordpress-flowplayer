@@ -482,7 +482,11 @@ CREATE TABLE `".$this->db_table_name."` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid' && $property != 'db_table_name') {
+      if ($property != 'numeric_properties' && $property != 'is_valid' && $property != 'db_table_name') {
+        // change ID to ID_PLAYER, as ID is used as a shortcode property
+        if ($property == 'id') {
+          $property = 'id_player';
+        }
         $data[$property] = $value;
       }
     }

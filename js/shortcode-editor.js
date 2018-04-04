@@ -900,6 +900,25 @@ function do_shortcode_magic(shortcode) {
   fv_wp_flowplayer_submit(true);
 }
 
+function fv_wp_flowplayer_map_names_to_editor_fields(name) {
+  var fieldMap = {
+    'liststyle': 'playlist',
+    'preroll': 'video_ads',
+    'postroll': 'video_ads_post'
+  };
+
+  return 'fv_wp_flowplayer_field_' + (fieldMap[name] ? fieldMap[name] : name);
+}
+
+function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
+  switch (name) {
+    case 'playlist_advance':
+      return (value == 'true' ? 'on' : 'off');
+  }
+
+  return value;
+}
+
 /*
  * removes previous values from editor
  * fills new values from shortcode
@@ -995,9 +1014,53 @@ function fv_wp_flowplayer_edit() {
 
       // now load playlist data
       // load video data via an AJAX call,
-      jQuery.post(ajaxurl, { 'action' : 'expand_player_shortcode', 'playerID' :  result[1] }, function(response) {
+      jQuery.post(ajaxurl, { 'action' : 'return_shortcode_db_data', 'playerID' :  result[1] }, function(response) {
+        console.log(response);
         if (response) {
-          do_shortcode_magic(response);
+          var field2value = {};
+
+          for (var key in response) {
+            // put the field value where it belongs
+            if (key !== 'videos') {
+              var
+                real_key = fv_wp_flowplayer_map_names_to_editor_fields(key),
+                real_val = fv_wp_flowplayer_map_db_values_to_field_values(key, response[key]),
+                // try ID first
+                $element = jQuery('#' + real_key);
+
+              if (!$element.length) {
+                // no element with this ID found, we need to go for a name
+                $element = jQuery('[name="' + real_key + '"]');
+              }
+
+              // player and video IDs wouldn't have corresponding fields
+              if ($element.length) {
+                // dropdowns could have capitalized values
+                if ($element.get(0).nodeName == 'SELECT') {
+                  if ($element.find('option[value="' + real_val + '"]').length) {
+                    $element.val(real_val);
+                  } else {
+                    // try capitalized
+                    var caps = real_val.charAt(0).toUpperCase() + real_val.slice(1);
+                    $element.find('option').each(function() {
+                      if (this.text == caps) {
+                        $(this).attr('selected', 'selected');
+                      }
+                    });
+                  }
+                } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
+                  if (real_val == '1' || real_val == 'on' || real_val == 'true') {
+                    $element.attr('checked', 'checked');
+                  } else {
+                    $element.attr('checked', '');
+                  }
+                } else {
+                  $element.val(real_val);
+                }
+              }
+            }
+          }
+          //do_shortcode_magic(response);
         }
 
         overlayDiv.remove();
