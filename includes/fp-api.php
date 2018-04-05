@@ -512,6 +512,7 @@ class FV_Wordpress_Flowplayer_Plugin
 
     if( $result ) {
       update_option( $option, $sTaskDone );
+      echo "<script>location.href='".$settings_url."';</script>";
     }
 
     return $result;

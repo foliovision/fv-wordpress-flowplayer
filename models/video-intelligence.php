@@ -277,13 +277,9 @@ class FV_Player_video_intelligence_Installer {
         "fv-player-video-intelligence",
         "fv-player-video-intelligence.php",
         "https://foliovision.com/plugins/public/fv-player-video-intelligence.zip",
-        '/wp-admin/options-general.php?page=fvplayer',
+        admin_url('options-general.php?page=fvplayer&reload='.rand().'#postbox-container-tab_video_intelligence'),
         'fv_wordpress_flowplayer_deferred_notices'
       );
-
-      if( $result ) {
-        echo "<script>location.href='".admin_url('options-general.php?page=fvplayer&reload#postbox-container-tab_video_intelligence')."';</script>";
-      }
     }
   }
 }
