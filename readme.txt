@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9.2
+Tested up to: 4.9.4
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -16,6 +16,8 @@ Custom HTML 5 video on your own site with Flash fallback for legacy browsers is 
 
 FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
+* Remembering video position both both guest users and members
+* API for custom video fields
 * **NEW** easy AB looped playback for your visitors (great for teaching sites)
 * **NEW** improved and more powerful playlists (more playlist features coming soon).
 * Automated checking of video encoding for logged in admins
@@ -354,9 +356,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.5.1 - 2018/04/04 =
+
+* Amazon S3 - Adding URL signature for subtitles
+* CSS - Responsive sizing of subtitles in fullscreen mode for large retina displays
+* Bugfix - Google Analytics - fixing label of "Unknown" to say "Unknown engine" which occurs when the video fails to play before engines are initialized
+* Bugfix - Lightbox - when used for playlist the first item was appearing twice in the lightbox view
+* Bugfix - Lightbox - when using the "text" lightbox with playlist it was rendering the playlist items as thumbnails
+* Bugfix - Lightbox - stopping the playlist styles from interfering - forcing horizontal playlist style for lightboxed playlist
+
 = 6.5 - 2018/03/14 =
 
-* New feature - Video position saving for both guest and logged in users
+* New feature - Video position saving for both guest and logged in users - see Settings -> FV Player -> Sidewide Flowplayer Defaults -> Remember video position
 * Custom video fields are now easy to add with the FV_Player_MetaBox PHP class
 * DASH - updating to latest tested Dash.js version
 * Bugfix - iframe embed code placing body closing tag in bad place
