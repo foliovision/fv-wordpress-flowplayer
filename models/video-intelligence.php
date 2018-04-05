@@ -18,7 +18,7 @@ class FV_Player_video_intelligence_Installer {
     global $fv_fp; 
     
     $jwt = $fv_fp->_get_option(array('addon-video-intelligence', 'jwt'));
-    wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
+    wp_nonce_field('fv_player_vi_install','nonce_fv_player_vi_install');
     ?>
         
         <table class="form-table2" style="margin: 5px; ">
@@ -93,7 +93,7 @@ class FV_Player_video_intelligence_Installer {
     <?php endif;
     
     $jwt = $fv_fp->_get_option(array('addon-video-intelligence', 'jwt'));
-    wp_nonce_field('fv_player_vi_install','_wpnonce_fv_player_vi_install');
+    wp_nonce_field('fv_player_vi_install','nonce_fv_player_vi_install');
     ?>        
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
@@ -199,9 +199,9 @@ class FV_Player_video_intelligence_Installer {
 
   function start() {
     $should_install = false;
-
+    
     if( current_user_can('install_plugins') && !empty($_POST['vi_login']) && !empty($_POST['vi_pass']) && !empty($_POST['fv_player_vi_install']) ) {
-      check_admin_referer( 'fv_player_vi_install', '_wpnonce_fv_player_vi_install' );
+      check_admin_referer( 'fv_player_vi_install', 'nonce_fv_player_vi_install' );
       
       remove_action('admin_init', 'fv_player_settings_save', 9);
 
@@ -257,13 +257,12 @@ class FV_Player_video_intelligence_Installer {
       $should_install = true;
     }
 
-    else if( current_user_can('install_plugins') && !empty($_POST['fv_player_vi_install']) ) {
-      check_admin_referer( 'fv_player_vi_install', '_wpnonce_fv_player_vi_install' );
+    else if( current_user_can('install_plugins') && !empty($_REQUEST['fv_player_vi_install']) && wp_verify_nonce( $_REQUEST['nonce_fv_player_vi_install'], 'fv_player_vi_install') ) {
       $should_install = true;
     }
     
     else if( current_user_can('install_plugins') && !empty($_POST['fv_player_vi_reset']) ) {
-      check_admin_referer( 'fv_player_vi_install', '_wpnonce_fv_player_vi_install' );
+      check_admin_referer( 'fv_player_vi_install', 'nonce_fv_player_vi_install' );
       global $fv_fp;      
       $fv_fp->conf['addon-video-intelligence'] = array();
       $fv_fp->_set_conf( $fv_fp->conf );
@@ -277,8 +276,9 @@ class FV_Player_video_intelligence_Installer {
         "fv-player-video-intelligence",
         "fv-player-video-intelligence.php",
         "https://foliovision.com/plugins/public/fv-player-video-intelligence.zip",
-        admin_url('options-general.php?page=fvplayer&reload='.rand().'#postbox-container-tab_video_intelligence'),
-        'fv_wordpress_flowplayer_deferred_notices'
+        admin_url('options-general.php?page=fvplayer&fv_player_vi_install=1#postbox-container-tab_video_intelligence'),
+        'fv_wordpress_flowplayer_deferred_notices',
+        'fv_player_vi_install'
       );
     }
   }

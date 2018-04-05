@@ -652,7 +652,8 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
     $plugin_basename,
     $download_url,
     admin_url('options-general.php?page=fvplayer&reload='.rand()),
-    'fv_wordpress_flowplayer_deferred_notices'
+    'fv_wordpress_flowplayer_deferred_notices',
+    'fv_player_pro_install'
   );
     
   $aInstalled = ( get_option('fv_flowplayer_extension_install' ) ) ? get_option('fv_flowplayer_extension_install' ) : array();

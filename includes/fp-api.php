@@ -408,20 +408,21 @@ class FV_Wordpress_Flowplayer_Plugin
   
   
   public static function install_form_text( $html, $name ) {
-    $html = preg_replace( '~<h3.*?</h3>~', '<h3>'.$name.' auto-installation</h3><p>As a FV Flowplayer license holder, we would like to automatically install our Pro extension for you.</p>', $html );
-    $html = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer'.'">Skip the Pro addon install</a>', $html );    
+    $tag = stripos($html,'</h3>') !== false ? 'h3' : 'h2';
+    $html = preg_replace( '~<'.$tag.'.*?</'.$tag.'>~', '<'.$tag.'>'.$name.' auto-installation</'.$tag.'>', $html );
+    $html = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.admin_url('options-general.php?page=fvplayer').'">Skip the '.$name.' install</a>', $html );    
     return $html;
   }
   
   
   
   
-  public static function install_plugin( $name, $plugin_package, $plugin_basename, $download_url, $settings_url, $option ) {  //  'FV Player Pro', 'fv-player-pro', '/wp-admin/options-general.php?page=fvplayer', download URL (perhaps from the license), settings URL and option where result message should be stored
+  public static function install_plugin( $name, $plugin_package, $plugin_basename, $download_url, $settings_url, $option, $nonce ) {  //  'FV Player Pro', 'fv-player-pro', '/wp-admin/options-general.php?page=fvplayer', download URL (perhaps from the license), settings URL (use admin_url(...), should also contain some GET which will make it install the extension if present) and option where result message should be stored and a nonce which should be passed
     global $hook_suffix;
     
     $plugin_path = self::get_plugin_path( str_replace( '_', '-', $plugin_package ) );
     if( $plugin_path ) {
-      $result = activate_plugin( $plugin_path, site_url().$settings_url );
+      $result = activate_plugin( $plugin_path, $settings_url );
       if ( is_wp_error( $result ) ) {
         update_option( $option, $name.' extension activation error: '.$result->get_error_message() );
         return false;
@@ -433,7 +434,7 @@ class FV_Wordpress_Flowplayer_Plugin
 
     $plugin_basename = $plugin_path ? $plugin_path : $plugin_basename;
 
-    $url = wp_nonce_url( site_url().$settings_url, 'fv_player_pro_install', 'nonce_fv_player_pro_install' );
+    $url = wp_nonce_url( $settings_url, $nonce, 'nonce_'.$nonce );
 
     set_current_screen();
 
@@ -441,7 +442,7 @@ class FV_Wordpress_Flowplayer_Plugin
     if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
       $form = ob_get_clean();
       include( ABSPATH . 'wp-admin/admin-header.php' );
-      echo self::install_form_text($form);
+      echo self::install_form_text($form, $name);
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
     }	
@@ -451,7 +452,7 @@ class FV_Wordpress_Flowplayer_Plugin
       request_filesystem_credentials( $url, $method, true, false, false );
       $form = ob_get_clean();
       include( ABSPATH . 'wp-admin/admin-header.php' );
-      echo self::install_form_text($form);
+      echo self::install_form_text($form, $name);
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
     }
