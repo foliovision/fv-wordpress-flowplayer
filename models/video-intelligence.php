@@ -78,6 +78,7 @@ class FV_Player_video_intelligence_Installer {
 
   function screen_ad() {
     global $fv_fp; 
+    $current_user = wp_get_current_user();
     
     if( $fv_fp->_get_option('hide-tab-video-intelligence') && !class_exists('FV_Player_Video_Intelligence') ) : ?>
       <style>
@@ -116,8 +117,7 @@ class FV_Player_video_intelligence_Installer {
             <tr>
               <td></td>
               <td>
-                  <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>
-                  <?php $current_user = wp_get_current_user(); ?>
+                  <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>                  
                   <a href="http://vi.ai/publisher-video-monetization/?aid=foliovision&email=<?php echo $current_user->user_email; ?>&url=<?php echo home_url(); ?>&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More or Create an Account</a>
               </td>
             </tr>
