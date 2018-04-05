@@ -151,7 +151,7 @@ class FV_Player_video_intelligence_Installer {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
       add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
-      add_meta_box( 'fv_flowplayer_video_intelligence_hide', __('Hide vi', 'fv-wordpress-flowplayer'), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_hide', __('Hide vi Ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
     }
   }
