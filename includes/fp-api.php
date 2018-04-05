@@ -421,7 +421,7 @@ class FV_Wordpress_Flowplayer_Plugin
     global $hook_suffix;
     
     $plugin_path = self::get_plugin_path( str_replace( '_', '-', $plugin_package ) );
-    if( $plugin_path ) {
+    if( !defined('PHPUnitTestMode') && $plugin_path ) {
       $result = activate_plugin( $plugin_path, $settings_url );
       if ( is_wp_error( $result ) ) {
         update_option( $option, $name.' extension activation error: '.$result->get_error_message() );
