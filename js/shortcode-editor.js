@@ -489,7 +489,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
   jQuery('.fv-player-tab-video-files').append(fv_player_playlist_video_template);
   var new_item = jQuery('.fv-player-tab-video-files table:last');
   new_item.hide().attr('data-index', newIndex);
-  
+
   jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template);
   var new_item_subtitles = jQuery('.fv-player-tab-subtitles table:last');
   new_item_subtitles.hide().attr('data-index', newIndex);
@@ -517,7 +517,24 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
       jQuery('[name=fv_wp_flowplayer_field_caption]',new_item).val(sCaption);
     }
     if( sSubtitles ) {
-      jQuery('[name=fv_wp_flowplayer_field_subtitles]',new_item_subtitles).val(sSubtitles);
+      if (typeof sSubtitles === 'object' && sSubtitles.length && sSubtitles[0].lang) {
+        // DB-based subtitles value
+        var firstDone = false;
+
+        for (var i in sSubtitles) {
+          // add as many new subtitles as we have
+          if (firstDone) {
+            fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex);
+          } else {
+            jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles).val(sSubtitles[i].lang);
+            jQuery('[name=fv_wp_flowplayer_field_subtitles]',new_item_subtitles).val(sSubtitles[i].file);
+            firstDone = true;
+          }
+        }
+      } else {
+        // shortcode-based subtitle value
+        jQuery('[name=fv_wp_flowplayer_field_subtitles]', new_item_subtitles).val(sSubtitles);
+      }
     }
     if( sSplashText ) {
       jQuery('[name=fv_wp_flowplayer_field_splash_text]',new_item).val(sSplashText);
@@ -1015,7 +1032,8 @@ function fv_wp_flowplayer_edit() {
       // now load playlist data
       // load video data via an AJAX call,
       jQuery.post(ajaxurl, { 'action' : 'return_shortcode_db_data', 'playerID' :  result[1] }, function(response) {
-        console.log(response);
+        var vids = response['videos'];
+
         if (response) {
           var field2value = {};
 
@@ -1060,6 +1078,32 @@ function fv_wp_flowplayer_edit() {
               }
             }
           }
+
+          // add videos from the DB
+          for (var x in vids) {
+            var subs = [];
+
+            // add all subtitles
+            if (vids[x].meta && vids[x].meta.length) {
+              for (var m in vids[x].meta) {
+                if (vids[x].meta[m].meta_key.indexOf('subtitles') > -1) {
+                  subs.push({
+                    lang: vids[x].meta[m].meta_key.replace('subtitles_', ''),
+                    file: vids[x].meta[m].meta_value
+                  });
+                }
+              }
+            }
+
+            fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text);
+          }
+
+          // show playlist instead of the "add new video" form
+          fv_flowplayer_playlist_show();
+
+          // remove the first blank video
+          jQuery('.fv-player-tab-playlist tr .fvp_item_remove:first').click();
+
           //do_shortcode_magic(response);
         }
 
@@ -1606,7 +1650,7 @@ function fv_wp_flowplayer_submit( preview ) {
   
   jQuery(document).trigger('fv_flowplayer_shortcode_create');
 	
-	if( fv_wp_fp_shortcode_remains.trim().length > 0 ) {
+	if( fv_wp_fp_shortcode_remains && fv_wp_fp_shortcode_remains.trim().length > 0 ) {
   	fv_wp_fp_shortcode += ' ' + fv_wp_fp_shortcode_remains.trim();
   }
   

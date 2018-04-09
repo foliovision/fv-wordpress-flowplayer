@@ -348,7 +348,7 @@ CREATE TABLE `".$this->db_table_name."` (
         $this->meta_data = -1;
         return array();
       } else {
-        return array($this->meta_data);
+        return ($this->meta_data->getAllLoadedMeta() ? $this->meta_data->getAllLoadedMeta() : array($this->meta_data));
       }
     } else {
       return array();
