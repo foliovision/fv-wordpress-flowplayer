@@ -524,10 +524,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
         for (var i in sSubtitles) {
           // add as many new subtitles as we have
           if (firstDone) {
-            // this has to be done async, otherwise the DOM wouldn't be completely ready
-            setTimeout(function() {
-              fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex);
-            }, 1500);
+            fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex);
           } else {
             jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles).val(sSubtitles[i].lang);
             jQuery('[name=fv_wp_flowplayer_field_subtitles]',new_item_subtitles).val(sSubtitles[i].file);
@@ -608,7 +605,7 @@ function fv_flowplayer_playlist_show() {
  * Adds another language to subtitle menu
  */
 function fv_flowplayer_language_add( sInput, sLang ,iTabIndex ) {
-  if(!iTabIndex && iTabIndex !== 0){
+  if(!iTabIndex){
     var current = jQuery('.fv-player-tab-subtitles table:visible');
     iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
   }
@@ -1031,6 +1028,8 @@ function fv_wp_flowplayer_edit() {
     if (result !== null) {
       // DB-based player, create a "wait" overlay
       var overlayDiv = fv_wp_flowplayer_big_loader_show();
+      
+      jQuery('[data-index=0]').remove();
 
       // now load playlist data
       // load video data via an AJAX call,
@@ -1105,7 +1104,7 @@ function fv_wp_flowplayer_edit() {
           fv_flowplayer_playlist_show();
 
           // remove the first blank video
-          jQuery('.fv-player-tab-playlist tr .fvp_item_remove:first').click();
+          //jQuery('.fv-player-tab-playlist tr .fvp_item_remove:first').click();
 
           //do_shortcode_magic(response);
         }

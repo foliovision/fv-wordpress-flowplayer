@@ -110,7 +110,7 @@
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
 var fv_wp_flowplayer_re_edit = /\[[^\]]*?<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>.*?[^\\]\]/mi;
 var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>/gi;
-var fv_Player_site_base = "<?php echo home_url(); ?>";
+var fv_Player_site_base = "<?php echo home_url('/'); ?>";
 <?php global $fv_fp; if( isset($fv_fp->conf['postthumbnail']) && $fv_fp->conf['postthumbnail'] == 'true' ) : ?>
 var fv_flowplayer_set_post_thumbnail_id = <?php echo $post_id; ?>;
 var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_post_thumbnail-$post_id" ); ?>';
@@ -305,7 +305,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
               </div>
 
               <div class="fv-player-tab fv-player-tab-subtitles" style="display: none">
-                <table width="100%">
+                <table width="100%" data-index="0">
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["subtitles"]) || $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
                     <td class="field fv-fp-subtitles" colspan="2">
