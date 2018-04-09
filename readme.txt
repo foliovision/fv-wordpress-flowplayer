@@ -356,6 +356,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.5.2 - 2018/04/?? =
+
+* Bugfix - Video position saving - not working when playing HLS in Firefox
+
 = 6.5.1 - 2018/04/04 =
 
 * Amazon S3 - Adding URL signature for subtitles
