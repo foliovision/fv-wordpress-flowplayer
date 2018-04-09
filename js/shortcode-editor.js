@@ -559,18 +559,19 @@ function fv_flowplayer_playlist_show() {
   
   //fills playlist edistor table from individual video tables
   var video_files = jQuery('.fv-player-tab-video-files table');
-  video_files.each( function() {    
+  video_files.each( function() {
     var current = jQuery(this);
+
     var currentUrl = current.find('#fv_wp_flowplayer_field_src').val();
     if(!currentUrl.length){
       currentUrl = 'Video ' + (jQuery(this).index() + 1);
     }
     var playlist_row = jQuery('.fv-player-tab-playlist table tbody tr').eq( video_files.index(current) );
-    
+
     current.attr('data-index', current.index() );
     playlist_row.attr('data-index', current.index() );
     
-    var video_preview = current.find('#fv_wp_flowplayer_field_splash').val()
+    var video_preview = current.find('#fv_wp_flowplayer_field_splash').val();
     playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? '<img src="' + video_preview + '" />':'');
     playlist_row.find('.fvp_item_video-filename').html( currentUrl.split("/").pop() );
     
@@ -1028,8 +1029,11 @@ function fv_wp_flowplayer_edit() {
     if (result !== null) {
       // DB-based player, create a "wait" overlay
       var overlayDiv = fv_wp_flowplayer_big_loader_show();
-      
+
+      // remove everything with index 0 and the initial video placeholder,
+      // otherwise our indexing & previews wouldn't work correctly
       jQuery('[data-index=0]').remove();
+      jQuery('.fv-player-tab-playlist table tbody tr:last').remove();
 
       // now load playlist data
       // load video data via an AJAX call,
@@ -1101,10 +1105,7 @@ function fv_wp_flowplayer_edit() {
           }
 
           // show playlist instead of the "add new video" form
-          fv_flowplayer_playlist_show();
-
-          // remove the first blank video
-          //jQuery('.fv-player-tab-playlist tr .fvp_item_remove:first').click();
+          fv_flowplayer_playlist_show(true);
 
           //do_shortcode_magic(response);
         }
@@ -1314,6 +1315,22 @@ function fv_wp_flowplayer_build_ajax_data() {
       });
     });
   });
+
+  // remove any empty videos, i.e. without a source
+  // this is used when loading data from DB to avoid previewing an empty video that's in editor by default
+  if (data['videos']) {
+    var
+      data_videos_new = {},
+      x = 0;
+
+    for (var i in data['videos']) {
+      if (data['videos'][i]['src'] || data['videos'][i]['src_1'] || !data['videos'][i]['src_2']) {
+        data_videos_new[x++] =  data['videos'][i];
+      }
+    }
+
+    data['videos'] = data_videos_new;
+  }
 
   return data;
 }
