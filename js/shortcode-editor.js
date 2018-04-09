@@ -1025,7 +1025,7 @@ function fv_wp_flowplayer_edit() {
     shortcode = shortcode.join('');
 
     // check for new, DB-based player shortcode
-    var result = /\[fvplayer id="(\d)"\]/g.exec(shortcode);
+    var result = /\[fvplayer id="(\d+)"\]/g.exec(shortcode);
     if (result !== null) {
       // DB-based player, create a "wait" overlay
       var overlayDiv = fv_wp_flowplayer_big_loader_show();
