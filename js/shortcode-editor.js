@@ -524,7 +524,10 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
         for (var i in sSubtitles) {
           // add as many new subtitles as we have
           if (firstDone) {
-            fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex);
+            // this has to be done async, otherwise the DOM wouldn't be completely ready
+            setTimeout(function() {
+              fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex);
+            }, 1500);
           } else {
             jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles).val(sSubtitles[i].lang);
             jQuery('[name=fv_wp_flowplayer_field_subtitles]',new_item_subtitles).val(sSubtitles[i].file);
@@ -605,7 +608,7 @@ function fv_flowplayer_playlist_show() {
  * Adds another language to subtitle menu
  */
 function fv_flowplayer_language_add( sInput, sLang ,iTabIndex ) {
-  if(!iTabIndex){
+  if(!iTabIndex && iTabIndex !== 0){
     var current = jQuery('.fv-player-tab-subtitles table:visible');
     iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
   }
