@@ -378,7 +378,9 @@ function flowplayer_prepare_scripts() {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
       $aConf['hlsjs'] = array('startLevel' => -1);
     }
-    
+
+    $aConf['enable_s3_browser'] = $fv_fp->_get_option('enable_s3_browser');
+
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );

@@ -333,11 +333,11 @@ jQuery(document).ready(function($){
       };
 
       fv_flowplayer_uploader.on('open', function() {
-        if (typeof(fv_player_pro) !== 'undefined') {
-          if (fv_player_pro.enable_s3_browser > 0) {
-            fv_flowplayer_media_browser_add_tab('fv_flowplayer_s3_browser_media_tab', 'Amazon S3', fv_flowplayer_s3_browser_load_assets);
-          }
+        if (fv_flowplayer_conf.enable_s3_browser > 0) {
+          fv_flowplayer_media_browser_add_tab('fv_flowplayer_s3_browser_media_tab', 'Amazon S3', fv_flowplayer_s3_browser_load_assets);
+        }
 
+        if (typeof(fv_player_pro) !== 'undefined') {
           fv_flowplayer_media_browser_add_tab('fv_flowplayer_vimeo_browser_media_tab', 'Vimeo', fv_flowplayer_vimeo_browser_load_assets);
         }
         jQuery('.media-router .media-menu-item').eq(0).click();
