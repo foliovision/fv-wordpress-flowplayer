@@ -1018,7 +1018,7 @@ class flowplayer_frontend extends flowplayer
     if ($fv_fp->_get_option('new_shortcode') && $this->current_video()) {
       if ($this->current_video()->getMetaData()) {
         foreach ($this->current_video()->getMetaData() as $meta_object) {
-          if ($meta_object->getIsValid() && strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
+          if (strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
             // subtitles meta data found, create URL from it
             // note: we ignore $index here, as it's used to determine an index
             //       for a single subtitle file from all subtitles set for the whole

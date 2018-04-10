@@ -337,18 +337,30 @@ CREATE TABLE `".$this->db_table_name."` (
       if ( $this->meta_data->getAllLoadedMeta() ) {
         return $this->meta_data->getAllLoadedMeta();
       } else {
-        return array( $this->meta_data );
+        if ($this->meta_data && $this->meta_data->getIsValid()) {
+          return array( $this->meta_data );
+        } else {
+          return array();
+        }
       }
     } else if ($this->meta_data === null) {
       // meta data not loaded yet - load them now
       $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($this->id)));
 
       // set meta data to -1, so we know we didn't get any meta data for this video
-      if (!$this->meta_data->getIsValid()) {
+      if (!$this->meta_data->getIsValid() && !$this->meta_data->getAllLoadedMeta()) {
         $this->meta_data = -1;
         return array();
       } else {
-        return ($this->meta_data->getAllLoadedMeta() ? $this->meta_data->getAllLoadedMeta() : array($this->meta_data));
+        if ($this->meta_data->getAllLoadedMeta()) {
+          return $this->meta_data->getAllLoadedMeta();
+        } else {
+          if ($this->meta_data && $this->meta_data->getIsValid()) {
+            return array( $this->meta_data );
+          } else {
+            return array();
+          }
+        }
       }
     } else {
       return array();

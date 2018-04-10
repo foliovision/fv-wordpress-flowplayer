@@ -490,9 +490,7 @@ class FV_Player_Db_Shortcode {
         // load all meta data
         $meta = $video->getMetaData();
         foreach ($meta as $meta_object) {
-          if ($meta_object->getIsValid()) {
-            $vid['meta'][] = $meta_object->getAllDataValues();
-          }
+          $vid['meta'][] = $meta_object->getAllDataValues();
         }
 
         $out['videos'][] = $vid;
