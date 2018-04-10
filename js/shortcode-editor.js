@@ -1726,7 +1726,7 @@ jQuery( function($) {
 
 
 
-fv_flowplayer_s3_browse = function(data) {
+fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
   var filemanager = jQuery('.filemanager'),
     breadcrumbs = jQuery('.breadcrumbs'),
@@ -1734,13 +1734,13 @@ fv_flowplayer_s3_browse = function(data) {
 
   // Start by fetching the file data from scan.php with an AJAX request
 
-  //jQuery.get('scan.php', function(data) {
+  // jQuery.get('scan.php', function(data) {
 
   var response = [data],
     currentPath = '',
     breadcrumbsUrls = [];
 
-  console.log(response);
+  // console.log(response);
 
   var folders = [],
     files = [];
@@ -1776,6 +1776,12 @@ fv_flowplayer_s3_browse = function(data) {
 
   filemanager.find('input').on('input', function(e){
 
+    // do nothing if we should use AJAX to perform the search
+    // ... in such case, we'll use the Enter key to search
+    if (typeof(ajax_search_callback) !== 'undefined') {
+      return;
+    }
+
     folders = [];
     files = [];
 
@@ -1807,6 +1813,11 @@ fv_flowplayer_s3_browse = function(data) {
 
       search.trigger('focusout');
 
+    } else if (e.keyCode == 13) {
+      // Clicking 'Enter' button triggers AJAX search callback
+      if (typeof(ajax_search_callback) !== 'undefined') {
+        ajax_search_callback();
+      }
     }
 
   }).focusout(function(e){
