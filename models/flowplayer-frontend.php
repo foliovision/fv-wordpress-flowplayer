@@ -65,7 +65,7 @@ class flowplayer_frontend extends flowplayer
 
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
 
-    if( !$media ) $media = $this->aCurArgs['src'];  // todo: make sure first video is parsed into src, src1, src2 etc.
+    if( !$media ) $media = $this->aCurArgs['src'];
     $this->hash = md5($media.$this->_salt()); //  unique player id
 
     $this->sHTMLAfter = false;

@@ -2141,7 +2141,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
           }
 
           // note: we need to put "src" into the code or it won't get parsed at all
-          echo do_shortcode('[fvplayer src="none" id="POST"]');
+          //       and at the same time, it displays the correct SRC in the preview
+          echo do_shortcode('[fvplayer src="' . (!empty($_POST['videos'][0]['fv_wp_flowplayer_field_src']) ? $_POST['videos'][0]['fv_wp_flowplayer_field_src'] : 'none') . '" id="POST"]');
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php

@@ -181,7 +181,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         }
         if( strlen($aArgs['caption']) ) {
           $aArgs['caption'] = apply_filters( 'fv_player_caption', $aArgs['caption'], false );
-        }        
+        }
 
         $new_player = $fv_fp->build_min_player( $aArgs['src'],$aArgs );
         $sHTML .= $new_player['html'];
@@ -192,7 +192,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         
   } else if( $arguments['src'] != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
-    $new_player = $fv_fp->build_min_player($arguments['src'],$arguments);		
+    $new_player = $fv_fp->build_min_player($arguments['src'],$arguments);
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
