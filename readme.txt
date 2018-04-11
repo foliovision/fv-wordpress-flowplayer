@@ -18,8 +18,8 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 
 * Remembering video position both both guest users and members
 * API for custom video fields
-* **NEW** easy AB looped playback for your visitors (great for teaching sites)
-* **NEW** improved and more powerful playlists (more playlist features coming soon).
+* easy AB looped playback for your visitors (great for teaching sites)
+* improved and more powerful playlists (more playlist features coming soon).
 * Automated checking of video encoding for logged in admins
 * FV Player is a completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
@@ -30,6 +30,7 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
+* Supports video intelligence video ads
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](https://foliovision.com/player/download).
 
@@ -356,8 +357,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.5.2 - 2018/04/?? =
+= 6.5.2 - 2018/04/11 =
 
+* New feature - video intelligence ads
 * Bugfix - Video position saving - not working when playing HLS in Firefox
 
 = 6.5.1 - 2018/04/04 =
