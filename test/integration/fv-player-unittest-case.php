@@ -14,6 +14,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   public function fix_newlines( $html ) {
     $html = preg_replace( '/(id|rel)="wpfp_[^"]+"/', '$1="some-test-hash"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
+    $html = preg_replace( '~<input type="hidden" id="nonce_([^"]*?)" name="nonce_([^"]*?)" value="([^"]*?)" />~', '<input type="hidden" id="nonce_$1" name="nonce_$2" value="XYZ" />', $html);    
     $html = preg_replace( "~nonce: '([^']*?)'~", "nonce: 'XYZ'", $html);
     
     // testProfileScreen
