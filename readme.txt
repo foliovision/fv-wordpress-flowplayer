@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9.4
+Tested up to: 4.9.5
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.5.3 - 2018/04/?? =
+
+* Optimization - fix is your site is using deferred loading of JavaScript
 
 = 6.5.2 - 2018/04/11 =
 
