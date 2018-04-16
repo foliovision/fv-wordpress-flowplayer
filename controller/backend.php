@@ -637,146 +637,28 @@ function fv_wp_flowplayer_admin_notice() {
  *  Check the extension info from plugin license transient and activate the plugin
  */
 function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' ) {
-  global $hook_suffix;
-
-  $aInstalled = ( get_option('fv_flowplayer_extension_install' ) ) ? get_option('fv_flowplayer_extension_install' ) : array();
+  
+  $aInstalled = get_option( 'fv_flowplayer_extension_install', array() );
   $aInstalled = array_merge( $aInstalled, array( $plugin_package => false ) );
   update_option('fv_flowplayer_extension_install', $aInstalled );
   
   $aPluginInfo = get_transient( 'fv_flowplayer_license' );
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug; 
-  $download_url = $aPluginInfo->{$plugin_package}->url;
+  $download_url = $aPluginInfo->{$plugin_package}->url;  
   
-  $sPluginBasenameReal = fv_flowplayer_get_extension_path( str_replace( '_', '-', $plugin_package ) );
-  if( $sPluginBasenameReal ) {
-    return; //  already installed
-  }
-  
-  $plugin_basename = $sPluginBasenameReal ? $sPluginBasenameReal : $plugin_basename;
-
-  $url = wp_nonce_url( site_url().'/wp-admin/options-general.php?page=fvplayer', 'fv_player_pro_install', 'nonce_fv_player_pro_install' );
-
-  set_current_screen();
-  
-  ob_start();
-  if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
-    $form = ob_get_clean();
-    include( ABSPATH . 'wp-admin/admin-header.php' );
-    echo fv_wp_flowplayer_install_extension_talk($form);
-    include( ABSPATH . 'wp-admin/admin-footer.php' );
-    die;
-  }	
-
-  if ( ! WP_Filesystem( $creds ) ) {
-    ob_start();
-    request_filesystem_credentials( $url, $method, true, false, false );
-    $form = ob_get_clean();
-    include( ABSPATH . 'wp-admin/admin-header.php' );
-    echo fv_wp_flowplayer_install_extension_talk($form);
-    include( ABSPATH . 'wp-admin/admin-footer.php' );
-    die;
-  }
-
-  require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-     
-  $sTaskDone = __('FV Flowplayer Pro extension installed - check the new ', 'fv-wordpress-flowplayer') . '<a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer#fv_player_pro">' . __('Pro features', 'fv-wordpress-flowplayer') . '</a>!';
-  if( !$sPluginBasenameReal || is_wp_error(validate_plugin($plugin_basename)) ) {
-    echo '<div style="display: none;">';
-    $objInstaller = new Plugin_Upgrader();
-    $objInstaller->install( $download_url );
-    echo '</div>';
-    wp_cache_flush();
+  $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
+    "FV Player Pro",
+    $plugin_package,
+    $plugin_basename,
+    $download_url,
+    admin_url('options-general.php?page=fvplayer&reload='.rand()),
+    'fv_wordpress_flowplayer_deferred_notices',
+    'fv_player_pro_install'
+  );
     
-    if ( is_wp_error( $objInstaller->skin->result ) ) {
-      
-      update_option( 'fv_wordpress_flowplayer_deferred_notices', __('FV Flowplayer Pro extension install failed - ', 'fv-wordpress-flowplayer') . $objInstaller->skin->result->get_error_message() );
-      $bResult = false;
-    } else {    
-      if ( $objInstaller->plugin_info() ) {
-        $plugin_basename = $objInstaller->plugin_info();
-        
-      }
-      
-      $activate = activate_plugin( $plugin_basename );
-      if ( is_wp_error( $activate ) ) {
-        update_option( 'fv_wordpress_flowplayer_deferred_notices', __('FV Flowplayer Pro extension install failed - ', 'fv-wordpress-flowplayer') . $activate->get_error_message());
-        $bResult = false;
-      }
-    }
-    
-  } else if( $sPluginBasenameReal ) {
-    $sTaskDone = __('FV Flowplayer Pro extension upgraded successfully!', 'fv-wordpress-flowplayer');
-
-    echo '<div style="display: none;">';
-    $objInstaller = new Plugin_Upgrader();
-    $objInstaller->upgrade( $sPluginBasenameReal );    
-    echo '</div></div>';  //  explanation: extra closing tag just to be safe (in case of "The plugin is at the latest version.")
-    wp_cache_flush();
-    
-    if ( is_wp_error( $objInstaller->skin->result ) ) {
-      update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension upgrade failed - '.$objInstaller->skin->result->get_error_message() );
-      $bResult = false;
-    } else {    
-      if ( $objInstaller->plugin_info() ) {
-        $plugin_basename = $objInstaller->plugin_info();
-        
-      }
-      
-      $activate = activate_plugin( $plugin_basename );
-      if ( is_wp_error( $activate ) ) {
-        update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer Pro extension upgrade failed - '.$activate->get_error_message() );
-        $bResult = false;
-      }
-    }    
-    
-  }
-
-  if( !isset($bResult) ) {
-    if( !isset($_GET['page']) || strcmp($_GET['page'],'fvplayer') != 0 ) {
-      update_option( 'fv_wordpress_flowplayer_deferred_notices', $sTaskDone );
-    }
-    $bResult = true;
-  }
-  
   $aInstalled = ( get_option('fv_flowplayer_extension_install' ) ) ? get_option('fv_flowplayer_extension_install' ) : array();
-  $aInstalled = array_merge( $aInstalled, array( $plugin_package => $bResult ) );
-  update_option('fv_flowplayer_extension_install', $aInstalled );
-
-  return $bResult;
-}
-
-
-function fv_wp_flowplayer_install_extension_talk( $content ) {
-  $content = preg_replace( '~<h3.*?</h3>~', '<h3>FV Player Pro auto-installation</h3><p>As a FV Flowplayer license holder, we would like to automatically install our Pro extension for you.</p>', $content );
-  $content = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer'.'">Skip the Pro addon install</a>', $content );
-  return $content;
-}
-
-
-
-
-//search for plugin path with {slug}.php
-function fv_flowplayer_get_extension_path( $slug ){
-  $aPluginSlugs = get_transient('plugin_slugs');
-  $aPluginSlugs = is_array($aPluginSlugs) ? $aPluginSlugs : array( 'fv-player-pro/fv-player-pro.php');
-  $aActivePlugins = get_option('active_plugins');
-  $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
-  
-  if( !$aPluginSlugs )
-    return false;
-
-  foreach( $aActivePlugins as $item ){
-    if( stripos($item,$slug.'.php') !== false )
-      return $item;
-  }
-  
-  $sPluginFolder = plugin_dir_path( dirname( dirname(__FILE__) ) );
-  foreach( $aInactivePlugins as $item ){
-    if( stripos($item,$slug.'.php') !== false && file_exists($sPluginFolder.$item) )
-      return $item;
-  }  
-  
-  return false;
+  $aInstalled = array_merge( $aInstalled, array( $plugin_package => $result ) );
+  update_option('fv_flowplayer_extension_install', $aInstalled );    
 }
 
 

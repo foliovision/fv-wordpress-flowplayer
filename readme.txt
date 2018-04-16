@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9.4
+Tested up to: 4.9.5
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -18,8 +18,8 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 
 * Remembering video position both both guest users and members
 * API for custom video fields
-* **NEW** easy AB looped playback for your visitors (great for teaching sites)
-* **NEW** improved and more powerful playlists (more playlist features coming soon).
+* easy AB looped playback for your visitors (great for teaching sites)
+* improved and more powerful playlists (more playlist features coming soon).
 * Automated checking of video encoding for logged in admins
 * FV Player is a completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
@@ -30,6 +30,7 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
+* Supports video intelligence video ads
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](https://foliovision.com/player/download).
 
@@ -355,6 +356,26 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 6.5.3 - 2018/04/?? =
+
+* Optimization - fix is your site is using deferred loading of JavaScript
+* Bugfix - PHP 5.2 issue with json_encode
+* Bugfix - playlist items with ' symbols
+
+= 6.5.2 - 2018/04/11 =
+
+* New feature - video intelligence ads
+* Bugfix - Video position saving - not working when playing HLS in Firefox
+
+= 6.5.1 - 2018/04/04 =
+
+* Amazon S3 - Adding URL signature for subtitles
+* CSS - Responsive sizing of subtitles in fullscreen mode for large retina displays
+* Bugfix - Google Analytics - fixing label of "Unknown" to say "Unknown engine" which occurs when the video fails to play before engines are initialized
+* Bugfix - Lightbox - when used for playlist the first item was appearing twice in the lightbox view
+* Bugfix - Lightbox - when using the "text" lightbox with playlist it was rendering the playlist items as thumbnails
+* Bugfix - Lightbox - stopping the playlist styles from interfering - forcing horizontal playlist style for lightboxed playlist
 
 = 6.5 - 2018/03/14 =
 

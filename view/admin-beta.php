@@ -1633,7 +1633,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     <p id="fv_flowplayer_admin_buttons">
       <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>
         <?php
-        $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');      
+        $fv_player_pro_path = FV_Wordpress_Flowplayer_Plugin::get_plugin_path('fv-player-pro');
         if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
           <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="<?php _e('Enable the Pro extension', 'fv-wordpress-flowplayer'); ?>" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
         <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>

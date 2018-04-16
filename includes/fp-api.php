@@ -377,6 +377,148 @@ class FV_Wordpress_Flowplayer_Plugin
     return version_compare( $GLOBALS['wp_version'], $version. 'alpha', '>=' );
   }
   
+  
+  
+
+  //search for plugin path with {slug}.php
+  public static function get_plugin_path( $slug ){
+    $aPluginSlugs = get_transient('plugin_slugs');
+    $aPluginSlugs = is_array($aPluginSlugs) ? $aPluginSlugs : array( $slug.'/'.$slug.'.php');
+    $aActivePlugins = get_option('active_plugins');
+    $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
+    
+    if( !$aPluginSlugs )
+      return false;
+      
+    foreach( $aActivePlugins as $item ){
+      if( stripos($item,$slug.'.php') !== false && !is_wp_error(validate_plugin($item)) )
+        return $item;
+    }
+    
+    $sPluginFolder = plugin_dir_path( dirname( dirname(__FILE__) ) );
+    foreach( $aInactivePlugins as $item ){
+      if( stripos($item,$slug.'.php') !== false && file_exists($sPluginFolder.$item) )
+        return $item;
+    }  
+    
+    return false;
+  }
+  
+  
+  
+  
+  public static function install_form_text( $html, $name ) {
+    $tag = stripos($html,'</h3>') !== false ? 'h3' : 'h2';
+    $html = preg_replace( '~<'.$tag.'.*?</'.$tag.'>~', '<'.$tag.'>'.$name.' auto-installation</'.$tag.'>', $html );
+    $html = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.admin_url('options-general.php?page=fvplayer').'">Skip the '.$name.' install</a>', $html );    
+    return $html;
+  }
+  
+  
+  
+  
+  public static function install_plugin( $name, $plugin_package, $plugin_basename, $download_url, $settings_url, $option, $nonce ) {  //  'FV Player Pro', 'fv-player-pro', '/wp-admin/options-general.php?page=fvplayer', download URL (perhaps from the license), settings URL (use admin_url(...), should also contain some GET which will make it install the extension if present) and option where result message should be stored and a nonce which should be passed
+    global $hook_suffix;
+    
+    $plugin_path = self::get_plugin_path( str_replace( '_', '-', $plugin_package ) );
+    if( !defined('PHPUnitTestMode') && $plugin_path ) {
+      $result = activate_plugin( $plugin_path, $settings_url );
+      if ( is_wp_error( $result ) ) {
+        update_option( $option, $name.' extension activation error: '.$result->get_error_message() );
+        return false;
+      } else {
+        update_option( $option, $name.' extension activated' );
+        return true; //  already installed
+      }
+    }
+
+    $plugin_basename = $plugin_path ? $plugin_path : $plugin_basename;
+
+    $url = wp_nonce_url( $settings_url, $nonce, 'nonce_'.$nonce );
+
+    set_current_screen();
+
+    ob_start();
+    if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
+      $form = ob_get_clean();
+      include( ABSPATH . 'wp-admin/admin-header.php' );
+      echo self::install_form_text($form, $name);
+      include( ABSPATH . 'wp-admin/admin-footer.php' );
+      die;
+    }	
+
+    if ( ! WP_Filesystem( $creds ) ) {
+      ob_start();
+      request_filesystem_credentials( $url, $method, true, false, false );
+      $form = ob_get_clean();
+      include( ABSPATH . 'wp-admin/admin-header.php' );
+      echo self::install_form_text($form, $name);
+      include( ABSPATH . 'wp-admin/admin-footer.php' );
+      die;
+    }
+
+    require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+    
+    $result = true;
+       
+    if( !$plugin_path || is_wp_error(validate_plugin($plugin_basename)) ) {
+      $sTaskDone = $name.__(' extension installed successfully!', 'fv-wordpress-flowplayer');
+      
+      echo '<div style="display: none;">';
+      $objInstaller = new Plugin_Upgrader();
+      $objInstaller->install( $download_url );
+      echo '</div>';
+      wp_cache_flush();
+      
+      if ( is_wp_error( $objInstaller->skin->result ) ) {
+        update_option( $option, $name.__(' extension install failed - ', 'fv-wordpress-flowplayer') . $objInstaller->skin->result->get_error_message() );
+        $result = false;
+      } else {    
+        if ( $objInstaller->plugin_info() ) {
+          $plugin_basename = $objInstaller->plugin_info();
+        }
+        
+        $activate = activate_plugin( $plugin_basename );
+        if ( is_wp_error( $activate ) ) {
+          update_option( $option, $name.__(' extension install failed - ', 'fv-wordpress-flowplayer') . $activate->get_error_message());
+          $result = false;
+        }
+      }
+      
+    } else if( $plugin_path ) {
+      $sTaskDone = $name.__(' extension upgraded successfully!', 'fv-wordpress-flowplayer');
+
+      echo '<div style="display: none;">';
+      $objInstaller = new Plugin_Upgrader();
+      $objInstaller->upgrade( $plugin_path );    
+      echo '</div></div>';  //  explanation: extra closing tag just to be safe (in case of "The plugin is at the latest version.")
+      wp_cache_flush();
+      
+      if ( is_wp_error( $objInstaller->skin->result ) ) {
+        update_option( $option, $name.' extension upgrade failed - '.$objInstaller->skin->result->get_error_message() );
+        $result = false;
+      } else {    
+        if ( $objInstaller->plugin_info() ) {
+          $plugin_basename = $objInstaller->plugin_info();
+        }
+        
+        $activate = activate_plugin( $plugin_basename );
+        if ( is_wp_error( $activate ) ) {
+          update_option( $option, $name.' Pro extension upgrade failed - '.$activate->get_error_message() );
+          $result = false;
+        }
+      }    
+      
+    }
+
+    if( $result ) {
+      update_option( $option, $sTaskDone );
+      echo "<script>location.href='".$settings_url."';</script>";
+    }
+
+    return $result;
+  }
+  
     
 
 }
