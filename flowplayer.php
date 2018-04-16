@@ -66,9 +66,9 @@ include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
 $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {
-	include( dirname( __FILE__ ) . '/controller/backend.php' );
-  include( dirname( __FILE__ ) . '/controller/editor.php' );
-  include( dirname( __FILE__ ) . '/controller/settings.php' );
+	include_once( dirname( __FILE__ ) . '/controller/backend.php' );
+  include_once( dirname( __FILE__ ) . '/controller/editor.php' );
+  include_once( dirname( __FILE__ ) . '/controller/settings.php' );
   
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
