@@ -187,7 +187,7 @@ function fv_flowplayer_admin_default_options() {
           </style>
 					<table class="form-table2">
 
-            <?php $fv_fp->_get_checkbox(__('Amazon S3 Browser', 'fv-wordpress-flowplayer'), 's3_browser', __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)', 's3_browser', __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), 'autoplay', __('We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' , 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
 
