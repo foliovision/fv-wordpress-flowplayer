@@ -265,15 +265,6 @@
           </style>
 					<table class="form-table2">
 
-                  <tr>
-          <td><label for="s3_browser">Amazon S3 Browser (beta):</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="s3_browser" value="false"/>
-                  <input type="checkbox" name="s3_browser" id="s3_browser" value="true" />
-                  Show Amazon S3 Browser in the "Add Video" dialog.                                </p>
-          </td>
-      </tr>
                         <tr>
           <td><label for="autoplay">Autoplay:</label></td>
           <td>
@@ -1268,14 +1259,13 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 							<p>Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly.</p>
               <p>If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won't be accounted and the video source URLs in your cached pages won't expire. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
 						</td>
-					</tr>
+					</tr>      
 					<tr>
 						<td class="first"><label for="amazon_expire">Default Expiration Time [minutes] (<abbr title="Each video duration is stored on post save and then used as the expire time. If the duration is not available, this value is used.">?</abbr>):</label></td>
 						<td>
               <input type="text" size="40" name="amazon_expire" id="amazon_expire" value="5" />            
             </td>
-					</tr>
-          
+					</tr>       
                 <tr>
           <td><label for="amazon_expire_force">Force the default expiration time:</label></td>
           <td>
@@ -1285,7 +1275,15 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                                                   </p>
           </td>
       </tr>
-                
+      <tr>
+        <td><label for="s3_browser">Amazon S3 Browser (beta):</label></td>
+        <td>
+            <p class="description">
+                <input type="hidden" name="s3_browser" value="false"/>
+                <input type="checkbox" name="s3_browser" id="s3_browser" value="true" />
+                Show Amazon S3 Browser in the "Add Video" dialog.                                </p>
+        </td>
+      </tr>                       
           					
         <tr class="amazon-s3-first">
             <td><label for="amazon_bucket[]">Amazon Bucket (<abbr title="We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.">?</abbr>):</label></td>
