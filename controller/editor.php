@@ -256,12 +256,13 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 
 }
 
-
-function fv_wp_flowplayer_include_aws_sdk() {
-  if (!class_exists('Aws\S3\S3Client')) {
-    require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
+if ($fv_fp->_get_option('enable_s3_browser')) {
+  function fv_wp_flowplayer_include_aws_sdk() {
+    if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
+      require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
+    }
   }
+
+
+  new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
 }
-
-
-new FV_Player_Media_Browser_S3('wp_ajax_load_s3_assets');

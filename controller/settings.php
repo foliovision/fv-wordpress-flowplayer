@@ -309,19 +309,19 @@ function flowplayer_admin_footer_wp_js_restore() {
 function fv_player_get_aws_regions($translation_domain = 'fv-wordpress-flowplayer') {
 
   return array(
-    'us-east-1' => translate('US East (N. Virginia)', $translation_domain),
-    'us-east-2' => translate('US East (Ohio)', $translation_domain),
-    'us-west-1' => translate('US West (N. California)', $translation_domain),
-    'us-west-2' => translate('US West (Oregon)', $translation_domain),
-    'ca-central-1' => translate('Canada (Central)', $translation_domain),
-    'ap-south-1' => translate('Asia Pacific (Mumbai)', $translation_domain),
-    'ap-northeast-2' => translate('Asia Pacific (Seoul)', $translation_domain),
-    'ap-southeast-1' => translate('Asia Pacific (Singapore)', $translation_domain),
-    'ap-southeast-2' => translate('Asia Pacific (Sydney)', $translation_domain),
-    'ap-northeast-1' => translate('Asia Pacific (Tokyo)', $translation_domain),
-    'eu-central-1' => translate('EU (Frankfurt)', $translation_domain),
-    'eu-west-1' => translate('EU (Ireland)', $translation_domain),
-    'eu-west-2' => translate('EU (London)', $translation_domain),
-    'sa-east-1' => translate('South America (S&atilde;o Paulo)', $translation_domain),
+    'us-east-1' => __('US East (N. Virginia)', $translation_domain),
+    'us-east-2' => __('US East (Ohio)', $translation_domain),
+    'us-west-1' => __('US West (N. California)', $translation_domain),
+    'us-west-2' => __('US West (Oregon)', $translation_domain),
+    'ca-central-1' => __('Canada (Central)', $translation_domain),
+    'ap-south-1' => __('Asia Pacific (Mumbai)', $translation_domain),
+    'ap-northeast-2' => __('Asia Pacific (Seoul)', $translation_domain),
+    'ap-southeast-1' => __('Asia Pacific (Singapore)', $translation_domain),
+    'ap-southeast-2' => __('Asia Pacific (Sydney)', $translation_domain),
+    'ap-northeast-1' => __('Asia Pacific (Tokyo)', $translation_domain),
+    'eu-central-1' => __('EU (Frankfurt)', $translation_domain),
+    'eu-west-1' => __('EU (Ireland)', $translation_domain),
+    'eu-west-2' => __('EU (London)', $translation_domain),
+    'sa-east-1' => __('South America (S&atilde;o Paulo)', $translation_domain),
   );
 }
