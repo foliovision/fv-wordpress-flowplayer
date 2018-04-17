@@ -10,14 +10,31 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
 
   //  we need to make sure FV Player loads as if it's wp-admin
   public static function wpSetUpBeforeClass() {
+    global $fv_fp;
+
+    $_POST = array (
+      'key' => '$613126731011358',
+      'amazon_bucket' => array(FV_PLAYER_AMAZON_BUCKET),
+      's3_browser' => 1,
+      'fv-wp-flowplayer-submit' => 'Save All Changes'
+    );
+
     set_current_screen( 'edit-post' );
+    // without this included, fv_wp_flowplayer_delete_extensions_transients() would not be found
+    include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
     parent::wpSetUpBeforeClass();
+
+    $fv_fp->_set_conf();
+  }
+
+  public function setUp() {
+    parent::setUp();
   }
 
   public function testNoSaveForNotLoggedInUsers() {
     global $fv_fp;
 
-    $fv_fp->conf['amazon_bucket'] = array(FV_PLAYER_AMAZON_BUCKET);
+    //$fv_fp->conf['amazon_bucket'] = array(FV_PLAYER_AMAZON_BUCKET);
     $fv_fp->conf['amazon_region'] = array(FV_PLAYER_AMAZON_REGION);
     $fv_fp->conf['amazon_key'] = array(FV_PLAYER_AMAZON_ACCESS_KEY);
     $fv_fp->conf['amazon_secret'] = array(FV_PLAYER_AMAZON_SECRET);

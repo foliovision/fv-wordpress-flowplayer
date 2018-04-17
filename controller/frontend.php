@@ -379,7 +379,7 @@ function flowplayer_prepare_scripts() {
       $aConf['hlsjs'] = array('startLevel' => -1);
     }
 
-    $aConf['enable_s3_browser'] = $fv_fp->_get_option('enable_s3_browser');
+    //$aConf['enable_s3_browser'] = $fv_fp->_get_option('enable_s3_browser');
 
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
