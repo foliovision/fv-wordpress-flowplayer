@@ -90,7 +90,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $output = preg_replace($regex, $substitution, $output);
 
     // test the HTML
-    $this->assertEquals($expect, $output);
+    $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($output));
   }
 
   public function testSaveAndPlaylistHTMLForLoggedInUsers() {
@@ -153,7 +153,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $output = preg_replace($regex, $substitution, $output);
 
     // test the HTML
-    $this->assertEquals($expect, $output);
+    $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($output));
     
     $current_user;
   }
