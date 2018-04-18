@@ -548,7 +548,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['amazon_region'] ) || !is_array($conf['amazon_region']) ) $conf['amazon_region'] = array('');      
     if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';
     if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';
-    if( !isset( $conf['enable_s3_browser'] ) ) $conf['enable_s3_browser'] = 'false';
     if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';       
     if(  isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }  //  some legacy setting
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';

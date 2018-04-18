@@ -60,8 +60,7 @@ include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
-include_once(dirname( __FILE__ ) . '/models/media-browser.php');
-include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
+
 
 $fv_fp = new flowplayer_frontend();
 
@@ -69,6 +68,8 @@ if( is_admin() ) {
 	include_once( dirname( __FILE__ ) . '/controller/backend.php' );
   include_once( dirname( __FILE__ ) . '/controller/editor.php' );
   include_once( dirname( __FILE__ ) . '/controller/settings.php' );
+  include_once(dirname( __FILE__ ) . '/models/media-browser.php');
+  include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 

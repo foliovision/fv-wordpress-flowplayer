@@ -2,8 +2,27 @@
 
 class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
+  function __construct( $ajax_action_name ) {
+    add_action( 'edit_form_after_editor', array($this, 'init'), 1 );
+    parent::__construct( $ajax_action_name );
+  }
+
+  function init() {
+    global $fv_fp, $fv_wp_flowplayer_ver;
+    if ($fv_fp->_get_option('s3_browser')) {
+      $sPath = $fv_fp->is_beta() ? 'flowplayer-beta' : 'flowplayer';
+      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.s3.browser.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+  }
+
+  function fv_wp_flowplayer_include_aws_sdk() {
+    if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
+      require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
+    }
+  }
+
   function get_formatted_assets_data() {
-    fv_wp_flowplayer_include_aws_sdk();
+    $this->fv_wp_flowplayer_include_aws_sdk();
     global $fv_fp, $s3Client;
 
     // load CloudFront setttings
@@ -255,3 +274,5 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   }
 
 }
+
+new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
