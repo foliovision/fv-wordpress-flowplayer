@@ -527,12 +527,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
     if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#bb0000';
     if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
-
-    //
-
-    $s3_buckets = (isset($conf['amazon_bucket']) ? $conf['amazon_bucket'] : null);
-    $enable_s3_browser = (isset($conf['s3_browser']) && $conf['s3_browser'] && !empty($s3_buckets) && count($s3_buckets) && $s3_buckets[0]);
-
+    
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
     if( !isset( $conf['width'] ) ) $conf['width'] = '640';
     if( !isset( $conf['height'] ) ) $conf['height'] = '360';
@@ -553,7 +548,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !isset( $conf['amazon_region'] ) || !is_array($conf['amazon_region']) ) $conf['amazon_region'] = array('');      
     if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';
     if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';
-    if( !isset( $conf['enable_s3_browser'] ) ) $conf['enable_s3_browser'] = ($enable_s3_browser ? 'true' : 'false');
+    if( !isset( $conf['enable_s3_browser'] ) ) $conf['enable_s3_browser'] = 'false';
     if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';       
     if(  isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }  //  some legacy setting
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
