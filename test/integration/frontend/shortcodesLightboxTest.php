@@ -8,30 +8,10 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_ShortcodeLightboxTestCase extends FV_Player_UnitTestCase {
   
-  public function setUp() {
-    parent::setUp();
-    
-    $shortcode_body = 'src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" playlist="https://cdn.site.com/video2.mp4,https://cdn.site.com/video2.jpg;https://cdn.site.com/video3.mp4,https://cdn.site.com/video3.jpg" caption="Video 1;Video 2; Video 3" share="no" embed="false"';
-    
-    $this->playlist_lightbox = $this->factory->post->create( array(      
-      'post_content' => '[fvplayer '.$shortcode_body.' lightbox="true"]'
-    ) );
-    
-    $this->playlist_lightbox_with_style = $this->factory->post->create( array(      
-      'post_content' => '[fvplayer '.$shortcode_body.' lightbox="true" liststyle="slider"]' //  should make no difference!
-    ) );
-    
-    $this->playlist_lightbox_text = $this->factory->post->create( array(      
-      'post_content' => '[fvplayer '.$shortcode_body.' lightbox="true;text"]'
-    ) );
-
-  }
+  var $shortcode_body = 'src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" playlist="https://cdn.site.com/video2.mp4,https://cdn.site.com/video2.jpg;https://cdn.site.com/video3.mp4,https://cdn.site.com/video3.jpg" caption="Video 1;Video 2; Video 3" share="no" embed="false"';
   
   public function testPlaylistLightboxShortcode() {
-    global $post;
-    
-    $post = get_post( $this->playlist_lightbox );
-    $output = apply_filters( 'the_content', $post->post_content );
+    $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true"]' );
     
     $sample = <<< HTML
 <div id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter'  href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class='fp-ui'></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
@@ -56,13 +36,11 @@ HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
     
     
-    $post = get_post( $this->playlist_lightbox_with_style );
-    $output = apply_filters( 'the_content', $post->post_content );
+    $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true" liststyle="slider"]' );
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );  
     
     
-    $post = get_post( $this->playlist_lightbox_text );
-    $output = apply_filters( 'the_content', $post->post_content );
+    $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true;text"]' );
     $sample = <<< HTML
 <ul><li><a id='fv_flowplayer_b721d6e309a0b856f27cc5ffe3f64c19_lightbox_starter' href="#" data-fv-lightbox='#wpfp_b721d6e309a0b856f27cc5ffe3f64c19'>Video 1</a></li><li><a id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_f7e1bf7ee8d12a2bf3bc4f148cdd718c'>Video 2</a></li><li><a id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_d0ecb746d43cfeca15296bd46c0dee3c'> Video 3</a></li></div></ul>
 HTML;
