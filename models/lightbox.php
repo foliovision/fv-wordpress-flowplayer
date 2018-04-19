@@ -138,12 +138,18 @@ class FV_Player_lightbox {
       $iPlayerWidth = ( isset($aArgs[1]->aCurArgs['width']) && intval($aArgs[1]->aCurArgs['width']) > 0 ) ? intval($aArgs[1]->aCurArgs['width']) : $iConfWidth;
       $iPlayerHeight = ( isset($aArgs[1]->aCurArgs['height']) && intval($aArgs[1]->aCurArgs['height']) > 0 ) ? intval($aArgs[1]->aCurArgs['height']) : $iConfHeight;
       
-      $aLightbox = $this->parse_args($aArgs[1]->aCurArgs);
-
+      $aLightbox = preg_split('~[;]~', $aArgs[1]->aCurArgs['lightbox']);
+      
       if ( $this->is_text_lightbox($aArgs[1]->aCurArgs) ) {
+        $sTitle = '';
+        if (!empty($aLightbox[2])) {
+          $sTitle = " title='" . esc_attr($aLightbox[2]) . "'";
+        } else if( !empty($aArgs[1]->aCurArgs['caption']) ) {
+          $sTitle = " title='" . esc_attr($aArgs[1]->aCurArgs['caption']) . "'";
+        }
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
-        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'".$sTitle." href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );

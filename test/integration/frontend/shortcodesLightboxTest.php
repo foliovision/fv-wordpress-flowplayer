@@ -9,6 +9,74 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
 final class FV_Player_ShortcodeLightboxTestCase extends FV_Player_UnitTestCase {
   
   var $shortcode_body = 'src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" playlist="https://cdn.site.com/video2.mp4,https://cdn.site.com/video2.jpg;https://cdn.site.com/video3.mp4,https://cdn.site.com/video3.jpg" caption="Video 1;Video 2; Video 3" share="no" embed="false"';
+
+  public function testLightboxShortcode() {
+    
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true" share="no" embed="false"]' );
+    
+    $sample = <<< HTML
+<div id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter'  href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class='fp-ui'></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
+<div class='fv_player_lightbox_hidden' style='display: none'>
+  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+   <div class="fp-ratio" style="padding-top: 56.25%"></div>
+   </div>
+</div>
+HTML;
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
+    
+    
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true;Video 1" share="no" embed="false"]' );
+    
+    $sample = <<< HTML
+<div id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter' title='Video 1' href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class='fp-ui'></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
+<div class='fv_player_lightbox_hidden' style='display: none'>
+  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+   <div class="fp-ratio" style="padding-top: 56.25%"></div>
+   </div>
+</div>
+HTML;
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
+    
+    
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true;320;240;Video 1" share="no" embed="false"]' );
+    $sample = <<< HTML
+<div id='fv_flowplayer_f1f51bb87ed9702bd91ac63990cee57b_lightbox_starter' title='Video 1' href='#wpfp_f1f51bb87ed9702bd91ac63990cee57b' class='flowplayer lightbox-starter is-splash' style="max-width: 320px; max-height: 240px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.75"><div class='fp-ui'></div><div class="fp-ratio" style="padding-top: 75%"></div></div>
+<div class='fv_player_lightbox_hidden' style='display: none'>
+  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+   <div class="fp-ratio" style="padding-top: 56.25%"></div>
+   </div>
+</div>
+HTML;
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );  
+    
+    
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" caption="Video 1" lightbox="true;text" share="no" embed="false"]' );
+    $sample = <<< HTML
+<a id='fv_flowplayer_2f9724515033ace3d660707b426f527c_lightbox_starter' title='Video 1' href="#" data-fv-lightbox='#wpfp_2f9724515033ace3d660707b426f527c'>Video 1</a>
+HTML;
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
+    
+    
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" caption="Video 1" lightbox="true;text;Video 1 caption" share="no" embed="false"]' );
+    $sample = <<< HTML
+<a id='fv_flowplayer_0106307cf5bc428ff2dc1589d71509ef_lightbox_starter' title='Video 1 caption' href="#" data-fv-lightbox='#wpfp_0106307cf5bc428ff2dc1589d71509ef'>Video 1</a>
+HTML;
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
+    
+    
+    ob_start();
+    do_action('wp_footer');
+    $footer = ob_get_clean();
+    
+    global $FV_Player_lightbox;
+    ob_start();
+    $FV_Player_lightbox->disp__lightboxed_players();    
+    $find = ob_get_clean();
+    
+    $this->assertTrue( stripos($footer,$find) !== false );  //  are the lightboxed players in the footer?
+    $this->assertTrue( $FV_Player_lightbox->bLoad );  //  is the flag to load lightbox JS set?
+  }
+
   
   public function testPlaylistLightboxShortcode() {
     $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true"]' );
