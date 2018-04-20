@@ -112,6 +112,10 @@ class FV_Player_lightbox {
       echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
     }
   }
+  
+  function get_title_attr( $args ) {    
+    return !empty($args['caption']) ? " title='" . esc_attr($args['caption']) . "'" : '';
+  }
 
   function is_text_lightbox($aArgs) {
     $aLightbox = preg_split('~[;]~', $aArgs['lightbox']);
@@ -141,12 +145,7 @@ class FV_Player_lightbox {
       $aLightbox = preg_split('~[;]~', $aArgs[1]->aCurArgs['lightbox']);
       
       if ( $this->is_text_lightbox($aArgs[1]->aCurArgs) ) {
-        $sTitle = '';
-        if (!empty($aLightbox[2])) {
-          $sTitle = " title='" . esc_attr($aLightbox[2]) . "'";
-        } else if( !empty($aArgs[1]->aCurArgs['caption']) ) {
-          $sTitle = " title='" . esc_attr($aArgs[1]->aCurArgs['caption']) . "'";
-        }
+        $sTitle = empty($aArgs[1]->aCurArgs['playlist']) ? $sTitle = $this->get_title_attr($aArgs[1]->aCurArgs) : '';
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
         $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'".$sTitle." href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
@@ -223,7 +222,8 @@ class FV_Player_lightbox {
         }
         
         if( $i > 1 ) {
-          $output['html'] .= "<li><a id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
+          $sTitle = $this->get_title_attr($fv_fp->aCurArgs);
+          $output['html'] .= "<li><a id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
         }
         
       } else {
