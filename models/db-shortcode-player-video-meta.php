@@ -95,7 +95,7 @@ CREATE TABLE `".$this->db_table_name."` (
    * @param $id The DB ID to which we'll link this meta data record.
    */
   public function link2db($id) {
-    $this->id = $id;
+    $this->id = (int) $id;
   }
 
   /**
@@ -145,9 +145,6 @@ CREATE TABLE `".$this->db_table_name."` (
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
             $this->$key = $value;
-          } else {
-            // ID cannot be set, as it's automatically assigned to all new video meta data item
-            trigger_error('ID of a newly created DB video meta data item was provided but will be generated automatically.');
           }
         } else {
           // generate warning
@@ -265,6 +262,30 @@ CREATE TABLE `".$this->db_table_name."` (
 
     if (!$wpdb->last_error) {
       return $this->id;
+    } else {
+      /*var_export($wpdb->last_error);
+      var_export($wpdb->last_query);*/
+      return false;
+    }
+  }
+
+  /**
+   * Removes meta data instance from the database.
+   *
+   * @return bool Returns true if the delete was successful, false otherwise.
+   */
+  public function delete() {
+    // not a DB meta? no delete
+    if (!$this->is_valid) {
+      return false;
+    }
+
+    global $wpdb;
+
+    $wpdb->delete($this->db_table_name, array('id' => $this->id));
+
+    if (!$wpdb->last_error) {
+      return true;
     } else {
       /*var_export($wpdb->last_error);
       var_export($wpdb->last_query);*/

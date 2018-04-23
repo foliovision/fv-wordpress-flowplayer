@@ -475,6 +475,17 @@ CREATE TABLE `".$this->db_table_name."` (
   }
 
   /**
+   * Makes this player linked to a record in database.
+   * This is used when we want to update a player in the DB
+   * instead of inserting a new record for it.
+   *
+   * @param $id        The DB ID to which we'll link this player.
+   */
+  public function link2db($id) {
+    $this->id = (int) $id;
+  }
+
+  /**
    * Returns all global options data for this player.
    *
    * @return array Returns all global options data for this player.

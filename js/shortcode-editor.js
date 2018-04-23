@@ -148,7 +148,7 @@ jQuery(document).ready(function($){
     var
       $parent = $(e.target).parents('[data-index]'),
       index = $parent.attr('data-index'),
-      id = $parent.attr('data-id_video'),
+      id = $('.fv-player-tab-video-files table[data-index=' + index + ']').attr('data-id_video'),
       $deleted_videos_element = $('#deleted_videos');
 
     if (id && $deleted_videos_element.val()) {
@@ -495,16 +495,15 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
   var newIndex = Math.max(Math.max.apply(Math, ids) + 1,0);
   var current = jQuery('.fv-player-tab-playlist table tbody tr').last();
   current.attr('data-index', newIndex);
-
-  if (typeof(sId) !== 'undefined') {
-    current.attr('data-id_video', sId);
-  }
-
   current.find('.fvp_item_video-filename').html( 'Video ' + (newIndex + 1) );
   
   jQuery('.fv-player-tab-video-files').append(fv_player_playlist_video_template);
   var new_item = jQuery('.fv-player-tab-video-files table:last');
   new_item.hide().attr('data-index', newIndex);
+
+  if (typeof(sId) !== 'undefined') {
+    new_item.attr('data-id_video', sId);
+  }
 
   jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template);
   var new_item_subtitles = jQuery('.fv-player-tab-subtitles table:last');
@@ -1095,16 +1094,26 @@ function fv_wp_flowplayer_edit() {
         var vids = response['videos'];
 
         if (response) {
-          var field2value = {};
+          var
+            field2value = {},
+            $id_player_element = jQuery('#id_player'),
+            $deleted_videos_element = jQuery('#deleted_videos'),
+            $deleted_subtitles_element = jQuery('#deleted_subtitles');
 
-          // add player ID as a hidden field
-          jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="id_player" id="id_player" value="' + result[1] + '" />');
+          if (!$id_player_element.length) {
+            // add player ID as a hidden field
+            jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="id_player" id="id_player" value="' + result[1] + '" />');
 
-          // add removed video IDs as a hidden field
-          jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_videos" id="deleted_videos" />');
+            // add removed video IDs as a hidden field
+            jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_videos" id="deleted_videos" />');
 
-          // add removed subtitle IDs as a hidden field
-          jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_subtitles" id="deleted_subtitles" />');
+            // add removed subtitle IDs as a hidden field
+            jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_subtitles" id="deleted_subtitles" />');
+          } else {
+            $id_player_element.val(result[1]);
+            $deleted_videos_element.val('');
+            $deleted_subtitles_element.val('');
+          }
 
           for (var key in response) {
             // put the field value where it belongs
@@ -1330,7 +1339,9 @@ function fv_wp_flowplayer_build_ajax_data() {
           // videos tab
           if (is_videos_tab) {
             if (!data['videos'][table_index]) {
-              data['videos'][table_index] = {};
+              data['videos'][table_index] = {
+                id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
+              };
             }
 
             // check dropdown for its value based on values in it
@@ -1357,7 +1368,8 @@ function fv_wp_flowplayer_build_ajax_data() {
             if (this.nodeName == 'INPUT') {
               data['subtitles'][table_index].push({
                 code : $this.siblings('select:first').val(),
-                file : this.value
+                file : this.value,
+                id: $this.parent().data('id_subtitles')
               });
             }
           }
@@ -1402,10 +1414,12 @@ function fv_wp_flowplayer_build_ajax_data() {
     data['videos'] = data_videos_new;
   }
 
-  // add player ID for a DB update
+  // add player ID and deleted elements for a DB update
   var $updateElement = jQuery('#id_player');
   if ($updateElement.length) {
     data['update'] = $updateElement.val();
+    data['deleted_videos'] = jQuery('#deleted_videos').val();
+    data['deleted_subtitles'] = jQuery('#deleted_subtitles').val();
   }
 
   return data;

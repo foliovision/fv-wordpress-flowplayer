@@ -366,11 +366,41 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
-    $player_options   = array();
-    $video_ids        = array();
-    $post_data        = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
+    $player_options    = array();
+    $video_ids         = array();
+    $post_data         = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
 
     if ($post_data) {
+      // parse and resolve deleted videos
+      if (!empty($post_data['deleted_videos']) && count($post_data['deleted_videos'])) {
+        $deleted_videos = explode(',', $post_data['deleted_videos']);
+        foreach ($deleted_videos as $d_id) {
+          // we don't need to load this video data, just link it to a database
+          // and then delete it
+          // ... although we'll need at least 1 item in the data array to consider this
+          //     video data valid for object creation
+          $d_vid = new FV_Player_Db_Shortcode_Player_Video(null, array('1' => '1'));
+          $d_vid->link2db($d_id);
+          $d_vid->delete();
+        }
+      }
+
+      // parse and resolve deleted meta data
+      foreach (array('deleted_subtitles') as $meta_post_key) {
+        if (!empty($post_data[$meta_post_key]) && count($post_data[$meta_post_key])) {
+          $deleted_meta = explode(',', $post_data[$meta_post_key]);
+          foreach ($deleted_meta as $d_id) {
+            // we don't need to load this meta data, just link it to a database
+            // and then delete it
+            // ... although we'll need at least 1 item in the data array to consider this
+            //     meta data valid for object creation
+            $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('1' => '1'));
+            $d_meta->link2db($d_id);
+            $d_meta->delete();
+          }
+        }
+      }
+
       foreach ($post_data as $field_name => $field_value) {
         // global player or local video setting field
         if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
@@ -386,7 +416,11 @@ class FV_Player_Db_Shortcode {
             // strip video data of the prefix
             $new_video_data = array();
             foreach ($video_data as $key => $value) {
-              $new_video_data[str_replace('fv_wp_flowplayer_field_', '', $key)] = $value;
+              if ($key === 'id') {
+                $id = $value;
+              } else {
+                $new_video_data[ str_replace( 'fv_wp_flowplayer_field_', '', $key ) ] = $value;
+              }
             }
             $video_data = $new_video_data;
             unset($new_video_data);
@@ -401,16 +435,29 @@ class FV_Player_Db_Shortcode {
               // prepare all options for this video
               foreach ( $post_data['subtitles'][$video_index] as $subtitle_values ) {
                 if ($subtitle_values['file']) {
-                  $video_meta[] = array(
+                  $m = array(
                     'meta_key' => 'subtitles' . ($subtitle_values['code'] ? '_'.$subtitle_values['code'] : ''),
                     'meta_value' => $subtitle_values['file']
                   );
+
+                  // add ID, if present
+                  if (!empty($subtitle_values['id'])) {
+                    $m['id'] = $subtitle_values['id'];
+                  }
+
+                  $video_meta[] = $m;
                 }
               }
             }
 
             // save the video
             $video = new FV_Player_Db_Shortcode_Player_Video(null, $video_data);
+
+            // if we have video ID, link this video to DB
+            if (isset($id)) {
+              $video->link2db($id);
+              unset($id);
+            }
 
             // save only if we're not requesting new instances for preview purposes
             if (!$data) {
@@ -426,7 +473,7 @@ class FV_Player_Db_Shortcode {
               $video_ids[] = $video;
             }
           }
-        } else {
+        } else if (!in_array($field_name, array('update', 'deleted_videos', 'deleted_subtitles'))) {
           // TODO:
           // here should be all other fields from plugins etc. (i.e. fv_player_field_ppv_price for PPV...)
         }
@@ -442,6 +489,11 @@ class FV_Player_Db_Shortcode {
 
       // save only if we're not requesting new instances for preview purposes
       if (!$data) {
+        // link to DB, if we're doing an update
+        if (!empty($post_data['update'])) {
+          $player->link2db($post_data['update']);
+        }
+
         $id = $player->save();
 
         if ($id) {

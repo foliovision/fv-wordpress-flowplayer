@@ -267,7 +267,7 @@ CREATE TABLE `".$this->db_table_name."` (
    * @throws Exception When the underlying Meta object throws.
    */
   public function link2db($id, $load_meta = false) {
-    $this->id = $id;
+    $this->id = (int) $id;
 
     if ($load_meta) {
       $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($id)));
@@ -289,6 +289,12 @@ CREATE TABLE `".$this->db_table_name."` (
       foreach ($meta_data as $meta_record) {
         // create new record in DB
         $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record);
+
+        // link to DB, if the meta record has an ID
+        if (!empty($meta_record['id'])) {
+          $meta_object->link2db($meta_record['id']);
+        }
+
         $this->meta_data = $meta_object;
       }
     }
@@ -415,12 +421,42 @@ CREATE TABLE `".$this->db_table_name."` (
 
           // create new record in DB
           $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record);
+
+          // add meta data ID
+          if ($is_update) {
+            $meta_object->link2db($meta_record['id']);
+          }
+
           $meta_object->save();
           $this->meta_data = $meta_object;
         }
       }
 
       return $this->id;
+    } else {
+      /*var_export($wpdb->last_error);
+      var_export($wpdb->last_query);*/
+      return false;
+    }
+  }
+
+  /**
+   * Removes video instance from the database.
+   *
+   * @return bool Returns true if the delete was successful, false otherwise.
+   */
+  public function delete() {
+    // not a DB video? no delete
+    if (!$this->is_valid) {
+      return false;
+    }
+
+    global $wpdb;
+
+    $wpdb->delete($this->db_table_name, array('id' => $this->id));
+
+    if (!$wpdb->last_error) {
+      return true;
     } else {
       /*var_export($wpdb->last_error);
       var_export($wpdb->last_query);*/
