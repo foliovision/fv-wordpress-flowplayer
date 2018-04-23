@@ -1809,7 +1809,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
       // if there is no hash
 
-      else {
+      else if (typeof(data) !== 'undefined' && data && data.path) {
         currentPath = data.path;
         breadcrumbsUrls.push(data.path);
         render(searchByPath(data.path));
