@@ -476,7 +476,7 @@ function fv_wp_flowplayer_playlist_remove(link) {
  * Adds playlist item
  * keywords: add playlist item
  */
-function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText ) {
+function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, sId ) {
   jQuery('.fv-player-tab-playlist table tbody').append(fv_player_playlist_item_template);
   var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
     return parseInt(jQuery(this).attr('data-index'), 10);
@@ -484,6 +484,11 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
   var newIndex = Math.max(Math.max.apply(Math, ids) + 1,0);
   var current = jQuery('.fv-player-tab-playlist table tbody tr').last();
   current.attr('data-index', newIndex);
+
+  if (typeof(sId) !== 'undefined') {
+    current.attr('data-id_video', sId);
+  }
+
   current.find('.fvp_item_video-filename').html( 'Video ' + (newIndex + 1) );
   
   jQuery('.fv-player-tab-video-files').append(fv_player_playlist_video_template);
@@ -524,9 +529,12 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
         for (var i in sSubtitles) {
           // add as many new subtitles as we have
           if (firstDone) {
-            fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex);
+            fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex, sSubtitles[i].id);
           } else {
-            jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles).val(sSubtitles[i].lang);
+            var subElement = jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles);
+            subElement.val(sSubtitles[i].lang);
+            subElement.parent().attr('data-id_subtitles', sSubtitles[i].id);
+
             jQuery('[name=fv_wp_flowplayer_field_subtitles]',new_item_subtitles).val(sSubtitles[i].file);
             firstDone = true;
           }
@@ -605,14 +613,20 @@ function fv_flowplayer_playlist_show() {
 /*
  * Adds another language to subtitle menu
  */
-function fv_flowplayer_language_add( sInput, sLang ,iTabIndex ) {
+function fv_flowplayer_language_add( sInput, sLang, iTabIndex, sId ) {
   if(!iTabIndex){
     var current = jQuery('.fv-player-tab-subtitles table:visible');
     iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
   }
   var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
   oTab.append( fv_player_playlist_subtitles_template ); 
-  jQuery('.fv-fp-subtitle:last' , oTab).hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
+
+  var subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+  subElement.hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
+
+  if (typeof(sId) !== 'undefined') {
+    subElement.attr('data-id_subtitles', sId);
+  }
   
   if( sInput ) {
     jQuery('.fv-fp-subtitle:last input.fv_wp_flowplayer_field_subtitles' , oTab ).val(sInput);
@@ -1043,6 +1057,9 @@ function fv_wp_flowplayer_edit() {
         if (response) {
           var field2value = {};
 
+          // add player ID as a hidden field
+          jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="id_player" id="id_player" value="' + result[1] + '" />');
+
           for (var key in response) {
             // put the field value where it belongs
             if (key !== 'videos') {
@@ -1095,13 +1112,14 @@ function fv_wp_flowplayer_edit() {
                 if (vids[x].meta[m].meta_key.indexOf('subtitles') > -1) {
                   subs.push({
                     lang: vids[x].meta[m].meta_key.replace('subtitles_', ''),
-                    file: vids[x].meta[m].meta_value
+                    file: vids[x].meta[m].meta_value,
+                    id: vids[x].meta[m].id
                   });
                 }
               }
             }
 
-            fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text);
+            fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text, vids[x].id);
           }
 
           // show playlist instead of the "add new video" form
