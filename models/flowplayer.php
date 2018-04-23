@@ -1998,7 +1998,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( version_compare(phpversion(), '5.3.0', '>') ) {        
       return json_encode( $input, JSON_HEX_APOS );
     } else {
-      return str_replace( "'", '&quot;', json_encode( $input ) );
+      return str_replace( "'", '\u0027', json_encode( $input ) );
     }
   }
   
