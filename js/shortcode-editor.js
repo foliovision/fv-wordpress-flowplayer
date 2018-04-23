@@ -220,27 +220,8 @@ jQuery(document).ready(function($){
           multiple: false
       });
 
-      var fv_flowplayer_media_browser_add_tab = function(tabId, tabText, tabOnClickCallback) {
-        if (!jQuery('#' + tabId).length) {
-          // add Vimeo browser tab
-          var
-            $router = jQuery('.media-router:visible'),
-            $item = $router.find('.media-menu-item:last').clone();
-
-          $item
-            .attr('id', tabId)
-            .text(tabText)
-            .on('click', tabOnClickCallback);
-
-          $router.append($item);
-        }
-      };
-
       fv_flowplayer_uploader.on('open', function() {
         $( document ).trigger( "mediaBrowserOpen" );
-        if (typeof(fv_player_pro) !== 'undefined') {
-          fv_flowplayer_media_browser_add_tab('fv_flowplayer_vimeo_browser_media_tab', 'Vimeo', fv_flowplayer_vimeo_browser_load_assets);
-        }
         jQuery('.media-router .media-menu-item').eq(0).click();
         jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
       });      
