@@ -145,8 +145,19 @@ jQuery(document).ready(function($){
    */
   $(document).on('click','.fv-player-tab-playlist tr .fvp_item_remove', function(e) {
     e.stopPropagation();
-    var index = $(e.target).parents('[data-index]').attr('data-index');
-    $(e.target).parents('[data-index]').remove();
+    var
+      $parent = $(e.target).parents('[data-index]'),
+      index = $parent.attr('data-index'),
+      id = $parent.attr('data-id_video'),
+      $deleted_videos_element = $('#deleted_videos');
+
+    if (id && $deleted_videos_element.val()) {
+      $deleted_videos_element.val($deleted_videos_element.val() + ',' + id);
+    } else {
+      $deleted_videos_element.val(id);
+    }
+
+    $parent.remove();
     jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').remove();
     jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']').remove();
     if(!jQuery('.fv-player-tab-subtitles table[data-index]').length){
@@ -531,9 +542,13 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
           if (firstDone) {
             fv_flowplayer_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex, sSubtitles[i].id);
           } else {
-            var subElement = jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles);
+            var
+              subElement = jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles),
+              $parent = subElement.parent();
             subElement.val(sSubtitles[i].lang);
-            subElement.parent().attr('data-id_subtitles', sSubtitles[i].id);
+            $parent.attr('data-id_subtitles', sSubtitles[i].id);
+            $parent.hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
+            $parent.find('.fv-fp-subtitle-remove').click(fv_flowplayer_remove_subtitles);
 
             jQuery('[name=fv_wp_flowplayer_field_subtitles]',new_item_subtitles).val(sSubtitles[i].file);
             firstDone = true;
@@ -610,6 +625,40 @@ function fv_flowplayer_playlist_show() {
   return false;
 }
 
+function fv_flowplayer_remove_subtitles() {
+  var $deleted_subtitles_element = $('#deleted_subtitles');
+
+  if(jQuery(this).parents('.fv-fp-subtitles').find('.fv-fp-subtitle').length > 1){
+    var
+      $parent = jQuery(this).parents('.fv-fp-subtitle'),
+      id = $parent.attr('data-id_subtitles')
+
+    if (id && $deleted_subtitles_element.val()) {
+      $deleted_subtitles_element.val($deleted_subtitles_element.val() + ',' + id);
+    } else {
+      $deleted_subtitles_element.val(id);
+    }
+
+    $parent.remove();
+  }else{
+    var
+      $parent = jQuery(this).parents('.fv-fp-subtitle'),
+      id = $parent.attr('data-id_subtitles')
+
+    if (id && $deleted_subtitles_element.val()) {
+      $deleted_subtitles_element.val($deleted_subtitles_element.val() + ',' + id);
+    } else {
+      $deleted_subtitles_element.val(id);
+    }
+
+    $parent.find('[name]').val('');
+    $parent.removeAttr('data-id_subtitles');
+  }
+  fv_wp_flowplayer_dialog_resize();
+
+  return false;
+}
+
 /*
  * Adds another language to subtitle menu
  */
@@ -636,16 +685,7 @@ function fv_flowplayer_language_add( sInput, sLang, iTabIndex, sId ) {
     jQuery('.fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang' , oTab).val(sLang);
   }
   
-  jQuery('.fv-fp-subtitle:last .fv-fp-subtitle-remove' , oTab).click(function(){
-    
-    if(jQuery(this).parents('.fv-fp-subtitles').find('.fv-fp-subtitle').length > 1){
-      jQuery(this).parents('.fv-fp-subtitle').remove();
-    }else{
-      jQuery(this).parents('.fv-fp-subtitle').find('[name]').val('');
-    }
-    fv_wp_flowplayer_dialog_resize();
-    
-  })
+  jQuery('.fv-fp-subtitle:last .fv-fp-subtitle-remove' , oTab).click(fv_flowplayer_remove_subtitles);
   
   fv_wp_flowplayer_dialog_resize();
   return false;
@@ -1059,6 +1099,12 @@ function fv_wp_flowplayer_edit() {
 
           // add player ID as a hidden field
           jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="id_player" id="id_player" value="' + result[1] + '" />');
+
+          // add removed video IDs as a hidden field
+          jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_videos" id="deleted_videos" />');
+
+          // add removed subtitle IDs as a hidden field
+          jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_subtitles" id="deleted_subtitles" />');
 
           for (var key in response) {
             // put the field value where it belongs
