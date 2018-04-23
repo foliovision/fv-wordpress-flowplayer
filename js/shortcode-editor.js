@@ -1125,6 +1125,12 @@ function fv_wp_flowplayer_edit() {
           // show playlist instead of the "add new video" form
           fv_flowplayer_playlist_show(true);
 
+          // update the Insert button to say Update
+          jQuery('.fv_player_field_insert-button')
+            .removeClass('fv_player_field_insert-button')
+            .addClass('fv_player_field_update-button')
+            .val('Update');
+
           //do_shortcode_magic(response);
         }
 
@@ -1350,6 +1356,12 @@ function fv_wp_flowplayer_build_ajax_data() {
     data['videos'] = data_videos_new;
   }
 
+  // add player ID for a DB update
+  var $updateElement = jQuery('#id_player');
+  if ($updateElement.length) {
+    data['update'] = $updateElement.val();
+  }
+
   return data;
 }
 
@@ -1502,7 +1514,6 @@ function fv_wp_flowplayer_submit( preview ) {
 
 	  if (preview) {
       var previewDimensions = fv_wp_flowplayer_calculatePreviewDimensions(divPreview);
-      console.log(previewDimensions, divPreview);
       previewWidth = previewDimensions.width;
       previewHeight = previewDimensions.height;
       ajax_data['fv_wp_flowplayer_field_width'] = previewWidth;
