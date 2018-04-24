@@ -372,7 +372,7 @@ class FV_Player_Db_Shortcode {
 
     if ($post_data) {
       // parse and resolve deleted videos
-      if (!empty($post_data['deleted_videos']) && count($post_data['deleted_videos'])) {
+      if (!empty($post_data['deleted_videos'])) {
         $deleted_videos = explode(',', $post_data['deleted_videos']);
         foreach ($deleted_videos as $d_id) {
           // we don't need to load this video data, just link it to a database
@@ -386,19 +386,41 @@ class FV_Player_Db_Shortcode {
       }
 
       // parse and resolve deleted meta data
-      foreach (array('deleted_subtitles') as $meta_post_key) {
-        if (!empty($post_data[$meta_post_key]) && count($post_data[$meta_post_key])) {
-          $deleted_meta = explode(',', $post_data[$meta_post_key]);
-          foreach ($deleted_meta as $d_id) {
-            // we don't need to load this meta data, just link it to a database
-            // and then delete it
-            // ... although we'll need at least 1 item in the data array to consider this
-            //     meta data valid for object creation
-            $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('1' => '1'));
-            $d_meta->link2db($d_id);
-            $d_meta->delete();
-          }
+      if (!empty($post_data['deleted_video_meta'])) {
+        $deleted_meta = explode(',', $post_data['deleted_video_meta']);
+        foreach ($deleted_meta as $d_id) {
+          // we don't need to load this meta data, just link it to a database
+          // and then delete it
+          // ... although we'll need at least 1 item in the data array to consider this
+          //     meta data valid for object creation
+          $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('1' => '1'));
+          $d_meta->link2db($d_id);
+          $d_meta->delete();
         }
+      }
+
+      // parse and resolve deleted meta data
+      if (!empty($post_data['deleted_player_meta'])) {
+        $deleted_meta = explode(',', $post_data['deleted_player_meta']);
+        foreach ($deleted_meta as $d_id) {
+          // we don't need to load this meta data, just link it to a database
+          // and then delete it
+          // ... although we'll need at least 1 item in the data array to consider this
+          //     meta data valid for object creation
+          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('1' => '1'));
+          $d_meta->link2db($d_id);
+          $d_meta->delete();
+        }
+      }
+
+      // add any player meta data that we can gather
+      $player_meta = array();
+
+      // call a filter which is server by plugins to augment
+      // the $player_meta data with all the plugin data for this
+      // particular player
+      if (!empty($post_data['player_meta'])) {
+        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta']);
       }
 
       foreach ($post_data as $field_name => $field_value) {
@@ -466,6 +488,16 @@ class FV_Player_Db_Shortcode {
         $player_options['videos'] = implode( ',', $video_ids );
       }
 
+      // add any player meta data that we can gather
+      $player_meta = array();
+
+      // call a filter which is server by plugins to augment
+      // the $player_meta data with all the plugin data for this
+      // particular player
+      if (!empty($post_data['player_meta'])) {
+        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta']);
+      }
+
       // create and save the player
       $player = new FV_Player_Db_Shortcode_Player(null, $player_options);
 
@@ -476,7 +508,7 @@ class FV_Player_Db_Shortcode {
           $player->link2db($post_data['update']);
         }
 
-        $id = $player->save();
+        $id = $player->save($player_meta);
 
         if ($id) {
           echo $id;
@@ -484,6 +516,7 @@ class FV_Player_Db_Shortcode {
           echo -1;
         }
       } else {
+        $player->link2meta( $player_meta );
         return array(
           'player' => $player,
           'videos' => $video_ids
@@ -512,6 +545,17 @@ class FV_Player_Db_Shortcode {
 
       // fill the $out variable with player data
       $out = array_merge($out, $fv_fp->current_player()->getAllDataValues());
+
+      // load all meta data
+      $meta = $fv_fp->current_player()->getMetaData();
+      foreach ($meta as $meta_object) {
+        if (!isset($out['meta'])) {
+          $out['meta'] = array();
+        }
+
+        $out['meta'][] = $meta_object->getAllDataValues();
+      }
+
       unset($out['video_objects'], $out['videos']);
 
       // fill the $out variable with video data

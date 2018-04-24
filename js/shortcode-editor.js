@@ -626,17 +626,17 @@ function fv_flowplayer_playlist_show() {
 }
 
 function fv_flowplayer_remove_subtitles() {
-  var $deleted_subtitles_element = $('#deleted_subtitles');
+  var $deleted_video_meta_element = $('#deleted_video_meta');
 
   if(jQuery(this).parents('.fv-fp-subtitles').find('.fv-fp-subtitle').length > 1){
     var
       $parent = jQuery(this).parents('.fv-fp-subtitle'),
       id = $parent.attr('data-id_subtitles')
 
-    if (id && $deleted_subtitles_element.val()) {
-      $deleted_subtitles_element.val($deleted_subtitles_element.val() + ',' + id);
+    if (id && $deleted_video_meta_element.val()) {
+      $deleted_video_meta_element.val($deleted_video_meta_element.val() + ',' + id);
     } else {
-      $deleted_subtitles_element.val(id);
+      $deleted_video_meta_element.val(id);
     }
 
     $parent.remove();
@@ -645,10 +645,10 @@ function fv_flowplayer_remove_subtitles() {
       $parent = jQuery(this).parents('.fv-fp-subtitle'),
       id = $parent.attr('data-id_subtitles')
 
-    if (id && $deleted_subtitles_element.val()) {
-      $deleted_subtitles_element.val($deleted_subtitles_element.val() + ',' + id);
+    if (id && $deleted_video_meta_element.val()) {
+      $deleted_video_meta_element.val($deleted_video_meta_element.val() + ',' + id);
     } else {
-      $deleted_subtitles_element.val(id);
+      $deleted_video_meta_element.val(id);
     }
 
     $parent.find('[name]').val('');
@@ -1099,7 +1099,8 @@ function fv_wp_flowplayer_edit() {
           var
             $id_player_element = jQuery('#id_player'),
             $deleted_videos_element = jQuery('#deleted_videos'),
-            $deleted_subtitles_element = jQuery('#deleted_subtitles');
+            $deleted_video_meta_element = jQuery('#deleted_video_meta'),
+            $deleted_player_meta_element = jQuery('#deleted_player_meta');
 
           if (!$id_player_element.length) {
             // add player ID as a hidden field
@@ -1108,13 +1109,21 @@ function fv_wp_flowplayer_edit() {
             // add removed video IDs as a hidden field
             jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_videos" id="deleted_videos" />');
 
-            // add removed subtitle IDs as a hidden field
-            jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_subtitles" id="deleted_subtitles" />');
+            // add removed video meta IDs as a hidden field
+            jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_video_meta" id="deleted_video_meta" />');
+
+            // add removed player meta IDs as a hidden field
+            jQuery('#fv-player-shortcode-editor').append('<input type="hidden" name="deleted_player_meta" id="deleted_player_meta" />');
           } else {
             $id_player_element.val(result[1]);
             $deleted_videos_element.val('');
-            $deleted_subtitles_element.val('');
+            $deleted_video_meta_element.val('');
+            $deleted_player_meta_element.val('');
           }
+
+          // fire the player load event to cater for any plugins listening
+          var $doc = jQuery(document);
+          $doc.trigger('fv_flowplayer_player_meta_load', [response]);
 
           for (var key in response) {
             // put the field value where it belongs
@@ -1173,6 +1182,9 @@ function fv_wp_flowplayer_edit() {
                   });
                 }
               }
+
+              // fire up meta load event for this video, so plugins can process it and react
+              $doc.trigger('fv_flowplayer_video_meta_load', [vids[x].meta, x]);
             }
 
             fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text, vids[x].id);
@@ -1184,20 +1196,25 @@ function fv_wp_flowplayer_edit() {
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
           var
-            $insert_button = jQuery('.fv_player_field_insert-button'),
-            $cloned = $insert_button.clone();
+            $insert_button = jQuery('.fv_player_field_insert-button:not(#insert_as_new)'),
+            $insert_as_new_button = jQuery('#insert_as_new');
 
-          jQuery($insert_button[0].outerHTML)
-            .val('Insert as New')
-            .on('click', function() {
-              // remove update and deleted hidden fields, so we insert a new record
-              // with our data instead of updating them
-              jQuery('#id_player, #deleted_videos, #deleted_subtitles').remove();
-              fv_wp_flowplayer_submit();
-              return true;
-            })
-            .css('margin-left', '5px')
-            .insertAfter($insert_button);
+          if (!$insert_as_new_button.length) {
+            jQuery($insert_button[0].outerHTML)
+              .attr('id', 'insert_as_new')
+              .val('Insert as New')
+              .on('click', function () {
+                // remove update and deleted hidden fields, so we insert a new record
+                // with our data instead of updating them
+                jQuery('#id_player, #deleted_videos, #deleted_video_meta, #deleted_player_meta').remove();
+                fv_wp_flowplayer_submit();
+                return true;
+              })
+              .css('margin-left', '5px')
+              .insertAfter($insert_button);
+          } else {
+            $insert_as_new_button.val('Insert as New');
+          }
 
           // update the Insert button to say Update
           $insert_button
@@ -1309,6 +1326,11 @@ function fv_wp_flowplayer_build_ajax_data() {
         break;
     }
   }
+
+  // trigger meta data save events, so we get meta data from different
+  // plugins included as we post
+  jQuery(document).trigger('fv_flowplayer_player_meta_save', [data]);
+  jQuery(document).trigger('fv_flowplayer_video_meta_save', [data]);
 
   $tabs.each(function() {
     var
@@ -1443,7 +1465,8 @@ function fv_wp_flowplayer_build_ajax_data() {
   if ($updateElement.length) {
     data['update'] = $updateElement.val();
     data['deleted_videos'] = jQuery('#deleted_videos').val();
-    data['deleted_subtitles'] = jQuery('#deleted_subtitles').val();
+    data['deleted_video_meta'] = jQuery('#deleted_video_meta').val();
+    data['deleted_player_meta'] = jQuery('#deleted_player_meta').val();
   }
 
   return data;

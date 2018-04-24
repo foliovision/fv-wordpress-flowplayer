@@ -60,6 +60,7 @@ include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/db-shortcode-player.php');
 include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-video.php');
 include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-video-meta.php');
+include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-player-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db-shortcode.php');
 $FV_Db_Shortcode = new FV_Player_Db_Shortcode();
 

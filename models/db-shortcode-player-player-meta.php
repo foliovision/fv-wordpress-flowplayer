@@ -16,13 +16,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// video meta data instance with options that's stored in a DB
-class FV_Player_Db_Shortcode_Player_Video_Meta {
+// player meta data instance with options that's stored in a DB
+class FV_Player_Db_Shortcode_Player_Player_Meta {
 
   private
     $id, // automatic ID for the meta data
     $is_valid = true, // used when loading meta data from DB to determine whether we've found it
-    $id_video, // DB ID of the video to which this meta data belongs
+    $id_player, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
     $meta_value, // arbitrary meta value
     $db_table_name,
@@ -38,8 +38,8 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
   /**
    * @return int
    */
-  public function getIdVideo() {
-    return $this->id_video;
+  public function getIdPlayer() {
+    return $this->id_player;
   }
 
   /**
@@ -69,16 +69,16 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
    * @param $wpdb The global WordPress database object.
    */
   private function initDB($wpdb) {
-    $this->db_table_name = $wpdb->prefix.'fv_player_videometa';
+    $this->db_table_name = $wpdb->prefix.'fv_player_playermeta';
     if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
       $sql = "
 CREATE TABLE `".$this->db_table_name."` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_video` int(10) UNSIGNED NOT NULL,
+  `id_player` int(10) UNSIGNED NOT NULL,
   `meta_key` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `meta_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id_video` (`id_video`),
+  KEY `id_player` (`id_player`),
   KEY `meta_key` (`meta_key`)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -88,9 +88,7 @@ CREATE TABLE `".$this->db_table_name."` (
 
   /**
    * Makes this meta data object linked to a record in database.
-   * This is used when loading multiple meta data records in the constructor,
-   * so we can return them as objects from the DB and any saving will
-   * not insert their duplicates.
+   * Used for player preview purposes.
    *
    * @param $id The DB ID to which we'll link this meta data record.
    */
@@ -114,10 +112,10 @@ CREATE TABLE `".$this->db_table_name."` (
   }
 
   /**
-   * FV_Player_Db_Shortcode_Player_Video_Meta constructor.
+   * FV_Player_Db_Shortcode_Player_Player_Meta constructor.
    *
-   * @param int $id         ID of video meta data to load data from the DB for.
-   * @param array $options  Options for a newly created video meta data that will be stored in a DB.
+   * @param int $id         ID of player meta data to load data from the DB for.
+   * @param array $options  Options for a newly created player meta data that will be stored in a DB.
    *
    * @throws Exception When no valid ID nor options are provided.
    */
@@ -127,19 +125,19 @@ CREATE TABLE `".$this->db_table_name."` (
     $this->initDB($wpdb);
     $multiID = is_array($id);
 
-    // check whether we're not trying to load data for a single video
+    // check whether we're not trying to load data for a single player
     // rather than meta data by its own ID
-    $load_for_video = false;
-    if (is_array($options) && count($options) && isset($options['id_video']) && is_array($options['id_video'])) {
-      $load_for_video = true;
+    $load_for_player = false;
+    if (is_array($options) && count($options) && isset($options['id_player']) && is_array($options['id_player'])) {
+      $load_for_player = true;
       $multiID = true;
-      $id = $options['id_video'];
+      $id = $options['id_player'];
       // reset this, so we don't try to create a new record below
       $options = array();
     }
 
     // if we've got options, fill them in instead of querying the DB,
-    // since we're storing new video meta data into the DB in such case
+    // since we're storing new player meta data into the DB in such case
     if (is_array($options) && count($options)) {
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
@@ -148,7 +146,7 @@ CREATE TABLE `".$this->db_table_name."` (
           }
         } else {
           // generate warning
-          trigger_error('Unknown property for new DB video meta data item: ' . $key);
+          trigger_error('Unknown property for new DB player meta data item: ' . $key);
         }
       }
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
@@ -159,10 +157,10 @@ CREATE TABLE `".$this->db_table_name."` (
           $id[$id_key] = (int) $id_value;
         }
 
-        // load multiple video metas via their IDs but a single query and return their values
-        $meta_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE ' . ($load_for_video ? 'id_video' : 'id') . ' IN('. implode(',', $id).')');
+        // load multiple player metas via their IDs but a single query and return their values
+        $meta_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE ' . ($load_for_player ? 'id_player' : 'id') . ' IN('. implode(',', $id).')');
       } else {
-        // load a single video meta data record
+        // load a single player meta data record
         $meta_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
       }
 
@@ -174,7 +172,7 @@ CREATE TABLE `".$this->db_table_name."` (
             $this->$key = $value;
           }
         } else {
-          // multiple IDs, create new video meta objects for each of them except the first one,
+          // multiple IDs, create new player meta objects for each of them except the first one,
           // for which we'll use this instance
           $first_done = false;
           foreach ($meta_data as $db_record) {
@@ -186,15 +184,15 @@ CREATE TABLE `".$this->db_table_name."` (
               $this->additional_objects[] = $this;
               $first_done = true;
             } else {
-              // create a new video object and populate it with DB values
+              // create a new player meta object and populate it with DB values
               $record_id = $db_record->id;
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
-              $video_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, get_object_vars($db_record));
-              $video_object->link2db($record_id);
+              $video_meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, get_object_vars($db_record));
+              $video_meta_object->link2db($record_id);
 
-              // cache is in the list of all loaded video objects
-              $this->additional_objects[] = $video_object;
+              // cache is in the list of all loaded player meta objects
+              $this->additional_objects[] = $video_meta_object;
             }
           }
         }
@@ -202,14 +200,14 @@ CREATE TABLE `".$this->db_table_name."` (
         $this->is_valid = false;
       }
     } else {
-      throw new \Exception('No options nor a valid ID was provided for DB video meta data item.');
+      throw new \Exception('No options nor a valid ID was provided for DB player meta data item.');
     }
   }
 
   /**
-   * Returns all options data for this video.
+   * Returns all options data for this player meta object.
    *
-   * @return array Returns all options data for this video.
+   * @return array Returns all options data for this player meta object.
    */
   public function getAllDataValues() {
     $data = array();
@@ -223,7 +221,7 @@ CREATE TABLE `".$this->db_table_name."` (
   }
 
   /**
-   * Stores new video meta data item or updates and existing one
+   * Stores new player meta data item or updates and existing one
    * in the database.
    *
    * @return bool|int Returns record ID if successful, false otherwise.
@@ -239,10 +237,10 @@ CREATE TABLE `".$this->db_table_name."` (
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
-        $is_video_id = ($property == 'id_video');
-        $data_keys[] = $property . ' = '.($is_video_id ? (int) $value : '%s');
+        $is_player_id = ($property == 'id_player');
+        $data_keys[] = $property . ' = '.($is_player_id ? (int) $value : '%s');
 
-        if (!$is_video_id) {
+        if (!$is_player_id) {
           $data_values[] = $value;
         }
       }

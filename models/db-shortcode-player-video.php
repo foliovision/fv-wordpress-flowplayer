@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -260,9 +260,9 @@ CREATE TABLE `".$this->db_table_name."` (
    * so we can return them as objects from the DB and any saving will
    * not insert their duplicates.
    *
-   * @param $id        The DB ID to which we'll link this video.
-   * @param $load_meta If true, the meta data will be loaded for the video from database.
-   *                   Used when loading multiple videos at once with the array $id constructor parameter.
+   * @param int  $id        The DB ID to which we'll link this video.
+   * @param bool $load_meta If true, the meta data will be loaded for the video from database.
+   *                        Used when loading multiple videos at once with the array $id constructor parameter.
    *
    * @throws Exception When the underlying Meta object throws.
    */
