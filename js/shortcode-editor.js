@@ -1180,10 +1180,29 @@ function fv_wp_flowplayer_edit() {
           // show playlist instead of the "add new video" form
           fv_flowplayer_playlist_show(true);
 
+          // copy the Insert button, place it after the first original one
+          // and rename it to Insert as New
+          var
+            $insert_button = jQuery('.fv_player_field_insert-button'),
+            $cloned = $insert_button.clone();
+
+          jQuery($insert_button[0].outerHTML)
+            .val('Insert as New')
+            .on('click', function() {
+              // remove update and deleted hidden fields, so we insert a new record
+              // with our data instead of updating them
+              jQuery('#id_player, #deleted_videos, #deleted_subtitles').remove();
+              fv_wp_flowplayer_submit();
+              return true;
+            })
+            .css('margin-left', '5px')
+            .insertAfter($insert_button);
+
           // update the Insert button to say Update
-          jQuery('.fv_player_field_insert-button')
+          $insert_button
             .removeClass('fv_player_field_insert-button')
             .addClass('fv_player_field_update-button')
+            .attr('name', 'update')
             .val('Update');
 
           //do_shortcode_magic(response);
