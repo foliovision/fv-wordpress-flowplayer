@@ -510,7 +510,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
   new_item_subtitles.hide().attr('data-index', newIndex);
   
   //jQuery('.fv-player-tab-video-files table').hover( function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } );
-  
+
   if( sInput ) {
     var aInput = sInput.split(',');
     var count = 0;
@@ -1085,8 +1085,9 @@ function fv_wp_flowplayer_edit() {
 
       // remove everything with index 0 and the initial video placeholder,
       // otherwise our indexing & previews wouldn't work correctly
-      jQuery('[data-index=0]').remove();
-      jQuery('.fv-player-tab-playlist table tbody tr:last').remove();
+      jQuery('[data-index="0"]').remove();
+      jQuery('.fv-player-tab-playlist table tbody tr').remove();
+      jQuery('.fv-player-tab-video-files table').remove();
 
       // now load playlist data
       // load video data via an AJAX call,
@@ -1095,7 +1096,6 @@ function fv_wp_flowplayer_edit() {
 
         if (response) {
           var
-            field2value = {},
             $id_player_element = jQuery('#id_player'),
             $deleted_videos_element = jQuery('#deleted_videos'),
             $deleted_subtitles_element = jQuery('#deleted_subtitles');
