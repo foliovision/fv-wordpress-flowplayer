@@ -1023,7 +1023,7 @@ class flowplayer_frontend extends flowplayer
     $output = new stdClass;
     $output->ret = array();
     $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs" style="max-width: '.$cssWidth.'"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
-    $output->ret['script'] = '';
+    $output->ret['script'] = array();
     
     $output->ret['html'] .= '<ul>';
     foreach( $aPlaylistItems AS $key => $aSrc ) {
