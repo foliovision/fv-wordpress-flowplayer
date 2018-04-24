@@ -544,6 +544,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
             var
               subElement = jQuery('[name=fv_wp_flowplayer_field_subtitles_lang]',new_item_subtitles),
               $parent = subElement.parent();
+
             subElement.val(sSubtitles[i].lang);
             $parent.attr('data-id_subtitles', sSubtitles[i].id);
             $parent.hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
@@ -1320,7 +1321,11 @@ function fv_wp_flowplayer_build_ajax_data() {
     if (is_videos_tab) {
       data['videos'] = {};
     } else if (is_subtitles_tab) {
-      data['subtitles'] = {};
+      if (!data['video_meta']) {
+        data['video_meta'] = {};
+      }
+
+      data['video_meta']['subtitles'] = {};
     }
 
     // iterate over all tables in tabs
@@ -1379,13 +1384,13 @@ function fv_wp_flowplayer_build_ajax_data() {
 
           // subtitles tab
           else if (is_subtitles_tab) {
-            if (!data['subtitles'][table_index]) {
-              data['subtitles'][table_index] = [];
+            if (!data['video_meta']['subtitles'][table_index]) {
+              data['video_meta']['subtitles'][table_index] = [];
             }
 
             // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
             if (this.nodeName == 'INPUT') {
-              data['subtitles'][table_index].push({
+              data['video_meta']['subtitles'][table_index].push({
                 code : $this.siblings('select:first').val(),
                 file : this.value,
                 id: $this.parent().data('id_subtitles')

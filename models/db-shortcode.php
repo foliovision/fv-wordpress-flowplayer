@@ -428,26 +428,11 @@ class FV_Player_Db_Shortcode {
             // add any video meta data that we can gather
             $video_meta = array();
 
-            /***
-             * SUBTITLES META DATA
-             */
-            if (isset($post_data['subtitles']) && isset($post_data['subtitles'][$video_index])) {
-              // prepare all options for this video
-              foreach ( $post_data['subtitles'][$video_index] as $subtitle_values ) {
-                if ($subtitle_values['file']) {
-                  $m = array(
-                    'meta_key' => 'subtitles' . ($subtitle_values['code'] ? '_'.$subtitle_values['code'] : ''),
-                    'meta_value' => $subtitle_values['file']
-                  );
-
-                  // add ID, if present
-                  if (!empty($subtitle_values['id'])) {
-                    $m['id'] = $subtitle_values['id'];
-                  }
-
-                  $video_meta[] = $m;
-                }
-              }
+            // call a filter which is server by plugins to augment
+            // the $video_meta data with all the plugin data for this
+            // particular video
+            if (!empty($post_data['video_meta'])) {
+              $video_meta = apply_filters( 'fv_player_db_video_meta_save', $video_meta, $post_data['video_meta'], $video_index);
             }
 
             // save the video
@@ -473,9 +458,6 @@ class FV_Player_Db_Shortcode {
               $video_ids[] = $video;
             }
           }
-        } else if (!in_array($field_name, array('update', 'deleted_videos', 'deleted_subtitles'))) {
-          // TODO:
-          // here should be all other fields from plugins etc. (i.e. fv_player_field_ppv_price for PPV...)
         }
       }
 
