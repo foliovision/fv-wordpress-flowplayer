@@ -1079,6 +1079,7 @@ function fv_wp_flowplayer_edit() {
     // check for new, DB-based player shortcode
     var result = /\[fvplayer id="(\d+)"\]/g.exec(shortcode);
     if (result !== null) {
+      fv_flowplayer_conf.new_shortcode_active = true;
       // DB-based player, create a "wait" overlay
       var overlayDiv = fv_wp_flowplayer_big_loader_show();
 
@@ -1194,12 +1195,12 @@ function fv_wp_flowplayer_edit() {
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
           var
-            $insert_button = jQuery('.fv_player_field_insert-button:not(#insert_as_new)'),
-            $insert_as_new_button = jQuery('#insert_as_new');
+            $insert_button = jQuery('.fv_player_field_insert-button:not(.insert_as_new)'),
+            $insert_as_new_button = jQuery('.insert_as_new');
 
           if (!$insert_as_new_button.length) {
             jQuery($insert_button[0].outerHTML)
-              .attr('id', 'insert_as_new')
+              .addClass('insert_as_new')
               .val('Insert as New')
               .on('click', function () {
                 // remove update and deleted hidden fields, so we insert a new record
@@ -1220,13 +1221,16 @@ function fv_wp_flowplayer_edit() {
             .addClass('fv_player_field_update-button')
             .attr('name', 'update')
             .val('Update');
-
-          //do_shortcode_magic(response);
         }
 
         overlayDiv.remove();
       });
     } else {
+      // remove Insert as New, or they'll all get renamed to Update
+      // when working with original shortcode
+      jQuery('.insert_as_new').remove();
+      fv_flowplayer_conf.new_shortcode_active = false;
+
       // ordinary text shortcode in the editor
       do_shortcode_magic(shortcode);
     }
@@ -1614,7 +1618,7 @@ function fv_wp_flowplayer_submit( preview ) {
     previewHeight = null;
 
   // if we're using the new DB-related shortcode, let's handle it here
-  if (fv_flowplayer_conf.new_shortcode) {
+  if (fv_flowplayer_conf.new_shortcode && fv_flowplayer_conf.new_shortcode_active) {
 	  var ajax_data = fv_wp_flowplayer_build_ajax_data();
 
 	  if (preview) {
