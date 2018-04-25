@@ -1636,16 +1636,20 @@ function fv_wp_flowplayer_submit( preview ) {
     previewHeight = null;
 
   // if we're using the new DB-related shortcode, let's handle it here
-  if (fv_flowplayer_conf.new_shortcode && fv_flowplayer_conf.new_shortcode_active) {
+  if (fv_flowplayer_conf.new_shortcode) {
 	  var ajax_data = fv_wp_flowplayer_build_ajax_data();
 
 	  if (preview) {
-      var previewDimensions = fv_wp_flowplayer_calculatePreviewDimensions(divPreview);
-      previewWidth = previewDimensions.width;
-      previewHeight = previewDimensions.height;
-      ajax_data['fv_wp_flowplayer_field_width'] = previewWidth;
-      ajax_data['fv_wp_flowplayer_field_height'] = previewHeight;
-      fv_wp_flowplayer_show_preview(true, ajax_data, true);
+	    // don't use DB preview if we're working with a standard shortcode
+	    if (fv_flowplayer_conf.new_shortcode_active) {
+        var previewDimensions = fv_wp_flowplayer_calculatePreviewDimensions(divPreview);
+        previewWidth = previewDimensions.width;
+        previewHeight = previewDimensions.height;
+        ajax_data['fv_wp_flowplayer_field_width'] = previewWidth;
+        ajax_data['fv_wp_flowplayer_field_height'] = previewHeight;
+        fv_wp_flowplayer_show_preview(true, ajax_data, true);
+        return;
+      }
     } else {
 	    // show saving loader
       fv_wp_flowplayer_big_loader_show();
@@ -1659,9 +1663,9 @@ function fv_wp_flowplayer_submit( preview ) {
         fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
         jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
       });
-    }
 
-    return;
+      return;
+    }
   }
 
   if( fv_player_preview_single == -1 ) {
