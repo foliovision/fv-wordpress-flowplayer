@@ -379,7 +379,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     video data valid for object creation
-          $d_vid = new FV_Player_Db_Shortcode_Player_Video(null, array('1' => '1'));
+          $d_vid = new FV_Player_Db_Shortcode_Player_Video(null, array('caption' => '1'));
           $d_vid->link2db($d_id);
           $d_vid->delete();
         }
@@ -393,7 +393,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('1' => '1'));
+          $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('meta_key' => '1'));
           $d_meta->link2db($d_id);
           $d_meta->delete();
         }
@@ -407,7 +407,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('1' => '1'));
+          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('meta_key' => '1'));
           $d_meta->link2db($d_id);
           $d_meta->delete();
         }

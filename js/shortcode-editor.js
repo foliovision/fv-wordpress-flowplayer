@@ -615,13 +615,11 @@ function fv_flowplayer_playlist_show() {
     jQuery('#fv-player-list-thumb-view').removeAttr('title');
   }
   
-  jQuery('.fv-player-tab-playlist').show(); 
-  
+  jQuery('.fv-player-tab-playlist').show();
   fv_wp_flowplayer_dialog_resize();
   fv_player_refresh_tabs();
-  
   fv_wp_flowplayer_submit(true);
-  
+
   return false;
 }
 
@@ -1689,7 +1687,7 @@ function fv_wp_flowplayer_submit( preview ) {
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_speed', 'speed', false, false, ['buttons', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_playlist_advance', 'playlist_advance', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_sticky', 'sticky', false, false, ['true', 'false'] );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_share', 'share', false, false, ['yes', 'no', jQuery('#fv_wp_flowplayer_field_share_title').val().replace(/;/,'').replace(/(\S)$/,'$1;')+jQuery('#fv_wp_flowplayer_field_share_url').val().replace(/;/,'')] );  
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_share', 'share', false, false, ['yes', 'no', jQuery('#fv_wp_flowplayer_field_share_title').val().replace(/;/,'').replace(/(\S)$/,'$1;')+jQuery('#fv_wp_flowplayer_field_share_url').val().replace(/;/,'')] );
 
   
   /*
@@ -1729,8 +1727,8 @@ function fv_wp_flowplayer_submit( preview ) {
   
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_height','ad_height','int');
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_skip','ad_skip', false, true, ['yes']);
-	fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_width','ad_width','int');  
-	
+	fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_width','ad_width','int');
+
 	if( fv_player_preview_single == -1 && jQuery('.fv-player-tab-video-files table').length > 0 ) {
 		var aPlaylistItems = new Array();
     var aPlaylistCaptions = new Array();
@@ -1802,7 +1800,7 @@ function fv_wp_flowplayer_submit( preview ) {
 			fv_wp_fp_shortcode += ' splash_text="'+sSplashText+'"';
 		}    
 	}
-  
+
   jQuery(document).trigger('fv_flowplayer_shortcode_create');
 	
 	if( fv_wp_fp_shortcode_remains && fv_wp_fp_shortcode_remains.trim().length > 0 ) {
