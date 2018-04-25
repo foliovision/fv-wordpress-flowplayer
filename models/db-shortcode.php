@@ -20,7 +20,7 @@
 class FV_Player_Db_Shortcode {
 
   public function __construct() {
-    add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 10, 1);
+    add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
     add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
 
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
