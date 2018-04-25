@@ -348,6 +348,8 @@ class FV_Player_Db_Shortcode {
 
       $cache[ $atts['id'] ] = $atts;
 
+    } else {
+      $fv_fp->currentPlayerObject = null;
     }
 
     return $atts;
