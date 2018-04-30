@@ -6,9 +6,16 @@ class FV_Xml_Video_Sitemap {
         // Add our custom rewrite rules
         add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'));
         add_action('do_feed_video-sitemap', array($this, 'fv_generate_video_sitemap'), 10, 1);
+        add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
     }
     
-    public static function get_videos_details( $posts ) {
+    function get_post_types() {
+      $types = array_keys( get_post_types( array( 'public' => true ) ) );
+      unset($types['revision'], $types['attachment'], $types['topic'], $types['reply']);
+      return $types;
+    }
+    
+    public static function get_video_details( $posts ) {
       global $fv_fp;
 
       $videos = array();
@@ -19,6 +26,9 @@ class FV_Xml_Video_Sitemap {
           preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
           // todo: perhaps include videos in postmeta too
         }
+        
+        $sanitized_description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');
+        $sanitized_description = htmlspecialchars( $sanitized_description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
         if ( isset( $matches[0] ) && count( $matches[0] ) ) {
           $video_alt_captions_counter = 1;
@@ -50,17 +60,6 @@ class FV_Xml_Video_Sitemap {
             // sanitized post title, used when no video caption is provided
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
-            // use excerpt as video description, or part of the content if excerpt is missing
-            // max length = 2040 characters, so take first 1800 to be on the safe side with UTF-8 & UTF-16 chars
-            $sanitized_description = htmlspecialchars(
-              preg_replace(
-                  ['~\[(?:flowplayer|fvplayer).*?\]~', '~(\r)?\n~'],
-                  ' ',
-                  strip_tags(!empty($objPost->excerpt) ? $objPost->post_excerpt : $objPost->post_content)
-                ),
-              ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE
-            );
-
             // set thumbnail
             $new_video_record['video']['thumbnail_loc'] = $aArgs['splash'];
 
@@ -76,14 +75,9 @@ class FV_Xml_Video_Sitemap {
               }
             }
 
-            // don't return empty descriptions (can happen if the video tag it the only thing on the page)
+            // don't return empty descriptions (can happen if the video tag it the only thing on the page)            
             if (empty(trim($sanitized_description))) {
-              preg_match(
-                  '/^.{1,1800}\b/s',
-                  $sanitized_description,
-                  $description_match
-                );
-              $new_video_record['video']['description'] = ( ! empty( $description_match[0] ) ? $description_match[0] : (!$increment_video_counter ? 'Video '.$video_alt_captions_counter.', ' : '').$new_video_record['video']['title']);
+              $new_video_record['video']['description'] = $new_video_record['video']['title'];
               $increment_video_counter = true;
             } else {
               $new_video_record['video']['description'] = $sanitized_description;
@@ -118,75 +112,111 @@ class FV_Xml_Video_Sitemap {
       }
 
       return $videos;
-    }    
+    }
+    
+    function get_video_years() {
+      global $wpdb;
+      
+      return $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date) ORDER BY post_date;" );
+    }
 
     function fv_check_xml_sitemap_rewrite_rules() {
-        global $wp_rewrite;
+      global $wp_rewrite;
 
-        $rules = get_option( 'rewrite_rules' );
+      $rules = get_option( 'rewrite_rules' );
 
-        if (!isset($rules['video-sitemap\.xml$'])) {
-            $wp_rewrite->flush_rules();
-            add_rewrite_rule('video-sitemap\.xml$', 'index.php?feed=video-sitemap', 'top');
-        }
+      if (!isset($rules['video-sitemap\.xml$'])) {
+        $wp_rewrite->flush_rules();
+        add_rewrite_rule('video-sitemap\.xml$', 'index.php?feed=video-sitemap-index', 'top');
+        add_rewrite_rule('video-sitemap\.(\d+)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]', 'top');
+      }
     }
 
     function fv_generate_video_sitemap() {
-        global $wpdb;
+      global $wpdb, $fv_wp_flowplayer_ver;
 
-        // if output buffering is active, clear it
-        if ( ob_get_level() ) ob_clean();
+      // if output buffering is active, clear it
+      if ( ob_get_level() ) ob_clean();
 
-        if ( !headers_sent($filename, $linenum) ) {
-            status_header('200'); // force header('HTTP/1.1 200 OK') for sites without posts
-            header('Content-Type: text/xml; charset=' . get_bloginfo('charset'), true);
-            header('X-Robots-Tag: noindex, follow', true);
+      if ( !headers_sent($filename, $linenum) ) {
+        status_header('200'); // force header('HTTP/1.1 200 OK') for sites without posts
+        header('Content-Type: text/xml; charset=' . get_bloginfo('charset'), true);
+        header('X-Robots-Tag: noindex, follow', true);
+      }
+
+      // This is to prevent issues with New Relics stupid auto injection of code.
+      if ( extension_loaded( 'newrelic' ) && function_exists( 'newrelic_disable_autorum' ) ) {
+        newrelic_disable_autorum();
+      }
+
+      $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE year(post_date) = ".get_query_var('year')." AND post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
+
+      $get_post_array = array();
+      foreach ($videos as $vid) {
+        $get_post_array[] = $vid;
+      }
+
+      $data = $this->get_video_details($get_post_array);
+
+      if (count($data)) {
+        echo '<'.'?xml version="1.0" encoding="UTF-8"?'.'>'."\n";
+        echo '<'.'?xml-stylesheet type="text/xsl" href="'.flowplayer::get_plugin_url().'/css/sitemap-video.xsl?ver='.$fv_wp_flowplayer_ver.'"?'.'>'."\n";
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">'."\n";
+        foreach ($data as $video) {
+          echo "\t<url>\n";
+          echo "\t\t<loc>".$video['loc']."</loc>\n";
+          echo "\t\t<video:video>\n";
+          foreach ($video['video'] as $videoTag => $videoTagValue) {
+            echo "\t\t\t<video:$videoTag>$videoTagValue</video:$videoTag>\n";
+          }
+          echo "\t\t</video:video>\n";
+          echo "\t</url>\n";
         }
-
-        // This is to prevent issues with New Relics stupid auto injection of code.
-        if ( extension_loaded( 'newrelic' ) && function_exists( 'newrelic_disable_autorum' ) ) {
-            newrelic_disable_autorum();
-        }
-
-        // get public post types
-        $types = array_keys( get_post_types( array( 'public' => true ) ) );
-
-        // remove revisions, forum topics / posts and attachments from the select
-        unset($types['revision'], $types['attachment'], $types['topic'], $types['reply']);
-        $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_content, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $types)."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
-
-        $get_post_array = array();
-        foreach ($videos as $vid) {
-            $get_post_array[] = $vid;
-        }
-
-        $data = $this->get_video_details($get_post_array);
-
-        if (count($data)) {
-            // echo is for PHP short tags
-            echo "<?";?>xml version="1.0" encoding="UTF-8"?>
-            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"><?php
-                foreach ($data as $video) {
-                    ?>
-
-                    <url>
-                    <loc><?php echo $video['loc']; ?></loc>
-                    <video:video><?php
-                        foreach ($video['video'] as $videoTag => $videoTagValue) {
-                            ?>
-
-                            <video:<?php echo $videoTag; ?>><?php echo $videoTagValue ?></video:<?php echo $videoTag; ?>><?php
-                        }
-                        ?>
-
-                    </video:video>
-                    </url><?php
-                }
-                ?>
-            </urlset>
-            <!-- XML Sitemap generated by FW Flow Player --><?php
-        }
+        echo "</urlset>\n";
+        echo "<!-- XML Sitemap generated by FV Player -->\n";
+      }
     }
+    
+    function fv_generate_video_sitemap_index() {
+      global $wpdb, $fv_wp_flowplayer_ver;
+
+      // if output buffering is active, clear it
+      if ( ob_get_level() ) ob_clean();
+
+      if ( !headers_sent($filename, $linenum) ) {
+        status_header('200'); // force header('HTTP/1.1 200 OK') for sites without posts
+        header('Content-Type: text/xml; charset=' . get_bloginfo('charset'), true);
+        header('X-Robots-Tag: noindex, follow', true);
+      }
+
+      // This is to prevent issues with New Relic's stupid auto injection of code.
+      if ( extension_loaded( 'newrelic' ) && function_exists( 'newrelic_disable_autorum' ) ) {
+        newrelic_disable_autorum();
+      }
+      
+      $years = $this->get_video_years();
+      
+      if( $years ) :
+        echo '<'.'?xml version="1.0" encoding="UTF-8"?'.'>'."\n";
+        echo '<'.'?xml-stylesheet type="text/xsl" href="'.flowplayer::get_plugin_url().'/css/sitemap-index.xsl?ver='.$fv_wp_flowplayer_ver.'"?'.'>'."\n";
+        ?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+		http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd">
+  <?php foreach( $years AS $objYear ) :
+    
+    $last_modified = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') AND year(post_date) = ".$objYear->year." ORDER BY post_modified_gmt DESC LIMIT 1" );
+    ?>
+    <sitemap>
+  		<loc><?php echo home_url('/video-sitemap.'.$objYear->year.'.xml'); ?></loc>
+  		<lastmod><?php echo mysql2date('Y-m-d\TH:i:s+00:00', $last_modified, false); ?></lastmod>
+  	</sitemap>    
+  <?php endforeach; ?>
+</sitemapindex><!-- XML Sitemap generated by FV Player -->
+      <?php
+      endif;
+    }    
 }
 
 $FV_Xml_Video_Sitemap = new FV_Xml_Video_Sitemap();
