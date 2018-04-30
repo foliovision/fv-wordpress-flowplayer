@@ -47,10 +47,11 @@ class FV_Xml_Video_Sitemap {
 
             // this crazyness needs to be first converted into non-html characters (so &quot; becomes "), then
             // stripped of them all and returned back HTML-encoded for the XML formatting to be correct
-            $trimmed_splash = htmlspecialchars(trim(html_entity_decode($aArgs['splash']), "\n\t\r\0\x0B".'"'));
+            $splash = !empty($aArgs['poster']) ? $aArgs['poster'] : $aArgs['splash'];
+            $trimmed_splash = htmlspecialchars(trim(html_entity_decode($splash), "\n\t\r\0\x0B".'"'));
 
             // update splash in accordance to what has been found
-            $aArgs['splash'] = $trimmed_splash ? $trimmed_splash : plugins_url('css/img/play_white.png', __DIR__);
+            $splash = $trimmed_splash ? $trimmed_splash : plugins_url('css/img/play_white.png', __DIR__);
 
             // check for caption - if none present, build it up from page title and video position
             // note: html characters must be substituted or enclosed in CDATA, from which the first
@@ -61,7 +62,7 @@ class FV_Xml_Video_Sitemap {
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // set thumbnail
-            $new_video_record['video']['thumbnail_loc'] = $aArgs['splash'];
+            $new_video_record['video']['thumbnail_loc'] = $splash;
 
             // set video title
             if (!empty($sanitized_caption)) {
@@ -117,7 +118,33 @@ class FV_Xml_Video_Sitemap {
     function get_video_years() {
       global $wpdb;
       
-      return $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date) ORDER BY post_date;" );
+      // grouped by year and month
+      $years_and_months = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
+      
+      // aggregated yearly data 
+      $per_year = array();
+      foreach( $years_and_months AS $v ) {
+        $per_year[$v->year] += $v->posts;
+      }
+      
+      // check each year and if there are more than 1000 videos, split it by month
+      $merged = array();
+      foreach( $per_year AS $year => $posts ) {
+        if( $posts > 1000 ) {
+          foreach( $years_and_months AS $v ) {
+            if( $v->year == $year ) {
+              $merged[] = $v;
+            }
+          }
+        } else {
+          $tmp = new stdClass;
+          $tmp->year = $year;
+          $tmp->posts = $posts;
+          $merged[] = $tmp;
+        }
+      }
+      
+      return $merged;
     }
 
     function fv_check_xml_sitemap_rewrite_rules() {
@@ -127,8 +154,9 @@ class FV_Xml_Video_Sitemap {
 
       if (!isset($rules['video-sitemap\.xml$'])) {
         $wp_rewrite->flush_rules();
-        add_rewrite_rule('video-sitemap\.xml$', 'index.php?feed=video-sitemap-index', 'top');
-        add_rewrite_rule('video-sitemap\.(\d+)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]', 'top');
+        add_rewrite_rule('video-sitemap\.xml$', 'index.php?feed=video-sitemap-index', 'top');        
+        add_rewrite_rule('video-sitemap\.(\d\d\d\d)-(\d\d)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]&monthnum=$matches[2]', 'top');  
+        add_rewrite_rule('video-sitemap\.(\d\d\d\d)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]', 'top');
       }
     }
 
@@ -148,8 +176,15 @@ class FV_Xml_Video_Sitemap {
       if ( extension_loaded( 'newrelic' ) && function_exists( 'newrelic_disable_autorum' ) ) {
         newrelic_disable_autorum();
       }
-
-      $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE year(post_date) = ".get_query_var('year')." AND post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
+      
+      $date_query = false;
+      if( get_query_var('year') && get_query_var('monthnum') ) {
+        $date_query = " year(post_date) = ".get_query_var('year')." AND month(post_date) = ".get_query_var('monthnum')." AND ";
+      } else if( get_query_var('year') ) {
+        $date_query = " year(post_date) = ".get_query_var('year')." AND ";
+      }
+      
+      $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
 
       $get_post_array = array();
       foreach ($videos as $vid) {
@@ -205,11 +240,19 @@ class FV_Xml_Video_Sitemap {
 	xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
 		http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd">
   <?php foreach( $years AS $objYear ) :
+    $filename = $objYear->year;
+    if( !empty($objYear->month) ) {
+      $filename .= '-';
+      if( strlen($objYear->month) == 1 ) $filename .= '0';
+      $filename .= $objYear->month;
+    }
     
-    $last_modified = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') AND year(post_date) = ".$objYear->year." ORDER BY post_modified_gmt DESC LIMIT 1" );
+    $date_query = !empty($objYear->month) ? " AND month(post_date) = ".intval($objYear->month) : false;    
+    
+    $last_modified = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
     ?>
     <sitemap>
-  		<loc><?php echo home_url('/video-sitemap.'.$objYear->year.'.xml'); ?></loc>
+  		<loc><?php echo home_url('/video-sitemap.'.$filename.'.xml'); ?></loc>
   		<lastmod><?php echo mysql2date('Y-m-d\TH:i:s+00:00', $last_modified, false); ?></lastmod>
   	</sitemap>    
   <?php endforeach; ?>
