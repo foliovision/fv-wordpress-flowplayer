@@ -140,6 +140,10 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           $name = $object['Key'];
           $size = $object['Size'];
 
+          if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
+            continue;
+          }
+
           if ( $object['Size'] != '0' ) {
 
             $link = (string) $s3Client->getObjectUrl( $bucket, $name );
