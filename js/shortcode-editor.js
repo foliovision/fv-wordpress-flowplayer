@@ -560,7 +560,15 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
       }
     }
     if( sSplashText ) {
-      jQuery('[name=fv_wp_flowplayer_field_splash_text]',new_item).val(sSplashText);
+      // if sSplashText is an object, we fill both, splash image and text,
+      // otherwise we only use it as a text into the input
+      // ... this is for compatibility reasons with old shortcodes
+      if (typeof(sSplashText) == 'string') {
+        jQuery('[name=fv_wp_flowplayer_field_splash_text]', new_item).val(sSplashText);
+      } else {
+        jQuery('[name=fv_wp_flowplayer_field_splash]', new_item).val(sSplashText.splash);
+        jQuery('[name=fv_wp_flowplayer_field_splash_text]', new_item).val(sSplashText.splash_text);
+      }
     }
   }
   
@@ -977,7 +985,7 @@ function fv_wp_flowplayer_map_names_to_editor_fields(name) {
 function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
   switch (name) {
     case 'playlist_advance':
-      return (value == 'true' ? 'on' : 'off');
+      return (value == 'true' || value == 'on' ? 'on' : 'off');
       break;
 
     default: return value
@@ -1178,7 +1186,7 @@ function fv_wp_flowplayer_edit() {
               }
             }
 
-            $video_data_tab = fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text, vids[x].id);
+            $video_data_tab = fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), (vids[x].splash ? {'splash' : vids[x].splash, 'splash_text' : vids[x].splash_text} : vids[x].splash_text), vids[x].id);
 
             // fire up meta load event for this video, so plugins can process it and react
             $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab]);
