@@ -415,16 +415,6 @@ class FV_Player_Db_Shortcode {
         }
       }
 
-      // add any player meta data that we can gather
-      $player_meta = array();
-
-      // call a filter which is server by plugins to augment
-      // the $player_meta data with all the plugin data for this
-      // particular player
-      if (!empty($post_data['player_meta'])) {
-        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta']);
-      }
-
       foreach ($post_data as $field_name => $field_value) {
         // global player or local video setting field
         if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {

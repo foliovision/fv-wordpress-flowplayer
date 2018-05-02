@@ -565,7 +565,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
   }
   
   fv_wp_flowplayer_dialog_resize(); 
-  return false;
+  return new_item;
 }
 
 /*
@@ -1175,12 +1175,12 @@ function fv_wp_flowplayer_edit() {
                   });
                 }
               }
-
-              // fire up meta load event for this video, so plugins can process it and react
-              $doc.trigger('fv_flowplayer_video_meta_load', [vids[x].meta, x]);
             }
 
-            fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text, vids[x].id);
+            $video_data_tab = fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), vids[x].splash_text, vids[x].id);
+
+            // fire up meta load event for this video, so plugins can process it and react
+            $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab]);
           }
 
           // show playlist instead of the "add new video" form
@@ -1327,7 +1327,7 @@ function fv_wp_flowplayer_build_ajax_data() {
       $editor                = jQuery('#fv-player-shortcode-editor')
       $tabs                  = $editor.find('.fv-player-tab'),
       regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
-      data                   = {},
+      data                   = {'video_meta' : {}},
       end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
 
   // special processing for end video actions
@@ -1350,30 +1350,25 @@ function fv_wp_flowplayer_build_ajax_data() {
   // trigger meta data save events, so we get meta data from different
   // plugins included as we post
   jQuery(document).trigger('fv_flowplayer_player_meta_save', [data]);
-  jQuery(document).trigger('fv_flowplayer_video_meta_save', [data]);
 
   $tabs.each(function() {
     var
       $tab = jQuery(this),
       is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
       is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select'));
+      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea'));
 
     // prepare video and subtitles data, which are duplicated through their input names
     if (is_videos_tab) {
       data['videos'] = {};
     } else if (is_subtitles_tab) {
-      if (!data['video_meta']) {
-        data['video_meta'] = {};
-      }
-
       data['video_meta']['subtitles'] = {};
     }
 
     // iterate over all tables in tabs
     $tables.each(function(table_index) {
       // only videos and subtitles tabs have tables, so we only need to search for their inputs when working with those
-      var $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select') : jQuery(this));
+      var $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this));
 
       $inputs.each(function() {
         var
@@ -1409,6 +1404,9 @@ function fv_wp_flowplayer_build_ajax_data() {
                 id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
               };
             }
+
+            // let plugins update video meta, if applicable
+            jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, table_index, this]);
 
             // check dropdown for its value based on values in it
             if (isDropdown) {
