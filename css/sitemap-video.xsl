@@ -84,10 +84,8 @@
 					<tr>
 						<th width="10%">Video</th>
 						<th width="20%">Title</th>
-						<th width="25%">Description</th>
-						<th width="10%">Tags</th>
-						<th width="10%">Category</th>
-						<th width="10%">Duration</th>
+						<th width="25%">Description</th>						
+						<th width="10%">Category</th>						
 						<th width="15%">Pub Date</th>
 					</tr>
 				</thead>
@@ -134,40 +132,9 @@
 							</td>
 
 							<td>
-								<xsl:for-each select="video:video/video:tag">
-									<xsl:value-of select="."/>,
-								</xsl:for-each>
-							</td>
-
-							<td>
 								<xsl:value-of select="video:video/video:category"/>
 							</td>
-
-							<td>
-								<xsl:variable name="duration">
-									<xsl:value-of select="video:video/video:duration"/>
-								</xsl:variable>
-								<xsl:if test="$duration != ''">
-									<xsl:variable name="durationMinutes">
-										<xsl:value-of select="floor($duration div 60)"/>
-									</xsl:variable>
-									<xsl:variable name="durationSeconds">
-										<xsl:value-of select="$duration - ( $durationMinutes * 60 )"/>
-									</xsl:variable>
-									<xsl:choose>
-										<xsl:when test="$durationSeconds &gt; '9'">
-											<xsl:value-of select="concat($durationMinutes,':',$durationSeconds )"/>
-										</xsl:when>
-										<xsl:when test="$durationSeconds &lt; '10'">
-											<xsl:value-of select="concat($durationMinutes,':0',$durationSeconds )"/>
-										</xsl:when>
-										<xsl:when test="$durationSeconds &lt; '1'">
-											<xsl:value-of select="concat($durationMinutes,':00' )"/>
-										</xsl:when>
-									</xsl:choose>
-								</xsl:if>
-							</td>
-
+              
 							<td>
 								<xsl:value-of select="concat(substring(video:video/video:publication_date,0,11),concat(' ', substring(video:video/video:publication_date,12,5)))"/>
 							</td>

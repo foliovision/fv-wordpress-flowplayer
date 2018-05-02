@@ -9,11 +9,12 @@ class FV_Xml_Video_Sitemap {
         add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
         
         add_action( 'parse_request', array($this, 'fix_query_vars') );
-        
-        add_action('wp_head', array($this, 'debug') );
     }
     
-    function fix_query_vars( $query ) { // stop Yoast SEO from interferring - todo: option
+    function fix_query_vars( $query ) { // stop Yoast SEO from interferring
+      global $fv_fp;
+      if( !$fv_fp->_get_option('video_sitemap') ) return $query;
+      
       if( !empty($query->query_vars['sitemap']) && $query->query_vars['sitemap'] == 'video' ) {
         unset($query->query_vars['sitemap']);
         $query->query_vars['feed'] = 'video-sitemap-index';
@@ -39,7 +40,16 @@ class FV_Xml_Video_Sitemap {
           // todo: perhaps include videos in postmeta too
         }
         
-        $sanitized_description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');
+        if( $meta = get_post_meta($objPost->ID, '_aioseop_description', true ) ) {
+          $sanitized_description = $meta;
+        } else if( $meta = get_post_meta($objPost->ID, '_yoast_wpseo_metadesc', true ) ) {
+          $sanitized_description = $meta;
+        } else if( $meta = get_post_meta($objPost->ID, '_genesis_description', true ) ) {
+          $sanitized_description = $meta;
+        } else {
+          $sanitized_description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');          
+        }
+        
         $sanitized_description = htmlspecialchars( $sanitized_description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
         if ( isset( $matches[0] ) && count( $matches[0] ) ) {
@@ -60,10 +70,18 @@ class FV_Xml_Video_Sitemap {
             // this crazyness needs to be first converted into non-html characters (so &quot; becomes "), then
             // stripped of them all and returned back HTML-encoded for the XML formatting to be correct
             $splash = !empty($aArgs['poster']) ? $aArgs['poster'] : $aArgs['splash'];
-            $trimmed_splash = htmlspecialchars(trim(html_entity_decode($splash), "\n\t\r\0\x0B".'"'));
-
-            // update splash in accordance to what has been found
-            $splash = $trimmed_splash ? $trimmed_splash : plugins_url('css/img/play_white.png', __DIR__);
+            $splash = htmlspecialchars(trim(html_entity_decode($splash), "\n\t\r\0\x0B".'"'));
+            
+            // make sure the URLs are absolute
+            if( $splash ) {
+              if( stripos($splash,'http://') !== 0 && stripos($splash,'https://') !== 0 && stripos($splash,'//') !== 0 ) {
+                $splash = home_url($splash);
+              } else if( stripos($trimmed_splash,'//') === 0 ) {
+                $splash = 'http:'.$splash;
+              }
+            } else {
+              $splash = plugins_url('css/img/play_white.png', __DIR__);
+            }            
 
             // check for caption - if none present, build it up from page title and video position
             // note: html characters must be substituted or enclosed in CDATA, from which the first
@@ -165,11 +183,11 @@ class FV_Xml_Video_Sitemap {
     }
 
     function fv_check_xml_sitemap_rewrite_rules() {
-      global $wp_rewrite;
+      global $wp_rewrite, $fv_fp;
 
       $rules = get_option( 'rewrite_rules' );
 
-      if (!isset($rules['video-sitemap\.xml$'])) {
+      if( $fv_fp->_get_option('video_sitemap') && !isset($rules['video-sitemap\.xml$']) ) {
         $wp_rewrite->flush_rules();
         add_rewrite_rule('video-sitemap\.xml$', 'index.php?feed=video-sitemap-index', 'top');        
         add_rewrite_rule('video-sitemap\.(\d\d\d\d)-(\d\d)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]&monthnum=$matches[2]', 'top');  
@@ -178,7 +196,9 @@ class FV_Xml_Video_Sitemap {
     }
 
     function fv_generate_video_sitemap() {
-      global $wpdb, $fv_wp_flowplayer_ver;
+      global $wpdb, $fv_wp_flowplayer_ver, $fv_fp;
+      
+      if( !$fv_fp->_get_option('video_sitemap') ) return;
 
       // if output buffering is active, clear it
       if ( ob_get_level() ) ob_clean();
@@ -230,7 +250,9 @@ class FV_Xml_Video_Sitemap {
     }
     
     function fv_generate_video_sitemap_index() {
-      global $wpdb, $fv_wp_flowplayer_ver;
+      global $wpdb, $fv_wp_flowplayer_ver, $fv_fp;
+      
+      if( !$fv_fp->_get_option('video_sitemap') ) return;
 
       // if output buffering is active, clear it
       if ( ob_get_level() ) ob_clean();
