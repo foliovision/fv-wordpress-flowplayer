@@ -159,7 +159,8 @@ CREATE TABLE `".$this->db_table_name."` (
   `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
   `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
   `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `src` (`src`)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       dbDelta($sql);
@@ -297,6 +298,25 @@ CREATE TABLE `".$this->db_table_name."` (
 
         $this->meta_data = $meta_object;
       }
+    }
+  }
+
+  public function searchBySrc($like = false, $fields = null) {
+    global $wpdb;
+
+    $row = $wpdb->get_row("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . $this->db_table_name . "` WHERE `src` ". ($like ? 'LIKE "%'.esc_sql($this->src).'%"' : '="'.esc_sql($this->src).'"') ." ORDER BY id DESC");
+
+    if (!$row) {
+      return false;
+    } else {
+      // load up all values for this video
+      foreach ($row as $key => $value) {
+        if (property_exists($this, $key)) {
+          $this->$key = $value;
+        }
+      }
+
+      return true;
     }
   }
 
