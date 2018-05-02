@@ -4,9 +4,21 @@ class FV_Xml_Video_Sitemap {
 
     public function __construct() {
         // Add our custom rewrite rules
-        add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'));
+        add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), 999 );
         add_action('do_feed_video-sitemap', array($this, 'fv_generate_video_sitemap'), 10, 1);
         add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
+        
+        add_action( 'parse_request', array($this, 'fix_query_vars') );
+        
+        add_action('wp_head', array($this, 'debug') );
+    }
+    
+    function fix_query_vars( $query ) { // stop Yoast SEO from interferring - todo: option
+      if( !empty($query->query_vars['sitemap']) && $query->query_vars['sitemap'] == 'video' ) {
+        unset($query->query_vars['sitemap']);
+        $query->query_vars['feed'] = 'video-sitemap-index';
+      }
+      return $query;
     }
     
     function get_post_types() {
@@ -62,7 +74,7 @@ class FV_Xml_Video_Sitemap {
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // set thumbnail
-            $new_video_record['video']['thumbnail_loc'] = $splash;
+            $new_video_record['video']['thumbnail_loc'] = apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID );
 
             // set video title
             if (!empty($sanitized_caption)) {
@@ -83,6 +95,11 @@ class FV_Xml_Video_Sitemap {
             } else {
               $new_video_record['video']['description'] = $sanitized_description;
             }
+            
+            if( $aCategories = get_the_category($objPost->ID) ) {
+              $new_video_record['video']['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
+            }
+            $new_video_record['video']['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
 
             // update video counter used for naming videos without caption on pages without titles
             if ($increment_video_counter) {
@@ -132,7 +149,7 @@ class FV_Xml_Video_Sitemap {
       foreach( $per_year AS $year => $posts ) {
         if( $posts > 1000 ) {
           foreach( $years_and_months AS $v ) {
-            if( $v->year == $year ) {
+            if( $year > 0 && $v->year == $year ) {
               $merged[] = $v;
             }
           }
