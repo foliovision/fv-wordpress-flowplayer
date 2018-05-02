@@ -978,9 +978,10 @@ function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
   switch (name) {
     case 'playlist_advance':
       return (value == 'true' ? 'on' : 'off');
-  }
+      break;
 
-  return value;
+    default: return value
+  }
 }
 
 /*
@@ -1148,10 +1149,10 @@ function fv_wp_flowplayer_edit() {
                     });
                   }
                 } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
-                  if (real_val == '1' || real_val == 'on' || real_val == 'true') {
+                  if (real_val === '1' || real_val === 'on' || real_val === 'true') {
                     $element.attr('checked', 'checked');
                   } else {
-                    $element.attr('checked', '');
+                    $element.removeAttr('checked');
                   }
                 } else {
                   $element.val(real_val);
