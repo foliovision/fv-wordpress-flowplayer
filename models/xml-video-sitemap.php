@@ -87,6 +87,7 @@ class FV_Xml_Video_Sitemap {
             // note: html characters must be substituted or enclosed in CDATA, from which the first
             //       is easier to do correctly on a single line
             $sanitized_caption = htmlspecialchars(strip_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+            $sanitized_src = htmlspecialchars(strip_tags(trim($aArgs['src'])), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // sanitized post title, used when no video caption is provided
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
@@ -129,10 +130,10 @@ class FV_Xml_Video_Sitemap {
             // note: we check for strlen($extension) < 10, since abc.com would otherwise register as extension
             if ((strpos($aArgs['src'], '.') !== false) && ($extension = substr(strrchr($aArgs['src'], "."), 1)) && strlen($extension) < 10) {
               // filename URL
-              $new_video_record['video']['content_loc'] = $aArgs['src'];
+              $new_video_record['video']['content_loc'] = $sanitized_src;
             } else {
               // player URL
-              $new_video_record['video']['player_loc'] = $aArgs['src'];
+              $new_video_record['video']['player_loc'] = $sanitized_src;
             }
 
             $videos[] = $new_video_record;
