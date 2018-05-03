@@ -306,6 +306,9 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
 
               <div class="fv-player-tab fv-player-tab-subtitles" style="display: none">
                 <table width="100%" data-index="0">
+
+                <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend'); ?>
+
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["subtitles"]) || $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
                     <td class="field fv-fp-subtitles" colspan="2">
