@@ -360,6 +360,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.5.3 - 2018/04/?? =
 
 * Optimization - fix is sites which use deferred loading of JavaScript
+* Subtitles - support for Simplified Chinese
 * Bugfix - Lightbox - fix for lightbox caption not appearing
 * Bugfix - PHP 5.2 issue with json_encode
 * Bugfix - playlist items with ' symbols
