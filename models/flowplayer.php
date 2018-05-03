@@ -1624,6 +1624,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       'KM' => 'Cambodian',
       'CA' => 'Catalan',
       'ZH' => 'Chinese',
+      'ZH_HANS' => 'Chinese (Simplified)',
       'CO' => 'Corsican',
       'HR' => 'Croatian',
       'CS' => 'Czech',
