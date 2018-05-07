@@ -427,6 +427,12 @@ class FV_Player_Db_Shortcode {
             // width and height are global options but are sent out for shortcode compatibility
             unset($video_data['fv_wp_flowplayer_field_width'], $video_data['fv_wp_flowplayer_field_height']);
 
+            // rename global player HLS key option to local video HLS option,
+            // since we've had to keep this name to provide backwards compatibility
+            // in old shortcodes
+            $video_data['fv_wp_flowplayer_field_hlskey'] = $video_data['fv_wp_flowplayer_hlskey'];
+            unset($video_data['fv_wp_flowplayer_hlskey'], $video_data['fv_wp_flowplayer_hlskey_cryptic']);
+
             // strip video data of the prefix
             $new_video_data = array();
             foreach ($video_data as $key => $value) {

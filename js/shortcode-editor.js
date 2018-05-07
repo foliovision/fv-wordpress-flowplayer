@@ -1187,6 +1187,11 @@ function fv_wp_flowplayer_edit() {
             }
 
             $video_data_tab = fv_flowplayer_playlist_add(vids[x].src + ',' + vids[x].src_1 + ',' + vids[x].src_2, vids[x].caption, (subs.length ? subs : ''), (vids[x].splash ? {'splash' : vids[x].splash, 'splash_text' : vids[x].splash_text} : vids[x].splash_text), vids[x].id);
+            $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
+
+            // add chapters and transcript
+            $subtitles_tab.find('#fv_wp_flowplayer_field_chapters').val(vids[x].chapters);
+            $subtitles_tab.find('.fv_wp_flowplayer_field_transcript').val(vids[x].transcript);
 
             // fire up meta load event for this video, so plugins can process it and react
             $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab]);
@@ -1365,7 +1370,8 @@ function fv_wp_flowplayer_build_ajax_data() {
       $tab = jQuery(this),
       is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
       is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea'));
+      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
+      video_fields_in_other_tabs = ['fv_wp_flowplayer_field_transcript', 'fv_wp_flowplayer_field_chapters'];
 
     // prepare video and subtitles data, which are duplicated through their input names
     if (is_videos_tab) {
@@ -1407,7 +1413,7 @@ function fv_wp_flowplayer_build_ajax_data() {
           }
 
           // videos tab
-          if (is_videos_tab) {
+          if (is_videos_tab || video_fields_in_other_tabs.indexOf($this.attr('name')) > -1) {
             if (!data['videos'][table_index]) {
               data['videos'][table_index] = {
                 id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
@@ -1432,7 +1438,7 @@ function fv_wp_flowplayer_build_ajax_data() {
           }
 
           // subtitles tab
-          else if (is_subtitles_tab) {
+          else if (is_subtitles_tab && $this.hasClass('fv_wp_flowplayer_field_subtitles')) {
             if (!data['video_meta']['subtitles'][table_index]) {
               data['video_meta']['subtitles'][table_index] = [];
             }

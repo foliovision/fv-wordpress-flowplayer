@@ -62,7 +62,6 @@ class FV_Player_Db_Shortcode_Player {
     $video_ads,
     $video_ads_post,
     $width, // with of the player on page
-    $hlskey,
     $videos,
     $video_objects = null,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
@@ -359,13 +358,6 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getHlskey() {
-    return $this->hlskey;
-  }
-
-  /**
-   * @return string
-   */
   public function getVideoIds() {
     return $this->videos;
   } // comma-separated list of video IDs for this player
@@ -421,8 +413,7 @@ CREATE TABLE `".$this->db_table_name."` (
   `sticky` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
   `video_ads` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[preroll in shortcode] ID of a saved video ad to be played as a pre-roll',
   `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[postroll in shortcode] ID of a saved video ad to be played as a pre-roll',
-  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page',
-  `hlskey` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page'
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
