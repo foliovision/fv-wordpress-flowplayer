@@ -985,7 +985,7 @@ function fv_wp_flowplayer_map_names_to_editor_fields(name) {
 function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
   switch (name) {
     case 'playlist_advance':
-      return (value == 'true' || value == 'on' ? 'on' : 'off');
+      return ((value == 'true' || value == 'on') ? 'on' : (value == 'default' || value == '') ? 'default' : 'off');
       break;
 
     default: return value
