@@ -2113,7 +2113,7 @@ function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
       }
     } else {
       // update if we have an ID
-      data['player_meta'][options.meta_section][options.meta_key] = {
+      options.data['player_meta'][options.meta_section][options.meta_key] = {
         'id': $element.data('id'),
         'value': $element.val()
       }
@@ -2125,7 +2125,61 @@ function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
     }
   } else if ($element.val()) {
     // insert new data if no meta ID
-    data['player_meta'][options.meta_section][options.meta_key] = {
+    options.data['player_meta'][options.meta_section][options.meta_key] = {
+      'value': $element.val()
+    }
+
+    // execute insert callback, if present
+    if (options.insert_callback && typeof(options.insert_callback) == 'function') {
+      options.insert_callback();
+    }
+  }
+};
+
+function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
+  var
+    $element = jQuery(options.element),
+    $deleted_meta_element = jQuery('#deleted_video_meta');
+
+  // don't do anything if we've not found the actual element
+  if (!$element.length) {
+    return;
+  }
+
+  // check whether to update or delete this meta
+  if ($element.data('id')) {
+    // only delete this meta if delete was not prevented via options
+    // and if there was no value specified, otherwise update
+    if ((!options.handle_delete || options.handle_delete !== false) && !$element.val()) {
+      if ($deleted_meta_element.val()) {
+        $deleted_meta_element.val($deleted_meta_element.val() + ',' + $element.data('id'));
+      } else {
+        $deleted_meta_element.val($element.data('id'));
+      }
+
+      $element
+        .removeData('id')
+        .removeAttr('data-id');
+
+      // execute delete callback, if present
+      if (options.delete_callback && typeof(options.delete_callback) == 'function') {
+        options.delete_callback();
+      }
+    } else {
+      // update if we have a value
+      options.data['video_meta'][options.meta_section][options.meta_index][options.meta_key] = {
+        'id': $element.data('id'),
+        'value': $element.val()
+      }
+
+      // execute update callback, if present
+      if (options.edit_callback && typeof(options.edit_callback) == 'function') {
+        options.edit_callback();
+      }
+    }
+  } else if ($element.val()) {
+    // insert new data if no meta ID
+    options.data['video_meta'][options.meta_section][options.meta_index][options.meta_key] = {
       'value': $element.val()
     }
 
