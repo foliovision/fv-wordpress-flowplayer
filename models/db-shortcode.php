@@ -368,9 +368,14 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
-    $player_options    = array();
-    $video_ids         = array();
-    $post_data         = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
+    $player_options        = array();
+    $video_ids             = array();
+    $post_data             = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
+    $ignored_player_fields = array(
+      'fv_wp_flowplayer_field_subtitles_lang', // subtitles languages is a per-video value with global field name,
+                                               // so the player should ignore it, as it will be added via video meta
+      'fv_wp_flowplayer_field_popup', // never used, never shown in the UI, possibly a remnant of old code
+    );
 
     if ($post_data) {
       // parse and resolve deleted videos
@@ -418,9 +423,11 @@ class FV_Player_Db_Shortcode {
       foreach ($post_data as $field_name => $field_value) {
         // global player or local video setting field
         if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
-          $option_name = str_replace('fv_wp_flowplayer_field_', '', $field_name);
-          // global player option
-          $player_options[$option_name] = $field_value;
+          if (!in_array($field_name, $ignored_player_fields)) {
+            $option_name = str_replace( 'fv_wp_flowplayer_field_', '', $field_name );
+            // global player option
+            $player_options[ $option_name ] = $field_value;
+          }
         } else if ($field_name == 'videos' && is_array($field_value)) {
           // iterate over all videos for the player
           foreach ($field_value as $video_index => $video_data) {
