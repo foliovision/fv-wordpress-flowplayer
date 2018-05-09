@@ -1002,7 +1002,12 @@ function fv_wp_flowplayer_edit() {
   dialog.removeAttr('tabindex');
   
   fv_wp_flowplayer_init();
-  
+
+  // remove any DB data IDs that may be left in the form
+  jQuery('#fv-player-shortcode-editor [data-id]').removeData('id').removeAttr('data-id');
+  jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
+  jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
+
   jQuery("#fv-player-shortcode-editor input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
   jQuery("#fv-player-shortcode-editor textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv-player-shortcode-editor select').prop('selectedIndex',0);
