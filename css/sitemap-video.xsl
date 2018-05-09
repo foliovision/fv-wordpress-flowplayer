@@ -105,7 +105,7 @@
 									<xsl:value-of select="video:video/video:player_loc"/>
 								</xsl:variable>
 
-								<a href="{$flvURL}"><img src="{$thumbURL}" width="115" height="65" /></a>
+								<img src="{$thumbURL}" width="100" />
 							</td>
 
 							<td>

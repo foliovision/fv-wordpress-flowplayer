@@ -357,8 +357,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.5.3 - 2018/04/?? =
+= 6.6 - 2018/05/09 =
 
+* New feature - XML Video Sitemap
 * Optimization - fix is sites which use deferred loading of JavaScript
 * Subtitles - support for Simplified Chinese
 * Bugfix - Lightbox - fix for lightbox caption not appearing

@@ -23,9 +23,9 @@ class FV_Xml_Video_Sitemap {
     }
     
     function get_post_types() {
-      $types = array_keys( get_post_types( array( 'public' => true ) ) );
+      $types = get_post_types( array( 'public' => true ) );
       unset($types['revision'], $types['attachment'], $types['topic'], $types['reply']);
-      return $types;
+      return array_keys($types);
     }
     
     public static function get_video_details( $posts ) {
@@ -88,6 +88,15 @@ class FV_Xml_Video_Sitemap {
             //       is easier to do correctly on a single line
             $sanitized_caption = htmlspecialchars(strip_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
             $sanitized_src = htmlspecialchars(strip_tags(trim($aArgs['src'])), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+            
+            // make sure the URLs are absolute
+            if( $sanitized_src ) {
+              if( stripos($sanitized_src,'http://') !== 0 && stripos($sanitized_src,'https://') !== 0 && stripos($sanitized_src,'//') !== 0 ) {
+                $sanitized_src = home_url($sanitized_src);
+              } else if( stripos($sanitized_src,'//') === 0 ) {
+                $sanitized_src = 'https:'.$sanitized_src;
+              }
+            }            
 
             // sanitized post title, used when no video caption is provided
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
@@ -132,8 +141,7 @@ class FV_Xml_Video_Sitemap {
               // filename URL
               $new_video_record['video']['content_loc'] = $sanitized_src;
             } else {
-              // player URL
-              $new_video_record['video']['player_loc'] = $sanitized_src;
+              continue;
             }
 
             $videos[] = $new_video_record;
