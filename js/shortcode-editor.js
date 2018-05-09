@@ -1008,6 +1008,10 @@ function fv_wp_flowplayer_edit() {
   jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
   jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
 
+  // fire up editor reset event, so plugins can clear up their data IDs as well
+  var $doc = jQuery(document);
+  $doc.trigger('fv_flowplayer_player_editor_reset');
+
   jQuery("#fv-player-shortcode-editor input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
   jQuery("#fv-player-shortcode-editor textarea").each( function() { jQuery(this).val( '' ) } );
   jQuery('#fv-player-shortcode-editor select').prop('selectedIndex',0);
