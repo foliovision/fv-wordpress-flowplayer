@@ -1180,17 +1180,37 @@ function fv_wp_flowplayer_edit() {
 
           // add videos from the DB
           for (var x in vids) {
-            var subs = [];
+            var
+              subs = [],
+              transcript = null,
+              chapters = null;
 
-            // add all subtitles
+            // add all subtitles, chapters and transcripts
             if (vids[x].meta && vids[x].meta.length) {
               for (var m in vids[x].meta) {
+                // subtitles
                 if (vids[x].meta[m].meta_key.indexOf('subtitles') > -1) {
                   subs.push({
                     lang: vids[x].meta[m].meta_key.replace('subtitles_', ''),
                     file: vids[x].meta[m].meta_value,
                     id: vids[x].meta[m].id
                   });
+                }
+
+                // chapters
+                if (vids[x].meta[m].meta_key.indexOf('chapters') > -1) {
+                  chapters = {
+                    id: vids[x].meta[m].id,
+                    value: vids[x].meta[m].meta_value
+                  };
+                }
+
+                // transcript
+                if (vids[x].meta[m].meta_key.indexOf('transcript') > -1) {
+                  transcript = {
+                    id: vids[x].meta[m].id,
+                    value: vids[x].meta[m].meta_value
+                  };
                 }
               }
             }
@@ -1199,8 +1219,13 @@ function fv_wp_flowplayer_edit() {
             $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
 
             // add chapters and transcript
-            $subtitles_tab.find('#fv_wp_flowplayer_field_chapters').val(vids[x].chapters);
-            $subtitles_tab.find('.fv_wp_flowplayer_field_transcript').val(vids[x].transcript);
+            if (chapters){
+              $subtitles_tab.find('#fv_wp_flowplayer_field_chapters').val(chapters.value).attr('data-id', chapters.id);
+            }
+
+            if (transcript) {
+              $subtitles_tab.find('.fv_wp_flowplayer_field_transcript').val(transcript.value).attr('data-id', transcript.id);
+            }
 
             // fire up meta load event for this video, so plugins can process it and react
             $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab]);
@@ -1379,14 +1404,15 @@ function fv_wp_flowplayer_build_ajax_data() {
       $tab = jQuery(this),
       is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
       is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
-      video_fields_in_other_tabs = ['fv_wp_flowplayer_field_transcript', 'fv_wp_flowplayer_field_chapters'];
+      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea'));
 
     // prepare video and subtitles data, which are duplicated through their input names
     if (is_videos_tab) {
       data['videos'] = {};
     } else if (is_subtitles_tab) {
       data['video_meta']['subtitles'] = {};
+      data['video_meta']['transcript'] = {};
+      data['video_meta']['chapters'] = {};
     }
 
     // iterate over all tables in tabs
@@ -1422,7 +1448,7 @@ function fv_wp_flowplayer_build_ajax_data() {
           }
 
           // videos tab
-          if (is_videos_tab || video_fields_in_other_tabs.indexOf($this.attr('name')) > -1) {
+          if (is_videos_tab) {
             if (!data['videos'][table_index]) {
               data['videos'][table_index] = {
                 id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
@@ -1446,7 +1472,7 @@ function fv_wp_flowplayer_build_ajax_data() {
             }
           }
 
-          // subtitles tab
+          // subtitles tab, subtitles inputs
           else if (is_subtitles_tab && $this.hasClass('fv_wp_flowplayer_field_subtitles')) {
             if (!data['video_meta']['subtitles'][table_index]) {
               data['video_meta']['subtitles'][table_index] = [];
@@ -1460,6 +1486,36 @@ function fv_wp_flowplayer_build_ajax_data() {
                 id: $this.parent().data('id_subtitles')
               });
             }
+          }
+
+          // subtitles tab, chapters input
+          else if (is_subtitles_tab && $this.attr('id') == 'fv_wp_flowplayer_field_chapters') {
+            if (!data['video_meta']['chapters'][table_index]) {
+              data['video_meta']['chapters'][table_index] = {};
+            }
+
+            fv_flowplayer_insertUpdateOrDeleteVideoMeta({
+              data: data,
+              meta_section: 'chapters',
+              meta_key: 'file',
+              meta_index: table_index,
+              element: $this
+            });
+          }
+
+          // subtitles tab, transcript input
+          else if (is_subtitles_tab && $this.hasClass('fv_wp_flowplayer_field_transcript')) {
+            if (!data['video_meta']['transcript'][table_index]) {
+              data['video_meta']['transcript'][table_index] = {};
+            }
+
+            fv_flowplayer_insertUpdateOrDeleteVideoMeta({
+              data: data,
+              meta_section: 'transcript',
+              meta_key: 'file',
+              meta_index: table_index,
+              element: $this
+            });
           }
 
           // all other tabs
@@ -1680,7 +1736,7 @@ function fv_wp_flowplayer_submit( preview ) {
       jQuery.post(ajaxurl, {
         action: 'fv_wp_flowplayer_db_store_player_data',
         data: ajax_data,
-        cookie: encodeURIComponent(document.cookie)
+        cookie: encodeURIComponent(document.cookie),
       }, function(playerID) {
         fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
         jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();

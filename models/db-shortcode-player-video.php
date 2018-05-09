@@ -23,7 +23,6 @@ class FV_Player_Db_Shortcode_Player_Video {
     $id, // automatic ID for the video
     $is_valid = false, // used when loading the video from DB to determine whether we've found it
     $caption, // optional video caption
-    $chapters, // URL for a VTT file for displaying captions
     $end, // allows you to show only a specific part of a video
     $mobile, // mobile (smaller-sized) version of this video
     $rtmp, // optional RTMP server URL
@@ -34,7 +33,6 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src_1, // alternative source path #1 for the video
     $src_2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $transcript, // URL for a transcript for this video
     $db_table_name,
     $additional_objects = array(),
     $meta_data = null; // object of this video's meta data
@@ -51,13 +49,6 @@ class FV_Player_Db_Shortcode_Player_Video {
    */
   public function getCaption() {
     return $this->caption;
-  }
-
-  /**
-   * @return string
-   */
-  public function getChapters() {
-    return $this->chapters;
   }
 
   /**
@@ -131,13 +122,6 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
-   * @return string
-   */
-  public function getTranscript() {
-    return $this->transcript;
-  }
-
-  /**
    * @return bool
    */
   public function getIsValid() {
@@ -161,13 +145,11 @@ CREATE TABLE `".$this->db_table_name."` (
   `splash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL to the splash screen picture',
   `splash_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'an optional splash screen text',
   `caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
-  `chapters` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL for a VTT file for displaying captions',
   `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
   `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
   `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
   `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
-  `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
-  `transcript` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL for a transcript for this video',
+  `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video'
   PRIMARY KEY (`id`),
   KEY `src` (`src`)
 )" . $wpdb->get_charset_collate() . ";";

@@ -374,7 +374,9 @@ class FV_Player_Db_Shortcode {
     $ignored_player_fields = array(
       'fv_wp_flowplayer_field_subtitles_lang', // subtitles languages is a per-video value with global field name,
                                                // so the player should ignore it, as it will be added via video meta
-      'fv_wp_flowplayer_field_popup', // never used, never shown in the UI, possibly a remnant of old code
+      'fv_wp_flowplayer_field_popup', // never used, never shown in the UI, possibly a remnant of old code,
+      'fv_wp_flowplayer_field_transcript', // transcript is a meta value, so it should not be stored globally per-player anymore
+      'fv_wp_flowplayer_field_chapters', // chapters is a meta value, so it should not be stored globally per-player anymore
     );
 
     if ($post_data) {
@@ -434,10 +436,7 @@ class FV_Player_Db_Shortcode {
             // width and height are global options but are sent out for shortcode compatibility
             unset($video_data['fv_wp_flowplayer_field_width'], $video_data['fv_wp_flowplayer_field_height']);
 
-            // rename global player HLS key option to local video HLS option,
-            // since we've had to keep this name to provide backwards compatibility
-            // in old shortcodes
-            $video_data['fv_wp_flowplayer_field_hlskey'] = $video_data['fv_wp_flowplayer_hlskey'];
+            // remove global player HLS key option, as it's handled as meta data item
             unset($video_data['fv_wp_flowplayer_hlskey'], $video_data['fv_wp_flowplayer_hlskey_cryptic']);
 
             // strip video data of the prefix
@@ -454,6 +453,34 @@ class FV_Player_Db_Shortcode {
 
             // add any video meta data that we can gather
             $video_meta = array();
+
+            // add chapters
+            if (!empty($post_data['video_meta']['chapters'][$video_index]['file']['value'])) {
+              $chapters = array(
+                'meta_key' =>'chapters',
+                'meta_value' => $post_data['video_meta']['chapters'][$video_index]['file']['value']
+              );
+
+              if (!empty($post_data['video_meta']['chapters'][$video_index]['file']['id'])) {
+                $chapters['id'] = $post_data['video_meta']['chapters'][$video_index]['file']['id'];
+              }
+
+              $video_meta[] = $chapters;
+            }
+
+            // add transcript
+            if (!empty($post_data['video_meta']['transcript'][$video_index]['file']['value'])) {
+              $transcript = array(
+                'meta_key' =>'transcript',
+                'meta_value' => $post_data['video_meta']['transcript'][$video_index]['file']['value']
+              );
+
+              if (!empty($post_data['video_meta']['transcript'][$video_index]['file']['id'])) {
+                $transcript['id'] = $post_data['video_meta']['transcript'][$video_index]['file']['id'];
+              }
+
+              $video_meta[] = $transcript;
+            }
 
             // call a filter which is server by plugins to augment
             // the $video_meta data with all the plugin data for this
@@ -496,7 +523,7 @@ class FV_Player_Db_Shortcode {
       // add any player meta data that we can gather
       $player_meta = array();
 
-      // call a filter which is server by plugins to augment
+      // call a filter which is served by plugins to augment
       // the $player_meta data with all the plugin data for this
       // particular player
       if (!empty($post_data['player_meta'])) {
