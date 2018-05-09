@@ -25,7 +25,6 @@ class FV_Player_Db_Shortcode_Player_Video {
     $caption, // optional video caption
     $chapters, // URL for a VTT file for displaying captions
     $end, // allows you to show only a specific part of a video
-    $hlskey, // key to decrypt protected HLS video streams
     $mobile, // mobile (smaller-sized) version of this video
     $rtmp, // optional RTMP server URL
     $rtmp_path, // if RTMP is set, this will have the path on the server to the RTMP stream
@@ -66,13 +65,6 @@ class FV_Player_Db_Shortcode_Player_Video {
    */
   public function getEnd() {
     return $this->end;
-  }
-
-  /**
-   * @return string
-   */
-  public function getHlskey() {
-    return $this->hlskey;
   }
 
   /**
@@ -171,7 +163,6 @@ CREATE TABLE `".$this->db_table_name."` (
   `caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
   `chapters` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL for a VTT file for displaying captions',
   `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
-  `hlskey` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'HLS key to decrypt protected HLS video streams, usually from AWS',
   `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
   `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
   `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
