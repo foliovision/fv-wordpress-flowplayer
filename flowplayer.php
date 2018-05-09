@@ -59,6 +59,8 @@ include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
+include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
+
 $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {
