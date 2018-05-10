@@ -600,6 +600,32 @@ CREATE TABLE `" . $this->db_table_name . "` (
         return array();
       } else {
         $this->video_objects = $videos->getAllLoadedVideos();
+
+        // load meta data for all videos at once, then link them to those videos,
+        // as we will always load meta data for those, so it's no use to lazy-load
+        // those only when needed (which creates additional DB requests per each video)
+        $ids = array();
+        foreach ($this->video_objects as $video) {
+          $ids[] = $video->getId();
+        }
+
+        $metas = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => $ids));
+        $meta_2_video = array();
+
+        // prepare loaded meta to be assigned to their respective videos
+        foreach ($metas->getAllLoadedMeta() as $meta_object) {
+          if (empty($meta_2_video[$meta_object->getIdVideo()])) {
+            $meta_2_video[$meta_object->getIdVideo()] = array();
+          }
+
+          $meta_2_video[$meta_object->getIdVideo()][] = $meta_object->getAllDataValues();
+        }
+
+        // assign all loaded meta data to their respective videos
+        foreach ($this->video_objects as $video) {
+          $video->link2meta($meta_2_video[$video->getId()]);
+        }
+
         return $this->video_objects;
       }
     } else {
