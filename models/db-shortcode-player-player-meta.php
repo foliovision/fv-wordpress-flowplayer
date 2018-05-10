@@ -69,10 +69,14 @@ class FV_Player_Db_Shortcode_Player_Player_Meta {
    * @param $wpdb The global WordPress database object.
    */
   private function initDB($wpdb) {
+    global $fv_fp;
+
     $this->db_table_name = $wpdb->prefix.'fv_player_playermeta';
-    if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
-      $sql = "
-CREATE TABLE `".$this->db_table_name."` (
+
+    if (!$fv_fp->_get_option('player_meta_model_db_checked')) {
+      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $this->db_table_name . "'" ) != $this->db_table_name ) {
+        $sql = "
+CREATE TABLE `" . $this->db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_player` int(10) UNSIGNED NOT NULL,
   `meta_key` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -81,8 +85,11 @@ CREATE TABLE `".$this->db_table_name."` (
   KEY `id_player` (`id_player`),
   KEY `meta_key` (`meta_key`)
 )" . $wpdb->get_charset_collate() . ";";
-      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta($sql);
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+      }
+
+      $fv_fp->_set_option('player_meta_model_db_checked', 1);
     }
   }
 

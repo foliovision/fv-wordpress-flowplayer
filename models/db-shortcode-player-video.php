@@ -134,27 +134,33 @@ class FV_Player_Db_Shortcode_Player_Video {
    * @param $wpdb The global WordPress database object.
    */
   private function initDB($wpdb) {
-    $this->db_table_name = $wpdb->prefix.'fv_player_videos';
-    if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
-      $sql = "
-CREATE TABLE `".$this->db_table_name."` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
-  `src_1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
-  `src_2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
-  `splash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL to the splash screen picture',
-  `splash_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'an optional splash screen text',
-  `caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
-  `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
-  `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
-  `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
-  `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
-  `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video'
-  PRIMARY KEY (`id`),
-  KEY `src` (`src`)
-)" . $wpdb->get_charset_collate() . ";";
-      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta($sql);
+    global $fv_fp;
+
+    $this->db_table_name = $wpdb->prefix . 'fv_player_videos';
+    if (!$fv_fp->_get_option('video_model_db_checked')) {
+      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $this->db_table_name . "'" ) != $this->db_table_name ) {
+        $sql = "
+  CREATE TABLE `" . $this->db_table_name . "` (
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
+    `src_1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
+    `src_2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
+    `splash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL to the splash screen picture',
+    `splash_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'an optional splash screen text',
+    `caption` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
+    `end` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
+    `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
+    `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
+    `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
+    `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video'
+    PRIMARY KEY (`id`),
+    KEY `src` (`src`)
+  )" . $wpdb->get_charset_collate() . ";";
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+      }
+
+      $fv_fp->_set_option('video_model_db_checked', 1);
     }
   }
 

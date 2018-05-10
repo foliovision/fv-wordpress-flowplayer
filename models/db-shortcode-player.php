@@ -368,10 +368,14 @@ class FV_Player_Db_Shortcode_Player {
    * @param $wpdb The global WordPress database object.
    */
   private function initDB($wpdb) {
+    global $fv_fp;
+
     $this->db_table_name = $wpdb->prefix.'fv_player_players';
-    if ($wpdb->get_var("SHOW TABLES LIKE '".$this->db_table_name."'") !== $this->db_table_name) {
-      $sql = "
-CREATE TABLE `".$this->db_table_name."` (
+
+    if (!$fv_fp->_get_option('player_model_db_checked')) {
+      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $this->db_table_name . "'" ) != $this->db_table_name ) {
+        $sql = "
+CREATE TABLE `" . $this->db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `player_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'custom name for the player',
   `player_slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '	short slug to be used as a unique identifier for this player that can be used instead of an ID',
@@ -416,8 +420,11 @@ CREATE TABLE `".$this->db_table_name."` (
   `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page'
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
-      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta($sql);
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+      }
+
+      $fv_fp->_set_option('player_model_db_checked', 1);
     }
   }
 
