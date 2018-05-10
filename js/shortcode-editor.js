@@ -111,9 +111,16 @@ jQuery(document).ready(function($){
     }else{
       $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').attr('style',false);
     }
-      
+
     fv_player_refresh_tabs();
-    
+
+    // hide chapters and transcript when not the first video in playlist
+    $('.fv-player-tab-subtitles table:gt(0)').each(function() {
+      var $e = $(this);
+      $e.find('.fv_wp_flowplayer_field_transcript').parents('tr:first').hide();
+      $e.find('#fv_wp_flowplayer_field_chapters').parents('tr:first').hide();
+    });
+
     fv_wp_flowplayer_submit(true);
   });
 
