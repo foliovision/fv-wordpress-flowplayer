@@ -721,6 +721,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     return true;  
   }
+
+  public function _set_option($key, $value) {
+    $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
+    $aNewOptions = array_merge($aOldOptions,array($key => $value));
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
+    update_option( 'fvwpflowplayer', $aNewOptions );
+    $this->_get_conf();
+  }
+
   /**
    * Salt function - returns pseudorandom string hash.
    * @return Pseudorandom string hash.
