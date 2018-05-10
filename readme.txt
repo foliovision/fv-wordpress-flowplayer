@@ -360,6 +360,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.6 - 2018/05/09 =
 
 * New feature - XML Video Sitemap
+* Lightbox - making it work also with class="lightbox" images
 * Optimization - fix is sites which use deferred loading of JavaScript
 * Subtitles - support for Simplified Chinese
 * Bugfix - Lightbox - fix for lightbox caption not appearing
