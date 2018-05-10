@@ -32,10 +32,20 @@ class FV_Xml_Video_Sitemap {
       global $fv_fp;
 
       $videos = array();
+      
+      $dynamic_domains = apply_filters('fv_player_pro_video_ajaxify_domains', array());
+      $amazon = $fv_fp->_get_option('amazon_bucket');
+      if( $amazon && is_array($amazon) && count($amazon) > 0 ) {
+        foreach( $amazon AS $bucket ) {
+          $dynamic_domains[] = 'amazonaws.com/'.$bucket.'/';
+          $dynamic_domains[] = '//'.$bucket.'.s3';
+        }      
+      }
 
       foreach ($posts as $objPost) {
         if ( $objPost ) {
           $content = $objPost->post_content;
+          $content = preg_replace( '~<code>.*?</code>~', '', $content );
           preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
           // todo: perhaps include videos in postmeta too
         }
@@ -133,6 +143,16 @@ class FV_Xml_Video_Sitemap {
             if ($increment_video_counter) {
               $video_alt_captions_counter++;
             }
+            
+            if( count($dynamic_domains) ) {
+              $is_dynamic = false;
+              foreach( $dynamic_domains AS $domain ) {
+                if( stripos($sanitized_src,$domain) !== false ) {
+                  $is_dynamic = true;
+                }
+              }
+              if( $is_dynamic ) continue;
+            }
 
             // files with extensions are considered direct video files,
             // everything else is considered a path to player location
@@ -164,31 +184,7 @@ class FV_Xml_Video_Sitemap {
       
       // grouped by year and month
       $years_and_months = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
-      
-      // aggregated yearly data 
-      $per_year = array();
-      foreach( $years_and_months AS $v ) {
-        $per_year[$v->year] += $v->posts;
-      }
-      
-      // check each year and if there are more than 1000 videos, split it by month
-      $merged = array();
-      foreach( $per_year AS $year => $posts ) {
-        if( $posts > 1000 ) {
-          foreach( $years_and_months AS $v ) {
-            if( $year > 0 && $v->year == $year ) {
-              $merged[] = $v;
-            }
-          }
-        } else {
-          $tmp = new stdClass;
-          $tmp->year = $year;
-          $tmp->posts = $posts;
-          $merged[] = $tmp;
-        }
-      }
-      
-      return $merged;
+      return $years_and_months;
     }
 
     function fv_check_xml_sitemap_rewrite_rules() {

@@ -357,7 +357,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.6 - 2018/05/09 =
+= 6.6 - 2018/05/10 =
 
 * New feature - XML Video Sitemap
 * Lightbox - making it work also with class="lightbox" images
