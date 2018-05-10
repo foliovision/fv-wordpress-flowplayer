@@ -98,7 +98,7 @@ HTML;
 <div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
   <div class="fp-ratio" style="padding-top: 56.25%"></div>
 </div>
-  <div class='fv-playlist-slider-wrapper'><div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_10ecd1d835d0db002906d6666d27a916" style="width: 603px">
+  <div class='fv-playlist-slider-wrapper'><div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_10ecd1d835d0db002906d6666d27a916" style="width: 750px">
     <a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video1.mp4","type":"video\/mp4"}]}'><div style='background-image: url("https://cdn.site.com/video1.jpg")'></div><h4><span>Video 1</span></h4></a>
     <a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video2.mp4","type":"video\/mp4"}]}'><div style='background-image: url("https://cdn.site.com/video2.jpg")'></div><h4><span>Video 2</span></h4></a>
     <a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video3.mp4","type":"video\/mp4"}]}'><div style='background-image: url("https://cdn.site.com/video3.jpg")'></div><h4><span> Video 3</span></h4></a>

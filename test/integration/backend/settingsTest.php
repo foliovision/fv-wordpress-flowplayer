@@ -24,7 +24,9 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
       
       /*if( $v != $two[$k]) {
         for($i=0;$i<strlen($two[$k]);$i++) {
-          var_dump( $two[$k][$i].' '.ord($two[$k][$i]) );
+          if( $v[$i] != $two[$k][$i]) {
+            var_dump( $v[$i].' vs '.$two[$k][$i].' '.ord($two[$k][$i]) );
+          }
         }
       }*/
       
