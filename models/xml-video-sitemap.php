@@ -127,7 +127,7 @@ class FV_Xml_Video_Sitemap {
             }
 
             // don't return empty descriptions (can happen if the video tag it the only thing on the page)            
-            if (empty(trim($sanitized_description))) {
+            if( strlen(trim($sanitized_description)) == 0 ) {
               $new_video_record['video']['description'] = $new_video_record['video']['title'];
               $increment_video_counter = true;
             } else {
