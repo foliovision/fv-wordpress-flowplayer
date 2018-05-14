@@ -29,6 +29,13 @@ class FV_Player_Db_Shortcode_Player_Player_Meta {
     $additional_objects = array();
 
   /**
+   * @param mixed $meta_value
+   */
+  public function setMetaValue( $meta_value ) {
+    $this->meta_value = $meta_value;
+  }
+
+  /**
    * @return int
    */
   public function getId() {

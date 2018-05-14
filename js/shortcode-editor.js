@@ -1101,6 +1101,7 @@ function fv_wp_flowplayer_edit() {
       fv_flowplayer_conf.new_shortcode_active = true;
       // DB-based player, create a "wait" overlay
       var overlayDiv = fv_wp_flowplayer_big_loader_show();
+      overlayDiv.html('');
 
       // remove everything with index 0 and the initial video placeholder,
       // otherwise our indexing & previews wouldn't work correctly
@@ -1273,6 +1274,14 @@ function fv_wp_flowplayer_edit() {
         }
 
         overlayDiv.remove();
+      }).error(function(xhr) {
+        if (xhr.status == 404) {
+          overlayDiv.html('<p>&nbsp;</p><p align="center">The requested player could not be found. Please try again.</p>').css('background-image', 'none');
+        } else if (xhr.status == 403) {
+          overlayDiv.html('<p>&nbsp;</p><p align="center">Someone else is editing this player at the moment. Please, try again later.</p>').css('background-image', 'none');
+        } else {
+          overlayDiv.html('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.</p>').css('background-image', 'none');
+        }
       });
     } else {
       // remove Insert as New, or they'll all get renamed to Update

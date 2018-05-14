@@ -363,6 +363,13 @@ class FV_Player_Db_Shortcode_Player {
   } // comma-separated list of video IDs for this player
 
   /**
+   * @return bool
+   */
+  public function getIsValid() {
+    return $this->is_valid;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.

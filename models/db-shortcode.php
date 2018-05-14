@@ -19,6 +19,8 @@
 // class handling database shortcode generation and saving
 class FV_Player_Db_Shortcode {
 
+  private $edit_lock_timeout_seconds = 300;
+
   public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
     add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
@@ -314,6 +316,11 @@ class FV_Player_Db_Shortcode {
         }
 
         $player                     = new FV_Player_Db_Shortcode_Player( $atts['id'] );
+
+        if (!$player->getIsValid()) {
+          return false;
+        }
+
         $player->getVideos();
         $fv_fp->currentPlayerObject = $player;
 
@@ -543,6 +550,18 @@ class FV_Player_Db_Shortcode {
         $id = $player->save($player_meta);
 
         if ($id) {
+          // delete edit lock meta key, if found
+          $meta = $player->getMetaData();
+
+          if (count($meta)) {
+            foreach ($meta as $meta_object) {
+              if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
+                $meta_object->delete();
+                break;
+              }
+            }
+          }
+
           echo $id;
         } else {
           echo -1;
@@ -573,7 +592,51 @@ class FV_Player_Db_Shortcode {
       $out = array();
 
       // load player and its videos from DB
-      $this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ));
+      if (!$this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ))) {
+        header("HTTP/1.0 404 Not Found");
+        die();
+      }
+
+      // check player's meta data for an edit lock
+      $userID = get_current_user_id();
+      if (count($fv_fp->current_player()->getMetaData())) {
+        foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
+          if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
+            if (str_replace('edit_lock_', '', $meta_object->getMetaKey()) != $userID) {
+              // someone else is editing this video, first check the timestamp
+              $last_tick = $meta_object->getMetaValue();
+              if (time() - $last_tick > $this->edit_lock_timeout_seconds) {
+                // timeout, remove lock, add lock for this user
+                $meta_object->delete();
+
+                $meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array(
+                  'id_player' => $fv_fp->current_player()->getId(),
+                  'meta_key' => 'edit_lock_'.$userID,
+                  'meta_value' => time()
+                ));
+
+                $meta->save();
+              } else {
+                header( 'HTTP/1.0 403 Forbidden' );
+                die();
+              }
+            } else {
+              // same user, extend the lock
+              $meta_object->setMetaValue(time());
+              $meta_object->save();
+            }
+          }
+        }
+      } else {
+        // add player edit lock if none was found
+        $meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array(
+          'id_player' => $fv_fp->current_player()->getId(),
+          'meta_key' => 'edit_lock_'.$userID,
+          'meta_value' => time()
+        ));
+
+        $meta->save();
+      }
 
       // fill the $out variable with player data
       $out = array_merge($out, $fv_fp->current_player()->getAllDataValues());
