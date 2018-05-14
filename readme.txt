@@ -357,9 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.5.3 - 2018/04/?? =
+= 6.6 - 2018/05/10 =
 
+* New feature - XML Video Sitemap
+* Lightbox - making it work also with class="lightbox" images
 * Optimization - fix is sites which use deferred loading of JavaScript
+* Subtitles - support for Simplified Chinese
 * Bugfix - Lightbox - fix for lightbox caption not appearing
 * Bugfix - PHP 5.2 issue with json_encode
 * Bugfix - playlist items with ' symbols

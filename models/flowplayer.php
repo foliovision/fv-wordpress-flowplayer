@@ -169,7 +169,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       }
     } else if ($args_num >= 2) {
       // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
-      $first_td_class = '';
+      $first_td_class = ' class="first"';
       $name = func_get_arg(0);
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
@@ -1612,6 +1612,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       'KM' => 'Cambodian',
       'CA' => 'Catalan',
       'ZH' => 'Chinese',
+      'ZH_HANS' => 'Chinese (Simplified)',
       'CO' => 'Corsican',
       'HR' => 'Croatian',
       'CS' => 'Czech',

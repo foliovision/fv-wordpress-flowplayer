@@ -26,9 +26,9 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$fv_wp_flowplayer_ver = '6.5.2';
+$fv_wp_flowplayer_ver = '6.6';
 $fv_wp_flowplayer_core_ver = '6.0.5';
-$fv_wp_flowplayer_core_ver_beta = '7.2.4';
+$fv_wp_flowplayer_core_ver_beta = '7.2.5';
 
 include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -59,6 +59,9 @@ include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
+include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
+
+global $fv_fp;
 $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {

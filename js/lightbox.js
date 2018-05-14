@@ -76,13 +76,13 @@ function fv_player_lightbox_bind(){
     args.initialHeight = 48;
     args.initialWidth = 96;
     args.scrolling = false;
-    jQuery(".colorbox").filter(function() {
+    jQuery(".colorbox, .lightbox").filter(function() {
         return this.href.match(/\.(png|jpg|jpeg|gif|webp)/i);
     }).fv_player_pro_colorbox( args );
     
     //Lightbox for non image divs href="#loginForm"
     args.inline = true;
-    jQuery(".colorbox[href^='#']").fv_player_pro_colorbox( args );    
+    jQuery(".colorbox[href^='#'], .lightbox[href^='#']").fv_player_pro_colorbox( args );    
     
     //Lightbox external sites href="example.com"    
     var args2 = jQuery.extend( {}, defaults );
@@ -90,7 +90,7 @@ function fv_player_lightbox_bind(){
     args2.width = '80%';
     args2.iframe = true;
     
-    jQuery(".colorbox").filter(function() {
+    jQuery(".colorbox, .lightbox").filter(function() {
       return !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
     }).not('[href^="#"]').fv_player_pro_colorbox( args2 );
     
