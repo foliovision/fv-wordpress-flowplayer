@@ -620,17 +620,22 @@ CREATE TABLE `" . $this->db_table_name . "` (
         $meta_2_video = array();
 
         // prepare loaded meta to be assigned to their respective videos
-        foreach ($metas->getAllLoadedMeta() as $meta_object) {
-          if (empty($meta_2_video[$meta_object->getIdVideo()])) {
-            $meta_2_video[$meta_object->getIdVideo()] = array();
-          }
+        $metas = $metas->getAllLoadedMeta();
+        if ($metas) {
+          foreach ( $metas as $meta_object ) {
+            if ( empty( $meta_2_video[ $meta_object->getIdVideo() ] ) ) {
+              $meta_2_video[ $meta_object->getIdVideo() ] = array();
+            }
 
-          $meta_2_video[$meta_object->getIdVideo()][] = $meta_object->getAllDataValues();
+            $meta_2_video[ $meta_object->getIdVideo() ][] = $meta_object->getAllDataValues();
+          }
         }
 
         // assign all loaded meta data to their respective videos
-        foreach ($this->video_objects as $video) {
-          $video->link2meta($meta_2_video[$video->getId()]);
+        if (count($meta_2_video)) {
+          foreach ( $this->video_objects as $video ) {
+            $video->link2meta( $meta_2_video[ $video->getId() ] );
+          }
         }
 
         return $this->video_objects;
