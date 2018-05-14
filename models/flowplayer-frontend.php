@@ -68,6 +68,10 @@ class flowplayer_frontend extends flowplayer
     if( !$media ) $media = $this->aCurArgs['src'];
     $this->hash = md5($media.$this->_salt()); //  unique player id
 
+    if (!$media) {
+      return;
+    }
+
     $this->sHTMLAfter = false;
     $player_type = 'video';
     $rtmp = false;
@@ -168,8 +172,7 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-    if( !$this->_get_option('old_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
-
+    if( !$this->_get_option('old_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {
       list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }
     

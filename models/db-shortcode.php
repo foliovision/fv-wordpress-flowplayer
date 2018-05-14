@@ -166,7 +166,7 @@ class FV_Player_Db_Shortcode {
         }
 
         // cache first vid
-        if (!$first_video_data_cached) {
+        if (!$first_video_data_cached && $videos) {
           $vid = $videos[0]->getAllDataValues();
           $atts = array_merge($atts, $vid);
           $atts['video_objects'] = array($videos[0]);
@@ -191,7 +191,7 @@ class FV_Player_Db_Shortcode {
         }
 
         // add rest of the videos into the playlist tag
-        if (count($videos)) {
+        if ($videos && count($videos)) {
           // if this remains false, the caption tag does not need to be present
           $has_captions = false;
 
@@ -317,7 +317,7 @@ class FV_Player_Db_Shortcode {
 
         $player                     = new FV_Player_Db_Shortcode_Player( $atts['id'] );
 
-        if (!$player->getIsValid()) {
+        if (!$player || !$player->getIsValid()) {
           return false;
         }
 
@@ -599,7 +599,7 @@ class FV_Player_Db_Shortcode {
 
       // check player's meta data for an edit lock
       $userID = get_current_user_id();
-      if (count($fv_fp->current_player()->getMetaData())) {
+      if ($fv_fp->current_player() &&count($fv_fp->current_player()->getMetaData())) {
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
           if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
             if (str_replace('edit_lock_', '', $meta_object->getMetaKey()) != $userID) {
@@ -629,13 +629,15 @@ class FV_Player_Db_Shortcode {
         }
       } else {
         // add player edit lock if none was found
-        $meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array(
-          'id_player' => $fv_fp->current_player()->getId(),
-          'meta_key' => 'edit_lock_'.$userID,
-          'meta_value' => time()
-        ));
+        if ($fv_fp->current_player()) {
+          $meta = new FV_Player_Db_Shortcode_Player_Player_Meta( null, array(
+            'id_player'  => $fv_fp->current_player()->getId(),
+            'meta_key'   => 'edit_lock_' . $userID,
+            'meta_value' => time()
+          ) );
 
-        $meta->save();
+          $meta->save();
+        }
       }
 
       // fill the $out variable with player data
