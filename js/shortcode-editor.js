@@ -1109,8 +1109,16 @@ function fv_wp_flowplayer_edit() {
       jQuery('.fv-player-tab-playlist table tbody tr').remove();
       jQuery('.fv-player-tab-video-files table').remove();
 
+      // store player ID into fv_player_conf, so we can keep sending it
+      // in WP heartbeat
+      fv_flowplayer_conf.current_player_db_id = result[1];
+
+      if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+        delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[result[1]];
+      }
+
       // now load playlist data
-      // load video data via an AJAX call,
+      // load video data via an AJAX call
       jQuery.post(ajaxurl, { 'action' : 'return_shortcode_db_data', 'playerID' :  result[1] }, function(response) {
         var vids = response['videos'];
 
@@ -1342,6 +1350,15 @@ function fv_wp_flowplayer_on_close() {
   fv_wp_flowplayer_init();
   fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
   jQuery('#fv-player-shortcode-editor-preview-target').html('');
+
+  if (fv_flowplayer_conf.current_player_db_id){
+    if (!fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+    }
+
+    fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[fv_flowplayer_conf.current_player_db_id] = 1;
+    delete fv_flowplayer_conf.current_player_db_id;
+  }
 }   
 
 
@@ -1747,6 +1764,16 @@ function fv_wp_flowplayer_submit( preview ) {
     } else {
 	    // show saving loader
       fv_wp_flowplayer_big_loader_show();
+
+      // remove this ID from removals
+      if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+        delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[fv_flowplayer_conf.current_player_db_id];
+      }
+
+      // unmark DB player ID as being currently edited
+      if (fv_flowplayer_conf.current_player_db_id) {
+        delete fv_flowplayer_conf.current_player_db_id;
+      }
 
       // save data
       jQuery.post(ajaxurl, {
@@ -2276,3 +2303,21 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
     }
   }
 };
+
+// extending DB player edit lock's timer
+jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+  if (fv_flowplayer_conf.current_player_db_id) {
+    data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
+  }
+  
+  if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+    data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
+  }
+});
+
+// remove edit locks in the config if it was removed on the server
+jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
+  if ( data.fv_flowplayer_edit_locks_removed ) {
+    fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+  }
+});

@@ -676,4 +676,59 @@ class FV_Player_Db_Shortcode {
     wp_die();
   }
 
+  /**
+   * Receive Heartbeat data and checks for DB edit lock.
+   * In case the lock is found and valid, it will be extended.
+   *
+   * @param array $response Heartbeat response data to pass back to front end.
+   * @param array $data Data received from the front end (unslashed).
+   *
+   * @return array Returns the same response as received, as we don't need to update it or read it anywhere in JS.
+   * @throws Exception When the underlying meta object throws an exception.
+   */
+  function check_db_edit_lock( $response, $data ) {
+    $userID = get_current_user_id();
+
+    // extend an existing lock
+    if ( !empty( $data['fv_flowplayer_edit_lock_id'] ) ) {
+      $player = new FV_Player_Db_Shortcode_Player($data['fv_flowplayer_edit_lock_id']);
+
+      if ($player->getIsValid()) {
+        if (count($player->getMetaData())) {
+          foreach ($player->getMetaData() as $meta_object) {
+            if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
+              if (str_replace('edit_lock_', '', $meta_object->getMetaKey()) == $userID) {
+                // same user, extend the lock
+                $meta_object->setMetaValue(time());
+                $meta_object->save();
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // remove locks that are no longer being edited
+    if ( !empty( $data['fv_flowplayer_edit_lock_removal'] ) && count($data['fv_flowplayer_edit_lock_removal']) ) {
+      // load meta for all players to remove locks for
+      $meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])));
+      $meta = $meta->getAllLoadedMeta();
+
+      if ($meta) {
+        foreach ( $meta as $meta_object ) {
+          if ( strstr( $meta_object->getMetaKey(), 'edit_lock_' ) !== false ) {
+            if ( str_replace( 'edit_lock_', '', $meta_object->getMetaKey() ) == $userID ) {
+              // correct user, delete the lock
+              $meta_object->delete();
+            }
+          }
+        }
+
+        $response['fv_flowplayer_edit_locks_removed'] = 1;
+      }
+    }
+
+    return $response;
+  }
+
 }

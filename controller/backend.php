@@ -874,4 +874,7 @@ function fv_player_block_update( $arg ) {
  *  DB based player data saving
  */
 global $FV_Db_Shortcode;
+
+// these have to be here, as using them in constructor doesn't work
 add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', array($FV_Db_Shortcode, 'db_store_player_data'));
+add_filter('heartbeat_received', array($FV_Db_Shortcode, 'check_db_edit_lock'), 10, 2);
