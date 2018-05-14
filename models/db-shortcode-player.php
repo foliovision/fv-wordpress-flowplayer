@@ -632,9 +632,11 @@ CREATE TABLE `" . $this->db_table_name . "` (
         }
 
         // assign all loaded meta data to their respective videos
-        if (count($meta_2_video)) {
-          foreach ( $this->video_objects as $video ) {
+        foreach ( $this->video_objects as $video ) {
+          if ( !empty($meta_2_video[ $video->getId() ]) ) {
             $video->link2meta( $meta_2_video[ $video->getId() ] );
+          } else {
+            $video->link2meta(-1);
           }
         }
 

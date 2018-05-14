@@ -295,6 +295,8 @@ class FV_Player_Db_Shortcode_Player_Video {
 
         $this->meta_data = $meta_object;
       }
+    } else if ($meta_data === -1) {
+      $this->meta_data = -1;
     }
   }
 
