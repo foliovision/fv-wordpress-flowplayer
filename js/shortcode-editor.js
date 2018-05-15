@@ -715,11 +715,6 @@ function fv_flowplayer_language_add( sInput, sLang, iTabIndex, sId ) {
  * @param shortcode The shortcode with parameters to display the dialog from.
  */
 function do_shortcode_magic(shortcode) {
-  shortcode = shortcode.replace(/^\[|]+$/gm,'');
-  shortcode = shortcode.replace( fv_wp_flowplayer_re_insert, '' );
-
-  shortcode = shortcode.replace( /\\'/g,'&#039;' );
-
   var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
   shortcode_parse_fix = shortcode_parse_fix.replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
   fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
@@ -1104,11 +1099,15 @@ function fv_wp_flowplayer_edit() {
     var shortcode = content.match( fv_wp_flowplayer_re_edit );  
   }
 
-  if( shortcode != null ) {
-    shortcode = shortcode.join('');
+  // remove visual editor placeholders etc.
+  shortcode = shortcode[0]
+                .replace(/^\[|]+$/gm,'')
+                .replace( fv_wp_flowplayer_re_insert, '' )
+                .replace( /\\'/g,'&#039;' );
 
+  if( shortcode != null ) {
     // check for new, DB-based player shortcode
-    var result = /\[fvplayer id="(\d+)"\]/g.exec(shortcode);
+    var result = /fvplayer id="(\d+)"/g.exec(shortcode);
     if (result !== null) {
       fv_flowplayer_conf.new_shortcode_active = true;
       // DB-based player, create a "wait" overlay
