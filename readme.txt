@@ -1676,6 +1676,10 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
+= 6.6.1 =
+
+* FV Player Pro 0.9.17 and 0.9.17.1 users - make sure you update FV Player Pro before this plugin!
+
 = 6.1 =
 
 * Make sure to clear your CDN of Minify cache after upgrading!
