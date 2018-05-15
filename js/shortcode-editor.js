@@ -1445,7 +1445,8 @@ function fv_wp_flowplayer_build_ajax_data() {
       $tab = jQuery(this),
       is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
       is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea'));
+      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
+      save_index = -1;
 
     // prepare video and subtitles data, which are duplicated through their input names
     if (is_videos_tab) {
@@ -1457,9 +1458,13 @@ function fv_wp_flowplayer_build_ajax_data() {
     }
 
     // iterate over all tables in tabs
-    $tables.each(function(table_index) {
+    $tables.each(function() {
       // only videos and subtitles tabs have tables, so we only need to search for their inputs when working with those
-      var $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this));
+      var
+        $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
+        table_index = jQuery(this).data('index');
+
+      save_index++;
 
       $inputs.each(function() {
         var
@@ -1490,14 +1495,14 @@ function fv_wp_flowplayer_build_ajax_data() {
 
           // videos tab
           if (is_videos_tab) {
-            if (!data['videos'][table_index]) {
-              data['videos'][table_index] = {
+            if (!data['videos'][save_index]) {
+              data['videos'][save_index] = {
                 id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
               };
             }
 
             // let plugins update video meta, if applicable
-            jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, table_index, this]);
+            jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, save_index, this]);
 
             // check dropdown for its value based on values in it
             if (isDropdown) {
@@ -1506,22 +1511,22 @@ function fv_wp_flowplayer_build_ajax_data() {
               if (opt_value === false) {
                 return {};
               } else {
-                data['videos'][table_index][m[1]] = opt_value;
+                data['videos'][save_index][m[1]] = opt_value;
               }
             } else {
-              data['videos'][table_index][m[1]] = this.value;
+              data['videos'][save_index][m[1]] = this.value;
             }
           }
 
           // subtitles tab, subtitles inputs
           else if (is_subtitles_tab && $this.hasClass('fv_wp_flowplayer_field_subtitles')) {
-            if (!data['video_meta']['subtitles'][table_index]) {
-              data['video_meta']['subtitles'][table_index] = [];
+            if (!data['video_meta']['subtitles'][save_index]) {
+              data['video_meta']['subtitles'][save_index] = [];
             }
 
             // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
             if (this.nodeName == 'INPUT') {
-              data['video_meta']['subtitles'][table_index].push({
+              data['video_meta']['subtitles'][save_index].push({
                 code : $this.siblings('select:first').val(),
                 file : this.value,
                 id: $this.parent().data('id_subtitles')
@@ -1531,30 +1536,30 @@ function fv_wp_flowplayer_build_ajax_data() {
 
           // subtitles tab, chapters input
           else if (is_subtitles_tab && $this.attr('id') == 'fv_wp_flowplayer_field_chapters') {
-            if (!data['video_meta']['chapters'][table_index]) {
-              data['video_meta']['chapters'][table_index] = {};
+            if (!data['video_meta']['chapters'][save_index]) {
+              data['video_meta']['chapters'][save_index] = {};
             }
 
             fv_flowplayer_insertUpdateOrDeleteVideoMeta({
               data: data,
               meta_section: 'chapters',
               meta_key: 'file',
-              meta_index: table_index,
+              meta_index: save_index,
               element: $this
             });
           }
 
           // subtitles tab, transcript input
           else if (is_subtitles_tab && $this.hasClass('fv_wp_flowplayer_field_transcript')) {
-            if (!data['video_meta']['transcript'][table_index]) {
-              data['video_meta']['transcript'][table_index] = {};
+            if (!data['video_meta']['transcript'][save_index]) {
+              data['video_meta']['transcript'][save_index] = {};
             }
 
             fv_flowplayer_insertUpdateOrDeleteVideoMeta({
               data: data,
               meta_section: 'transcript',
               meta_key: 'file',
-              meta_index: table_index,
+              meta_index: save_index,
               element: $this
             });
           }
