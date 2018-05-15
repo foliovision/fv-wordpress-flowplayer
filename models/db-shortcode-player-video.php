@@ -284,6 +284,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   public function link2meta($meta_data) {
     if (is_array($meta_data) && count($meta_data)) {
       // we have meta, let's insert that
+      $first_done = false;
       foreach ($meta_data as $meta_record) {
         // create new record in DB
         $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record);
@@ -293,7 +294,12 @@ class FV_Player_Db_Shortcode_Player_Video {
           $meta_object->link2db($meta_record['id']);
         }
 
-        $this->meta_data = $meta_object;
+        if (!$first_done) {
+          $this->meta_data = array($meta_object);
+          $first_done = true;
+        } else {
+          $this->meta_data[] = $meta_object;
+        }
       }
     } else if ($meta_data === -1) {
       $this->meta_data = -1;
@@ -359,7 +365,11 @@ class FV_Player_Db_Shortcode_Player_Video {
   public function getMetaData() {
     // meta data already loaded and present, return them
     if ($this->meta_data && $this->meta_data !== -1) {
-      if ( $this->meta_data->getAllLoadedMeta() ) {
+      // meta data will be an array if we filled all of them at once
+      // from database at the time when player is initially created
+      if (is_array($this->meta_data)) {
+        return $this->meta_data;
+      } else if ( $this->meta_data->getAllLoadedMeta() ) {
         return $this->meta_data->getAllLoadedMeta();
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
