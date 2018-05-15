@@ -536,7 +536,7 @@
       transition: opacity .1s;
       filter: alpha(opacity=0);
       opacity: 0; }
-  .flowplayer.fp-ui-shown .fp-ui, .flowplayer.is-paused .fp-ui, .flowplayer.is-mouseover .fp-ui, .flowplayer.is-loading .fp-ui {
+    .flowplayer.fp-ui-shown .fp-ui, .flowplayer.is-mouseover .fp-ui, .flowplayer.is-loading .fp-ui, .is-splash.flowplayer .fp-player .fp-ui, .is-paused.flowplayer .fp-player .fp-ui,#content .is-paused.flowplayer .fp-player .fp-ui,#content .is-splash.flowplayer .fp-player .fp-ui {
     /*background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.25)), color-stop(15%, transparent));
     background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.25), transparent 15%);
     background-image: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 15%);*/
@@ -1106,7 +1106,7 @@
 
 .flowplayer.is-mouseout .fp-captions{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
 .flowplayer .fp-captions p{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px; margin: 0}
-.flowplayer.is-fullscreen .fp-captions p{font-size:175%;line-height:1.2}
+.flowplayer.is-fullscreen .fp-captions p{font-size:125%;line-height:1.2}
 .flowplayer .fp-captions.is-wide br{display:none}
 .flowplayer .fp-captions p:after{content:'';clear:both}
 .flowplayer .fp-captions p:first-of-type{-webkit-border-radius:4px 0 0 4px;-moz-border-radius:4px 0 0 4px;border-radius:4px 0 0 4px}
@@ -1127,7 +1127,23 @@
 }
 @media (max-width: 30em) {
   .flowplayer .fp-captions{bottom:4px;line-height:12px !important}
-  .flowplayer .fp-captions p{font-size:12px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
+  .flowplayer .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
+}
+/* Fullscreen captions on large screens */
+@media (min-width: 64.063em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:135%}
+}
+@media (min-width: 90.063em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:175%}
+}
+@media (min-width: 120.063em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:225%}
+}
+@media (min-width: 128em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:300%}
+}
+@media (min-width: 160em) {
+.flowplayer.is-fullscreen .fp-captions p{font-size:350%}
 }
 
 
@@ -1871,7 +1887,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .edd_form .fv-player-custom-video-list {
     clear: both;
     position: relative;
-    top: -26px;
 }
 a.fv-player-custom-video-add, a.fv-player-custom-video-remove {
     margin: 0 6px 0 0;
@@ -1920,7 +1935,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	text-align: center;
 }
 .fv-fp-playlist .fvp-icon,
-.fv-fp-playlist #fvp-playlist-play {
+.fv-fp-playlist #fvp-playlist-play,
+.flowplayer .fp-menu.fv-fp-playlist-menu .fp-selected::before {
 	display: none;
 }
 .fv-fp-playlist.mode-repeat-playlist .fvp-icon.fvp-replay-list,

@@ -284,7 +284,7 @@ class FV_Player_Email_Subscription {
             
             row.replaceWith( jQuery('#'+row.attr('id'),response) );
             
-            var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.plugins_url('images/test-subtitles.vtt',dirname(__FILE__)).'" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
+            var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.flowplayer::get_plugin_url().'/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
             shortcode = shortcode.replace(/#key#/,key);
             
             var url = '<?php echo home_url(); ?>?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(shortcode);

@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9.2
+Tested up to: 4.9.5
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -16,8 +16,10 @@ Custom HTML 5 video on your own site with Flash fallback for legacy browsers is 
 
 FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
-* **NEW** easy AB looped playback for your visitors (great for teaching sites)
-* **NEW** improved and more powerful playlists (more playlist features coming soon).
+* Remembering video position both both guest users and members
+* API for custom video fields
+* easy AB looped playback for your visitors (great for teaching sites)
+* improved and more powerful playlists (more playlist features coming soon).
 * Automated checking of video encoding for logged in admins
 * FV Player is a completely responsive WordPress video player.
 * Custom start and end screens are built right in. You can use your own custom design before and after the video.
@@ -28,6 +30,7 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
+* Supports video intelligence video ads
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](https://foliovision.com/player/download).
 
@@ -354,8 +357,38 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.4.3 - 2018/02/?? =
+= 6.6.1 - 2018/05/15 =
 
+* Autoplay - disabled in Chrome 66 for now as it won't permit video autoplay unless the user has already played some video on your website
+
+= 6.6 - 2018/05/10 =
+
+* New feature - XML Video Sitemap
+* Lightbox - making it work also with class="lightbox" images
+* Optimization - fix is sites which use deferred loading of JavaScript
+* Subtitles - support for Simplified Chinese
+* Bugfix - Lightbox - fix for lightbox caption not appearing
+* Bugfix - PHP 5.2 issue with json_encode
+* Bugfix - playlist items with ' symbols
+
+= 6.5.2 - 2018/04/11 =
+
+* New feature - video intelligence ads
+* Bugfix - Video position saving - not working when playing HLS in Firefox
+
+= 6.5.1 - 2018/04/04 =
+
+* Amazon S3 - Adding URL signature for subtitles
+* CSS - Responsive sizing of subtitles in fullscreen mode for large retina displays
+* Bugfix - Google Analytics - fixing label of "Unknown" to say "Unknown engine" which occurs when the video fails to play before engines are initialized
+* Bugfix - Lightbox - when used for playlist the first item was appearing twice in the lightbox view
+* Bugfix - Lightbox - when using the "text" lightbox with playlist it was rendering the playlist items as thumbnails
+* Bugfix - Lightbox - stopping the playlist styles from interfering - forcing horizontal playlist style for lightboxed playlist
+
+= 6.5 - 2018/03/14 =
+
+* New feature - Video position saving for both guest and logged in users - see Settings -> FV Player -> Sidewide Flowplayer Defaults -> Remember video position
+* Custom video fields are now easy to add with the FV_Player_MetaBox PHP class
 * DASH - updating to latest tested Dash.js version
 * Bugfix - iframe embed code placing body closing tag in bad place
 * Bugfix - fix for PHP warnings on AMP pages

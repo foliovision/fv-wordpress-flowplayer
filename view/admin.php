@@ -596,7 +596,10 @@ function fv_flowplayer_admin_integrations() {
                     $htmlQueue .= "<a href='".get_edit_post_link($k)."'>$k</a> ";
                   }
                   $htmlQueue .= ") <a href='".site_url()."/wp-admin/options-general.php?page=fvplayer&fv_flowplayer_checker'>Scan now!</a></span>";
+                } else {
+                  $htmlQueue = '';
                 }
+                
                 if( $iCount && $iQueue ) {
                   printf(__('Currently %d videos in database and %s posts in queue.', 'fv-wordpress-flowplayer'), $iCount, $htmlQueue);
                 } else if( $iCount ) {
@@ -618,7 +621,6 @@ function fv_flowplayer_admin_integrations() {
 					</tr>-->
 
           <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Use Schema.org markup', 'fv-wordpress-flowplayer'), array( 'integrations', 'schema_org' ), __('Beta version! Adds the meta data information for google.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Use old code', 'fv-wordpress-flowplayer'), 'old_code', __('Check this option if your videos suddenly don\'t play and report the issues to <a href="https://foliovision.com/support">Foliovision Support Forums</a> please!', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Use short code', 'fv-wordpress-flowplayer'), 'new_shortcode', __('Use a new player code version which hides all configuration in the database. You will still be able to update the player using the FV Player button.', 'fv-wordpress-flowplayer') ); ?>
@@ -640,6 +642,22 @@ function fv_flowplayer_admin_mobile() {
 				<table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Use native fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_native_fullscreen', __('Stops popups, ads or subtitles from working, but provides faster interface. We set this for Android < 4.4 and iOS < 7 automatically.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Force fullscreen on mobile', 'fv-wordpress-flowplayer').' (beta)', 'mobile_force_fullscreen', __('Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback.', 'fv-wordpress-flowplayer')  ); ?>
+					<tr>
+						<td colspan="4">
+							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+						</td>
+					</tr>
+				</table>
+<?php
+}
+
+
+function fv_flowplayer_admin_seo() {
+	global $fv_fp;
+?>        
+				<table class="form-table2">
+          <?php $fv_fp->_get_checkbox(__('Use Schema.org markup', 'fv-wordpress-flowplayer'), array( 'integrations', 'schema_org' ), __(' Adds the video meta data information for search engines.', 'fv-wordpress-flowplayer') ); ?>          
+          <?php $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ) ); ?>
 					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -1021,7 +1039,7 @@ function fv_flowplayer_admin_skin() {
       'autoplay' => false,
       'preroll' => 'no',
       'postroll' => 'no',
-      'subtitles' =>  plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
+      'subtitles' =>  flowplayer::get_plugin_url().'/images/test-subtitles.vtt',
       'caption' => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
       'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843_295x166.jpg;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053_295x166.jpg',
 			'liststyle' => 'horizontal'
@@ -1350,7 +1368,6 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting',  	'name' => __('Hosting', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions',  	'name' => __('Actions', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_video_ads',	'hash' => 'tab_video_ads', 	'name' => __('Video Ads', 'fv-wordpress-flowplayer') ),
-  array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') ),
 );
 
 //unset video ads tab for Legacy PRO player
@@ -1362,12 +1379,15 @@ if(version_compare( str_replace( '.beta','',get_option( 'fv_player_pro_ver' ) ),
 
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
 
+$fv_player_aSettingsTabs[] = array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') );
+
 /* Setup tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide FV Player Defaults', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_mobile', __('Mobile Settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_mobile', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_seo', 'fv_flowplayer_settings', 'normal' );
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
@@ -1429,7 +1449,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     <p id="fv_flowplayer_admin_buttons">
       <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>
         <?php
-        $fv_player_pro_path = fv_flowplayer_get_extension_path('fv-player-pro');      
+        $fv_player_pro_path = FV_Wordpress_Flowplayer_Plugin::get_plugin_path('fv-player-pro');
         if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
           <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="<?php _e('Enable the Pro extension', 'fv-wordpress-flowplayer'); ?>" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
         <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
@@ -1490,7 +1510,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
 				?>
-			</div>
+      
+      </div>
       <?php endforeach;?>
       <div style="clear: both"></div>
 		</div>

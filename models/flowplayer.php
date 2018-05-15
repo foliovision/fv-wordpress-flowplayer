@@ -162,18 +162,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $key            = (!empty($options['key']) ? $options['key'] : '');
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $help           = (!empty($options['help']) ? $options['help'] : '');
-      $more           = (!empty($options['more']) ? $options['more'] : '');
+      $more           = (!empty($options['more']) ? $options['more'] : '');      
 
       if (!$key || !$name) {
         throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
       }
     } else if ($args_num >= 2) {
       // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
-      $first_td_class = '';
+      $first_td_class = ' class="first"';
       $name = func_get_arg(0);
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
-      $more = ($args_num >= 4 ? func_get_arg(3) : false);
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);      
     } else {
         throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
     }
@@ -572,6 +572,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
+    if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();
+    if (!isset($conf['skin-youtuby'])) $conf['skin-youtuby'] = array();
+
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = array();
@@ -612,15 +615,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
 
 
-  public function _get_option($key) {
+  public function _get_option($key) {    
+    $conf = $this->conf;
 
     $value = false;
     if( is_array($key) && count($key) === 2) {
-      if( isset($this->conf[$key[0]]) && isset($this->conf[$key[0]][$key[1]]) ) {
-        $value = $this->conf[$key[0]][$key[1]];
+      if( isset($conf[$key[0]]) && isset($conf[$key[0]][$key[1]]) ) {
+        $value = $conf[$key[0]][$key[1]];
       }
-    } elseif( isset($this->conf[$key]) ) {
-      $value = $this->conf[$key];
+    } elseif( isset($conf[$key]) ) {
+      $value = $conf[$key];
     }
 
     if( is_string($value) ) $value = trim($value);
@@ -638,8 +642,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
 
   
-  public function _set_conf() {
-    $aNewOptions = $_POST;
+  public function _set_conf( $aNewOptions = false ) {
+    if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
     
     //  make sure the preset Skin properties are not over-written
@@ -755,7 +759,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
     
     $sHTML = "\t\t<a href='#' onclick='return false'";
-    $sHTML .= !$this->_get_option('old_code') ? " data-item='".json_encode($aPlayer)."'" : "";
+    $sHTML .= !$this->_get_option('old_code') ? " data-item='".$this->json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
     
@@ -978,36 +982,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         
       }
       
-      $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
       
-      if( isset($aArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
-        $sPlaylistClass .= ' fp-playlist-horizontal';
-      } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'vertical' ){
-        $sPlaylistClass .= ' fp-playlist-vertical';
-      } else if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ){
-        $sPlaylistClass = 'fp-playlist-vertical';
-      }
-      //var_dump($aCaptions);
-      if( isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ){
-        $sPlaylistClass .= ' fp-playlist-only-captions';
-      } else if( isset($aArgs['liststyle']) && sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ){
-        $sPlaylistClass .= ' fp-playlist-has-captions';
-      }
-      
-      if(isset($aArgs['liststyle']) && $aArgs['liststyle'] != 'tabs'){
+      if(isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] != 'tabs'){
         $aPlaylistItems = apply_filters('fv_flowplayer_playlist_items',$aPlaylistItems,$this);
-      }
-    
+      } 
       
       
       $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
       
       $attributes = array();
       $attributes_html = '';
-      $attributes['class'] = 'fp-playlist-external '.$sPlaylistClass;
+      $attributes['class'] = 'fp-playlist-external '.$this->get_playlist_class($aCaptions);
       $attributes['rel'] = 'wpfp_'.$this->hash;
-      if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
-        $attributes['style'] = "width: ".(count($aPlaylistItems)*201)."px";
+      if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
+        $attributes['style'] = "width: ".(count($aPlaylistItems)*250)."px"; // we put in enough to be sure it will fit in, later JS calculates a better value
       }
       
       $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
@@ -1158,7 +1146,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
       }
       
-      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration, ".$sel." .noUI-time-in, ".$sel." .noUI-time-out { color: ".$sTime." !important; }\n";
       $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
       
       if( $sBackground != 'transparent' ) {
@@ -1845,8 +1833,30 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
       return get_template_directory_uri().'/fv-wordpress-flowplayer';
     } else {
-      return plugins_url( '', str_replace( array('/models','\\models'), '', __FILE__ ) );
+      $plugin_folder = basename(dirname(dirname(__FILE__))); // make fv-wordpress-flowplayer out of {anything}/fv-wordpress-flowplayer/models/flowplayer.php
+      return plugins_url($plugin_folder);
     }
+  }
+  
+  
+  public function get_playlist_class($aCaptions) {
+    $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
+
+    if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
+      $sPlaylistClass .= ' fp-playlist-horizontal';
+    } else if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' ){
+      $sPlaylistClass .= ' fp-playlist-vertical';
+    } else if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' ){
+      $sPlaylistClass = 'fp-playlist-vertical';
+    }
+    //var_dump($aCaptions);
+    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' ){
+      $sPlaylistClass .= ' fp-playlist-only-captions';
+    } else if( isset($this->aCurArgs['liststyle']) && sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ){
+      $sPlaylistClass .= ' fp-playlist-has-captions';
+    }
+
+    return $sPlaylistClass;
   }
   
   
@@ -1991,6 +2001,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   public function is_secure_amazon_s3( $url ) {
     return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
+  }
+  
+  
+  public static function json_encode( $input ) {
+    if( version_compare(phpversion(), '5.3.0', '>') ) {        
+      return json_encode( $input, JSON_HEX_APOS );
+    } else {
+      return str_replace( "'", '\u0027', json_encode( $input ) );
+    }
   }
   
   
@@ -2279,4 +2298,3 @@ function fv_wp_flowplayer_save_post( $post_id ) {
     }
   }
 }
-

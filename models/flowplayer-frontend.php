@@ -178,7 +178,7 @@ class flowplayer_frontend extends flowplayer
     
     if( !$this->_get_option('old_code')  && count($aPlaylistItems) == 1 ) {
       $playlist_items_external_html = false;
-      $attributes['data-item'] = json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ), JSON_HEX_APOS );
+      $attributes['data-item'] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
     }
     
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
@@ -1006,7 +1006,9 @@ class flowplayer_frontend extends flowplayer
     else {
       $subtitles = trim($subtitles);
     }
-
+    
+    $subtitles = apply_filters( 'fv_flowplayer_resource', $subtitles );
+    
     return $subtitles;
   }
   
@@ -1059,7 +1061,7 @@ class flowplayer_frontend extends flowplayer
     $output = new stdClass;
     $output->ret = array();
     $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs" style="max-width: '.$cssWidth.'"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
-    $output->ret['script'] = '';
+    $output->ret['script'] = array();
     
     $output->ret['html'] .= '<ul>';
     foreach( $aPlaylistItems AS $key => $aSrc ) {
