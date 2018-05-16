@@ -186,15 +186,20 @@ jQuery(document).ready(function($){
     update: function( event, ui ) {    
       var items = []; 
       $('.fv-player-tab-playlist table tbody tr').each(function(){
-        var index = $(this).data('index');
+        var
+          index = $(this).data('index'),
+          $items = jQuery('.fv-player-tab-video-files table[data-index=' + index + ']'),
+          $subs = jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']');
+
         items.push({
-          items : jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').clone(),
-          subs : jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']').clone(),
-        })
-        jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').remove();
-        jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']').remove();
-      })
-      
+          items : $items.clone(),
+          subs : $subs.clone(),
+        });
+
+        $items.remove();
+        $subs.remove();
+      });
+
       for(var  i in items){
         if(!items.hasOwnProperty(i))continue;
         jQuery('.fv-player-tab-video-files').append(items[i].items);
@@ -563,6 +568,10 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText, 
               $parent = subElement.parent();
 
             subElement.val(sSubtitles[i].lang);
+
+            var subIndex = subElement.get(0).selectedIndex;
+            jQuery(subElement.get(0).options[subIndex]).attr('selected', 'selected');
+
             $parent.attr('data-id_subtitles', sSubtitles[i].id);
             $parent.hover( function() { jQuery(this).find('.fv-fp-subtitle-remove').show(); }, function() { jQuery(this).find('.fv-fp-subtitle-remove').hide(); } );
             $parent.find('.fv-fp-subtitle-remove').click(fv_flowplayer_remove_subtitles);
@@ -700,6 +709,12 @@ function fv_flowplayer_language_add( sInput, sLang, iTabIndex, sId ) {
   
   if ( sLang ) {
     jQuery('.fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang' , oTab).val(sLang);
+    var
+      sel = jQuery('.fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang' , oTab).get(0),
+      index = sel.selectedIndex,
+      $selectedOption = jQuery(sel.options[index]);
+
+    $selectedOption.attr('selected', 'selected');
   }
   
   jQuery('.fv-fp-subtitle:last .fv-fp-subtitle-remove' , oTab).click(fv_flowplayer_remove_subtitles);
