@@ -315,7 +315,7 @@ class FV_Player_Db_Shortcode {
           return $cache[ $atts['id'] ];
         }
 
-        $player                     = new FV_Player_Db_Shortcode_Player( $atts['id'] );
+        $player = new FV_Player_Db_Shortcode_Player( $atts['id'] );
 
         if (!$player || !$player->getIsValid()) {
           return false;
@@ -599,7 +599,7 @@ class FV_Player_Db_Shortcode {
 
       // check player's meta data for an edit lock
       $userID = get_current_user_id();
-      if ($fv_fp->current_player() &&count($fv_fp->current_player()->getMetaData())) {
+      if ($fv_fp->current_player() && count($fv_fp->current_player()->getMetaData())) {
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
           if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
             if (str_replace('edit_lock_', '', $meta_object->getMetaKey()) != $userID) {
@@ -643,7 +643,7 @@ class FV_Player_Db_Shortcode {
       // fill the $out variable with player data
       $out = array_merge($out, $fv_fp->current_player()->getAllDataValues());
 
-      // load all meta data
+      // load player meta data
       $meta = $fv_fp->current_player()->getMetaData();
       foreach ($meta as $meta_object) {
         if (!isset($out['meta'])) {
@@ -664,6 +664,7 @@ class FV_Player_Db_Shortcode {
 
         // load all meta data
         $meta = $video->getMetaData();
+
         foreach ($meta as $meta_object) {
           $vid['meta'][] = $meta_object->getAllDataValues();
         }

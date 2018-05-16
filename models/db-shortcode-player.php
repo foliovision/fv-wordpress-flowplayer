@@ -599,7 +599,8 @@ CREATE TABLE `" . $this->db_table_name . "` (
       return $this->video_objects;
     } else if ($this->video_objects === null) {
       // video objects not loaded yet - load them now
-      $videos = new FV_Player_Db_Shortcode_Player_Video(explode(',', $this->videos));
+      $videos_in_order = explode(',', $this->videos);
+      $videos = new FV_Player_Db_Shortcode_Player_Video($videos_in_order);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$videos->getIsValid()) {
@@ -639,6 +640,19 @@ CREATE TABLE `" . $this->db_table_name . "` (
             $video->link2meta(-1);
           }
         }
+
+        // fill video objects with videos sorted according to playlist order
+        $ordered_video_objects = array();
+        foreach ($videos_in_order as $video_id) {
+          // find the correct video
+          foreach ( $this->video_objects as $video ) {
+            if ($video->getId() == $video_id) {
+              $ordered_video_objects[] = $video;
+              break;
+            }
+          }
+        }
+        $this->video_objects = $ordered_video_objects;
 
         return $this->video_objects;
       }
