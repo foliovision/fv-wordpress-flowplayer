@@ -839,12 +839,14 @@ function fv_wp_flowplayer_edit() {
   }
 
   // remove visual editor placeholders etc.
-  shortcode = shortcode[0]
-                .replace(/^\[|]+$/gm,'')
-                .replace( fv_wp_flowplayer_re_insert, '' )
-                .replace( /\\'/g,'&#039;' );
+  if (shortcode && shortcode[0]) {
+    shortcode = shortcode[0]
+      .replace(/^\[|]+$/gm, '')
+      .replace(fv_wp_flowplayer_re_insert, '')
+      .replace(/\\'/g, '&#039;');
+  }
 
-  if( shortcode != null ) {
+  if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
     // check for new, DB-based player shortcode
     var result = /fvplayer id="(\d+)"/g.exec(shortcode);
     if (result !== null) {
@@ -998,7 +1000,13 @@ function fv_wp_flowplayer_edit() {
           }
 
           // show playlist instead of the "add new video" form
-          fv_flowplayer_playlist_show(true);
+          // if we have more than 1 video
+          if (vids.length > 1) {
+            fv_flowplayer_playlist_show();
+          } else {
+            fv_player_refresh_tabs();
+            fv_wp_flowplayer_submit(true);
+          }
 
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
