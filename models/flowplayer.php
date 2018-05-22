@@ -95,7 +95,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( is_admin() ) {
       //  update notices
-      $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';
+      $this->readme_URL = 'https://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';   
       if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
         add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
       }
@@ -1265,18 +1265,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $this->bCSSInline = true;
     $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer'.($this->is_beta() ? '-beta': '').'.css';
     $sVer = $fv_wp_flowplayer_ver;
-    
-    if( is_multisite() ) {
-      global $blog_id;
-      $site_id = $blog_id;
-    } else {
-      $site_id = 1;
-    }
 
-    if( apply_filters('fv_flowplayer_css_writeout', true ) && $this->_get_option($this->css_option()) ) {
-      $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
-      if( @file_exists($filename) ) {
-        $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css';
+    if( apply_filters('fv_flowplayer_css_writeout', true ) && $this->_get_option($this->css_option()) ) {      
+      if( @file_exists($this->css_path()) ) {
+        $sURL = $this->css_path('url');
         $sVer = $this->_get_option($this->css_option());
         $this->bCSSInline = false;
       }
@@ -1317,6 +1309,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
+  function css_path( $type = false ) {
+    if( is_multisite() ) {
+      global $blog_id;
+      $site_id = $blog_id;
+    } else {
+      $site_id = 1;
+    }
+    
+    $name = 'fv-flowplayer-custom/style-'.$site_id;
+    if( self::is_beta() ) {
+      $name .= '-beta';
+    }
+    $name .= '.css';
+    if( 'name' == $type ) {
+      return $name;
+    } else if( 'url' == $type ) {
+      return trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).$name;
+    } else {
+      return trailingslashit(WP_CONTENT_DIR).$name;
+    }
+  }
+  
+  
   function css_writeout() {
     if( !apply_filters('fv_flowplayer_css_writeout', true ) ) {
       return false;
@@ -1336,13 +1351,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     global $wp_filesystem;
-    if( is_multisite() ) {
-      global $blog_id;
-      $site_id = $blog_id;
-    } else {
-      $site_id = 1;
-    }
-    $filename = $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/style-'.$site_id.'.css';
+    $filename = $wp_filesystem->wp_content_dir().$this->css_path('name');
      
     // by this point, the $wp_filesystem global should be working, so let's use it to create a file
     
