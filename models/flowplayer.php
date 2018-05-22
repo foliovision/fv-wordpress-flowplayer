@@ -1157,13 +1157,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
         $css .= $sel." .fv-ab-loop .noUi-handle { color: ".$sBackground." !important; }\n";
+        $css .= $sel." .fv_player_popup, .fvfp_admin_error_content {  background: ".$sBackground."; }\n";
       }
       $css .= $sel." .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
       $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
-      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
-      $css .= $sel." .fv_player_popup {  background: ".$sBackground."; padding: 1% 5%; width: 65%; margin: 0 auto; }\n";  //  todo: should not be transparent!
-      $css .= $sel." .fvfp_admin_error_content {  background: ".$sBackground." ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }\n"; //  todo: same as above!
-      
+      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";      
     }
     
     echo $css;
@@ -2027,11 +2025,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
-  function css_writeout_option() {
+  function css_writeout_option( $value ) {
     if( $this->_get_option('css_disable') ) {
       return false;
     }
-    return true;
+    return $value;
   }
   
 
