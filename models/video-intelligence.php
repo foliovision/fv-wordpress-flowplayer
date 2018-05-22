@@ -271,7 +271,7 @@ class FV_Player_video_intelligence_Installer {
     }
 
     if( $should_install ) {
-      $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
+      $result = FV_Wordpress_Flowplayer_Plugin_Private::install_plugin(
         "FV Player video intelligence",
         "fv-player-video-intelligence",
         "fv-player-video-intelligence.php",

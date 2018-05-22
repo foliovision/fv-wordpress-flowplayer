@@ -102,17 +102,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
        
        //  pointer boxes
       parent::__construct();
-      
-      if( flowplayer::is_beta() ) {
-        $this->strPluginSlug = 'fv-wordpress-flowplayer';
-        $this->strPrivateAPI = 'http://foliovision.com/plugins/';
-        $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
-        global $fv_wp_flowplayer_ver_beta;
-        $this->version = $fv_wp_flowplayer_ver_beta;
-        $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
-        parent::auto_updates();
-      }
-
     }
     
 
@@ -153,6 +142,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
     
+    add_action( 'init', array( $this, 'beta_updates') );
 
   }
   
@@ -751,6 +741,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $media .= '#.m3u8'; //  if this is not added then the Flowpalyer Flash HLS won't play the HLS stream!
     }
     return $media;
+  }
+  
+  
+  public function beta_updates() {
+    if( flowplayer::is_beta() ) {
+      $this->strPluginSlug = 'fv-wordpress-flowplayer';
+      $this->strPrivateAPI = 'http://foliovision.com/plugins/';
+      $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
+      global $fv_wp_flowplayer_ver_beta;
+      $this->version = $fv_wp_flowplayer_ver_beta;
+      $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
+      parent::auto_updates();
+    }    
   }
   
   
