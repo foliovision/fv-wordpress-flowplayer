@@ -16,9 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
+require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
 
-class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
+class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   private $count = 0;
   /**
    * Relative URL path
@@ -95,13 +95,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( is_admin() ) {
       //  update notices
-      $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';    
+      $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';
       if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
         add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
       }
        
        //  pointer boxes
       parent::__construct();
+      
+      if( flowplayer::is_beta() ) {
+        $this->strPluginSlug = 'fv-wordpress-flowplayer';
+        $this->strPrivateAPI = 'http://foliovision.com/plugins/';
+        $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
+        global $fv_wp_flowplayer_ver_beta;
+        $this->version = $fv_wp_flowplayer_ver_beta;
+        $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
+        parent::auto_updates();
+      }
+
     }
     
 
