@@ -442,7 +442,7 @@ function fv_player_lchecks() {
   
   global $fv_fp;
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {    
-    if( version_compare( flowplayer::get_core_version(), get_option( 'fvwpflowplayer_core_ver' ) ) == 1 ) {
+    if( flowplayer::get_core_version() != get_option( 'fvwpflowplayer_core_ver' ) ) {
       fv_wp_flowplayer_admin_key_update();
       fv_wp_flowplayer_delete_extensions_transients();
     }      
