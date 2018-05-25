@@ -518,7 +518,11 @@ class flowplayer_frontend extends flowplayer
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
         }
-        
+
+        if( isset($this->aCurArgs['playlist_start']) ) {
+          $attributes['data-playlist_start'] = $this->aCurArgs['playlist_start'];
+        }
+
         if( $this->_get_option('ad_show_after') ) {
           $attributes['data-ad_show_after'] = $this->_get_option('ad_show_after');
         }
@@ -543,7 +547,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
-        
+
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
         }
