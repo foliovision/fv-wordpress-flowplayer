@@ -99,8 +99,8 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);    
             
     $src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
-    $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
-    
+    $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;
+
     $splash_img = $this->get_splash();
 
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -195,7 +195,21 @@ class flowplayer_frontend extends flowplayer
       return $res;
     }  
     
-    
+
+    /*
+     * Playlist Start Position Splash Screen
+     */
+    global $fv_fp;
+
+    if (isset($this->aCurArgs['playlist_start']) && $fv_fp && method_exists($fv_fp, 'current_player') && $fv_fp->current_player() && $fv_fp->current_player()->getVideos()) {
+      foreach ($fv_fp->current_player()->getVideos() as $video_index => $video) {
+        if ($video_index + 1 == $this->aCurArgs['playlist_start']) {
+          $splash_img = $video->getSplash();
+          break;
+        }
+      }
+    }
+
     /*
      *  Video player tabs
      */
@@ -535,7 +549,7 @@ class flowplayer_frontend extends flowplayer
             }
           }
         }
-        
+
         if( $this->is_beta() ) {
           add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
         }
@@ -987,6 +1001,7 @@ class flowplayer_frontend extends flowplayer
     }    
     
     $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
+
     return $splash_img;
   }
 
