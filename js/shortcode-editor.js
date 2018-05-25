@@ -1001,12 +1001,12 @@ function fv_wp_flowplayer_edit() {
 
           // show playlist instead of the "add new video" form
           // if we have more than 1 video
-          if (vids.length > 1) {
+          //if (vids.length > 1) {
             fv_flowplayer_playlist_show();
-          } else {
-            fv_player_refresh_tabs();
-            fv_wp_flowplayer_submit(true);
-          }
+          //} else {
+          //  fv_player_refresh_tabs();
+          //  fv_wp_flowplayer_submit(true);
+          //}
 
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
