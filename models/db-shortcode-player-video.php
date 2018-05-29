@@ -152,15 +152,14 @@ class FV_Player_Db_Shortcode_Player_Video {
     `mobile` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'mobile (smaller-sized) version of this video',
     `rtmp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional RTMP server URL',
     `rtmp_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'if RTMP is set, this will have the path on the server to the RTMP stream',
-    `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video'
+    `start` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
     PRIMARY KEY (`id`),
     KEY `src` (`src`)
   )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
+        $fv_fp->_set_option('video_model_db_checked', 1);
       }
-
-      $fv_fp->_set_option('video_model_db_checked', 1);
     }
   }
 

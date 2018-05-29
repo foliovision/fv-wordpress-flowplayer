@@ -424,14 +424,13 @@ CREATE TABLE `" . $this->db_table_name . "` (
   `sticky` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
   `video_ads` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[preroll in shortcode] ID of a saved video ad to be played as a pre-roll',
   `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[postroll in shortcode] ID of a saved video ad to be played as a pre-roll',
-  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page'
+  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page',
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
+        $fv_fp->_set_option('player_model_db_checked', 1);
       }
-
-      $fv_fp->_set_option('player_model_db_checked', 1);
     }
   }
 

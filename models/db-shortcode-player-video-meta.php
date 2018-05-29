@@ -87,9 +87,8 @@ CREATE TABLE `" . $this->db_table_name . "` (
 )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
+        $fv_fp->_set_option('player_meta_model_db_checked', 1);
       }
-
-      $fv_fp->_set_option('player_meta_model_db_checked', 1);
     }
   }
 
