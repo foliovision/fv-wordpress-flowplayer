@@ -2184,7 +2184,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if ( $aPlayers ) {
         foreach ( $aPlayers AS $k => $v ) {
           if ( stripos( $v, $sLink . '"' ) !== false ) {
-            echo '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">' . substr( $v, stripos( $v, '<div id="wpfp_' ) ) . '</div>';
+            $player_html = substr( $v, stripos( $v, '<div id="wpfp_' ) );
+            if (strstr($player_html, 'fp-playlist-') !== false) {
+              $player_html = '<div class="fp-playlist-vertical-wrapper">' . $player_html . '</div>';
+            }
+
+            echo $player_html;
             $bFound = true;
             break;
           }
