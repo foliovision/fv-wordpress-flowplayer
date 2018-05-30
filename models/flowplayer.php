@@ -2127,7 +2127,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   </style>
 </head>
 <body class="fv-player-preview">
-  <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+  <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) {
     
     if( !is_user_logged_in() || !current_user_can('manage_options') ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
@@ -2163,36 +2163,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       </div>
     </div>
     
-  <?php else :
-    
-    if( stripos($content,'<!--fv player end-->') !== false ) {
-      
-      $bFound = false;
-      $rewrite = get_option('rewrite_rules');
-      if( empty($rewrite) ) {
-        $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
+  <?php } else {
+
+    if ( stripos( $content, '<!--fv player end-->' ) !== false ) {
+
+      $bFound  = false;
+      $rewrite = get_option( 'rewrite_rules' );
+      if ( empty( $rewrite ) ) {
+        $sLink = 'fv_player_embed=' . get_query_var( 'fv_player_embed' );
       } else {
-        $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
-        $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
+        $sPostfix = get_query_var( 'fv_player_embed' ) > 1 ? 'fvp' . get_query_var( 'fv_player_embed' ) : 'fvp';
+        $sLink    = user_trailingslashit( trailingslashit( get_permalink() ) . $sPostfix );
       }
-            
+
       $aPlayers = explode( '<!--fv player end-->', $content );
-      if( $aPlayers ) {
-        foreach( $aPlayers AS $k => $v ) {
-          if( stripos($v,$sLink.'"') !== false ) {
-            echo substr($v, stripos($v,'<div id="wpfp_') );
+      if ( $aPlayers ) {
+        foreach ( $aPlayers AS $k => $v ) {
+          if ( stripos( $v, $sLink . '"' ) !== false ) {
+            echo '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">' . substr( $v, stripos( $v, '<div id="wpfp_' ) ) . '</div>';
             $bFound = true;
             break;
           }
         }
       }
-      
-      if( !$bFound ) {
-        echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
-      }    
-      
+
+      if ( ! $bFound ) {
+        echo "<p>Player not found, see the full article: <a href='" . get_permalink() . "' target='_blank'>" . get_the_title() . "</a>.</p>";
+      }
+
     }
-  endif;
+  }
   
   wp_footer();
   

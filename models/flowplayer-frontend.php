@@ -53,6 +53,11 @@ class flowplayer_frontend extends flowplayer
 
     $this->hash = md5($media.$this->_salt()); //  unique player id
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
+
+    if( get_query_var('fv_player_embed') ) {
+      $this->aCurArgs['liststyle'] = 'vertical';
+    }
+
     $this->sHTMLAfter = false;
     $player_type = 'video';
     $rtmp = false;
