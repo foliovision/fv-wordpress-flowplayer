@@ -1868,6 +1868,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sPlaylistClass .= ' fp-playlist-has-captions';
     }
 
+    if( get_query_var('fv_player_embed') ) {
+      $sPlaylistClass .= ' fp-is-embed';
+    }
+
     return $sPlaylistClass;
   }
   
