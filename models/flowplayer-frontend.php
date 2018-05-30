@@ -493,7 +493,19 @@ class flowplayer_frontend extends flowplayer
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
         }
-        
+
+        if( !empty($this->aCurArgs['chapters']) ) {
+          $attributes['class'] .= ' has-chapters';
+        }
+
+        if( !empty($this->aCurArgs['transcript']) ) {
+          $attributes['class'] .= ' has-transcript';
+        }
+
+        if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
+          $attributes['class'] .= ' fp-is-embed';
+        }
+
         if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
@@ -669,10 +681,6 @@ class flowplayer_frontend extends flowplayer
         
         $this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
         
-                 if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
-                   $this->ret['html'] .= "<!--fv player end-->";
-                 }
-        
         //  change engine for IE9 and 10
         if( $this->aCurArgs['engine'] == 'false' ) {
           $this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
@@ -719,7 +727,9 @@ class flowplayer_frontend extends flowplayer
     }
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
 
-    
+    if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
+      $this->ret['html'] .= "<!--fv player end-->";
+    }
     
     $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
       
