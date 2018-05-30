@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.6.2 - 2018/06/?? =
+
+* Bugfix - XML Video Sitemap - fix for conflict with Yoast SEO when the option to disable date archives is enabled
+
+= 6.6.1 - 2018/05/15 =
+
+* Autoplay - disabled in Chrome 66 for now as it won't permit video autoplay unless the user has already played some video on your website
+
 = 6.6 - 2018/05/10 =
 
 * New feature - XML Video Sitemap
@@ -1671,6 +1679,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 6.6.1 =
+
+* FV Player Pro 0.9.17 and 0.9.17.1 users - make sure you update FV Player Pro before this plugin!
 
 = 6.1 =
 

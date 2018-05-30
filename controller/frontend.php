@@ -375,7 +375,11 @@ function flowplayer_prepare_scripts() {
     }
     
     if( $fv_fp->load_hlsjs && $fv_fp->_get_option('hlsjs') ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      if( $fv_fp->is_beta() ) {
+        wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/hls.light.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      } else {
+        wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      }
       $aConf['hlsjs'] = array('startLevel' => -1);
     }
     

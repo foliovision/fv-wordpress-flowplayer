@@ -14,9 +14,11 @@ class FV_Player_Position_Save {
   }
 
   public function set_last_position($aItemArray) {
+    global $fv_fp;
     // we only use the first source to check for stored position,
     // since other sources would be alternatives (in quality, etc.)
     if (
+      ( !empty($fv_fp->aCurArgs['saveposition']) || $fv_fp->_get_option('video_position_save_enable') ) &&
       is_user_logged_in() &&
       is_array($aItemArray) &&
       isset($aItemArray['sources']) &&
@@ -47,8 +49,8 @@ class FV_Player_Position_Save {
   }
   
   function shortcode( $attributes, $media, $fv_fp ) {
-    if( isset($fv_fp->aCurArgs['saveposition']) && $fv_fp->aCurArgs['saveposition'] == 'true' ) {
-      $attributes['data-save-position'] = 'true';
+    if( !empty($fv_fp->aCurArgs['saveposition']) ) {
+      $attributes['data-save-position'] = $fv_fp->aCurArgs['saveposition'];
     }
     return $attributes;
   }

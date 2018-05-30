@@ -442,7 +442,7 @@ function fv_player_lchecks() {
   
   global $fv_fp;
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {    
-    if( version_compare( flowplayer::get_core_version(), get_option( 'fvwpflowplayer_core_ver' ) ) == 1 ) {
+    if( flowplayer::get_core_version() != get_option( 'fvwpflowplayer_core_ver' ) ) {
       fv_wp_flowplayer_admin_key_update();
       fv_wp_flowplayer_delete_extensions_transients();
     }      
@@ -751,3 +751,21 @@ function fv_player_block_update( $arg ) {
     }
   }
 }
+
+
+/*
+Beta plugin needs to show different update on the plugins screen
+*/
+add_filter( 'all_plugins', 'fv_player_beta_adjust_plugin_version' );
+
+function fv_player_beta_adjust_plugin_version( $aPlugins ) {
+  if( flowplayer::is_beta() ) {
+    $current_plugin = basename(dirname(dirname(__FILE__))).'/flowplayer.php';
+    if( !empty($aPlugins[$current_plugin]) && !empty($aPlugins[$current_plugin]['Version']) ) {
+      global $fv_wp_flowplayer_ver_beta;
+      $aPlugins[$current_plugin]['Version'] = $fv_wp_flowplayer_ver_beta;
+    }
+  }
+  return $aPlugins;
+}
+

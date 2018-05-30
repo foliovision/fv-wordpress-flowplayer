@@ -9,6 +9,13 @@ class FV_Xml_Video_Sitemap {
         add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
         
         add_action( 'parse_request', array($this, 'fix_query_vars') );
+        add_filter( 'query_vars', array($this, 'custom_query_vars') ); // we need to use custom query vars as otherwise Yoast SEO could stop the sitemap from working as it could be detected by $wp_query->is_date
+    }
+    
+    function custom_query_vars( $vars ) {
+      $vars[] = 'fvp_sitemap_year';
+      $vars[] = 'fvp_sitemap_monthnum';
+      return $vars;
     }
     
     function fix_query_vars( $query ) { // stop Yoast SEO from interferring
@@ -191,12 +198,23 @@ class FV_Xml_Video_Sitemap {
       global $wp_rewrite, $fv_fp;
 
       $rules = get_option( 'rewrite_rules' );
+      
+      $aRules = array(
+        'video-sitemap\.xml$' => 'index.php?feed=video-sitemap-index',
+        'video-sitemap\.(\d\d\d\d)-(\d\d)\.xml$' =>  'index.php?feed=video-sitemap&fvp_sitemap_year=$matches[1]&fvp_sitemap_monthnum=$matches[2]',
+        'video-sitemap\.(\d\d\d\d)\.xml$' => 'index.php?feed=video-sitemap&fvp_sitemap_year=$matches[1]',
+      );
+      $aKeys = array_keys($aRules);
 
-      if( $fv_fp->_get_option('video_sitemap') && !isset($rules['video-sitemap\.xml$']) ) {
+      // flush rules if option is enabled and the second rewrite rule is not found or not matching
+      if( $fv_fp->_get_option('video_sitemap') &&
+        ( !isset($rules[$aKeys[1]]) ||
+        $rules[$aKeys[1]] != $aRules[$aKeys[1]] )
+      ) {
         $wp_rewrite->flush_rules();
-        add_rewrite_rule('video-sitemap\.xml$', 'index.php?feed=video-sitemap-index', 'top');        
-        add_rewrite_rule('video-sitemap\.(\d\d\d\d)-(\d\d)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]&monthnum=$matches[2]', 'top');  
-        add_rewrite_rule('video-sitemap\.(\d\d\d\d)\.xml$', 'index.php?feed=video-sitemap&year=$matches[1]', 'top');
+        foreach( $aRules AS $rewrite => $vars ) {
+          add_rewrite_rule( $rewrite, $vars, 'top');
+        }
       }
     }
 
@@ -220,10 +238,12 @@ class FV_Xml_Video_Sitemap {
       }
       
       $date_query = false;
-      if( get_query_var('year') && get_query_var('monthnum') ) {
-        $date_query = " year(post_date) = ".get_query_var('year')." AND month(post_date) = ".get_query_var('monthnum')." AND ";
+      $year = intval(get_query_var('fvp_sitemap_year'));
+      $month = intval(get_query_var('fvp_sitemap_monthnum'));
+      if( $year && $month ) {
+        $date_query = " year(post_date) = ".$year." AND month(post_date) = ".$month." AND ";
       } else if( get_query_var('year') ) {
-        $date_query = " year(post_date) = ".get_query_var('year')." AND ";
+        $date_query = " year(post_date) = ".$year." AND ";
       }
       
       $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
