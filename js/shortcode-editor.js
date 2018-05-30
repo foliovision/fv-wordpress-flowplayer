@@ -1835,9 +1835,17 @@ function fv_wp_flowplayer_submit( preview ) {
       }, function(playerID) {
         // we have extra parameters to keep
         if (fv_flowplayer_conf.db_extra_shortcode_params) {
-          fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '" ' + jQuery.map(fv_flowplayer_conf.db_extra_shortcode_params, function(value, index) {
+          var
+            params = jQuery.map(fv_flowplayer_conf.db_extra_shortcode_params, function(value, index) {
             return index + '="' + value + '"';
-          }).join(' ') + ']');
+          }),
+            to_append = '';
+
+          if (params.length) {
+            to_append = ' ' + params.join(' ');
+          }
+
+          fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"' + to_append + ']');
         } else {
           // simple DB shortcode, no extra presentation parameters
           fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
