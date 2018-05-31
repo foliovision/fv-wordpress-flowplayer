@@ -1761,7 +1761,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio .fp-playbtn { position: absolute;bottom: 0;left: 0}
 .flowplayer.fixed-controls.is-audio .fp-time em { bottom:13px }
 .flowplayer.is-audio .fp-waiting em { margin:0.8em 0.3em 0 }
-.flowplayer.is-audio .fp-timeline { top:19px;margin-left: 92px;margin-right:160px; }
+.flowplayer.is-audio .fp-timeline { top:19px;margin-left: 105px;margin-right:160px; }
 .flowplayer.is-audio.fp-full .fp-timeline,.flowplayer.is-audio.fp-fat .fp-timeline { top:13px; }
 .flowplayer.is-audio.skin-slim .fp-timeline { top:19px; }
 .flowplayer.is-audio .fp-time { font-size:14px;text-shadow:none }
