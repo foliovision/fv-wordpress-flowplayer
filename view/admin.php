@@ -1035,7 +1035,7 @@ function fv_flowplayer_admin_skin() {
     $fv_fp->admin_preview_player = flowplayer_content_handle( array(
       'src' => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
       'splash' => 'https://i.vimeocdn.com/video/609485450_1280.jpg',
-      'autoplay' => false,
+      'autoplay' => 'false',
       'preroll' => 'no',
       'postroll' => 'no',
       'subtitles' =>  flowplayer::get_plugin_url().'/images/test-subtitles.vtt',
