@@ -750,7 +750,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $this->strPrivateAPI = 'http://foliovision.com/plugins/';
       $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
       global $fv_wp_flowplayer_ver_beta;
-      $this->version = $fv_wp_flowplayer_ver_beta;
+      $this->version = str_replace('.beta','',$fv_wp_flowplayer_ver_beta);
       $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
       parent::auto_updates();
     }    
