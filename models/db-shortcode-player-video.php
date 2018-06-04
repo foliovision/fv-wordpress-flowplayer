@@ -35,6 +35,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $start, // allows you to show only a specific part of a video
     $db_table_name,
     $additional_objects = array(),
+    $DB_Shortcode_Instance = null,
     $meta_data = null; // object of this video's meta data
 
   /**
@@ -168,11 +169,17 @@ class FV_Player_Db_Shortcode_Player_Video {
    *
    * @param int $id         ID of video to load data from the DB for.
    * @param array $options  Options for a newly created video that will be stored in a DB.
+   * @param object $DB_Shortcode Instance of the DB shortcode global object that handles caching
+   *                             of videos, players and their meta data.
    *
    * @throws Exception When no valid ID nor options are provided.
    */
-  function __construct($id, $options = array()) {
+  function __construct($id, $options = array(), $DB_Shortcode = null) {
     global $wpdb;
+
+    if ($DB_Shortcode) {
+      $this->DB_Shortcode_Instance = $DB_Shortcode;
+    }
 
     $this->initDB($wpdb);
     $multiID = is_array($id);
@@ -305,6 +312,16 @@ class FV_Player_Db_Shortcode_Player_Video {
     }
   }
 
+  /**
+   * Searches for a player via custom query.
+   * Used in plugins such as HLS which will
+   * provide video src data but not ID to search for.
+   *
+   * @param bool $like   The LIKE part for the database query.
+   * @param null $fields Fields to return for this search.
+   *
+   * @return bool Returns true if any data were loaded, false otherwise.
+   */
   public function searchBySrc($like = false, $fields = null) {
     global $wpdb;
 
@@ -347,7 +364,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'meta_data') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance' && $property != 'meta_data') {
         $data[$property] = $value;
       }
     }
@@ -421,7 +438,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'meta_data') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = $value;
       }

@@ -66,6 +66,7 @@ class FV_Player_Db_Shortcode_Player {
     $video_objects = null,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
     $db_table_name,
+    $DB_Shortcode_Instance = null,
     $meta_data = null; // object of this player's meta data
 
   /**
@@ -437,15 +438,22 @@ CREATE TABLE `" . $this->db_table_name . "` (
   /**
    * FV_Player_Db_Shortcode_Player constructor.
    *
-   * @param int $id         ID of player to load data from the DB for.
-   * @param array $options  Options for a newly created player that will be stored in a DB.
+   * @param int $id                              ID of player to load data from the DB for.
+   * @param array $options                       Options for a newly created player that will be stored in a DB.
+   * @param FV_Player_Db_Shortcode $DB_Shortcode Instance of the DB shortcode global object that handles caching
+   *                                             of videos, players and their meta data.
    *
    * @throws Exception When no valid ID nor options are provided.
    */
-  function __construct($id, $options = array()) {
+  function __construct($id, $options = array(), $DB_Shortcode = null) {
     global $wpdb;
 
+    if ($DB_Shortcode) {
+      $this->DB_Shortcode_Instance = $DB_Shortcode;
+    }
+
     $this->initDB($wpdb);
+    $multiID = is_array($id);
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
@@ -463,15 +471,92 @@ CREATE TABLE `" . $this->db_table_name . "` (
           trigger_error('Unknown property for new DB player: ' . $key);
         }
       }
-    } else if (is_numeric($id) && $id > 0) {
+    } else if ($multiID || (is_numeric($id) && $id > 0)) {
+      $cache = $DB_Shortcode->getPlayersCache();
+
       // no options, load data from DB
-      $player_data = $wpdb->get_row('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id);
-      if ($player_data) {
-        // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
-        foreach ($player_data as $key => $value) {
-          $this->$key = $value;
+      if ($multiID) {
+        // make sure we have numeric IDs
+        $query_ids = array();
+        foreach ($id as $id_key => $id_value) {
+          // check if this player is not cached yet
+          // TODO: uncomment this :P
+          //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id_value)) {
+            $query_ids[$id_key] = (int) $id_value;
+          //}
+
+          $id[$id_key] = (int) $id_value;
+        }
+
+        if (count($query_ids)) {
+          // load multiple players via their IDs but a single query and return their values
+          $player_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE id IN('. implode(',', $query_ids).')');
+        } else {
+          $player_data = -1;
+          $this->is_valid = false;
         }
       } else {
+        // TODO: uncomment :)
+        //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id)) {
+          // load a single video
+          $player_data = $wpdb->get_row('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id);
+        //} else {
+        //  $player_data = -1;
+        //  $this->is_valid = false;
+        //}
+      }
+
+      if ($player_data && $player_data !== -1) {
+        // single ID, just populate our own data
+        if (!$multiID) {
+          // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
+          foreach ( $player_data as $key => $value ) {
+            $this->$key = $value;
+          }
+
+          // cache this player in DB Shortcode object
+          if ($DB_Shortcode) {
+            $cache[$id] = $this;
+          }
+        } else {
+          // multiple IDs, create new player objects for each of them except the first one,
+          // for which we'll use this instance
+          $first_done = false;
+          foreach ($player_data as $db_record) {
+            if (!$first_done) {
+              // fill-in our internal variables
+              foreach ( $db_record as $key => $value ) {
+                $this->$key = $value;
+              }
+
+              // add this to all the loaded video objects
+              $this->additional_objects[] = $this;
+              $first_done = true;
+
+              // cache this player in DB Shortcode object
+              if ($DB_Shortcode) {
+                $cache[$db_record->id] = $this;
+              }
+            } else {
+              // create a new video object and populate it with DB values
+              $record_id = $db_record->id;
+              // if we don't unset this, we'll get warnings
+              unset($db_record->id);
+              $player_object = new FV_Player_Db_Shortcode_Player(null, get_object_vars($db_record));
+              $player_object->link2db($record_id);
+
+              // cache it in the list of all loaded video objects
+              $this->additional_objects[] = $player_object;
+
+              // cache this player in DB Shortcode object
+              if ($DB_Shortcode) {
+                $cache[$record_id] = $player_object;
+              }
+            }
+          }
+        }
+      } else if ($player_data !== -1) {
+        // no players found in DB
         $this->is_valid = false;
       }
     } else {
@@ -525,6 +610,21 @@ CREATE TABLE `" . $this->db_table_name . "` (
   }
 
   /**
+   * Returns a list of players that were potentially loaded
+   * via multiple IDs in the constructor. If there are none,
+   * null will be returned.
+   *
+   * @return array|null Returns list of loaded player objects or null if none were loaded.
+   */
+  public function getAllLoadedPlayers() {
+    if (count($this->additional_objects)) {
+      return $this->additional_objects;
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * Returns all global options data for this player.
    *
    * @return array Returns all global options data for this player.
@@ -532,7 +632,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'numeric_properties' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'meta_data') {
+      if ($property != 'numeric_properties' && $property != 'is_valid' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance' && $property != 'db_table_name' && $property != 'meta_data') {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -680,7 +780,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'video_objects' && $property != 'meta_data') {
+      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance' && $property != 'db_table_name' && $property != 'video_objects' && $property != 'meta_data') {
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 

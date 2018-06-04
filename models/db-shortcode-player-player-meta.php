@@ -26,6 +26,7 @@ class FV_Player_Db_Shortcode_Player_Player_Meta {
     $meta_key, // arbitrary meta key
     $meta_value, // arbitrary meta value
     $db_table_name,
+    $DB_Shortcode_Instance = null,
     $additional_objects = array();
 
   /**
@@ -129,11 +130,17 @@ CREATE TABLE `" . $this->db_table_name . "` (
    *
    * @param int $id         ID of player meta data to load data from the DB for.
    * @param array $options  Options for a newly created player meta data that will be stored in a DB.
+   * @param object $DB_Shortcode Instance of the DB shortcode global object that handles caching
+   *                             of videos, players and their meta data.
    *
    * @throws Exception When no valid ID nor options are provided.
    */
-  function __construct($id, $options = array()) {
+  function __construct($id, $options = array(), $DB_Shortcode = null) {
     global $wpdb;
+
+    if ($DB_Shortcode) {
+      $this->DB_Shortcode_Instance = $DB_Shortcode;
+    }
 
     $this->initDB($wpdb);
     $multiID = is_array($id);
@@ -225,7 +232,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance') {
         $data[$property] = $value;
       }
     }
@@ -249,7 +256,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance') {
         $is_player_id = ($property == 'id_player');
         $data_keys[] = $property . ' = '.($is_player_id ? (int) $value : '%s');
 

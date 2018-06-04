@@ -19,13 +19,61 @@
 // class handling database shortcode generation and saving
 class FV_Player_Db_Shortcode {
 
-  private $edit_lock_timeout_seconds = 300;
+  private
+    $edit_lock_timeout_seconds = 300,
+    $videos_cache = array(),
+    $video_atts_cache = array(),
+    $video_meta_cache = array(),
+    $players_cache = array(),
+    $player_atts_cache = array(),
+    $player_meta_cache = array();
 
   public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
     add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
+    add_action('wp_head', array($this, 'cache_players_and_videos' ));
 
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
+  }
+
+  function cache_players_and_videos() {
+    global $posts;
+    if( !empty($posts) && is_array($posts) ) {
+      foreach( $posts AS $item ) {
+      }
+    }
+  }
+
+  public function &getVideosCache() {
+    return $this->videos_cache;
+  }
+
+  public function isVideoCached($id) {
+    return isset($this->videos_cache[$id]);
+  }
+
+  public function &getVideoMetaCache() {
+    return $this->video_meta_cache;
+  }
+
+  public function isVideoMetaCached($id) {
+    return isset($this->video_meta_cache[$id]);
+  }
+
+  public function &getPlayersCache() {
+    return $this->players_cache;
+  }
+
+  public function isPlayerCached($id) {
+    return isset($this->players_cache[$id]);
+  }
+
+  public function &getPlayerMetaCache() {
+    return $this->player_meta_cache;
+  }
+
+  public function isPlayerMetaCached($id) {
+    return isset($this->player_meta_cache[$id]);
   }
 
   public function setCurrentVideoAndPlayer($aItem, $index, $aPlayer) {
@@ -126,7 +174,6 @@ class FV_Player_Db_Shortcode {
    */
   private function generateFullPlaylistCode($atts, $preview_data = null) {
     global $fv_fp;
-    static $cache = array();
 
     // check if we should change anything in the playlist code
     if ($preview_data || (isset($atts['playlist']) && preg_match('/^[\d,]+$/m', $atts['playlist']))) {
@@ -141,17 +188,17 @@ class FV_Player_Db_Shortcode {
         $newids = array();
 
         // check the first video, which is the main one for the playlist
-        if ( isset( $cache[ $ids[0] ] ) ) {
+        if ( isset( $this->video_atts_cache[ $ids[0] ] ) ) {
           $first_video_data_cached = true;
-          $atts                    = array_merge( $atts, $cache[ $ids[0] ] );
+          $atts                    = array_merge( $atts, $this->video_atts_cache[ $ids[0] ] );
         }
 
         // prepare cached data and IDs that still need loading from DB
         foreach ( $ids as $id ) {
-          if ( isset( $cache[ $id ] ) ) {
-            $new_playlist_tag[] = $this->getPlaylistItemData( $cache[ $id ] );
-            $new_caption_tag[]  = $this->getCaptionData( $cache[ $id ] );
-            $new_startend_tag[] = $this->getStartEndData( $cache[ $id ] );
+          if ( isset( $this->video_atts_cache[ $id ] ) ) {
+            $new_playlist_tag[] = $this->getPlaylistItemData( $this->video_atts_cache[ $id ] );
+            $new_caption_tag[]  = $this->getCaptionData( $this->video_atts_cache[ $id ] );
+            $new_startend_tag[] = $this->getStartEndData( $this->video_atts_cache[ $id ] );
           } else {
             $newids[] = (int) $id;
           }
@@ -173,7 +220,7 @@ class FV_Player_Db_Shortcode {
 
           // don't cache if we're previewing
           if (!$preview_data) {
-            $cache[ $vid['id'] ] = $vid;
+            $this->video_atts_cache[ $vid['id'] ] = $vid;
           }
 
           $caption = $this->getCaptionData($vid);
@@ -199,10 +246,10 @@ class FV_Player_Db_Shortcode {
           $has_timings = false;
 
           foreach ( $videos as $vid_object ) {
-            $vid = $vid_object->getAllDataValues();
-            $atts['video_objects'][] = $vid_object;
-            $cache[ $vid['id'] ]  = $vid;
-            $new_playlist_tag[] = $this->getPlaylistItemData( $vid );
+            $vid                              = $vid_object->getAllDataValues();
+            $atts['video_objects'][]          = $vid_object;
+            $this->video_atts_cache[ $vid['id'] ] = $vid;
+            $new_playlist_tag[]               = $this->getPlaylistItemData( $vid );
 
             $caption = $this->getCaptionData($vid);
             if ($caption) {
@@ -306,13 +353,12 @@ class FV_Player_Db_Shortcode {
    */
   public function getPlayerAttsFromDb($atts) {
     global $fv_fp, $FV_Db_Shortcode;
-    static $cache = array();
 
     if (isset($atts['id'])) {
       // numeric ID means we're coming from a shortcode somewhere in a post
       if (is_numeric($atts['id'])) {
-        if ( isset( $cache[ $atts['id'] ] ) ) {
-          return $cache[ $atts['id'] ];
+        if ( isset( $this->player_atts_cache[ $atts['id'] ] ) ) {
+          return $this->player_atts_cache[ $atts['id'] ];
         }
 
         $player = new FV_Player_Db_Shortcode_Player( $atts['id'] );
@@ -353,8 +399,7 @@ class FV_Player_Db_Shortcode {
         $atts = array_merge( $atts, $FV_Db_Shortcode->generateFullPlaylistCode(array(), $this->db_store_player_data($_POST)));
       }
 
-      $cache[ $atts['id'] ] = $atts;
-
+      $this->player_atts_cache[ $atts['id'] ] = $atts;
     } else {
       $fv_fp->currentPlayerObject = null;
     }
