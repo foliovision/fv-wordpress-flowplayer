@@ -1534,7 +1534,7 @@
 
 
 /* Caption, todo: check!*/
-p.fp-caption { text-align: center; }
+p.fp-caption { text-align: center;max-width: 100%;  }
 
 
 
