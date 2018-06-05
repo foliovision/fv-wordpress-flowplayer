@@ -1950,3 +1950,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fv-fp-no-picture.fp-color {
 	background-color: transparent !important;
 }
+
+.fp-menu a.is-current {
+  font-weight: 800;
+}
