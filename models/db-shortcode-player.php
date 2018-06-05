@@ -472,7 +472,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
         }
       }
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
-      $cache = $DB_Shortcode->getPlayersCache();
+      $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayersCache() : array());
 
       // no options, load data from DB
       if ($multiID) {
