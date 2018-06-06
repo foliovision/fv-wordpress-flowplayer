@@ -50,7 +50,12 @@ class FV_Player_lightbox {
     $bCSSLoaded = true;
     
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH.'/css/lightbox.css', array(), $fv_wp_flowplayer_ver );
+
+    if (empty($_GET['lightbox_dev'])) {
+      wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/lightbox.css', array(), $fv_wp_flowplayer_ver );
+    } else {
+      wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
+    }
   }
 
   function conf_defaults($conf){
@@ -148,7 +153,7 @@ class FV_Player_lightbox {
         $sTitle = empty($aArgs[1]->aCurArgs['playlist']) ? $sTitle = $this->get_title_attr($aArgs[1]->aCurArgs) : '';
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
-        $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'".$sTitle." href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        $html = "<a data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'".$sTitle." href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
@@ -179,7 +184,7 @@ class FV_Player_lightbox {
         /* $html = preg_replace( '~max-width: \d+px;~', 'max-width: '.$iWidth.'px;', $html );
           $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
 
-        $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
+        $html = "<div data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
         if ($iWidth > 0) {
           $html .= '<div class="fp-ratio" style="padding-top: '.str_replace(',','.',round($iHeight / $iWidth, 4) * 100).'%"></div>';
         }
@@ -223,7 +228,7 @@ class FV_Player_lightbox {
         
         if( $i > 1 ) {
           $sTitle = $this->get_title_attr($fv_fp->aCurArgs);
-          $output['html'] .= "<li><a id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
+          $output['html'] .= "<li><a data-fancybox='gallery' id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
         }
         
       } else {
@@ -234,9 +239,9 @@ class FV_Player_lightbox {
         
         $aPlayerParts = explode("<div class='fv_player_lightbox_hidden'", $aPlayer['html']);
         if( $i == 1 ) {
-          $output['html'] .= "<a id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          $output['html'] .= "<a data-fancybox='gallery' id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
         } else {
-          $output['html'] .= "<a id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          $output['html'] .= "<a data-fancybox='gallery' id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
         }
         
         if ($i > 1) {
@@ -351,7 +356,7 @@ class FV_Player_lightbox {
         }
       }      
     }
-    
+
     return $matches[1] . $matches[2];
   }
   
