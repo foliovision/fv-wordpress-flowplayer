@@ -26,3 +26,9 @@ function fv_player_colorbox_title() {
 
 jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
+
+jQuery(document).ready(function() {
+  jQuery(".colorbox[href^='#'], .lightbox[href^='#']").filter(function () {
+    return this.href && !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
+  }).fancybox();
+});
