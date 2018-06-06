@@ -646,6 +646,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _set_conf( $aNewOptions = false ) {
     if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
+    $sKey7 = !empty($aNewOptions['key7']) ? trim($aNewOptions['key7']) : false;
     
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
@@ -690,6 +691,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     
     $aNewOptions['key'] = trim($sKey);
+    if( $sKey7 ) $aNewOptions['key7'] = $sKey7;
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     

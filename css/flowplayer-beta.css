@@ -1200,7 +1200,8 @@
 }
 
 
-
+.flowplayer .wpfp_custom_popup form .edd-add-to-cart {float:none;}
+.flowplayer .wpfp_custom_popup .fv_player_popup p {max-width:100%}
 
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
 .flowplayer.is-fullscreen .fp-player{background-color:#000}
@@ -1533,7 +1534,7 @@
 
 
 /* Caption, todo: check!*/
-p.fp-caption { text-align: center; }
+p.fp-caption { text-align: center;max-width: 100%;  }
 
 
 
@@ -1948,4 +1949,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .flowplayer .fv-fp-no-picture.fp-color {
 	background-color: transparent !important;
+}
+
+.fp-menu a.is-current {
+  font-weight: 800;
 }
