@@ -24,6 +24,8 @@ function fv_player_colorbox_title() {
   }
 }
 
+jQuery.fancybox.defaults.smallBtn = false;
+jQuery.fancybox.defaults.toolbar = true;
 jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 
