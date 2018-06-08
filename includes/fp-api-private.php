@@ -666,7 +666,7 @@ $this->strPrivateAPI - also
       //<![CDATA[
       (function ($) {
         var pointer_options = <?php echo json_encode( $options ); ?>,
-        setup = function () {console.log('pointer setup',pointer_options)
+        setup = function () {
           $('<?php echo $selector; ?>').pointer(pointer_options).pointer('open');
           var buttons = $('.<?php echo $id; ?> .wp-pointer-buttons').html('');       
           buttons.append( $('<a style="margin-left:5px" class="button-secondary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $button2_function; ?>; t.element.pointer('close'); }) );        
