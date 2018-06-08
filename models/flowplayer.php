@@ -599,6 +599,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
+    if (!isset($conf['hlsjs'])) $conf['hlsjs'] = 'true';
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     
