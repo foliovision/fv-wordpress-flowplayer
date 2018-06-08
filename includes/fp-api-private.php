@@ -625,6 +625,18 @@ $this->strPrivateAPI - also
       return;
     }
     
+    ?>
+<script type="text/javascript">
+//<![CDATA[
+  function <?php echo $this->class_name; ?>_store_answer(key, input, nonce) {
+    jQuery.post(ajaxurl, { action : 'fv_foliopress_ajax_pointers', key : key, value : input, _ajax_nonce : nonce }, function () {
+      jQuery('#wp-pointer-0').remove(); // there must only be a single pointer at once. Or perhaps it removes them all, but the ones which were not dismissed by Ajax by storing the option will turn up again?
+    });
+  }
+//]]>
+</script>
+    <?php    
+    
     foreach( $this->pointer_boxes AS $sKey => $aPopup ) {
       $sNonce = wp_create_nonce( $sKey );
   
@@ -637,28 +649,10 @@ $this->strPrivateAPI - also
       
       $position = ( isset($aPopup['position']) ) ? $aPopup['position'] : array( 'edge' => 'top', 'align' => 'center' );
       
-      $opt_arr = array( 'content'  => $content, 'position' => $position );
+      $opt_arr = array( 'pointerClass' => $sKey, 'content'  => $content, 'position' => $position );
         
       $function2 = $this->class_name.'_store_answer("'.$sKey.'", "false","' . $sNonce . '")';
       $function1 = $this->class_name.'_store_answer("'.$sKey.'", "true","' . $sNonce . '")';
-      
-      ?>
-<script type="text/javascript">
-  //<![CDATA[
-    function <?php echo $this->class_name; ?>_store_answer(key, input, nonce) {
-      var post_data = {
-        action        : 'fv_foliopress_ajax_pointers',
-        key           : key, 
-        value         : input,
-        _ajax_nonce   : nonce
-      }
-      jQuery.post(ajaxurl, post_data, function () {
-        jQuery('#wp-pointer-0').remove(); //  todo: does this really work?
-      });
-    }
-  //]]>
-</script>
-      <?php
   
       $this->pointers_print_scripts( $sKey, $aPopup['id'], $opt_arr, $aPopup['button2'], $aPopup['button1'], $function2, $function1 );
     }
@@ -671,33 +665,20 @@ $this->strPrivateAPI - also
     <script type="text/javascript">
       //<![CDATA[
       (function ($) {
-        var <?php echo $id; ?>_pointer_options = <?php echo json_encode( $options ); ?>, <?php echo $id; ?>_setup;
-
-        <?php echo $id; ?>_pointer_options = $.extend(<?php echo $id; ?>_pointer_options, {
-          buttons: function (event, t) {
-            button = jQuery('<a id="pointer-close" style="margin-left:5px" class="button-secondary">' + '<?php echo addslashes($button1); ?>' + '</a>');
-            button.bind('click.pointer', function () {
-              t.element.pointer('close');
-            });
-            return button;
-          },
-          close  : function () {
-          }
-        });
-
-        <?php echo $id; ?>_setup = function () {
-          $('<?php echo $selector; ?>').pointer(<?php echo $id; ?>_pointer_options).pointer('open');
+        var pointer_options = <?php echo json_encode( $options ); ?>,
+        setup = function () {console.log('pointer setup',pointer_options)
+          $('<?php echo $selector; ?>').pointer(pointer_options).pointer('open');
+          var buttons = $('.<?php echo $id; ?> .wp-pointer-buttons').html('');       
+          buttons.append( $('<a style="margin-left:5px" class="button-secondary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $button2_function; ?>; t.element.pointer('close'); }) );        
           <?php if ( $button2 ) { ?>
-          jQuery('#pointer-close').after('<a id="pointer-primary" class="button-primary">' + '<?php echo addslashes($button2); ?>' + '</a>');
-          jQuery('#pointer-primary').click(function () { <?php echo $button1_function; ?> });
-          jQuery('#pointer-close').click(function () { <?php echo $button2_function; ?> });
-          <?php } ?>
+            buttons.append( $('<a class="button-primary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $button1_function; ?> }) );                          
+          <?php } ?>             
         };
 
-        if(<?php echo $id; ?>_pointer_options.position && <?php echo $id; ?>_pointer_options.position.defer_loading)
-          $(window).bind('load.wp-pointers', <?php echo $id; ?>_setup);
+        if(pointer_options.position && pointer_options.position.defer_loading)
+          $(window).bind('load.wp-pointers', setup);
         else
-          $(document).ready(<?php echo $id; ?>_setup);
+          $(document).ready(setup);
       })(jQuery);
       //]]>
     </script>
