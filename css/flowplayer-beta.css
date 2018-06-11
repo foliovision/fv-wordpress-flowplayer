@@ -453,12 +453,13 @@
   content: "\e312"; }
 
 .flowplayer.no-svg .fp-ui .fp-header, .flowplayer.no-svg .fp-ui .fp-controls {
-  background-color: #333; }
+  /*background-color: #333;*/ }
 
 .flowplayer.no-svg .fp-ui .fp-play.fp-visible {
-  background-color: #ccc;
+  /*background-color: #ccc;*/
   position: absolute;
-  padding-top: 17%;
+  padding-top: 19%;
+  font-size: 2.5em;
   top: 0;
   left: 0;
   right: 0;
@@ -466,7 +467,9 @@
   .flowplayer.no-svg .fp-ui .fp-play.fp-visible svg {
     display: none; }
   .flowplayer.no-svg .fp-ui .fp-play.fp-visible .fp-playbtn {
-    display: inline; }
+    display: inline;
+    -webkit-filter: drop-shadow( 0 0 4px #aaa );
+  	filter: drop-shadow( 0 0 4px #aaa )	}
 
 .flowplayer .fp-player, .flowplayer .fp-ui, .flowplayer .fp-header, .flowplayer .fp-captions, .flowplayer .fp-controls {
   position: absolute;
