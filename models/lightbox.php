@@ -190,7 +190,7 @@ class FV_Player_lightbox {
 
         $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
         if( $fv_fp->is_beta() ) {
-          $html .= '<div class="fp-player"><div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div></div>';
+          $html .= '<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>';
         } else {
           $html .= "<div class='fp-ui'></div>";
         }
