@@ -66,6 +66,8 @@ include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-player-meta.php'
 include_once(dirname( __FILE__ ) . '/models/db-shortcode.php');
 $FV_Db_Shortcode = new FV_Player_Db_Shortcode();
 
+include_once(dirname( __FILE__ ) . '/models/list-table.php');
+
 include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
 
 global $fv_fp;
