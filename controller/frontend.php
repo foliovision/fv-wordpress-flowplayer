@@ -376,8 +376,12 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( $fv_fp->load_hlsjs && $fv_fp->_get_option('hlsjs') ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
+      if( $fv_fp->is_beta() ) {
+        wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/hls.light.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      } else {
+        wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      }
       $aConf['hlsjs'] = array('startLevel' => -1);
     }
     

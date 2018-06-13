@@ -533,7 +533,7 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', __('Enable to force video size at cost of loosing the video responsiveness.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Colorbox Compatibility', 'fv-wordpress-flowplayer'), 'cbox_compatibility', __('Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Disable saving of color settings into a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
-          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer').' (beta)', 'hlsjs', __('Allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.','fv-wordpress-flowplayer' )); ?>
 
           <tr>
 						<td><label for="css_disable"><?php _e('Enable profile videos', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
@@ -1036,7 +1036,7 @@ function fv_flowplayer_admin_skin() {
     $fv_fp->admin_preview_player = flowplayer_content_handle( array(
       'src' => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
       'splash' => 'https://i.vimeocdn.com/video/609485450_1280.jpg',
-      'autoplay' => false,
+      'autoplay' => 'false',
       'preroll' => 'no',
       'postroll' => 'no',
       'subtitles' =>  flowplayer::get_plugin_url().'/images/test-subtitles.vtt',
@@ -1449,7 +1449,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     <p id="fv_flowplayer_admin_buttons">
       <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>
         <?php
-        $fv_player_pro_path = FV_Wordpress_Flowplayer_Plugin::get_plugin_path('fv-player-pro');
+        $fv_player_pro_path = FV_Wordpress_Flowplayer_Plugin_Private::get_plugin_path('fv-player-pro');
         if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
           <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="<?php _e('Enable the Pro extension', 'fv-wordpress-flowplayer'); ?>" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
         <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>

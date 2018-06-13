@@ -16,9 +16,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
+require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
 
-class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
+class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   private $count = 0;
   /**
    * Relative URL path
@@ -95,7 +95,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     if( is_admin() ) {
       //  update notices
-      $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';    
+      $this->readme_URL = 'https://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';   
       if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
         add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
       }
@@ -142,6 +142,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
     
+    add_action( 'init', array( $this, 'beta_updates') );
 
   }
   
@@ -598,6 +599,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
 
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
+    if (!isset($conf['hlsjs'])) $conf['hlsjs'] = 'true';
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     
@@ -645,6 +647,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   public function _set_conf( $aNewOptions = false ) {
     if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
+    $sKey7 = !empty($aNewOptions['key7']) ? trim($aNewOptions['key7']) : false;
     
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
@@ -689,6 +692,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
     
     $aNewOptions['key'] = trim($sKey);
+    if( $sKey7 ) $aNewOptions['key7'] = $sKey7;
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -749,6 +753,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       $media .= '#.m3u8'; //  if this is not added then the Flowpalyer Flash HLS won't play the HLS stream!
     }
     return $media;
+  }
+  
+  
+  public function beta_updates() {
+    if( flowplayer::is_beta() ) {
+      $this->strPluginSlug = 'fv-wordpress-flowplayer';
+      $this->strPrivateAPI = 'http://foliovision.com/plugins/';
+      $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
+      global $fv_wp_flowplayer_ver_beta;
+      $this->version = str_replace('.beta','',$fv_wp_flowplayer_ver_beta);
+      $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
+      parent::auto_updates();
+    }    
   }
   
   
@@ -1152,13 +1169,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
         $css .= $sel." .fv-ab-loop .noUi-handle { color: ".$sBackground." !important; }\n";
+        $css .= $sel." .fv_player_popup, .fvfp_admin_error_content {  background: ".$sBackground."; }\n";
       }
       $css .= $sel." .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
       $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
-      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
-      $css .= $sel." .fv_player_popup {  background: ".$sBackground."; padding: 1% 5%; width: 65%; margin: 0 auto; }\n";  //  todo: should not be transparent!
-      $css .= $sel." .fvfp_admin_error_content {  background: ".$sBackground." ?>; opacity:0.75;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=75); }\n"; //  todo: same as above!
-      
+      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";      
     }
     
     echo $css;
@@ -1263,18 +1278,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     $this->bCSSInline = true;
     $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer'.($this->is_beta() ? '-beta': '').'.css';
     $sVer = $fv_wp_flowplayer_ver;
-    
-    if( is_multisite() ) {
-      global $blog_id;
-      $site_id = $blog_id;
-    } else {
-      $site_id = 1;
-    }
 
-    if( apply_filters('fv_flowplayer_css_writeout', true ) && $this->_get_option($this->css_option()) ) {
-      $filename = trailingslashit(WP_CONTENT_DIR).'fv-flowplayer-custom/style-'.$site_id.'.css';
-      if( @file_exists($filename) ) {
-        $sURL = trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).'fv-flowplayer-custom/style-'.$site_id.'.css';
+    if( apply_filters('fv_flowplayer_css_writeout', true ) && $this->_get_option($this->css_option()) ) {      
+      if( @file_exists($this->css_path()) ) {
+        $sURL = $this->css_path('url');
         $sVer = $this->_get_option($this->css_option());
         $this->bCSSInline = false;
       }
@@ -1284,6 +1291,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
       echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
       $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/".$sPath.".css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
+      
+      if( $this->is_beta() && $this->bCSSInline ) {
+        $this->css_generate_beta(false);        
+      } else if( $this->bCSSInline ) {
+        $this->css_generate(false);        
+      }
       
     } else {
       $aDeps = array();
@@ -1295,7 +1308,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
         $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
         wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/'.$sPath.'.css', array(), $fv_wp_flowplayer_ver );
       }
-      
       
       if( $this->is_beta() && $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate_beta' ) );
@@ -1312,6 +1324,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   
   function css_option() {
     return 'css_writeout-'.sanitize_title(WP_CONTENT_URL);
+  }
+  
+  
+  function css_path( $type = false ) {
+    if( is_multisite() ) {
+      global $blog_id;
+      $site_id = $blog_id;
+    } else {
+      $site_id = 1;
+    }
+    
+    $name = 'fv-flowplayer-custom/style-'.$site_id;
+    if( self::is_beta() ) {
+      $name .= '-beta';
+    }
+    $name .= '.css';
+    if( 'name' == $type ) {
+      return $name;
+    } else if( 'url' == $type ) {
+      return trailingslashit( str_replace( array('/plugins','\\plugins'), '', plugins_url() )).$name;
+    } else {
+      return trailingslashit(WP_CONTENT_DIR).$name;
+    }
   }
   
   
@@ -1334,13 +1369,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
     }
 
     global $wp_filesystem;
-    if( is_multisite() ) {
-      global $blog_id;
-      $site_id = $blog_id;
-    } else {
-      $site_id = 1;
-    }
-    $filename = $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/style-'.$site_id.'.css';
+    $filename = $wp_filesystem->wp_content_dir().$this->css_path('name');
      
     // by this point, the $wp_filesystem global should be working, so let's use it to create a file
     
@@ -2013,11 +2042,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   }
   
   
-  function css_writeout_option() {
+  function css_writeout_option( $value ) {
     if( $this->_get_option('css_disable') ) {
       return false;
     }
-    return true;
+    return $value;
   }
   
 

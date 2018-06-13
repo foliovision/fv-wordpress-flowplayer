@@ -91,8 +91,7 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
 
     global $FV_Player_VAST ;
     if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
-      //  todo: there should be a better way than this
-      add_action('admin_footer', array( $FV_Player_VAST , 'styles' ) );
+      //  todo: there should be a better way than this      
       add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
     }
     

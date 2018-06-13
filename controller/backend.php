@@ -442,7 +442,7 @@ function fv_player_lchecks() {
   
   global $fv_fp;
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {    
-    if( version_compare( flowplayer::get_core_version(), get_option( 'fvwpflowplayer_core_ver' ) ) == 1 ) {
+    if( flowplayer::get_core_version() != get_option( 'fvwpflowplayer_core_ver' ) ) {
       fv_wp_flowplayer_admin_key_update();
       fv_wp_flowplayer_delete_extensions_transients();
     }      
@@ -646,7 +646,7 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug; 
   $download_url = $aPluginInfo->{$plugin_package}->url;  
   
-  $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
+  $result = FV_Wordpress_Flowplayer_Plugin_Private::install_plugin(
     "FV Player Pro",
     $plugin_package,
     $plugin_basename,
@@ -760,3 +760,20 @@ global $FV_Db_Shortcode;
 // these have to be here, as using them in constructor doesn't work
 add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', array($FV_Db_Shortcode, 'db_store_player_data'));
 add_filter('heartbeat_received', array($FV_Db_Shortcode, 'check_db_edit_lock'), 10, 2);
+
+
+/*
+Beta plugin needs to show different update on the plugins screen
+*/
+add_filter( 'all_plugins', 'fv_player_beta_adjust_plugin_version' );
+
+function fv_player_beta_adjust_plugin_version( $aPlugins ) {
+  if( flowplayer::is_beta() ) {
+    $current_plugin = basename(dirname(dirname(__FILE__))).'/flowplayer.php';
+    if( !empty($aPlugins[$current_plugin]) && !empty($aPlugins[$current_plugin]['Version']) ) {
+      global $fv_wp_flowplayer_ver_beta;
+      $aPlugins[$current_plugin]['Version'] = $fv_wp_flowplayer_ver_beta;
+    }
+  }
+  return $aPlugins;
+}

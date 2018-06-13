@@ -77,7 +77,7 @@ function fv_player_lightbox_bind(){
     args.initialWidth = 96;
     args.scrolling = false;
     jQuery(".colorbox, .lightbox").filter(function() {
-        return this.href.match(/\.(png|jpg|jpeg|gif|webp)/i);
+        return this.href && this.href.match(/\.(png|jpg|jpeg|gif|webp)/i);
     }).fv_player_pro_colorbox( args );
     
     //Lightbox for non image divs href="#loginForm"
@@ -91,7 +91,7 @@ function fv_player_lightbox_bind(){
     args2.iframe = true;
     
     jQuery(".colorbox, .lightbox").filter(function() {
-      return !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
+      return this.href && !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
     }).not('[href^="#"]').fv_player_pro_colorbox( args2 );
     
   }

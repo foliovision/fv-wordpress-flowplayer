@@ -27,7 +27,7 @@ function fv_player_admin_page() {
 
 
 function fv_player_is_admin_screen() {
-	if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
+	if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
 		 return true;
 	}
 	return false;
@@ -162,7 +162,7 @@ function fv_player_admin_pointer_boxes() {
     );    
   }
   
-  if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {    
+  /*if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {    
 		$fv_fp->pointer_boxes['fv_player_notification_video_links'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_player_notification_video_links',
@@ -174,7 +174,7 @@ function fv_player_admin_pointer_boxes() {
     );
     
     add_action( 'admin_print_footer_scripts', 'fv_player_pointer_scripts' );
-	}  
+	}*/ 
 }
 
 
