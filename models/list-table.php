@@ -39,6 +39,9 @@ class FV_Player_List_Table_View {
       
   	</div>
   <?php 
+    fv_player_shortcode_editor_scripts_enqueue();
+    fv_wp_flowplayer_edit_form_after_editor();
+  
     add_action( 'admin_footer', array($this, 'scripts') );
   }  
 }
