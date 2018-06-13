@@ -322,7 +322,7 @@ class flowplayer_frontend extends flowplayer
           } else {
             $skin = 'skin-'.$this->_get_option('skin');
           }
-          $attributes['class'] .= ' '.$skin;
+          $attributes['class'] .= ' no-svg is-paused '.$skin;
           $attributes['class'] .= ' '.$this->_get_option(array($skin, 'design-timeline')).' '.$this->_get_option(array($skin, 'design-icons'));
         }
       
@@ -528,6 +528,9 @@ class flowplayer_frontend extends flowplayer
         
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+          if( $this->is_beta() ) {
+            $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>'."\n";
+          }
         }
 
         if( count($aPlaylistItems) == 0 ) {  // todo: this stops subtitles, mobile video, preload etc.
@@ -1081,7 +1084,7 @@ class flowplayer_frontend extends flowplayer
         $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
       }
 
-      if( isset($aTest_media) && count($aTest_media) > 0 ) { 
+      if( isset($aTest_media) && count($aTest_media) > 0 ) {
         $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
       }
     }            

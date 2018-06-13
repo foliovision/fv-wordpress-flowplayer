@@ -599,6 +599,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
+    if (!isset($conf['hlsjs'])) $conf['hlsjs'] = 'true';
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     
@@ -1282,6 +1283,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/".$sPath.".css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
+      if( $this->is_beta() && $this->bCSSInline ) {
+        $this->css_generate_beta(false);        
+      } else if( $this->bCSSInline ) {
+        $this->css_generate(false);        
+      }
+      
     } else {
       $aDeps = array();
       if( class_exists('OptimizePress_Default_Assets') ) $aDeps = array('optimizepress-default'); //  make sure the CSS loads after optimizePressPlugin
@@ -1292,7 +1299,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
         wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/'.$sPath.'.css', array(), $fv_wp_flowplayer_ver );
       }
-      
       
       if( $this->is_beta() && $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate_beta' ) );
