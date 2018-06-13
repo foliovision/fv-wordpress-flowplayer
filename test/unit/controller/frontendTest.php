@@ -103,6 +103,7 @@ final class FV_Player_Controller extends PHPUnit_Framework_TestCase {
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
 Registering flowplayer for fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver=1.2.3.4 footer? 1
+Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/flowplayer.hlsjs.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fullscreen] => 1
@@ -137,6 +138,11 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
+    [hlsjs] => Array
+        (
+            [startLevel] => -1
+        )
+
 )
 
 Localizing flowplayer with fv_flowplayer_translations = Array
@@ -191,7 +197,7 @@ Localizing flowplayer with fv_flowplayer_playlists = Array
       $this->assertEquals( $v, $aExpected[$k] );
     }*/
     
-    $this->assertEquals( preg_replace( '~\r\n~', "\n", $output), preg_replace( '~\r\n~', "\n", $expected ) );
+    $this->assertEquals( preg_replace( '~\r\n~', "\n", $expected ), preg_replace( '~\r\n~', "\n", $output) );
   }
 
 }

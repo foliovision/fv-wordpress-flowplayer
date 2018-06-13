@@ -657,11 +657,11 @@ jQuery(document).ready(function($) {
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="hlsjs">Enable HLS.js (beta):</label></td>
+          <td class="first"><label for="hlsjs">Enable HLS.js:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="hlsjs" value="false"/>
-                  <input type="checkbox" name="hlsjs" id="hlsjs" value="true" />
+                  <input type="checkbox" name="hlsjs" id="hlsjs" value="true" checked="checked" />
                   Allows HLS playback in all modern browsers.                                        <span class="more">HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.</span> <a href="#" class="show-more">(&hellip;)</a>
                                 </p>
           </td>
@@ -1380,7 +1380,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
           <p class="description">  <select id="popups_default" name="popups_default">
         <option selected value="no">None</option>
     <option value="random">Random</option>
-      </select>
+    <option  value="email-1">email-1 - Subscribe to list one</option>  </select>
    You can set a default popup here and then skip it for individual videos.</p>
         </td>
       </tr>
@@ -1529,11 +1529,11 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                   <table>
                     <tr>
                       <td style="width:16%"><label>Header</label></td>
-                      <td><input type='text' name='email_lists[1][title]' value='' /></td>
+                      <td><input type='text' name='email_lists[1][title]' value='Subscribe to list one' /></td>
                     </tr>
                     <tr>
                       <td><label>Message</label></td>
-                      <td><input type='text' name='email_lists[1][description]' value='' /></td>
+                      <td><input type='text' name='email_lists[1][description]' value='Two good reasons to subscribe right now' /></td>
                     </tr>
                   </table>
                 </td>                
@@ -1544,7 +1544,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[1][first_name]' value='0' />
-                    <input id='list-first-name-1' title="first name" type='checkbox' name='email_lists[1][first_name]' value='1'  />
+                    <input id='list-first-name-1' title="first name" type='checkbox' name='email_lists[1][first_name]' value='1' checked="checked" />
                     <label for='list-first-name-1'>First Name</label>
                     <br />
                     <input type='hidden' name='email_lists[1][last_name]' value='0' />
