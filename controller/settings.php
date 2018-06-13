@@ -27,7 +27,7 @@ function fv_player_admin_page() {
 
 
 function fv_player_is_admin_screen() {
-	if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) {
+	if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
 		 return true;
 	}
 	return false;
