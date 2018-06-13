@@ -29,8 +29,37 @@ jQuery.fancybox.defaults.toolbar = true;
 jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 
+$fv_player_win = jQuery(window);
+
 jQuery(document).ready(function() {
   jQuery(".colorbox[href^='#'], .lightbox[href^='#']").filter(function () {
     return this.href && !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
   }).fancybox();
 });
+
+function fv_fancybox_check_size() {
+  var $player = jQuery('.fancybox-container .flowplayer:visible');
+
+  if ($player.length) {
+    // check that the player does not extend beyond document height
+    // ... +10 because while CSS is recalculated, another resize event
+    //     can occur and would re-add max-height, which would then be
+    //     subsequently removed again and so on
+    if ($fv_player_win.height() < $player.outerHeight() + 10) {
+      if (typeof($player.data('orig-max-height')) == 'undefined') {
+        $player
+          .data('orig-max-height', $player.css('max-height'))
+          .css('max-height', '');
+      }
+    } else if (typeof($player.data('orig-max-height')) != 'undefined') {
+      $player
+        .css('max-height', $player.data('orig-max-height') + 'px')
+        .removeData('orig-max-height');
+    }
+  }
+}
+
+jQuery(window).resize(fv_fancybox_check_size);
+if( document.addEventListener ) {
+  window.addEventListener("orientationchange", fv_fancybox_check_size, false);
+}
