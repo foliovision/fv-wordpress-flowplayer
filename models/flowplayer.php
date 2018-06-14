@@ -1983,6 +1983,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $version = isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ? $_POST['fv-player-pro-release'] : get_option('fv-player-pro-release');
     if( $version == 'beta' ) {
+      global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_ver_beta;
+      $fv_wp_flowplayer_ver = $fv_wp_flowplayer_ver_beta;
       return true;
     } else {
       return false;
