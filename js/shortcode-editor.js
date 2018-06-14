@@ -1394,7 +1394,10 @@ function fv_wp_flowplayer_dialog_resize() {
 
 function fv_wp_flowplayer_on_close() {
   //fv_player_editor_button_clicked = false;  //  todo: is it not too early?
-  
+
+  // if error / message overlay is visible, hide it
+  $('#fv-player-shortcode-editor-preview-spinner:visible').remove();
+
   fv_wp_flowplayer_init();
   fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
   jQuery('#fv-player-shortcode-editor-preview-target').html('');
