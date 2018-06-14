@@ -357,6 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.6.2 - 2018/06/?? =
+
+* Compatibility - fix for themes which use wp_kses to show post content, like UnidashVersion By CactusThemes. It was preventing FV Player from working in these themes.
+
 = 6.6.2 - 2018/06/04 =
 
 * Bugfix - "Load FV Flowplayer JS everywhere" setting - was not loading HLS.js library at all
