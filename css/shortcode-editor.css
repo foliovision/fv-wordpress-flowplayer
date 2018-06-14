@@ -7,6 +7,7 @@
 .fv-player-tabs-header { padding:6px 0 12px; }
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-player-shortcode-editor table input[type=text], #fv-flowplayer-playlist table input[type=text].with-button { width: 93%; }
+#fv-player-shortcode-editor table #fv_wp_flowplayer_field_player_name { width: 150px; }
 #fv-player-shortcode-editor table input[type=text].half-field { width: 46%; }
 #fv-player-shortcode-editor table/*:first-child*/ input.with-button { width: 70%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }

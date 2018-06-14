@@ -858,12 +858,18 @@ function fv_wp_flowplayer_edit() {
 
       fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
 
-      var playlist_start = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'playlist_start' );
+      var
+        playlist_start = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'playlist_start' ),
+        autoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'autoplay' );
 
       fv_flowplayer_conf.db_extra_shortcode_params = {};
 
       if (playlist_start && playlist_start[1]) {
         fv_flowplayer_conf.db_extra_shortcode_params['playlist_start'] = playlist_start[1];
+      }
+
+      if (autoplay && autoplay[1]) {
+        fv_flowplayer_conf.db_extra_shortcode_params['autoplay'] = autoplay[1];
       }
 
       fv_flowplayer_conf.new_shortcode_active = true;
@@ -1474,6 +1480,9 @@ function fv_wp_flowplayer_build_ajax_data() {
         break;
     }
   }
+
+  // add playlist name
+  data['fv_wp_flowplayer_field_player_name'] = jQuery('#fv_wp_flowplayer_field_player_name').val();
 
   // trigger meta data save events, so we get meta data from different
   // plugins included as we post
