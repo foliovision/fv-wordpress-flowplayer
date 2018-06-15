@@ -451,10 +451,6 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
         }
         
-        if( $this->_get_option('scaling') && $this->_get_option('fixed_size') ) {
-          $attributes['data-flashfit'] = 'true';
-        }
-        
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
           $attributes['data-live'] = 'true';
         }

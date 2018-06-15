@@ -40,7 +40,7 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
         }
       }*/
       
-      //$this->assertEquals( $v, $two[$k] );
+      $this->assertEquals( $v, $two[$k] );
     }
     
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html')), $this->fix_newlines($output) );
