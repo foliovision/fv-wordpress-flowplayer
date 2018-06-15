@@ -30,8 +30,7 @@ class FV_Player_Db_Shortcode_Player {
     $align, // alignment position
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
-    $copy_text,
-    $drm_text, // whether to show DRM text on the player
+    $copy_text, // whether to show DRM text on the player
     $email_list, // ID of the e-mail list to collect e-mails to at the end of playlist
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
@@ -185,13 +184,6 @@ class FV_Player_Db_Shortcode_Player {
    */
   public function getCopyText() {
     return $this->copy_text;
-  }
-
-  /**
-   * @return string
-   */
-  public function getDrmText() {
-    return $this->drm_text;
   }
 
   /**
@@ -389,7 +381,6 @@ CREATE TABLE `" . $this->db_table_name . "` (
   `autoplay` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to autoplay videos on page load',
   `controlbar` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
   `copy_text` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `drm_text` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to show DRM text on the player',
   `email_list` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID of the e-mail list to collect e-mails to at the end of playlist',
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
