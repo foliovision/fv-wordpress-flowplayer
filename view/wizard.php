@@ -285,6 +285,11 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                       <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
                     </tr>
 
+                    <tr <?php if( !isset($fv_flowplayer_conf["interface"]["live"]) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
+                        <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
+                    </tr>
+
                     <?php do_action('fv_flowplayer_shortcode_editor_item_after'); ?>     
 
                     <?php if (!$allow_uploads && current_user_can('manage_options')) : ?> 
@@ -370,11 +375,6 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                   <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
                    <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
-                  
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["live"]) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-                    <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
-                    <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
-                  </tr>
                   
                   <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal', 'Text', 'Slider' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'dropdown' => array( 'Default', 'Yes', 'No', 'Custom' ) ) ); ?>

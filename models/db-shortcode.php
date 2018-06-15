@@ -506,6 +506,21 @@ class FV_Player_Db_Shortcode {
             // add any video meta data that we can gather
             $video_meta = array();
 
+            if (!empty($post_data['video_meta']['video'][$video_index])) {
+              foreach ($post_data['video_meta']['video'][$video_index] as $video_meta_section => $video_meta_array) {
+                $meta_data_to_add = array(
+                  'meta_key' => $video_meta_section,
+                  'meta_value' => $video_meta_array['value']
+                );
+
+                if (isset($video_meta_array['id'])) {
+                  $meta_data_to_add['id'] = (int) $video_meta_array['id'];
+                }
+
+                $video_meta[] = $meta_data_to_add;
+              }
+            }
+
             // add chapters
             if (!empty($post_data['video_meta']['chapters'][$video_index]['file']['value'])) {
               $chapters = array(
