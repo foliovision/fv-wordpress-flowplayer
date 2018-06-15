@@ -153,7 +153,11 @@ class FV_Player_lightbox {
         $sTitle = empty($aArgs[1]->aCurArgs['playlist']) ? $sTitle = $this->get_title_attr($aArgs[1]->aCurArgs) : '';
         $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
         $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
-        $html = "<a data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'".$sTitle." href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        if (empty($_GET['lightbox_dev'])) {
+          $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        } else {
+          $html = "<a data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+        }
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
@@ -184,7 +188,11 @@ class FV_Player_lightbox {
         /* $html = preg_replace( '~max-width: \d+px;~', 'max-width: '.$iWidth.'px;', $html );
           $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
 
-        $html = "<div data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
+        if (empty($_GET['lightbox_dev'])) {
+          $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
+        } else {
+          $html = "<div data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
+        }
         if ($iWidth > 0) {
           $html .= '<div class="fp-ratio" style="padding-top: '.str_replace(',','.',round($iHeight / $iWidth, 4) * 100).'%"></div>';
         }
@@ -228,7 +236,11 @@ class FV_Player_lightbox {
         
         if( $i > 1 ) {
           $sTitle = $this->get_title_attr($fv_fp->aCurArgs);
-          $output['html'] .= "<li><a data-fancybox='gallery' id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-src='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
+          if (empty($_GET['lightbox_dev'])) {
+            $output['html'] .= "<li><a id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
+          } else {
+            $output['html'] .= "<li><a data-fancybox='gallery' id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-src='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
+          }
         }
         
       } else {
@@ -239,9 +251,17 @@ class FV_Player_lightbox {
         
         $aPlayerParts = explode("<div class='fv_player_lightbox_hidden'", $aPlayer['html']);
         if( $i == 1 ) {
-          $output['html'] .= "<a data-fancybox='gallery' id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          if (empty($_GET['lightbox_dev'])) {
+            $output['html'] .= "<a id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          } else {
+            $output['html'] .= "<a data-fancybox='gallery' id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          }
         } else {
-          $output['html'] .= "<a data-fancybox='gallery' id='fv_flowplayer_lightbox_starter' href='#' data-src='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          if (empty($_GET['lightbox_dev'])) {
+            $output['html'] .= "<a id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          } else {
+            $output['html'] .= "<a data-fancybox='gallery' id='fv_flowplayer_lightbox_starter' href='#' data-src='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+          }
         }
         
         if ($i > 1) {
@@ -276,7 +296,7 @@ class FV_Player_lightbox {
       return $content;
     }
 
-    if (stripos($content, 'lightbox') !== false) {
+    if (!empty($_GET['lightbox_dev']) && stripos($content, 'lightbox') !== false) {
       $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?lightbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
       return $content;
     }
@@ -325,12 +345,24 @@ class FV_Player_lightbox {
   }
 
   function html_lightbox_images_callback($matches) {
-    if( stripos($matches[1],'colorbox') || stripos($matches[1],'lightbox') ) return str_replace('<a', '<a data-fancybox="gallery"', $matches[0]);
+    if (empty($_GET['lightbox_dev'])) {
+      if( stripos($matches[1],'colorbox') ) return $matches[0];
+    } else {
+      if( stripos($matches[1],'colorbox') || stripos($matches[1],'lightbox') ) return str_replace('<a', '<a data-fancybox="gallery"', $matches[0]);
+    }
     
     if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
-    $matches[1] = str_replace('<a ', '<a data-fancybox="gallery" ', $matches[1]);
+    if (empty($_GET['lightbox_dev'])) {
+      if (stripos($matches[1], 'class=') === false) {
+        $matches[1] = str_replace('<a ', '<a class="colorbox" ', $matches[1]);
+      } else {
+        $matches[1] = preg_replace('~(class=[\'"])~', '$1colorbox ', $matches[1]);
+      }
+    } else {
+      $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
+    }
 
     //  since the srcset on img doesn't contain all the image sizes we need to create a our own srcset on the anchor which will only have proper aspect ratio image at least the size of the thumbnail
     if( stripos($matches[0],'srcset') !== false ) {
