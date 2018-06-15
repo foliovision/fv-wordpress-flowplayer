@@ -575,6 +575,21 @@ class FV_Player_Db_Shortcode {
       // add any player meta data that we can gather
       $player_meta = array();
 
+      if (!empty($post_data['player_meta']['player'])) {
+        foreach ($post_data['player_meta']['player'] as $player_meta_section => $player_meta_array) {
+          $meta_data_to_add = array(
+            'meta_key' => $player_meta_section,
+            'meta_value' => $player_meta_array['value']
+          );
+
+          if (isset($player_meta_array['id'])) {
+            $meta_data_to_add['id'] = (int) $player_meta_array['id'];
+          }
+
+          $player_meta[] = $meta_data_to_add;
+        }
+      }
+
       // call a filter which is served by plugins to augment
       // the $player_meta data with all the plugin data for this
       // particular player

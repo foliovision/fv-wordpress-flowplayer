@@ -926,44 +926,62 @@ function fv_wp_flowplayer_edit() {
           var $doc = jQuery(document);
           $doc.trigger('fv_flowplayer_player_meta_load', [response]);
 
+          // used below 2 times, so it's in a function
+          function set_player_field(key, value, id) {
+            var
+              real_key = fv_wp_flowplayer_map_names_to_editor_fields(key),
+              real_val = fv_wp_flowplayer_map_db_values_to_field_values(key, value),
+              // try ID first
+              $element = jQuery('#' + real_key);
+
+            if (!$element.length) {
+              // no element with this ID found, we need to go for a name
+              $element = jQuery('[name="' + real_key + '"]');
+            }
+
+            // player and video IDs wouldn't have corresponding fields
+            if ($element.length) {
+              // dropdowns could have capitalized values
+              if ($element.get(0).nodeName == 'SELECT') {
+                if ($element.find('option[value="' + real_val + '"]').length) {
+                  $element.val(real_val);
+                } else {
+                  // try capitalized
+                  var caps = real_val.charAt(0).toUpperCase() + real_val.slice(1);
+                  $element.find('option').each(function() {
+                    if (this.text == caps) {
+                      $(this).attr('selected', 'selected');
+                    }
+                  });
+                }
+              } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
+                if (real_val === '1' || real_val === 'on' || real_val === 'true') {
+                  $element.attr('checked', 'checked');
+                } else {
+                  $element.removeAttr('checked');
+                }
+              } else {
+                $element.val(real_val);
+              }
+
+              // if an ID exists, this is a meta field
+              // and the data id needs to be added to it as well
+              if (typeof(id) != 'undefined') {
+                $element.attr('data-id', id);
+              }
+            }
+          }
+
           for (var key in response) {
             // put the field value where it belongs
             if (key !== 'videos') {
-              var
-                real_key = fv_wp_flowplayer_map_names_to_editor_fields(key),
-                real_val = fv_wp_flowplayer_map_db_values_to_field_values(key, response[key]),
-                // try ID first
-                $element = jQuery('#' + real_key);
-
-              if (!$element.length) {
-                // no element with this ID found, we need to go for a name
-                $element = jQuery('[name="' + real_key + '"]');
-              }
-
-              // player and video IDs wouldn't have corresponding fields
-              if ($element.length) {
-                // dropdowns could have capitalized values
-                if ($element.get(0).nodeName == 'SELECT') {
-                  if ($element.find('option[value="' + real_val + '"]').length) {
-                    $element.val(real_val);
-                  } else {
-                    // try capitalized
-                    var caps = real_val.charAt(0).toUpperCase() + real_val.slice(1);
-                    $element.find('option').each(function() {
-                      if (this.text == caps) {
-                        $(this).attr('selected', 'selected');
-                      }
-                    });
-                  }
-                } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
-                  if (real_val === '1' || real_val === 'on' || real_val === 'true') {
-                    $element.attr('checked', 'checked');
-                  } else {
-                    $element.removeAttr('checked');
-                  }
-                } else {
-                  $element.val(real_val);
+              // in case of meta data, proceed with each player meta one by one
+              if (key == 'meta') {
+                for (var i in response[key]) {
+                  set_player_field(response[key][i]['meta_key'], response[key][i]['meta_value'], response[key][i]['id']);
                 }
+              } else {
+                set_player_field(key, response[key]);
               }
             }
           }
@@ -1464,7 +1482,7 @@ function fv_wp_flowplayer_build_ajax_data() {
       $editor                = jQuery('#fv-player-shortcode-editor')
       $tabs                  = $editor.find('.fv-player-tab'),
       regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
-      data                   = {'video_meta' : {}},
+      data                   = {'video_meta' : {}, 'player_meta' : {}},
       end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
 
   // special processing for end video actions
@@ -1618,7 +1636,20 @@ function fv_wp_flowplayer_build_ajax_data() {
           // all other tabs
           else {
             if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
-              data[m[1]] = this.checked ? 'true' : '';
+              // some player attributes are meta data
+              if (fv_wp_flowplayer_check_for_player_meta_field(m[1])) {
+                // meta data input
+                fv_flowplayer_insertUpdateOrDeletePlayerMeta({
+                  data: data,
+                  meta_section: 'player',
+                  meta_key: fv_wp_flowplayer_get_player_meta_field_name(m[1]),
+                  element: this,
+                  handle_delete: false
+                });
+              } else {
+                // ordinary player attribute
+                data[m[1]] = (this.type.toLowerCase() == 'checkbox' ? this.checked ? 'true' : '' : this.value);
+              }
             } else {
               // check dropdown for its value based on values in it
               if (isDropdown) {
@@ -1627,10 +1658,34 @@ function fv_wp_flowplayer_build_ajax_data() {
                 if (opt_value === false) {
                   return {};
                 } else {
-                  data[m[1]] = opt_value.toLowerCase();
+                  if (fv_wp_flowplayer_check_for_player_meta_field(m[1])) {
+                    // meta data input
+                    fv_flowplayer_insertUpdateOrDeletePlayerMeta({
+                      data: data,
+                      meta_section: 'player',
+                      meta_key: fv_wp_flowplayer_get_player_meta_field_name(m[1]),
+                      element: this,
+                      handle_delete: false
+                    });
+                  } else {
+                    // ordinary player attribute
+                    data[m[1]] = opt_value.toLowerCase();
+                  }
                 }
               } else {
-                data[m[1]] = this.value;
+                if (fv_wp_flowplayer_check_for_player_meta_field(m[1])) {
+                  // meta data input
+                  fv_flowplayer_insertUpdateOrDeletePlayerMeta({
+                    data: data,
+                    meta_section: 'player',
+                    meta_key: fv_wp_flowplayer_get_player_meta_field_name(m[1]),
+                    element: this,
+                    handle_delete: false
+                  });
+                } else {
+                  // ordinary player attribute
+                  data[m[1]] = this.value;
+                }
               }
             }
           }
@@ -1665,6 +1720,22 @@ function fv_wp_flowplayer_build_ajax_data() {
   }
 
   return data;
+}
+
+
+
+function fv_wp_flowplayer_check_for_player_meta_field(fieldName) {
+  return ['fv_wp_flowplayer_field_live'].indexOf(fieldName) > -1;
+}
+
+
+
+function fv_wp_flowplayer_get_player_meta_field_name(origFieldName) {
+  if (origFieldName.indexOf('fv_wp_flowplayer_field_') > -1) {
+    return origFieldName.replace('fv_wp_flowplayer_field_', '');
+  }
+
+  return origFieldName;
 }
 
 
@@ -2280,18 +2351,38 @@ jQuery(document).on('fv_flowplayer_shortcode_insert', function(e) {
 function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
   var
     $element = jQuery(options.element),
-    $deleted_meta_element = jQuery('#deleted_player_meta');
+    $deleted_meta_element = jQuery('#deleted_player_meta'),
+    optionsHaveNoValue = false, // will become true for dropdown options without values
+    $valueLessOptions = null,
+    isDropdown = $element.get(0).nodeName == 'SELECT',
+    value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
 
   // don't do anything if we've not found the actual element
   if (!$element.length) {
     return;
   }
 
+  // check for a select without any option values, in which case we'll use their text
+  if (isDropdown) {
+    $valueLessOptions = $element.find('option:not([value])');
+    if ($valueLessOptions.length == $element.get(0).length) {
+      optionsHaveNoValue = true;
+    }
+
+    var opt_value = fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, $element.get(0));
+    // if there were any problems, just set value to ''
+    if (opt_value === false) {
+      value = '';
+    } else {
+      value = opt_value.toLowerCase();
+    }
+  }
+
   // check whether to update or delete this meta
   if ($element.data('id')) {
     // only delete this meta if delete was not prevented via options
     // and if there was no value specified, otherwise update
-    if ((!options.handle_delete || options.handle_delete !== false) && !$element.val()) {
+    if ((!options.handle_delete || options.handle_delete !== false) && !value) {
       if ($deleted_meta_element.val()) {
         $deleted_meta_element.val($deleted_meta_element.val() + ',' + $element.data('id'));
       } else {
@@ -2307,10 +2398,14 @@ function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
         options.delete_callback();
       }
     } else {
+      if (typeof(options.data['player_meta'][options.meta_section]) == 'undefined') {
+        options.data['player_meta'][options.meta_section] = {};
+      }
+
       // update if we have an ID
       options.data['player_meta'][options.meta_section][options.meta_key] = {
         'id': $element.data('id'),
-        'value': $element.val()
+        'value': value
       }
 
       // execute update callback, if present
@@ -2318,10 +2413,14 @@ function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
         options.edit_callback();
       }
     }
-  } else if ($element.val()) {
+  } else if (value) {
+    if (typeof(options.data['player_meta'][options.meta_section]) == 'undefined') {
+      options.data['player_meta'][options.meta_section] = {};
+    }
+
     // insert new data if no meta ID
     options.data['player_meta'][options.meta_section][options.meta_key] = {
-      'value': $element.val()
+      'value': value
     }
 
     // execute insert callback, if present
@@ -2334,11 +2433,31 @@ function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
 function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
   var
     $element = jQuery(options.element),
-    $deleted_meta_element = jQuery('#deleted_video_meta');
+    $deleted_meta_element = jQuery('#deleted_video_meta'),
+    optionsHaveNoValue = false, // will become true for dropdown options without values
+    $valueLessOptions = null,
+    isDropdown = $element.get(0).nodeName == 'SELECT',
+    value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
 
   // don't do anything if we've not found the actual element
   if (!$element.length) {
     return;
+  }
+
+  // check for a select without any option values, in which case we'll use their text
+  if (isDropdown) {
+    $valueLessOptions = $element.find('option:not([value])');
+    if ($valueLessOptions.length == $element.get(0).length) {
+      optionsHaveNoValue = true;
+    }
+
+    var opt_value = fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, $element.get(0));
+    // if there were any problems, just set value to ''
+    if (opt_value === false) {
+      value = '';
+    } else {
+      value = opt_value.toLowerCase();
+    }
   }
 
   // check whether to update or delete this meta
@@ -2361,10 +2480,14 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
         options.delete_callback();
       }
     } else {
-      // update if we have a value
+      if (typeof(options.data['video_meta'][options.meta_section]) == 'undefined') {
+        options.data['video_meta'][options.meta_section] = {};
+      }
+
+      // update if we have an ID
       options.data['video_meta'][options.meta_section][options.meta_index][options.meta_key] = {
         'id': $element.data('id'),
-        'value': $element.val()
+        'value': value
       }
 
       // execute update callback, if present
@@ -2372,10 +2495,14 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
         options.edit_callback();
       }
     }
-  } else if ($element.val()) {
+  } else if (value) {
+    if (typeof(options.data['video_meta'][options.meta_section]) == 'undefined') {
+      options.data['video_meta'][options.meta_section] = {};
+    }
+
     // insert new data if no meta ID
     options.data['video_meta'][options.meta_section][options.meta_index][options.meta_key] = {
-      'value': $element.val()
+      'value': value
     }
 
     // execute insert callback, if present

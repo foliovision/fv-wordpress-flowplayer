@@ -43,7 +43,6 @@ class FV_Player_Db_Shortcode_Player {
     $lightbox_caption, // title for the lightbox popup
     $lightbox_height, // height for the lightbox popup
     $lightbox_width, // width for the lightbox popup
-    $live, // whether this video is a live stream
     $logo, // adds a logo to the video or hides the globally preset one
     $player_name, // custom name for the player
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
@@ -261,13 +260,6 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getLive() {
-    return $this->live;
-  }
-
-  /**
-   * @return string
-   */
   public function getPlaylist() {
     return $this->playlist;
   }
@@ -409,7 +401,6 @@ CREATE TABLE `" . $this->db_table_name . "` (
   `lightbox_caption` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for the lightbox popup',
   `lightbox_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height for the lightbox popup',
   `lightbox_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width for the lightbox popup',
-  `live` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether this video is a live stream',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'adds a logo to the video or hides the globally preset one',
   `playlist` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT '[liststyle in shortcode] style of the playlist',
   `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
