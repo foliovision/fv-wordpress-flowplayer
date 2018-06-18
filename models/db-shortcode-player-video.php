@@ -375,7 +375,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   /**
    * Returns meta data for this video.
    *
-   * @return array Returns all meta data for this video.
+   * @return FV_Player_Db_Shortcode_Player_Video_Meta[] Returns all meta data for this video.
    * @throws Exception When an underlying meta data object throws an exception.
    */
   public function getMetaData() {

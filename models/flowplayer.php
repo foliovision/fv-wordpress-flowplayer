@@ -770,8 +770,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ){
+    global $fv_fp;
     
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
+
+    // check for live video meta and update as neccessary
+    if (method_exists($fv_fp, 'current_video') && $fv_fp->current_video() && count($fv_fp->current_video()->getMetaData())) {
+      foreach ($fv_fp->current_video()->getMetaData() as $meta) {
+          if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
+            // if the video is live, update player data
+            $aPlayer['live'] = 'true';
+          }
+      }
+    }
     
     if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
     
