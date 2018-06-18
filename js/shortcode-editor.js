@@ -1241,7 +1241,8 @@ function fv_wp_flowplayer_edit() {
         sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
         sad = sad.replace(/&amp;/g,'&');
         document.getElementById("fv_wp_flowplayer_field_ad").value = sad;
-      }dat
+      }
+
       if( iadheight != null && iadheight[1] != null )
         document.getElementById("fv_wp_flowplayer_field_ad_height").value = iadheight[1];
       if( iadwidth != null && iadwidth[1] != null )
