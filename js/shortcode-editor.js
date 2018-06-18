@@ -1241,13 +1241,20 @@ function fv_wp_flowplayer_edit() {
         sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
         sad = sad.replace(/&amp;/g,'&');
         document.getElementById("fv_wp_flowplayer_field_ad").value = sad;
-      }
+      }dat
       if( iadheight != null && iadheight[1] != null )
         document.getElementById("fv_wp_flowplayer_field_ad_height").value = iadheight[1];
       if( iadwidth != null && iadwidth[1] != null )
         document.getElementById("fv_wp_flowplayer_field_ad_width").value = iadwidth[1];
       if( sad_skip != null && sad_skip[1] != null && sad_skip[1] == 'yes' )
         document.getElementById("fv_wp_flowplayer_field_ad_skip").checked = 1;
+
+      // classic shortcode being used instead of DB ones
+      if (!fv_flowplayer_conf.new_shortcode) {
+        if (slive != null && slive[1] != null && slive[1] == 'true')
+          document.getElementById("fv_wp_flowplayer_field_live").checked = 1;
+      }
+
       if( sspeed != null && sspeed[1] != null ) {
         if (sspeed[1] == 'buttons')
           document.getElementById("fv_wp_flowplayer_field_speed").selectedIndex = 1;
@@ -1365,10 +1372,13 @@ function fv_wp_flowplayer_edit() {
       //???
       jQuery('#cboxContent').css('background','white');
 
-      if( slive != null && slive[1] != null && slive[1] == 'true' ) {
-        jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
-          this.checked = 1;
-        });
+      // do this only with new DB-based shortcodes
+      if (fv_flowplayer_conf.new_shortcode) {
+        if (slive != null && slive[1] != null && slive[1] == 'true') {
+          jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
+            this.checked = 1;
+          });
+        }
       }
 
 
