@@ -7,6 +7,16 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  * in the HTML markup.
  */
 final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
+  
+  //  we need to convince it is showing the FV Player settings screen!
+  public static function wpSetUpBeforeClass() {
+    set_current_screen( 'settings_page_fvplayer' );
+    
+    parent::wpSetUpBeforeClass();    
+    
+    remove_action( 'admin_init', 'wp_admin_headers' );
+    do_action( 'admin_init' );
+  }    
     
   public function testSettingsScreen() {
     include( '../../../fv-wordpress-flowplayer/controller/backend.php' );
@@ -30,7 +40,7 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
         }
       }*/
       
-      //$this->assertEquals( $v, $two[$k] );
+      $this->assertEquals( $v, $two[$k] );
     }
     
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html')), $this->fix_newlines($output) );

@@ -19,7 +19,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     // create a post with playlist shortcode
     $this->postID = $this->factory->post->create( array(
       'post_title' => 'Playlist with Ads',
-      'post_content' => '[fvplayer src="https://cdn.site.com/1.mp4" playlist="https://cdn.site.com/2.mp4;https://cdn.site.com/3.mp4"]'
+      'post_content' => '[fvplayer src="https://cdn.site.com/1.mp4" playlist="https://cdn.site.com/2.mp4;https://cdn.site.com/3.mp4" saveposition="yes"]'
     ) );
 
     global $fv_fp;
@@ -68,7 +68,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"\" data-ratio=\"0.5625\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"\" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\">Facebook</a></li>
@@ -125,7 +125,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"\" data-ratio=\"0.5625\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"\" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\">Facebook</a></li>

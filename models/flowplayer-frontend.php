@@ -213,6 +213,8 @@ class flowplayer_frontend extends flowplayer
      *  Video player
      */
     if( $player_type == 'video' ) {
+        
+        add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
       
         if (!empty($media)) {
           $media = $this->get_video_url($media);
@@ -322,7 +324,7 @@ class flowplayer_frontend extends flowplayer
           } else {
             $skin = 'skin-'.$this->_get_option('skin');
           }
-          $attributes['class'] .= ' '.$skin;
+          $attributes['class'] .= ' no-svg is-paused '.$skin;
           $attributes['class'] .= ' '.$this->_get_option(array($skin, 'design-timeline')).' '.$this->_get_option(array($skin, 'design-icons'));
         }
       
@@ -449,10 +451,6 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
         }
         
-        if( $this->_get_option('scaling') && $this->_get_option('fixed_size') ) {
-          $attributes['data-flashfit'] = 'true';
-        }
-        
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
           $attributes['data-live'] = 'true';
         }
@@ -528,6 +526,9 @@ class flowplayer_frontend extends flowplayer
         
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+          if( $this->is_beta() ) {
+            $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>'."\n";
+          }
         }
 
         if( count($aPlaylistItems) == 0 ) {  // todo: this stops subtitles, mobile video, preload etc.
@@ -1081,7 +1082,7 @@ class flowplayer_frontend extends flowplayer
         $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
       }
 
-      if( isset($aTest_media) && count($aTest_media) > 0 ) { 
+      if( isset($aTest_media) && count($aTest_media) > 0 ) {
         $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
       }
     }            
@@ -1180,6 +1181,55 @@ class flowplayer_frontend extends flowplayer
 HTML;
 
     return $sHTML;
+  }
+  
+  
+  // some themes use wp_filter_post_kses() on output, so we must ensure FV Player markup passes
+  function wp_kses_permit( $tags, $context = false ) {
+    if( $context != 'post' ) return $tags;
+    
+    if( !empty($tags['a']) && is_array($tags['a']) ) {
+      $tags['a']['data-item'] = true;
+      $tags['a']['itemprop'] = true;
+      $tags['a']['itemscope'] = true;
+      $tags['a']['itemtype'] = true;
+      $tags['a']['onclick'] = true;
+    }
+    
+    if( !empty($tags['div']) && is_array($tags['div']) ) {
+      $tags['div']['data-ad_show_after'] = true;
+      $tags['div']['data-advance'] = true;
+      $tags['div']['data-analytics'] = true;
+      $tags['div']['data-item'] = true;
+      $tags['div']['data-button-no-picture'] = true;
+      $tags['div']['data-button-repeat'] = true;
+      $tags['div']['data-engine'] = true;
+      $tags['div']['data-embed'] = true;
+      $tags['div']['data-fv-embed'] = true;
+      $tags['div']['data-fv_loop'] = true;
+      $tags['div']['data-fv_redirect'] = true;
+      $tags['div']['data-fvautoplay'] = true;
+      $tags['div']['data-fvsticky'] = true;
+      $tags['div']['data-fullscreen'] = true;
+      $tags['div']['data-live'] = true;
+      $tags['div']['data-logo'] = true;
+      $tags['div']['data-ratio'] = true;      
+      $tags['div']['data-rtmp'] = true;
+      $tags['div']['itemprop'] = true;
+      $tags['div']['itemscope'] = true;
+      $tags['div']['itemtype'] = true;
+      $tags['div']['onclick'] = true;
+      $tags['div']['rel'] = true;
+    }
+    
+    if( empty($tags['meta']) ) {
+      $tags['meta'] = array();
+      $tags['meta']['name'] = true;
+      $tags['meta']['content'] = true;
+      $tags['meta']['itemprop'] = true;
+    }
+    
+    return $tags;  
   }
   
   

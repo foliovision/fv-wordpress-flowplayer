@@ -176,6 +176,15 @@ class FV_Player_lightbox {
         if (is_object($aArgs[1]) && method_exists($aArgs[1], 'get_align')) {
           $sClass = $aArgs[1]->get_align();
         }
+        if( $fv_fp->is_beta() ) {
+          if( !empty($fv_fp->aCurArgs['skin']) ) {
+            $skin = 'skin-'.$fv_fp->aCurArgs['skin'];
+          } else {
+            $skin = 'skin-'.$fv_fp->_get_option('skin');
+          }
+          $sClass .= ' no-svg is-paused '.$skin;
+          $sClass .= ' '.$fv_fp->_get_option(array($skin, 'design-timeline')).' '.$fv_fp->_get_option(array($skin, 'design-icons'));
+        }
 
         $sTitle = '';
         if (isset($aLightbox[3])) {
@@ -189,9 +198,15 @@ class FV_Player_lightbox {
           $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
 
         if (empty($_GET['lightbox_dev'])) {
-          $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
+          $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
         } else {
-          $html = "<div data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle><div class='fp-ui'></div>";
+          $html = "<div data-fancybox='gallery' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
+        }
+        
+        if( $fv_fp->is_beta() ) {
+          $html .= '<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>';
+        } else {
+          $html .= "<div class='fp-ui'></div>";
         }
         if ($iWidth > 0) {
           $html .= '<div class="fp-ratio" style="padding-top: '.str_replace(',','.',round($iHeight / $iWidth, 4) * 100).'%"></div>';
@@ -214,7 +229,7 @@ class FV_Player_lightbox {
     global $fv_fp;
     $output = array();
     $output['html'] = '';
-    $output['script'] = '';
+    $output['script'] = array();
 
     $i = 0;
     $after = '';
