@@ -213,6 +213,8 @@ class flowplayer_frontend extends flowplayer
      *  Video player
      */
     if( $player_type == 'video' ) {
+        
+        add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
       
         if (!empty($media)) {
           $media = $this->get_video_url($media);
@@ -447,10 +449,6 @@ class flowplayer_frontend extends flowplayer
           $this->fRatio = $ratio;
   
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
-        }
-        
-        if( $this->_get_option('scaling') && $this->_get_option('fixed_size') ) {
-          $attributes['data-flashfit'] = 'true';
         }
         
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
@@ -1183,6 +1181,55 @@ class flowplayer_frontend extends flowplayer
 HTML;
 
     return $sHTML;
+  }
+  
+  
+  // some themes use wp_filter_post_kses() on output, so we must ensure FV Player markup passes
+  function wp_kses_permit( $tags, $context = false ) {
+    if( $context != 'post' ) return $tags;
+    
+    if( !empty($tags['a']) && is_array($tags['a']) ) {
+      $tags['a']['data-item'] = true;
+      $tags['a']['itemprop'] = true;
+      $tags['a']['itemscope'] = true;
+      $tags['a']['itemtype'] = true;
+      $tags['a']['onclick'] = true;
+    }
+    
+    if( !empty($tags['div']) && is_array($tags['div']) ) {
+      $tags['div']['data-ad_show_after'] = true;
+      $tags['div']['data-advance'] = true;
+      $tags['div']['data-analytics'] = true;
+      $tags['div']['data-item'] = true;
+      $tags['div']['data-button-no-picture'] = true;
+      $tags['div']['data-button-repeat'] = true;
+      $tags['div']['data-engine'] = true;
+      $tags['div']['data-embed'] = true;
+      $tags['div']['data-fv-embed'] = true;
+      $tags['div']['data-fv_loop'] = true;
+      $tags['div']['data-fv_redirect'] = true;
+      $tags['div']['data-fvautoplay'] = true;
+      $tags['div']['data-fvsticky'] = true;
+      $tags['div']['data-fullscreen'] = true;
+      $tags['div']['data-live'] = true;
+      $tags['div']['data-logo'] = true;
+      $tags['div']['data-ratio'] = true;      
+      $tags['div']['data-rtmp'] = true;
+      $tags['div']['itemprop'] = true;
+      $tags['div']['itemscope'] = true;
+      $tags['div']['itemtype'] = true;
+      $tags['div']['onclick'] = true;
+      $tags['div']['rel'] = true;
+    }
+    
+    if( empty($tags['meta']) ) {
+      $tags['meta'] = array();
+      $tags['meta']['name'] = true;
+      $tags['meta']['content'] = true;
+      $tags['meta']['itemprop'] = true;
+    }
+    
+    return $tags;  
   }
   
   
