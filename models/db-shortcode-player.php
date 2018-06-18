@@ -31,7 +31,6 @@ class FV_Player_Db_Shortcode_Player {
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
     $copy_text, // whether to show DRM text on the player
-    $email_list, // ID of the e-mail list to collect e-mails to at the end of playlist
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
     $end_action_value, // the actual shortcode value for end_actions field
@@ -49,9 +48,7 @@ class FV_Player_Db_Shortcode_Player {
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
     $playlist_hide, // whether to hide the playlist items below the video box
     $play_button, // whether to hide the play/pause button on the control bar
-    $popup_id, // ID of the popup to show at the end of playlist
     $qsel,
-    $redirect, // where to redirect after the end of playlist
     $share, // whether to display sharing buttons (On / Off / Default)
     $share_title, // title for sharing buttons
     $share_url,
@@ -189,13 +186,6 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getEmailList() {
-    return $this->email_list;
-  }
-
-  /**
-   * @return string
-   */
   public function getEmbed() {
     return $this->embed;
   }
@@ -266,22 +256,8 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getPopupId() {
-    return $this->popup_id;
-  }
-
-  /**
-   * @return string
-   */
   public function getQsel() {
     return $this->qsel;
-  }
-
-  /**
-   * @return string
-   */
-  public function getRedirect() {
-    return $this->redirect;
   }
 
   /**
@@ -381,7 +357,6 @@ CREATE TABLE `" . $this->db_table_name . "` (
   `autoplay` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to autoplay videos on page load',
   `controlbar` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
   `copy_text` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_list` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID of the e-mail list to collect e-mails to at the end of playlist',
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
   `end_action_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'the actual shortcode value for end_actions field',
@@ -397,9 +372,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
   `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
   `playlist_hide` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the playlist items below the video box',
   `play_button` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the play/pause button on the control bar',
-  `popup_id` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID of the popup to show at the end of playlist',
   `qsel` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `redirect` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'where to redirect after the end of playlist',
   `share` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to display sharing buttons (On / Off / Default)',
   `share_title` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for sharing buttons',
   `share_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
