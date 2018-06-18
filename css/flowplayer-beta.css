@@ -706,6 +706,10 @@
     padding-right: 0.3em; }
     .flowplayer .fp-controls > * {
       margin: 0 .6em; }
+      .flowplayer .fp-controls strong {
+      	margin: 0;
+      	padding: 0 .6em;
+      }
     .flowplayer .fp-controls > strong {
       letter-spacing: 1px; font-weight: 400; }
     .flowplayer .fp-controls img {
