@@ -937,7 +937,7 @@
 	.flowplayer.fixed-controls .fp-menu.fp-active {
 		bottom: .2em;
 	}
-    .flowplayer .fp-speed-menu.fp-active {
+    .flowplayer .fp-speed-menu.fp-active.wont-fit {
 		overflow-y: scroll;
 		height: 86%;
 	}
