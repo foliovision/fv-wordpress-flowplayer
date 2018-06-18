@@ -1248,8 +1248,6 @@ function fv_wp_flowplayer_edit() {
         document.getElementById("fv_wp_flowplayer_field_ad_width").value = iadwidth[1];
       if( sad_skip != null && sad_skip[1] != null && sad_skip[1] == 'yes' )
         document.getElementById("fv_wp_flowplayer_field_ad_skip").checked = 1;
-      if( slive != null && slive[1] != null && slive[1] == 'true' )
-        document.getElementById("fv_wp_flowplayer_field_live").checked = 1;
       if( sspeed != null && sspeed[1] != null ) {
         if (sspeed[1] == 'buttons')
           document.getElementById("fv_wp_flowplayer_field_speed").selectedIndex = 1;
@@ -1366,6 +1364,12 @@ function fv_wp_flowplayer_edit() {
 
       //???
       jQuery('#cboxContent').css('background','white');
+
+      if( slive != null && slive[1] != null && slive[1] == 'true' ) {
+        jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
+          this.checked = 1;
+        });
+      }
 
 
       if(sPlaylist){
