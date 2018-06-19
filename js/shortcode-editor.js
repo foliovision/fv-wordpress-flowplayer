@@ -938,12 +938,12 @@ function fv_wp_flowplayer_edit() {
             if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
               var end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
 
+              // to actually show the value, we need to trigger a change event on the end_actions dropdown itself
+              jQuery('#fv_wp_flowplayer_field_end_actions').trigger('change');
+
               switch (end_of_playlist_action) {
                 case 'redirect':
-                  console.log(jQuery('#fv_wp_flowplayer_field_redirect').val());
                   jQuery('#fv_wp_flowplayer_field_redirect').val(value);
-                  jQuery('#fv_wp_flowplayer_field_redirect').addClass('aaaaa');
-                  console.log(jQuery('#fv_wp_flowplayer_field_redirect').val());
                   break;
 
                 case 'popup':
@@ -955,8 +955,6 @@ function fv_wp_flowplayer_edit() {
                   break;
               }
 
-              // to actually show the value, we need to trigger a change event on the end_actions dropdown itself
-              jQuery('#fv_wp_flowplayer_field_end_actions').trigger('change');
               return;
             } else if (['fv_wp_flowplayer_field_email_list', 'fv_wp_flowplayer_field_popup_id', 'fv_wp_flowplayer_field_redirect'].indexOf(real_key) > -1) {
               // ignore the original fields, if we still use old DB values
