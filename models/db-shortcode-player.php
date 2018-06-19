@@ -31,6 +31,7 @@ class FV_Player_Db_Shortcode_Player {
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
     $copy_text, // whether to show DRM text on the player
+    $email_list, // (NON-ORM, class property only) ID of the e-mail list to collect e-mails to at the end of playlist
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
     $end_action_value, // the actual shortcode value for end_actions field
@@ -48,7 +49,9 @@ class FV_Player_Db_Shortcode_Player {
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
     $playlist_hide, // whether to hide the playlist items below the video box
     $play_button, // whether to hide the play/pause button on the control bar
+    $popup, // (NON-ORM, class property only) ID of the popup to show at the end of playlist
     $qsel,
+    $redirect, // (NON-ORM, class property only) where to redirect after the end of playlist
     $share, // whether to display sharing buttons (On / Off / Default)
     $share_title, // title for sharing buttons
     $share_url,
@@ -186,6 +189,13 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
+  public function getEmailList() {
+    return $this->email_list;
+  }
+
+  /**
+   * @return string
+   */
   public function getEmbed() {
     return $this->embed;
   }
@@ -256,8 +266,22 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
+  public function getPopup() {
+    return $this->popup;
+  }
+
+  /**
+   * @return string
+   */
   public function getQsel() {
     return $this->qsel;
+  }
+
+  /**
+   * @return string
+   */
+  public function getRedirect() {
+    return $this->redirect;
   }
 
   /**
@@ -391,6 +415,26 @@ CREATE TABLE `" . $this->db_table_name . "` (
   }
 
   /**
+   * Propagates end action value into one of the non-orm
+   * related class keys for this player. This is because
+   * we've refactored the end_actions functionality and now
+   * we don't have the original DB counterparts for the input
+   * fields in the wizard.
+   */
+  private function propagate_end_action_value() {
+    switch ($this->end_actions) {
+      case 'redirect': $this->redirect = $this->end_action_value;
+        break;
+
+      case 'popup': $this->popup = $this->end_action_value;
+        break;
+
+      case 'email_list': $this->email_list = $this->end_action_value;
+        break;
+    }
+  }
+
+  /**
    * FV_Player_Db_Shortcode_Player constructor.
    *
    * @param int $id                              ID of player to load data from the DB for.
@@ -469,6 +513,9 @@ CREATE TABLE `" . $this->db_table_name . "` (
             $this->$key = $value;
           }
 
+          // make sure we fill the appropriate non-orm object variables
+          $this->propagate_end_action_value();
+
           // cache this player in DB Shortcode object
           if ($DB_Shortcode) {
             $cache[$id] = $this;
@@ -483,6 +530,9 @@ CREATE TABLE `" . $this->db_table_name . "` (
               foreach ( $db_record as $key => $value ) {
                 $this->$key = $value;
               }
+
+              // make sure we fill the appropriate non-orm object variables
+              $this->propagate_end_action_value();
 
               // add this to all the loaded video objects
               $this->additional_objects[] = $this;
@@ -587,7 +637,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'numeric_properties' && $property != 'is_valid' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance' && $property != 'db_table_name' && $property != 'meta_data') {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'meta_data', 'popup', 'email_list', 'redirect'))) {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -735,7 +785,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'numeric_properties' && $property != 'is_valid' && $property != 'additional_objects' && $property != 'DB_Shortcode_Instance' && $property != 'db_table_name' && $property != 'video_objects' && $property != 'meta_data') {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'email_list', 'redirect'))) {
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 
