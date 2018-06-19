@@ -31,7 +31,6 @@ class FV_Player_Db_Shortcode_Player {
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
     $copy_text, // whether to show DRM text on the player
-    $email_list, // (NON-ORM, class property only) ID of the e-mail list to collect e-mails to at the end of playlist
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
     $end_action_value, // the actual shortcode value for end_actions field
@@ -43,6 +42,7 @@ class FV_Player_Db_Shortcode_Player {
     $lightbox_height, // height for the lightbox popup
     $lightbox_width, // width for the lightbox popup
     $logo, // adds a logo to the video or hides the globally preset one
+    $loop, // (NON-ORM, class property only) loops player at the end if set
     $player_name, // custom name for the player
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
@@ -56,6 +56,7 @@ class FV_Player_Db_Shortcode_Player {
     $share_title, // title for sharing buttons
     $share_url,
     $speed,
+    $splashend, // (NON-ORM, class property only) populated by "true" if splash should be shown when the player stops
     $sticky, // whether or not to enable sticky functionality for this player
     $video_ads,
     $video_ads_post,
@@ -184,13 +185,6 @@ class FV_Player_Db_Shortcode_Player {
    */
   public function getCopyText() {
     return $this->copy_text;
-  }
-
-  /**
-   * @return string
-   */
-  public function getEmailList() {
-    return $this->email_list;
   }
 
   /**
@@ -429,7 +423,13 @@ CREATE TABLE `" . $this->db_table_name . "` (
       case 'popup': $this->popup = $this->end_action_value;
         break;
 
-      case 'email_list': $this->email_list = $this->end_action_value;
+      case 'email_list': $this->popup = 'email-'.$this->end_action_value;
+        break;
+
+      case 'loop': $this->loop = true;
+        break;
+
+      case 'splashend': $this->splashend = true;
         break;
     }
   }
@@ -637,7 +637,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'meta_data', 'popup', 'email_list', 'redirect'))) {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'meta_data'))) {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -785,7 +785,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'email_list', 'redirect'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 

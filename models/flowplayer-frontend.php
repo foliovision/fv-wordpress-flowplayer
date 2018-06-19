@@ -530,7 +530,7 @@ class flowplayer_frontend extends flowplayer
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
         }
-        var_dump($this->aCurArgs);
+
         if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
@@ -911,6 +911,7 @@ class flowplayer_frontend extends flowplayer
     $sClass = ' fv_player_popup-' . $iPopupIndex;
 
     $popup = apply_filters('fv_flowplayer_popup_html', $popup);
+
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
           'html' => '<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>'
