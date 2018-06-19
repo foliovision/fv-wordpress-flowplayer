@@ -777,3 +777,7 @@ body.compensate-for-scrollbar {
 .fancybox-content {
     overflow: hidden;
 }
+
+.fancybox-content.flowplayer {
+    padding: 0;
+}
