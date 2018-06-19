@@ -409,7 +409,15 @@ function fv_wp_flowplayer_init() {
   fv_wp_flowplayer_dialog_resize_height_record = 0;
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
-  
+
+  if (!fv_flowplayer_conf.new_shortcode) {
+    jQuery('#fv_wp_flowplayer_field_player_name').hide();
+  } else {
+    jQuery('#fv_wp_flowplayer_field_player_name').show();
+  }
+
+  jQuery('#player_id_top_text').html('');
+
   var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
   if( field.length ) {    
     fv_wp_flowplayer_content = jQuery(field).val();
@@ -902,6 +910,8 @@ function fv_wp_flowplayer_edit() {
             $deleted_videos_element = jQuery('#deleted_videos'),
             $deleted_video_meta_element = jQuery('#deleted_video_meta'),
             $deleted_player_meta_element = jQuery('#deleted_player_meta');
+
+          jQuery('#player_id_top_text').html(result[1]);
 
           if (!$id_player_element.length) {
             // add player ID as a hidden field
