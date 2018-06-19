@@ -138,11 +138,6 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
-    [hlsjs] => Array
-        (
-            [startLevel] => -1
-        )
-
 )
 
 Localizing flowplayer with fv_flowplayer_translations = Array
