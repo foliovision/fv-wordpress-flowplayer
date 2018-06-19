@@ -357,7 +357,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.6.3 - 2018/06/?? =
+= 6.6.3 - 2018/06/19 =
 
 * Compatibility - fix for themes which use wp_kses to show post content, like UnidashVersion By CactusThemes. It was preventing FV Player from working in these themes.
 * Deprecating settings unless you are already using it:
