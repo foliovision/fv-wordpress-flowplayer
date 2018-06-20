@@ -617,9 +617,7 @@ function fv_flowplayer_admin_integrations() {
               <input type="hidden" name="integrations[optimizepress2]" value="false" />
               <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( $fv_fp->_get_option( array( 'integrations', 'optimizepress2' ) ) ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>-->
-
-          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
+					</tr>-->          
           <?php if( $fv_fp->_get_option('old_code') ) $fv_fp->_get_checkbox(__('Use old code', 'fv-wordpress-flowplayer'), 'old_code', __('Check this option if your videos suddenly don\'t play and report the issues to <a href="https://foliovision.com/support">Foliovision Support Forums</a> please!', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
 

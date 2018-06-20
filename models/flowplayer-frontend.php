@@ -396,7 +396,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-engine'] = 'flash';
         }
         
-        if( $this->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
+        if( $this->is_beta() || $this->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
           if( $this->aCurArgs['embed'] == 'false' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
             
           } else {
