@@ -646,7 +646,7 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug; 
   $download_url = $aPluginInfo->{$plugin_package}->url;  
   
-  $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
+  $result = FV_Wordpress_Flowplayer_Plugin_Private::install_plugin(
     "FV Player Pro",
     $plugin_package,
     $plugin_basename,

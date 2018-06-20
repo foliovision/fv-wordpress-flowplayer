@@ -515,7 +515,7 @@
       })   
     </script>
           <tr>
-          <td class="first"><label for="video_position_save_enable">Remember video position (beta):</label></td>
+          <td class="first"><label for="video_position_save_enable">Remember video position:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="video_position_save_enable" value="false"/>
@@ -638,15 +638,6 @@ jQuery(document).ready(function($) {
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="cbox_compatibility">Colorbox Compatibility:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="cbox_compatibility" value="false"/>
-                  <input type="checkbox" name="cbox_compatibility" id="cbox_compatibility" value="true" />
-                  Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.                                </p>
-          </td>
-      </tr>
-                      <tr>
           <td class="first"><label for="css_disable">Disable saving of color settings into a static file:</label></td>
           <td>
               <p class="description">
@@ -657,11 +648,11 @@ jQuery(document).ready(function($) {
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="hlsjs">Enable HLS.js (beta):</label></td>
+          <td class="first"><label for="hlsjs">Enable HLS.js:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="hlsjs" value="false"/>
-                  <input type="checkbox" name="hlsjs" id="hlsjs" value="true" />
+                  <input type="checkbox" name="hlsjs" id="hlsjs" value="true" checked="checked" />
                   Allows HLS playback in all modern browsers.                                        <span class="more">HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.</span> <a href="#" class="show-more">(&hellip;)</a>
                                 </p>
           </td>
@@ -671,11 +662,9 @@ jQuery(document).ready(function($) {
 						<td><label for="css_disable">Enable profile videos:</label></td>
 						<td>
               <div class="description">
-                <p>
-                  <input type="hidden" name="profile_videos_enable_bio" value="false" />
-                  <input type="checkbox" name="profile_videos_enable_bio" id="profile_videos_enable_bio" value="true"  />
-                  Check your site carefully after enabling. Videos attached to the user profile will be showing as a part of the user bio. <a href="#" class="show-more">(&hellip;)</a>
-                </p>
+                <input type="hidden" name="profile_videos_enable_bio" value="false" />
+                <input type="checkbox" name="profile_videos_enable_bio" id="profile_videos_enable_bio" value="true"  />
+                Check your site carefully after enabling. Videos attached to the user profile will be showing as a part of the user bio. <a href="#" class="show-more">(&hellip;)</a>
                 <div class="more">
                   <p>This feature is designed for YouTube and Vimeo videos and works best for our licensed users who get these videos playing without YouTube or Vimeo branding.</p>
                   <p>Some themes show author bio on the author post archive automatically (Genesis framework and others). Or you can also just put this code into your theme archive.php template, right before <code>while ( have_posts() )</code> is called:</p>
@@ -701,15 +690,6 @@ jQuery(document).ready(function($) {
 						</td>
 					</tr>
 
-                <tr>
-          <td class="first"><label for="scaling">Fit scaling:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="scaling" value="false"/>
-                  <input type="checkbox" name="scaling" id="scaling" value="true" checked="checked" />
-                  Original aspect ratio of the video will be used to display the video - for troubleshooting of fullscreen issues.                                </p>
-          </td>
-      </tr>
                       <tr>
           <td class="first"><label for="integrations[wp_core_video]">Handle WordPress <code><small>[video]</small></code> shortcodes:</label></td>
           <td>
@@ -726,16 +706,6 @@ jQuery(document).ready(function($) {
                   <input type="hidden" name="js-everywhere" value="false"/>
                   <input type="checkbox" name="js-everywhere" id="js-everywhere" value="true" />
                   If you use some special JavaScript integration you might prefer this option.                                        <span class="more">Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.</span> <a href="#" class="show-more">(&hellip;)</a>
-                                </p>
-          </td>
-      </tr>
-      					      <tr>
-          <td class="first"><label for="parse_commas">Parse old shortcodes with commas:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="parse_commas" value="false"/>
-                  <input type="checkbox" name="parse_commas" id="parse_commas" value="true" />
-                  Older versions of this plugin used commas to sepparate shortcode parameters.                                        <span class="more">This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.</span> <a href="#" class="show-more">(&hellip;)</a>
                                 </p>
           </td>
       </tr>
@@ -756,16 +726,6 @@ jQuery(document).ready(function($) {
                   <input type="hidden" name="postthumbnail" value="false"/>
                   <input type="checkbox" name="postthumbnail" id="postthumbnail" value="true" />
                   Setting a video splash screen from the media library will automatically make it the splash image if there is none.                                </p>
-          </td>
-      </tr>
-      					      <tr>
-          <td class="first"><label for="engine">Prefer Flash player by default:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="engine" value="false"/>
-                  <input type="checkbox" name="engine" id="engine" value="true" />
-                  Provides greater compatibility.                                        <span class="more">We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.</span> <a href="#" class="show-more">(&hellip;)</a>
-                                </p>
           </td>
       </tr>
                       <tr>
@@ -804,15 +764,6 @@ jQuery(document).ready(function($) {
                   <input type="hidden" name="integrations[embed_iframe]" value="false"/>
                   <input type="checkbox" name="integrations[embed_iframe]" id="integrations[embed_iframe]" value="true" />
                   Beta version! New kind of embedding which supports all the features in embedded player.                                </p>
-          </td>
-      </tr>
-                      <tr>
-          <td class="first"><label for="old_code">Use old code:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="old_code" value="false"/>
-                  <input type="checkbox" name="old_code" id="old_code" value="true" />
-                  Check this option if your videos suddenly don't play and report the issues to <a href="https://foliovision.com/support">Foliovision Support Forums</a> please!                                </p>
           </td>
       </tr>
                       <tr>
@@ -1380,7 +1331,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
           <p class="description">  <select id="popups_default" name="popups_default">
         <option selected value="no">None</option>
     <option value="random">Random</option>
-      </select>
+    <option  value="email-1">email-1 - Subscribe to list one</option>  </select>
    You can set a default popup here and then skip it for individual videos.</p>
         </td>
       </tr>
@@ -1529,11 +1480,11 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                   <table>
                     <tr>
                       <td style="width:16%"><label>Header</label></td>
-                      <td><input type='text' name='email_lists[1][title]' value='' /></td>
+                      <td><input type='text' name='email_lists[1][title]' value='Subscribe to list one' /></td>
                     </tr>
                     <tr>
                       <td><label>Message</label></td>
-                      <td><input type='text' name='email_lists[1][description]' value='' /></td>
+                      <td><input type='text' name='email_lists[1][description]' value='Two good reasons to subscribe right now' /></td>
                     </tr>
                   </table>
                 </td>                
@@ -1544,7 +1495,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[1][first_name]' value='0' />
-                    <input id='list-first-name-1' title="first name" type='checkbox' name='email_lists[1][first_name]' value='1'  />
+                    <input id='list-first-name-1' title="first name" type='checkbox' name='email_lists[1][first_name]' value='1' checked="checked" />
                     <label for='list-first-name-1'>First Name</label>
                     <br />
                     <input type='hidden' name='email_lists[1][last_name]' value='0' />

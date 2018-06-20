@@ -26,8 +26,8 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Player all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
 * Single site pro license available (JW Player requires five pack for full features)
-* Ultra-efficient player: just 161kB of JavaScript and 10kB of Flash code. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
-* 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers.
+* Ultra-efficient player: just 181kB of JavaScript and 10kB of Flash code. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers while HLS.js library gives you HLS playback on desktop browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
 * Supports video intelligence video ads
@@ -357,8 +357,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.6.2 - 2018/06/?? =
+= 6.6.3 - 2018/06/19 =
 
+* Compatibility - fix for themes which use wp_kses to show post content, like UnidashVersion By CactusThemes. It was preventing FV Player from working in these themes.
+* Deprecating settings unless you are already using it:
+  * "Prefer Flash player by default" - used to be useful 3-4 years ago when Firefox (but even Chrome) had several issues with HTML5 video - often depending on the video encoding.
+  * "Colorbox Compatibility" - FV Player is going to use fancyBox soon
+  * "Parse old shortcodes with commas" - only important if upgrading from FV Player 0.x
+  * "Use old code" - this makes sure FV Player keeps using <video> tag, but we had zero support tickets about not using it anymore
+* Removing deprecated settings - "Fit scaling" setting as it doesn't apply anymore
+
+= 6.6.2 - 2018/06/04 =
+
+* Bugfix - "Load FV Flowplayer JS everywhere" setting - was not loading HLS.js library at all
+* Bugfix - Lightbox - JavaScript error for matching elements without href attribute
+* Bugfix - Video Position Saving - affecting even players which are not set to remember position
 * Bugfix - XML Video Sitemap - fix for conflict with Yoast SEO when the option to disable date archives is enabled
 
 = 6.6.1 - 2018/05/15 =

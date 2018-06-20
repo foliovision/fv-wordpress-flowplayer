@@ -77,6 +77,7 @@ function fv_flowplayer_get_js_translations() {
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
   'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer').$sWhy,
+  'warning_samsungbrowser' => __('You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
   'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,  
   );
   
@@ -374,13 +375,12 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( $fv_fp->load_hlsjs && $fv_fp->_get_option('hlsjs') ) {
+    if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
       if( $fv_fp->is_beta() ) {
         wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/hls.light.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
       } else {
         wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.hlsjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
       }
-      $aConf['hlsjs'] = array('startLevel' => -1);
     }
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );

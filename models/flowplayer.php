@@ -492,7 +492,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
     if( !isset( $conf['auto_buffering'] ) ) $conf['auto_buffering'] = 'false';
-    if( !isset( $conf['scaling'] ) ) $conf['scaling'] = 'true';
     if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
     if( !isset( $conf['disablesharing'] ) ) $conf['disablesharing'] = 'false';
     
@@ -599,6 +598,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
+    if (!isset($conf['hlsjs'])) $conf['hlsjs'] = 'true';
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     
@@ -646,6 +646,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _set_conf( $aNewOptions = false ) {
     if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = $aNewOptions['key'];
+    $sKey7 = !empty($aNewOptions['key7']) ? trim($aNewOptions['key7']) : false;
     
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
@@ -690,6 +691,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     
     $aNewOptions['key'] = trim($sKey);
+    if( $sKey7 ) $aNewOptions['key7'] = $sKey7;
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -750,7 +752,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $this->strPrivateAPI = 'http://foliovision.com/plugins/';
       $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
       global $fv_wp_flowplayer_ver_beta;
-      $this->version = $fv_wp_flowplayer_ver_beta;
+      $this->version = str_replace('.beta','',$fv_wp_flowplayer_ver_beta);
       $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
       parent::auto_updates();
     }    
@@ -1280,6 +1282,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/".$sPath.".css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
+      if( $this->is_beta() && $this->bCSSInline ) {
+        $this->css_generate_beta(false);        
+      } else if( $this->bCSSInline ) {
+        $this->css_generate(false);        
+      }
+      
     } else {
       $aDeps = array();
       if( class_exists('OptimizePress_Default_Assets') ) $aDeps = array('optimizepress-default'); //  make sure the CSS loads after optimizePressPlugin
@@ -1290,7 +1298,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sPath = $this->is_beta() ? 'admin-beta' : 'admin';
         wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/'.$sPath.'.css', array(), $fv_wp_flowplayer_ver );
       }
-      
       
       if( $this->is_beta() && $this->bCSSInline ) {
         add_action( 'wp_head', array( $this, 'css_generate_beta' ) );
@@ -1979,6 +1986,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $version = isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ? $_POST['fv-player-pro-release'] : get_option('fv-player-pro-release');
     if( $version == 'beta' ) {
+      global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_ver_beta;
+      $fv_wp_flowplayer_ver = $fv_wp_flowplayer_ver_beta;
       return true;
     } else {
       return false;
