@@ -1510,10 +1510,10 @@
 @media (max-width: 40em){
   .fv_fp_close a {width:24px;height:24px;background-size:24px 24px}
   .fp-playlist-horizontal a h4, .fp-playlist-external a h4 {font-size:12px}
-  	.fp-playlist-vertical-wrapper .flowplayer,.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:100%;float:none;margin-bottom:0}
-        .fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}
+  	/*.fp-playlist-vertical-wrapper .flowplayer,.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:100%;float:none;margin-bottom:0}*/
+        /*.fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}*/
         .fp-playlist-only-captions.fp-playlist-vertical a {width:100%;float:none;margin:8px 0}
-        .fp-playlist-vertical a:nth-child(2n+1) {clear:both}
+        /*.fp-playlist-vertical a:nth-child(2n+1) {clear:both}*/
 }
 @media only screen and (max-width: 30em) {
   .flowplayer.is-audio .fp-time em {font-size:12px}
@@ -1829,7 +1829,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio .fp-player {background-size:contain;background-position:top center;background-repeat:no-repeat}
 
 
-@media only screen and (max-width: 48em) {
+/* DUPLICATE, see 1502-1525! @media only screen and (max-width: 48em) {
   .fp-playlist-horizontal {margin-left:-1px;margin-right:-1px}
   .fp-playlist-horizontal a,.entry-content .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fp-playlist-horizontal a {width: 50%}
   .fp-playlist-horizontal a:nth-child(3n+1) {clear:none}
@@ -1849,7 +1849,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 }
 @media only screen and (max-width: 22.44em) {
   .fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:100%;float:none;margin:0.75% 0.5%}
-}
+}*/
 
 @media screen and (min-width: 1020px) {
   .fp-player a.fp-sticky {
