@@ -1108,9 +1108,14 @@ function fv_wp_flowplayer_edit() {
               .addClass('insert_as_new')
               .val('Insert as New')
               .on('click', function () {
-                // remove update and deleted hidden fields, so we insert a new record
+                // remove update and deleted hidden fields + DB IDs so we insert a new record
                 // with our data instead of updating them
                 jQuery('#id_player, #deleted_videos, #deleted_video_meta, #deleted_player_meta').remove();
+                jQuery('#fv-player-shortcode-editor [data-id]').removeData('id').removeAttr('data-id');
+                jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
+                jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
+                //jQuery('.fv-player-playlist-item, .fv-player-tab table').removeData('id_video');
+
                 fv_wp_flowplayer_submit();
                 return true;
               })
