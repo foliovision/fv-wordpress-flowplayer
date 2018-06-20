@@ -780,4 +780,7 @@ body.compensate-for-scrollbar {
 
 .fancybox-content.flowplayer {
     padding: 0;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center center;
 }
