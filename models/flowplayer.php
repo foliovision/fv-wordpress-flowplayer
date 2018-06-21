@@ -523,7 +523,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['subtitleSize'] ) ) $conf['subtitleSize'] = 16;
 
     //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
-    if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#808080';
+    if( !isset( $conf['playlistBgColor'] ) ) $conf['playlistBgColor'] = '#f0f0f0';
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
     if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#bb0000';
     if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
@@ -1859,7 +1859,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public function get_playlist_class($aCaptions) {
-    $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
+    if( !empty($this->aCurArgs['listdesign']) ) {
+      $sPlaylistClass = 'fv-playlist-design-'.$this->aCurArgs['listdesign'];
+    } else {
+      $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
+    }
 
     if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
       $sPlaylistClass .= ' fp-playlist-horizontal';
