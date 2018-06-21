@@ -3,7 +3,7 @@
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
-  if( $page !== 'post.php' && $page !== 'post-new.php' && ( empty($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+  if( $page !== 'post.php' && $page !== 'post-new.php' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
     return;
   }
   

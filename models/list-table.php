@@ -13,7 +13,7 @@ class FV_Player_List_Table_View {
   function __construct() {
     add_action( 'admin_menu', array($this, 'admin_menu') );
   }
-  
+
   function admin_menu(){    
     if( current_user_can('edit_posts') ) {
       add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', 'dashicons-welcome-widgets-menus', 30 );
@@ -198,7 +198,7 @@ class FV_Player_List_Table extends WP_List_Table {
 	public function column_default( $log, $column_name ) {
 		switch ( $column_name ) {
 			case 'edit' :				
-				$value = "<a href='#' class='fv-tweet-edit'>Edit</a>";
+				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a>";
 				break;
 			default:
 				$value = isset($log->$column_name) && $log->$column_name ? $log->$column_name : '';
