@@ -30,6 +30,7 @@ jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 // it takes a little while for the slide to be correctly resized, so we use timeout here
 jQuery.fancybox.defaults.afterLoad = function() { setTimeout(fv_fancybox_check_size, 500); }
+jQuery.fancybox.defaults.hash = false;
 
 $fv_player_win = jQuery(window);
 
