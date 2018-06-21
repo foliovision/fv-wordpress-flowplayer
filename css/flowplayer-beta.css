@@ -1089,7 +1089,7 @@
     background-color: rgba(0, 0, 0, 0.75) !important;
 }
 
-.flowplayer { margin: 0 auto 2.8em auto; display: block; }
+.flowplayer { margin: 0 auto 2.8em auto; display: block; max-width: 100%; }
 .flowplayer.has-caption { margin: 0 auto; }
 .flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls { margin-bottom: 5.2em }
