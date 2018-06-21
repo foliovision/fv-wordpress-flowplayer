@@ -33,11 +33,12 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src_1, // alternative source path #1 for the video
     $src_2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $db_table_name,
     $additional_objects = array(),
     $DB_Shortcode_Instance = null,
     $meta_data = null; // object of this video's meta data
 
+  private static $db_table_name;
+  
   /**
    * @return int
    */
@@ -130,6 +131,19 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
+   * Initializes database name, including WP prefix
+   * once WPDB class is initialized.
+   *
+   * @return string Returns the actual table name for this ORM class.
+   */
+  public static function init_db_name() {
+    global $wpdb;
+
+    self::$db_table_name = $wpdb->prefix.'fv_player_videos';
+    return self::$db_table_name;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.
@@ -137,11 +151,12 @@ class FV_Player_Db_Shortcode_Player_Video {
   private function initDB($wpdb) {
     global $fv_fp;
 
-    $this->db_table_name = $wpdb->prefix . 'fv_player_videos';
+    self::init_db_name();
+
     if (!$fv_fp->_get_option('video_model_db_checked')) {
-      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $this->db_table_name . "'" ) != $this->db_table_name ) {
+      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
         $sql = "
-  CREATE TABLE `" . $this->db_table_name . "` (
+  CREATE TABLE `" . self::$db_table_name . "` (
     `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
     `src_1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
@@ -186,7 +201,7 @@ class FV_Player_Db_Shortcode_Player_Video {
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video into the DB in such case
-    if (is_array($options) && count($options)) {
+    if (is_array($options) && count($options) && !isset($options['db_options'])) {
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
@@ -211,10 +226,28 @@ class FV_Player_Db_Shortcode_Player_Video {
         }
 
         // load multiple videos via their IDs but a single query and return their values
-        $video_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE id IN('. implode(',', $id).')');
+        $video_data = $wpdb->get_results('
+          SELECT
+            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+          FROM
+            '.self::$db_table_name.'
+          WHERE
+            id IN('. implode(',', $id).')'.
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+        );
       } else {
         // load a single video
-        $video_data = $wpdb->get_row('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id);
+        $video_data = $wpdb->get_row('
+          SELECT
+            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+          FROM
+            '.self::$db_table_name.'
+          WHERE
+            id = '. $id.
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+        );
       }
 
       if ($video_data) {
@@ -325,7 +358,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   public function searchBySrc($like = false, $fields = null) {
     global $wpdb;
 
-    $row = $wpdb->get_row("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . $this->db_table_name . "` WHERE `src` ". ($like ? 'LIKE "%'.esc_sql($this->src).'%"' : '="'.esc_sql($this->src).'"') ." ORDER BY id DESC");
+    $row = $wpdb->get_row("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE `src` ". ($like ? 'LIKE "%'.esc_sql($this->src).'%"' : '="'.esc_sql($this->src).'"') ." ORDER BY id DESC");
 
     if (!$row) {
       return false;
@@ -346,7 +379,7 @@ class FV_Player_Db_Shortcode_Player_Video {
    * via multiple IDs in the constructor. If there are none,
    * null will be returned.
    *
-   * @return array|null Returns list of loaded video objects or null if none were loaded.
+   * @return FV_Player_Db_Shortcode_Player_Video[] | null Returns list of loaded video objects or null if none were loaded.
    */
   public function getAllLoadedVideos() {
     if (count($this->additional_objects)) {
@@ -433,7 +466,7 @@ class FV_Player_Db_Shortcode_Player_Video {
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$this->db_table_name.' SET ';
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
 
@@ -498,7 +531,7 @@ class FV_Player_Db_Shortcode_Player_Video {
 
     global $wpdb;
 
-    $wpdb->delete($this->db_table_name, array('id' => $this->id));
+    $wpdb->delete(self::$db_table_name, array('id' => $this->id));
 
     if (!$wpdb->last_error) {
       return true;

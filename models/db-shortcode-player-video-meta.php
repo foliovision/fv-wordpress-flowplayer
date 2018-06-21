@@ -25,9 +25,10 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
     $id_video, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
     $meta_value, // arbitrary meta value
-    $db_table_name,
     $DB_Shortcode_Instance = null,
     $additional_objects = array();
+
+  private static $db_table_name;
 
   /**
    * @return int
@@ -65,6 +66,19 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
   }
 
   /**
+   * Initializes database name, including WP prefix
+   * once WPDB class is initialized.
+   *
+   * @return string Returns the actual table name for this ORM class.
+   */
+  public static function init_db_name() {
+    global $wpdb;
+
+    self::$db_table_name = $wpdb->prefix.'fv_player_videometa';
+    return self::$db_table_name;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.
@@ -72,12 +86,12 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
   private function initDB($wpdb) {
     global $fv_fp;
 
-    $this->db_table_name = $wpdb->prefix.'fv_player_videometa';
+    self::init_db_name();
 
     if (!$fv_fp->_get_option('player_meta_model_db_checked')) {
-      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $this->db_table_name . "'" ) != $this->db_table_name ) {
+      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
         $sql = "
-CREATE TABLE `" . $this->db_table_name . "` (
+CREATE TABLE `" . self::$db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_video` int(10) UNSIGNED NOT NULL,
   `meta_key` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -173,10 +187,10 @@ CREATE TABLE `" . $this->db_table_name . "` (
         }
 
         // load multiple video metas via their IDs but a single query and return their values
-        $meta_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE ' . ($load_for_video ? 'id_video' : 'id') . ' IN('. implode(',', $id).')');
+        $meta_data = $wpdb->get_results('SELECT * FROM '.self::$db_table_name.' WHERE ' . ($load_for_video ? 'id_video' : 'id') . ' IN('. implode(',', $id).')');
       } else {
         // load a single video meta data record
-        $meta_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id));
+        $meta_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.self::$db_table_name.' WHERE id = '. $id));
       }
 
       if ($meta_data) {
@@ -246,7 +260,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$this->db_table_name.' SET ';
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
 
@@ -295,7 +309,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
 
     global $wpdb;
 
-    $wpdb->delete($this->db_table_name, array('id' => $this->id));
+    $wpdb->delete(self::$db_table_name, array('id' => $this->id));
 
     if (!$wpdb->last_error) {
       return true;

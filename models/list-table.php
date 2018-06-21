@@ -7,6 +7,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 class FV_Player_List_Table_View {
+
+  private $slug;
+
   function __construct() {
     add_action( 'admin_menu', array($this, 'admin_menu') );
   }
@@ -42,7 +45,7 @@ class FV_Player_List_Table_View {
     fv_player_shortcode_editor_scripts_enqueue();
     fv_wp_flowplayer_edit_form_after_editor();
   
-    add_action( 'admin_footer', array($this, 'scripts') );
+    //add_action( 'admin_footer', array($this, 'scripts') );
   }  
 }
 
@@ -150,8 +153,8 @@ class FV_Player_List_Table extends WP_List_Table {
 		return array(
 			//'cb'          => '<input type="checkbox" />',
 			'id'          => __( 'ID', 'fv-wordpress-flowplayer' ),
-      'player_name' => __( 'Name', 'fv-wordpress-flowplayer' ),
-			'videos'      => __( 'Videos', 'fv-wordpress-flowplayer' ),
+            'name' => __( 'Name', 'fv-wordpress-flowplayer' ),
+			'thumbs'      => __( 'Videos', 'fv-wordpress-flowplayer' ),
 			'edit'			  => ''
 		);
 	}
@@ -215,44 +218,29 @@ class FV_Player_List_Table extends WP_List_Table {
 	}
   
 	public function get_result_counts() {
-
-		$aWhere = array();
-		$where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
-		
-    global $wpdb;
-    $this->total_items = $wpdb->get_var("SELECT count(id) FROM {$wpdb->prefix}fv_player_players $where" );		
+      $this->total_items = FV_Player_Db_Shortcode_Player::getTotalPlayersCount();
 	}
 
-	public function get_players( $id = false ) {
-		$aWhere = array();
-		if( $id ) {
-			$aWhere[] = 'id = '.intval($id);
-		}		
-    
-    $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
-    
-		$current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
-    $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'asc';
-    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'id';
+	public function get_data() {
+	  global $FV_Db_Shortcode;
 
-		$per_page = $this->per_page;
-		$offset = ( $current - 1 ) * $per_page;
-		
-		global $wpdb, $FV_TR_Employees_Twitter_Log;
-    $sql = "SELECT * FROM {$wpdb->prefix}fv_player_players $where ORDER BY $order_by $order LIMIT $offset, $per_page";		
-		$results = $wpdb->get_results($sql);
-		
-    return $results;
+	  $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
+      $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'asc';
+      $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'id';
+
+	  $per_page = $this->per_page;
+	  $offset = ( $current - 1 ) * $per_page;
+      return $FV_Db_Shortcode::getListPageData($order_by, $order, $offset, $per_page);
 	}
 	
-	public function prepare_items( $id = false ) {
+	public function prepare_items() {
 
 		wp_reset_vars( array( 'action', 'payment', 'orderby', 'order', 's' ) );
 
 		$columns  = $this->get_columns();
 		$hidden   = array(); // No hidden columns
 		$sortable = $this->get_sortable_columns();
-		$data     = $this->get_players( $id );
+		$data     = $this->get_data();
 		$status   = isset( $_GET['status'] ) ? $_GET['status'] : 'all';
 
 		$this->_column_headers = array( $columns, $hidden, $sortable );
@@ -262,7 +250,7 @@ class FV_Player_List_Table extends WP_List_Table {
 		$this->set_pagination_args( array(
 				'total_items' => $this->total_items,
 				'per_page'    => $this->per_page,
-				'total_pages' => ceil( $total_items / $this->per_page ),
+				'total_pages' => ceil( $this->total_items / $this->per_page ),
 			)
 		);
 	}

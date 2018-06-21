@@ -36,14 +36,6 @@ class FV_Player_Db_Shortcode {
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
   }
 
-  function cache_players_and_videos() {
-    global $posts;
-    if( !empty($posts) && is_array($posts) ) {
-      foreach( $posts AS $item ) {
-      }
-    }
-  }
-
   public function &getVideosCache() {
     return $this->videos_cache;
   }
@@ -87,6 +79,114 @@ class FV_Player_Db_Shortcode {
     }
 
     return $aItem;
+  }
+
+  public function cache_players_and_videos() {
+    global $posts;
+    if( !empty($posts) && is_array($posts) ) {
+      foreach( $posts AS $item ) {
+      }
+    }
+  }
+
+  /**
+   * Retrieves data for all players table shown in admin.
+   *
+   * @param $order_by  If set, data will be ordered by this column.
+   * @param $order     If set, data will be ordered in this order.
+   * @param $offset    If set, data will returned will be limited, starting at this offset.
+   * @param $per_page  If set, data will returned will be limited, ending at this offset.
+   *
+   * @return array     Returns an array of all list page results to be displayed.
+   * @throws Exception When the underlying FV_Player_Db_Shortcode_Player_Video class generates an error.
+   */
+  public static function getListPageData($order_by, $order, $offset, $per_page) {
+    global $wpdb;
+
+    $players = $wpdb->get_results('SELECT id, player_name, videos FROM '.FV_Player_Db_Shortcode_Player::init_db_name()." ORDER BY $order_by $order LIMIT $offset, $per_page");
+
+    // get all video IDs used in all players
+    if ($players && count($players)) {
+      $videos = array();
+      $result = array();
+
+      foreach ($players as $player) {
+        $videos = array_merge($videos, explode(',', $player->videos));
+      }
+
+      // load all videos data at once
+      if (count($videos)) {
+        $vids_data = new FV_Player_Db_Shortcode_Player_Video( $videos, array(
+          'db_options' => array(
+            'order_by'      => $order_by,
+            'order'         => $order,
+            'offset'        => $offset,
+            'per_page'      => $per_page,
+            'select_fields' => 'caption, src, splash'
+          )
+        ) );
+
+        // reset $videos variable and index all of our video data,
+        // so they are easily accessible when building the resulting
+        // display data
+        if ($vids_data) {
+          /* @var FV_Player_Db_Shortcode_Player_Video[] $videos */
+          $videos = array();
+          if ($vids_data->getAllLoadedVideos()) {
+            foreach ( $vids_data->getAllLoadedVideos() as $video_object ) {
+              $videos[ $video_object->getId() ] = $video_object;
+            }
+          }
+        }
+
+        // build the result
+        foreach ($players as $player) {
+          // player data first
+          $result_row = new stdClass();
+          $result_row->id = $player->id;
+          $result_row->name = $player->player_name;
+          $result_row->thumbs = array();
+
+          // no player name, we'll assemble it from video captions and/or sources
+          if (!$result_row->name) {
+            $result_row->name = array();
+          }
+
+          foreach (explode(',', $player->videos) as $video_id) {
+            // assemble video name, if there's no player name
+            if (is_array($result_row->name) && isset($videos[ $video_id ])) {
+              if ( $videos[ $video_id ]->getCaption() ) {
+                // use caption
+                $result_row->name[] = $videos[ $video_id ]->getCaption();
+              } else {
+                // use source
+                $arr = explode('/', $videos[ $video_id ]->getSrc());
+                $result_row->name[] = end($arr);
+              }
+            }
+
+            // if we have a splash, add that in
+            if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
+              $result_row->thumbs[] = '<img src="'.$videos[ $video_id ]->getSplash().'" width="100" />';
+            }
+          }
+
+          // join name items, if present
+          if (is_array($result_row->name)) {
+            $result_row->name = join(',', $result_row->name);
+          }
+
+          // join thumbnails
+          $result_row->thumbs = join(',', $result_row->thumbs);
+
+          $result[] = $result_row;
+        }
+
+        return $result;
+      }
+    }
+
+    return array();
   }
 
   /**

@@ -64,9 +64,10 @@ class FV_Player_Db_Shortcode_Player {
     $videos,
     $video_objects = null,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
-    $db_table_name,
     $DB_Shortcode_Instance = null,
     $meta_data = null; // object of this player's meta data
+
+  private static $db_table_name;
 
   /**
    * @return string
@@ -349,6 +350,19 @@ class FV_Player_Db_Shortcode_Player {
   }
 
   /**
+   * Initializes database name, including WP prefix
+   * once WPDB class is initialized.
+   *
+   * @return string Returns the actual table name for this ORM class.
+   */
+  public static function init_db_name() {
+    global $wpdb;
+
+    self::$db_table_name = $wpdb->prefix.'fv_player_players';
+    return self::$db_table_name;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.
@@ -356,12 +370,12 @@ class FV_Player_Db_Shortcode_Player {
   private function initDB($wpdb) {
     global $fv_fp;
 
-    $this->db_table_name = $wpdb->prefix.'fv_player_players';
+    self::init_db_name();
 
     if (!$fv_fp->_get_option('player_model_db_checked')) {
-      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . $this->db_table_name . "'" ) != $this->db_table_name ) {
+      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
         $sql = "
-CREATE TABLE `" . $this->db_table_name . "` (
+CREATE TABLE `" . self::$db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `player_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'custom name for the player',
   `player_slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '	short slug to be used as a unique identifier for this player that can be used instead of an ID',
@@ -489,7 +503,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
 
         if (count($query_ids)) {
           // load multiple players via their IDs but a single query and return their values
-          $player_data = $wpdb->get_results('SELECT * FROM '.$this->db_table_name.' WHERE id IN('. implode(',', $query_ids).')');
+          $player_data = $wpdb->get_results('SELECT * FROM '.self::$db_table_name.' WHERE id IN('. implode(',', $query_ids).')');
         } else {
           $player_data = -1;
           $this->is_valid = false;
@@ -498,7 +512,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
         // TODO: uncomment :)
         //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id)) {
           // load a single video
-          $player_data = $wpdb->get_row('SELECT * FROM '.$this->db_table_name.' WHERE id = '. $id);
+          $player_data = $wpdb->get_row('SELECT * FROM '.self::$db_table_name.' WHERE id = '. $id);
         //} else {
         //  $player_data = -1;
         //  $this->is_valid = false;
@@ -566,6 +580,24 @@ CREATE TABLE `" . $this->db_table_name . "` (
       }
     } else {
       throw new \Exception('No options nor a valid ID was provided for DB player instance.');
+    }
+  }
+
+  /**
+   * Retrieves total number of players in the database.
+   *
+   * @return int Returns the total number of players in database.
+   */
+  public static function getTotalPlayersCount() {
+    global $wpdb;
+
+    self::init_db_name();
+
+    $total = $wpdb->get_row('SELECT Count(*) AS Total FROM '.self::$db_table_name);
+    if ($total) {
+      return $total->Total;
+    } else {
+      return 0;
     }
   }
 
@@ -780,7 +812,7 @@ CREATE TABLE `" . $this->db_table_name . "` (
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.$this->db_table_name.' SET ';
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
 
