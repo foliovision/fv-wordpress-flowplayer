@@ -28,6 +28,8 @@ jQuery.fancybox.defaults.smallBtn = false;
 jQuery.fancybox.defaults.toolbar = true;
 jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
+// it takes a little while for the slide to be correctly resized, so we use timeout here
+jQuery.fancybox.defaults.afterLoad = function() { setTimeout(fv_fancybox_check_size, 500); }
 
 $fv_player_win = jQuery(window);
 
@@ -38,14 +40,17 @@ jQuery(document).ready(function() {
 });
 
 function fv_fancybox_check_size() {
-  var $player = jQuery('.fancybox-container .flowplayer:visible');
+  var
+    $player = jQuery('.fancybox-container .flowplayer:visible'),
+    player_height = $player.outerHeight(),
+    $caption = jQuery('.fancybox-caption');
 
   if ($player.length) {
     // check that the player does not extend beyond document height
     // ... +10 because while CSS is recalculated, another resize event
     //     can occur and would re-add max-height, which would then be
     //     subsequently removed again and so on
-    if ($fv_player_win.height() < $player.outerHeight() + 10) {
+    if ($fv_player_win.height() < player_height + 10) {
       if (typeof($player.data('orig-max-height')) == 'undefined') {
         $player
           .data('orig-max-height', $player.css('max-height'))
@@ -55,6 +60,15 @@ function fv_fancybox_check_size() {
       $player
         .css('max-height', $player.data('orig-max-height') + 'px')
         .removeData('orig-max-height');
+    }
+
+    // hide caption if it would cover the player
+    if ($caption.length) {
+      if (($caption.position().top - 5 < $player.position().top + player_height)) {
+        $caption.css('opacity', 0);
+      } else {
+        $caption.css('opacity', 100);
+      }
     }
   }
 }
