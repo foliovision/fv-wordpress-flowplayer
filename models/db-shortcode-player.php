@@ -466,11 +466,11 @@ CREATE TABLE `" . self::$db_table_name . "` (
     }
 
     $this->initDB($wpdb);
-    $multiID = is_array($id);
+    $multiID = is_array($id) || $id === null;
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
-    if (is_array($options) && count($options)) {
+    if (is_array($options) && count($options) && !isset($options['db_options'])) {
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
@@ -484,26 +484,38 @@ CREATE TABLE `" . self::$db_table_name . "` (
           trigger_error('Unknown property for new DB player: ' . $key);
         }
       }
-    } else if ($multiID || (is_numeric($id) && $id > 0)) {
+    } else if ($multiID || (is_numeric($id) && $id >= -1)) {
       $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayersCache() : array());
 
       // no options, load data from DB
       if ($multiID) {
-        // make sure we have numeric IDs
         $query_ids = array();
-        foreach ($id as $id_key => $id_value) {
-          // check if this player is not cached yet
-          // TODO: uncomment this :P
-          //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id_value)) {
-            $query_ids[$id_key] = (int) $id_value;
-          //}
 
-          $id[$id_key] = (int) $id_value;
+        if ($id !== null) {
+          // make sure we have numeric IDs
+          foreach ( $id as $id_key => $id_value ) {
+            // check if this player is not cached yet
+            // TODO: uncomment this :P
+            //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id_value)) {
+            $query_ids[ $id_key ] = (int) $id_value;
+            //}
+
+            $id[ $id_key ] = (int) $id_value;
+          }
         }
 
-        if (count($query_ids)) {
+        if ($id === null || count($query_ids)) {
           // load multiple players via their IDs but a single query and return their values
-          $player_data = $wpdb->get_results('SELECT * FROM '.self::$db_table_name.' WHERE id IN('. implode(',', $query_ids).')');
+          $player_data = $wpdb->get_results('
+          SELECT
+            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+          FROM
+            '.self::$db_table_name.($id !== null ? '
+          WHERE
+            id IN('. implode(',', $query_ids).')' : '').
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
+            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+          );
         } else {
           $player_data = -1;
           $this->is_valid = false;
@@ -512,7 +524,16 @@ CREATE TABLE `" . self::$db_table_name . "` (
         // TODO: uncomment :)
         //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id)) {
           // load a single video
-          $player_data = $wpdb->get_row('SELECT * FROM '.self::$db_table_name.' WHERE id = '. $id);
+          $player_data = $wpdb->get_row('
+          SELECT
+            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+          FROM
+            '.self::$db_table_name.'
+          WHERE
+            id = '.$id.
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
+            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+          );
         //} else {
         //  $player_data = -1;
         //  $this->is_valid = false;

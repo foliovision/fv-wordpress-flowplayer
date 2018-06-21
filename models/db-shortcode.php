@@ -101,9 +101,17 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When the underlying FV_Player_Db_Shortcode_Player_Video class generates an error.
    */
   public static function getListPageData($order_by, $order, $offset, $per_page) {
-    global $wpdb;
+    $players = new FV_Player_Db_Shortcode_Player(null, array(
+      'db_options' => array(
+        'select_fields' => 'id, player_name, videos',
+        'order_by' => $order_by,
+        'order' => $order,
+        'offset' => $offset,
+        'per_page' => $per_page
+      )
+    ));
 
-    $players = $wpdb->get_results('SELECT id, player_name, videos FROM '.FV_Player_Db_Shortcode_Player::init_db_name()." ORDER BY $order_by $order LIMIT $offset, $per_page");
+    $players = $players->getAllLoadedPlayers();
 
     // get all video IDs used in all players
     if ($players && count($players)) {
@@ -111,7 +119,8 @@ class FV_Player_Db_Shortcode {
       $result = array();
 
       foreach ($players as $player) {
-        $videos = array_merge($videos, explode(',', $player->videos));
+        /* @var FV_Player_Db_Shortcode_Player $player */
+        $videos = array_merge($videos, explode(',', $player->getVideoIds()));
       }
 
       // load all videos data at once
@@ -139,8 +148,8 @@ class FV_Player_Db_Shortcode {
         foreach ($players as $player) {
           // player data first
           $result_row = new stdClass();
-          $result_row->id = $player->id;
-          $result_row->name = $player->player_name;
+          $result_row->id = $player->getId();
+          $result_row->name = $player->getPlayerName();
           $result_row->thumbs = array();
 
           // no player name, we'll assemble it from video captions and/or sources
@@ -148,7 +157,7 @@ class FV_Player_Db_Shortcode {
             $result_row->name = array();
           }
 
-          foreach (explode(',', $player->videos) as $video_id) {
+          foreach (explode(',', $player->getVideoIds()) as $video_id) {
             // assemble video name, if there's no player name
             if (is_array($result_row->name) && isset($videos[ $video_id ])) {
               if ( $videos[ $video_id ]->getCaption() ) {

@@ -234,7 +234,7 @@ class FV_Player_Db_Shortcode_Player_Video {
           WHERE
             id IN('. implode(',', $id).')'.
             ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
         );
       } else {
         // load a single video
@@ -246,7 +246,7 @@ class FV_Player_Db_Shortcode_Player_Video {
           WHERE
             id = '. $id.
             ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
         );
       }
 
