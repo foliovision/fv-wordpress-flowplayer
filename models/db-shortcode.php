@@ -118,10 +118,6 @@ class FV_Player_Db_Shortcode {
       if (count($videos)) {
         $vids_data = new FV_Player_Db_Shortcode_Player_Video( $videos, array(
           'db_options' => array(
-            'order_by'      => $order_by,
-            'order'         => $order,
-            'offset'        => $offset,
-            'per_page'      => $per_page,
             'select_fields' => 'caption, src, splash'
           )
         ) );
