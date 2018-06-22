@@ -136,7 +136,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
             </div>
           </td>
           <td class="fv-player-shortcode-editor-right">
-            <input type="text" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
+            <input type="text" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> ID: <span id="player_id_top_text"></span>
             <div class="fv-player-tabs-header">
               <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
