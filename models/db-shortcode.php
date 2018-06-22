@@ -166,7 +166,16 @@ class FV_Player_Db_Shortcode {
               } else {
                 // use source
                 $arr = explode('/', $videos[ $video_id ]->getSrc());
-                $result_row->name[] = end($arr);
+                $arr = end($arr);
+
+                // update YouTube and other video names
+                $vid_replacements = array(
+                  'watch?v=' => 'YouTube: '
+                );
+
+                $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
+
+                $result_row->name[] = $arr;
               }
             }
 
@@ -178,11 +187,11 @@ class FV_Player_Db_Shortcode {
 
           // join name items, if present
           if (is_array($result_row->name)) {
-            $result_row->name = join(',', $result_row->name);
+            $result_row->name = join(', ', $result_row->name);
           }
 
           // join thumbnails
-          $result_row->thumbs = join(',', $result_row->thumbs);
+          $result_row->thumbs = join(' ', $result_row->thumbs);
 
           $result[] = $result_row;
         }

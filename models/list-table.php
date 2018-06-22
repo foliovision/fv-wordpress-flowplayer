@@ -53,7 +53,7 @@ $FV_Player_List_Table_View = new FV_Player_List_Table_View;
   
 class FV_Player_List_Table extends WP_List_Table {
 
-	public $per_page = 3;
+	public $per_page = 10;
 
 	public $base_url;
   
