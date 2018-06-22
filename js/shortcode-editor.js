@@ -1119,12 +1119,12 @@ function fv_wp_flowplayer_edit() {
                 jQuery('#fv-player-shortcode-editor [data-id]').removeData('id').removeAttr('data-id');
                 jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
                 jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
-                //jQuery('.fv-player-playlist-item, .fv-player-tab table').removeData('id_video');
 
                 fv_wp_flowplayer_submit();
                 return true;
               })
               .css('margin-left', '5px')
+              .off('click')
               .insertAfter($insert_button);
           } else {
             $insert_as_new_button.val('Insert as New');
