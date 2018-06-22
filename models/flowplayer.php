@@ -1765,7 +1765,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   function get_mime_type($media, $default = 'flash', $no_video = false) {
     $media = trim($media);
     $aURL = explode( '?', $media ); //  throwing away query argument here
-    $pathinfo = pathinfo( $aURL[0] );    
+    $pathinfo = pathinfo( $aURL[0] );
+    if( empty($pathinfo['extension']) ) $pathinfo = pathinfo( $media ); // but if no extension remains, keep the query arguments, todo: unit test for https://drive.google.com/uc?export=download&id=0B32098YdDwTAcmJxVl9Kc1piT2s#.mp4
 
     $extension = ( isset($pathinfo['extension']) ) ? $pathinfo['extension'] : false;       
     $extension = preg_replace( '~[?#].+$~', '', $extension );

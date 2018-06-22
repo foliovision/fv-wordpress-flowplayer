@@ -264,6 +264,7 @@ function flowplayer_admin_head() {
   if( !fv_player_is_admin_screen() ) return; 
 
   global $fv_wp_flowplayer_ver;
+  // TODO: do this properly
   ?>      
     <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
