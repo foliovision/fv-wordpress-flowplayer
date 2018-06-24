@@ -36,32 +36,48 @@ class FV_Player_Db_Shortcode {
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
   }
 
-  public function &getVideosCache() {
+  public function getVideosCache() {
     return $this->videos_cache;
+  }
+
+  public function setVideosCache($cache) {
+    return $this->videos_cache = $cache;
   }
 
   public function isVideoCached($id) {
     return isset($this->videos_cache[$id]);
   }
 
-  public function &getVideoMetaCache() {
+  public function getVideoMetaCache() {
     return $this->video_meta_cache;
+  }
+
+  public function setVideoMetaCache($cache) {
+    return $this->video_meta_cache = $cache;
   }
 
   public function isVideoMetaCached($id) {
     return isset($this->video_meta_cache[$id]);
   }
 
-  public function &getPlayersCache() {
+  public function getPlayersCache() {
     return $this->players_cache;
+  }
+
+  public function setPlayersCache($cache) {
+    return $this->players_cache = $cache;
   }
 
   public function isPlayerCached($id) {
     return isset($this->players_cache[$id]);
   }
 
-  public function &getPlayerMetaCache() {
+  public function getPlayerMetaCache() {
     return $this->player_meta_cache;
+  }
+
+  public function setPlayerMetaCache($cache) {
+    return $this->player_meta_cache = $cache;
   }
 
   public function isPlayerMetaCached($id) {
@@ -101,7 +117,10 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When the underlying FV_Player_Db_Shortcode_Player_Video class generates an error.
    */
   public static function getListPageData($order_by, $order, $offset, $per_page) {
-    $players = new FV_Player_Db_Shortcode_Player(null, array(
+    global $FV_Db_Shortcode; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
+
+    // load all players, which will put them into the cache automatically
+    new FV_Player_Db_Shortcode_Player(null, array(
       'db_options' => array(
         'select_fields' => 'id, player_name, videos',
         'order_by' => $order_by,
@@ -109,9 +128,9 @@ class FV_Player_Db_Shortcode {
         'offset' => $offset,
         'per_page' => $per_page
       )
-    ));
+    ), $FV_Db_Shortcode);
 
-    $players = $players->getAllLoadedPlayers();
+    $players = $FV_Db_Shortcode->getPlayersCache();
 
     // get all video IDs used in all players
     if ($players && count($players)) {
@@ -129,7 +148,7 @@ class FV_Player_Db_Shortcode {
           'db_options' => array(
             'select_fields' => 'caption, src, splash'
           )
-        ) );
+        ), $FV_Db_Shortcode );
 
         // reset $videos variable and index all of our video data,
         // so they are easily accessible when building the resulting
@@ -137,8 +156,8 @@ class FV_Player_Db_Shortcode {
         if ($vids_data) {
           /* @var FV_Player_Db_Shortcode_Player_Video[] $videos */
           $videos = array();
-          if ($vids_data->getAllLoadedVideos()) {
-            foreach ( $vids_data->getAllLoadedVideos() as $video_object ) {
+          if (count($FV_Db_Shortcode->getVideosCache())) {
+            foreach ( $FV_Db_Shortcode->getVideosCache() as $video_object ) {
               $videos[ $video_object->getId() ] = $video_object;
             }
           }
@@ -475,7 +494,7 @@ class FV_Player_Db_Shortcode {
           return $this->player_atts_cache[ $atts['id'] ];
         }
 
-        $player = new FV_Player_Db_Shortcode_Player( $atts['id'] );
+        $player = new FV_Player_Db_Shortcode_Player( $atts['id'], array(), $FV_Db_Shortcode );
 
         if (!$player || !$player->getIsValid()) {
           return false;
@@ -534,6 +553,8 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
+    global $FV_Db_Shortcode;
+
     $player_options        = array();
     $video_ids             = array();
     $post_data             = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
@@ -554,7 +575,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     video data valid for object creation
-          $d_vid = new FV_Player_Db_Shortcode_Player_Video(null, array('caption' => '1'));
+          $d_vid = new FV_Player_Db_Shortcode_Player_Video(null, array('caption' => '1'), $this);
           $d_vid->link2db($d_id);
           $d_vid->delete();
         }
@@ -568,7 +589,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('meta_key' => '1'));
+          $d_meta = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('meta_key' => '1'), $this);
           $d_meta->link2db($d_id);
           $d_meta->delete();
         }
@@ -582,7 +603,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('meta_key' => '1'));
+          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('meta_key' => '1'), $this->DB_Shortcode_Instance);
           $d_meta->link2db($d_id);
           $d_meta->delete();
         }
@@ -671,7 +692,7 @@ class FV_Player_Db_Shortcode {
             }
 
             // save the video
-            $video = new FV_Player_Db_Shortcode_Player_Video(null, $video_data);
+            $video = new FV_Player_Db_Shortcode_Player_Video(null, $video_data, $this);
 
             // if we have video ID, link this video to DB
             if (isset($id)) {
@@ -727,7 +748,7 @@ class FV_Player_Db_Shortcode {
       }
 
       // create and save the player
-      $player = new FV_Player_Db_Shortcode_Player(null, $player_options);
+      $player = new FV_Player_Db_Shortcode_Player(null, $player_options, $FV_Db_Shortcode);
 
       // save only if we're not requesting new instances for preview purposes
       if (!$data) {
@@ -802,7 +823,7 @@ class FV_Player_Db_Shortcode {
                   'id_player' => $fv_fp->current_player()->getId(),
                   'meta_key' => 'edit_lock_'.$userID,
                   'meta_value' => time()
-                ));
+                ), $this);
 
                 $meta->save();
               } else {
@@ -823,7 +844,7 @@ class FV_Player_Db_Shortcode {
             'id_player'  => $fv_fp->current_player()->getId(),
             'meta_key'   => 'edit_lock_' . $userID,
             'meta_value' => time()
-          ) );
+          ), $this );
 
           $meta->save();
         }
@@ -879,11 +900,13 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When the underlying meta object throws an exception.
    */
   function check_db_edit_lock( $response, $data ) {
+    global $FV_Db_Shortcode;
+
     $userID = get_current_user_id();
 
     // extend an existing lock
     if ( !empty( $data['fv_flowplayer_edit_lock_id'] ) ) {
-      $player = new FV_Player_Db_Shortcode_Player($data['fv_flowplayer_edit_lock_id']);
+      $player = new FV_Player_Db_Shortcode_Player($data['fv_flowplayer_edit_lock_id'], array(), $FV_Db_Shortcode);
 
       if ($player->getIsValid()) {
         if (count($player->getMetaData())) {
@@ -902,11 +925,11 @@ class FV_Player_Db_Shortcode {
 
     // remove locks that are no longer being edited
     if ( !empty( $data['fv_flowplayer_edit_lock_removal'] ) && count($data['fv_flowplayer_edit_lock_removal']) ) {
-      // load meta for all players to remove locks for
-      $meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])));
-      $meta = $meta->getAllLoadedMeta();
+      // load meta for all players to remove locks for (and to auto-cache them as well)
+      new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])), $this);
+      $meta = $this->getPlayerMetaCache();
 
-      if ($meta) {
+      if (count($meta)) {
         foreach ( $meta as $meta_object ) {
           if ( strstr( $meta_object->getMetaKey(), 'edit_lock_' ) !== false ) {
             if ( str_replace( 'edit_lock_', '', $meta_object->getMetaKey() ) == $userID ) {

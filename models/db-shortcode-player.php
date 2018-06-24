@@ -423,6 +423,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
   }
 
   /**
+   * Fills non-orm variables that are not directly linked
+   * from received POST data to the DB.
+   */
+  private function fill_non_orm_properties() {
+    $this->propagate_end_action_value();
+  }
+
+  /**
    * Propagates end action value into one of the non-orm
    * related class keys for this player. This is because
    * we've refactored the end_actions functionality and now
@@ -495,10 +503,9 @@ CREATE TABLE `" . self::$db_table_name . "` (
           // make sure we have numeric IDs
           foreach ( $id as $id_key => $id_value ) {
             // check if this player is not cached yet
-            // TODO: uncomment this :P
-            //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id_value)) {
-            $query_ids[ $id_key ] = (int) $id_value;
-            //}
+            if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id_value)) {
+              $query_ids[ $id_key ] = (int) $id_value;
+            }
 
             $id[ $id_key ] = (int) $id_value;
           }
@@ -521,8 +528,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
           $this->is_valid = false;
         }
       } else {
-        // TODO: uncomment :)
-        //if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id)) {
+        if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id)) {
           // load a single video
           $player_data = $wpdb->get_row('
           SELECT
@@ -534,10 +540,10 @@ CREATE TABLE `" . self::$db_table_name . "` (
             ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
             ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
           );
-        //} else {
-        //  $player_data = -1;
-        //  $this->is_valid = false;
-        //}
+        } else {
+          $player_data = -1;
+          $this->is_valid = false;
+        }
       }
 
       if ($player_data && $player_data !== -1) {
@@ -548,16 +554,17 @@ CREATE TABLE `" . self::$db_table_name . "` (
             $this->$key = $value;
           }
 
-          // make sure we fill the appropriate non-orm object variables
-          $this->propagate_end_action_value();
+          // make sure we fill the appropriate non-orm object properties
+          $this->fill_non_orm_properties();
 
           // cache this player in DB Shortcode object
           if ($DB_Shortcode) {
-            $cache[$id] = $this;
+            $cache[$this->id] = $this;
           }
         } else {
-          // multiple IDs, create new player objects for each of them except the first one,
-          // for which we'll use this instance
+          // multiple IDs, create new player objects for each of them
+          // and cache those (except for the first one, which will be
+          // this actual instance)
           $first_done = false;
           foreach ($player_data as $db_record) {
             if (!$first_done) {
@@ -567,10 +574,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
               }
 
               // make sure we fill the appropriate non-orm object variables
-              $this->propagate_end_action_value();
-
-              // add this to all the loaded video objects
-              $this->additional_objects[] = $this;
+              $this->fill_non_orm_properties();
               $first_done = true;
 
               // cache this player in DB Shortcode object
@@ -582,11 +586,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
               $record_id = $db_record->id;
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
-              $player_object = new FV_Player_Db_Shortcode_Player(null, get_object_vars($db_record));
+              $player_object = new FV_Player_Db_Shortcode_Player(null, get_object_vars($db_record), $this->DB_Shortcode_Instance);
               $player_object->link2db($record_id);
-
-              // cache it in the list of all loaded video objects
-              $this->additional_objects[] = $player_object;
 
               // cache this player in DB Shortcode object
               if ($DB_Shortcode) {
@@ -601,6 +602,11 @@ CREATE TABLE `" . self::$db_table_name . "` (
       }
     } else {
       throw new \Exception('No options nor a valid ID was provided for DB player instance.');
+    }
+
+    // update cache, if changed
+    if (isset($cache)) {
+      $this->DB_Shortcode_Instance->setPlayersCache($cache);
     }
   }
 
@@ -637,7 +643,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     $this->id = (int) $id;
 
     if ($load_meta) {
-      $this->meta_data = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array($id)));
+      $this->meta_data = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array($id)), $this->DB_Shortcode_Instance);
     }
   }
 
@@ -655,7 +661,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       // we have meta, let's insert that
       foreach ($meta_data as $meta_record) {
         // create new record in DB
-        $meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, $meta_record);
+        $meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, $meta_record, $this->DB_Shortcode_Instance);
 
         // link to DB, if the meta record has an ID
         if (!empty($meta_record['id'])) {
@@ -668,21 +674,6 @@ CREATE TABLE `" . self::$db_table_name . "` (
   }
 
   /**
-   * Returns a list of players that were potentially loaded
-   * via multiple IDs in the constructor. If there are none,
-   * null will be returned.
-   *
-   * @return array|null Returns list of loaded player objects or null if none were loaded.
-   */
-  public function getAllLoadedPlayers() {
-    if (count($this->additional_objects)) {
-      return $this->additional_objects;
-    } else {
-      return null;
-    }
-  }
-
-  /**
    * Returns all global options data for this player.
    *
    * @return array Returns all global options data for this player.
@@ -690,7 +681,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'meta_data'))) {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'meta_data'))) {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -711,10 +702,15 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function getMetaData() {
     // meta data already loaded and present, return them
     if ($this->meta_data && $this->meta_data !== -1) {
-      if ( $this->meta_data->getAllLoadedMeta() ) {
-        return $this->meta_data->getAllLoadedMeta();
+      if ( $this->DB_Shortcode_Instance && count($this->DB_Shortcode_Instance->getPlayerMetaCache()) ) {
+        return $this->DB_Shortcode_Instance->getPlayerMetaCache();
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
+          // add this meta into global meta cache
+          $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
+          $cache[$this->meta_data->getId()] = $this->meta_data;
+          $this->DB_Shortcode_Instance->setPlayersCache($cache);
+
           return array( $this->meta_data );
         } else {
           return array();
@@ -722,17 +718,22 @@ CREATE TABLE `" . self::$db_table_name . "` (
       }
     } else if ($this->meta_data === null) {
       // meta data not loaded yet - load them now
-      $this->meta_data = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array($this->id)));
+      $this->meta_data = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array($this->id)), $this->DB_Shortcode_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this player
-      if (!$this->meta_data->getIsValid() && !$this->meta_data->getAllLoadedMeta()) {
+      if (!$this->meta_data->getIsValid() && !count($this->DB_Shortcode_Instance->getPlayerMetaCache())) {
         $this->meta_data = -1;
         return array();
       } else {
-        if ($this->meta_data->getAllLoadedMeta()) {
-          return $this->meta_data->getAllLoadedMeta();
+        if (count($this->DB_Shortcode_Instance->getPlayerMetaCache())) {
+          return $this->DB_Shortcode_Instance->getPlayerMetaCache();
         } else {
           if ($this->meta_data && $this->meta_data->getIsValid()) {
+            // add this meta into global meta cache
+            $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
+            $cache[$this->meta_data->getId()] = $this->meta_data;
+            $this->DB_Shortcode_Instance->setPlayersCache($cache);
+
             return array( $this->meta_data );
           } else {
             return array();
@@ -757,14 +758,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
     } else if ($this->video_objects === null) {
       // video objects not loaded yet - load them now
       $videos_in_order = explode(',', $this->videos);
-      $videos = new FV_Player_Db_Shortcode_Player_Video($videos_in_order);
+      $videos = new FV_Player_Db_Shortcode_Player_Video($videos_in_order, array(), $this->DB_Shortcode_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$videos->getIsValid()) {
         $this->video_objects = -1;
         return array();
       } else {
-        $this->video_objects = $videos->getAllLoadedVideos();
+        $this->video_objects = $this->DB_Shortcode_Instance->getVideosCache();
 
         // load meta data for all videos at once, then link them to those videos,
         // as we will always load meta data for those, so it's no use to lazy-load
@@ -774,11 +775,11 @@ CREATE TABLE `" . self::$db_table_name . "` (
           $ids[] = $video->getId();
         }
 
-        $metas = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => $ids));
+        new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => $ids), $this->DB_Shortcode_Instance);
         $meta_2_video = array();
 
         // prepare loaded meta to be assigned to their respective videos
-        $metas = $metas->getAllLoadedMeta();
+        $metas = $this->DB_Shortcode_Instance->getVideoMetaCache();
         if ($metas) {
           foreach ( $metas as $meta_object ) {
             if ( empty( $meta_2_video[ $meta_object->getIdVideo() ] ) ) {
@@ -838,7 +839,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'additional_objects', 'DB_Shortcode_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 
@@ -869,7 +870,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
           $meta_record['id_player'] = $this->id;
 
           // create new record in DB
-          $meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, $meta_record);
+          $meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, $meta_record, $this->DB_Shortcode_Instance);
 
           // add meta data ID
           if ($is_update) {
@@ -880,6 +881,11 @@ CREATE TABLE `" . self::$db_table_name . "` (
           $this->meta_data = $meta_object;
         }
       }
+
+      // cache this instance
+      $cache = $this->DB_Shortcode_Instance->getPlayersCache();
+      $cache[$this->id] = $this;
+      $this->DB_Shortcode_Instance->setPlayersCache($cache);
 
       return $this->id;
     } else {
