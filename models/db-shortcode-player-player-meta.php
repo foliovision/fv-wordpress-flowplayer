@@ -194,7 +194,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
           // cache this meta in DB Shortcode object
           if ($DB_Shortcode) {
-            $cache[$this->id] = $this;
+            $cache[$this->id_player][$this->id] = $this;
           }
         } else {
           // multiple IDs, create new player meta objects for each of them except the first one,
@@ -209,7 +209,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
               // cache this meta in DB Shortcode object
               if ($DB_Shortcode) {
-                $cache[$db_record->id] = $this;
+                $cache[$db_record->id_player][$this->id] = $this;
               }
 
               $first_done = true;
@@ -223,7 +223,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
               // cache this meta in DB Shortcode object
               if ($DB_Shortcode) {
-                $cache[$record_id] = $player_meta_object;
+                $cache[$db_record->id_player][$this->id] = $player_meta_object;
               }
             }
           }
@@ -298,7 +298,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     if (!$wpdb->last_error) {
       // add this meta into cache
       $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
-      $cache[$this->id] = $this;
+      $cache[$this->id_player][$this->id] = $this;
       $this->DB_Shortcode_Instance->setPlayerMetaCache($cache);
 
       return $this->id;
@@ -327,8 +327,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
     if (!$wpdb->last_error) {
       // remove this meta from cache
       $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
-      if (isset($cache[$this->id])) {
-        unset($cache[$this->id]);
+      if (isset($cache[$this->id_player][$this->id])) {
+        unset($cache[$this->id_player][$this->id]);
         $this->DB_Shortcode_Instance->setPlayerMetaCache($cache);
       }
 

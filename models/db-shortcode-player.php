@@ -488,8 +488,11 @@ CREATE TABLE `" . self::$db_table_name . "` (
             trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
           }
         } else {
-          // generate warning
-          trigger_error('Unknown property for new DB player: ' . $key);
+          // ignore old database structure records
+          if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
+            // generate warning
+            trigger_error('Unknown property for new DB player: ' . $key);
+          }
         }
       }
     } else if ($multiID || (is_numeric($id) && $id >= -1)) {
@@ -702,15 +705,11 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function getMetaData() {
     // meta data already loaded and present, return them
     if ($this->meta_data && $this->meta_data !== -1) {
-      if ( $this->DB_Shortcode_Instance && count($this->DB_Shortcode_Instance->getPlayerMetaCache()) ) {
-        return $this->DB_Shortcode_Instance->getPlayerMetaCache();
+      if ( $this->DB_Shortcode_Instance && $this->DB_Shortcode_Instance->isPlayerMetaCached($this->id) ) {
+        $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
+        return $cache[$this->id];
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
-          // add this meta into global meta cache
-          $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
-          $cache[$this->meta_data->getId()] = $this->meta_data;
-          $this->DB_Shortcode_Instance->setPlayersCache($cache);
-
           return array( $this->meta_data );
         } else {
           return array();
@@ -721,23 +720,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
       $this->meta_data = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => array($this->id)), $this->DB_Shortcode_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this player
-      if (!$this->meta_data->getIsValid() && !count($this->DB_Shortcode_Instance->getPlayerMetaCache())) {
+      if (!$this->meta_data->getIsValid()) {
         $this->meta_data = -1;
         return array();
       } else {
-        if (count($this->DB_Shortcode_Instance->getPlayerMetaCache())) {
-          return $this->DB_Shortcode_Instance->getPlayerMetaCache();
+        if ($this->meta_data && $this->meta_data->getIsValid()) {
+          return array( $this->meta_data );
         } else {
-          if ($this->meta_data && $this->meta_data->getIsValid()) {
-            // add this meta into global meta cache
-            $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
-            $cache[$this->meta_data->getId()] = $this->meta_data;
-            $this->DB_Shortcode_Instance->setPlayersCache($cache);
-
-            return array( $this->meta_data );
-          } else {
-            return array();
-          }
+          return array();
         }
       }
     } else {
@@ -776,24 +766,18 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
 
         new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => $ids), $this->DB_Shortcode_Instance);
-        $meta_2_video = array();
 
-        // prepare loaded meta to be assigned to their respective videos
-        $metas = $this->DB_Shortcode_Instance->getVideoMetaCache();
-        if ($metas) {
-          foreach ( $metas as $meta_object ) {
-            if ( empty( $meta_2_video[ $meta_object->getIdVideo() ] ) ) {
-              $meta_2_video[ $meta_object->getIdVideo() ] = array();
+        // assign all meta data to their respective videos
+        foreach ( $this->video_objects as $video ) {
+          if ( $this->DB_Shortcode_Instance->isVideoMetaCached($video->getId()) ) {
+            // prepare meta data
+            $meta_2_video = array();
+            $cache = $this->DB_Shortcode_Instance->getVideoMetaCache();
+            foreach ($cache[$video->getId()] as $meta_object) {
+              $meta_2_video[] = $meta_object->getAllDataValues();
             }
 
-            $meta_2_video[ $meta_object->getIdVideo() ][] = $meta_object->getAllDataValues();
-          }
-        }
-
-        // assign all loaded meta data to their respective videos
-        foreach ( $this->video_objects as $video ) {
-          if ( !empty($meta_2_video[ $video->getId() ]) ) {
-            $video->link2meta( $meta_2_video[ $video->getId() ] );
+            $video->link2meta( $meta_2_video );
           } else {
             $video->link2meta(-1);
           }

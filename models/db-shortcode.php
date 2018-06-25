@@ -56,8 +56,8 @@ class FV_Player_Db_Shortcode {
     return $this->video_meta_cache = $cache;
   }
 
-  public function isVideoMetaCached($id) {
-    return isset($this->video_meta_cache[$id]);
+  public function isVideoMetaCached($id_video) {
+    return isset($this->video_meta_cache[$id_video]);
   }
 
   public function getPlayersCache() {
@@ -80,8 +80,8 @@ class FV_Player_Db_Shortcode {
     return $this->player_meta_cache = $cache;
   }
 
-  public function isPlayerMetaCached($id) {
-    return isset($this->player_meta_cache[$id]);
+  public function isPlayerMetaCached($id_player) {
+    return isset($this->player_meta_cache[$id_player]);
   }
 
   public function setCurrentVideoAndPlayer($aItem, $index, $aPlayer) {
@@ -99,10 +99,20 @@ class FV_Player_Db_Shortcode {
 
   public function cache_players_and_videos() {
     global $posts;
-    if( !empty($posts) && is_array($posts) ) {
-      foreach( $posts AS $item ) {
+    /*if( !empty($posts) && is_array($posts) ) {
+      $player_ids = array();
+      foreach( $posts AS $post ) {
+        preg_match_all('/\[fvplayer id="(\d+)"\]/m', $post->post_content, $matches, PREG_SET_ORDER, 0);
+        if ($matches && count($matches)) {
+          foreach ($matches as $match) {
+            $player_ids[] = $match[1];
+          }
+        }
       }
-    }
+
+      // load all players at once
+      new FV_Player_Db_Shortcode_Player($player_ids, array(), $this);
+    }*/
   }
 
   /**

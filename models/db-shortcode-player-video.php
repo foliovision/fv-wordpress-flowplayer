@@ -419,8 +419,9 @@ class FV_Player_Db_Shortcode_Player_Video {
       // from database at the time when player is initially created
       if (is_array($this->meta_data)) {
         return $this->meta_data;
-      } else if ( count($this->DB_Shortcode_Instance->getVideoMetaCache()) ) {
-        return $this->DB_Shortcode_Instance->getVideoMetaCache();
+      } else if ( $this->DB_Shortcode_Instance->isVideoMetaCached($this->id) ) {
+        $cache = $this->DB_Shortcode_Instance->getVideoMetaCache();
+        return $cache[$this->id];
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
           return array( $this->meta_data );
@@ -433,18 +434,14 @@ class FV_Player_Db_Shortcode_Player_Video {
       $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($this->id)), $this->DB_Shortcode_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
-      if (!$this->meta_data->getIsValid() && !count($this->DB_Shortcode_Instance->getVideoMetaCache())) {
+      if (!$this->meta_data->getIsValid()) {
         $this->meta_data = -1;
         return array();
       } else {
-        if (count($this->DB_Shortcode_Instance->getVideoMetaCache())) {
-          return $this->DB_Shortcode_Instance->getVideoMetaCache();
+        if ($this->meta_data && $this->meta_data->getIsValid()) {
+          return array( $this->meta_data );
         } else {
-          if ($this->meta_data && $this->meta_data->getIsValid()) {
-            return array( $this->meta_data );
-          } else {
-            return array();
-          }
+          return array();
         }
       }
     } else {
