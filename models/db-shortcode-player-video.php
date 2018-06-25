@@ -217,41 +217,56 @@ class FV_Player_Db_Shortcode_Player_Video {
 
       $this->is_valid = true;
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
+      /* @var $cache FV_Player_Db_Shortcode_Player_Video[] */
       $cache = ($DB_Shortcode ? $DB_Shortcode->getVideosCache() : array());
+      $all_cached = false;
 
       // no options, load data from DB
       if ($multiID) {
-        // make sure we have numeric IDs
+        // make sure we have numeric IDs and that they're not cached yet
+        $query_ids = array();
         foreach ($id as $id_key => $id_value) {
-          $id[$id_key] = (int) $id_value;
+          if (!isset($cache[$id_value])) {
+            $query_ids[ $id_key ] = (int) $id_value;
+          }
+
+          $id[ $id_key ] = (int) $id_value;
         }
 
         // load multiple videos via their IDs but a single query and return their values
-        $video_data = $wpdb->get_results('
+        if (count($query_ids)) {
+          $video_data = $wpdb->get_results( '
           SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . $options['db_options']['select_fields'] : '*' ) . '
           FROM
-            '.self::$db_table_name.'
+            ' . self::$db_table_name . '
           WHERE
-            id IN('. implode(',', $id).')'.
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
-        );
+            id IN(' . implode( ',', $query_ids ) . ')' .
+            ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
+            ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
+          );
+        } else {
+          $all_cached = true;
+        }
       } else {
-        // load a single video
-        $video_data = $wpdb->get_row('
+        if (!isset($cache[$id])) {
+          // load a single video
+          $video_data = $wpdb->get_row( '
           SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . $options['db_options']['select_fields'] : '*' ) . '
           FROM
-            '.self::$db_table_name.'
+            ' . self::$db_table_name . '
           WHERE
-            id = '. $id.
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
-        );
+            id = ' . $id .
+            ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
+            ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
+          );
+        } else {
+          $all_cached = true;
+        }
       }
 
-      if ($video_data) {
+      if (isset($video_data) && $video_data && count($video_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
@@ -285,16 +300,36 @@ class FV_Player_Db_Shortcode_Player_Video {
               $record_id = $db_record->id;
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
-              $video_object = new FV_Player_Db_Shortcode_Player_Video(null, get_object_vars($db_record), $this->DB_Shortcode_Instance);
-              $video_object->link2db($record_id);
 
-              // cache this video in DB Shortcode object
-              if ($DB_Shortcode) {
-                $cache[$record_id] = $video_object;
+              if ($DB_Shortcode && !$DB_Shortcode->isVideoCached($record_id)) {
+                $video_object = new FV_Player_Db_Shortcode_Player_Video( null, get_object_vars( $db_record ), $this->DB_Shortcode_Instance );
+                $video_object->link2db( $record_id );
+
+                // cache this video in DB Shortcode object
+                if ( $DB_Shortcode ) {
+                  $cache[ $record_id ] = $video_object;
+                }
               }
             }
           }
         }
+        $this->is_valid = true;
+      } else if ($all_cached) {
+        // fill the data for this class with data of the cached class
+        if ($multiID) {
+          $cached_video = $cache[reset($id)];
+        } else {
+          $cached_video = $cache[$id];
+        }
+
+        foreach ($cached_video->getAllDataValues() as $key => $value) {
+          $this->$key = $value;
+        }
+
+        // add meta data
+        $this->meta_data = $cached_video->getMetaData();
+
+        // make this class a valid video
         $this->is_valid = true;
       }
     } else {
@@ -302,7 +337,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     }
 
     // update cache, if changed
-    if (isset($cache)) {
+    if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
       $this->DB_Shortcode_Instance->setVideosCache($cache);
     }
   }

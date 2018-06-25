@@ -146,6 +146,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
     // check whether we're not trying to load data for a single player
     // rather than meta data by its own ID
     $load_for_player = false;
+    $force_cache_update = false;
+
     if (is_array($options) && count($options) && isset($options['id_player']) && is_array($options['id_player'])) {
       $load_for_player = true;
       $multiID = true;
@@ -168,23 +170,130 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
       }
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
+      /* @var $cache FV_Player_Db_Shortcode_Player_Player_Meta[] */
       $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayerMetaCache() : array());
+      $all_cached = false;
 
       // no options, load data from DB
       if ($multiID) {
-        // make sure we have numeric IDs
+        $query_ids = array();
+
+        // make sure we have numeric IDs and that they're not cached yet
+        $is_cached = false;
         foreach ($id as $id_key => $id_value) {
+          if ($load_for_player) {
+            $is_cached = isset($cache[$id_value]);
+          } else {
+            // run through all the cached data and check
+            // whether our meta data ID was not cached yet
+            foreach ($cache as $player_meta) {
+              if (isset($player_meta[$id_value])) {
+                $is_cached = true;
+              }
+            }
+          }
+
+          // select from DB if not cached yet
+          if (!$is_cached) {
+            $query_ids[ $id_key ] = (int) $id_value;
+          }
+
           $id[$id_key] = (int) $id_value;
         }
 
-        // load multiple player metas via their IDs but a single query and return their values
-        $meta_data = $wpdb->get_results('SELECT * FROM '.self::$db_table_name.' WHERE ' . ($load_for_player ? 'id_player' : 'id') . ' IN('. implode(',', $id).')');
+        if (count($query_ids)) {
+          // load multiple player metas via their IDs but a single query and return their values
+          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE ' . ( $load_for_player ? 'id_player' : 'id' ) . ' IN(' . implode( ',', $query_ids ) . ')' );
+
+          // run through all of the meta data and
+          // fill the ones that were not found with blank arrays
+          // for cache-filling purposes
+          if (!is_array($meta_data)) {
+            $meta_data = array();
+          }
+
+          foreach ($query_ids as $q_id) {
+            $meta_found = false;
+            foreach ($meta_data as $m_data) {
+              if (($load_for_player && $m_data->id_player == $q_id) || (!$load_for_player && $m_data->id == $q_id)) {
+                $meta_found = true;
+                break;
+              }
+            }
+
+            // if we have no meta data for the requested ID,
+            // fill it with an empty array
+            if (!$meta_found) {
+              $force_cache_update = true;
+
+              if ($load_for_player) {
+                // for player, create an empty array with no meta
+                $cache[$q_id] = array();
+              } else {
+                // for a single meta, initialize it with null value
+                // on a 0-id player (which obviously cannot exist,
+                // so we can use it for cache-checking purposes)
+                $cache[0][$q_id] = null;
+              }
+            }
+          }
+        } else {
+          $all_cached = true;
+        }
       } else {
-        // load a single player meta data record
-        $meta_data = $wpdb->get_row($wpdb->query('SELECT * FROM '.self::$db_table_name.' WHERE id = '. $id));
+        $is_cached = false;
+        if ($load_for_player) {
+          $is_cached = isset($cache[$id]);
+        } else {
+          // run through all the cached data and check
+          // whether our meta data ID was not cached yet
+          foreach ($cache as $player_id => $player_meta) {
+            if (isset($player_meta[$id])) {
+              $is_cached = true;
+            }
+          }
+        }
+
+        if (!$is_cached) {
+          // load a single player meta data record
+          $meta_data = $wpdb->get_row( $wpdb->query( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . $id ) );
+
+          // run through all of the meta data and
+          // fill the ones that were not found with blank arrays
+          // for cache-filling purposes
+          if (!is_array($meta_data)) {
+            $meta_data = array();
+          }
+
+          $meta_found = false;
+          foreach ($meta_data as $m_data) {
+            if (($load_for_player && $m_data->id_player == $id) || (!$load_for_player && $m_data->id == $id)) {
+              $meta_found = true;
+              break;
+            }
+          }
+
+          // if we have no meta data for the requested ID,
+          // fill it with an empty array
+          if (!$meta_found) {
+            $force_cache_update = true;
+
+            if ($load_for_player) {
+              // for player, create an empty array with no meta
+              $cache[$id] = array();
+            } else {
+              // for a single meta, initialize it with null value
+              // on a 0-id player (which obviously cannot exist,
+              // so we can use it for cache-checking purposes)
+              $cache[0][$id] = null;
+            }
+          }
+        } else {
+          $all_cached = true;
+        }
       }
 
-      if ($meta_data) {
+      if (isset($meta_data) && $meta_data && count($meta_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
@@ -207,25 +316,54 @@ CREATE TABLE `" . self::$db_table_name . "` (
                 $this->$key = $value;
               }
 
+              $first_done = true;
+
               // cache this meta in DB Shortcode object
               if ($DB_Shortcode) {
                 $cache[$db_record->id_player][$this->id] = $this;
               }
-
-              $first_done = true;
             } else {
               // create a new player meta object and populate it with DB values
               $record_id = $db_record->id;
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
-              $player_meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, get_object_vars($db_record), $DB_Shortcode);
-              $player_meta_object->link2db($record_id);
 
-              // cache this meta in DB Shortcode object
-              if ($DB_Shortcode) {
-                $cache[$db_record->id_player][$this->id] = $player_meta_object;
+              if ($DB_Shortcode && !$DB_Shortcode->isPlayerMetaCached($db_record->id_player, $record_id)) {
+                $player_meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta( null, get_object_vars( $db_record ), $DB_Shortcode );
+                $player_meta_object->link2db( $record_id );
+
+                // cache this meta in DB Shortcode object
+                if ( $DB_Shortcode ) {
+                  $cache[ $db_record->id_player ][ $this->id ] = $player_meta_object;
+                }
               }
             }
+          }
+        }
+      } else if ($all_cached) {
+        // fill the data for this class with data of the cached class
+        if ($multiID) {
+          $cached_meta = reset($id);
+        } else {
+          $cached_meta = $id;
+        }
+
+        // find the meta in cache and reassign $cached_meta
+        foreach ($cache as $player_id => $player) {
+          if ($load_for_player && $player_id == $cached_meta ) {
+            // load first meta for the requested player
+            $cached_meta = reset( $player );
+            break;
+          } else if (!$load_for_player && isset($player[$cached_meta])) {
+            $cached_meta = $player[$cached_meta];
+            break;
+          }
+        }
+
+        // $cached_meta will remain numeric if there are no meta data in the database
+        if ($cached_meta instanceof FV_Player_Db_Shortcode_Player_Player_Meta) {
+          foreach ( $cached_meta->getAllDataValues() as $key => $value ) {
+            $this->$key = $value;
           }
         }
       } else {
@@ -236,7 +374,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     }
 
     // update cache, if changed
-    if (isset($cache)) {
+    if (isset($cache) && ($force_cache_update || !isset($all_cached) || !$all_cached)) {
       $this->DB_Shortcode_Instance->setPlayerMetaCache($cache);
     }
   }

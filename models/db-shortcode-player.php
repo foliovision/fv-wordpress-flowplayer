@@ -496,14 +496,17 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
       }
     } else if ($multiID || (is_numeric($id) && $id >= -1)) {
+      /* @var $cache FV_Player_Db_Shortcode_Player[] */
       $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayersCache() : array());
+      $all_cached = false;
 
       // no options, load data from DB
       if ($multiID) {
         $query_ids = array();
 
         if ($id !== null) {
-          // make sure we have numeric IDs
+          // make sure we have numeric IDs and that they're not cached yet
+          $query_ids = array();
           foreach ( $id as $id_key => $id_value ) {
             // check if this player is not cached yet
             if ($DB_Shortcode && !$DB_Shortcode->isPlayerCached($id_value)) {
@@ -526,6 +529,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
             ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
             ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
           );
+        } else if ($id !== null && !count($query_ids)) {
+          $all_cached = true;
         } else {
           $player_data = -1;
           $this->is_valid = false;
@@ -543,13 +548,15 @@ CREATE TABLE `" . self::$db_table_name . "` (
             ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
             ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
           );
+        } else if ($DB_Shortcode && $DB_Shortcode->isPlayerCached($id)) {
+          $all_cached = true;
         } else {
           $player_data = -1;
           $this->is_valid = false;
         }
       }
 
-      if ($player_data && $player_data !== -1) {
+      if (isset($player_data) && $player_data !== -1 && count($player_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
@@ -589,16 +596,36 @@ CREATE TABLE `" . self::$db_table_name . "` (
               $record_id = $db_record->id;
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
-              $player_object = new FV_Player_Db_Shortcode_Player(null, get_object_vars($db_record), $this->DB_Shortcode_Instance);
-              $player_object->link2db($record_id);
 
-              // cache this player in DB Shortcode object
-              if ($DB_Shortcode) {
-                $cache[$record_id] = $player_object;
+              if ($this->DB_Shortcode_Instance && !$this->DB_Shortcode_Instance->isPlayerCached($record_id)) {
+                $player_object = new FV_Player_Db_Shortcode_Player( null, get_object_vars( $db_record ), $this->DB_Shortcode_Instance );
+                $player_object->link2db( $record_id );
+
+                // cache this player in DB Shortcode object
+                if ($DB_Shortcode) {
+                  $cache[$record_id] = $player_object;
+                }
               }
             }
           }
         }
+      } else if ($all_cached) {
+        // fill the data for this class with data of the cached class
+        if ($multiID) {
+          $cached_player = $cache[reset($id)];
+        } else {
+          $cached_player = $cache[$id];
+        }
+
+        foreach ($cached_player->getAllDataValues() as $key => $value) {
+          $this->$key = $value;
+        }
+
+        // add meta data
+        $this->meta_data = $cached_player->getMetaData();
+
+        // make this class a valid player
+        $this->is_valid = true;
       } else if ($player_data !== -1) {
         // no players found in DB
         $this->is_valid = false;
@@ -608,7 +635,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     }
 
     // update cache, if changed
-    if (isset($cache)) {
+    if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
       $this->DB_Shortcode_Instance->setPlayersCache($cache);
     }
   }

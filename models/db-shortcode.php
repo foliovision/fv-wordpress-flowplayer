@@ -56,8 +56,8 @@ class FV_Player_Db_Shortcode {
     return $this->video_meta_cache = $cache;
   }
 
-  public function isVideoMetaCached($id_video) {
-    return isset($this->video_meta_cache[$id_video]);
+  public function isVideoMetaCached($id_video, $id_meta = null) {
+    return ($id_meta !== null ? isset($this->video_meta_cache[$id_video][$id_meta]) : isset($this->video_meta_cache[$id_video]));
   }
 
   public function getPlayersCache() {
@@ -80,8 +80,8 @@ class FV_Player_Db_Shortcode {
     return $this->player_meta_cache = $cache;
   }
 
-  public function isPlayerMetaCached($id_player) {
-    return isset($this->player_meta_cache[$id_player]);
+  public function isPlayerMetaCached($id_player, $id_meta = null) {
+    return ($id_meta !== null ? isset($this->player_meta_cache[$id_player][$id_meta]) : isset($this->player_meta_cache[$id_player]));
   }
 
   public function setCurrentVideoAndPlayer($aItem, $index, $aPlayer) {
@@ -99,7 +99,7 @@ class FV_Player_Db_Shortcode {
 
   public function cache_players_and_videos() {
     global $posts;
-    /*if( !empty($posts) && is_array($posts) ) {
+    if( !empty($posts) && is_array($posts) ) {
       $player_ids = array();
       foreach( $posts AS $post ) {
         preg_match_all('/\[fvplayer id="(\d+)"\]/m', $post->post_content, $matches, PREG_SET_ORDER, 0);
@@ -112,7 +112,22 @@ class FV_Player_Db_Shortcode {
 
       // load all players at once
       new FV_Player_Db_Shortcode_Player($player_ids, array(), $this);
-    }*/
+
+      // load all player meta
+      new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => $player_ids), $this);
+
+      // pre load all videos and their meta for these players
+      $video_ids = array();
+
+      foreach ($this->players_cache as $player) {
+        $video_ids = array_merge($video_ids, explode(',', $player->getVideoIds()));
+      }
+
+      if (count($video_ids)) {
+        new FV_Player_Db_Shortcode_Player_Video( $video_ids, array(), $this );
+        new FV_Player_Db_Shortcode_Player_Video_Meta( null, array( 'id_video' => $video_ids ), $this );
+      }
+    }
   }
 
   /**
@@ -504,7 +519,12 @@ class FV_Player_Db_Shortcode {
           return $this->player_atts_cache[ $atts['id'] ];
         }
 
-        $player = new FV_Player_Db_Shortcode_Player( $atts['id'], array(), $FV_Db_Shortcode );
+        if ($this->isPlayerCached($atts['id'])) {
+          $player = $this->getPlayersCache();
+          $player = $player[$atts['id']];
+        } else {
+          $player = new FV_Player_Db_Shortcode_Player( $atts['id'], array(), $FV_Db_Shortcode );
+        }
 
         if (!$player || !$player->getIsValid()) {
           return false;
@@ -916,7 +936,12 @@ class FV_Player_Db_Shortcode {
 
     // extend an existing lock
     if ( !empty( $data['fv_flowplayer_edit_lock_id'] ) ) {
-      $player = new FV_Player_Db_Shortcode_Player($data['fv_flowplayer_edit_lock_id'], array(), $FV_Db_Shortcode);
+      if ($FV_Db_Shortcode && $FV_Db_Shortcode->isPlayerCached($data['fv_flowplayer_edit_lock_id'])) {
+        $player = $FV_Db_Shortcode->getPlayersCache();
+        $player = $player[$data['fv_flowplayer_edit_lock_id']];
+      } else {
+        $player = new FV_Player_Db_Shortcode_Player($data['fv_flowplayer_edit_lock_id'], array(), $FV_Db_Shortcode);
+      }
 
       if ($player->getIsValid()) {
         if (count($player->getMetaData())) {
