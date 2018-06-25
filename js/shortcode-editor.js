@@ -406,6 +406,9 @@ jQuery(document).ready(function($){
  * Initializes shortcode, removes playlist items, hides elements
  */
 function fv_wp_flowplayer_init() {
+  // if error / message overlay is visible, hide it
+  jQuery('.fv-spinner-clone').remove();
+
   fv_wp_flowplayer_dialog_resize_height_record = 0;
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
@@ -890,12 +893,6 @@ function fv_wp_flowplayer_edit() {
       var overlayDiv = fv_wp_flowplayer_big_loader_show();
       overlayDiv.html('');
 
-      // remove everything with index 0 and the initial video placeholder,
-      // otherwise our indexing & previews wouldn't work correctly
-      jQuery('[data-index="0"]').remove();
-      jQuery('.fv-player-tab-playlist table tbody tr').remove();
-      jQuery('.fv-player-tab-video-files table').remove();
-
       // store player ID into fv_player_conf, so we can keep sending it
       // in WP heartbeat
       fv_flowplayer_conf.current_player_db_id = result[1];
@@ -915,6 +912,12 @@ function fv_wp_flowplayer_edit() {
             $deleted_videos_element = jQuery('#deleted_videos'),
             $deleted_video_meta_element = jQuery('#deleted_video_meta'),
             $deleted_player_meta_element = jQuery('#deleted_player_meta');
+
+          // remove everything with index 0 and the initial video placeholder,
+          // otherwise our indexing & previews wouldn't work correctly
+          jQuery('[data-index="0"]').remove();
+          jQuery('.fv-player-tab-playlist table tbody tr').remove();
+          jQuery('.fv-player-tab-video-files table').remove();
 
           jQuery('#player_id_top_text').html(result[1]);
 
@@ -1485,9 +1488,6 @@ function fv_wp_flowplayer_dialog_resize() {
 
 
 function fv_wp_flowplayer_on_close() {
-  // if error / message overlay is visible, hide it
-  jQuery('#fv-player-shortcode-editor-preview-spinner:visible').remove();
-
   fv_wp_flowplayer_init();
 
   if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined') {
@@ -1934,7 +1934,7 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
 
 function fv_wp_flowplayer_big_loader_show() {
   // DB-based player, create a "wait" overlay
-  var overlayDiv = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
+  var overlayDiv = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().addClass('fv-spinner-clone').css({
     'height' : '100%'
   });
 
