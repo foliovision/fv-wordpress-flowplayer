@@ -965,11 +965,13 @@ class FV_Player_Db_Shortcode {
       $meta = $this->getPlayerMetaCache();
 
       if (count($meta)) {
-        foreach ( $meta as $meta_object ) {
-          if ( strstr( $meta_object->getMetaKey(), 'edit_lock_' ) !== false ) {
-            if ( str_replace( 'edit_lock_', '', $meta_object->getMetaKey() ) == $userID ) {
-              // correct user, delete the lock
-              $meta_object->delete();
+        foreach ( $meta as $player ) {
+          foreach ($player as $meta_object) {
+            if ( strstr( $meta_object->getMetaKey(), 'edit_lock_' ) !== false ) {
+              if ( str_replace( 'edit_lock_', '', $meta_object->getMetaKey() ) == $userID ) {
+                // correct user, delete the lock
+                $meta_object->delete();
+              }
             }
           }
         }
