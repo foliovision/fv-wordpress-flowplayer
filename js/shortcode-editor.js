@@ -1945,6 +1945,12 @@ function fv_wp_flowplayer_big_loader_show() {
 
 
 
+function fv_wp_flowplayer_big_loader_close() {
+  jQuery('.fv-spinner-clone').remove();
+}
+
+
+
 function fv_wp_flowplayer_submit( preview ) {
   if( preview && typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
     //console.log('fv_wp_flowplayer_submit skip...',fv_player_shortcode_preview);
@@ -2024,25 +2030,31 @@ function fv_wp_flowplayer_submit( preview ) {
         data: ajax_data,
         cookie: encodeURIComponent(document.cookie),
       }, function(playerID) {
-        // we have extra parameters to keep
-        if (fv_flowplayer_conf.db_extra_shortcode_params) {
-          var
-            params = jQuery.map(fv_flowplayer_conf.db_extra_shortcode_params, function(value, index) {
-            return index + '="' + value + '"';
-          }),
-            to_append = '';
+        if (playerID === parseInt(playerID)) {
+          // we have extra parameters to keep
+          if (fv_flowplayer_conf.db_extra_shortcode_params) {
+            var
+              params = jQuery.map(fv_flowplayer_conf.db_extra_shortcode_params, function (value, index) {
+                return index + '="' + value + '"';
+              }),
+              to_append = '';
 
-          if (params.length) {
-            to_append = ' ' + params.join(' ');
+            if (params.length) {
+              to_append = ' ' + params.join(' ');
+            }
+
+            fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"' + to_append + ']');
+          } else {
+            // simple DB shortcode, no extra presentation parameters
+            fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
           }
 
-          fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"' + to_append + ']');
+          jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
         } else {
-          // simple DB shortcode, no extra presentation parameters
-          fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
+          jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.<br /><br /><input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>').css('background-image', 'none');
         }
-
-        jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
+      }).error(function() {
+        jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.<br /><br /><input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>').css('background-image', 'none');
       });
 
       return;
