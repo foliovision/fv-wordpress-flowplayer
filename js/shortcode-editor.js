@@ -2030,7 +2030,7 @@ function fv_wp_flowplayer_submit( preview ) {
         data: ajax_data,
         cookie: encodeURIComponent(document.cookie),
       }, function(playerID) {
-        if (playerID === parseInt(playerID)) {
+        if (playerID == parseInt(playerID)) {
           // we have extra parameters to keep
           if (fv_flowplayer_conf.db_extra_shortcode_params) {
             var
