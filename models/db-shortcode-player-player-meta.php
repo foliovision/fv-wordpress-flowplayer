@@ -173,6 +173,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       /* @var $cache FV_Player_Db_Shortcode_Player_Player_Meta[] */
       $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayerMetaCache() : array());
       $all_cached = false;
+      $some_meta_exist = false;
 
       // no options, load data from DB
       if ($multiID) {
@@ -183,12 +184,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
         foreach ($id as $id_key => $id_value) {
           if ($load_for_player) {
             $is_cached = isset($cache[$id_value]);
+            $some_meta_exist = ($is_cached ? count($cache[$id_value]) : false);
           } else {
             // run through all the cached data and check
             // whether our meta data ID was not cached yet
             foreach ($cache as $player_meta) {
               if (isset($player_meta[$id_value])) {
                 $is_cached = true;
+                $some_meta_exist = (count($player_meta[$id_value]) ? true : false);
               }
             }
           }
@@ -244,12 +247,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
         $is_cached = false;
         if ($load_for_player) {
           $is_cached = isset($cache[$id]);
+          $some_meta_exist = ($is_cached ? count($cache[$id]) : false);
         } else {
           // run through all the cached data and check
           // whether our meta data ID was not cached yet
           foreach ($cache as $player_id => $player_meta) {
             if (isset($player_meta[$id])) {
               $is_cached = true;
+              $some_meta_exist = (count($player_meta[$id]) ? true : false);
             }
           }
         }
@@ -340,7 +345,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
             }
           }
         }
-      } else if ($all_cached) {
+      } else if ($all_cached && $some_meta_exist) {
         // fill the data for this class with data of the cached class
         if ($multiID) {
           $cached_meta = reset($id);
