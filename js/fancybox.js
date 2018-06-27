@@ -101,6 +101,19 @@ function fv_lightbox_flowplayer_shutdown() {
 jQuery(document).on('afterShow.fb afterClose.fb', fv_lightbox_flowplayer_shutdown);
 
 jQuery(window).resize(fv_fancybox_check_size);
+
 if( document.addEventListener ) {
-  window.addEventListener("orientationchange", fv_fancybox_check_size, false);
+  var fv_orientation_change_timer = -1;
+
+  window.addEventListener("orientationchange", function() {
+    if (window.fv_orientation_change_timer > -1) {
+      clearTimeout(fv_orientation_change_timer);
+      fv_orientation_change_timer = -1;
+    }
+
+    fv_orientation_change_timer = setTimeout(function() {
+      fv_fancybox_check_size();
+      fv_orientation_change_timer = -1;
+    }, 1000);
+  }, false);
 }
