@@ -31,6 +31,8 @@ jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 // it takes a little while for the slide to be correctly resized, so we use timeout here
 jQuery.fancybox.defaults.afterLoad = function() { setTimeout(fv_fancybox_check_size, 500); }
 jQuery.fancybox.defaults.hash = false;
+// YouTube videos should not be amended or detected by FancyBox itself
+jQuery.fancybox.defaults.youtube.matcher = /this_will_never_be_found/i;
 
 $fv_player_win = jQuery(window);
 
