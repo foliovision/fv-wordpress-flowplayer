@@ -110,22 +110,24 @@ class FV_Player_Db_Shortcode {
         }
       }
 
-      // load all players at once
-      new FV_Player_Db_Shortcode_Player($player_ids, array(), $this);
+      if (count($player_ids)) {
+        // load all players at once
+        new FV_Player_Db_Shortcode_Player( $player_ids, array(), $this );
 
-      // load all player meta
-      new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('id_player' => $player_ids), $this);
+        // load all player meta
+        new FV_Player_Db_Shortcode_Player_Player_Meta( null, array( 'id_player' => $player_ids ), $this );
 
-      // pre load all videos and their meta for these players
-      $video_ids = array();
+        // pre load all videos and their meta for these players
+        $video_ids = array();
 
-      foreach ($this->players_cache as $player) {
-        $video_ids = array_merge($video_ids, explode(',', $player->getVideoIds()));
-      }
+        foreach ( $this->players_cache as $player ) {
+          $video_ids = array_merge( $video_ids, explode( ',', $player->getVideoIds() ) );
+        }
 
-      if (count($video_ids)) {
-        new FV_Player_Db_Shortcode_Player_Video( $video_ids, array(), $this );
-        new FV_Player_Db_Shortcode_Player_Video_Meta( null, array( 'id_video' => $video_ids ), $this );
+        if ( count( $video_ids ) ) {
+          new FV_Player_Db_Shortcode_Player_Video( $video_ids, array(), $this );
+          new FV_Player_Db_Shortcode_Player_Video_Meta( null, array( 'id_video' => $video_ids ), $this );
+        }
       }
     }
   }
