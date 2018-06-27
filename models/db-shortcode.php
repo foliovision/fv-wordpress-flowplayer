@@ -102,7 +102,7 @@ class FV_Player_Db_Shortcode {
     if( !empty($posts) && is_array($posts) ) {
       $player_ids = array();
       foreach( $posts AS $post ) {
-        preg_match_all('/\[fvplayer id="(\d+)"\]/m', $post->post_content, $matches, PREG_SET_ORDER, 0);
+        preg_match_all('/\[fvplayer id="(\d+)"[^\]]*\]/m', $post->post_content, $matches, PREG_SET_ORDER, 0);
         if ($matches && count($matches)) {
           foreach ($matches as $match) {
             $player_ids[] = $match[1];
