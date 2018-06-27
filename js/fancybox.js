@@ -74,21 +74,31 @@ function fv_fancybox_check_size() {
   }
 }
 
-if( typeof(flowplayer) != "undefined" ) { //  stop lightbox from playing if it's closed
-  flowplayer(function (api,root) {
-    root = jQuery(root);
-    if( !root.hasClass('lightboxed') ) return; //  only work for lightboxed video!
+function fv_lightbox_flowplayer_shutdown() {
+  setTimeout( 'fv_fancybox_check_size', 100 );
 
-    api.bind("ready", function (e, api, video) {
-      if( root.parent().attr('id') != 'fv_player_pro_boxLoadedContent') {
-        api.one('progress', function(e,api) {
-          api.pause();
-          //FV_Flowplayer_Pro.log('FV FP: Lightbox: stoping closed video!');
-        });
-      }
-    });
-  });
+  if( typeof('flowplayer') == "undefined" ) {
+    return;
+  }
+
+  jQuery('.flowplayer').each( function() {
+    var api = jQuery(this).data("flowplayer");
+    if( typeof(api) == "undefined") {
+      return;
+    }
+    if( api.ready ) {
+      api.unload();
+    }
+    if( api.loading  ) {
+      api.one('ready',function(){
+        if(api.engine.engineName === 'fvyoutube')
+          api.unload();
+      })
+    }
+  } );
 }
+
+jQuery(document).on('afterShow.fb afterClose.fb', fv_lightbox_flowplayer_shutdown);
 
 jQuery(window).resize(fv_fancybox_check_size);
 if( document.addEventListener ) {
