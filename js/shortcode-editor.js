@@ -1108,13 +1108,15 @@ function fv_wp_flowplayer_edit() {
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
           var
-            $insert_button = jQuery('.fv_player_field_insert-button:not(.insert_as_new)'),
-            $insert_as_new_button = jQuery('.insert_as_new');
+            $insert_button = jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)'),
+            $insert_as_new_button = jQuery('.fv_player_insert_as_new'),
+            $export_button = jQuery('.fv_player_export');
 
           if (!$insert_as_new_button.length) {
             jQuery($insert_button[0].outerHTML)
-              .addClass('insert_as_new')
+              .addClass('fv_player_insert_as_new')
               .val('Insert as New')
+              .off('click')
               .on('click', function () {
                 // remove update and deleted hidden fields + DB IDs so we insert a new record
                 // with our data instead of updating them
@@ -1127,18 +1129,25 @@ function fv_wp_flowplayer_edit() {
                 return true;
               })
               .css('margin-left', '5px')
-              .off('click')
               .insertAfter($insert_button);
           } else {
             $insert_as_new_button.val('Insert as New');
           }
 
-          // update the Insert button to say Update
-          $insert_button
-            .removeClass('fv_player_field_insert-button')
-            .addClass('fv_player_field_update-button')
-            .attr('name', 'update')
-            .val('Update');
+          if (!$export_button.length) {
+            jQuery($insert_button[0].outerHTML)
+              .addClass('fv_player_export')
+              .val('Export Playlist Data')
+              .off('click')
+              .on('click', function () {
+                fv_wp_flowplayer_export();
+                return true;
+              })
+              .css('margin-left', '5px')
+              .insertAfter(jQuery('.fv_player_insert_as_new'));
+          } else {
+            $export_button.val('Export Playlist Data');
+          }
         }
 
         overlayDiv.remove();
@@ -1154,7 +1163,8 @@ function fv_wp_flowplayer_edit() {
     } else {
       // remove Insert as New, or they'll all get renamed to Update
       // when working with original shortcode
-      jQuery('.insert_as_new').remove();
+      jQuery('.fv_player_insert_as_new').remove();
+      jQuery('.fv_player_export').remove();
       fv_flowplayer_conf.new_shortcode_active = false;
 
       // ordinary text shortcode in the editor
@@ -1947,6 +1957,12 @@ function fv_wp_flowplayer_big_loader_show() {
 
 function fv_wp_flowplayer_big_loader_close() {
   jQuery('.fv-spinner-clone').remove();
+}
+
+
+
+function fv_player_export() {
+  console.log('export :P');
 }
 
 
