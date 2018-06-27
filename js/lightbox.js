@@ -238,7 +238,7 @@ if( document.addEventListener ) {
 }
 
 function fv_lightbox_flowplayer_shutdown() {
-  setTimeout( 'fv_lightbox_resizeColorBox', 100 );  
+  setTimeout( fv_lightbox_resizeColorBox, 100 );  
   
   if( typeof('flowplayer') == "undefined" ) {
     return;
