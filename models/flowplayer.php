@@ -347,6 +347,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
+    $help           = (!empty($options['help']) ? $options['help'] : '');     
 
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
@@ -358,14 +359,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     ?>
       <tr>
-          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?></label></td>
-          <td><input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-more">(?)</a>'; ?>:</label></td>
+        <td>
+          <input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
-          ?> /></td>
+          ?> />          
+          <?php if ( $help ) { ?>
+            <p class="description"><span class="more"><?php echo $help; ?></span></p>
+          <?php } ?>
+        </td>
       </tr>
 
     <?php
