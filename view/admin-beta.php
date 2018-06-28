@@ -655,7 +655,7 @@ function fv_flowplayer_admin_seo() {
 ?>        
 				<table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Use Schema.org markup', 'fv-wordpress-flowplayer'), array( 'integrations', 'schema_org' ), __(' Adds the video meta data information for search engines.', 'fv-wordpress-flowplayer') ); ?>          
-          <?php $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ) ); ?>
+          <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
 					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -1829,14 +1829,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     jQuery('.show-more').click( function(e) {
       e.preventDefault();
       
-      var more = jQuery('.more', jQuery(this).parent() ).length ? jQuery('.more', jQuery(this).parent() ) : jQuery(this).parent().siblings('.more');
+      var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
       
       more.toggle();
       
       if( jQuery(':visible', more ).length > 0 ) {
+        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
         jQuery(this).html('(hide)');
       } else {
-        jQuery(this).html('(&hellip;)');
+        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
       }      
     } );  
     
