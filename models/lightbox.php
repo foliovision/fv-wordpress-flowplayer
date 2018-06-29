@@ -156,14 +156,15 @@ class FV_Player_lightbox {
         if (empty($_GET['lightbox_dev'])) {
           $html = "<a id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " href=\"#\" data-fv-lightbox='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
         } else {
-          $html = "<a data-fancybox='gallery' data-options='{\"touch\" : false}' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+          $html = "<a".$this->fancybox_opts()." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
         }
       } else {
         $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
 
+        $sSplash = apply_filters('fv_flowplayer_playlist_splash', $aArgs[1]->aCurArgs['splash'], $fv_fp);
         $sStyle = 'style="max-width: ' . $iWidth . 'px; max-height: ' . $iHeight . 'px; ';
-        if (isset($aArgs[1]->aCurArgs['splash']) && $sSplash = apply_filters('fv_flowplayer_playlist_splash', $aArgs[1]->aCurArgs['splash'], $fv_fp)) {
+        if (isset($aArgs[1]->aCurArgs['splash']) && $sSplash ) {
           $sStyle .= 'background-image: url(\'' . $sSplash . '\')';
         }
         $sStyle .= '"';
@@ -200,7 +201,7 @@ class FV_Player_lightbox {
         if (empty($_GET['lightbox_dev'])) {
           $html = "<div id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
         } else {
-          $html = "<div data-fancybox='gallery' data-options='{\"touch\" : false}' id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
+          $html = "<div".$this->fancybox_opts($sSplash)." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
         }
         
         if( $fv_fp->is_beta() ) {
@@ -254,7 +255,7 @@ class FV_Player_lightbox {
           if (empty($_GET['lightbox_dev'])) {
             $output['html'] .= "<li><a id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
           } else {
-            $output['html'] .= "<li><a data-fancybox='gallery' data-options='{\"touch\" : false}' id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-src='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
+            $output['html'] .= "<li><a".$this->fancybox_opts()." id='fv_flowplayer_lightbox_starter'$sTitle href='#' data-src='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
           }
         }
         
@@ -269,13 +270,13 @@ class FV_Player_lightbox {
           if (empty($_GET['lightbox_dev'])) {
             $output['html'] .= "<a id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
           } else {
-            $output['html'] .= "<a id='fv_flowplayer_lightbox_placeholder' data-options='{\"touch\" : false}' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+            $output['html'] .= "<a id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
           }
         } else {
           if (empty($_GET['lightbox_dev'])) {
             $output['html'] .= "<a id='fv_flowplayer_lightbox_starter' href='#' data-fv-lightbox='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
           } else {
-            $output['html'] .= "<a data-fancybox='gallery' data-options='{\"touch\" : false}' id='fv_flowplayer_lightbox_starter' href='#' data-src='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
+            $output['html'] .= "<a".$this->fancybox_opts($fv_fp->aCurArgs['splash'])."  id='fv_flowplayer_lightbox_starter' href='#' data-src='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
           }
         }
         
@@ -568,6 +569,12 @@ class FV_Player_lightbox {
       })   
     </script>
     <?php
+  }
+  
+  function fancybox_opts( $splash = false ) {
+    $options = array('touch' => false);
+    if( !empty($splash) ) $options['thumb'] = $splash;
+    return " data-fancybox='gallery' data-options='".json_encode($options)."'";
   }
 
 }

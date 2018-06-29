@@ -30,6 +30,13 @@ jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 // it takes a little while for the slide to be correctly resized, so we use timeout here
 jQuery.fancybox.defaults.afterLoad = function() { setTimeout(fv_fancybox_check_size, 500); }
+jQuery.fancybox.defaults.onThumbsShow = function() {  
+  jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
+    if( v.src.match(/^#wpfp_/) ) {
+      jQuery('.fancybox-thumbs li[data-index='+k+']').append('<span class="fv-player-fancybox-play-icon">&#9654;</span>');
+    }
+  })
+}
 jQuery.fancybox.defaults.hash = false;
 jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
 

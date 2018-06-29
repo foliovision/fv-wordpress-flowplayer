@@ -796,3 +796,16 @@ body.compensate-for-scrollbar {
   content: "\e116"; }
 .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-outlined .fp-fullscreen:before, .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-minimal .fp-fullscreen:before {
   content: "\e316"; }
+  
+.fv-player-fancybox-play-icon {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 99999;
+    font-size: 40px;
+    color: white;
+    text-align: center;
+    text-shadow: 0px 0px 7px #000;
+}
