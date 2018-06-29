@@ -69,12 +69,15 @@ function fv_fancybox_check_size() {
     }
 
     // hide caption if it would cover the player
-    if ($caption.length) {
-      if (($caption.position().top - 5 < $player.position().top + player_height)) {
-        $caption.css('opacity', 0);
-      } else {
-        $caption.css('opacity', 100);
-      }
+    if ($caption.length) {      
+      if ( $caption.position().top - 5 < $player.position().top + player_height ) $caption.hide();        
+      else $caption.show();
+    }
+    
+    // hide FV Player fullscreen button if it would be covered.
+    if ($toolbar.length) {
+      if ( $player.position().top < $toolbar.position().top + $toolbar.height() ) $fs_button.hide();
+      else $fs_button.show();
     }
     
     jQuery('.fancybox-button--play').hide();
