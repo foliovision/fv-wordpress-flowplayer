@@ -771,9 +771,7 @@ body.compensate-for-scrollbar {
         max-width: calc(100% - 10px); } }
 
 
-/*
- * Own CSS
- */
+/* Customizations */
 .fancybox-content {
     overflow: hidden;
 }
@@ -784,3 +782,17 @@ body.compensate-for-scrollbar {
     background-repeat:no-repeat;
     background-position:center center;
 }
+
+/* Make sure FV Player respects fancybox fullscreen mode */
+.fancybox-is-fullscreen .flowplayer {
+    max-width: 9999px !important;
+    max-height: 9999px !important;
+}
+.fancybox-is-fullscreen .flowplayer .fp-fullscreen:before {
+    content: "\e016"; }
+.fancybox-is-fullscreen .flowplayer.fp-outlined .fp-fullscreen:before, .fancybox-is-fullscreen .flowplayer.fp-minimal .fp-fullscreen:before {
+  content: "\e216"; }
+.fancybox-is-fullscreen .flowplayer.fp-edgy .fp-fullscreen:before {
+  content: "\e116"; }
+.fancybox-is-fullscreen .flowplayer.fp-edgy.fp-outlined .fp-fullscreen:before, .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-minimal .fp-fullscreen:before {
+  content: "\e316"; }

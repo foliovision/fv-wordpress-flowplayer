@@ -31,6 +31,7 @@ jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 // it takes a little while for the slide to be correctly resized, so we use timeout here
 jQuery.fancybox.defaults.afterLoad = function() { setTimeout(fv_fancybox_check_size, 500); }
 jQuery.fancybox.defaults.hash = false;
+jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
 
 $fv_player_win = jQuery(window);
 
@@ -44,9 +45,13 @@ function fv_fancybox_check_size() {
   var
     $player = jQuery('.fancybox-container .flowplayer:visible'),
     player_height = $player.outerHeight(),
-    $caption = jQuery('.fancybox-caption');
+    $caption = jQuery('.fancybox-caption'),
+    $toolbar = jQuery('.fancybox-toolbar'),
+    $fs_button = $player.find('.fp-fullscreen');
 
   if ($player.length) {
+    if( $player.hasClass('fixed-controls') ) player_height += $player.find('.fp-controls').height();
+  
     // check that the player does not extend beyond document height
     // ... +10 because while CSS is recalculated, another resize event
     //     can occur and would re-add max-height, which would then be
@@ -71,6 +76,10 @@ function fv_fancybox_check_size() {
         $caption.css('opacity', 100);
       }
     }
+    
+    jQuery('.fancybox-button--play').hide();
+  } else {
+    jQuery('.fancybox-button--play').show();
   }
 }
 
@@ -117,3 +126,18 @@ if( document.addEventListener ) {
     }, 1000);
   }, false);
 }
+
+// overriding default Flowplayer fullscreen function
+jQuery(document).on('ready', function() {
+  flowplayer( function(api,root) {
+    if( jQuery(root).parents('.fv_player_lightbox_hidden') ) {
+      api.fullscreen = function() {
+        jQuery.fancybox.getInstance().FullScreen.toggle();
+      };
+    }
+  });
+});
+
+jQuery(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
+  fv_fancybox_check_size();
+});
