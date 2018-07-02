@@ -696,7 +696,7 @@ jQuery(document).ready(function($) {
               <p class="description">
                   <input type="hidden" name="integrations[wp_core_video]" value="false"/>
                   <input type="checkbox" name="integrations[wp_core_video]" id="integrations[wp_core_video]" value="true" />
-                                                  </p>
+                  ...and also the YouTube links                                </p>
           </td>
       </tr>
                       <tr>
@@ -844,7 +844,15 @@ jQuery(document).ready(function($) {
           <p class="description">
           <input type="hidden" name="video_sitemap" value="false"/>
           <input type="checkbox" name="video_sitemap" id="video_sitemap" value="true" />
-          Creates <code>http://example.org/video-sitemap.xml</code> which you can submit via Google Webmaster Tools.                                </p>
+          Creates <code>http://example.org/video-sitemap.xml</code> which you can submit via Google Webmaster Tools.                                        <span class="more">As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.</span> <a href="#" class="show-more">(&hellip;)</a>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="video_sitemap_meta">Sitemap Post Meta <a href="#" class="show-more">(?)</a>:</label></td>
+        <td>
+          <input  id="video_sitemap_meta" name="video_sitemap_meta" type="text"  value="" />
+          <p class="description"><span class="more">You can enter post meta keys here, use <code>,</code> to separate multiple values.</span></p>
         </td>
       </tr>
       <tr>
@@ -1962,14 +1970,15 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     jQuery('.show-more').click( function(e) {
       e.preventDefault();
       
-      var more = jQuery('.more', jQuery(this).parent() ).length ? jQuery('.more', jQuery(this).parent() ) : jQuery(this).parent().siblings('.more');
+      var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
       
       more.toggle();
       
       if( jQuery(':visible', more ).length > 0 ) {
+        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
         jQuery(this).html('(hide)');
       } else {
-        jQuery(this).html('(&hellip;)');
+        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
       }      
     } );  
     
