@@ -357,6 +357,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 6.6.5 - 2018/07/02 =
+
+* Feature - Handle WordPress video shortcodes option now also converts YouTube links
+* Bugfix - XSS fix, thanks to Japan Vulnerability Notes for the report
+
 = 6.6.4 - 2018/06/27 =
 
 * Lightbox - fixing height bug if video is bigger than screen size and taller
