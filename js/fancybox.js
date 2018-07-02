@@ -28,8 +28,7 @@ jQuery.fancybox.defaults.smallBtn = false;
 jQuery.fancybox.defaults.toolbar = true;
 jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
-// it takes a little while for the slide to be correctly resized, so we use timeout here
-jQuery.fancybox.defaults.afterLoad = function() { setTimeout(fv_fancybox_check_size, 500); }
+jQuery.fancybox.defaults.afterLoad = fv_fancybox_check_size;
 jQuery.fancybox.defaults.onThumbsShow = function() {  
   jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
     if( v.src.match(/^#wpfp_/) ) {
@@ -39,8 +38,6 @@ jQuery.fancybox.defaults.onThumbsShow = function() {
 }
 jQuery.fancybox.defaults.hash = false;
 jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
-
-$fv_player_win = jQuery(window);
 
 jQuery(document).ready(function() {
   jQuery(".colorbox[href^='#'], .lightbox[href^='#']").filter(function () {
@@ -57,23 +54,22 @@ function fv_fancybox_check_size() {
     $fs_button = $player.find('.fp-fullscreen');
 
   if ($player.length) {
-    if( $player.hasClass('fixed-controls') ) player_height += $player.find('.fp-controls').height();
-  
-    // check that the player does not extend beyond document height
-    // ... +10 because while CSS is recalculated, another resize event
-    //     can occur and would re-add max-height, which would then be
-    //     subsequently removed again and so on
-    if ($fv_player_win.height() < player_height + 10) {
-      if (typeof($player.data('orig-max-height')) == 'undefined') {
-        $player
-          .data('orig-max-height', $player.css('max-height'))
-          .css('max-height', '');
-      }
-    } else if (typeof($player.data('orig-max-height')) != 'undefined') {
-      $player
-        .css('max-height', $player.data('orig-max-height') + 'px')
-        .removeData('orig-max-height');
+    
+    if( typeof($player.data('orig-max-height')) == 'undefined' ) {
+      $player.data('orig-max-height', parseInt($player.css('max-height')) ).data('orig-max-width', parseInt($player.css('max-width')) );      
     }
+    
+    var height = jQuery(window).height();    
+    if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar    
+    
+    if( height > $player.data('orig-max-height') && jQuery(window).width() > $player.data('orig-max-width') ) { // if the player original dimensions fit, restore original height
+      height = $player.data('orig-max-height');
+    }
+        
+    $player
+      .css('max-height', '')
+      .css('max-width', (height/$player.data('ratio'))+'px');
+  
 
     // hide caption if it would cover the player
     if ($caption.length) {      
@@ -94,12 +90,6 @@ function fv_fancybox_check_size() {
 }
 
 function fv_lightbox_flowplayer_shutdown() {
-  setTimeout( 'fv_fancybox_check_size', 100 );
-
-  if( typeof('flowplayer') == "undefined" ) {
-    return;
-  }
-
   jQuery('.flowplayer').each( function() {
     var api = jQuery(this).data("flowplayer");
     if( typeof(api) == "undefined") {
