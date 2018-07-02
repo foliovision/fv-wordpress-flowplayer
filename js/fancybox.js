@@ -129,11 +129,24 @@ if( document.addEventListener ) {
 
 // overriding default Flowplayer fullscreen function
 jQuery(document).on('ready', function() {
-  flowplayer( function(api,root) {
+  flowplayer( function(api,root) {    
     if( jQuery(root).parents('.fv_player_lightbox_hidden') ) {
-      api.fullscreen = function() {
-        jQuery.fancybox.getInstance().FullScreen.toggle();
-      };
+      if( flowplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
+        api.fullscreen = function() {
+          jQuery.fancybox.getInstance().FullScreen.toggle();
+        };
+      } else {
+        var fancybox_ui = '.fancybox-caption, .fancybox-toolbar, .fancybox-infobar, .fancybox-navigation';
+        var fancybox_thumbs = false;
+        api.on('fullscreen', function() {
+          jQuery(fancybox_ui).hide();
+          fancybox_thumbs = jQuery('.fancybox-container').hasClass('fancybox-show-thumbs')
+          jQuery('.fancybox-container').removeClass('fancybox-show-thumbs');
+        }).on('fullscreen-exit', function() {
+          jQuery(fancybox_ui).show();
+          if( fancybox_thumbs ) jQuery('.fancybox-container').addClass('fancybox-show-thumbs');
+        });
+      }
     }
   });
 });
