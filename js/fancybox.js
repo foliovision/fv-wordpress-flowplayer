@@ -47,7 +47,7 @@ jQuery(document).ready(function() {
 
 function fv_fancybox_check_size() {
   var
-    $player = jQuery('.fancybox-container .flowplayer:visible'),
+    $player = jQuery('.fancybox-slide--current .flowplayer:visible'),
     player_height = $player.outerHeight(),
     $caption = jQuery('.fancybox-caption'),
     $toolbar = jQuery('.fancybox-toolbar'),
