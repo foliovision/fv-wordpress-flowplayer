@@ -458,6 +458,14 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   }
   
   add_filter( 'post_playlist', 'fv_flowplayer_shortcode_playlist', 10, 2 );
+  
+  
+  add_filter( 'the_content', 'fv_player_handle_youtube_links' );
+
+  function fv_player_handle_youtube_links( $html ) {
+    $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]', $html );
+    return $html;
+  }
 }
 
 
