@@ -919,7 +919,7 @@ function fv_wp_flowplayer_edit() {
           jQuery('.fv-player-tab-playlist table tbody tr').remove();
           jQuery('.fv-player-tab-video-files table').remove();
 
-          jQuery('#player_id_top_text').html(result[1]);
+          jQuery('#player_id_top_text').html('ID: ' + result[1]);
 
           if (!$id_player_element.length) {
             // add player ID as a hidden field
@@ -1962,7 +1962,7 @@ function fv_wp_flowplayer_big_loader_close() {
 
 
 function fv_player_export() {
-  console.log('export :P');
+  //if ()
 }
 
 
