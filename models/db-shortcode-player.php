@@ -22,6 +22,10 @@ class FV_Player_Db_Shortcode_Player {
   private
     $id, // automatic ID for the player
     $is_valid = true, // used when loading the player from DB to determine whether we've found it
+    $author, // user ID that created this player
+    $changed_by, // user ID that last updated this player
+    $date_created, // date this playlist was created on
+    $date_modified, // date this playlist was modified on
     $ab, // whether to show AB loop
     $ad, // any HTML ad text
     $ad_height, // height of advertisement for this player
@@ -63,9 +67,37 @@ class FV_Player_Db_Shortcode_Player {
     $width, // with of the player on page
     $videos,
     $video_objects = null,
-    $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width'),
+    $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width', 'author', 'changed_by', 'date_created', 'date_modified'),
     $DB_Shortcode_Instance = null,
-    $meta_data = null; // object of this player's meta data
+    $meta_data = null;
+
+  /**
+   * @return int
+   */
+  public function getAuthor() {
+    return $this->author;
+  }
+
+  /**
+   * @return int
+   */
+  public function getChangedBy() {
+    return $this->changed_by;
+  }
+
+  /**
+   * @return int
+   */
+  public function getDateCreated() {
+    return $this->date_created;
+  }
+
+  /**
+   * @return int
+   */
+  public function getDateModified() {
+    return $this->date_modified;
+  } // object of this player's meta data
 
   private static $db_table_name;
 
@@ -386,9 +418,13 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `ad_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width of advertisement for this player',
   `ad_skip` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether or not to skip ads for this player',
   `align` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'alignment position',
+  `author` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'user ID that created this player',
   `autoplay` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to autoplay videos on page load',
   `controlbar` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
   `copy_text` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `changed_by` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'user ID that last updated this player',
+  `date_created` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'date this playlist was created on',
+  `date_modified` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'date this playlist was modified on',
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
   `end_action_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'the actual shortcode value for end_actions field',
@@ -495,6 +531,12 @@ CREATE TABLE `" . self::$db_table_name . "` (
           }
         }
       }
+
+      // add dates
+      $this->date_created = $this->date_modified = time();
+
+      // add author
+      $this->author = $this->changed_by = get_current_user_id();
     } else if ($multiID || (is_numeric($id) && $id >= -1)) {
       /* @var $cache FV_Player_Db_Shortcode_Player[] */
       $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayersCache() : array());
@@ -849,8 +891,27 @@ CREATE TABLE `" . self::$db_table_name . "` (
     $data_keys   = array();
     $data_values = array();
 
+    // fill date(s)
+    $this->date_modified = time();
+
+    if (!$is_update) {
+      $this->date_created = $this->date_modified;
+    }
+
+    // fill author(s)
+    $this->changed_by = get_current_user_id();
+
+    if (!$is_update) {
+      $this->author = $this->changed_by;
+    }
+
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+        // don't update author or date created if we're updating
+        if ($is_update && ($property == 'date_created' || $property == 'author')) {
+          continue;
+        }
+
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 
