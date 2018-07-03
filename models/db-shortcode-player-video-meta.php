@@ -87,7 +87,7 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
 
     self::init_db_name();
 
-    if (!$fv_fp->_get_option('video_meta_model_db_checked')) {
+    if (is_admin() || !$fv_fp->_get_option('video_meta_model_db_checked')) {
       if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
         $sql = "
 CREATE TABLE `" . self::$db_table_name . "` (
