@@ -87,7 +87,7 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
 
     self::init_db_name();
 
-    if (!$fv_fp->_get_option('player_meta_model_db_checked')) {
+    if (!$fv_fp->_get_option('video_meta_model_db_checked')) {
       if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
         $sql = "
 CREATE TABLE `" . self::$db_table_name . "` (
@@ -101,7 +101,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
-        $fv_fp->_set_option('player_meta_model_db_checked', 1);
+        $fv_fp->_set_option('video_meta_model_db_checked', 1);
       }
     }
   }
