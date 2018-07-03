@@ -14,7 +14,7 @@ class FV_Player_Timeline_Actions {
     global $fv_fp;    
     $aActions = $this->get_actions($fv_fp->aCurArgs);
     
-    if( count($aActions) ) {
+    if( $aActions && count($aActions) ) {
       $aItem['cuepoints'] = $aActions;
     }
     
@@ -31,6 +31,8 @@ class FV_Player_Timeline_Actions {
     foreach( $aActions AS $k => $v ) {
       $v = explode(',',$v);
       $t = explode('-',$v[0]);
+      if( intval($t[0]) == 0 ) $t[0] = 0;
+      if( intval($t[1]) == 0 ) $t[1] = 0;
       $objAction = new stdClass;
       $objAction->time = $t[0];
       $objAction->duration = $t[1]-$t[0];
