@@ -67,7 +67,7 @@ class FV_Player_Db_Shortcode_Player {
     $width, // with of the player on page
     $videos,
     $video_objects = null,
-    $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width', 'author', 'changed_by', 'date_created', 'date_modified'),
+    $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width', 'author', 'changed_by'),
     $DB_Shortcode_Instance = null,
     $meta_data = null;
 
@@ -423,8 +423,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `controlbar` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show the control bar for this player',
   `copy_text` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
   `changed_by` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'user ID that last updated this player',
-  `date_created` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'date this playlist was created on',
-  `date_modified` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'date this playlist was modified on',
+  `date_created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'date this playlist was created on',
+  `date_modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'date this playlist was modified on',
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
   `end_action_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'the actual shortcode value for end_actions field',
@@ -533,7 +533,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       }
 
       // add dates
-      $this->date_created = $this->date_modified = time();
+      $this->date_created = $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
       // add author
       $this->author = $this->changed_by = get_current_user_id();
@@ -892,7 +892,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     $data_values = array();
 
     // fill date(s)
-    $this->date_modified = time();
+    $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
     if (!$is_update) {
       $this->date_created = $this->date_modified;
