@@ -428,6 +428,18 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv_player_insert_as_new').remove();
   jQuery('.fv_player_export').remove();
 
+  // stop and remove any pending AJAX requests to retrieve video meta data
+  jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
+    var
+      $this = jQuery(this),
+      ajaxData = $this.data('fv_player_video_data_ajax');
+
+    if (typeof(ajaxData) != 'undefined') {
+      ajaxData.abort();
+      $this.removeData('fv_player_video_data_ajax');
+    }
+  });
+
   fv_wp_flowplayer_dialog_resize_height_record = 0;
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
