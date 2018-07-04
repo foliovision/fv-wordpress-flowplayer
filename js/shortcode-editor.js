@@ -409,6 +409,11 @@ function fv_wp_flowplayer_init() {
   // if error / message overlay is visible, hide it
   jQuery('.fv-spinner-clone').remove();
 
+  // remove Insert as New and Export buttons, or they'll all get renamed to Update
+  // when working with original shortcode
+  jQuery('.fv_player_insert_as_new').remove();
+  jQuery('.fv_player_export').remove();
+
   fv_wp_flowplayer_dialog_resize_height_record = 0;
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
@@ -1108,7 +1113,9 @@ function fv_wp_flowplayer_edit() {
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
           var
-            $insert_button = jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)'),
+            $insert_button = jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').filter(function() {
+              return jQuery(this).parents('.fv-player-playlist-item').length === 0;
+            }),
             $insert_as_new_button = jQuery('.fv_player_insert_as_new'),
             $export_button = jQuery('.fv_player_export');
 
@@ -1161,10 +1168,6 @@ function fv_wp_flowplayer_edit() {
         }
       });
     } else {
-      // remove Insert as New, or they'll all get renamed to Update
-      // when working with original shortcode
-      jQuery('.fv_player_insert_as_new').remove();
-      jQuery('.fv_player_export').remove();
       fv_flowplayer_conf.new_shortcode_active = false;
 
       // ordinary text shortcode in the editor
