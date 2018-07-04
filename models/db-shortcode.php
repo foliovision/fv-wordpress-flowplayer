@@ -35,6 +35,7 @@ class FV_Player_Db_Shortcode {
 
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') );
+    add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') );
   }
 
   public function getVideosCache() {
@@ -988,6 +989,12 @@ class FV_Player_Db_Shortcode {
     return $response;
   }
 
+  /**
+   * AJAX function to return JSON-formatted export data
+   * for a specific player ID.
+   *
+   * @throws Exception Thrown if one of the underlying DB classes throws an exception.
+   */
   public function export_player_data() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
       // first, load the player
@@ -1033,11 +1040,26 @@ class FV_Player_Db_Shortcode {
         die('invalid player ID, export unsuccessful - please use the close button and try again');
       }
 
+      header('Content-Type: application/json');
       echo json_encode($export_data);
       exit;
     } else {
       die('invalid player ID, export unsuccessful - please use the close button and try again');
     }
+  }
+
+  public function retrieve_video_data() {
+    $json_data = apply_filters('fv_player_meta_data', array());
+
+    // add splash, caption and duration
+    $json_data = array_merge($json_data, array(
+      'duration' => '1:11:00.0000',
+      'splash' => 'some splash',
+      'caption' => 'some caption'
+    ));
+
+    header('Content-Type: application/json');
+    die(json_encode($json_data));
   }
 
 }

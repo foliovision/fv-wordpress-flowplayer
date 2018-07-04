@@ -481,8 +481,48 @@ function fv_wp_flowplayer_init() {
   
   jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
 
-  jQuery('body').on('focus', '#fv_player_copy_to_clipboard', function() {
+  var $body = jQuery('body');
+  $body.on('focus', '#fv_player_copy_to_clipboard', function() {
     this.select();
+  });
+
+  $body.on('change', '#fv_wp_flowplayer_field_src', function() {
+    var $element = jQuery(this);
+
+    // cancel any previous AJAX call
+    if (typeof($element.data('fv_player_video_data_ajax')) != 'undefined') {
+      $element.data('fv_player_video_data_ajax').abort();
+    }
+
+    $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
+        action: 'fv_wp_flowplayer_retrieve_video_data',
+        cookie: encodeURIComponent(document.cookie),
+      }, function(json_export_data) {
+        // check if we still have this element on page
+        if ($element.closest("body").length > 0) {
+          // get this element's table
+          var
+            $parent_table = $element.closest('table'),
+            $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="0"] td.fvp_item_caption');
+
+          // fill splash image
+          $parent_table.find('#fv_wp_flowplayer_field_splash').val(json_export_data.splash);
+
+          // fill caption
+          $parent_table.find('#fv_wp_flowplayer_field_caption').val(json_export_data.caption);
+
+          // update caption in playlist table
+          if ($playlist_row.length) {
+            $playlist_row.html('<div>' + json_export_data.caption + '</div>');
+          }
+
+          console.log('video duration: ', json_export_data.duration);
+        }
+      }).error(function() {
+        console.log('retry needed');
+      })
+    );
+
   });
 
   fv_player_refresh_tabs();
