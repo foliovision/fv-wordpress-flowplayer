@@ -1972,17 +1972,17 @@ function fv_wp_flowplayer_copy_to_clipboard() {
 
 
 function fv_player_export() {
+  fv_wp_flowplayer_big_loader_show();
+
   jQuery.post(ajaxurl, {
     action: 'fv_wp_flowplayer_export_player_data',
     playerID : jQuery('#id_player').val(),
     cookie: encodeURIComponent(document.cookie),
   }, function(json_export_data) {
-    fv_wp_flowplayer_big_loader_show('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>');
-    jQuery('.fv-spinner-clone').css('background-image', 'none');
+    jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>').css('background-image', 'none');
     jQuery('#fv_player_copy_to_clipboard').select();
   }).error(function() {
-    fv_wp_flowplayer_big_loader_show('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.<br /><br /><input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>');
-    jQuery('.fv-spinner-clone').css('background-image', 'none');
+    jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.<br /><br /><input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>').css('background-image', 'none');
   });
 }
 
