@@ -334,7 +334,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
                 // cache this meta in DB Shortcode object
                 if ($DB_Shortcode) {
-                  $cache[$db_record->id_video][$this->id] = $video_meta_object;
+                  $cache[$db_record->id_video][$record_id] = $video_meta_object;
                 }
               }
             }
@@ -445,6 +445,23 @@ CREATE TABLE `" . self::$db_table_name . "` (
       var_export($wpdb->last_query);*/
       return false;
     }
+  }
+
+  /**
+   * Prepares this class' properties for export
+   * and returns them in an associative array.
+   *
+   * @return array Returns an associative array of this class' properties and their values.
+   */
+  public function export() {
+    $export_data = array();
+    foreach (get_object_vars($this) as $property => $value) {
+      if ($property != 'id' && $property != 'id_video' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance') {
+        $export_data[$property] = $value;
+      }
+    }
+
+    return $export_data;
   }
 
   /**

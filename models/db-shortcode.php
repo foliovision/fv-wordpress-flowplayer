@@ -34,6 +34,7 @@ class FV_Player_Db_Shortcode {
     add_action('wp_head', array($this, 'cache_players_and_videos' ));
 
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
+    add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') );
   }
 
   public function getVideosCache() {
@@ -985,6 +986,58 @@ class FV_Player_Db_Shortcode {
     }
 
     return $response;
+  }
+
+  public function export_player_data() {
+    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
+      // first, load the player
+      $player = new FV_Player_Db_Shortcode_Player($_POST['playerID'], array(), $this);
+      if ($player && $player->getIsValid()) {
+        $export_data = $player->export();
+
+        // load player meta data
+        $meta = $player->getMetaData();
+        if ($meta && count($meta)) {
+          $export_data['meta'] = array();
+
+          foreach ($meta as $meta_data) {
+            $export_data['meta'][] = $meta_data->export();
+          }
+        }
+
+        // load videos and meta for this player
+        $videos = $player->getVideos();
+
+        // this line will load and cache meta for all videos at once
+        new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => explode(',', $player->getVideoIds())), $this);
+
+        if ($videos && count($videos)) {
+          $export_data['videos'] = array();
+
+          foreach ($videos as $video) {
+            $video_export_data = $video->export();
+
+            // load all meta data for this video
+            if ($this->isVideoMetaCached($video->getId())) {
+              $video_export_data['meta'] = array();
+
+              foreach ($this->video_meta_cache[$video->getId()] as $meta) {
+                $video_export_data['meta'][] = $meta->export();
+              }
+            }
+
+            $export_data['videos'][] = $video_export_data;
+          }
+        }
+      } else {
+        die('invalid player ID, export unsuccessful - please use the close button and try again');
+      }
+
+      echo json_encode($export_data);
+      exit;
+    } else {
+      die('invalid player ID, export unsuccessful - please use the close button and try again');
+    }
   }
 
 }

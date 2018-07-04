@@ -768,7 +768,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   /**
    * Returns meta data for this player.
    *
-   * @return array Returns all meta data for this player.
+   * @return FV_Player_Db_Shortcode_Player_Player_Meta[] Returns all meta data for this player.
    * @throws Exception When an underlying meta data object throws an exception.
    */
   public function getMetaData() {
@@ -807,7 +807,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   /**
    * Returns all video objects for this player.
    *
-   * @return array Returns all video objects for this player.
+   * @return FV_Player_Db_Shortcode_Player_Video[] Returns all video objects for this player.
    * @throws Exception When an underlying video object throws an exception.
    */
   public function getVideos() {
@@ -966,4 +966,22 @@ CREATE TABLE `" . self::$db_table_name . "` (
       return false;
     }
   }
+
+  /**
+   * Prepares this class' properties for export
+   * and returns them in an associative array.
+   *
+   * @return array Returns an associative array of this class' properties and their values.
+   */
+  public function export() {
+    $export_data = array();
+    foreach (get_object_vars($this) as $property => $value) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+        $export_data[$property] = $value;
+      }
+    }
+
+    return $export_data;
+  }
+
 }

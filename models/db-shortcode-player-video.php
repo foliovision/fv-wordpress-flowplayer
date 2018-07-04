@@ -557,6 +557,23 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
+   * Prepares this class' properties for export
+   * and returns them in an associative array.
+   *
+   * @return array Returns an associative array of this class' properties and their values.
+   */
+  public function export() {
+    $export_data = array();
+    foreach (get_object_vars($this) as $property => $value) {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance' && $property != 'meta_data') {
+        $export_data[$property] = $value;
+      }
+    }
+
+    return $export_data;
+  }
+
+  /**
    * Removes video instance from the database.
    *
    * @return bool Returns true if the delete was successful, false otherwise.

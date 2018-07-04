@@ -453,6 +453,24 @@ CREATE TABLE `" . self::$db_table_name . "` (
   }
 
   /**
+   * Prepares this class' properties for export
+   * and returns them in an associative array.
+   *
+   * @return array Returns an associative array of this class' properties and their values.
+   */
+  public function export() {
+    $export_data = array();
+    foreach (get_object_vars($this) as $property => $value) {
+      if ($property != 'id' && $property != 'id_player' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance') {
+        $export_data[$property] = $value;
+      }
+    }
+
+    return $export_data;
+  }
+
+
+  /**
    * Removes meta data instance from the database.
    *
    * @return bool Returns true if the delete was successful, false otherwise.
