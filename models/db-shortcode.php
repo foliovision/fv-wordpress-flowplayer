@@ -1055,7 +1055,8 @@ class FV_Player_Db_Shortcode {
     $json_data = array_merge($json_data, array(
       'duration' => '1:11:00.0000',
       'splash' => 'some splash',
-      'caption' => 'some caption'
+      'caption' => 'some caption',
+      'ts' => time()
     ));
 
     header('Content-Type: application/json');
