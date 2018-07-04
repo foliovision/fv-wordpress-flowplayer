@@ -480,6 +480,11 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv-player-tab-video-files table').show();
   
   jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
+
+  jQuery('body').on('focus', '#fv_player_copy_to_clipboard', function() {
+    this.select();
+  });
+
   fv_player_refresh_tabs();
 }
 
@@ -1969,7 +1974,26 @@ function fv_wp_flowplayer_big_loader_close() {
 
 
 function fv_wp_flowplayer_copy_to_clipboard() {
-  console.log('copy to clipboard text here');
+  fv_player_clipboard(jQuery('#fv_player_copy_to_clipboard').val(), function() {
+    jQuery('#fv_player_copied_to_clipboard_message')
+      .html('Text Copied To Clipboard!')
+      .removeClass('notice-error')
+      .addClass('notice-success')
+      .css('visibility', 'visible');
+
+    setTimeout(function() {
+      jQuery('#fv_player_copied_to_clipboard_message').css('visibility', 'hidden');
+    }, 3000);
+  }, function() {
+    jQuery('#fv_player_copied_to_clipboard_message')
+      .html('<strong>Error copying text into clipboard!</strong><br />Please copy the content of the above text area manually by using CTRL+C (or CMD+C on MAC).')
+      .removeClass('notice-success')
+      .addClass('notice-error')
+      .css({
+        'visibility': 'visible',
+        'width': '80%'
+      });
+  });
 }
 
 
@@ -1982,8 +2006,9 @@ function fv_player_export() {
     playerID : jQuery('#id_player').val(),
     cookie: encodeURIComponent(document.cookie),
   }, function(json_export_data) {
-    jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>').css('background-image', 'none');
+    jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p><div class="notice notice-success" id="fv_player_copied_to_clipboard_message">&nbsp;</div>').css('background-image', 'none');
     jQuery('#fv_player_copy_to_clipboard').select();
+    fv_wp_flowplayer_copy_to_clipboard();
   }).error(function() {
     jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.<br /><br /><input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>').css('background-image', 'none');
   });
