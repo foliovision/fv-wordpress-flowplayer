@@ -28,29 +28,6 @@ var fv_player_video_api = {
           $element.data('duration', json_export_data.duration);
         }
       }
-    },
-    vimeo: {
-      matcher: /^.+vimeo.com\/(.*\/)?([\d]+)(.*)?/i,
-      data_callback: function($element, json_export_data) {
-        // check if we still have this element on page
-        if ($element.closest("body").length > 0) {
-          // get this element's table
-          var
-            $parent_table = $element.closest('table'),
-            $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="0"] td.fvp_item_caption');
-
-          // fill splash image
-          $parent_table.find('#fv_wp_flowplayer_field_splash').val(json_export_data.thumbnail);
-
-          // fill caption
-          $parent_table.find('#fv_wp_flowplayer_field_caption').val(json_export_data.name);
-
-          // update caption in playlist table
-          if ($playlist_row.length) {
-            $playlist_row.html('<div>' + json_export_data.name + '</div>');
-          }
-        }
-      }
     }
   }
 };
