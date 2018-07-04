@@ -18,6 +18,66 @@ var fv_player_editor_button_clicked = 0;
 
 var fv_player_shortcode_preview_unsupported = false;
 
+var fv_player_video_api = {
+  video_types: {
+    default: {
+      matcher: /\.mp4$/i,
+      data_callback: function($element, json_export_data) {
+        // check if we still have this element on page
+        if ($element.closest("body").length > 0) {
+          $element.data('duration', json_export_data.duration);
+        }
+      }
+    },
+    youtube: {
+      matcher: /(youtube\.com|youtu\.be|youtube\-nocookie\.com)\/(watch\?(.*&)?v=|v\/|u\/|embed\/?)?(videoseries\?list=(.*)|[\w-]{11}|\?listType=(.*)&list=(.*))(.*)/i,
+      data_callback: function($element, json_export_data) {
+        // check if we still have this element on page
+        if ($element.closest("body").length > 0) {
+          // get this element's table
+          var
+            $parent_table = $element.closest('table'),
+            $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="0"] td.fvp_item_caption');
+
+          // fill splash image
+          $parent_table.find('#fv_wp_flowplayer_field_splash').val(json_export_data.thumbnail);
+
+          // fill caption
+          $parent_table.find('#fv_wp_flowplayer_field_caption').val(json_export_data.name);
+
+          // update caption in playlist table
+          if ($playlist_row.length) {
+            $playlist_row.html('<div>' + json_export_data.name + '</div>');
+          }
+        }
+      }
+    },
+    vimeo: {
+      matcher: /^.+vimeo.com\/(.*\/)?([\d]+)(.*)?/i,
+      data_callback: function($element, json_export_data) {
+        // check if we still have this element on page
+        if ($element.closest("body").length > 0) {
+          // get this element's table
+          var
+            $parent_table = $element.closest('table'),
+            $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="0"] td.fvp_item_caption');
+
+          // fill splash image
+          $parent_table.find('#fv_wp_flowplayer_field_splash').val(json_export_data.thumbnail);
+
+          // fill caption
+          $parent_table.find('#fv_wp_flowplayer_field_caption').val(json_export_data.name);
+
+          // update caption in playlist table
+          if ($playlist_row.length) {
+            $playlist_row.html('<div>' + json_export_data.name + '</div>');
+          }
+        }
+      }
+    }
+  }
+};
+
 jQuery(document).ready(function($){
   
   var ua = window.navigator.userAgent;
@@ -480,50 +540,6 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv-player-tab-video-files table').show();
   
   jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
-
-  var $body = jQuery('body');
-  $body.on('focus', '#fv_player_copy_to_clipboard', function() {
-    this.select();
-  });
-
-  $body.on('change', '#fv_wp_flowplayer_field_src', function() {
-    var $element = jQuery(this);
-
-    // cancel any previous AJAX call
-    if (typeof($element.data('fv_player_video_data_ajax')) != 'undefined') {
-      $element.data('fv_player_video_data_ajax').abort();
-    }
-
-    $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
-        action: 'fv_wp_flowplayer_retrieve_video_data',
-        cookie: encodeURIComponent(document.cookie),
-      }, function(json_export_data) {
-        // check if we still have this element on page
-        if ($element.closest("body").length > 0) {
-          // get this element's table
-          var
-            $parent_table = $element.closest('table'),
-            $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="0"] td.fvp_item_caption');
-
-          // fill splash image
-          $parent_table.find('#fv_wp_flowplayer_field_splash').val(json_export_data.splash);
-
-          // fill caption
-          $parent_table.find('#fv_wp_flowplayer_field_caption').val(json_export_data.caption);
-
-          // update caption in playlist table
-          if ($playlist_row.length) {
-            $playlist_row.html('<div>' + json_export_data.caption + '</div>');
-          }
-
-          console.log('video duration: ', json_export_data.duration);
-        }
-      }).error(function() {
-        console.log('retry needed');
-      })
-    );
-
-  });
 
   fv_player_refresh_tabs();
 }
@@ -2759,6 +2775,48 @@ jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
 
 jQuery( function($) {
   $(document).ready( 'fv_wp_flowplayer_init' );
+
+  var $body = jQuery('body');
+  $body.on('focus', '#fv_player_copy_to_clipboard', function() {
+    this.select();
+  });
+
+  $body.on('change', '#fv_wp_flowplayer_field_src', function() {
+    var
+      $element = jQuery(this),
+      value = $element.val(),
+      callback = null;
+
+    // cancel any previous AJAX call
+    if (typeof($element.data('fv_player_video_data_ajax')) != 'undefined') {
+      $element.data('fv_player_video_data_ajax').abort();
+    }
+
+    // try to check if we have a suitable matcher
+    for (var vtype in fv_player_video_api.video_types) {
+      if (fv_player_video_api.video_types[vtype].matcher.exec(value) !== null) {
+        // matcher found
+        callback = fv_player_video_api.video_types[vtype].data_callback;
+        break;
+      }
+    }
+
+    if (callback !== null) {
+      $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
+          action: 'fv_wp_flowplayer_retrieve_video_data',
+          video_url: $element.val(),
+          cookie: encodeURIComponent(document.cookie),
+        }, function (json_data) {
+          callback($element, json_data);
+        }).error(function () {
+          // remove element AJAX data
+          $element.removeData('fv_player_video_data_ajax');
+          console.log('retry needed');
+        })
+      );
+    }
+
+  });
   
   jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only     
 

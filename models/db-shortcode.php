@@ -1049,15 +1049,21 @@ class FV_Player_Db_Shortcode {
   }
 
   public function retrieve_video_data() {
-    $json_data = apply_filters('fv_player_meta_data', array());
+    if (!isset($_POST['video_url'])) {
+      exit;
+    }
+
+    $json_data = apply_filters('fv_player_meta_data', $_POST['video_url'], false);
+    if ($json_data !== false) {
+      header('Content-Type: application/json');
+      die(json_encode($json_data));
+    }
 
     // add splash, caption and duration
-    $json_data = array_merge($json_data, array(
+    $json_data = array(
       'duration' => '1:11:00.0000',
-      'splash' => 'some splash',
-      'caption' => 'some caption',
       'ts' => time()
-    ));
+    );
 
     header('Content-Type: application/json');
     die(json_encode($json_data));
