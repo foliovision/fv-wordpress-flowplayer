@@ -1056,10 +1056,12 @@ class FV_Player_Db_Shortcode {
     $json_data = apply_filters('fv_player_meta_data', $_POST['video_url'], false);
     if ($json_data !== false) {
       header('Content-Type: application/json');
+      $json_data['ts'] = time();
       die(json_encode($json_data));
     }
 
     // add splash, caption and duration
+    // TODO: make this work for real
     $json_data = array(
       'duration' => '1:11:00.0000',
       'ts' => time()
