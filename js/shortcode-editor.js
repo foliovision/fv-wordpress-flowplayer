@@ -432,11 +432,16 @@ function fv_wp_flowplayer_init() {
   jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
     var
       $this = jQuery(this),
-      ajaxData = $this.data('fv_player_video_data_ajax');
+      ajaxData = $this.data('fv_player_video_data_ajax'),
+      retryData = $this.data('fv_player_video_data_ajax_retry_count');
 
     if (typeof(ajaxData) != 'undefined') {
       ajaxData.abort();
       $this.removeData('fv_player_video_data_ajax');
+    }
+
+    if (typeof(retryData) != 'undefined') {
+      $this.removeData('fv_player_video_data_ajax_retry_count');
     }
   });
 
@@ -2754,7 +2759,8 @@ jQuery( function($) {
     var
       $element = jQuery(this),
       value = $element.val(),
-      callback = null,
+      success_callback = null,
+      error_callback = null,
       pre_ajax_callback = null;
 
     // cancel any previous AJAX call
@@ -2766,7 +2772,8 @@ jQuery( function($) {
     for (var vtype in fv_player_video_api.video_types) {
       if (fv_player_video_api.video_types[vtype].matcher.exec(value) !== null) {
         // matcher found
-        callback = fv_player_video_api.video_types[vtype].data_callback;
+        success_callback = (typeof(fv_player_video_api.video_types[vtype].data_callback) != 'undefined' ? fv_player_video_api.video_types[vtype].data_callback : null);
+        error_callback = (typeof(fv_player_video_api.video_types[vtype].error_callback) != 'undefined' ? fv_player_video_api.video_types[vtype].error_callback : null);
 
         if (typeof(fv_player_video_api.video_types[vtype].pre_ajax_callback)) {
           pre_ajax_callback = fv_player_video_api.video_types[vtype].pre_ajax_callback;
@@ -2776,23 +2783,42 @@ jQuery( function($) {
       }
     }
 
-    if (callback !== null) {
+    if (success_callback !== null) {
       if (pre_ajax_callback !== null) {
         pre_ajax_callback($element);
       }
 
-      $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
-          action: 'fv_wp_flowplayer_retrieve_video_data',
-          video_url: $element.val(),
-          cookie: encodeURIComponent(document.cookie),
-        }, function (json_data) {
-          callback($element, json_data);
-        }).error(function () {
-          // remove element AJAX data
-          $element.removeData('fv_player_video_data_ajax');
-          console.log('retry needed');
-        })
-      );
+      var ajax_call = function() {
+        $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
+            action: 'fv_wp_flowplayer_retrieve_video_data',
+            video_url: $element.val(),
+            cookie: encodeURIComponent(document.cookie),
+          }, function (json_data) {
+            if (success_callback !== null) {
+              success_callback($element, json_data);
+            }
+            $element.removeData('fv_player_video_data_ajax');
+          }).error(function () {
+            // remove element AJAX data
+            $element.removeData('fv_player_video_data_ajax');
+
+            // check if we should still retry
+            var retry_count = $element.data('fv_player_video_data_ajax_retry_count');
+            if (typeof(retry_count) == 'undefined' || retry_count < 2) {
+              ajax_call();
+              $element.data('fv_player_video_data_ajax_retry_count', (typeof(retry_count) == 'undefined' ? 1 : retry_count + 1));
+            } else {
+              // maximum retries reached
+              $element.removeData('fv_player_video_data_ajax_retry_count');
+              if (error_callback !== null) {
+                error_callback($element);
+              }
+            }
+          })
+        );
+      };
+
+      ajax_call();
     }
 
   });
