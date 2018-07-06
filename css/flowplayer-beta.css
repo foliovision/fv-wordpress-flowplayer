@@ -1254,7 +1254,7 @@
 .flowplayer video.fp-engine { visibility:visible; }
 .flowplayer .fp-engine { max-width:100%; }
 .flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
-.flowplayer .fp-logo{pointer-events: none;}
+.flowplayer .fp-logo{-webkit-tap-highlight-color: rgba(0,0,0,0);}
 
 /* Share bar, todo: check!  */
 .flowplayer .fp-embed-code{display:none;}
