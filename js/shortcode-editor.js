@@ -26,11 +26,26 @@ var fv_player_video_api = {
         // check if we still have this element on page
         if ($element.closest("body").length > 0) {
           // add duration as meta, if not present yet
-          if ($element.next().attr('id') !== 'fv_wp_flowplayer_field_duration') {
-            $element.after('<input type="hidden" name="fv_wp_flowplayer_field_duration" id="fv_wp_flowplayer_field_duration" />');
+          if (json_export_data.duration) {
+            if (!$element.siblings('#fv_wp_flowplayer_field_duration').length) {
+              $element.after('<input type="hidden" name="fv_wp_flowplayer_field_duration" id="fv_wp_flowplayer_field_duration" />');
+            }
+
+            $element.siblings('#fv_wp_flowplayer_field_duration').val(json_export_data.duration);
+          } else {
+            $element.siblings('#fv_wp_flowplayer_field_duration').val('').removeData('id').removeAttr('data-id');
           }
 
-          $element.next().val(json_export_data.duration);
+          // add last check timestamp as meta, if not present yet
+          if (json_export_data.ts) {
+            if (!$element.siblings('#fv_wp_flowplayer_field_last_video_meta_check').length) {
+              $element.after('<input type="hidden" name="fv_wp_flowplayer_field_last_video_meta_check" id="fv_wp_flowplayer_field_last_video_meta_check" />');
+            }
+
+            $element.siblings('#fv_wp_flowplayer_field_last_video_meta_check').val(json_export_data.ts);
+          } else {
+            $element.siblings('#fv_wp_flowplayer_field_last_video_meta_check').val('').removeData('id').removeAttr('data-id');
+          }
         }
       }
     }
@@ -433,8 +448,8 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv_player_insert_as_new').remove();
   jQuery('.fv_player_export').remove();
 
-  // remove meta data inputs with video durations
-  jQuery('input[name="fv_wp_flowplayer_field_duration"]').remove();
+  // remove hidden meta data inputs
+  jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_last_video_meta_check"]').remove();
 
   // stop and remove any pending AJAX requests to retrieve video meta data
   jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
@@ -1116,7 +1131,7 @@ function fv_wp_flowplayer_edit() {
                 }
 
                 // general video meta
-                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || vids[x].meta[m].meta_key.indexOf('duration') > -1) {
+                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['duration', 'last_video_meta_check'].indexOf(vids[x].meta[m].meta_key) > -1) {
                   video_meta.push(vids[x].meta[m]);
                 }
               }
@@ -1137,8 +1152,8 @@ function fv_wp_flowplayer_edit() {
             if (video_meta.length) {
               for (var i in video_meta) {
                 // video duration hidden input
-                if (video_meta[i].meta_key == 'duration') {
-                  $video_data_tab.find('#fv_wp_flowplayer_field_src').after('<input type="hidden" name="fv_wp_flowplayer_field_duration" id="fv_wp_flowplayer_field_duration" value="' + video_meta[i].meta_value + '" data-id="' + video_meta[i].id + '" />');
+                if (['duration', 'last_video_meta_check'].indexOf(video_meta[i].meta_key) > -1) {
+                  $video_data_tab.find('#fv_wp_flowplayer_field_src').after('<input type="hidden" name="fv_wp_flowplayer_field_' + video_meta[i].meta_key + '" id="fv_wp_flowplayer_field_' + video_meta[i].meta_key + '" value="' + video_meta[i].meta_value + '" data-id="' + video_meta[i].id + '" />');
                 } else {
                   // predefined meta input with field already existing in the dialog
                   set_player_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
@@ -1895,7 +1910,7 @@ function fv_wp_flowplayer_check_for_player_meta_field(fieldName) {
 
 
 function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
-  return ['fv_wp_flowplayer_field_duration', 'fv_wp_flowplayer_field_live'].indexOf(fieldName) > -1;
+  return ['fv_wp_flowplayer_field_duration', 'fv_wp_flowplayer_field_last_video_meta_check', 'fv_wp_flowplayer_field_live'].indexOf(fieldName) > -1;
 }
 
 
