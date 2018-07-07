@@ -25,7 +25,12 @@ var fv_player_video_api = {
       data_callback: function($element, json_export_data) {
         // check if we still have this element on page
         if ($element.closest("body").length > 0) {
-          $element.data('duration', json_export_data.duration);
+          // add duration as meta, if not present yet
+          if ($element.next().attr('id') !== 'fv_wp_flowplayer_field_duration') {
+            $element.after('<input type="hidden" name="fv_wp_flowplayer_field_duration" id="fv_wp_flowplayer_field_duration" />');
+          }
+
+          $element.next().val(json_export_data.duration);
         }
       }
     }
@@ -427,6 +432,9 @@ function fv_wp_flowplayer_init() {
   // when working with original shortcode
   jQuery('.fv_player_insert_as_new').remove();
   jQuery('.fv_player_export').remove();
+
+  // remove meta data inputs with video durations
+  jQuery('input[name="fv_wp_flowplayer_field_duration"]').remove();
 
   // stop and remove any pending AJAX requests to retrieve video meta data
   jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
@@ -1108,7 +1116,7 @@ function fv_wp_flowplayer_edit() {
                 }
 
                 // general video meta
-                if (vids[x].meta[m].meta_key.indexOf('live') > -1) {
+                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || vids[x].meta[m].meta_key.indexOf('duration') > -1) {
                   video_meta.push(vids[x].meta[m]);
                 }
               }
@@ -1128,7 +1136,13 @@ function fv_wp_flowplayer_edit() {
 
             if (video_meta.length) {
               for (var i in video_meta) {
-                set_player_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
+                // video duration hidden input
+                if (video_meta[i].meta_key == 'duration') {
+                  $video_data_tab.find('#fv_wp_flowplayer_field_src').after('<input type="hidden" name="fv_wp_flowplayer_field_duration" id="fv_wp_flowplayer_field_duration" value="' + video_meta[i].meta_value + '" data-id="' + video_meta[i].id + '" />');
+                } else {
+                  // predefined meta input with field already existing in the dialog
+                  set_player_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
+                }
               }
             }
 
@@ -1881,7 +1895,7 @@ function fv_wp_flowplayer_check_for_player_meta_field(fieldName) {
 
 
 function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
-  return ['fv_wp_flowplayer_field_live'].indexOf(fieldName) > -1;
+  return ['fv_wp_flowplayer_field_duration', 'fv_wp_flowplayer_field_live'].indexOf(fieldName) > -1;
 }
 
 
@@ -2775,7 +2789,7 @@ jQuery( function($) {
         success_callback = (typeof(fv_player_video_api.video_types[vtype].data_callback) != 'undefined' ? fv_player_video_api.video_types[vtype].data_callback : null);
         error_callback = (typeof(fv_player_video_api.video_types[vtype].error_callback) != 'undefined' ? fv_player_video_api.video_types[vtype].error_callback : null);
 
-        if (typeof(fv_player_video_api.video_types[vtype].pre_ajax_callback)) {
+        if (typeof(fv_player_video_api.video_types[vtype].pre_ajax_callback) != 'undefined') {
           pre_ajax_callback = fv_player_video_api.video_types[vtype].pre_ajax_callback;
         }
 
