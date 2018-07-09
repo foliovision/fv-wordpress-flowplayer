@@ -62,6 +62,16 @@ class FV_Xml_Video_Sitemap {
           $dynamic_domains[] = '//'.$bucket.'.s3';
         }      
       }
+      
+      $cf = $fv_fp->_get_option( array('pro','cf_domain') );
+      if( $cf ) {
+        $cf = explode( ',', $cf );
+        if( is_array($cf) && count($cf) > 0 ) {
+          foreach( $cf AS $cf_domain ) {
+            $dynamic_domains[] = $cf_domain;
+          }
+        }
+      }
 
       foreach ($posts as $objPost) {
         $did_videos = array();
