@@ -1055,6 +1055,10 @@ class FV_Player_Db_Shortcode {
 
     $json_data = apply_filters('fv_player_meta_data', $_POST['video_url'], false);
     if ($json_data !== false) {
+      // get video duration
+      global $FV_Player_Checker;
+      $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($_POST['video_url']));
+
       header('Content-Type: application/json');
       $json_data['ts'] = time();
       die(json_encode($json_data));

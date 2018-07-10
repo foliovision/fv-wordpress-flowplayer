@@ -119,7 +119,7 @@ class FV_Player_Checker {
     if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
       $URLs = json_decode( stripslashes( trim($_POST['media']) ));
     }
-    
+
     if( isset($URLs) ) {
       $all_sources = $URLs;
 
@@ -133,8 +133,7 @@ class FV_Player_Checker {
               
       //$random = rand( 0, 10000 );
       $random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
-      
-      if( isset($media) ) {	     
+      if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
   
@@ -284,10 +283,10 @@ class FV_Player_Checker {
             $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
             $fv_flowplayer_meta['date'] = time();
             $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
-
+var_dump($fv_flowplayer_meta);
             if( $time > 0 || $this->is_cron ) {
               update_post_meta( $post->ID, flowplayer::get_video_key($meta_original), $fv_flowplayer_meta );
-              return true;
+              return $fv_flowplayer_meta;
             }
             //} else {
               //self::queue_add($post->ID);
