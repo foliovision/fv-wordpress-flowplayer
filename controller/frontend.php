@@ -427,7 +427,7 @@ function flowplayer_prepare_scripts() {
     
     if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
 
-    if (empty($_GET['lightbox_dev'])) {
+    if( !$FV_Player_lightbox->is_fancybox() ) {
       wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/lightbox.js', 'jquery', $fv_wp_flowplayer_ver, true );
     } else {
       wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
