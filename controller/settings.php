@@ -27,10 +27,7 @@ function fv_player_admin_page() {
 
 
 function fv_player_is_admin_screen() {
-  $is_admin_screen = false;
-  $is_admin_screen = apply_filters('fv_flowplayer_is_admin_screen', $is_admin_screen);
-
-	if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || $is_admin_screen ) {
+	if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
 		 return true;
 	}
 	return false;
@@ -267,6 +264,7 @@ function flowplayer_admin_head() {
   if( !fv_player_is_admin_screen() ) return; 
 
   global $fv_wp_flowplayer_ver;
+  // TODO: do this properly
   ?>      
     <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />

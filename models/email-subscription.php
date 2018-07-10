@@ -60,10 +60,11 @@ class FV_Player_Email_Subscription {
   public function fv_flowplayer_settings_save($param1,$param2){
 
     if(isset($_POST['email_lists'])){
-      $aOptions = $_POST['email_lists'];
+      $aOptions = array();
       unset($aOptions['#fv_popup_dummy_key#']);
 
-      foreach( $aOptions AS $key => $value ) {
+      foreach( $_POST['email_lists'] AS $key => $value ) {
+        $key = intval($key);
         $aOptions[$key]['first_name'] = stripslashes($value['first_name']);
         $aOptions[$key]['last_name'] = stripslashes($value['last_name']);
         $aOptions[$key]['integration'] = isset($value['integration']) ? stripslashes($value['integration']) : false;
@@ -559,7 +560,7 @@ class FV_Player_Email_Subscription {
     header("Expires: 0");
 
     global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . esc_sql($list_id) . '"');
+    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . intval($list_id) . '"');
 
     echo 'email,first_name,last_name,date,integration,status,error'."\n";
     if( $results ) {
@@ -587,7 +588,7 @@ class FV_Player_Email_Subscription {
     $list_id = $_GET['fv-email-export-screen'];
 
     global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . esc_sql($list_id) . '" LIMIT 10');
+    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . intval($list_id) . '" LIMIT 10');
 
     ?>
     <style>
@@ -631,7 +632,7 @@ class FV_Player_Email_Subscription {
       </tbody>
     </table>
     <p>
-      <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$list_id);?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+      <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
     </p>
 
   <?php

@@ -357,7 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.6.3 - 2018/06/?? =
+= 6.6.5 - 2018/07/02 =
+
+* Feature - Handle WordPress video shortcodes option now also converts YouTube links
+* Bugfix - XSS fix, thanks to Japan Vulnerability Notes for the report
+
+= 6.6.4 - 2018/06/27 =
+
+* Lightbox - fixing height bug if video is bigger than screen size and taller
+
+= 6.6.3 - 2018/06/19 =
 
 * Compatibility - fix for themes which use wp_kses to show post content, like UnidashVersion By CactusThemes. It was preventing FV Player from working in these themes.
 * Deprecating settings unless you are already using it:

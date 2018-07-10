@@ -1,7 +1,7 @@
 <?php
 
 class FV_Xml_Video_Sitemap {
-
+    
     public function __construct() {
         // Add our custom rewrite rules
         add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), 999 );
@@ -10,6 +10,10 @@ class FV_Xml_Video_Sitemap {
         
         add_action( 'parse_request', array($this, 'fix_query_vars') );
         add_filter( 'query_vars', array($this, 'custom_query_vars') ); // we need to use custom query vars as otherwise Yoast SEO could stop the sitemap from working as it could be detected by $wp_query->is_date
+        
+        add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ) ); // stop trailing slashes on sitemap URLs
+        add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save') ); // whitelist symbols
+        add_action( 'fv_flowplayer_admin_seo_after', array( $this, 'options' ) );
     }
     
     function custom_query_vars( $vars ) {
@@ -29,13 +33,23 @@ class FV_Xml_Video_Sitemap {
       return $query;
     }
     
+    function get_meta_keys( $mode = false ) {
+      global $fv_fp;
+      if( !empty($fv_fp) && $fv_fp->_get_option('video_sitemap_meta') ) {
+        $keys = explode(',', esc_sql($fv_fp->_get_option('video_sitemap_meta')) );        
+        if( $mode == 'sql' ) return "'".implode("','",$keys)."'";
+        return $keys;
+      }
+      return false;
+    }
+    
     function get_post_types() {
       $types = get_post_types( array( 'public' => true ) );
       unset($types['revision'], $types['attachment'], $types['topic'], $types['reply']);
       return array_keys($types);
     }
     
-    public static function get_video_details( $posts ) {
+    function get_video_details( $posts ) {
       global $fv_fp;
 
       $videos = array();
@@ -50,11 +64,23 @@ class FV_Xml_Video_Sitemap {
       }
 
       foreach ($posts as $objPost) {
+        $did_videos = array();
+        
         if ( $objPost ) {
           $content = $objPost->post_content;
           $content = preg_replace( '~<code>.*?</code>~', '', $content );
+          if( $this->get_meta_keys() ) {
+            foreach( $this->get_meta_keys() AS $meta_key ) {
+              $content .= implode( get_post_meta($objPost->ID, $meta_key) );
+            }
+          }
+          
+          // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
+          $content = str_replace( array('[fvplayer','[flowplayer'), '[noplayer', $content );
+          $content = do_shortcode($content);
+          $content = str_replace( '[noplayer', '[fvplayer', $content );
+          
           preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
-          // todo: perhaps include videos in postmeta too
         }
         
         if( $meta = get_post_meta($objPost->ID, '_aioseop_description', true ) ) {
@@ -75,6 +101,9 @@ class FV_Xml_Video_Sitemap {
           foreach ( $matches[0] AS $shortcode ) {
             $increment_video_counter = false;
             $aArgs = shortcode_parse_atts( rtrim( $shortcode, ']' ) );
+            
+            if( !empty($did_videos[$aArgs['src']]) ) continue;
+            $did_videos[$aArgs['src']] = true;
 
             // sitemap data generation - remove the first item (start of the tag)
             // and leave everything else that was defined
@@ -189,8 +218,34 @@ class FV_Xml_Video_Sitemap {
     function get_video_years() {
       global $wpdb;
       
-      // grouped by year and month
+      // grouped by year and month, each row is year, month, count
       $years_and_months = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
+      
+      if( $this->get_meta_keys() ) { // if we have some postmeta values to process
+        $years_and_months_meta = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts  FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN('post') AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').") GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
+        
+        if( $years_and_months_meta ) { // we have to marge these year, month, count rows into one array
+          $years = array(); // multidimensional array year => month => count
+          foreach( array_merge( $years_and_months, $years_and_months_meta ) AS $date ) {
+            if( empty($years[$date->year]) ) $years[$date->year] = array();
+            if( empty($years[$date->year][$date->month]) ) $years[$date->year][$date->month] = 0;
+            $years[$date->year][$date->month] += $date->posts;
+          }
+          ksort($years);
+          foreach( $years AS $k => $v ) {
+            ksort($v);
+            $years[$k] = $v;
+          }
+          
+          $years_and_months = array(); // back to year, month, count rows
+          foreach( $years AS $k => $year ) {
+            foreach( $year AS $month => $count ) {
+              $years_and_months[] = (object) array( 'year' => $k, 'month' => $month, 'posts' => $count );
+            }
+          }
+        }
+      }
+      
       return $years_and_months;
     }
 
@@ -215,6 +270,11 @@ class FV_Xml_Video_Sitemap {
         foreach( $aRules AS $rewrite => $vars ) {
           add_rewrite_rule( $rewrite, $vars, 'top');
         }
+      
+      } else if( !$fv_fp->_get_option('video_sitemap') && // remove the rules if found
+        isset($rules[$aKeys[1]]) &&
+        $rules[$aKeys[1]] == $aRules[$aKeys[1]] ) {
+        $wp_rewrite->flush_rules();
       }
     }
 
@@ -247,7 +307,12 @@ class FV_Xml_Video_Sitemap {
       }
       
       $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
-
+      
+      if( $this->get_meta_keys() ) {
+        $videos_meta = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').")" );
+        $videos = array_merge($videos,$videos_meta);
+      }
+      
       $get_post_array = array();
       foreach ($videos as $vid) {
         $get_post_array[] = $vid;
@@ -314,6 +379,11 @@ class FV_Xml_Video_Sitemap {
     $date_query = !empty($objYear->month) ? " AND month(post_date) = ".intval($objYear->month) : false;    
     
     $last_modified = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
+    if( $this->get_meta_keys() ) {
+      $last_modified_meta = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').") AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
+      
+      if( strtotime($last_modified_meta) > strtotime($last_modified) ) $last_modified = $last_modified_meta;
+    }
     ?>
     <sitemap>
   		<loc><?php echo home_url('/video-sitemap.'.$filename.'.xml'); ?></loc>
@@ -323,7 +393,27 @@ class FV_Xml_Video_Sitemap {
 </sitemapindex><!-- XML Sitemap generated by FV Player -->
       <?php
       endif;
-    }    
+    }
+    
+    function options() {
+      global $fv_fp;
+      $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ), __('As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.', 'fv-wordpress-flowplayer') );
+      $fv_fp->_get_input_text( array( 'name' => __('Sitemap Post Meta', 'fv-wordpress-flowplayer'), 'key' => 'video_sitemap_meta', 'help' => __('You can enter post meta keys here, use <code>,</code> to separate multiple values.', 'fv-wordpress-flowplayer') ) );
+    }
+    
+    function redirect_canonical( $redirect ) {
+  		if( get_query_var('fvp_sitemap_year') || get_query_var('fvp_sitemap_monthnum') || get_query_var('feed') && get_query_var('feed') == 'video-sitemap-index' ) {
+  			return false;
+  		}
+  		return $redirect;
+  	}
+    
+    function settings_save( $settings ) {
+      if( !empty($_POST['video_sitemap_meta']) ) {
+        $settings['video_sitemap_meta'] = trim( preg_replace( '~[^A-Za-z0-9.:\-_\/,]~', '', $_POST['video_sitemap_meta']) );
+      }
+      return $settings;
+    }
 }
 
 $FV_Xml_Video_Sitemap = new FV_Xml_Video_Sitemap();
