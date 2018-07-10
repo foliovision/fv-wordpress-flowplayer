@@ -25,7 +25,7 @@ var fv_player_editor_matcher = {
     // AJAX will return these fields which can be auto-updated via JS
     update_fields: ['duration', 'last_video_meta_check'],
     // the following fields should be cleared up, since a new video was
-    // added and old splash, caption, ... are no longer valid, unless
+    // added and old splash, caption, etc. are no longer valid, unless
     // they were manually updated by the user
     cleanup_fields: ['caption', 'splash', 'auto_splash']
   }
@@ -319,34 +319,35 @@ jQuery(document).ready(function($){
   fv_player_playlist_subtitles_template = jQuery('.fv-fp-subtitle').parent().html();
   fv_player_playlist_subtitles_box_template = jQuery('.fv-player-tab-subtitles').html();
 
+  var $document = jQuery(document);
 
   /*
    * Preview
    */
-  jQuery(document).on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
+  $document.on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
     if( !fv_player_shortcode_preview_unsupported && jQuery('.fv-player-tab-playlist tr').length < 10 ){
       jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').show();
     }
   });
   
   var fv_player_shortcode_click_element = null;
-  jQuery(document).mousedown(function(e) {
+  $document.mousedown(function(e) {
       fv_player_shortcode_click_element = jQuery(e.target);
   });
-  
-  jQuery(document).mouseup(function(e) {
+
+  $document.mouseup(function(e) {
       fv_player_shortcode_click_element = null;
   });
-  
-  jQuery(document).on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
+
+  $document.on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
     if( fv_player_shortcode_click_element && fv_player_shortcode_click_element.hasClass('button-primary') ) {
       return;
     }
     
     fv_wp_flowplayer_submit('refresh-button');
   });
-  
-  jQuery(document).on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
+
+  $document.on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
     if(e.key === 'Enter') {
       fv_wp_flowplayer_submit(true);
     }
@@ -385,7 +386,7 @@ jQuery(document).ready(function($){
   /*
    * Preview iframe dialog resize
    */
-  jQuery(document).on('fvp-preview-complete',function(e,width,height){
+  $document.on('fvp-preview-complete',function(e,width,height){
     fv_player_shortcode_preview = false;
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
     setTimeout(function(){
@@ -408,9 +409,8 @@ jQuery(document).ready(function($){
         jQuery("#fv_wp_flowplayer_field_share_custom").hide();
         break;
     }
-  });  
-  
-  
+  });
+
 });
 
 
@@ -431,10 +431,12 @@ function fv_wp_flowplayer_init() {
   jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_last_video_meta_check"], input[name="fv_wp_flowplayer_field_auto_splash"]').remove();
 
   // stop and remove any pending AJAX requests to retrieve video meta data
+  // as well as any auto-update timers
   jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
     var
       $this = jQuery(this),
       ajaxData = $this.data('fv_player_video_data_ajax'),
+      refreshTask = $this.data('fv_player_video_auto_refresh_task'),
       retryData = $this.data('fv_player_video_data_ajax_retry_count');
 
     if (typeof(ajaxData) != 'undefined') {
@@ -444,6 +446,11 @@ function fv_wp_flowplayer_init() {
 
     if (typeof(retryData) != 'undefined') {
       $this.removeData('fv_player_video_data_ajax_retry_count');
+    }
+
+    if (typeof(refreshTask) != 'undefined') {
+      clearInterval(refreshTask);
+      $this.removeData('fv_player_video_auto_refresh_task');
     }
   });
 
@@ -2812,6 +2819,13 @@ jQuery( function($) {
     // cancel any previous AJAX call
     if (typeof($element.data('fv_player_video_data_ajax')) != 'undefined') {
       $element.data('fv_player_video_data_ajax').abort();
+      $element.removeData('fv_player_video_data_ajax');
+    }
+
+    // cancel any previous auto-refresh task
+    if (typeof($element.data('fv_player_video_auto_refresh_task')) != 'undefined') {
+      clearInterval($element.data('fv_player_video_auto_refresh_task'));
+      $element.removeData('fv_player_video_auto_refresh_task');
     }
 
     // set jQuery data related to certain meta data that we may have for current video
@@ -2825,6 +2839,14 @@ jQuery( function($) {
       if (fv_player_editor_matcher[vtype].matcher.exec(value) !== null) {
         update_fields = (fv_player_editor_matcher[vtype].update_fields ? fv_player_editor_matcher[vtype].update_fields : []);
         cleanup_fields = (fv_player_editor_matcher[vtype].cleanup_fields ? fv_player_editor_matcher[vtype].cleanup_fields : []);
+
+        // create interval to auto-refresh video data, if required
+        if (typeof(fv_player_editor_matcher[vtype].auto_refresh_interval) != 'undefined') {
+          $element.data('fv_player_video_auto_refresh_task', setInterval(function() {
+            jQuery('#fv_wp_flowplayer_field_src:visible').trigger('change');
+          }, fv_player_editor_matcher[vtype].auto_refresh_interval * 1000));
+        }
+
         break;
       }
     }
