@@ -1217,14 +1217,12 @@
 
 @media (max-width: 40em){
 .flowplayer .fp-help p{font-size:9px;}
-.flowplayer .fp-logo{max-width: 130px;}
 }
 @media (max-width: 30em) {
 .flowplayer .fv_player_popup {width:99%;font-size:14px;top:0;}
 .flowplayer.is-fv-narrow .fv_player_popup{font-size:0.8em}
 }
 @media (max-width: 22.5em) {
-.flowplayer .fp-logo{max-width: 90px;}
 .flowplayer.is-fv-narrow .mailchimp-form{padding:10px 1.5%}
 .flowplayer.is-fv-narrow .fv_player_popup{font-size:0.7em}	
 }
@@ -1254,7 +1252,9 @@
 .flowplayer video.fp-engine { visibility:visible; }
 .flowplayer .fp-engine { max-width:100%; }
 .flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
-.flowplayer .fp-logo{-webkit-tap-highlight-color: rgba(0,0,0,0);}
+.flowplayer .fp-logo {max-width:33%;-webkit-tap-highlight-color: rgba(0,0,0,0);}
+.flowplayer .fp-logo img {box-shadow:none}
+.flowplayer.fixed-controls .fp-logo {bottom: 15px}
 
 /* Share bar, todo: check!  */
 .flowplayer .fp-embed-code{display:none;}

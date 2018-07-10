@@ -409,7 +409,7 @@ class flowplayer_frontend extends flowplayer
         
         $attributes['style'] = '';
         if( !empty($this->aCurArgs['playlist']) && ( in_array($this->_get_option('liststyle'), array('horizontal','slider') ) || isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'] == 'horizontal', array('horizontal','slider')) ) ) {
-          //  no player dimensions for playlists
+          $attributes['style'] .= 'max-width: 100%; ';
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
           if( intval($height) == 0 ) $height = '100%';
@@ -485,6 +485,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
+        }
+        
+        if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
+          $attributes['class'] .= ' fp-is-embed';
         }
         
         if( !empty($this->aCurArgs['redirect']) ) {

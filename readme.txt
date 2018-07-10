@@ -360,7 +360,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 6.6.6 - 2018/07/?? =
 
 * Making sure big custom logo won't prevent video playback due to blocking clicks
+* Playlist - setting maximum player width to 100% to prevent display issues
 * Preventing right mouse click on player
+* XML Video Sitemap and Schema.org - fixing exclusion for CloudFront domains
 
 = 6.6.5 - 2018/07/02 =
 

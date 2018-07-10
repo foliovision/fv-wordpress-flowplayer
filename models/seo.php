@@ -77,6 +77,35 @@ class FV_Player_SEO {
       $this->can_seo = false;
     }
     
+    $dynamic_domains = apply_filters('fv_player_pro_video_ajaxify_domains', array());
+    $amazon = $fv_fp->_get_option('amazon_bucket');
+    if( $amazon && is_array($amazon) && count($amazon) > 0 ) {
+      foreach( $amazon AS $bucket ) {
+        $dynamic_domains[] = 'amazonaws.com/'.$bucket.'/';
+        $dynamic_domains[] = '//'.$bucket.'.s3';
+      }      
+    }
+    
+    $cf = $fv_fp->_get_option( array('pro','cf_domain') );
+    if( $cf ) {
+      $cf = explode( ',', $cf );
+      if( is_array($cf) && count($cf) > 0 ) {
+        foreach( $cf AS $cf_domain ) {
+          $dynamic_domains[] = $cf_domain;
+        }
+      }
+    }  
+    
+    if( count($dynamic_domains) ) {
+      $is_dynamic = false;
+      foreach( $dynamic_domains AS $domain ) {
+        if( stripos($args['src'],$domain) !== false ) {
+          $this->can_seo = false;
+          return $args;
+        }
+      }
+    }
+    
     $this->can_seo = true;    
     return $args;
   }
