@@ -35,6 +35,7 @@ class FV_Player_Db_Shortcode {
 
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') );
+    add_action( 'wp_ajax_fv_wp_flowplayer_import_player_data', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') );
   }
 
@@ -993,6 +994,8 @@ class FV_Player_Db_Shortcode {
    * AJAX function to return JSON-formatted export data
    * for a specific player ID.
    *
+   * Works for single player only right now!
+   *
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
   public function export_player_data() {
@@ -1050,6 +1053,79 @@ class FV_Player_Db_Shortcode {
     }
   }
 
+  /**
+   * AJAX function to import JSON-formatted export data.
+   *
+   * Works for single player only right now!
+   *
+   * @throws Exception Thrown if one of the underlying DB classes throws an exception.
+   */
+  public function import_player_data() {
+    global $FV_Db_Shortcode;
+
+    if (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true)) {
+      try {
+        // first, create the player
+        $player_keys = $data;
+        unset($player_keys['meta'], $player_keys['videos']);
+
+        $player = new FV_Player_Db_Shortcode_Player(null, $player_keys, $FV_Db_Shortcode);
+        $player_video_ids = array();
+
+        // create player videos, along with meta data
+        // ... don't save the player yet, as we need all video IDs to be known
+        //     before doing so
+        if (isset($data['videos'])) {
+          foreach ($data['videos'] as $video_data) {
+            $video_object = new FV_Player_Db_Shortcode_Player_Video(null, $video_data, $FV_Db_Shortcode);
+            $id_video = $video_object->save();
+
+            // add all meta data for this video
+            if (isset($video_data['meta'])) {
+              foreach ($video_data['meta'] as $video_meta_data) {
+                $video_meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $video_meta_data, $FV_Db_Shortcode);
+                $video_meta_object->link2db($id_video, true);
+                $video_meta_object->save();
+              }
+            }
+
+            $player_video_ids[] = $id_video;
+          }
+        }
+
+        // set video IDs for the player
+        $player->setVideos(implode(',', $player_video_ids));
+
+        // save player
+        $id_player = $player->save();
+
+        // create player meta, if any
+        if (isset($data['meta'])) {
+          foreach ($data['meta'] as $meta_data) {
+            $meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta(null, $meta_data, $FV_Db_Shortcode);
+            $meta_object->link2db($id_player, true);
+            $meta_object->save();
+          }
+        }
+
+      } catch (Exception $e) {
+        if (WP_DEBUG) {
+          var_dump($e);
+        }
+
+        die('0');
+      }
+
+      die('1');
+    } else {
+      die('no valid import data found, import unsuccessful');
+    }
+  }
+
+  /**
+   * AJAX method to retrieve video caption, splash screen and duration.
+   * Also returns current timestamp, so we can store the last check date in DB.
+   */
   public function retrieve_video_data() {
     if (!isset($_POST['video_url'])) {
       exit;

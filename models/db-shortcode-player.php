@@ -72,6 +72,13 @@ class FV_Player_Db_Shortcode_Player {
     $meta_data = null;
 
   /**
+   * @param mixed $videos
+   */
+  public function setVideos( $videos ) {
+    $this->videos = $videos;
+  }
+
+  /**
    * @return int
    */
   public function getAuthor() {

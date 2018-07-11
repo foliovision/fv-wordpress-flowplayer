@@ -30,15 +30,22 @@ class FV_Player_List_Table_View {
           <div id="icon-options-general" class="icon32"><br /></div>
           <h2>FV Player</h2>
       </div>
-  		<form id="<?php echo $this->slug; ?>-filter" method="get" action="<?php echo admin_url( 'admin.php?page='.$this->slug ); ?>">
-  			<input type="hidden" name="page" value="<?php echo $this->slug; ?>" />
 
-  			<?php $table->views() ?>
+        <p>
+            <a href="#" class="fv-player-import">IMPORT PLAYERS</a>
+        </p>
 
-  			<?php $table->advanced_filters(); ?>
+        <div id="fv_player_players_table">
+            <form id="<?php echo $this->slug; ?>-filter" method="get" action="<?php echo admin_url( 'admin.php?page='.$this->slug ); ?>">
+                <input type="hidden" name="page" value="<?php echo $this->slug; ?>" />
 
-  			<?php $table->display() ?>
-  		</form>
+                <?php $table->views() ?>
+
+                <?php $table->advanced_filters(); ?>
+
+                <?php $table->display() ?>
+            </form>
+        </div>
       
   	</div>
   <?php 

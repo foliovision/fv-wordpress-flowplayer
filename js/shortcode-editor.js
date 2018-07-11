@@ -80,6 +80,28 @@ jQuery(document).ready(function($){
         }
       } );
     });
+
+    $(document).on( 'click', '.fv-player-import', function(e) {
+      var $element = jQuery(this);
+
+      e.preventDefault();
+      $.fv_player_box( {
+        top: "100px",
+        initialWidth: 1100,
+        initialHeight: 50,
+        width:"1100px",
+        height:"100px",
+        href: "#fv-player-shortcode-editor",
+        inline: true,
+        title: 'Import FV Player(s)',
+        onComplete : fv_player_import,
+        onClosed : fv_wp_flowplayer_big_loader_close,
+        onOpen: function(){
+          jQuery("#fv_player_box").addClass("fv-flowplayer-shortcode-editor");
+          jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
+        }
+      } );
+    });
     
   }
   /* 
@@ -1564,7 +1586,7 @@ function fv_wp_flowplayer_on_close() {
   } else {
     // navigate to the same page, effectively reloading it
     // ... using this instead of reload(), since that also re-posts any form postdata, which could result in errors
-    document.location.href = document.location.href;
+    // document.location.href = document.location.href;
   }
 
   if (fv_flowplayer_conf.current_player_db_id){
@@ -2064,6 +2086,70 @@ function fv_player_export(id_player) {
   }).error(function() {
     jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center">An unexpected error has occurred. Please try again.<br /><br /><input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p>').css('background-image', 'none');
     fv_wp_flowplayer_dialog_resize();
+  });
+}
+
+
+
+function fv_player_import(failed) {
+  fv_wp_flowplayer_big_loader_show();
+  jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="paste your import data here"></textarea><br /><br /><input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Data" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-primary button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />Please try again.' : '&nbsp;') + '</div>').css('background-image', 'none');
+
+  if (typeof(failed) != 'undefined') {
+    jQuery('#fv_player_imported_message')
+      .removeClass('notice-success')
+      .addClass('notice-error')
+      .css({
+        'visibility': 'visible',
+        'width': '80%'
+      });
+  }
+
+  fv_wp_flowplayer_dialog_resize();
+}
+
+
+
+function fv_wp_flowplayer_import_routine() {
+  var data = jQuery('#fv_player_import_data').val();
+
+  if (!data) {
+    jQuery('#fv_player_imported_message')
+      .html('No data to import!')
+      .removeClass('notice-success')
+      .addClass('notice-error')
+      .css({
+        'visibility': 'visible',
+        'width': '80%'
+      });
+
+    setTimeout(function() {
+      jQuery('#fv_player_imported_message').css('visibility', 'hidden');
+    }, 5000);
+
+    return;
+  } else {
+    jQuery('#fv_player_imported_message').css('visibility', 'hidden');
+  }
+
+  jQuery('.fv-spinner-clone').remove();
+  fv_wp_flowplayer_big_loader_show();
+
+  jQuery.post(ajaxurl, {
+    action: 'fv_wp_flowplayer_import_player_data',
+    data: data,
+    cookie: encodeURIComponent(document.cookie),
+  }, function(response) {
+    if (response == '1') {
+      jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close()
+      //document.location.href = document.location.href;
+    } else {
+      jQuery('.fv-spinner-clone').remove();
+      fv_player_import(true);
+    }
+  }).error(function() {
+    jQuery('.fv-spinner-clone').remove();
+    fv_player_import(true);
   });
 }
 

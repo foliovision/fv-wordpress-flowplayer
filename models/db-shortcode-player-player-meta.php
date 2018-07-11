@@ -117,10 +117,15 @@ CREATE TABLE `" . self::$db_table_name . "` (
    * Makes this meta data object linked to a record in database.
    * Used for player preview purposes.
    *
-   * @param $id The DB ID to which we'll link this meta data record.
+   * @param int $id The DB ID to which we'll link this meta data record.
+   * @param bool $id_is_player If true, link to an actual player ID will be made.
    */
-  public function link2db($id) {
-    $this->id = (int) $id;
+  public function link2db($id, $id_is_player = false) {
+    if (!$id_is_player) {
+      $this->id = (int) $id;
+    } else {
+      $this->id_player = (int) $id;
+    }
   }
 
   /**

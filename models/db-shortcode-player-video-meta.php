@@ -113,9 +113,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
    * not insert their duplicates.
    *
    * @param $id The DB ID to which we'll link this meta data record.
+   * @param bool $id_is_video If true, link to an actual video ID will be made.
    */
-  public function link2db($id) {
-    $this->id = (int) $id;
+  public function link2db($id, $id_is_video = false) {
+    if (!$id_is_video) {
+      $this->id = (int) $id;
+    } else {
+      $this->id_video = (int) $id;
+    }
   }
 
   /**
