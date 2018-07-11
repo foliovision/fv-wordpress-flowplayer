@@ -104,7 +104,7 @@ class FV_Player_Checker {
   
   
   
-  public function check_mimetype( $URLs = false, $meta = false ) {
+  public function check_mimetype( $URLs = false, $meta = false, $force_is_cron = false ) {
 
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
     
@@ -179,7 +179,7 @@ class FV_Player_Checker {
          
             if( $out ) {
               $aArgs = array( 'file' => $out );
-              if( !$this->is_cron ) {
+              if( !$this->is_cron && !$force_is_cron ) {
                 $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
               }
               list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
@@ -231,7 +231,7 @@ class FV_Player_Checker {
           Only check file length
           */
           
-          if( isset($meta_action) && $meta_action == 'check_time' ) {
+          if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
             $time = false;
             if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
               $time = $ThisFileInfo['playtime_seconds'];    	

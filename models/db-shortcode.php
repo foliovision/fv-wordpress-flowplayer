@@ -1067,7 +1067,8 @@ class FV_Player_Db_Shortcode {
 
     // add duration
     global $FV_Player_Checker;
-    $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($_POST['video_url']));
+    $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($_POST['video_url']), false, true);
+    $json_data['duration'] = $json_data['duration']['duration'];
 
     header('Content-Type: application/json');
     die(json_encode($json_data));
