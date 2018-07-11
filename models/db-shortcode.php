@@ -1008,7 +1008,10 @@ class FV_Player_Db_Shortcode {
           $export_data['meta'] = array();
 
           foreach ($meta as $meta_data) {
-            $export_data['meta'][] = $meta_data->export();
+            // don't include edit locks
+            if ( strstr($meta_data->getMetaKey(), 'edit_lock_') === false ) {
+              $export_data['meta'][] = $meta_data->export();
+            }
           }
         }
 
