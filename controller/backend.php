@@ -378,6 +378,10 @@ function fv_player_admin_update() {
     delete_option('fv_flowplayer_extension_install');
   }
   
+  if( isset($_POST['fv-player-release']) && isset($_POST['fv_player_switch']) && wp_verify_nonce( $_POST['fv_player_switch'], 'fv_player_switch') ) {
+    $fv_fp->css_writeout();
+  }
+  
   if( isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ) {
     $fv_fp->css_writeout();
   }
