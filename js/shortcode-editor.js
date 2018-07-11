@@ -73,6 +73,7 @@ jQuery(document).ready(function($){
         inline: true,
         title: 'Export FV Player',
         onComplete : function() { fv_player_export($element.data('player_id')); },
+        onClosed : fv_wp_flowplayer_big_loader_close,
         onOpen: function(){
           jQuery("#fv_player_box").addClass("fv-flowplayer-shortcode-editor");
           jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
