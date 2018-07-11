@@ -27,7 +27,7 @@ var fv_player_editor_matcher = {
     // the following fields should be cleared up, since a new video was
     // added and old splash, caption, etc. are no longer valid, unless
     // they were manually updated by the user
-    cleanup_fields: ['caption', 'splash', 'auto_splash']
+    cleanup_fields: ['caption', 'splash', 'auto_splash', 'auto_caption']
   }
 };
 
@@ -428,7 +428,7 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv_player_export').remove();
 
   // remove hidden meta data inputs
-  jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_last_video_meta_check"], input[name="fv_wp_flowplayer_field_auto_splash"]').remove();
+  jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_last_video_meta_check"], input[name="fv_wp_flowplayer_field_auto_splash"], input[name="fv_wp_flowplayer_field_auto_caption"]').remove();
 
   // stop and remove any pending AJAX requests to retrieve video meta data
   // as well as any auto-update timers
@@ -1117,7 +1117,7 @@ function fv_wp_flowplayer_edit() {
                 }
 
                 // general video meta
-                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['duration', 'last_video_meta_check', 'auto_splash'].indexOf(vids[x].meta[m].meta_key) > -1) {
+                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
                   video_meta.push(vids[x].meta[m]);
                 }
               }
@@ -1138,7 +1138,7 @@ function fv_wp_flowplayer_edit() {
             if (video_meta.length) {
               for (var i in video_meta) {
                 // video duration hidden input
-                if (['duration', 'last_video_meta_check', 'auto_splash'].indexOf(video_meta[i].meta_key) > -1) {
+                if (['duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(video_meta[i].meta_key) > -1) {
                   $video_data_tab.find('#fv_wp_flowplayer_field_src').after('<input type="hidden" name="fv_wp_flowplayer_field_' + video_meta[i].meta_key + '" id="fv_wp_flowplayer_field_' + video_meta[i].meta_key + '" value="' + video_meta[i].meta_value + '" data-id="' + video_meta[i].id + '" />');
                 } else {
                   // predefined meta input with field already existing in the dialog
@@ -1896,7 +1896,7 @@ function fv_wp_flowplayer_check_for_player_meta_field(fieldName) {
 
 
 function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
-  return ['fv_wp_flowplayer_field_duration', 'fv_wp_flowplayer_field_last_video_meta_check', 'fv_wp_flowplayer_field_live', 'fv_wp_flowplayer_field_auto_splash'].indexOf(fieldName) > -1;
+  return ['fv_wp_flowplayer_field_duration', 'fv_wp_flowplayer_field_last_video_meta_check', 'fv_wp_flowplayer_field_live', 'fv_wp_flowplayer_field_auto_splash', 'fv_wp_flowplayer_field_auto_caption'].indexOf(fieldName) > -1;
 }
 
 
@@ -2814,7 +2814,8 @@ jQuery( function($) {
       value = $element.val(),
       update_fields = null,
       cleanup_fields = null,
-      $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash');
+      $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash'),
+      $auto_caption_element = $element.siblings('#fv_wp_flowplayer_field_auto_caption');
 
     // cancel any previous AJAX call
     if (typeof($element.data('fv_player_video_data_ajax')) != 'undefined') {
@@ -2832,6 +2833,11 @@ jQuery( function($) {
     if (!$auto_splash_element.length) {
       // splash for this video was manually updated
       $parent_table.find('#fv_wp_flowplayer_field_splash').data('fv_player_user_updated', 1);
+    }
+
+    if (!$auto_caption_element.length) {
+      // caption for this video was manually updated
+      $parent_table.find('#fv_wp_flowplayer_field_caption').data('fv_player_user_updated', 1);
     }
 
     // try to check if we have a suitable matcher
@@ -2871,6 +2877,19 @@ jQuery( function($) {
                   element: $auto_splash_element,
                   meta_section: 'video',
                   meta_key: 'auto_splash',
+                  handle_delete: true
+                });
+              }
+              break;
+
+            case 'auto_caption':
+              if ($auto_caption_element.length) {
+                $auto_caption_element.val('');
+
+                fv_flowplayer_insertUpdateOrDeleteVideoMeta({
+                  element: $auto_caption_element,
+                  meta_section: 'video',
+                  meta_key: 'auto_caption',
                   handle_delete: true
                 });
               }
@@ -2977,6 +2996,21 @@ jQuery( function($) {
                         element: jQuery('#fv_wp_flowplayer_field_auto_splash'),
                         meta_section: 'video',
                         meta_key: 'auto_splash',
+                        handle_delete: true
+                      });
+                      break;
+
+                    case 'auto_caption':
+                      if (!$element.siblings('#fv_wp_flowplayer_field_auto_caption').length) {
+                        $element.after('<input type="hidden" name="fv_wp_flowplayer_field_auto_caption" id="fv_wp_flowplayer_field_auto_caption" />');
+                      }
+
+                      $element.siblings('#fv_wp_flowplayer_field_auto_caption').val(1);
+
+                      fv_flowplayer_insertUpdateOrDeleteVideoMeta({
+                        element: jQuery('#fv_wp_flowplayer_field_auto_caption'),
+                        meta_section: 'video',
+                        meta_key: 'auto_caption',
                         handle_delete: true
                       });
                       break;
