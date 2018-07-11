@@ -1040,7 +1040,6 @@ class FV_Player_Db_Shortcode {
         die('invalid player ID, export unsuccessful - please use the close button and try again');
       }
 
-      header('Content-Type: application/json');
       echo json_encode($export_data);
       exit;
     } else {

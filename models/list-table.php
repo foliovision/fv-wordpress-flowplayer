@@ -198,7 +198,7 @@ class FV_Player_List_Table extends WP_List_Table {
 	public function column_default( $log, $column_name ) {
 		switch ( $column_name ) {
 			case 'edit' :				
-				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a>";
+				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a> | <a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a>";
 				break;
 			default:
 				$value = isset($log->$column_name) && $log->$column_name ? $log->$column_name : '';
