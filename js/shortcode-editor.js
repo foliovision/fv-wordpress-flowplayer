@@ -2916,7 +2916,7 @@ jQuery( function($) {
           .filter(function () {
             var
               $e = jQuery(this),
-              updated_manually = typeof($e.data('fv_player_user_updated')) != 'undefined';
+              updated_manually = ($e.val() && typeof($e.data('fv_player_user_updated')) != 'undefined');
 
             if (this.id == 'fv_wp_flowplayer_field_caption' && !updated_manually) {
               // add spinners (loading indicators) to the playlist table
@@ -2946,7 +2946,7 @@ jQuery( function($) {
                     case 'caption':
                       if (json_export_data.name) {
                         var $caption = $parent_table.find('#fv_wp_flowplayer_field_caption');
-                        if (typeof($caption.data('fv_player_user_updated')) == 'undefined') {
+                        if (!$caption.val() || typeof($caption.data('fv_player_user_updated')) == 'undefined') {
                           $caption.val(json_export_data.name);
 
                           // update caption in playlist table
@@ -2960,7 +2960,7 @@ jQuery( function($) {
                     case 'splash':
                       if (json_export_data.thumbnail) {
                         var $splash = $parent_table.find('#fv_wp_flowplayer_field_splash');
-                        if (typeof($splash.data('fv_player_user_updated')) == 'undefined') {
+                        if (!$splash.val() || typeof($splash.data('fv_player_user_updated')) == 'undefined') {
                           $splash.val(json_export_data.thumbnail);
                         }
                       }
