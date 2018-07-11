@@ -794,7 +794,17 @@ CREATE TABLE `" . self::$db_table_name . "` (
         return array();
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
-          return array( $this->meta_data );
+          // we want to return all meta data for this player
+          if ( $this->DB_Shortcode_Instance && $this->DB_Shortcode_Instance->isPlayerMetaCached($this->id) ) {
+            $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
+            return $cache[$this->id];
+          } else {
+            if ($this->meta_data && $this->meta_data->getIsValid()) {
+              return array( $this->meta_data );
+            } else {
+              return array();
+            }
+          }
         } else {
           return array();
         }
@@ -976,7 +986,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'date_created', 'date_modified'))) {
         $export_data[$property] = $value;
       }
     }
