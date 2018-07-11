@@ -2023,6 +2023,8 @@ function fv_wp_flowplayer_big_loader_close() {
 
 
 function fv_wp_flowplayer_copy_to_clipboard() {
+  jQuery('#fv_player_copy_to_clipboard').get(0).select();
+
   fv_player_clipboard(jQuery('#fv_player_copy_to_clipboard').val(), function() {
     jQuery('#fv_player_copied_to_clipboard_message')
       .html('Text Copied To Clipboard!')
