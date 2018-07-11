@@ -283,7 +283,7 @@ class FV_Player_Checker {
             $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
             $fv_flowplayer_meta['date'] = time();
             $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
-var_dump($fv_flowplayer_meta);
+
             if( $time > 0 || $this->is_cron ) {
               update_post_meta( $post->ID, flowplayer::get_video_key($meta_original), $fv_flowplayer_meta );
               return $fv_flowplayer_meta;

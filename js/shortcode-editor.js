@@ -436,7 +436,7 @@ function fv_wp_flowplayer_init() {
     var
       $this = jQuery(this),
       ajaxData = $this.data('fv_player_video_data_ajax'),
-      refreshTask = $this.data('fv_player_video_auto_refresh_task'),
+      //refreshTask = $this.data('fv_player_video_auto_refresh_task'),
       retryData = $this.data('fv_player_video_data_ajax_retry_count');
 
     if (typeof(ajaxData) != 'undefined') {
@@ -448,10 +448,10 @@ function fv_wp_flowplayer_init() {
       $this.removeData('fv_player_video_data_ajax_retry_count');
     }
 
-    if (typeof(refreshTask) != 'undefined') {
+    /*if (typeof(refreshTask) != 'undefined') {
       clearInterval(refreshTask);
       $this.removeData('fv_player_video_auto_refresh_task');
-    }
+    }*/
   });
 
   fv_wp_flowplayer_dialog_resize_height_record = 0;
@@ -2823,10 +2823,10 @@ jQuery( function($) {
     }
 
     // cancel any previous auto-refresh task
-    if (typeof($element.data('fv_player_video_auto_refresh_task')) != 'undefined') {
+    /*if (typeof($element.data('fv_player_video_auto_refresh_task')) != 'undefined') {
       clearInterval($element.data('fv_player_video_auto_refresh_task'));
       $element.removeData('fv_player_video_auto_refresh_task');
-    }
+    }*/
 
     // set jQuery data related to certain meta data that we may have for current video
     if (!$auto_splash_element.length) {
@@ -2841,11 +2841,11 @@ jQuery( function($) {
         cleanup_fields = (fv_player_editor_matcher[vtype].cleanup_fields ? fv_player_editor_matcher[vtype].cleanup_fields : []);
 
         // create interval to auto-refresh video data, if required
-        if (typeof(fv_player_editor_matcher[vtype].auto_refresh_interval) != 'undefined') {
+        /*if (typeof(fv_player_editor_matcher[vtype].auto_refresh_interval) != 'undefined') {
           $element.data('fv_player_video_auto_refresh_task', setInterval(function() {
             jQuery('#fv_wp_flowplayer_field_src:visible').trigger('change');
           }, fv_player_editor_matcher[vtype].auto_refresh_interval * 1000));
-        }
+        }*/
 
         break;
       }
