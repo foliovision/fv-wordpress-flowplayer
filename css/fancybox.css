@@ -809,3 +809,5 @@ body.compensate-for-scrollbar {
     text-align: center;
     text-shadow: 0px 0px 7px #000;
 }
+
+body.fancybox-active #wpadminbar, body.fancybox-active .nc_wrapper.bottom { display: none !important }
