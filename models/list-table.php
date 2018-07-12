@@ -204,7 +204,11 @@ class FV_Player_List_Table extends WP_List_Table {
   
 	public function column_default( $log, $column_name ) {
 		switch ( $column_name ) {
-			case 'edit' :				
+          case 'id':
+                $id = (isset($log->$column_name) && $log->$column_name ? $log->$column_name : '');
+                $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
+                break;
+			case 'edit' :
 				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a> | <a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a>";
 				break;
 			default:
@@ -234,10 +238,12 @@ class FV_Player_List_Table extends WP_List_Table {
 	  $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
       $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'asc';
       $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'id';
+      $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
+      $search = !empty($_GET['s']) ? esc_sql($_GET['s']) : null;
 
 	  $per_page = $this->per_page;
 	  $offset = ( $current - 1 ) * $per_page;
-      return $FV_Db_Shortcode::getListPageData($order_by, $order, $offset, $per_page);
+      return $FV_Db_Shortcode::getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
 	}
 	
 	public function prepare_items() {

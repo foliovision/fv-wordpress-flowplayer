@@ -1584,9 +1584,14 @@ function fv_wp_flowplayer_on_close() {
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
     jQuery('#fv-player-shortcode-editor-preview-target').html('');
   } else {
-    // navigate to the same page, effectively reloading it
-    // ... using this instead of reload(), since that also re-posts any form postdata, which could result in errors
-    // document.location.href = document.location.href;
+    var playerID = jQuery(fv_player_editor_button_clicked).data('player_id');
+
+    // reload our player's row
+    jQuery.get(
+      document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
+      function (response) {
+        jQuery('#the-list span[data-player_id="' + playerID + '"]').closest('tr').replaceWith(jQuery(response).find('#the-list tr'));
+    });
   }
 
   if (fv_flowplayer_conf.current_player_db_id){

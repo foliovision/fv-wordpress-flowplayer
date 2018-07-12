@@ -144,23 +144,30 @@ class FV_Player_Db_Shortcode {
    * @param $order     If set, data will be ordered in this order.
    * @param $offset    If set, data will returned will be limited, starting at this offset.
    * @param $per_page  If set, data will returned will be limited, ending at this offset.
+   * @param $single_id If set, data will be restricted to a single player ID.
+   * @param $search    If set, results will be searched for using the GET search parameter.
    *
    * @return array     Returns an array of all list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Shortcode_Player_Video class generates an error.
    */
-  public static function getListPageData($order_by, $order, $offset, $per_page) {
+  public static function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
     global $FV_Db_Shortcode; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
 
-    // load all players, which will put them into the cache automatically
-    new FV_Player_Db_Shortcode_Player(null, array(
-      'db_options' => array(
-        'select_fields' => 'id, player_name, videos',
-        'order_by' => $order_by,
-        'order' => $order,
-        'offset' => $offset,
-        'per_page' => $per_page
-      )
-    ), $FV_Db_Shortcode);
+    // load single player, as requested by the user
+    if ($single_id) {
+      new FV_Player_Db_Shortcode_Player( $single_id, array(), $FV_Db_Shortcode );
+    } else {
+      // load all players, which will put them into the cache automatically
+      new FV_Player_Db_Shortcode_Player( null, array(
+        'db_options' => array(
+          'select_fields' => 'id, player_name, videos',
+          'order_by'      => $order_by,
+          'order'         => $order,
+          'offset'        => $offset,
+          'per_page'      => $per_page
+        )
+      ), $FV_Db_Shortcode );
+    }
 
     $players = $FV_Db_Shortcode->getPlayersCache();
 
