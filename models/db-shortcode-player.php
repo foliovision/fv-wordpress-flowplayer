@@ -993,7 +993,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'date_created', 'date_modified'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Shortcode_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified'))) {
         $export_data[$property] = $value;
       }
     }
