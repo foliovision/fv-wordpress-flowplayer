@@ -1046,7 +1046,7 @@ class FV_Player_Db_Shortcode {
         die('invalid player ID, export unsuccessful - please use the close button and try again');
       }
 
-      echo json_encode($export_data);
+      echo json_encode($export_data, JSON_UNESCAPED_SLASHES);
       exit;
     } else {
       die('invalid player ID, export unsuccessful - please use the close button and try again');
@@ -1116,7 +1116,7 @@ class FV_Player_Db_Shortcode {
         die('0');
       }
 
-      die('1');
+      die((string) $id_player);
     } else {
       die('no valid import data found, import unsuccessful');
     }

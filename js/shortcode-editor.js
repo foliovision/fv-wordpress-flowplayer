@@ -2091,9 +2091,9 @@ function fv_player_export(id_player) {
 
 
 
-function fv_player_import(failed) {
+function fv_player_import(failed, failed_data) {
   fv_wp_flowplayer_big_loader_show();
-  jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="paste your import data here"></textarea><br /><br /><input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Data" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-primary button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />Please try again.' : '&nbsp;') + '</div>').css('background-image', 'none');
+  jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="paste your import data here">' + (typeof(failed_data) != 'undefined' ? failed_data : '') + '</textarea><br /><br /><input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Data" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-primary button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />Please try again.' : '&nbsp;') + '</div>').css('background-image', 'none');
 
   if (typeof(failed) != 'undefined') {
     jQuery('#fv_player_imported_message')
@@ -2140,16 +2140,16 @@ function fv_wp_flowplayer_import_routine() {
     data: data,
     cookie: encodeURIComponent(document.cookie),
   }, function(response) {
-    if (response == '1') {
+    if (response != '0' && !isNaN(parseFloat(response)) && isFinite(response)) {
       jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close()
       //document.location.href = document.location.href;
     } else {
       jQuery('.fv-spinner-clone').remove();
-      fv_player_import(true);
+      fv_player_import(true, data);
     }
   }).error(function() {
     jQuery('.fv-spinner-clone').remove();
-    fv_player_import(true);
+    fv_player_import(true, data);
   });
 }
 
