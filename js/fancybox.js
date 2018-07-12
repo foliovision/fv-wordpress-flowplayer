@@ -15,8 +15,12 @@ function fv_player_colorbox_title() {
   var that = jQuery(this);
   if( that.attr('title') && that.attr('title').length > 0 ) return that.attr('title');
   if( that.find('img') && that.find('img').attr('alt') && that.find('img').attr('alt').length > 0 ) return that.find('img').attr('alt');
-  if( that.parent().is('h5') && that.text() ) return that.text();
-  if( that.parent().is('h5') && that.parent().text() ) return that.parent().text();
+  if( that.parent().is('h5') && that.clone().children().remove().end().text() ) {
+    return that.clone().children().remove().end().text();
+  }
+  if( that.parent().is('h5') && that.parent().clone().children().remove().end().text() ) {
+    return that.parent().clone().children().remove().end().text();
+  }
   return '';
 }
 
