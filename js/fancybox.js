@@ -34,6 +34,9 @@ jQuery.fancybox.defaults.onThumbsShow = function() {
     if( v.src.match(/^#wpfp_/) ) {
       jQuery('.fancybox-thumbs li[data-index='+k+']').append('<span class="fv-player-fancybox-play-icon">&#9654;</span>');
     }
+    if( v.opts.$thumb[0].src.match(/data:image.*?base64/) ) {console.log('no thumb!',jQuery( v.opts.$thumb).data('lazy-src'));
+      jQuery('.fancybox-thumbs li[data-index='+k+']').css('background-image', 'url("'+jQuery( v.opts.$thumb).data('lazy-src')+'")' );
+    }
   })
 }
 jQuery.fancybox.defaults.hash = false;
