@@ -151,11 +151,38 @@ class FV_Player_Db_Shortcode {
    * @throws Exception When the underlying FV_Player_Db_Shortcode_Player_Video class generates an error.
    */
   public static function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
-    global $FV_Db_Shortcode; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
+    global $player_ids_when_searching, $FV_Db_Shortcode; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
 
     // load single player, as requested by the user
     if ($single_id) {
       new FV_Player_Db_Shortcode_Player( $single_id, array(), $FV_Db_Shortcode );
+    } else if ($search) {
+      // search for videos that are consistent with the search text
+      // and load their players only
+      $vids = FV_Player_Db_Shortcode_Player_Video::search(array('src', 'src_1', 'src_2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
+
+      // if we have any data, assemble video IDs and load their players
+      if ($vids !== false) {
+        $player_video_ids = array();
+
+        foreach ($vids as $db_record) {
+          $player_video_ids[] = $db_record->id;
+        }
+
+        // cache this, so we can use this in the FV_Player_Db_Shortcode_Player::getTotalPlayersCount() method
+        $player_ids_when_searching = $player_video_ids;
+
+        new FV_Player_Db_Shortcode_Player( null, array(
+          'db_options' => array(
+            'select_fields'       => 'id, player_name, videos',
+            'order_by'            => $order_by,
+            'order'               => $order,
+            'offset'              => $offset,
+            'per_page'            => $per_page,
+            'search_by_video_ids' => $player_video_ids
+          )
+        ), $FV_Db_Shortcode );
+      }
     } else {
       // load all players, which will put them into the cache automatically
       new FV_Player_Db_Shortcode_Player( null, array(

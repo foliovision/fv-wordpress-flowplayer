@@ -397,12 +397,12 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
-   * Searches for a player via custom query.
+   * Searches for a player video via custom query.
    * Used in plugins such as HLS which will
    * provide video src data but not ID to search for.
    *
-   * @param bool $like   The LIKE part for the database query.
-   * @param null $fields Fields to return for this search.
+   * @param bool $like   The LIKE part for the database query. If false, exact match is used.
+   * @param null $fields Fields to return for this search. If null, all fields are returned.
    *
    * @return bool Returns true if any data were loaded, false otherwise.
    */
@@ -422,6 +422,37 @@ class FV_Player_Db_Shortcode_Player_Video {
       }
 
       return true;
+    }
+  }
+
+  /**
+   * Searches for a player video via custom query.
+   *
+   * @param array $fields_to_search Array with fields in which to perform this search.
+   * @param string $search_string   The actual text to search for.
+   * @param bool $like              The LIKE part for the database query. If false, exact match is used.
+   * @param string $and_or          The condition to use when multiple fields are being searched.
+   * @param null $fields            Fields to return for this search. If null, all fields are returned.
+   *
+   * @return bool Returns true if any data were loaded, false otherwise.
+   */
+  public static function search($fields_to_search, $search_string, $like = false, $and_or = 'OR', $fields = null) {
+    global $wpdb;
+
+    // assemble where part
+    $where = array();
+    foreach ($fields_to_search as $field_name) {
+      $where[] = "`$field_name` ". ($like ? 'LIKE "%'.esc_sql($search_string).'%"' : '="'.esc_sql($search_string).'"');
+    }
+    $where = implode(' '.$and_or.' ', $where);
+
+    self::init_db_name();
+    $data = $wpdb->get_results("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE $where ORDER BY id DESC");
+
+    if (!$data) {
+      return false;
+    } else {
+      return $data;
     }
   }
 

@@ -254,6 +254,12 @@ class FV_Player_List_Table extends WP_List_Table {
 		$hidden   = array(); // No hidden columns
 		$sortable = $this->get_sortable_columns();
 		$data     = $this->get_data();
+
+		// re-count number of players to show when searching
+		if (isset($_GET['s']) && $_GET['s']) {
+          $this->get_result_counts();
+        }
+
 		$status   = isset( $_GET['status'] ) ? $_GET['status'] : 'all';
 
 		$this->_column_headers = array( $columns, $hidden, $sortable );
