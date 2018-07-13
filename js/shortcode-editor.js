@@ -1238,6 +1238,9 @@ function fv_wp_flowplayer_edit() {
           } else {
             $insert_as_new_button.val('Insert as New');
           }
+
+          // rename insert to update if we're actually editing
+          $insert_button.val('Update');
         }
 
         overlayDiv.remove();
