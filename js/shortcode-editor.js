@@ -2144,10 +2144,17 @@ function fv_wp_flowplayer_import_routine() {
     action: 'fv_wp_flowplayer_import_player_data',
     data: data,
     cookie: encodeURIComponent(document.cookie),
-  }, function(response) {
-    if (response != '0' && !isNaN(parseFloat(response)) && isFinite(response)) {
-      jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close()
-      //document.location.href = document.location.href;
+  }, function(playerID) {
+    if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
+      // add the inserted our player's row
+      jQuery.get(
+        document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
+        function (response) {
+          jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
+          jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
+      }).error(function() {
+        jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
+      });
     } else {
       jQuery('.fv-spinner-clone').remove();
       fv_player_import(true, data);
