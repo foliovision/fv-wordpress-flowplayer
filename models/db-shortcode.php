@@ -572,23 +572,27 @@ class FV_Player_Db_Shortcode {
 
     if (isset($atts['id'])) {
       // numeric ID means we're coming from a shortcode somewhere in a post
-      if (is_numeric($atts['id'])) {
-        if ( isset( $this->player_atts_cache[ $atts['id'] ] ) ) {
-          return $this->player_atts_cache[ $atts['id'] ];
+      if (preg_match('/[\d,]+/', $atts['id']) === 1) {
+        $is_multi_playlist = (strpos($atts['id'], ',') !== false);
+        $real_id = ($is_multi_playlist ? substr($atts['id'], 0, strpos($atts['id'], ',')) : $atts['id']);
+
+        if ( isset( $this->player_atts_cache[ $real_id ] ) ) {
+          return $this->player_atts_cache[ $real_id ];
         }
 
-        if ($this->isPlayerCached($atts['id'])) {
+        if ($this->isPlayerCached($real_id)) {
           $player = $this->getPlayersCache();
-          $player = $player[$atts['id']];
+          $player = $player[$real_id];
         } else {
-          $player = new FV_Player_Db_Shortcode_Player( $atts['id'], array(), $FV_Db_Shortcode );
+          $player = new FV_Player_Db_Shortcode_Player( $real_id, array(), $FV_Db_Shortcode );
         }
 
+        // even if we have multi-playlist tag, if we cannot find the first player
+        // we don't continue here, since we get all attributes from the first player
         if (!$player || !$player->getIsValid()) {
           return false;
         }
 
-        $player->getVideos();
         $fv_fp->currentPlayerObject = $player;
 
         $data = $player->getAllDataValues();
@@ -603,6 +607,30 @@ class FV_Player_Db_Shortcode {
               $atts[ $k ] = $v;
             }
           }
+
+          // if we have multiple players, load them here
+          // and merge their videos with first player's videos
+          if ($is_multi_playlist) {
+            $ids = explode(',', $atts['id']);
+            array_shift($ids);
+
+            foreach ($ids as $id_player) {
+              if ($this->isPlayerCached($id_player)) {
+                $additional_player = $this->getPlayersCache();
+                $additional_player = $additional_player[$id_player];
+              } else {
+                $additional_player = new FV_Player_Db_Shortcode_Player( $id_player, array(), $FV_Db_Shortcode );
+              }
+
+              $additional_player->getVideos();
+              $data['videos'] .= ',' . $additional_player->getVideoIds();
+            }
+
+            $player->setVideos($data['videos']);
+          }
+
+          // preload all videos
+          $player->getVideos();
 
           // add playlist / single video data
           $atts = array_merge( $atts, $this->generateFullPlaylistCode(

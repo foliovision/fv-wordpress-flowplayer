@@ -65,7 +65,7 @@ class FV_Player_Db_Shortcode_Player {
     $video_ads,
     $video_ads_post,
     $width, // with of the player on page
-    $videos,
+    $videos, // comma-delimited IDs of videos for this player
     $video_objects = null,
     $numeric_properties = array('id', 'ad_height', 'ad_width', 'height', 'lightbox_height', 'lightbox_width', 'width', 'author', 'changed_by'),
     $DB_Shortcode_Instance = null,
