@@ -267,10 +267,11 @@ class FV_Player_Db_Shortcode {
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
               // use splash
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . ($videos[ $video_id ]->getCaption() ? $videos[ $video_id ]->getCaption() : $videos[ $video_id ]->getSrc()) . '" title="' . ($videos[ $video_id ]->getCaption() ? $videos[ $video_id ]->getCaption() : $videos[ $video_id ]->getSrc()) . '" /></div>';
+              $txt = ($videos[ $video_id ]->getCaption() ? $videos[ $video_id ]->getCaption() : $videos[ $video_id ]->getSrc());
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . $txt . '" title="' . $txt . '" /></div>';
             } else if ( isset($videos[ $video_id ]) && $videos[ $video_id ]->getCaption() ) {
               // use caption
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $videos[ $video_id ]->getCaption() . '">' . $videos[ $video_id ]->getCaption() . '</div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $videos[ $video_id ]->getCaption() . '"><span>' . $videos[ $video_id ]->getCaption() . '</span></div>';
             } else {
               // use source
               $arr = explode('/', $videos[ $video_id ]->getSrc());
