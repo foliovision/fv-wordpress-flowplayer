@@ -956,9 +956,8 @@ function fv_wp_flowplayer_edit() {
 
   if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
     // check for new, DB-based player shortcode
-    var result = /fvplayer id="(\d+)"/g.exec(shortcode);
+    var result = /fvplayer id="([\d,]+)"/g.exec(shortcode);
     if (result !== null) {
-
       var
         shortcode_parse_fix = shortcode
                                 .replace(/(popup|ad)='[^']*?'/g, '')
@@ -991,6 +990,13 @@ function fv_wp_flowplayer_edit() {
 
       if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
         delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[result[1]];
+      }
+
+      // check if we don't have multiple-playlists shortcode,
+      // in which case we need to stop and show an error message
+      if (shortcode.indexOf(',') > -1) {
+        overlayDiv.html('<p>&nbsp;</p><p align="center">Shortcode editor is not available for multiple players shortcode tag.</p>').css('background-image', 'none');
+        return;
       }
 
       // now load playlist data
