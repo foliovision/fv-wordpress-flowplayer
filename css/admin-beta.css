@@ -139,4 +139,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 .column-edit {width: 6em}
 
 .fv_player_splash_list_preview {width: 100px; height: 75px; margin: 0 5px 2px 0; display: inline; float: left}
+.fv_player_splash_list_preview span {display: none}
+.fv_player_splash_list_preview:hover span {display: block}
 .fv_player_splash_list_preview.fv_player_list_preview_no_splash {background-color: #000; display: inline-block; color: #fff; padding: 5px; height: 65px}
+.fv_player_splash_list_preview.fv_player_list_preview_no_splash span {display: block}

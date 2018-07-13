@@ -1230,7 +1230,7 @@ function fv_wp_flowplayer_edit() {
                 jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
                 jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
 
-                fv_wp_flowplayer_submit();
+                fv_wp_flowplayer_submit(null, true);
                 return true;
               })
               .css('margin-left', '5px')
@@ -1594,16 +1594,28 @@ function fv_wp_flowplayer_on_close() {
     jQuery('#fv-player-shortcode-editor-preview-target').html('');
   } else {
     var
-      playerID = jQuery(fv_player_editor_button_clicked).data('player_id'),
+      $buttonClicked = jQuery(fv_player_editor_button_clicked),
+      playerID = $buttonClicked.data('player_id'),
       playerRow = jQuery('#the-list span[data-player_id="' + playerID + '"]');
 
-    // reload our player's row
-    playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
-    jQuery.get(
-      document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
-      function (response) {
-        jQuery('#the-list span[data-player_id="' + playerID + '"]').closest('tr').replaceWith(jQuery(response).find('#the-list tr'));
-    });
+    // check if we didn't use Insert as New button
+    if (typeof($buttonClicked.data('insert_as_new_id')) != 'undefined') {
+      jQuery.get(
+        document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + $buttonClicked.data('insert_as_new_id'),
+        function (response) {
+          jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
+        });
+    } else {
+      if (typeof($buttonClicked.data('insert_id')) != 'undefined') {
+        // reload our player's row
+        playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+        jQuery.get(
+          document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + $buttonClicked.data('insert_id'),
+          function (response) {
+            jQuery('#the-list span[data-player_id="' + playerID + '"]').closest('tr').replaceWith(jQuery(response).find('#the-list tr'));
+          });
+      }
+    }
   }
 
   if (fv_flowplayer_conf.current_player_db_id){
@@ -2179,7 +2191,7 @@ function fv_wp_flowplayer_import_routine() {
 
 
 
-function fv_wp_flowplayer_submit( preview ) {
+function fv_wp_flowplayer_submit( preview, insert_as_new ) {
   if( preview && typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
     //console.log('fv_wp_flowplayer_submit skip...',fv_player_shortcode_preview);
     return;
@@ -2275,6 +2287,15 @@ function fv_wp_flowplayer_submit( preview ) {
           } else {
             // simple DB shortcode, no extra presentation parameters
             fv_wp_flowplayer_insert('[fvplayer id="' + playerID + '"]');
+          }
+
+          // if we're inserting player as new and we come from the list view,
+          // we need to store this player's ID in the original Edit link's data,
+          // so we can add it to the displayed table
+          if (insert_as_new && jQuery(fv_player_editor_button_clicked).data('player_id')) {
+            jQuery(fv_player_editor_button_clicked).data('insert_as_new_id', playerID);
+          } else {
+            jQuery(fv_player_editor_button_clicked).data('insert_id', playerID);
           }
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();

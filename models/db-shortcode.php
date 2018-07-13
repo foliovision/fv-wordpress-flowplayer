@@ -266,9 +266,23 @@ class FV_Player_Db_Shortcode {
 
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
-              // use splash
-              $txt = ($videos[ $video_id ]->getCaption() ? $videos[ $video_id ]->getCaption() : $videos[ $video_id ]->getSrc());
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . $txt . '" title="' . $txt . '" /></div>';
+              // use splash with caption / filename in a span
+              if ( isset($videos[ $video_id ]) && $videos[ $video_id ]->getCaption() ) {
+                $txt = $videos[ $video_id ]->getCaption();
+              } else {
+                // use source
+                $arr = explode('/', $videos[ $video_id ]->getSrc());
+                $arr = end($arr);
+
+                // update YouTube and other video names
+                $vid_replacements = array(
+                  'watch?v=' => 'YouTube: '
+                );
+
+                $txt = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
+              }
+
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . $txt . '" title="' . $txt . '" /><span>' . $txt . '</span></div>';
             } else if ( isset($videos[ $video_id ]) && $videos[ $video_id ]->getCaption() ) {
               // use caption
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $videos[ $video_id ]->getCaption() . '"><span>' . $videos[ $video_id ]->getCaption() . '</span></div>';
@@ -284,7 +298,7 @@ class FV_Player_Db_Shortcode {
 
               $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
 
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $arr . '">' . $arr . '</div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $arr . '"><span>' . $arr . '</span></div>';
             }
           }
 
