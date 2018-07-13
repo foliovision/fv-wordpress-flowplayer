@@ -1590,9 +1590,12 @@ function fv_wp_flowplayer_on_close() {
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
     jQuery('#fv-player-shortcode-editor-preview-target').html('');
   } else {
-    var playerID = jQuery(fv_player_editor_button_clicked).data('player_id');
+    var
+      playerID = jQuery(fv_player_editor_button_clicked).data('player_id'),
+      playerRow = jQuery('#the-list span[data-player_id="' + playerID + '"]');
 
     // reload our player's row
+    playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
     jQuery.get(
       document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
       function (response) {
