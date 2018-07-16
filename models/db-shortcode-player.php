@@ -498,7 +498,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           } else {
             // ID cannot be set, as it's automatically assigned to all new players
             trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
@@ -596,7 +596,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $player_data as $key => $value ) {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           }
 
           // make sure we fill the appropriate non-orm object properties
@@ -615,7 +615,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
             if (!$first_done) {
               // fill-in our internal variables
               foreach ( $db_record as $key => $value ) {
-                $this->$key = $value;
+                $this->$key = stripslashes($value);
               }
 
               // make sure we fill the appropriate non-orm object variables
@@ -653,7 +653,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
 
         foreach ($cached_player->getAllDataValues() as $key => $value) {
-          $this->$key = $value;
+          $this->$key = stripslashes($value);
         }
 
         // add meta data

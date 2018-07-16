@@ -167,7 +167,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           }
         } else {
           // generate warning
@@ -308,7 +308,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $meta_data as $key => $value ) {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           }
 
           // cache this meta in DB Shortcode object
@@ -323,7 +323,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
             if (!$first_done) {
               // fill-in our internal variables
               foreach ( $db_record as $key => $value ) {
-                $this->$key = $value;
+                $this->$key = stripslashes($value);
               }
 
               $first_done = true;
@@ -373,7 +373,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
         // $cached_meta will remain numeric if there are no meta data in the database
         if ($cached_meta instanceof FV_Player_Db_Shortcode_Player_Player_Meta) {
           foreach ( $cached_meta->getAllDataValues() as $key => $value ) {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           }
         }
       } else {

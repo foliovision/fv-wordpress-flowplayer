@@ -204,7 +204,7 @@ class FV_Player_Db_Shortcode_Player_Video {
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
@@ -271,7 +271,7 @@ class FV_Player_Db_Shortcode_Player_Video {
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $video_data as $key => $value ) {
-            $this->$key = $value;
+            $this->$key = stripslashes($value);
           }
 
           // cache this video in DB Shortcode object
@@ -286,7 +286,7 @@ class FV_Player_Db_Shortcode_Player_Video {
             if (!$first_done) {
               // fill-in our internal variables
               foreach ( $db_record as $key => $value ) {
-                $this->$key = $value;
+                $this->$key = stripslashes($value);
               }
 
               $first_done = true;
@@ -323,7 +323,7 @@ class FV_Player_Db_Shortcode_Player_Video {
         }
 
         foreach ($cached_video->getAllDataValues() as $key => $value) {
-          $this->$key = $value;
+          $this->$key = stripslashes($value);
         }
 
         // add meta data
@@ -417,7 +417,7 @@ class FV_Player_Db_Shortcode_Player_Video {
       // load up all values for this video
       foreach ($row as $key => $value) {
         if (property_exists($this, $key)) {
-          $this->$key = $value;
+          $this->$key = stripslashes($value);
         }
       }
 
