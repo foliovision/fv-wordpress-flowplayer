@@ -512,8 +512,9 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
       }
 
-      // add dates
-      $this->date_created = $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+      // add dates for newly created players
+      if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
+      if( empty($this->date_modified) ) $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
       // add author
       $this->author = $this->changed_by = get_current_user_id();

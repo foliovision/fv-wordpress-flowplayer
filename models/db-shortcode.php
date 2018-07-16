@@ -174,7 +174,7 @@ class FV_Player_Db_Shortcode {
 
         new FV_Player_Db_Shortcode_Player( null, array(
           'db_options' => array(
-            'select_fields'       => 'id, player_name, videos',
+            'select_fields'       => 'id, player_name, date_created, videos',
             'order_by'            => $order_by,
             'order'               => $order,
             'offset'              => $offset,
@@ -187,7 +187,7 @@ class FV_Player_Db_Shortcode {
       // load all players, which will put them into the cache automatically
       new FV_Player_Db_Shortcode_Player( null, array(
         'db_options' => array(
-          'select_fields' => 'id, player_name, videos',
+          'select_fields' => 'id, player_name, date_created, videos',
           'order_by'      => $order_by,
           'order'         => $order,
           'offset'        => $offset,
@@ -234,20 +234,21 @@ class FV_Player_Db_Shortcode {
           // player data first
           $result_row = new stdClass();
           $result_row->id = $player->getId();
-          $result_row->name = $player->getPlayerName();
+          $result_row->player_name = $player->getPlayerName();
+          $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
 
           // no player name, we'll assemble it from video captions and/or sources
-          if (!$result_row->name) {
-            $result_row->name = array();
+          if (!$result_row->player_name) {
+            $result_row->player_name = array();
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
             // assemble video name, if there's no player name
-            if (is_array($result_row->name) && isset($videos[ $video_id ])) {
+            if (is_array($result_row->player_name) && isset($videos[ $video_id ])) {
               if ( $videos[ $video_id ]->getCaption() ) {
                 // use caption
-                $result_row->name[] = $videos[ $video_id ]->getCaption();
+                $result_row->player_name[] = $videos[ $video_id ]->getCaption();
               } else {
                 // use source
                 $arr = explode('/', $videos[ $video_id ]->getSrc());
@@ -260,7 +261,7 @@ class FV_Player_Db_Shortcode {
 
                 $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
 
-                $result_row->name[] = $arr;
+                $result_row->player_name[] = $arr;
               }
             }
 
@@ -303,8 +304,8 @@ class FV_Player_Db_Shortcode {
           }
 
           // join name items, if present
-          if (is_array($result_row->name)) {
-            $result_row->name = join(', ', $result_row->name);
+          if (is_array($result_row->player_name)) {
+            $result_row->player_name = join(', ', $result_row->player_name);
           }
 
           // join thumbnails
