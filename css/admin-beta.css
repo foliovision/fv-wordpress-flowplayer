@@ -132,6 +132,3 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 #fp-preview-wrapper .fp-subtitle{height:50px}
 
 #dashboard-widgets .flowplayer-wrapper h3, #dashboard-widgets .flowplayer-wrapper h4 {color:inherit;margin:0 auto;padding:0;font-weight:700;font-size:inherit}
-
-#fv_player_copy_to_clipboard {width: 80%}
-#fv_player_copied_to_clipboard_message, #fv_player_imported_message {margin: 22px auto 0 auto; visibility: hidden; width: 20%; text-align: center}

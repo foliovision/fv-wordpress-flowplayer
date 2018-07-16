@@ -33,7 +33,7 @@ class FV_Player_List_Table_View {
   	?>
   	<div class="wrap">
       <h1 class="wp-heading-inline">FV Player</h1>
-      <a href="#" class="page-title-action">Add New</a>  
+      <a href="#" class="page-title-action fv-player-edit">Add New</a>  
       <a href="#" class="page-title-action fv-player-import">Import</a>      
 
       <div id="fv_player_players_table">

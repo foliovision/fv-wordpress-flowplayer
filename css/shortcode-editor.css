@@ -147,3 +147,6 @@ a #add-format, a #add-rtmp {
 #fv-wordpress-flowplayer-popup table td {
 	padding: 4px 2px;
 }
+
+#fv_player_copy_to_clipboard, #fv_player_import_data {width: 80%}
+#fv_player_copied_to_clipboard_message, #fv_player_imported_message {margin: 22px auto 0 auto; visibility: hidden; width: 20%; text-align: center}
