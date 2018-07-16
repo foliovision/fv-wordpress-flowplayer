@@ -876,8 +876,19 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_popup_code() {
-    if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'popup' ) {
-      $popup = trim($this->aCurArgs['end_action_value']);
+    if (!isset($this->aCurArgs['end_actions'])) {
+      return;
+    }
+
+    $is_static_popup = $this->aCurArgs['end_actions'] == 'popup';
+    $is_email_popup = $this->aCurArgs['end_actions'] == 'email_list';
+
+    if( !empty($this->aCurArgs['end_actions']) && ($is_static_popup || $is_email_popup) ) {
+      if ($is_static_popup) {
+        $popup = trim( $this->aCurArgs['end_action_value'] );
+      } else if ($is_email_popup) {
+        $popup = 'email-'.trim( $this->aCurArgs['end_action_value'] );
+      }
     } else {
       $popup = $this->_get_option('popups_default');
     }
