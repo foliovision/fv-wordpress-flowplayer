@@ -533,11 +533,11 @@ class flowplayer_frontend extends flowplayer
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
-        if( !empty($this->aCurArgs['redirect']) ) {
-          $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
+        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' ) {
+          $attributes['data-fv_redirect'] = trim($this->aCurArgs['end_action_value']);
         }
-        
-        if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+
+      if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
           $attributes['data-fv_loop'] = true;
         }
         
