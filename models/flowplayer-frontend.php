@@ -238,7 +238,7 @@ class flowplayer_frontend extends flowplayer
     if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
       $autoplay = true;
     }  
-    if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
+    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = true;
     }
 
@@ -249,7 +249,7 @@ class flowplayer_frontend extends flowplayer
     if( $this->_get_option('sticky') && $this->aCurArgs['sticky'] != 'false'  ) {
       $sticky = true;
     }  
-    if( isset($this->aCurArgs['sticky']) && $this->aCurArgs['sticky'] == 'true') {
+    if( isset($this->aCurArgs['sticky']) && ($this->aCurArgs['sticky'] == 'true' || $this->aCurArgs['sticky'] == 'on')) {
       $sticky = true;
     }    
     
