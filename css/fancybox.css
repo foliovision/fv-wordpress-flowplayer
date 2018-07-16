@@ -796,7 +796,7 @@ body.compensate-for-scrollbar {
   content: "\e116"; }
 .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-outlined .fp-fullscreen:before, .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-minimal .fp-fullscreen:before {
   content: "\e316"; }
-  
+
 .fv-player-fancybox-play-icon {
     position: absolute;
     left: 0;

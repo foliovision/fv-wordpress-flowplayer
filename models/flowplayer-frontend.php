@@ -563,12 +563,14 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-ad_show_after'] = $this->_get_option('ad_show_after');
         }
         if( count($aPlaylistItems) ) {
-          if( isset($this->aCurArgs['playlist_advance']) && $this->aCurArgs['playlist_advance'] === 'false' ){
+          if( isset($this->aCurArgs['playlist_advance']) && ($this->aCurArgs['playlist_advance'] === 'false' || $this->aCurArgs['playlist_advance'] === 'off') ){
             $attributes['data-advance'] = 'false';
-          }elseif(empty($this->aCurArgs['playlist_advance']) ) {
+          } elseif (empty($this->aCurArgs['playlist_advance']) ) {
             if( $this->_get_option('playlist_advance') ) {
               $attributes['data-advance'] = 'false';
             }
+          } else if( isset($this->aCurArgs['playlist_advance']) && ($this->aCurArgs['playlist_advance'] == 'on' || $this->aCurArgs['playlist_advance'] == 'true') ){
+            $attributes['data-advance'] = 'true';
           }
         }
 
@@ -975,7 +977,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_speed_buttons( $aButtons ) {
     $bShow = false;
-    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && ($this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes') ) {
       $bShow = true;
     }
     
