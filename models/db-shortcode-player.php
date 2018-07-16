@@ -38,7 +38,6 @@ class FV_Player_Db_Shortcode_Player {
     $embed, // whether to show embed links for this player
     $end_actions, // what do to when the playlist in this player ends
     $end_action_value, // the actual shortcode value for end_actions field
-    $engine, // enforces the Flash engine for the playback of the video
     $height, // height of this player on page
     $hflip, // whether to horizontally flip the player
     $lightbox, // whether to enable displaying this player in a lightbox
@@ -51,8 +50,6 @@ class FV_Player_Db_Shortcode_Player {
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
-    $playlist_hide, // whether to hide the playlist items below the video box
-    $play_button, // whether to hide the play/pause button on the control bar
     $popup, // (NON-ORM, class property only) ID of the popup to show at the end of playlist
     $qsel,
     $redirect, // (NON-ORM, class property only) where to redirect after the end of playlist
@@ -139,29 +136,8 @@ class FV_Player_Db_Shortcode_Player {
   /**
    * @return string
    */
-  public function getEngine() {
-    return $this->engine;
-  }
-
-  /**
-   * @return string
-   */
   public function getLogo() {
     return $this->logo;
-  }
-
-  /**
-   * @return string
-   */
-  public function getPlaylistHide() {
-    return $this->playlist_hide;
-  }
-
-  /**
-   * @return string
-   */
-  public function getPlayButton() {
-    return $this->play_button;
   }
 
   /**
@@ -435,7 +411,6 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
   `end_action_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'the actual shortcode value for end_actions field',
-  `engine` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'enforces the Flash engine for the playback of the video',
   `height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of this player on page',
   `hflip` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to horizontally flip the player',
   `lightbox` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to enable displaying this player in a lightbox',
@@ -445,8 +420,6 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'adds a logo to the video or hides the globally preset one',
   `playlist` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT '[liststyle in shortcode] style of the playlist',
   `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
-  `playlist_hide` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the playlist items below the video box',
-  `play_button` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to hide the play/pause button on the control bar',
   `qsel` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `share` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to display sharing buttons (On / Off / Default)',
   `share_title` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for sharing buttons',
