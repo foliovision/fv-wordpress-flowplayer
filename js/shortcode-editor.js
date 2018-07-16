@@ -2028,7 +2028,7 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
   }*/
 
   //console.log('Iframe refresh with '+fv_wp_fp_shortcode);
-  if( typeof(fv_player_shortcode_editor_last_url) == 'undefined' || url !== fv_player_shortcode_editor_last_url ){
+  if( (typeof(is_post) !== 'undefined') || typeof(fv_player_shortcode_editor_last_url) == 'undefined' || url !== fv_player_shortcode_editor_last_url ){
     fv_player_shortcode_editor_last_url = url;
     var $previewTarget = jQuery('#fv-player-shortcode-editor-preview-target');
     $previewTarget.html('');
