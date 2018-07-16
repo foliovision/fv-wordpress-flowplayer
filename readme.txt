@@ -357,7 +357,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.6.6 - 2018/07/?? =
+= 6.6.6 - 2018/07/10 =
+
+New users get FV Player 7 Beta (7.1.6.726.beta) automatically!
 
 * Making sure big custom logo won't prevent video playback due to blocking clicks
 * Playlist - setting maximum player width to 100% to prevent display issues

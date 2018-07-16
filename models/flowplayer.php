@@ -489,8 +489,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   private function _get_conf() {
-    ///  Addition  2010/07/12  mv
-    $conf = get_option( 'fvwpflowplayer' );  
+    $conf = get_option( 'fvwpflowplayer' );
+    
+    if( !$conf ) {
+      update_option('fv-player-pro-release','beta'); // new FV Player install, use Beta!
+      $conf['nag_fv_player_7'] = true;
+      $conf['notice_new_lightbox'] = true;
+    } 
         
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
@@ -2003,11 +2008,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   public static function is_beta() {
     global $FV_Player_Pro;
-    if( !isset($FV_Player_Pro) ) return false;
+    if( isset($FV_Player_Pro) && isset($FV_Player_Pro->version) && version_compare('0.9.20', str_replace('.beta','',$FV_Player_Pro->version) ) == 1 ) return false; // no Beta if it's old FV Player Pro is being used
     
-    if( version_compare('0.9.20', str_replace('.beta','',$FV_Player_Pro->version) ) == 1 ) return false;
+    $version = get_option('fv-player-pro-release');
     
-    $version = isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ? $_POST['fv-player-pro-release'] : get_option('fv-player-pro-release');
+    if( isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ) {
+      $version = $_POST['fv-player-pro-release'];
+    }
+    
     if( $version == 'beta' ) {
       global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_ver_beta;
       $fv_wp_flowplayer_ver = $fv_wp_flowplayer_ver_beta;

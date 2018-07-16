@@ -13,15 +13,15 @@
 
 function fv_player_colorbox_title() {
   var that = jQuery(this);
-  if( typeof(that.attr('title')) == "undefined" && typeof(that.find('img').attr('alt')) == "undefined" ) {
-    return '';
-  }
   if( that.attr('title') && that.attr('title').length > 0 ) return that.attr('title');
-  if( that.find('img') && that.find('img').attr('alt') && that.find('img').attr('alt').length > 0 ) {
-    return that.find('img').attr('alt');
-  } else {
-    return '';
+  if( that.find('img') && that.find('img').attr('alt') && that.find('img').attr('alt').length > 0 ) return that.find('img').attr('alt');
+  if( that.parent().is('h5') && that.clone().children().remove().end().text() ) {
+    return that.clone().children().remove().end().text();
   }
+  if( that.parent().is('h5') && that.parent().clone().children().remove().end().text() ) {
+    return that.parent().clone().children().remove().end().text();
+  }
+  return '';
 }
 
 jQuery.fancybox.defaults.smallBtn = false;
@@ -33,6 +33,9 @@ jQuery.fancybox.defaults.onThumbsShow = function() {
   jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
     if( v.src.match(/^#wpfp_/) ) {
       jQuery('.fancybox-thumbs li[data-index='+k+']').append('<span class="fv-player-fancybox-play-icon">&#9654;</span>');
+    }
+    if( v.opts.$thumb[0].src.match(/data:image.*?base64/) ) {console.log('no thumb!',jQuery( v.opts.$thumb).data('lazy-src'));
+      jQuery('.fancybox-thumbs li[data-index='+k+']').css('background-image', 'url("'+jQuery( v.opts.$thumb).data('lazy-src')+'")' );
     }
   })
 }
@@ -129,26 +132,28 @@ if( document.addEventListener ) {
 
 // overriding default Flowplayer fullscreen function
 jQuery(document).on('ready', function() {
-  flowplayer( function(api,root) {    
-    if( jQuery(root).parents('.fv_player_lightbox_hidden') ) {
-      if( flowplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
-        api.fullscreen = function() {
-          jQuery.fancybox.getInstance().FullScreen.toggle();
-        };
-      } else {
-        var fancybox_ui = '.fancybox-caption, .fancybox-toolbar, .fancybox-infobar, .fancybox-navigation';
-        var fancybox_thumbs = false;
-        api.on('fullscreen', function() {
-          jQuery(fancybox_ui).hide();
-          fancybox_thumbs = jQuery('.fancybox-container').hasClass('fancybox-show-thumbs')
-          jQuery('.fancybox-container').removeClass('fancybox-show-thumbs');
-        }).on('fullscreen-exit', function() {
-          jQuery(fancybox_ui).show();
-          if( fancybox_thumbs ) jQuery('.fancybox-container').addClass('fancybox-show-thumbs');
-        });
+  if( typeof(flowplayer) != "undefined" ) {
+    flowplayer( function(api,root) {
+      if( jQuery(root).parents('.fv_player_lightbox_hidden') ) {
+        if( flowplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
+          api.fullscreen = function() {
+            jQuery.fancybox.getInstance().FullScreen.toggle();
+          };
+        } else {
+          var fancybox_ui = '.fancybox-caption, .fancybox-toolbar, .fancybox-infobar, .fancybox-navigation';
+          var fancybox_thumbs = false;
+          api.on('fullscreen', function() {
+            jQuery(fancybox_ui).hide();
+            fancybox_thumbs = jQuery('.fancybox-container').hasClass('fancybox-show-thumbs')
+            jQuery('.fancybox-container').removeClass('fancybox-show-thumbs');
+          }).on('fullscreen-exit', function() {
+            jQuery(fancybox_ui).show();
+            if( fancybox_thumbs ) jQuery('.fancybox-container').addClass('fancybox-show-thumbs');
+          });
+        }
       }
-    }
-  });
+    });
+  }
 });
 
 jQuery(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange', function() {
