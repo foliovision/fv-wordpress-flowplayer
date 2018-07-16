@@ -351,9 +351,7 @@ class flowplayer_frontend extends flowplayer
         
         $aSubtitles = $this->get_subtitles();
       
-        $show_splashend = false;
-        if (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {      
-          $show_splashend = true;
+        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'splashend' ) {
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
         
@@ -878,8 +876,8 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_popup_code() {
-    if (!empty($this->aCurArgs['popup'])) {
-      $popup = trim($this->aCurArgs['popup']);
+    if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'popup' ) {
+      $popup = trim($this->aCurArgs['end_action_value']);
     } else {
       $popup = $this->_get_option('popups_default');
     }
