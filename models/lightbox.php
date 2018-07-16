@@ -236,7 +236,7 @@ class FV_Player_lightbox {
     $after = '';
     foreach ($aPlaylistItems AS $key => $aSrc) {
       $i++;
-      unset($aCurArgs['playlist']);
+      unset($aCurArgs['playlist'], $aCurArgs['id']);
       $aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
       $aCurArgs['splash'] = isset($aSplashScreens[$key]) ? $aSplashScreens[$key] : false;
       $aCurArgs['caption'] = isset($aCaptions[$key]) ? $aCaptions[$key] : false;
