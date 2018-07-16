@@ -351,7 +351,13 @@ class flowplayer_frontend extends flowplayer
         
         $aSubtitles = $this->get_subtitles();
       
-        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'splashend' ) {
+        if(
+          // new, DB playlist code
+          (!empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'splashend')
+        ||
+          // compatibility fallback for classic (non-DB) shortcode
+          (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash']))
+        ) {
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
         
@@ -533,9 +539,15 @@ class flowplayer_frontend extends flowplayer
         }
         if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['end_action_value']);
+        } else if( !empty($this->aCurArgs['redirect']) ) {
+          // compatibility fallback for classic (non-DB) shortcode
+          $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
 
-      if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
+        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
+          $attributes['data-fv_loop'] = true;
+        } else if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+          // compatibility fallback for classic (non-DB) shortcode
           $attributes['data-fv_loop'] = true;
         }
         
@@ -880,12 +892,13 @@ class flowplayer_frontend extends flowplayer
       return;
     }
 
-    $is_static_popup = $this->aCurArgs['end_actions'] == 'popup';
-    $is_email_popup = $this->aCurArgs['end_actions'] == 'email_list';
+    // static and e-mail popups share the same parameter in old non-DB shortcode
+    $is_static_popup = (!empty($this->aCurArgs['popup']) || $this->aCurArgs['end_actions'] == 'popup');
+    $is_email_popup = (!empty($this->aCurArgs['popup']) || $this->aCurArgs['end_actions'] == 'email_list');
 
     if( !empty($this->aCurArgs['end_actions']) && ($is_static_popup || $is_email_popup) ) {
       if ($is_static_popup) {
-        $popup = trim( $this->aCurArgs['end_action_value'] );
+        $popup = (!empty($this->aCurArgs['popup']) ? trim($this->aCurArgs['popup']) : trim( $this->aCurArgs['end_action_value'] ));
       } else if ($is_email_popup) {
         $popup = 'email-'.trim( $this->aCurArgs['end_action_value'] );
       }
