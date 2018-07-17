@@ -699,7 +699,7 @@ class FV_Player_Db_Shortcode {
 
     if ($post_data) {
       // parse and resolve deleted videos
-      if (!empty($post_data['deleted_videos'])) {
+      if (!$data && !empty($post_data['deleted_videos'])) {
         $deleted_videos = explode(',', $post_data['deleted_videos']);
         foreach ($deleted_videos as $d_id) {
           // we don't need to load this video data, just link it to a database
@@ -713,7 +713,7 @@ class FV_Player_Db_Shortcode {
       }
 
       // parse and resolve deleted meta data
-      if (!empty($post_data['deleted_video_meta'])) {
+      if (!$data && !empty($post_data['deleted_video_meta'])) {
         $deleted_meta = explode(',', $post_data['deleted_video_meta']);
         foreach ($deleted_meta as $d_id) {
           // we don't need to load this meta data, just link it to a database
@@ -727,7 +727,7 @@ class FV_Player_Db_Shortcode {
       }
 
       // parse and resolve deleted meta data
-      if (!empty($post_data['deleted_player_meta'])) {
+      if (!$data && !empty($post_data['deleted_player_meta'])) {
         $deleted_meta = explode(',', $post_data['deleted_player_meta']);
         foreach ($deleted_meta as $d_id) {
           // we don't need to load this meta data, just link it to a database
