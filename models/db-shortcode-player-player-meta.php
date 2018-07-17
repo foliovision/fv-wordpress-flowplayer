@@ -344,7 +344,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
                 // cache this meta in DB Shortcode object
                 if ( $DB_Shortcode ) {
-                  $cache[ $db_record->id_player ][ $this->id ] = $player_meta_object;
+                  $cache[ $db_record->id_player ][ $record_id ] = $player_meta_object;
                 }
               }
             }
