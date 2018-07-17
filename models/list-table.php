@@ -108,16 +108,20 @@ class FV_Player_List_Table extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			//'cb'          => '<input type="checkbox" />',
-			'id'          => __( 'Playlist', 'fv-wordpress-flowplayer' ),
-      'name'        => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
-			'thumbs'      => __( 'Videos', 'fv-wordpress-flowplayer' ),
-			'edit'			  => ''
+			'id'           => __( 'Playlist', 'fv-wordpress-flowplayer' ),
+      'player_name'  => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
+      'date_created' => __( 'Date', 'fv-wordpress-flowplayer' ),
+      //'author'       => __( 'Author', 'fv-wordpress-flowplayer' ),
+			'thumbs'       => __( 'Videos', 'fv-wordpress-flowplayer' ),
+			'edit'			   => ''
 		);
 	}
   
 	public function get_sortable_columns() {
 		return array(
-		  'id'          => array( 'ID', true )
+		  'id'           => array( 'ID', true ),
+      'player_name'  => array( 'player_name', true ),
+      'date_created' => array( 'date_created', true )
 		);
 	}
   
