@@ -505,7 +505,7 @@ class FV_Player_Db_Shortcode {
           if ($has_timings) {
             $atts['startend'] = implode( ';', $new_startend_tag );
           }
-        } else {
+        } else if ($videos) {
           // only one video found, therefore this is not a playlist
           unset($atts['playlist']);
 
@@ -587,6 +587,8 @@ class FV_Player_Db_Shortcode {
     global $fv_fp, $FV_Db_Shortcode;
 
     if (isset($atts['id'])) {
+      $is_multi_playlist = false;
+
       // numeric ID means we're coming from a shortcode somewhere in a post
       if (preg_match('/[\d,]+/', $atts['id']) === 1) {
         $is_multi_playlist = (strpos($atts['id'], ',') !== false);
@@ -667,6 +669,16 @@ class FV_Player_Db_Shortcode {
       $this->player_atts_cache[ $atts['id'] ] = $atts;
     } else {
       $fv_fp->currentPlayerObject = null;
+    }
+
+    // clear player cache with our player IDs
+    // if we're coming from multi-ID shortcode,
+    // otherwise we'd store player with manually updated
+    // and therefore invalid video IDs
+    if ($is_multi_playlist) {
+      $cache = $FV_Db_Shortcode->getPlayersCache();
+      unset($cache[$player->getId()]);
+      $FV_Db_Shortcode->setPlayersCache($cache);
     }
 
     return $atts;

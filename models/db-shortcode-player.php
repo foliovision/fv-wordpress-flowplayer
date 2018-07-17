@@ -833,7 +833,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       return $this->video_objects;
     } else if ($this->video_objects === null) {
       // video objects not loaded yet - load them now
-      $videos_in_order = explode(',', $this->videos);
+      $videos_in_order = explode(',', trim($this->videos, ','));
       $videos = new FV_Player_Db_Shortcode_Player_Video($videos_in_order, array(), $this->DB_Shortcode_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
