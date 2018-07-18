@@ -286,7 +286,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                     </tr>
 
                     <?php
-                    if ($fv_flowplayer_conf["new_shortcode"] && $fv_flowplayer_conf["new_shortcode"] == 'true') {
+                    if( $fv_fp->_get_option('new_shortcode') ) {
                     ?>
                     <tr <?php if( !isset($fv_flowplayer_conf["interface"]["live"]) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                         <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
@@ -383,7 +383,7 @@ var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_p
                    <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
 
                   <?php
-                    if (!$fv_flowplayer_conf["new_shortcode"] || $fv_flowplayer_conf["new_shortcode"] != 'true') {
+                    if( !$fv_fp->_get_option('new_shortcode') ) {
                   ?>
                   <tr <?php if( !isset($fv_flowplayer_conf["interface"]["live"]) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
