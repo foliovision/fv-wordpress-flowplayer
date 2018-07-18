@@ -829,7 +829,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
       $replace_from = array('&amp;','\;', '\,');        
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');        
-      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );      
+      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );
       $sItems = explode( ';', $sShortcode );
 
       if( $sCaption ) {

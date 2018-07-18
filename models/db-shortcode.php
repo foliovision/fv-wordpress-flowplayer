@@ -520,6 +520,11 @@ class FV_Player_Db_Shortcode {
           }
         }
       } else {
+        // remove the first video from playlist, since that is
+        // the video in src and would duplicate that video in player
+        // as a result
+        array_shift($new_playlist_tag);
+
         $atts['playlist'] = implode(';', $new_playlist_tag);
 
         if (count($new_caption_tag)) {
