@@ -1,6 +1,6 @@
 <?php
 
-abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
+abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   
   protected $backupGlobals = false;
   
@@ -9,16 +9,12 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     
     global $fv_fp;
     $this->restore = $fv_fp->conf;
-    
-    //  somehow this got hooked in again after being removed in WP_Ajax_UnitTestCase::setUpBeforeClass() already
-    remove_action( 'admin_init', '_maybe_update_core' );
-    remove_action( 'admin_init', '_maybe_update_plugins' );
-    remove_action( 'admin_init', '_maybe_update_themes' );    
   }  
   
   public function fix_newlines( $html ) {
     $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"some-test-hash"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
+    $html = preg_replace( '~<input type="hidden" id="nonce_([^"]*?)" name="nonce_([^"]*?)" value="([^"]*?)" />~', '<input type="hidden" id="nonce_$1" name="nonce_$2" value="XYZ" />', $html);    
     $html = preg_replace( "~nonce: '([^']*?)'~", "nonce: 'XYZ'", $html);
     
     // testProfileScreen
@@ -36,6 +32,17 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     $html = implode( "\n", array_map('trim',$html) );
     
     $html = preg_replace( '~\t~', '', $html );
+    
+    //  playlist in lightbox test
+    $html = preg_replace( "/(href|data-fv-lightbox|data-src)='#wpfp_[^']+'/", "$1='#some-test-hash'", $html);
+    $html = preg_replace( '~fv_flowplayer_[a-z0-9]+_lightbox_starter~', 'fv_flowplayer_XYZ_lightbox_starter', $html);
+    
+    //  tabbed playlist test
+    $html = preg_replace( '~tabs-\d+~', 'tabs-1', $html);
+    
+    // splash end
+    $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
+    
     return $html;
   }
 

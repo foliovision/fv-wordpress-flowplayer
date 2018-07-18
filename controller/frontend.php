@@ -367,9 +367,6 @@ function flowplayer_prepare_scripts() {
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width');
-
-    $aConf['new_shortcode'] = $fv_fp->_get_option('new_shortcode');
-
        
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {

@@ -890,13 +890,13 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_popup_code() {
-    if (!isset($this->aCurArgs['end_actions'])) {
+    if ( isset($this->aCurArgs['id']) && !isset($this->aCurArgs['end_actions'])) {
       return;
     }
 
     // static and e-mail popups share the same parameter in old non-DB shortcode
-    $is_static_popup = (!empty($this->aCurArgs['popup']) || $this->aCurArgs['end_actions'] == 'popup');
-    $is_email_popup = (!empty($this->aCurArgs['popup']) || $this->aCurArgs['end_actions'] == 'email_list');
+    $is_static_popup = (!empty($this->aCurArgs['popup']) || !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'popup');
+    $is_email_popup = (!empty($this->aCurArgs['popup']) || !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'email_list');
 
     if( !empty($this->aCurArgs['end_actions']) && ($is_static_popup || $is_email_popup) ) {
       if ($is_static_popup) {
@@ -904,6 +904,8 @@ class flowplayer_frontend extends flowplayer
       } else if ($is_email_popup) {
         $popup = 'email-'.trim( $this->aCurArgs['end_action_value'] );
       }
+    } else if (!empty($this->aCurArgs['popup'])) {
+      $popup = trim($this->aCurArgs['popup']);
     } else {
       $popup = $this->_get_option('popups_default');
     }

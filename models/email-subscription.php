@@ -318,7 +318,7 @@ class FV_Player_Email_Subscription {
     $aLists = get_option('fv_player_email_lists',array());
     $list = isset($aLists[$id]) ? $aLists[$id] : array('disabled' => '1');
     
-    if( empty($list['title']) || $list['disabled'] === '1'){
+    if( empty($list['title']) || !empty($list['disabled']) && $list['disabled'] === '1'){
       return '';
     }
     $popupItems = '';
@@ -675,4 +675,5 @@ class FV_Player_Email_Subscription {
 
 }
 
+global $FV_Player_Email_Subscription;
 $FV_Player_Email_Subscription = new FV_Player_Email_Subscription();
