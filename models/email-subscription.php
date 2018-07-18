@@ -675,4 +675,5 @@ class FV_Player_Email_Subscription {
 
 }
 
+global $FV_Player_Email_Subscription;
 $FV_Player_Email_Subscription = new FV_Player_Email_Subscription();

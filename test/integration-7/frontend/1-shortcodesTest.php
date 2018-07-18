@@ -38,7 +38,8 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     add_filter( 'wp_resource_hints', '__return_empty_array' );    
 
     wp_deregister_script( 'wp-embed' );
-    
+        
+    // note that you can only use wp_head() or wp_footer() once!
     ob_start();
     wp_head();
     echo apply_filters( 'the_content', $post->post_content );
