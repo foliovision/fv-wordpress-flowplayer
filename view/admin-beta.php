@@ -621,7 +621,7 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('old_code') ) $fv_fp->_get_checkbox(__('Use old code', 'fv-wordpress-flowplayer'), 'old_code', __('Check this option if your videos suddenly don\'t play and report the issues to <a href="https://foliovision.com/support">Foliovision Support Forums</a> please!', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Use short code', 'fv-wordpress-flowplayer'), 'new_shortcode', __('Use a new player code version which hides all configuration in the database. You will still be able to update the player using the FV Player button.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Use database', 'fv-wordpress-flowplayer').' (beta)', 'new_shortcode', __('FV Player configuration will no longer be stored in shortcode but in database tables', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>
