@@ -107,6 +107,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/shortcode-editor.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
   
 <script>
+var fv_player_db_editor = <?php global $fv_fp; echo $fv_fp->_get_option( 'new_shortcode' ) ? 1 : 0; ?>;
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
 var fv_wp_flowplayer_re_edit = /\[[^\]]*?<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>.*?[^\\]\]/mi;
 var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>/gi;

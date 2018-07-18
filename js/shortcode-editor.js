@@ -164,7 +164,7 @@ jQuery(document).ready(function($){
     /*
      * temporary untill we fix multilang subs for playlist
      */
-    if( !fv_flowplayer_conf.new_shortcode && new_index > 1){
+    if( !fv_player_db_editor && new_index > 1){
       $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').hide();
     }else{
       $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').attr('style',false);
@@ -501,7 +501,7 @@ function fv_wp_flowplayer_init() {
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
 
-  if (!fv_flowplayer_conf.new_shortcode) {
+  if (!fv_player_db_editor) {
     jQuery('#fv_wp_flowplayer_field_player_name').hide();
   } else {
     jQuery('#fv_wp_flowplayer_field_player_name').show();
@@ -1402,7 +1402,7 @@ function fv_wp_flowplayer_edit() {
         document.getElementById("fv_wp_flowplayer_field_ad_skip").checked = 1;
 
       // classic shortcode being used instead of DB ones
-      if (!fv_flowplayer_conf.new_shortcode) {
+      if (!fv_player_db_editor) {
         if (slive != null && slive[1] != null && slive[1] == 'true')
           document.getElementById("fv_wp_flowplayer_field_live").checked = 1;
       }
@@ -1525,7 +1525,7 @@ function fv_wp_flowplayer_edit() {
       jQuery('#cboxContent').css('background','white');
 
       // do this only with new DB-based shortcodes
-      if (fv_flowplayer_conf.new_shortcode) {
+      if (fv_player_db_editor) {
         if (slive != null && slive[1] != null && slive[1] == 'true') {
           jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
             this.checked = 1;
@@ -2238,7 +2238,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     previewHeight = null;
 
   // if we're using the new DB-related shortcode, let's handle it here
-  if (fv_flowplayer_conf.new_shortcode) {
+  if (fv_player_db_editor) {
 	  var ajax_data = fv_wp_flowplayer_build_ajax_data();
 
 	  if (preview) {
