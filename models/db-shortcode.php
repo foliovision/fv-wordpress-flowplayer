@@ -586,9 +586,9 @@ class FV_Player_Db_Shortcode {
   public function getPlayerAttsFromDb($atts) {
     global $fv_fp, $FV_Db_Shortcode;
 
-    if (isset($atts['id'])) {
-      $is_multi_playlist = false;
+    $is_multi_playlist = false;
 
+    if (isset($atts['id'])) {
       // numeric ID means we're coming from a shortcode somewhere in a post
       if (preg_match('/[\d,]+/', $atts['id']) === 1) {
         $is_multi_playlist = (strpos($atts['id'], ',') !== false);
