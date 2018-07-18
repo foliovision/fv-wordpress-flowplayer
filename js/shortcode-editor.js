@@ -468,7 +468,7 @@ function fv_wp_flowplayer_init() {
 
   // remove Insert as New button, or it'll all get renamed to Update
   // when working with original shortcode
-  jQuery('.fv_player_insert_as_new').remove();
+  // jQuery('.fv_player_insert_as_new').remove();
 
   // remove hidden meta data inputs
   jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_last_video_meta_check"], input[name="fv_wp_flowplayer_field_auto_splash"], input[name="fv_wp_flowplayer_field_auto_caption"]').remove();
@@ -1211,7 +1211,7 @@ function fv_wp_flowplayer_edit() {
 
           // copy the Insert button, place it after the first original one
           // and rename it to Insert as New
-          var
+          /*var
             $insert_button = jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').filter(function() {
               return jQuery(this).parents('.fv-player-playlist-item').length === 0;
             }),
@@ -1237,10 +1237,12 @@ function fv_wp_flowplayer_edit() {
               .insertAfter($insert_button);
           } else {
             $insert_as_new_button.val('Insert as New');
-          }
+          }*/
 
           // rename insert to update if we're actually editing
-          $insert_button.val('Update');
+          jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').filter(function() {
+            return jQuery(this).parents('.fv-player-playlist-item').length === 0;
+          }).val('Update');
         }
 
         overlayDiv.remove();
