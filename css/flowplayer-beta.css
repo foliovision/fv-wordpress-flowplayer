@@ -1736,7 +1736,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 
 /* Notices, todo: check!  */
-.fvfp-notices { position: absolute;top:10%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 1px #000; opacity: 1 }
+.fvfp-notices { position: absolute;top:10%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 1px #000; opacity: 1; pointer-events: none}
 .flowplayer.is-splash .fvfp-notices { display: block }
 
 
