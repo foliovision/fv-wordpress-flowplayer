@@ -912,6 +912,10 @@ function fv_wp_flowplayer_edit() {
     // create an artificial shortcode from which we can extract the actual player ID later below
     fv_wp_flowplayer_content = '[fvplayer id="' + jQuery(fv_player_editor_button_clicked).data('player_id') + '"]';
     shortcode = [fv_wp_flowplayer_content];
+  } else if (typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
+  // create empty shortcode for Add New button on the list page
+    fv_wp_flowplayer_content = '';
+    shortcode = '';
   } else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
@@ -1545,6 +1549,13 @@ function fv_wp_flowplayer_edit() {
 	} else {
     jQuery(document).trigger('fv_flowplayer_shortcode_new');
     fv_wp_fp_shortcode_remains = '';
+
+    // rename insert to save for new playlists if we come from list view
+    if (typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
+      jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').filter(function() {
+        return jQuery(this).parents('.fv-player-playlist-item').length !== 0;
+      }).val('Save');
+    }
   }
 }
 
