@@ -111,7 +111,7 @@ jQuery(document).ready(function($){
         .after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
       jQuery.post(ajaxurl, {
-        action: "fv_wp_flowplayer_clone_player",
+        action: "clone_player",
         playerID: $element.data('player_id')
       }, function(playerID){
         if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
@@ -608,7 +608,7 @@ function fv_wp_flowplayer_init() {
  * Sends new shortcode to editor
  */
 function fv_wp_flowplayer_insert( shortcode ) {
-  if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined') {
+  if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' && typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) == 'undefined') {
     var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
     if (field.length) {
       field.val(shortcode);
@@ -1589,9 +1589,7 @@ function fv_wp_flowplayer_edit() {
 
     // rename insert to save for new playlists if we come from list view
     if (typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
-      jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').filter(function() {
-        return jQuery(this).parents('.fv-player-playlist-item').length !== 0;
-      }).val('Save');
+      jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').val('Save');
     }
   }
 }
@@ -1639,7 +1637,7 @@ function fv_wp_flowplayer_dialog_resize() {
 function fv_wp_flowplayer_on_close() {
   fv_wp_flowplayer_init();
 
-  if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined') {
+  if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' && typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) == 'undefined') {
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
     jQuery('#fv-player-shortcode-editor-preview-target').html('');
   } else {
