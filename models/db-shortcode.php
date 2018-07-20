@@ -36,6 +36,7 @@ class FV_Player_Db_Shortcode {
     add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_import_player_data', array($this, 'import_player_data') );
+    add_action( 'wp_ajax_fv_wp_flowplayer_clone_player', array($this, 'clone_player') );
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') );
   }
 
@@ -1108,9 +1109,14 @@ class FV_Player_Db_Shortcode {
    *
    * Works for single player only right now!
    *
+   * @param null $unused        Populated by WordPress, not used in this method.
+   * @param bool $output_result If true, the export data will be returned instead of outputted.
+   *                            Used when cloning a player.
+   *
+   * @return array Returns the actual export data in an associative array, if $output_result is false.
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
-  public function export_player_data() {
+  public function export_player_data($unused = null, $output_result = true) {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
       // first, load the player
       $player = new FV_Player_Db_Shortcode_Player($_POST['playerID'], array(), $this);
@@ -1155,13 +1161,25 @@ class FV_Player_Db_Shortcode {
           }
         }
       } else {
-        die('invalid player ID, export unsuccessful - please use the close button and try again');
+        if ($output_result) {
+          die( 'invalid player ID, export unsuccessful - please use the close button and try again' );
+        } else {
+          return false;
+        }
       }
 
-      echo json_encode($export_data, JSON_UNESCAPED_SLASHES);
-      exit;
+      if ($output_result) {
+        echo json_encode( $export_data, JSON_UNESCAPED_SLASHES );
+        exit;
+      } else {
+        return $export_data;
+      }
     } else {
-      die('invalid player ID, export unsuccessful - please use the close button and try again');
+      if ($output_result) {
+        die( 'invalid player ID, export unsuccessful - please use the close button and try again' );
+      } else {
+        return false;
+      }
     }
   }
 
@@ -1170,12 +1188,20 @@ class FV_Player_Db_Shortcode {
    *
    * Works for single player only right now!
    *
+   * @param null $unused        Populated by WordPress, not used in this method.
+   * @param bool $output_result If true, the import result will be returned instead of outputted.
+   *                            Used when cloning a player.
+   * @param array|null $alternative_data If set, this is an alternative source of data to import.
+   *                                     Used when cloning a player.
+   *
+   * @return string Returns the actual player ID, if $output_result is false.
+   *
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
-  public function import_player_data() {
+  public function import_player_data($unused = null, $output_result = true, $alternative_data = null) {
     global $FV_Db_Shortcode;
 
-    if (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true)) {
+    if (($alternative_data !== null && $data = $alternative_data) || (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true))) {
       try {
         // first, create the player
         $player_keys = $data;
@@ -1223,14 +1249,43 @@ class FV_Player_Db_Shortcode {
       } catch (Exception $e) {
         if (WP_DEBUG) {
           var_dump($e);
+
+          if (!$output_result) {
+            exit;
+          }
         }
 
-        die('0');
+        die( '0' );
       }
 
-      die((string) $id_player);
+      if ($output_result) {
+        die( (string) $id_player );
+      } else {
+        return (string) $id_player;
+      }
     } else {
-      die('no valid import data found, import unsuccessful');
+      if ($output_result) {
+        die('no valid import data found, import unsuccessful');
+      } else {
+        return 'no valid import data found, import unsuccessful';
+      }
+    }
+  }
+
+  /**
+   * AJAX function to clone a player in the database.
+   *
+   * Works for single player only right now!
+   *
+   * @throws Exception Thrown if one of the underlying DB classes throws an exception.
+   */
+  public function clone_player() {
+    if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
+      $export_data = $this->export_player_data(null, false);
+      echo $this->import_player_data(null, false, $export_data);
+      exit;
+    } else {
+      die('no valid player ID found, cloning unsuccessful');
     }
   }
 

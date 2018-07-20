@@ -102,6 +102,43 @@ jQuery(document).ready(function($){
         }
       } );
     });
+
+    $(document).on( 'click', '.fv-player-clone', function(e) {
+      var $element = jQuery(this);
+
+      $element
+        .hide()
+        .after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+      jQuery.post(ajaxurl, {
+        action: "fv_wp_flowplayer_clone_player",
+        playerID: $element.data('player_id')
+      }, function(playerID){
+        if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
+        // add the inserted player's row
+        jQuery.get(
+          document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
+          function (response) {
+            jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
+            $element.next('div.fv-player-shortcode-editor-small-spinner').remove();
+            $element.show();
+          }).error(function() {
+            $element.next('div.fv-player-shortcode-editor-small-spinner').remove();
+            $element.show();
+          });
+        } else {
+          $element.next('div.fv-player-shortcode-editor-small-spinner').css({
+            'background': 'none',
+            'width': 'auto'
+          }).html('Error');
+        }
+      }).error(function() {
+        $element.next('div.fv-player-shortcode-editor-small-spinner').css({
+          'background': 'none',
+          'width': 'auto'
+        }).html('Error');
+      });
+    });
     
   }
   /* 
@@ -2183,7 +2220,7 @@ function fv_wp_flowplayer_import_routine() {
     cookie: encodeURIComponent(document.cookie),
   }, function(playerID) {
     if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
-      // add the inserted our player's row
+      // add the inserted player's row
       jQuery.get(
         document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
         function (response) {

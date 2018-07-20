@@ -176,7 +176,7 @@ class FV_Player_List_Table extends WP_List_Table {
                 $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
                 break;
 			case 'edit' :
-				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a> | <a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a>";
+				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a> | <a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a> | <a href='#' class='fv-player-clone' data-player_id='{$log->id}'>Clone</a>";
 				break;
 			default:
 				$value = isset($log->$column_name) && $log->$column_name ? $log->$column_name : '';

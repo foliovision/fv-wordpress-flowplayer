@@ -1,7 +1,7 @@
 #id { width: 6em }
 #player_name { width: 20em }
 #fv_player_players_table { max-width: 140em }
-#edit {width: 6em}
+#edit {width: 8em}
 #date_created {width: 12em}
 
 .fv_player_splash_list_preview { height: 72px; margin: 0 5px 2px 0; display: inline; float: left; position: relative}
