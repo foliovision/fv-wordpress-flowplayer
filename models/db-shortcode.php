@@ -506,7 +506,7 @@ class FV_Player_Db_Shortcode {
           if ($has_timings) {
             $atts['startend'] = implode( ';', $new_startend_tag );
           }
-        } else if ($videos) {
+        } else if (isset($videos) && is_array($videos)) {
           // only one video found, therefore this is not a playlist
           unset($atts['playlist']);
 
