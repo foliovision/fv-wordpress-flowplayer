@@ -1731,7 +1731,9 @@ function fv_wp_flowplayer_build_ajax_data() {
       $tabs                  = $editor.find('.fv-player-tab'),
       regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
       data                   = {'video_meta' : {}, 'player_meta' : {}},
-      end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
+      end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val(),
+      single_video_showing   = jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').length,
+      single_video_id        = (single_video_showing ? jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').closest('table').data('index') : -1);
 
   // special processing for end video actions
   if (end_of_playlist_action && end_of_playlist_action != 'Nothing') {
@@ -1972,7 +1974,13 @@ function fv_wp_flowplayer_build_ajax_data() {
 
     for (var i in data['videos']) {
       if (data['videos'][i]['src'] || data['videos'][i]['src_1'] || !data['videos'][i]['src_2']) {
-        data_videos_new[x++] =  data['videos'][i];
+        // if we should show preview of a single video only, add that video here,
+        // otherwise add all videos here
+        if (!single_video_showing || x == single_video_id) {
+          data_videos_new[x++] =  data['videos'][i];
+        } else {
+          x++;
+        }
       }
     }
 
