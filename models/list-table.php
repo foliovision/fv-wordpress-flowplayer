@@ -42,7 +42,7 @@ class FV_Player_List_Table_View {
   	<div class="wrap">
       <h1 class="wp-heading-inline">FV Player</h1>
       <a href="#" class="page-title-action fv-player-edit" data-add_new="1">Add New</a>
-      <a href="#" class="page-title-action fv-player-import">Import</a>      
+      <a href="#" class="page-title-action fv-player-import">Import</a>
 
       <div id="fv_player_players_table">
           <form id="fv-player-filter" method="get" action="<?php echo admin_url( 'admin.php?page=fv_player' ); ?>">
@@ -176,7 +176,7 @@ class FV_Player_List_Table extends WP_List_Table {
                 $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
                 break;
 			case 'edit' :
-				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a> | <a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a> | <a href='#' class='fv-player-clone' data-player_id='{$log->id}'>Clone</a>";
+				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a><span> | </span><a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a><span> | </span><a href='#' class='fv-player-clone' data-player_id='{$log->id}'>Clone</a><span> | </span><a href='#' class='fv-player-remove' data-player_id='{$log->id}'>Delete</a>";
 				break;
 			default:
 				$value = isset($log->$column_name) && $log->$column_name ? $log->$column_name : '';

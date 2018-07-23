@@ -79,6 +79,8 @@ jQuery(document).ready(function($){
           jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
         }
       } );
+
+      return false;
     });
 
     $(document).on( 'click', '.fv-player-import', function(e) {
@@ -101,6 +103,56 @@ jQuery(document).ready(function($){
           jQuery("#cboxOverlay").addClass("fv-flowplayer-shortcode-editor");
         }
       } );
+
+      return false;
+    });
+
+    $(document).on( 'click', '.fv-player-remove', function(e) {
+      var $element = jQuery(this);
+
+      $element
+        .addClass('fv-player-remove-confirm')
+        .removeClass('fv-player-remove')
+        .html('Confirm?');
+
+      return false;
+    });
+
+    $(document).on( 'click', '.fv-player-remove-confirm', function(e) {
+      var
+        $element = jQuery(this),
+        $element_td = $element.parent();
+
+      $element_td.find('a, span').hide();
+      $element.after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+      jQuery.post(ajaxurl, {
+        action: "fv_wp_flowplayer_remove_player",
+        playerID: $element.data('player_id')
+      }, function(rows_affected){
+        if (!isNaN(parseFloat(rows_affected)) && isFinite(rows_affected)) {
+          // remove the deleted player's row
+          $element.closest('tr').hide('slow', function() {
+            jQuery(this).remove();
+          });
+        } else {
+          $element.next('div.fv-player-shortcode-editor-small-spinner').css({
+            'background': 'none',
+            'width': 'auto'
+          }).html('Error');
+
+          $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
+        }
+      }).error(function() {
+        $element.next('div.fv-player-shortcode-editor-small-spinner').css({
+          'background': 'none',
+          'width': 'auto'
+        }).html('Error');
+
+        $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
+      });
+
+      return false;
     });
 
     $(document).on( 'click', '.fv-player-clone', function(e) {
@@ -111,7 +163,7 @@ jQuery(document).ready(function($){
         .after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
       jQuery.post(ajaxurl, {
-        action: "clone_player",
+        action: "fv_wp_flowplayer_clone_player",
         playerID: $element.data('player_id')
       }, function(playerID){
         if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
@@ -138,6 +190,8 @@ jQuery(document).ready(function($){
           'width': 'auto'
         }).html('Error');
       });
+
+      return false;
     });
     
   }

@@ -1001,4 +1001,47 @@ CREATE TABLE `" . self::$db_table_name . "` (
     return $export_data;
   }
 
+  /**
+   * Removes the player and all of its videos, meta and video meta data from database.
+   *
+   * @return false|int Returns number of rows updated or false on failure.
+   * @throws Exception When any of the underlying classes throws an exception.
+   */
+  public function delete() {
+    global $wpdb;
+
+    // load player meta data
+    $meta = $this->getMetaData();
+    if ($meta && count($meta)) {
+      $export_data['meta'] = array();
+
+      foreach ($meta as $meta_data) {
+        // don't include edit locks
+        $meta_data->delete();
+      }
+    }
+
+    // load videos and meta for this player
+    $videos = $this->getVideos();
+
+    // this line will load and cache meta for all videos at once
+    new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => explode(',', $this->getVideoIds())), $this->DB_Shortcode_Instance);
+
+    if ($videos && count($videos)) {
+      foreach ($videos as $video) {
+        $video->delete();
+
+        // load all meta data for this video
+        if ($this->DB_Shortcode_Instance->isVideoMetaCached($video->getId())) {
+          $cache = $this->DB_Shortcode_Instance->getVideoMetaCache();
+          foreach ($cache[$video->getId()] as $meta) {
+            $meta->delete();
+          }
+        }
+      }
+    }
+
+    return $wpdb->delete(self::$db_table_name, array('id' => $this->id));
+  }
+
 }

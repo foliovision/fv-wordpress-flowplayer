@@ -37,6 +37,7 @@ class FV_Player_Db_Shortcode {
     add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_import_player_data', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_wp_flowplayer_clone_player', array($this, 'clone_player') );
+    add_action( 'wp_ajax_fv_wp_flowplayer_remove_player', array($this, 'remove_player') );
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') );
   }
 
@@ -288,7 +289,7 @@ class FV_Player_Db_Shortcode {
             } else if ( isset($videos[ $video_id ]) && $videos[ $video_id ]->getCaption() ) {
               // use caption
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $videos[ $video_id ]->getCaption() . '"><span>' . $videos[ $video_id ]->getCaption() . '</span></div>';
-            } else {
+            } else if (isset($videos[ $video_id ])) {
               // use source
               $arr = explode('/', $videos[ $video_id ]->getSrc());
               $arr = end($arr);
@@ -1269,6 +1270,31 @@ class FV_Player_Db_Shortcode {
       } else {
         return 'no valid import data found, import unsuccessful';
       }
+    }
+  }
+
+  /**
+   * AJAX function to remove a player from database.
+   *
+   * @throws Exception Thrown if one of the underlying DB classes throws an exception.
+   */
+  public function remove_player() {
+    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
+      // first, load the player
+      $player = new FV_Player_Db_Shortcode_Player($_POST['playerID'], array(), $this);
+      if ($player && $player->getIsValid()) {
+        // remove the player
+        if ($player->delete()) {
+          echo 1;
+          exit;
+        } else {
+          die( 'could not remove player - please use the close button and try again' );
+        }
+      } else {
+        die( 'invalid player ID, removal unsuccessful - please use the close button and try again' );
+      }
+    } else {
+      die( 'invalid player ID, removal unsuccessful - please use the close button and try again' );
     }
   }
 
