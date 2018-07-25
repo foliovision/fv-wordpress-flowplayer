@@ -1705,7 +1705,9 @@ function fv_wp_flowplayer_on_close() {
       jQuery.get(
         document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + $buttonClicked.data('insert_as_new_id'),
         function (response) {
-          jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
+          if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' || typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
+            jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
+          }
         });
     } else {
       if (typeof($buttonClicked.data('insert_id')) != 'undefined') {
@@ -2402,7 +2404,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
           // if we're inserting player as new and we come from the list view,
           // we need to store this player's ID in the original Edit link's data,
           // so we can add it to the displayed table
-          if (insert_as_new && jQuery(fv_player_editor_button_clicked).data('player_id')) {
+          if ((insert_as_new && jQuery(fv_player_editor_button_clicked).data('player_id')) || jQuery(fv_player_editor_button_clicked).data('add_new')) {
             jQuery(fv_player_editor_button_clicked).data('insert_as_new_id', playerID);
           } else {
             jQuery(fv_player_editor_button_clicked).data('insert_id', playerID);
