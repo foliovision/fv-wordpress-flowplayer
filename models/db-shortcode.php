@@ -663,8 +663,8 @@ class FV_Player_Db_Shortcode {
 
             switch ($atts['sort']) {
               case 'oldest':
-
                 $ordered_videos_tmp = array();
+                sort($ordered_videos);
                 foreach (  $ordered_videos as $video_index ) {
                   $ordered_videos_tmp['v'.$video_index] = $video_index;
                 }
@@ -675,6 +675,7 @@ class FV_Player_Db_Shortcode {
 
               case 'newest':
                 $ordered_videos_tmp = array();
+                sort($ordered_videos);
                 $index = count($ordered_videos);
                 while($index) {
                   $ordered_videos_tmp['v'.$ordered_videos[--$index]] = $ordered_videos[$index];
