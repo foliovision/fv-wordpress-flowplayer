@@ -601,7 +601,7 @@ class FV_Player_Db_Shortcode {
         $is_multi_playlist = (strpos($atts['id'], ',') !== false);
         $real_id = ($is_multi_playlist ? substr($atts['id'], 0, strpos($atts['id'], ',')) : $atts['id']);
 
-        if ( isset( $this->player_atts_cache[ $real_id ] ) ) {
+        if ( isset( $this->player_atts_cache[ $real_id ]) && empty($fv_fp->aCurArgs['sort']) ) {
           return $this->player_atts_cache[ $real_id ];
         }
 
@@ -656,6 +656,61 @@ class FV_Player_Db_Shortcode {
 
           // preload all videos
           $player->getVideos();
+
+          // check if we should change order of videos
+          $ordered_videos = explode(',', $data['videos']);
+          if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'title'))) {
+
+            switch ($atts['sort']) {
+              case 'oldest':
+
+                $ordered_videos_tmp = array();
+                foreach (  $ordered_videos as $video_index ) {
+                  $ordered_videos_tmp['v'.$video_index] = $video_index;
+                }
+
+                ksort($ordered_videos_tmp);
+                $ordered_videos = array_values($ordered_videos_tmp);
+                break;
+
+              case 'newest':
+                $ordered_videos_tmp = array();
+                $index = count($ordered_videos);
+                while($index) {
+                  $ordered_videos_tmp['v'.$ordered_videos[--$index]] = $ordered_videos[$index];
+                }
+
+                $ordered_videos = array_values($ordered_videos_tmp);
+                break;
+
+              case 'title':
+                $ordered_videos_tmp = array();
+                foreach (  $FV_Db_Shortcode->getVideosCache() as $video ) {
+                  // if this is not one of our videos, bail out
+                  if (!in_array($video->getId(), $ordered_videos)) {
+                    continue;
+                  }
+
+                  $title = $video->getCaption();
+
+                  if (!$title) {
+                    $title = $video->getSplashText();
+                  }
+
+                  if (!$title) {
+                    $title = $video->getSrc();
+                  }
+
+                  $ordered_videos_tmp[$title] = $video->getId();
+                }
+
+                ksort($ordered_videos_tmp);
+                $ordered_videos = array_values($ordered_videos_tmp);
+                break;
+            }
+
+            $data['videos'] = implode(',', $ordered_videos);
+          }
 
           // add playlist / single video data
           $atts = array_merge( $atts, $this->generateFullPlaylistCode(

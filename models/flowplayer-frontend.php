@@ -69,9 +69,12 @@ class flowplayer_frontend extends flowplayer
 
   /**
    * Builds the HTML and JS code of single flowplayer instance on a page/post.
+   *
    * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
    * @param array $args Array of arguments (name => value).
-   * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
+   *
+   * @return array array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
+   * @throws Exception If any of the underlying classes throws an exception.
    */
   function build_min_player($media,$args = array()) {
 
