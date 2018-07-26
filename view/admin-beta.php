@@ -1415,7 +1415,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
-                 data-fv-preview=".flowplayer .fp-captions { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
