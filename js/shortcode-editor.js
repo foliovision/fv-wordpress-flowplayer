@@ -1851,7 +1851,7 @@ function fv_wp_flowplayer_build_ajax_data() {
 
         // exceptions for selectively hidden fields
         if ($parent_tr.hasClass('fv_player_interface_hide') && $parent_tr.css('display') == 'none') {
-          return;
+          //return;
         }
 
         // check for a select without any option values, in which case we'll use their text
