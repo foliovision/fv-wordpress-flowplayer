@@ -83,25 +83,25 @@ class FV_Player_Db_Shortcode_Player_Video_Meta {
    * @param $wpdb The global WordPress database object.
    */
   private function initDB($wpdb) {
-    global $fv_fp;
+    global $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
     if (is_admin() || !$fv_fp->_get_option('video_meta_model_db_checked')) {
-      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
+      if ( $fv_fp->_get_option('video_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
         $sql = "
 CREATE TABLE `" . self::$db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_video` int(10) UNSIGNED NOT NULL,
-  `meta_key` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_value` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_video` (`id_video`),
-  KEY `meta_key` (`meta_key`)
+  KEY `meta_key` (`meta_key`(191))
 )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
-        $fv_fp->_set_option('video_meta_model_db_checked', 1);
+        $fv_fp->_set_option('video_meta_model_db_checked', $fv_wp_flowplayer_ver);
       }
     }
   }

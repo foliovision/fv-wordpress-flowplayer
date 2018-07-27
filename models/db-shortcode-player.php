@@ -383,22 +383,22 @@ class FV_Player_Db_Shortcode_Player {
    * @param $wpdb The global WordPress database object.
    */
   private function initDB($wpdb) {
-    global $fv_fp;
+    global $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
     if (is_admin() || !$fv_fp->_get_option('player_model_db_checked')) {
-      if ( $wpdb->get_var( "SHOW TABLES LIKE '" . self::$db_table_name . "'" ) != self::$db_table_name ) {
+      if ( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
         $sql = "
 CREATE TABLE `" . self::$db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `player_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'custom name for the player',
   `player_slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '	short slug to be used as a unique identifier for this player that can be used instead of an ID',
-  `videos` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'comma-separated list of video IDs for this player',
+  `videos` varchar(65535) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'comma-separated list of video IDs for this player',
   `ab` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to show AB loop',
   `ad` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'any HTML ad text',
-  `ad_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of advertisement for this player',
-  `ad_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width of advertisement for this player',
+  `ad_height` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'height of advertisement for this player',
+  `ad_width` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'width of advertisement for this player',
   `ad_skip` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether or not to skip ads for this player',
   `align` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'alignment position',
   `author` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'user ID that created this player',
@@ -411,12 +411,12 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `embed` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether to show embed links for this player',
   `end_actions` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'what do to when the playlist in this player ends',
   `end_action_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'the actual shortcode value for end_actions field',
-  `height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height of this player on page',
+  `height` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'height of this player on page',
   `hflip` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to horizontally flip the player',
   `lightbox` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to enable displaying this player in a lightbox',
   `lightbox_caption` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for the lightbox popup',
-  `lightbox_height` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'height for the lightbox popup',
-  `lightbox_width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'width for the lightbox popup',
+  `lightbox_height` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'height for the lightbox popup',
+  `lightbox_width` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'width for the lightbox popup',
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'adds a logo to the video or hides the globally preset one',
   `playlist` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT '[liststyle in shortcode] style of the playlist',
   `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
@@ -428,12 +428,12 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `sticky` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT 'whether or not to enable sticky functionality for this player',
   `video_ads` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[preroll in shortcode] ID of a saved video ad to be played as a pre-roll',
   `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '[postroll in shortcode] ID of a saved video ad to be played as a pre-roll',
-  `width` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'with of the player on page',
+  `width` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'with of the player on page',
   PRIMARY KEY (`id`)
 )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
-        $fv_fp->_set_option('player_model_db_checked', 1);
+        $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
       }
     }
   }
