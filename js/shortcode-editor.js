@@ -2221,6 +2221,7 @@ function fv_player_export(id_player) {
     playerID : id_player,
     cookie: encodeURIComponent(document.cookie),
   }, function(json_export_data) {
+    json_export_data = jQuery('<div/>').text(json_export_data).html();
     jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_copied_to_clipboard_message">&nbsp;</div>').css('background-image', 'none');
     jQuery('#fv_player_copy_to_clipboard').select();
     fv_wp_flowplayer_dialog_resize();
