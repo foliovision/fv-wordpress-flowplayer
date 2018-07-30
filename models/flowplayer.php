@@ -2178,7 +2178,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       wp_die('Please log in.');
     }
     $dataInPost = ($_GET['fv_player_preview'] === 'POST');
-    $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : $_POST);
+    $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
     $matches = null;
     $width ='';
     $height ='';
@@ -2227,7 +2227,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
           // note: we need to put "src" into the code or it won't get parsed at all
           //       and at the same time, it displays the correct SRC in the preview
-          echo do_shortcode('[fvplayer src="' . (!empty($_POST['videos'][0]['fv_wp_flowplayer_field_src']) ? $_POST['videos'][0]['fv_wp_flowplayer_field_src'] : 'none') . '" id="POST"]');
+          if( count($shortcode['videos']) > 0 ) {
+            $item = array_pop(array_reverse($shortcode['videos']));
+            $src = $item['fv_wp_flowplayer_field_src'];            
+          } else {
+            $src = 'none';
+          }
+          echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php

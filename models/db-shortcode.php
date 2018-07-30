@@ -726,7 +726,7 @@ class FV_Player_Db_Shortcode {
         }
       } else {
         // when ID is not numeric, it's most probably a preview that we need to build
-        $atts = array_merge( $atts, $FV_Db_Shortcode->generateFullPlaylistCode(array(), $this->db_store_player_data($_POST)));
+        $atts = array_merge( $atts, $FV_Db_Shortcode->generateFullPlaylistCode(array(), $this->db_store_player_data( json_decode( stripslashes($_POST['fv_player_preview_json']), true ) )));
       }
 
       $this->player_atts_cache[ $atts['id'] ] = $atts;
@@ -764,7 +764,16 @@ class FV_Player_Db_Shortcode {
 
     $player_options        = array();
     $video_ids             = array();
-    $post_data             = (is_array($data) ? $data : (!empty($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null));
+    
+    $post_data = null;
+    if( is_array($data) ) {
+      $post_data = $data;
+    } else if( !empty($_POST['data']) ) {
+      if( json_decode( stripslashes($_POST['data']) ) ) {
+        $post_data = json_decode( stripslashes($_POST['data']), true );
+      }
+    }
+    
     $ignored_player_fields = array(
       'fv_wp_flowplayer_field_subtitles_lang', // subtitles languages is a per-video value with global field name,
                                                // so the player should ignore it, as it will be added via video meta

@@ -2146,7 +2146,7 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
     $previewTarget.html('');
 
     if (typeof(is_post) != 'undefined') {
-      jQuery.post(url, data, function (response) {
+      jQuery.post(url, { 'fv_player_preview_json' : JSON.stringify(data) }, function (response) {
         $previewTarget.html(jQuery('#wrapper', response));
         jQuery(document).trigger('fvp-preview-complete');
       });
@@ -2380,7 +2380,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
       // save data
       jQuery.post(ajaxurl, {
         action: 'fv_wp_flowplayer_db_store_player_data',
-        data: ajax_data,
+        data: JSON.stringify(ajax_data),
         cookie: encodeURIComponent(document.cookie),
       }, function(playerID) {
         if (playerID == parseInt(playerID)) {
