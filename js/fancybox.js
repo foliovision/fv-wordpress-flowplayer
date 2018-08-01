@@ -46,6 +46,9 @@ jQuery(document).ready(function() {
   jQuery(".colorbox[href^='#'], .lightbox[href^='#']").filter(function () {
     return this.href && !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
   }).fancybox();
+  jQuery(".colorbox, .lightbox").filter(function () {
+    return this.href && this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
+  }).attr('data-fancybox','gallery').fancybox();
 });
 
 function fv_fancybox_check_size() {
