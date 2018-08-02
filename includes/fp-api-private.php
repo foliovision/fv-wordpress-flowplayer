@@ -354,6 +354,8 @@ $this->strPrivateAPI - also
       }
       else{
         $cache_plugins = get_plugins();
+        if( !function_exists('get_plugins') ) return $checked_data;
+        
         if( empty($cache_plugins[$plugin_path]['Version']) ){
           return $checked_data;
         }
