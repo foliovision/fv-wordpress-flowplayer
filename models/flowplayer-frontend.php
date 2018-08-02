@@ -1085,7 +1085,7 @@ class flowplayer_frontend extends flowplayer
     $protocol = is_ssl() ? 'https' : 'http';
 
     // each video can have subtitles in any language with new DB-based shortcodes
-    if ($fv_fp->_get_option('new_shortcode') && $this->current_video()) {
+    if ($this->current_video()) {
       if ($this->current_video()->getMetaData()) {
         foreach ($this->current_video()->getMetaData() as $meta_object) {
           if (strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
