@@ -170,7 +170,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     `start` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'allows you to show only a specific part of a video',
     PRIMARY KEY (`id`),
     KEY `src` (`src`),
-    KEY `caption` (`caption`),
+    KEY `caption` (`caption`)
   )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
@@ -203,6 +203,8 @@ class FV_Player_Db_Shortcode_Player_Video {
     // since we're storing new video into the DB in such case
     if (is_array($options) && count($options) && !isset($options['db_options'])) {
       foreach ($options as $key => $value) {
+        if( $key == 'meta' ) continue; // meta is handled elsewhere, but it's part of the object when importing from JSON
+        
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
             $this->$key = stripslashes($value);
