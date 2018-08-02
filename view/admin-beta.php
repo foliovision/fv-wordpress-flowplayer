@@ -603,7 +603,7 @@ function fv_flowplayer_admin_integrations() {
                 } else if( $iCount ) {
                   printf(__("Currently %d videos in database.", 'fv-wordpress-flowplayer'), $iCount);
                 } else if( $iQueue ) {
-                  printf(__("Currently %s posts in queue.", 'fv-wordpress-flowplayer'), $htmlQueue);
+                  printf(__("Currently %s posts in queue.", 'fv-wordpress-flowplayer'), $iQueue);
                 }
                 ?>
                 </span> <a href="#" class="show-more">(&hellip;)</a>
