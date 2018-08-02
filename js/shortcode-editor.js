@@ -113,7 +113,7 @@ jQuery(document).ready(function($){
       $element
         .addClass('fv-player-remove-confirm')
         .removeClass('fv-player-remove')
-        .html('Confirm?');
+        .html('Are you sure?');
 
       return false;
     });

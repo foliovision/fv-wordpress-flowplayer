@@ -1029,6 +1029,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
+        if( $wpdb->get_var("select count(*) from ".self::$db_table_name." where FIND_IN_SET(".$video->getId().",videos)") > 1 ) continue; // only delete videos which are used for this particular player and no other player
+        
         $video->delete();
 
         // load all meta data for this video
