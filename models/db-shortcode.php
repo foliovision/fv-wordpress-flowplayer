@@ -601,7 +601,7 @@ class FV_Player_Db_Shortcode {
         $is_multi_playlist = (strpos($atts['id'], ',') !== false);
         $real_id = ($is_multi_playlist ? substr($atts['id'], 0, strpos($atts['id'], ',')) : $atts['id']);
 
-        if ( isset( $this->player_atts_cache[ $real_id ]) && empty($fv_fp->aCurArgs['sort']) ) {
+        if ( isset( $this->player_atts_cache[ $real_id ]) && empty($atts['sort']) ) {
           return $this->player_atts_cache[ $real_id ];
         }
 
