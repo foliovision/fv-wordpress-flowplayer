@@ -1062,7 +1062,8 @@ function fv_wp_flowplayer_edit() {
 
       var
         playlist_start = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'playlist_start' ),
-        autoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'autoplay' );
+        autoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'autoplay' ),
+        playlist_sort = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'sort' );
 
       fv_flowplayer_conf.db_extra_shortcode_params = {};
 
@@ -1072,6 +1073,10 @@ function fv_wp_flowplayer_edit() {
 
       if (autoplay && autoplay[1]) {
         fv_flowplayer_conf.db_extra_shortcode_params['autoplay'] = autoplay[1];
+      }
+      
+      if (playlist_sort && playlist_sort[1]) {
+        fv_flowplayer_conf.db_extra_shortcode_params['sort'] = playlist_sort[1];
       }
 
       fv_flowplayer_conf.new_shortcode_active = true;
