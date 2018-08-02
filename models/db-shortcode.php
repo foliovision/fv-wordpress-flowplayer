@@ -1182,10 +1182,15 @@ class FV_Player_Db_Shortcode {
    * @return array Returns the actual export data in an associative array, if $output_result is false.
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
-  public function export_player_data($unused = null, $output_result = true) {
-    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
+  public function export_player_data($unused = null, $output_result = true, $id = false ) {
+    
+    if( !$id && isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID'] ) {
+      $id  = $_POST['playerID'];
+    }
+    
+    if ( $id ) {
       // first, load the player
-      $player = new FV_Player_Db_Shortcode_Player($_POST['playerID'], array(), $this);
+      $player = new FV_Player_Db_Shortcode_Player($id, array(), $this);
       if ($player && $player->getIsValid()) {
         $export_data = $player->export();
 

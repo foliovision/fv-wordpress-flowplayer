@@ -106,7 +106,13 @@ HTML;
 HTML;
     
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );      
-  }   
+  }
+  
+  public function testDBExport() {
+    global $FV_Db_Shortcode;        
+    $output = json_encode( $FV_Db_Shortcode->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
+    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );  
+  }
   
   public function tearDown() {
     delete_option('fv_player_popups');

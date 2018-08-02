@@ -654,6 +654,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
 
         foreach ($cached_player->getAllDataValues() as $key => $value) {
+          if( is_array($value) ) continue; // problem with video_objects when exporting
+          
           $this->$key = stripslashes($value);
         }
 
