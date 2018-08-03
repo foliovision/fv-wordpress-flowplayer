@@ -760,11 +760,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function beta_updates() {
     if( flowplayer::is_beta() ) {
       $this->strPluginSlug = 'fv-wordpress-flowplayer';
-      $this->strPrivateAPI = 'http://foliovision.com/plugins/';
+      $this->strPrivateAPI = 'https://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/beta-update.txt?format=txt';
       $this->strPluginPath = 'fv-wordpress-flowplayer/flowplayer.php';
       global $fv_wp_flowplayer_ver_beta;
       $this->version = str_replace('.beta','',$fv_wp_flowplayer_ver_beta);
-      $this->readme_URL = 'https://foliovision.com/plugins/public/fv-wordpress-flowplayer-beta-changelog.txt';
+      $this->readme_URL = 'https://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/beta-changelog.txt?format=txt';
       parent::auto_updates();
     }    
   }
