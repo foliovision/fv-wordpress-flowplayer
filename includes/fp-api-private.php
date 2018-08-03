@@ -367,12 +367,16 @@ $this->strPrivateAPI - also
       $sTransient = $this->strPluginSlug.'_fp-private-updates-api-'.sanitize_title($request_args['version']);
       $response = get_transient( $sTransient );
       
-      if( !$response ){        
-        $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
-        if( is_wp_error($raw_response) ) {
-          $request['sslverify'] = false;
+      if( !$response ){
+        if( stripos($this->strPrivateAPI,'plugins.trac.wordpress.org') === false ) {
           $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
-        }
+          if( is_wp_error($raw_response) ) {
+            $request['sslverify'] = false;
+            $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
+          }          
+        } else {
+          $raw_response = wp_remote_get( $this->strPrivateAPI );        
+        }        
         
         if( !is_wp_error( $raw_response ) && ( $raw_response['response']['code'] == 200 ) ) {
           $response = @unserialize( preg_replace( '~^/\*[\s\S]*?\*/\s+~', '', $raw_response['body'] ) );
