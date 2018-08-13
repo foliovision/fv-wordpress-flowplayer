@@ -71,6 +71,7 @@ function fv_flowplayer_get_js_translations() {
   'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
   'playlist_current' =>__('Now Playing','fv-wordpress-flowplayer'),
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
+  'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),

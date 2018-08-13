@@ -1737,7 +1737,10 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 /* Notices */
 .fvfp-notices { position: absolute;top:12%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 10px #000; opacity: 1; pointer-events: none}
+.fvfp-notices a { pointer-events: auto; color:#fff; }
+.flowplayer .fvfp-notice-content a:hover { color:#eee; }
 .flowplayer.is-splash .fvfp-notices { display: block }
+.fv-player-reload { font-size: 5em; display: block }
 
 
 /* Disable selection, todo: check!  */
