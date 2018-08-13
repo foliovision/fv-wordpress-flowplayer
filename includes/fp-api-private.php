@@ -353,8 +353,9 @@ $this->strPrivateAPI - also
         $request_args['version'] = isset($checked_data->checked[$plugin_path]) ? $checked_data->checked[$plugin_path] : '0.1';        
       }
       else{
-        $cache_plugins = get_plugins();
         if( !function_exists('get_plugins') ) return $checked_data;
+        
+        $cache_plugins = get_plugins();        
         
         if( empty($cache_plugins[$plugin_path]['Version']) ){
           return $checked_data;
