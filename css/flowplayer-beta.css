@@ -1550,18 +1550,7 @@
 .flowplayer.alignleft { margin-right: 10px; margin-bottom: 10px;  }
 .flowplayer.alignright { margin-left: 10px; margin-bottom: 10px; }
 
-
-
-/*  No Controlar, todo: check!  */
-.flowplayer.no-controlbar .fp-controls a,.flowplayer.no-controlbar .fp-controls .fp-volume,.flowplayer.no-controlbar .fp-time {display:none;}
-.flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.fixed-controls.no-controlbar .fp-controls {height:auto;}
-.flowplayer.is-mouseover.no-controlbar .fp-timeline {height:4px;top:0;}
-.has-menu.no-brand.flowplayer.no-controlbar .fp-timeline {margin:0;}
-.flowplayer.is-mouseover.no-controlbar .fp-controls, .flowplayer.is-mouseover.no-controlbar .fp-mute, .flowplayer.is-mouseover.no-controlbar .fp-title {height:0;}
-.flowplayer.no-controlbar .fp-buffer, .flowplayer.no-controlbar .fp-progress, .flowplayer.no-controlbar .fp-timeline  { cursor: auto; }
-.flowplayer.no-controlbar .fp-timeline:hover+.fp-timeline-tooltip { display: none; }
-
-
+.flowplayer.no-controlbar .fp-controls {display:none}
 
 /* Caption, todo: check!*/
 p.fp-caption { text-align: center;max-width: 100%;  }
