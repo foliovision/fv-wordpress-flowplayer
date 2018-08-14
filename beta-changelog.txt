@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 7.1.12.726.beta =
+
+* Audio player - making sure "Force fullscreen on mobile" doesn't work for it as it makes no sense
+* Getting rid of the old video tag code
+
 = 7.1.11.726.beta =
 
 * Fixing subtitle size setting
