@@ -645,10 +645,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $value = false;
     else if($value === 'true')
         $value = true;
-        
-    if( isset($_GET['old_code']) && $key == 'old_code' ) {
-      return $_GET['old_code'];
-    }
 
     return $value;
   }
@@ -777,7 +773,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
     
     $sHTML = "\t\t<a href='#' onclick='return false'";
-    $sHTML .= !$this->_get_option('old_code') ? " data-item='".$this->json_encode($aPlayer)."'" : "";
+    $sHTML .= $this->is_beta() || !$this->_get_option('old_code') ? " data-item='".$this->json_encode($aPlayer)."'" : "";
     $sHTML .= ">";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
     
@@ -904,7 +900,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       $sHTML = array();
       
-      if( !$this->_get_option('old_code') || $sShortcode && count($sItems) > 0) {
+      if( $this->is_beta() || !$this->_get_option('old_code') || $sShortcode && count($sItems) > 0) {
         //var_dump($sItemCaption);
         
         if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
