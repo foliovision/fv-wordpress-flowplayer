@@ -353,8 +353,9 @@ $this->strPrivateAPI - also
         $request_args['version'] = isset($checked_data->checked[$plugin_path]) ? $checked_data->checked[$plugin_path] : '0.1';        
       }
       else{
-        $cache_plugins = get_plugins();
         if( !function_exists('get_plugins') ) return $checked_data;
+        
+        $cache_plugins = get_plugins();        
         
         if( empty($cache_plugins[$plugin_path]['Version']) ){
           return $checked_data;
@@ -367,15 +368,19 @@ $this->strPrivateAPI - also
       $sTransient = $this->strPluginSlug.'_fp-private-updates-api-'.sanitize_title($request_args['version']);
       $response = get_transient( $sTransient );
       
-      if( !$response ){        
-        $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
-        if( is_wp_error($raw_response) ) {
-          $request['sslverify'] = false;
+      if( !$response ){
+        if( stripos($this->strPrivateAPI,'plugins.trac.wordpress.org') === false ) {
           $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
-        }
+          if( is_wp_error($raw_response) ) {
+            $request['sslverify'] = false;
+            $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
+          }          
+        } else {
+          $raw_response = wp_remote_get( $this->strPrivateAPI );        
+        }        
         
         if( !is_wp_error( $raw_response ) && ( $raw_response['response']['code'] == 200 ) ) {
-          $response = @unserialize( $raw_response['body'] );
+          $response = @unserialize( preg_replace( '~^/\*[\s\S]*?\*/\s+~', '', $raw_response['body'] ) );
           if( !$response ) $response = $raw_response['body'];
         }
         
@@ -413,7 +418,7 @@ $this->strPrivateAPI - also
       if( is_wp_error( $request ) ) {
          $res = new WP_Error( 'plugins_api_failed', __( 'An Unexpected HTTP Error occurred during the API request.</p> <p><a href="?" onclick="document.location.reload(); return false;">Try again</a>' ), $request->get_error_message() );
       }else{
-         $res = unserialize( $request['body'] );
+         $res = unserialize( preg_replace( '~^/\*[\s\S]*?\*/\s+~', '', $request['body'] ) );
          if( $res === false ) $res = new WP_Error( 'plugins_api_failed', __( 'An unknown error occurred' ), $request['body'] );
       }
 

@@ -71,6 +71,7 @@ function fv_flowplayer_get_js_translations() {
   'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
   'playlist_current' =>__('Now Playing','fv-wordpress-flowplayer'),
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
+  'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
@@ -394,7 +395,7 @@ function flowplayer_prepare_scripts() {
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     
-    if( $fv_fp->_get_option('old_code') ) {
+    if( $fv_fp->_get_option('old_code') && !$fv_fp->is_beta() ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', $fv_fp->aPlaylists );
     } else {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
