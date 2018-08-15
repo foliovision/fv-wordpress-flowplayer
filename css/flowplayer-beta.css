@@ -1550,6 +1550,9 @@
 .flowplayer.alignleft { margin-right: 10px; margin-bottom: 10px;  }
 .flowplayer.alignright { margin-left: 10px; margin-bottom: 10px; }
 
+.flowplayer.is-muted .fp-volumebtn {display: block}
+.flowplayer.is-muted .fp-volumebar {display: none}
+
 .flowplayer.no-controlbar .fp-controls {visibility:hidden}
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebtn {visibility:visible;display:block}
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebar {display:none}
