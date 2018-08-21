@@ -43,8 +43,7 @@ class FV_Player_Db_Shortcode_Player {
     $lightbox, // whether to enable displaying this player in a lightbox
     $lightbox_caption, // title for the lightbox popup
     $lightbox_height, // height for the lightbox popup
-    $lightbox_width, // width for the lightbox popup
-    $logo, // adds a logo to the video or hides the globally preset one
+    $lightbox_width, // width for the lightbox popup    
     $loop, // (NON-ORM, class property only) loops player at the end if set
     $player_name, // custom name for the player
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
@@ -131,13 +130,6 @@ class FV_Player_Db_Shortcode_Player {
    */
   public function getAd() {
     return $this->ad;
-  }
-
-  /**
-   * @return string
-   */
-  public function getLogo() {
-    return $this->logo;
   }
 
   /**
@@ -416,8 +408,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   `lightbox` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to enable displaying this player in a lightbox',
   `lightbox_caption` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'title for the lightbox popup',
   `lightbox_height` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'height for the lightbox popup',
-  `lightbox_width` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'width for the lightbox popup',
-  `logo` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'adds a logo to the video or hides the globally preset one',
+  `lightbox_width` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'width for the lightbox popup',  
   `playlist` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default' COMMENT '[liststyle in shortcode] style of the playlist',
   `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'whether to auto-advance the playlist in this player (On / Off / Default)',
   `qsel` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
