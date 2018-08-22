@@ -819,7 +819,7 @@ class FV_Player_Db_Shortcode {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('meta_key' => '1'), $this->DB_Shortcode_Instance);
+          $d_meta = new FV_Player_Db_Shortcode_Player_Player_Meta(null, array('meta_key' => '1'), $this);
           $d_meta->link2db($d_id);
           $d_meta->delete();
         }
