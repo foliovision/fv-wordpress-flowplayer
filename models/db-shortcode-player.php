@@ -813,6 +813,24 @@ CREATE TABLE `" . self::$db_table_name . "` (
       return array();
     }
   }
+  
+  /**
+   * Returns actual meta data for a key for this player.
+   */
+  public function getMetaValue( $key, $single = false ) {
+    $output = array();
+    $data = $this->getMetaData();    
+    if (count($data)) {
+      foreach ($data as $meta_object) {
+        if ($meta_object->getMetaKey() == $key) {
+          if( $single ) return $meta_object->getMetaValue();
+          $output[] = $meta_object->getMetaValue();
+        }
+      }
+    }
+    if( $single ) return false;
+    return $output;
+  }  
 
   /**
    * Returns all video objects for this player.
