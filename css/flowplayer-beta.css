@@ -1161,13 +1161,13 @@
 }
 /* Fullscreen captions on large screens */
 @media (min-width: 64.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:135%}
+.flowplayer.is-fullscreen .fp-captions p{font-size:175%;max-width:75%}
 }
 @media (min-width: 90.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:175%}
+.flowplayer.is-fullscreen .fp-captions p{font-size:200%}
 }
 @media (min-width: 120.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:225%}
+.flowplayer.is-fullscreen .fp-captions p{font-size:225%;max-width:65%}
 }
 @media (min-width: 128em) {
 .flowplayer.is-fullscreen .fp-captions p{font-size:300%}
@@ -1455,8 +1455,8 @@
 .fp-playlist-horizontal.is-wide a:nth-child(5n+1) {clear:both}
 
 .fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px;-webkit-overflow-scrolling: touch;display:block}
-.fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px }
-.fv-playlist-slider-wrapper .fp-playlist-horizontal a  { width: 200px }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px;text-align:left }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal a { width: 200px }
 
 .fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
 .fp-playlist-vertical-player {float:left!important;max-width:calc( 100% - 156px)!important}
