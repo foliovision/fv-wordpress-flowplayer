@@ -1788,7 +1788,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-play { height:40px !important; width:40px;line-height:40px !important }
 .flowplayer.fixed-controls.is-audio .fp-time em { bottom:13px }
 .flowplayer.is-audio .fp-waiting em { margin:0.8em 0.3em 0 }
-.flowplayer.is-audio.fp-full .fp-timeline,.flowplayer.is-audio.fp-fat .fp-timeline { position: static;margin:0 .6em;height:inherit;bottom:0; } 
+.flowplayer.is-audio.fp-full .fp-timeline,.flowplayer.is-audio.fp-fat .fp-timeline { margin:0;bottom:2.4em } 
 .flowplayer.is-audio .fp-time { font-size:14px;text-shadow:none }
 .flowplayer.is-audio .fp-mute { width:40px;height:40px }
 .flowplayer.is-audio .fp-volumebtn { display: block }
@@ -1818,8 +1818,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-message p {font-size:75%}
 
 .flowplayer.is-audio .fp-duration, .flowplayer.is-audio .fp-elapsed, .flowplayer.is-audio a.fp-play, .flowplayer.is-audio a.fp-mute {color:#eee !important}
-.flowplayer.is-audio .fp-volumelevel, .flowplayer.is-audio .fp-progress {background-color:#bb0000 !important}
-.flowplayer.is-audio .fp-volumeslider, .flowplayer.is-audio .fp-buffer {background-color:#eeeeee !important}
+.flowplayer.is-audio .fp-volumelevel, .flowplayer.is-audio .fp-progress {background-color:#bb0000 !important;border-radius:0}
+.flowplayer.is-audio .fp-volumeslider, .flowplayer.is-audio .fp-buffer {background-color:#eeeeee !important;border-radius:0}
 
 .fp-playlist-external.is-audio a.is-active,.fp-playlist-external.is-audio a.is-active h4,.fp-playlist-external.is-audio a.is-active h4:before {color:#bb0000}
 
