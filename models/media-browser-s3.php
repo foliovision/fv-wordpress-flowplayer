@@ -25,6 +25,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     $this->fv_wp_flowplayer_include_aws_sdk();
     global $fv_fp, $s3Client;
 
+    $error = false;
 
     $regions = $fv_fp->_get_option('amazon_region');
     $secrets = $fv_fp->_get_option('amazon_secret');
@@ -85,14 +86,49 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     }
 
     if ($regioned_bucket_found) {
+      
+      $output = array();
+      
       $region = $regions[ $array_id ];
       $secret = $secrets[ $array_id ];
       $key    = $keys[ $array_id ];
       $bucket = $buckets[ $array_id ];
-      $cf_domain_to_use = null;
 
       $credentials = new Aws\Credentials\Credentials( $key, $secret );
+      
+      try {
 
+        $s3Client = Aws\CloudFront\CloudFrontClient::factory( array(
+        'credentials' => $credentials,
+        'region' => 'us-east-1',
+        'version' => 'latest'
+        ) );
+
+        $cloudfronts = $s3Client->listDistributions();        
+        foreach( $cloudfronts['DistributionList']['Items'] AS $item ) {
+          if( !$item['Enabled'] ) continue;
+          
+          $cf_domain = $item['DomainName'];
+          if( !empty($item['Aliases']) && !empty($item['Aliases']['Items']) && !empty($item['Aliases']['Items'][0]) ) {
+            $cf_domain = $item['Aliases']['Items'][0];
+          }
+          $origin = false;
+          if( !empty($item['Origins']) && !empty($item['Origins']['Items']) && !empty($item['Origins']['Items'][0]) && !empty($item['Origins']['Items'][0]['DomainName']) ) {
+            $origin = $item['Origins']['Items'][0]['DomainName'];
+          }
+          
+          foreach( $buckets as $bucket_id => $bucket_name ) {
+            if( $bucket_name.'.s3.amazonaws.com' == $origin ) {
+              $domains[$bucket_id] = 'https://'.$cf_domain; // todo: check if SSL is enabled for custom domains!
+            }            
+          }
+          
+        }
+
+      } catch ( Aws\CloudFront\Exception\CloudFrontException $e ) {
+        $error = 'It appears that the policy of AWS IAM user identified by '.$key.' doesn\'t permit List and Read operations for the CloudFront service. Please add these access levels if you are using CloudFront for your S3 buckets in order to obtain CloudFront links for your videos.';
+      }
+      
       // instantiate the S3 client with AWS credentials
       $s3Client = Aws\S3\S3Client::factory( array(
         'credentials' => $credentials,
@@ -124,12 +160,12 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
             $link = (string) $s3Client->getObjectUrl( $bucket, $name );
 
             // replace link with CloudFront URL, if we have one
-            if ($cf_domain_to_use !== null) {
+            if( !empty($domains[$array_id]) ) {
               // replace S3 URLs with buckets in the S3 subdomain
-              $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($cf_domain_to_use, '/').'/$1', $link);
+              $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
 
               // replace S3 URLs with bucket name as a subfolder
-              $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($cf_domain_to_use, '/').'/$1', $link);
+              $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
             }
 
             $path = 'Home/' . $name;
@@ -200,7 +236,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           return placeInArray( $dest, $path_array, $size, $pathorig, $link );
         }
 
-        $output        = array();
         $folders_added = array();
         $i             = 0;
         foreach ( $path_array as $path ) {
@@ -247,6 +282,10 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         )
       )
     );
+    
+    if( $error ) {
+      $json_final['error'] = $error;
+    }
 
     if (isset($err) && $err) {
       $json_final['err'] = $err;
