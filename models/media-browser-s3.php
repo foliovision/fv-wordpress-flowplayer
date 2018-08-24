@@ -25,9 +25,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     $this->fv_wp_flowplayer_include_aws_sdk();
     global $fv_fp, $s3Client;
 
-    // load CloudFront setttings
-    $cfDomains = $fv_fp->_get_option( array('pro','cf_domains_list') );
-    $cfBuckets = $fv_fp->_get_option( array('pro','cf_buckets_list') );
 
     $regions = $fv_fp->_get_option('amazon_region');
     $secrets = $fv_fp->_get_option('amazon_secret');
@@ -83,28 +80,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         if ($regions[$bucket_id]) {
           $array_id = $bucket_id;
           $regioned_bucket_found = true;
-        }
-      }
-    }
-
-    // assign CF URLs to buckets
-    foreach ($buckets as $bucket_id => $unused) {
-      // if the bucket is assigned to a CloudFront URL,
-      // add it to the list of domains
-      if (is_array($cfBuckets) && count($cfBuckets)) {
-        foreach ($cfBuckets as $cf_bucket_index => $cf_bucket_id) {
-          if ($cf_bucket_id == $bucket_id) {
-            $cf_domain_to_use = strtolower($cfDomains[$cf_bucket_index]);
-
-            // add HTTP, if not set
-            if (substr($cf_domain_to_use, 0, 4) !== 'http' && substr($cf_domain_to_use, 0, 4) !== 'https') {
-              $cf_domain_to_use = 'http'.((strstr($cf_domain_to_use, '.cloudfront.net') !== false) ? 's' : '').'://' . $cf_domain_to_use;
-            }
-
-            $domains[ $bucket_id ] = $cf_domain_to_use;
-
-            break;
-          }
         }
       }
     }
