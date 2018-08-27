@@ -312,10 +312,8 @@ class flowplayer_frontend extends flowplayer
           $show_splashend = true;
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
-        
-        
   
-        
+        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );          
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
         if( $this->is_beta() ) {
@@ -325,7 +323,11 @@ class flowplayer_frontend extends flowplayer
             $skin = 'skin-'.$this->_get_option('skin');
           }
           $attributes['class'] .= ' no-svg is-paused '.$skin;
-          $attributes['class'] .= ' '.$this->_get_option(array($skin, 'design-timeline')).' '.$this->_get_option(array($skin, 'design-icons'));
+          $timeline_class = $this->_get_option(array($skin, 'design-timeline'));
+          if( $bIsAudio && $timeline_class == 'fp-minimal' ) {
+            $timeline_class = 'fp-slim';
+          }
+          $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
         }
       
         if( $autoplay ) {
@@ -343,10 +345,8 @@ class flowplayer_frontend extends flowplayer
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
           $attributes['class'] .= ' playlist-hidden';
         }
-        
-        $bIsAudio = false;
-        if( ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
-          $bIsAudio = true;
+                
+        if( $bIsAudio ) {
           $attributes['class'] .= ' is-audio fixed-controls is-mouseover';
         }
         
