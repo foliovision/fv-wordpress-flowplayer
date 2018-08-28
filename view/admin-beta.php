@@ -685,7 +685,7 @@ function fv_flowplayer_admin_select_popups($aArgs){
         echo $key;
         if( !empty($aPopupAd['title']) ) echo ' - '.$aPopupAd['title'];
         if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
-        if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
+        if( !empty($aPopupAd['disabled']) && $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
       }
     } ?>
@@ -1553,6 +1553,17 @@ function fv_flowplayer_admin_usage() {
 }
 
 
+function fv_flowplayer_admin_rollback() {
+  global $fv_wp_flowplayer_ver;
+  $url = admin_url('options-general.php?page=fvplayer&action=fv-player-rollback');
+  $url = wp_nonce_url( $url, 'fv-player-rollback' );
+  ?>  		
+    <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>? You can reinstall version 6.6.6 here:</p>
+    <p><a href="<?php echo $url; ?>" class="button">Reinstall version 6.6.6</a></p>
+  <?php			
+}
+
+
 function fv_flowplayer_admin_checkbox( $name ) {
 	global $fv_fp;
 ?>
@@ -1616,6 +1627,7 @@ if( !class_exists('FV_Player_Pro') ) {
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
+add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_help', 'normal' );
 
 ?>
 
