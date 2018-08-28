@@ -1097,6 +1097,13 @@
 .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 
+/* using fp-full and fp-slim at once should only make the timeline full width and nothings else should change */
+.flowplayer.fp-slim.fp-full .fp-controls {
+    height: 2.4em; }
+.flowplayer.fp-slim.fp-full .fp-timeline {
+  bottom: 2.4em;
+    height: .2em; }
+
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: .2em; }
