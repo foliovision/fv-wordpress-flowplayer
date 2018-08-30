@@ -131,7 +131,9 @@
   cursor: none; }
 
 .flowplayer.is-loading .fp-waiting, .flowplayer.is-seeking .fp-waiting {
-  display: block !important; }
+  display: block !important;
+  filter: alpha(opacity=100) !important;
+  opacity: 1 !important; }
   .flowplayer.is-loading .fp-waiting svg, .flowplayer.is-loading .fp-waiting p, .flowplayer.is-seeking .fp-waiting svg, .flowplayer.is-seeking .fp-waiting p {
     filter: alpha(opacity=100);
     opacity: 1; }
