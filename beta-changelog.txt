@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 7.1.13.727.beta =
+
+* Updating to Flowplayer 7.2.7
+* Disallowing minimal skin for audio player as it doesn't work properly with it
+
 = 7.1.12.726.beta =
 
 * Audio player - making sure "Force fullscreen on mobile" doesn't work for it as it makes no sense

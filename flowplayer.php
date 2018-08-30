@@ -29,8 +29,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $fv_wp_flowplayer_ver_beta, $fv_wp_flowplayer_core_ver_beta;
 $fv_wp_flowplayer_ver = '6.6.6';
 $fv_wp_flowplayer_core_ver = '6.0.5';
-$fv_wp_flowplayer_ver_beta = '7.1.12.726.beta.2';
-$fv_wp_flowplayer_core_ver_beta = '7.2.6.1';
+$fv_wp_flowplayer_ver_beta = '7.1.13.727.beta';
+$fv_wp_flowplayer_core_ver_beta = '7.2.7';
 
 include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {

@@ -131,7 +131,9 @@
   cursor: none; }
 
 .flowplayer.is-loading .fp-waiting, .flowplayer.is-seeking .fp-waiting {
-  display: block !important; }
+  display: block !important;
+  filter: alpha(opacity=100) !important;
+  opacity: 1 !important; }
   .flowplayer.is-loading .fp-waiting svg, .flowplayer.is-loading .fp-waiting p, .flowplayer.is-seeking .fp-waiting svg, .flowplayer.is-seeking .fp-waiting p {
     filter: alpha(opacity=100);
     opacity: 1; }
@@ -1097,6 +1099,13 @@
 .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 
+/* using fp-full and fp-slim at once should only make the timeline full width and nothings else should change */
+.flowplayer.fp-slim.fp-full .fp-controls {
+    height: 2.4em; }
+.flowplayer.fp-slim.fp-full .fp-timeline {
+  bottom: 2.4em;
+    height: .2em; }
+
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: .2em; }
@@ -1161,13 +1170,13 @@
 }
 /* Fullscreen captions on large screens */
 @media (min-width: 64.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:135%}
+.flowplayer.is-fullscreen .fp-captions p{font-size:175%;max-width:75%}
 }
 @media (min-width: 90.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:175%}
+.flowplayer.is-fullscreen .fp-captions p{font-size:200%}
 }
 @media (min-width: 120.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:225%}
+.flowplayer.is-fullscreen .fp-captions p{font-size:225%;max-width:65%}
 }
 @media (min-width: 128em) {
 .flowplayer.is-fullscreen .fp-captions p{font-size:300%}
@@ -1455,8 +1464,8 @@
 .fp-playlist-horizontal.is-wide a:nth-child(5n+1) {clear:both}
 
 .fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px;-webkit-overflow-scrolling: touch;display:block}
-.fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px }
-.fv-playlist-slider-wrapper .fp-playlist-horizontal a  { width: 200px }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px;text-align:left }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal a { width: 200px }
 
 .fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
 .fp-playlist-vertical-player {float:left!important;max-width:calc( 100% - 156px)!important}
@@ -1788,7 +1797,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-play { height:40px !important; width:40px;line-height:40px !important }
 .flowplayer.fixed-controls.is-audio .fp-time em { bottom:13px }
 .flowplayer.is-audio .fp-waiting em { margin:0.8em 0.3em 0 }
-.flowplayer.is-audio.fp-full .fp-timeline,.flowplayer.is-audio.fp-fat .fp-timeline { position: static;margin:0 .6em;height:inherit;bottom:0; } 
+.flowplayer.is-audio.fp-full .fp-timeline { margin:0;bottom:2.4em } 
 .flowplayer.is-audio .fp-time { font-size:14px;text-shadow:none }
 .flowplayer.is-audio .fp-mute { width:40px;height:40px }
 .flowplayer.is-audio .fp-volumebtn { display: block }
@@ -1818,8 +1827,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-message p {font-size:75%}
 
 .flowplayer.is-audio .fp-duration, .flowplayer.is-audio .fp-elapsed, .flowplayer.is-audio a.fp-play, .flowplayer.is-audio a.fp-mute {color:#eee !important}
-.flowplayer.is-audio .fp-volumelevel, .flowplayer.is-audio .fp-progress {background-color:#bb0000 !important}
-.flowplayer.is-audio .fp-volumeslider, .flowplayer.is-audio .fp-buffer {background-color:#eeeeee !important}
+.flowplayer.is-audio .fp-volumelevel, .flowplayer.is-audio .fp-progress {background-color:#bb0000 !important;border-radius:0}
+.flowplayer.is-audio .fp-volumeslider, .flowplayer.is-audio .fp-buffer {background-color:#eeeeee !important;border-radius:0}
 
 .fp-playlist-external.is-audio a.is-active,.fp-playlist-external.is-audio a.is-active h4,.fp-playlist-external.is-audio a.is-active h4:before {color:#bb0000}
 
