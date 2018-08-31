@@ -990,7 +990,7 @@
 .flowplayer .fp-captions p i{font-style:italic}
 .flowplayer .fp-captions p u{text-decoration:underline}
 @media (max-width: 56.25em){
-  .flowr{display:block}
+  .flowplayer .fp-captions br{display:block}
   .flowplayer .fp-captions p:first-of-type,.flowplayer .fp-captions p:last-of-type{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
   .flowplayer .fp-captions p:last-of-type{padding-left:0.4em}
 }
