@@ -754,7 +754,7 @@ function fv_player_block_update( $arg ) {
 
 
 /*
-Beta plugin needs to show different version on the plugins screen
+Beta plugin needs to show different update on the plugins screen
 */
 add_filter( 'all_plugins', 'fv_player_beta_adjust_plugin_version' );
 
@@ -769,103 +769,3 @@ function fv_player_beta_adjust_plugin_version( $aPlugins ) {
   return $aPlugins;
 }
 
-
-/*
-Beta version to not show release updates
-*/
-add_filter( 'site_transient_update_plugins', 'fv_player_beta_stop_release_updates' );
-
-function fv_player_beta_stop_release_updates( $objUpdates ) {
-  if( !flowplayer::is_beta() || !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
-
-  global $fv_wp_flowplayer_ver_beta;
-  foreach( $objUpdates->response AS $key => $objUpdate ) {
-    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
-      if( version_compare($objUpdate->new_version,$fv_wp_flowplayer_ver_beta) == -1 ) {
-        unset($objUpdates->response[$key]);
-      }
-    }
-  }
-  
-  return $objUpdates;
-}
-
-
-add_action( 'admin_notices', 'fv_player_rollback' );
-
-function fv_player_rollback() {
-  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-rollback' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-rollback' ) ) {
-    
-    ob_start(); // first check if we can perform the update automatically!
-    $creds = request_filesystem_credentials( admin_url(), '', false, false, array() );
-    if( !WP_Filesystem($creds) ) { // if not, then don't try to do it at all
-      ob_get_clean();
-      echo "<div class='error'><p>Unfortunately rollback is not supported as your site can't install plugins without FTP. Please login to your Foliovision.com account and download the previous plugin version there.</p></div>";
-      return;
-    }
-
-    echo ob_get_clean();
-
-    global $fv_fp, $fv_wp_flowplayer_ver;
-    $fv_fp->pointer_boxes = array(); // no pointer boxes here!
-
-    $plugin_slug = false;
-    $active_plugins = get_option( 'active_plugins' );
-    foreach( $active_plugins AS $plugin ) {
-      if( stripos($plugin,'fv-wordpress-flowplayer') === 0 && stripos($plugin,'/flowplayer.php') !== false ) {
-        $plugin_slug = $plugin;
-      }
-    }    
-
-    $plugin_transient 	= get_site_transient( 'update_plugins' );
-    $plugin_folder    	= plugin_basename( dirname( $plugin_slug ) );
-    $plugin_file      	= basename( $plugin_slug );
-    $version          	= $fv_wp_flowplayer_ver;
-    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.6.6.6.zip';
-    $temp_array 		= array(
-      'slug'        => $plugin_folder,
-      'new_version' => $version,
-      'url'         => 'https://foliovision.com',
-      'package'     => $url,
-    );
-
-    $temp_object = (object) $temp_array;
-    $plugin_transient->response[ $plugin_folder . '/' . $plugin_file ] = $temp_object;
-    set_site_transient( 'update_plugins', $plugin_transient );
-
-    add_filter( 'upgrader_pre_download', 'fv_player_rollback_message' );
-
-    require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
-    $title = 'FV Player Rollback';
-    $nonce = 'upgrade-plugin_' . $plugin_slug;
-    $url = 'update.php?action=upgrade-plugin&plugin=' . urlencode( $plugin_slug );
-    $upgrader_skin = new Plugin_Upgrader_Skin( compact( 'title', 'nonce', 'url', 'plugin' ) );
-    $upgrader = new Plugin_Upgrader( $upgrader_skin );      
-    $upgrader->upgrade( $plugin_slug );
-
-    include( ABSPATH . 'wp-admin/admin-footer.php' );
-    
-    delete_option('fv-player-pro-release');
-    
-    
-    $active_plugins = get_option( 'active_plugins' );
-    foreach( $active_plugins AS $plugin ) {
-      if( stripos( $plugin, 'fv-player-pro' ) === 0 ) {
-        delete_plugins( array($plugin) ); // deleting the FV Player Pro plugin here means that he FV Player activation process in the iframe will already re-install it in the iframe, so in the iframe you will get the FV Player settings screen!
-      }
-    }    
-    
-    wp_die( '', 'FV Player Rollback', array( 'response' => 200 ) );
-    
-  }
-}
-
-function fv_player_rollback_message( $val ) {
-  echo "<div class='updated'>";
-  echo "<p>Please wait until the plugin download and reactivation is completed.</p>";
-  if( flowplayer::is_licensed() ) {
-    echo "<p>We also rollback the FV Player Pro plugin in the process.</p>";
-  }
-  echo "</div>";
-  return $val;
-}

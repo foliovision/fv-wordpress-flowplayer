@@ -43,7 +43,7 @@ final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
     $output = apply_filters( 'the_content', $post->post_content );
     
     $sample = <<< HTML
-    <div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 100%; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+    <div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
     	<div class="fp-ratio" style="padding-top: 56.25%"></div>
     </div>
     	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_10ecd1d835d0db002906d6666d27a916">
@@ -60,7 +60,7 @@ HTML;
     $output = apply_filters( 'the_content', $post->post_content );
     
     $sample = <<< HTML
-    <div class="fp-playlist-vertical-wrapper"><div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 100%; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+    <div class="fp-playlist-vertical-wrapper"><div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
     	<div class="fp-ratio" style="padding-top: 56.25%"></div>
     </div>
     	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-vertical fp-playlist-has-captions" rel="wpfp_10ecd1d835d0db002906d6666d27a916">
@@ -78,7 +78,7 @@ HTML;
     $output = apply_filters( 'the_content', $post->post_content );
 
     $sample = <<< HTML
-<div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 100%; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+<div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
   <div class="fp-ratio" style="padding-top: 56.25%"></div>
 <a class="fp-prev" title="prev">&lt;</a><a class="fp-next" title="next">&gt;</a></div>
   <div style="display: none" class="fp-playlist-external fv-playlist-design-2017 fp-playlist-has-captions" rel="wpfp_10ecd1d835d0db002906d6666d27a916">
@@ -95,7 +95,7 @@ HTML;
     $output = apply_filters( 'the_content', $post->post_content );
 
     $sample = <<< HTML
-<div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="max-width: 100%; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+<div id="wpfp_10ecd1d835d0db002906d6666d27a916" class="flowplayer no-brand is-splash fvp-play-button" data-embed="false" style="background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
   <div class="fp-ratio" style="padding-top: 56.25%"></div>
 </div>
   <div class='fv-playlist-slider-wrapper'><div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_10ecd1d835d0db002906d6666d27a916" style="width: 750px">

@@ -169,7 +169,6 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [check_failed] => Admin: Check failed.
     [playlist_current] => Now Playing
     [video_issues] => Video Issues
-    [video_reload] => Video loading has stalled, click to reload
     [link_copied] => Video Link Copied to Clipboard
     [embed_copied] => Embed Code Copied to Clipboard
     [subtitles_disabled] => Subtitles disabled

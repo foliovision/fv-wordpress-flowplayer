@@ -158,12 +158,12 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-    if( $this->is_beta() || !$this->_get_option('old_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
+    if( !$this->_get_option('old_code') || apply_filters('fv_flowplayer_playlist_items',array(),$this) || isset($this->aCurArgs['playlist']) && strlen(trim($this->aCurArgs['playlist'])) > 0 ) {     
 
       list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
     }
     
-    if( ( $this->is_beta() || !$this->_get_option('old_code') ) && count($aPlaylistItems) == 1 ) {
+    if( !$this->_get_option('old_code')  && count($aPlaylistItems) == 1 ) {
       $playlist_items_external_html = false;
       $attributes['data-item'] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
     }
@@ -317,8 +317,10 @@ class flowplayer_frontend extends flowplayer
           $show_splashend = true;
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
+        
+        
   
-        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );          
+        
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
         if( $this->is_beta() ) {
@@ -328,11 +330,7 @@ class flowplayer_frontend extends flowplayer
             $skin = 'skin-'.$this->_get_option('skin');
           }
           $attributes['class'] .= ' no-svg is-paused '.$skin;
-          $timeline_class = $this->_get_option(array($skin, 'design-timeline'));
-          if( $bIsAudio && $timeline_class == 'fp-minimal' ) {
-            $timeline_class = 'fp-slim';
-          }
-          $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
+          $attributes['class'] .= ' '.$this->_get_option(array($skin, 'design-timeline')).' '.$this->_get_option(array($skin, 'design-icons'));
         }
       
         if( $autoplay ) {
@@ -350,8 +348,10 @@ class flowplayer_frontend extends flowplayer
         if( isset($this->aCurArgs['playlist_hide']) && strcmp($this->aCurArgs['playlist_hide'],'true') == 0 ) {
           $attributes['class'] .= ' playlist-hidden';
         }
-                
-        if( $bIsAudio ) {
+        
+        $bIsAudio = false;
+        if( ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+          $bIsAudio = true;
           $attributes['class'] .= ' is-audio fixed-controls is-mouseover';
         }
         
@@ -414,7 +414,7 @@ class flowplayer_frontend extends flowplayer
         
         $attributes['style'] = '';
         if( !empty($this->aCurArgs['playlist']) && ( in_array($this->_get_option('liststyle'), array('horizontal','slider') ) || isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'] == 'horizontal', array('horizontal','slider')) ) ) {
-          $attributes['style'] .= 'max-width: 100%; ';
+          //  no player dimensions for playlists
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
           if( intval($height) == 0 ) $height = '100%';
@@ -491,11 +491,19 @@ class flowplayer_frontend extends flowplayer
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
         }
-        
+
+        if( !empty($this->aCurArgs['chapters']) ) {
+          $attributes['class'] .= ' has-chapters';
+        }
+
+        if( !empty($this->aCurArgs['transcript']) ) {
+          $attributes['class'] .= ' has-transcript';
+        }
+
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
-        
+
         if( !empty($this->aCurArgs['redirect']) ) {
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }

@@ -357,24 +357,6 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 6.6.6 - 2018/07/10 =
-
-New users get FV Player 7 Beta (7.1.6.726.beta) automatically!
-
-* Making sure big custom logo won't prevent video playback due to blocking clicks
-* Playlist - setting maximum player width to 100% to prevent display issues
-* Preventing right mouse click on player
-* XML Video Sitemap and Schema.org - fixing exclusion for CloudFront domains
-
-= 6.6.5 - 2018/07/02 =
-
-* Feature - Handle WordPress video shortcodes option now also converts YouTube links
-* Bugfix - XSS fix, thanks to Japan Vulnerability Notes for the report
-
-= 6.6.4 - 2018/06/27 =
-
-* Lightbox - fixing height bug if video is bigger than screen size and taller
-
 = 6.6.3 - 2018/06/19 =
 
 * Compatibility - fix for themes which use wp_kses to show post content, like UnidashVersion By CactusThemes. It was preventing FV Player from working in these themes.

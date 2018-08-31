@@ -76,6 +76,8 @@ a.red-button {
 
 #wpfp_options table { width: 100% }
 #wpfp_options table td.first { width: 250px }
+#wpfp_options #fv_player_pro table td.first { width: 278px }
+#wpfp_options #fv_flowplayer_integrations table td.first { width: 310px }
 #wpfp_options #fv_flowplayer_integrations table tr > td:first-child { padding-top: 4px; vertical-align: top; }
 #wpfp_options table.flowplayer-settings { width: 29%; }
 

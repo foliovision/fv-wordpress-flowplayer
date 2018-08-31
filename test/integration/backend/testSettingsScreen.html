@@ -638,12 +638,12 @@ jQuery(document).ready(function($) {
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="css_disable">Disable saving skin CSS to a static file:</label></td>
+          <td class="first"><label for="css_disable">Disable saving of color settings into a static file:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="css_disable" value="false"/>
                   <input type="checkbox" name="css_disable" id="css_disable" value="true" />
-                  Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.                                        <span class="more">We do this to avoid a big style tag in your site &lt;head&gt;. Don't edit this file though, as it will be overwritten by plugin update or saving its options!</span> <a href="#" class="show-more">(&hellip;)</a>
+                  Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.                                        <span class="more">We do this to avoid outputting CSS code into your site <head>. Don't edit this file though, as it will be overwritten by plugin update or saving its options!</span> <a href="#" class="show-more">(&hellip;)</a>
                                 </p>
           </td>
       </tr>
@@ -696,7 +696,7 @@ jQuery(document).ready(function($) {
               <p class="description">
                   <input type="hidden" name="integrations[wp_core_video]" value="false"/>
                   <input type="checkbox" name="integrations[wp_core_video]" id="integrations[wp_core_video]" value="true" />
-                  ...and also the YouTube links                                </p>
+                                                  </p>
           </td>
       </tr>
                       <tr>
@@ -844,15 +844,7 @@ jQuery(document).ready(function($) {
           <p class="description">
           <input type="hidden" name="video_sitemap" value="false"/>
           <input type="checkbox" name="video_sitemap" id="video_sitemap" value="true" />
-          Creates <code>http://example.org/video-sitemap.xml</code> which you can submit via Google Webmaster Tools.                                        <span class="more">As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.</span> <a href="#" class="show-more">(&hellip;)</a>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td><label for="video_sitemap_meta">Sitemap Post Meta <a href="#" class="show-more">(?)</a>:</label></td>
-        <td>
-          <input  id="video_sitemap_meta" name="video_sitemap_meta" type="text"  value="" />
-          <p class="description"><span class="more">You can enter post meta keys here, use <code>,</code> to separate multiple values.</span></p>
+          Creates <code>http://example.org/video-sitemap.xml</code> which you can submit via Google Webmaster Tools.                                </p>
         </td>
       </tr>
       <tr>
@@ -981,7 +973,7 @@ jQuery(document).ready(function($) {
 <div class="inside">
 <style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
-    <div id="wpfp_1b7da827d9fee9aa6d5bb9c5dca973bf" class="flowplayer no-brand is-splash fvp-play-button" style="max-width: 100%; background-image: url(https://i.vimeocdn.com/video/609485450_1280.jpg);" data-ratio="0.5625">
+    <div id="wpfp_1b7da827d9fee9aa6d5bb9c5dca973bf" class="flowplayer no-brand is-splash fvp-play-button" style="background-image: url(https://i.vimeocdn.com/video/609485450_1280.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 <div class='fvp-share-bar'><ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank">Facebook</a></li>
@@ -1970,15 +1962,14 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     jQuery('.show-more').click( function(e) {
       e.preventDefault();
       
-      var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
+      var more = jQuery('.more', jQuery(this).parent() ).length ? jQuery('.more', jQuery(this).parent() ) : jQuery(this).parent().siblings('.more');
       
       more.toggle();
       
       if( jQuery(':visible', more ).length > 0 ) {
-        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
         jQuery(this).html('(hide)');
       } else {
-        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
+        jQuery(this).html('(&hellip;)');
       }      
     } );  
     

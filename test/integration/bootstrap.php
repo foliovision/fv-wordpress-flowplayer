@@ -25,7 +25,6 @@ $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array(
 	  'fv-wordpress-flowplayer/flowplayer.php',
   ),
-  'fv-player-pro-release' => 'release',
 );
 
 // If the develop repo location is defined (as WP_DEVELOP_DIR), use that
