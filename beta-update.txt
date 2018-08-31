@@ -1,0 +1,4 @@
+/*
+This files is used to signal there is a new version out of the beta users
+*/
+O:8:"stdClass":5:{s:7:"version";s:10:"7.1.13.727";s:11:"new_version";s:10:"7.1.13.727";s:4:"date";s:10:"2018-08-30";s:7:"package";s:66:"https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.zip";s:4:"slug";s:23:"fv-wordpress-flowplayer";}

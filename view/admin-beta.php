@@ -536,8 +536,7 @@ function fv_flowplayer_admin_integrations() {
 				<table class="form-table2">
 
           <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', __('Enable to force video size at cost of loosing the video responsiveness.', 'fv-wordpress-flowplayer') ); ?>
-          <?php if( $fv_fp->_get_option('cbox_compatibility') ) $fv_fp->_get_checkbox(__('Colorbox Compatibility', 'fv-wordpress-flowplayer'), 'cbox_compatibility', __('Enable if your theme is using colorbox lightbox to show content and clones the HTML content into it.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Disable saving of color settings into a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid outputting CSS code into your site <head>. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Disable saving skin CSS to a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
           <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required <a href="https://foliovision.com/player/video-hosting/hls#hls-js" target="_blank">CORS headers</a>.','fv-wordpress-flowplayer' )); ?>
 
           <tr>
@@ -572,7 +571,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
 
-          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '', '' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '...and also the YouTube links', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
@@ -617,8 +616,9 @@ function fv_flowplayer_admin_integrations() {
               <input type="hidden" name="integrations[optimizepress2]" value="false" />
               <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( $fv_fp->_get_option( array( 'integrations', 'optimizepress2' ) ) ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>-->          
-          <?php if( $fv_fp->_get_option('old_code') ) $fv_fp->_get_checkbox(__('Use old code', 'fv-wordpress-flowplayer'), 'old_code', __('Check this option if your videos suddenly don\'t play and report the issues to <a href="https://foliovision.com/support">Foliovision Support Forums</a> please!', 'fv-wordpress-flowplayer') ); ?>
+					</tr>-->
+
+          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array( 'integrations', 'featured_img' ), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
@@ -653,7 +653,7 @@ function fv_flowplayer_admin_seo() {
 ?>        
 				<table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Use Schema.org markup', 'fv-wordpress-flowplayer'), array( 'integrations', 'schema_org' ), __(' Adds the video meta data information for search engines.', 'fv-wordpress-flowplayer') ); ?>          
-          <?php $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ) ); ?>
+          <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
 					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -685,7 +685,7 @@ function fv_flowplayer_admin_select_popups($aArgs){
         echo $key;
         if( !empty($aPopupAd['title']) ) echo ' - '.$aPopupAd['title'];
         if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
-        if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
+        if( !empty($aPopupAd['disabled']) && $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
       }
     } ?>
@@ -1413,7 +1413,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
-                 data-fv-preview=".flowplayer .fp-captions { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
@@ -1553,6 +1553,17 @@ function fv_flowplayer_admin_usage() {
 }
 
 
+function fv_flowplayer_admin_rollback() {
+  global $fv_wp_flowplayer_ver;
+  $url = admin_url('options-general.php?page=fvplayer&action=fv-player-rollback');
+  $url = wp_nonce_url( $url, 'fv-player-rollback' );
+  ?>  		
+    <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>? You can reinstall version 6.6.6 here:</p>
+    <p><a href="<?php echo $url; ?>" class="button">Reinstall version 6.6.6</a></p>
+  <?php			
+}
+
+
 function fv_flowplayer_admin_checkbox( $name ) {
 	global $fv_fp;
 ?>
@@ -1616,6 +1627,7 @@ if( !class_exists('FV_Player_Pro') ) {
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
+//add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_help', 'normal' );
 
 ?>
 
@@ -1827,14 +1839,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     jQuery('.show-more').click( function(e) {
       e.preventDefault();
       
-      var more = jQuery('.more', jQuery(this).parent() ).length ? jQuery('.more', jQuery(this).parent() ) : jQuery(this).parent().siblings('.more');
+      var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
       
       more.toggle();
       
       if( jQuery(':visible', more ).length > 0 ) {
+        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
         jQuery(this).html('(hide)');
       } else {
-        jQuery(this).html('(&hellip;)');
+        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
       }      
     } );  
     

@@ -3,7 +3,7 @@
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Formerly FV WordPress Flowplayer. Embed videos (MP4, WEBM, OGV, FLV) into posts or pages. Uses Flowplayer 6.
-Version: 6.6.3
+Version: 6.6.6
 Author URI: http://foliovision.com/
 License:     GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -26,10 +26,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$fv_wp_flowplayer_ver = '6.6.3.1';
+$fv_wp_flowplayer_ver = '6.6.6';
 $fv_wp_flowplayer_core_ver = '6.0.5';
-$fv_wp_flowplayer_ver_beta = '7.1.3.726.beta';
-$fv_wp_flowplayer_core_ver_beta = '7.2.6.1';
+$fv_wp_flowplayer_ver_beta = '7.1.13.727.beta';
+$fv_wp_flowplayer_core_ver_beta = '7.2.7';
 
 include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
