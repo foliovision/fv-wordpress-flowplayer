@@ -1126,7 +1126,7 @@
 
 .flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.is-loading .fp-ui .fp-controls { opacity: 1; filter: alpha(opacity=100); }
 .flowplayer.fixed-controls {overflow: visible; margin-bottom: 4em}  
-.flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
+.flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
