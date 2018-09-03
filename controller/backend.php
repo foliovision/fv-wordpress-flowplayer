@@ -800,7 +800,7 @@ function fv_player_rollback() {
     $creds = request_filesystem_credentials( admin_url(), '', false, false, array() );
     if( !WP_Filesystem($creds) ) { // if not, then don't try to do it at all
       ob_get_clean();
-      echo "<div class='error'><p>Unfortunately rollback is not supported as your site can't install plugins without FTP. Please login to your Foliovision.com account and download the previous plugin version there.</p></div>";
+      echo "<div class='error'><p>Unfortunately rollback is not supported as your site can't install plugins without FTP. Please login to your Foliovision.com account and download the previous plugin version there using the \"Show Previous Version\" button.</p></div>";
       return;
     }
 
@@ -840,7 +840,7 @@ function fv_player_rollback() {
     $nonce = 'upgrade-plugin_' . $plugin_slug;
     $url = 'update.php?action=upgrade-plugin&plugin=' . urlencode( $plugin_slug );
     $upgrader_skin = new Plugin_Upgrader_Skin( compact( 'title', 'nonce', 'url', 'plugin' ) );
-    $upgrader = new Plugin_Upgrader( $upgrader_skin );      
+    $upgrader = new Plugin_Upgrader( $upgrader_skin );
     $upgrader->upgrade( $plugin_slug );
 
     include( ABSPATH . 'wp-admin/admin-footer.php' );
