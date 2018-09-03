@@ -865,6 +865,7 @@ function fv_player_rollback_message( $val ) {
   echo "<p>Please wait until the plugin download and reactivation is completed.</p>";
   if( flowplayer::is_licensed() ) {
     echo "<p>We also rollback the FV Player Pro plugin in the process.</p>";
+    if( class_exists('FV_Player_Pro') ) echo "<style>#wpbody-content iframe[title=\"Update progress\"] { display: none; }</style>";
   }
   echo "</div>";
   return $val;
