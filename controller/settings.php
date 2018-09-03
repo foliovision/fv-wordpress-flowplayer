@@ -15,12 +15,7 @@ function fv_player_admin_menu () {
 
 
 function fv_player_admin_page() {
-	global $fv_fp;
-  if( $fv_fp->is_beta() ) {
-    include dirname( __FILE__ ) . '/../view/admin-beta.php';
-  } else {
-    include dirname( __FILE__ ) . '/../view/admin.php';
-  }
+	include dirname( __FILE__ ) . '/../view/admin.php';
 }
 
 
@@ -146,7 +141,7 @@ function fv_player_admin_pointer_boxes() {
     );
 	}
   
-  if( $fv_fp->is_beta() && !$fv_fp->_get_option('notice_new_lightbox') ) {
+  if( !$fv_fp->_get_option('notice_new_lightbox') ) {
 		$fv_fp->pointer_boxes['fv_flowplayer_new_lightbox'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_new_lightbox',
@@ -158,12 +153,12 @@ function fv_player_admin_pointer_boxes() {
     );
 	}
   
-  if( $fv_fp->is_beta() && $fv_fp->_get_option('nag_fv_player_7') ) {
+  if( $fv_fp->_get_option('nag_fv_player_7') ) {
 		$fv_fp->pointer_boxes['fv_flowplayer_fv_player_7'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_fv_player_7',
       'heading' => __('FV Player 7 Bera', 'fv-wordpress-flowplayer'),
-      'content' => '<p>Welcome to the brand new FV Player 7 Beta! Improvements include:</p>'.
+      'content' => '<p>Welcome to the brand new FV Player 7! Improvements include:</p>'.
         '<ul style="list-style: circle; padding-left: 3em;"><li>New player design and skin options</li>
 <li>New Flowplayer core video engine</li>
 <li>Support for autoplay on mobile</li>
@@ -354,88 +349,4 @@ function flowplayer_admin_footer_wp_js_restore() {
   });
   </script>
   <?php
-}
-
-
-/*
-Beta switcher interface
-*/
-add_action( 'plugins_loaded', 'fv_player_version_switcher_init' );
-
-function fv_player_version_switcher_init() {
-  global $FV_Player_Pro;
-  if( !empty($FV_Player_Pro) ) return;
-  
-  add_action( 'admin_notices', 'fv_player_version_switcher_start', 999999 );
-  add_action( 'fv_player_settings_pre', 'fv_player_version_switcher' );
-  add_action( 'fv_flowplayer_admin_buttons_after', 'fv_player_version_switcher_script' );
-  add_action( 'admin_footer', 'fv_player_version_switcher_save' );
-}
-
-function fv_player_version_switcher_start() {
-  if( isset($_GET['page']) && $_GET['page'] == 'fvplayer' ) ob_start();
-}
-
-function fv_player_version_switcher() {
-  $html = ob_get_clean();
-  
-  $select = "<select id='fv-player-pro-release' name='fv-player-pro-release'>";
-  $select .= "<option".( fv_player_version_switcher_get_release() == 'beta' ? " selected" : "" )." value='beta'>Beta</option>";
-  $select .= "<option".( fv_player_version_switcher_get_release() == 'release' ? " selected" : "" )." value='release'>Release</option>";
-  $select .= "</select>";
-  
-  $html = str_replace('<h2>FV Player</h2>','<form action="" method="post"><h2>FV Player '.$select.'</h2><input type="hidden" name="fv_player_pro_switch" value="' . wp_create_nonce( 'fv_player_pro_switch' ) . '" /></form>',$html);
-  
-  echo $html;
-}
-
-function fv_player_version_switcher_get_release() {
-  $release = isset($_POST['fv-player-pro-release']) && isset($_REQUEST['fv_player_pro_switch']) ? $_POST['fv-player-pro-release'] : get_option('fv-player-pro-release');
-  if( !$release ) {
-    $release = 'release';
-  }
-  return $release;
-}
-
-function fv_player_version_switcher_script() {
-  ?>
-  <script>
-  jQuery('#fv-player-pro-release').change( function() {
-    var question = '';
-    var version = jQuery(this).val().toLowerCase(); 
-
-    switch( version )
-    {
-      case "beta":
-        question = '<?php _e('Are you sure you want to switch your FV Player release to beta?', 'fv-wordpress-flowplayer'); ?>';
-        break;
-      case "release":
-        question = '<?php _e('Are you sure you want to switch your FV Player beta to release?', 'fv-wordpress-flowplayer'); ?>';
-        break;
-      case "stable":
-
-        break;
-      default:
-        console.log('version_switcher_script -> unexpected version');
-    }
-    
-    if( !confirm(question) ) 
-    {
-      jQuery(this).val( '<?php echo fv_player_version_switcher_get_release(); ?>' );
-      return false;
-    }     
-
-    jQuery('#fv-player-pro-release').parents('form').submit();
-  });
-  </script>
-  <?php    
-}
-
-function fv_player_version_switcher_save() {
-  if( isset($_POST['fv-player-pro-release']) && isset($_REQUEST['fv_player_pro_switch']) && wp_verify_nonce( $_REQUEST['fv_player_pro_switch'], 'fv_player_pro_switch') ) {
-    update_option('fv-player-pro-release',$_POST['fv-player-pro-release']);
-    
-    global $fv_fp;
-    $fv_fp->css_writeout();
-  }
 }

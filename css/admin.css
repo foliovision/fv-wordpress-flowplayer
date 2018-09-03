@@ -1,11 +1,12 @@
-#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { position: absolute; top: 1%; left: 1%; z-index: 20; }
-#content .flowplayer.is-mouseout .fv-wp-flowplayer-notice-small, .flowplayer.is-mouseout .fv-wp-flowplayer-notice-small { top: 1%; -webkit-transition:top .15s .3s;-moz-transition:top .15s .3s;transition:top .15s .3s }
-#content .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small, .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small { top: 32px }
-#content .fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice { color: black !important; background-color: #FFFFE0; border-color: #E6DB55; margin: -1%; padding: 0 0.6em; border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; line-height: 15px; z-index: 100; width: 97%; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif }
+#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { position: absolute; top: 0; left: 0; z-index: 20; }
+#content .flowplayer .fv-wp-flowplayer-notice-small small, .flowplayer .fv-wp-flowplayer-notice-small small { position:relative;left:15px;top:10px;-webkit-transition:all .15s 0s;-moz-transition:all .15s 0s;transition:all .15s 0s }
+#content .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small small, .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small small, #content .flowplayer.is-ready.is-paused .fv-wp-flowplayer-notice-small small, .flowplayer.is-ready.is-paused .fv-wp-flowplayer-notice-small small  { top: 3em }
+/*#content .flowplayer.is-ready.is-paused.has-video-checker .fv-wp-flowplayer-notice-small small, .flowplayer.is-ready.is-paused.has-video-checker .fv-wp-flowplayer-notice-small small { top: 0; }*/
+#content .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice small, .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice small, #content .flowplayer .fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice small, .flowplayer .fv-wp-flowplayer-notice-small.fv-wp-flowplayer-notice small { top:0;left:0;-webkit-transition:none;-moz-transition:none;transition:none; }
+#content .fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice { color: black !important; background-color: #FFFFE0; margin: 0; padding: 0 12px; border-radius: 0; border: none; line-height: 15px; z-index: 100; width: 100%; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif }
 #content .fv-wp-flowplayer-notice strong, .fv-wp-flowplayer-notice strong { font-weight: bold; }
-#content .fv-wp-flowplayer-notice blockquote, .fv-wp-flowplayer-notice blockquote { font-size: 12px; }
-#content .fv-wp-flowplayer-notice p, .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; color: #5b5b5b; }
-.fv-wp-flowplayer-notice p tt { color: #000; }
+#content .fv-wp-flowplayer-notice p, .fv-wp-flowplayer-notice p { font-family: sans-serif; margin: 0.5em 0; padding: 2px; color: #5b5b5b; }
+.fv-wp-flowplayer-notice p tt, .fv-wp-flowplayer-notice blockquote { color: #000; font-size: 12px; }
 .fv-wp-flowplayer-notice p tt.bluelink { color: #4189A7; }
 
 #content .fv-wp-flowplayer-notice a { color: #800 !important; }
@@ -17,7 +18,8 @@
 #content .fv-wp-flowplayer-notice.fv-wp-flowplayer-error, .fv-wp-flowplayer-notice.fv-wp-flowplayer-error { background-color: #FFEBE8; border-color: #CC0000; }
 #content .fv-wp-flowplayer-notice.fv-wp-flowplayer-notice, .fv-wp-flowplayer-notice.fv-wp-flowplayer-notice { background-color: #EDEDED; border-color: #c0c0c0; box-shadow: 0 0 4px #ccc; }
 .fv-wp-flowplayer-notice-small .fv_wp_flowplayer_notice_head { display: none; }
-.fv-wp-flowplayer-notice.fv-wp-flowplayer-notice .fv_wp_flowplayer_notice_head { display: block; text-align: center; font-size: 14px; border-bottom: 1px solid #7a7a7a; padding: 10px; line-height: 1; margin: 0 -0.6em 1em -0.6em; background-color: #e3e3e3; background-repeat: repeat-x; background-image: -moz-linear-gradient(top, #e3e3e3, #aeaeae); 	background-image: -ms-linear-gradient(top, #e3e3e3, #aeaeae); background-image: -webkit-linear-gradient(top, #e3e3e3, #aeaeae); background-image: -o-linear-gradient(top, #e3e3e3, #aeaeae); background-image: linear-gradient(top, #e3e3e3, #aeaeae); border-radius: 3px 3px 0 0; }
+.fv-wp-flowplayer-notice.fv-wp-flowplayer-notice .fv_wp_flowplayer_notice_head { display: block; text-align: center; font-size: 14px; padding: 10px; line-height: 1; margin: 0 -12px 1em; background-color: #ccc; text-transform: uppercase; }
+.fv-wp-flowplayer-notice.fv-wp-flowplayer-notice .fv_wp_flowplayer_notice_head:after { position: absolute; top: 5px; right: 5px; content: '\f335'; font-family: 'dashicons'; line-height: 1; vertical-align: top; font-size: 24px; color: #666; cursor: pointerc }
 
 .fv-wp-flowplayer-notice-small .vid-ok { color: green; }
 .fv-wp-flowplayer-notice-small .vid-warning { color: orange; }
@@ -130,8 +132,3 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 #fp-preview-wrapper .fp-subtitle{height:50px}
 
 #dashboard-widgets .flowplayer-wrapper h3, #dashboard-widgets .flowplayer-wrapper h4 {color:inherit;margin:0 auto;padding:0;font-weight:700;font-size:inherit}
-
-.fv-player-editor-wrapper { float: left }
-
-/* otherwise "Drag boxes here" appears when you hide a meta box initially and then you show it with JS */
-.metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }

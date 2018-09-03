@@ -716,6 +716,9 @@ function fv_player_admin_notice_expired_license() {
 }
 
 
+/*
+Warning when clicking the update link on plugins screen
+*/
 add_action( 'admin_footer', 'fv_player_block_update', 999 );
 
 function fv_player_block_update( $arg ) {
@@ -750,44 +753,6 @@ function fv_player_block_update( $arg ) {
       <?php
     }
   }
-}
-
-
-/*
-Beta plugin needs to show different version on the plugins screen
-*/
-add_filter( 'all_plugins', 'fv_player_beta_adjust_plugin_version' );
-
-function fv_player_beta_adjust_plugin_version( $aPlugins ) {
-  if( flowplayer::is_beta() ) {
-    $current_plugin = basename(dirname(dirname(__FILE__))).'/flowplayer.php';
-    if( !empty($aPlugins[$current_plugin]) && !empty($aPlugins[$current_plugin]['Version']) ) {
-      global $fv_wp_flowplayer_ver_beta;
-      $aPlugins[$current_plugin]['Version'] = $fv_wp_flowplayer_ver_beta;
-    }
-  }
-  return $aPlugins;
-}
-
-
-/*
-Beta version to not show release updates
-*/
-add_filter( 'site_transient_update_plugins', 'fv_player_beta_stop_release_updates' );
-
-function fv_player_beta_stop_release_updates( $objUpdates ) {
-  if( !flowplayer::is_beta() || !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
-
-  global $fv_wp_flowplayer_ver_beta;
-  foreach( $objUpdates->response AS $key => $objUpdate ) {
-    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
-      if( version_compare($objUpdate->new_version,$fv_wp_flowplayer_ver_beta) == -1 ) {
-        unset($objUpdates->response[$key]);
-      }
-    }
-  }
-  
-  return $objUpdates;
 }
 
 
