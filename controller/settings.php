@@ -157,7 +157,7 @@ function fv_player_admin_pointer_boxes() {
 		$fv_fp->pointer_boxes['fv_flowplayer_fv_player_7'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_fv_player_7',
-      'heading' => __('FV Player 7 Bera', 'fv-wordpress-flowplayer'),
+      'heading' => __('FV Player 7', 'fv-wordpress-flowplayer'),
       'content' => '<p>Welcome to the brand new FV Player 7! Improvements include:</p>'.
         '<ul style="list-style: circle; padding-left: 3em;"><li>New player design and skin options</li>
 <li>New Flowplayer core video engine</li>
