@@ -716,46 +716,6 @@ function fv_player_admin_notice_expired_license() {
 }
 
 
-/*
-Warning when clicking the update link on plugins screen
-*/
-add_action( 'admin_footer', 'fv_player_block_update', 999 );
-
-function fv_player_block_update( $arg ) {
-  global $pagenow;
-  if( isset($pagenow) && $pagenow == 'plugins.php' ) {
-    $plugin_path = str_replace( trailingslashit(plugins_url()), '', plugins_url('',dirname(__FILE__)) ).'/flowplayer.php';
-    $aUpdates = get_site_transient('update_plugins');
-    if( !$aUpdates || empty($aUpdates->response) || empty($aUpdates->response[$plugin_path]) ) return;
-    
-    $sMessage = 'You are about to upgrade to FV Player 7 which uses the new core video player with some visual changes.\n\n';
-    $aCheckProLicense = get_transient( 'fv_flowplayer_license' );
-    $aCheckPlayerLicense = get_transient( 'fv-player-pro_license' );
-    if( !empty($aCheckProLicense->expired) || !empty($aCheckProLicense->error) ) {
-      $sMessage .= 'Since your license is expired, so you will loose your custom logo and Pro features might not work.\n\n';
-    } if( !empty($aCheckPlayerLicense->expired) || !empty($aCheckPlayerLicense->error) ) {
-      $sMessage .= 'Since your license is expired, so you will loose your custom logo.\n\nAre you sure you want to upgrade?\n\n';
-    }
-    
-    $sMessage .= 'Are you sure you want to upgrade?';
-    
-    if( stripos($aUpdates->response[$plugin_path]->new_version,'7.') === 0 ) {
-      ?>
-      <script>
-      ( function($) {        
-        $('[data-plugin=<?php echo str_replace( array('/','.'), array('\\\/','\\\.'), $plugin_path ); ?>]').find('.update-link').click( function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          return confirm("<?php echo $sMessage; ?>");
-        });
-      })(jQuery);
-      </script>
-      <?php
-    }
-  }
-}
-
-
 add_action( 'admin_notices', 'fv_player_rollback' );
 
 function fv_player_rollback() {
