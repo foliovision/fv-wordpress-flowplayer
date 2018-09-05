@@ -1778,7 +1778,7 @@ On the right side of this screen, you can see the current visual configuration o
 
 = 7.1.14.727 =
 
-* Brand new FV Player version. If you can't upgrade due to a popup dialog saying "Are you sure you want to upgrade?" please one the update link in a new browser tab.
+* Brand new FV Player version. If you can't upgrade due to a popup dialog saying "Are you sure you want to upgrade?" please open the update link in a new browser tab.
 
 = 6.6.1 =
 
