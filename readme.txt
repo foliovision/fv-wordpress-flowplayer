@@ -1776,6 +1776,10 @@ On the right side of this screen, you can see the current visual configuration o
 
 == Upgrade Notice ==
 
+= 7.1.14.727 =
+
+* Brand new FV Player version. If you can't upgrade due to a popup dialog saying "Are you sure you want to upgrade?" please one the update link in a new browser tab.
+
 = 6.6.1 =
 
 * FV Player Pro 0.9.17 and 0.9.17.1 users - make sure you update FV Player Pro before this plugin!
