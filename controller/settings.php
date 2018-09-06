@@ -161,11 +161,11 @@ function fv_player_admin_pointer_boxes() {
       'content' => '<p>Welcome to the brand new FV Player 7! Improvements include:</p>'.
         '<ul style="list-style: circle; padding-left: 3em;"><li>New player design and skin options</li>
 <li>New Flowplayer core video engine</li>
+<li>Support for autoplay on latest Chrome and Safari versions</li>
 <li>Support for autoplay on mobile</li>
 <li>New lightbox look</li>
 <li>Improved video buffering</li></ul>'.
-        '<p>More information in our <a href="https://foliovision.com/2018/05/fv-player-7-beta" target="_blank">blog announcement</a>.</p>'.
-        '<p>In case of any issues you can still switch back to the release verson on the <a href="' . admin_url('options-general.php?page=fvplayer') . '">settings screen</a>. Please also file in a <a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">bug report</a>.</p>',
+        '<p>More information in our <a href="https://foliovision.com/2018/09/fv-player-7" target="_blank">blog announcement</a>.</p>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __('Acknowledge', 'fv-wordpress-flowplayer'),
       'button2' => '<style>.fv_flowplayer_fv_player_7 .button-secondary { display: none }</style>'
