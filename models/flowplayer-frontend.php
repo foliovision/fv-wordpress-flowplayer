@@ -1011,10 +1011,10 @@ class flowplayer_frontend extends flowplayer
     }
     $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
 
-    $aStartend = !empty($this->aCurArgs['startend']) ? explode(";",$this->aCurArgs['startend']) : false;  //  todo: somehow move to Pro?
+    $aStartend = !empty($this->aCurArgs['startend']) ? explode(";",$this->aCurArgs['startend']) : array();  //  todo: somehow move to Pro?
     
     foreach( $aPlaylistItems AS $key => $aSrc ) {
-      $this->aCurArgs['startend'] = isset($aStartend[$key]) ? $aStartend[$key] : false;
+      if( !empty($aStartend[$key]) ) $this->aCurArgs['startend'] = $aStartend[$key];
       
       unset($this->aCurArgs['playlist']);
       $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
