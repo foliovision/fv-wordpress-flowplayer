@@ -1546,7 +1546,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-time { font-size:14px;text-shadow:none }
 .flowplayer.is-audio .fp-mute { width:40px;height:40px }
 .flowplayer.is-audio .fp-volumebtn { display: block }
-.flowplayer.is-audio .fp-play.fp-visible svg, .flowplayer.is-audio + .fp-playlist-external a .now-playing { display:none; }
+.flowplayer.is-audio .fp-play.fp-visible svg, .flowplayer.is-audio + .fp-playlist-external a .now-playing, .flowplayer.is-audio .fp-speed-flash { display:none; }
 .is-audio + .fp-playlist-external { counter-reset: 'fv-playlist-counter';background-color:#f0f0f0;border-radius:0 0 10px 10px;border-top:1px solid #fff }
 .flowplayer.is-audio .fp-waiting { margin:0 auto; }
 .flowplayer.is-audio .fp-speed.fp-hilite { opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0); }
@@ -1559,10 +1559,14 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio + .fp-playlist-external a h4,.entry-content .is-audio + .fp-playlist-external a h4 { display: block;opacity:1;position:relative;text-align:left;font-size:13px;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
 .is-audio + .fp-playlist-external a h4 span,.entry-content .is-audio + .fp-playlist-external a h4 span { position:relative;top:auto;padding:0;transform:none }
 .is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
-.flowplayer.is-loading.is-audio .fp-controls, .flowplayer.is-loading.is-audio .fp-time { display:block }
-.flowplayer.is-loading.is-audio .fp-waiting { position:relative;top:-3px;z-index:99 }
-.flowplayer.fixed-controls.is-audio { margin-bottom:0;height:40px }
+.flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:0;height:40px }
 .flowplayer.is-audio .fv-ab-loop,.flowplayer.fixed-controls.is-audio .fv-ab-loop {bottom:-28px;padding-left:82px}
+.flowplayer.is-loading.is-audio .fp-controls { display:flex }
+.flowplayer.is-audio.is-loading .fp-playbtn {opacity:0}
+.flowplayer.is-audio.is-loading .fp-waiting {top:0;left:0;position:absolute}
+.flowplayer.is-audio.is-loading .fp-waiting svg {z-index:9;width:3em;height:3em;left: 9px;right:auto;top:5px;bottom:auto;-webkit-transform:none;transform:none;max-height:none}
+.flowplayer.is-audio .fp-bar {background-color: #ccc}
+
 
 .flowplayer.is-audio .fp-fullscreen,.flowplayer.is-audio .fp-ratio,.flowplayer.is-audio.is-splash .fp-timeline-tooltip {display:none}
 .flowplayer.is-audio.is-error {border:0;margin-bottom:50px}
