@@ -1535,16 +1535,16 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio .fp-player {background-size: contain; background-position: top center; background-repeat: no-repeat}
 
 /* Audio player playlist, todo: check! */ 
-.flowplayer.is-audio,.site-content .flowplayer.is-audio,.flowplayer.fixed-controls.is-audio {margin-top:40px}
+.flowplayer.is-audio,.site-content .flowplayer.is-audio,.flowplayer.fixed-controls.is-audio {margin-top:2.8em}
 .flowplayer.is-audio .fv-player-buttons li {margin:0}
 .site-content .flowplayer.is-audio .fp-controls,.site-content .flowplayer.is-audio .fv-ab-loop,.site-content .fv-player-buttons a:active,.site-content .fv-player-buttons a { background-color:#888 !important }
 .is-audio .fp-playlist-external { background-color:#eee }
-.flowplayer.is-audio .fp-controls { height:40px;top:0;bottom:0 }
-.flowplayer.is-audio .fp-play { height:40px !important; width:40px;line-height:40px !important }
+.flowplayer.is-audio .fp-controls { height:2.8em;top:0;bottom:0 }
+.flowplayer.is-audio .fp-play { height:2.8em !important; width:2.8em;line-height:2.8em !important }
 .flowplayer.fixed-controls.is-audio .fp-time em { bottom:13px }
 .flowplayer.is-audio .fp-waiting em { margin:.8em .3em 0 }
 .flowplayer.is-audio .fp-time { font-size:14px;text-shadow:none }
-.flowplayer.is-audio .fp-mute { width:40px;height:40px }
+.flowplayer.is-audio .fp-mute { width:2.8em;height:2.8em }
 .flowplayer.is-audio .fp-volumebtn { display: block }
 .flowplayer.is-audio .fp-play.fp-visible svg, .flowplayer.is-audio + .fp-playlist-external a .now-playing, .flowplayer.is-audio .fp-speed-flash { display:none; }
 .is-audio + .fp-playlist-external { counter-reset: 'fv-playlist-counter';background-color:#f0f0f0;border-radius:0 0 10px 10px;border-top:1px solid #fff }
@@ -1559,7 +1559,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio + .fp-playlist-external a h4,.entry-content .is-audio + .fp-playlist-external a h4 { display: block;opacity:1;position:relative;text-align:left;font-size:13px;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
 .is-audio + .fp-playlist-external a h4 span,.entry-content .is-audio + .fp-playlist-external a h4 span { position:relative;top:auto;padding:0;transform:none }
 .is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
-.flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:0;height:40px }
+.flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:0;height:2.8em }
 .flowplayer.is-audio .fv-ab-loop,.flowplayer.fixed-controls.is-audio .fv-ab-loop {bottom:-28px;padding-left:82px}
 .flowplayer.is-loading.is-audio .fp-controls { display:flex }
 .flowplayer.is-audio.is-loading .fp-playbtn {opacity:0}
@@ -1571,7 +1571,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-fullscreen,.flowplayer.is-audio .fp-ratio,.flowplayer.is-audio.is-splash .fp-timeline-tooltip {display:none}
 .flowplayer.is-audio.is-error {border:0;margin-bottom:50px}
 .flowplayer.is-audio.is-error h2,.entry-content .flowplayer.is-audio.is-error h2 {margin:0}
-.flowplayer.is-audio .fp-message {padding-top:40px}
+.flowplayer.is-audio .fp-message {padding-top:2.8em}
 .flowplayer.is-audio .fp-time em {width:44px}
 .flowplayer.is-audio .fp-message p {font-size:75%}
 
