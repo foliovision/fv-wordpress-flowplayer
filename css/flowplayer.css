@@ -1801,7 +1801,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-time { font-size:14px;text-shadow:none }
 .flowplayer.is-audio .fp-mute { width:40px;height:40px }
 .flowplayer.is-audio .fp-volumebtn { display: block }
-.flowplayer.is-audio .fp-play.fp-visible svg, .flowplayer.is-audio + .fp-playlist-external a .now-playing { display:none; }
+.flowplayer.is-audio .fp-play.fp-visible svg, .flowplayer.is-audio + .fp-playlist-external a .now-playing, .flowplayer.is-audio .fp-speed-flash { display:none; }
 .is-audio + .fp-playlist-external { counter-reset: 'fv-playlist-counter';background-color:#f0f0f0;border-radius:0 0 10px 10px;border-top:1px solid #fff }
 .flowplayer.is-audio .fp-waiting { margin:0 auto; }
 .flowplayer.is-audio .fp-speed.fp-hilite { opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0); }
