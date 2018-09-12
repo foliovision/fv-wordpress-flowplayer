@@ -357,7 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.1.14.727 =
+= 7.1.15.727 - 2018/09/11 =
+
+* Audio player - fixing speed menu and avoiding "No Picture" button
+* CSS cleanup
+* Iframe embedding - fix for playlists - always use "Slider" style to keep it simple 
+* Lightbox - update to latest FancyBox version to prevent issues with element data key "target" used by Popups plugin
+* Playlist - fixing width for the "Slider" playlist style
+* Playlist - fixing start/end parsing for "Tabs" playlist style
+
+= 7.1.14.727 - 2018/09/04 =
 
 * First stable release of FV Player 7
 
