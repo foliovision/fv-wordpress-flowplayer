@@ -376,9 +376,7 @@ function flowplayer_prepare_scripts() {
     if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.light.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
-
-    //$aConf['enable_s3_browser'] = $fv_fp->_get_option('enable_s3_browser');
-
+    
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );

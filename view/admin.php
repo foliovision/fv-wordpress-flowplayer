@@ -139,7 +139,6 @@ function fv_flowplayer_admin_amazon_options() {
 
                 foreach (fv_player_get_aws_regions() as $aws_region_id => $aws_region_name) {
                   ?>
-
                   <option value="<?php echo $aws_region_id; ?>"<?php if( $sRegion == $aws_region_id ) echo " selected"; ?>><?php echo $aws_region_name; ?></option>
                   <?php
                 }

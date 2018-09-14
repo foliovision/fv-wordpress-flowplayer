@@ -219,7 +219,7 @@ jQuery(document).ready(function($){
           },
           multiple: false
       });
-
+      
       fv_flowplayer_uploader.on('open', function() {
         $( document ).trigger( "mediaBrowserOpen" );
         jQuery('.media-router .media-menu-item').eq(0).click();

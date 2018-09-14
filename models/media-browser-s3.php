@@ -10,8 +10,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   function init() {
     global $fv_fp, $fv_wp_flowplayer_ver;
     if ($fv_fp->_get_option('s3_browser')) {
-      $sPath = $fv_fp->is_beta() ? 'flowplayer-beta' : 'flowplayer';
-      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/'.$sPath.'/flowplayer.s3.browser.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array(), $fv_wp_flowplayer_ver, true );
     }
   }
 

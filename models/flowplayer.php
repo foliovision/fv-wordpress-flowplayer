@@ -535,6 +535,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['playlistFontColor'] ) ) $conf['playlistFontColor'] = '';
     if( !isset( $conf['playlistSelectedColor'] ) ) $conf['playlistSelectedColor'] = '#bb0000';
     if( !isset( $conf['logoPosition'] ) ) $conf['logoPosition'] = 'bottom-left';
+
+    //
     
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
     if( !isset( $conf['width'] ) ) $conf['width'] = '640';
@@ -555,7 +557,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['amazon_secret'] ) || !is_array($conf['amazon_secret']) ) $conf['amazon_secret'] = array('');
     if( !isset( $conf['amazon_region'] ) || !is_array($conf['amazon_region']) ) $conf['amazon_region'] = array('');      
     if( !isset( $conf['amazon_expire'] ) ) $conf['amazon_expire'] = '5';
-    if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';
+    if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';   
     if( !isset( $conf['fixed_size'] ) ) $conf['fixed_size'] = 'false';       
     if(  isset( $conf['responsive'] ) && $conf['responsive'] == 'fixed' ) { $conf['fixed_size'] = true; unset($conf['responsive']); }  //  some legacy setting
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
@@ -1381,7 +1383,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $resource .= $sGlue."X-Amz-Expires=$time";
         $resource .= $sGlue."X-Amz-SignedHeaders=$sSignedHeaders";
         $resource .= $sGlue."X-Amz-Signature=".$sSignature;              
-
+        
         $this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
   
       } else {

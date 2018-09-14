@@ -1,4 +1,5 @@
 <?php
+
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
@@ -93,13 +94,13 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
       //  todo: there should be a better way than this      
       add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
     }
-
+    
     global $FV_Player_Alternative_Sources ;
     if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
       //  todo: there should be a better way than this
       add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
-    }
-
+    }    
+  
     add_action('admin_footer','flowplayer_prepare_scripts');    
   }
 }
