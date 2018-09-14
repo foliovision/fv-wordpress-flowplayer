@@ -608,23 +608,6 @@ function fv_wp_flowplayer_admin_notice() {
           </div>';
   }
   
-  global $FV_Player_Pro;
-  if( $FV_Player_Pro && version_compare($FV_Player_Pro->version,'0.5') == -1 ) : 
-  ?>
-  <div class="error">
-      <p><?php _e( 'FV Player: Your pro extension is installed, but it\'s not compatible with FV Player 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'my-text-domain' ); ?></p>
-  </div>
-  <?php
-  endif;
-  
-  /*if( isset($_GET['page']) && $_GET['page'] == 'backend.php' ) {
-	  $options = get_option( 'fvwpflowplayer' );
-    if( $options['key'] == 'false' ) {
-  		echo '<div class="updated"><p>'; 
-    	printf(__('Brand new version of Flowplayer for HTML5. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">Licenses half price</a> in May.' ) );
-    	echo "</p></div>";
-    }
-  }*/
 }
 
 
@@ -803,7 +786,7 @@ function fv_player_pro_version_check() {
   if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.1.14.727' ) == -1 ) :
   ?>
   <div class="error">
-      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.1.14.727 or above!', 'fv-player-pro' ); ?></p>
+      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.1.14.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
   </div>
   <?php
   endif;
