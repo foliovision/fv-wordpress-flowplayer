@@ -795,3 +795,17 @@ function fv_player_rollback_message( $val ) {
   echo "</div>";
   return $val;
 }
+
+add_action( 'admin_notices', 'fv_player_pro_version_check' );
+
+function fv_player_pro_version_check() {
+  global $FV_Player_Pro;
+  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.1.14.727' ) == -1 ) :
+  ?>
+  <div class="error">
+      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.1.14.727 or above!', 'fv-player-pro' ); ?></p>
+  </div>
+  <?php
+  endif;
+}
+
