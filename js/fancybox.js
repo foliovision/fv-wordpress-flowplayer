@@ -96,12 +96,13 @@ function fv_fancybox_check_size() {
   }
 }
 
-function fv_lightbox_flowplayer_shutdown() {
+function fv_lightbox_flowplayer_shutdown(e) {
   jQuery('.flowplayer').each( function() {
     var api = jQuery(this).data("flowplayer");
     if( typeof(api) == "undefined") {
       return;
     }
+    if( e.type == 'afterShow' && jQuery(this).parents('.fancybox-slide--current').length ) return;
     if( api.ready ) {
       api.unload();
     }
@@ -192,3 +193,15 @@ function fv_player_lightbox_bind(){
   } );
   
 }
+
+jQuery(document).on('click', '.flowplayer.lightbox-starter', function() {  
+  var api = jQuery(jQuery(this).attr('href')).data('flowplayer');
+  if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
+    if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
+  }
+  if( api.splash ) {
+    api.load();
+  } else {
+    api.play();
+  }
+})
