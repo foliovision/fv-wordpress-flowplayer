@@ -2,33 +2,32 @@
 /*
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
-Description: Formerly FV WordPress Flowplayer. Embed videos (MP4, WEBM, OGV, FLV) into posts or pages. Uses Flowplayer 6.
-Version: 6.5.2
+Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.7.
+Version: 7.1.15.727
 Author URI: http://foliovision.com/
-License:     GPL-3.0
+License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-/*  FV Player - HTML5 video player with Flash fallback  
-	Copyright (C) 2016  Foliovision
+/* FV Player - HTML5 video player with Flash fallback  
+	Copyright (C) 2018  Foliovision
 		
 	This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$fv_wp_flowplayer_ver = '6.5.2';
-$fv_wp_flowplayer_core_ver = '6.0.5';
-$fv_wp_flowplayer_core_ver_beta = '7.2.4';
+$fv_wp_flowplayer_ver = '7.1.15.727';
+$fv_wp_flowplayer_core_ver = '7.2.7.1';
 
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -61,7 +60,9 @@ include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
+include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
 
+global $fv_fp;
 $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {

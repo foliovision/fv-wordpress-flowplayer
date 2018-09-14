@@ -19,7 +19,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     // create a post with playlist shortcode
     $this->postID = $this->factory->post->create( array(
       'post_title' => 'Playlist with Ads',
-      'post_content' => '[fvplayer src="https://cdn.site.com/1.mp4" playlist="https://cdn.site.com/2.mp4;https://cdn.site.com/3.mp4"]'
+      'post_content' => '[fvplayer src="https://cdn.site.com/1.mp4" playlist="https://cdn.site.com/2.mp4;https://cdn.site.com/3.mp4" saveposition="yes"]'
     ) );
 
     global $fv_fp;
@@ -68,8 +68,9 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"\" data-ratio=\"0.5625\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
+  <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\">Facebook</a></li>
     <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\">Twitter</a></li>
@@ -83,14 +84,8 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 	</div>
 
 ";
-
-    // replace the player's ID by a preset one, so we can actually test the output
-    $regex = '/(id|rel)="wpfp_[^"]+"/';
-    $substitution = '$1="some-test-hash"';
-    $output = preg_replace($regex, $substitution, $output);
-
-    // test the HTML
-    $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($output));
+    
+    $this->assertEquals( $this->fix_newlines($expect), $this->fix_newlines($output) );
   }
 
   public function testSaveAndPlaylistHTMLForLoggedInUsers() {
@@ -131,8 +126,9 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"\" data-ratio=\"0.5625\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
+  <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\">Facebook</a></li>
     <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\">Twitter</a></li>
@@ -146,6 +142,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 	</div>
 
 ";
+<<<<<<< HEAD
 
     // replace the player's ID by a preset one, so we can actually test the output
     $regex = '/(id|rel)="wpfp_[^"]+"/';
@@ -154,6 +151,10 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
     // test the HTML
     $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($output));
+=======
+    
+    $this->assertEquals( $this->fix_newlines($expect), $this->fix_newlines($output) );
+>>>>>>> master
     
     $current_user;
   }

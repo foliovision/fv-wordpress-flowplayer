@@ -16,6 +16,12 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
     
     remove_action( 'admin_init', 'wp_admin_headers' );
     do_action( 'admin_init' );
+  }    
+    
+    parent::wpSetUpBeforeClass();    
+    
+    remove_action( 'admin_init', 'wp_admin_headers' );
+    do_action( 'admin_init' );
   }  
   
   public function testSettingsScreen() {
@@ -30,11 +36,13 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
       
       /*if( $v != $two[$k]) {
         for($i=0;$i<strlen($two[$k]);$i++) {
-          var_dump( $two[$k][$i].' '.ord($two[$k][$i]) );
+          if( $v[$i] != $two[$k][$i]) {
+            var_dump( $v[$i].' vs '.$two[$k][$i].' '.ord($two[$k][$i]) );
+          }
         }
       }*/
       
-      //$this->assertEquals( $v, $two[$k] );
+      $this->assertEquals( $v, $two[$k] );
     }
     
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html')), $this->fix_newlines($output) );

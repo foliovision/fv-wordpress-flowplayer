@@ -442,7 +442,7 @@ function fv_player_lchecks() {
   
   global $fv_fp;
   if( preg_match( '!^\$\d+!', $fv_fp->conf['key'] ) ) {    
-    if( version_compare( flowplayer::get_core_version(), get_option( 'fvwpflowplayer_core_ver' ) ) == 1 ) {
+    if( flowplayer::get_core_version() != get_option( 'fvwpflowplayer_core_ver' ) ) {
       fv_wp_flowplayer_admin_key_update();
       fv_wp_flowplayer_delete_extensions_transients();
     }      
@@ -608,23 +608,6 @@ function fv_wp_flowplayer_admin_notice() {
           </div>';
   }
   
-  global $FV_Player_Pro;
-  if( $FV_Player_Pro && version_compare($FV_Player_Pro->version,'0.5') == -1 ) : 
-  ?>
-  <div class="error">
-      <p><?php _e( 'FV Player: Your pro extension is installed, but it\'s not compatible with FV Player 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'my-text-domain' ); ?></p>
-  </div>
-  <?php
-  endif;
-  
-  /*if( isset($_GET['page']) && $_GET['page'] == 'backend.php' ) {
-	  $options = get_option( 'fvwpflowplayer' );
-    if( $options['key'] == 'false' ) {
-  		echo '<div class="updated"><p>'; 
-    	printf(__('Brand new version of Flowplayer for HTML5. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">Licenses half price</a> in May.' ) );
-    	echo "</p></div>";
-    }
-  }*/
 }
 
 
@@ -646,7 +629,7 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug; 
   $download_url = $aPluginInfo->{$plugin_package}->url;  
   
-  $result = FV_Wordpress_Flowplayer_Plugin::install_plugin(
+  $result = FV_Wordpress_Flowplayer_Plugin_Private::install_plugin(
     "FV Player Pro",
     $plugin_package,
     $plugin_basename,
@@ -716,38 +699,96 @@ function fv_player_admin_notice_expired_license() {
 }
 
 
-add_action( 'admin_footer', 'fv_player_block_update', 999 );
+add_action( 'admin_notices', 'fv_player_rollback' );
 
-function fv_player_block_update( $arg ) {
-  global $pagenow;
-  if( isset($pagenow) && $pagenow == 'plugins.php' ) {
-    $plugin_path = str_replace( trailingslashit(plugins_url()), '', plugins_url('',dirname(__FILE__)) ).'/flowplayer.php';
-    $aUpdates = get_site_transient('update_plugins');
-    if( !$aUpdates || empty($aUpdates->response) || empty($aUpdates->response[$plugin_path]) ) return;
+function fv_player_rollback() {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-rollback' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-rollback' ) ) {
     
-    $sMessage = 'You are about to upgrade to FV Player 7 which uses the new core video player with some visual changes.\n\n';
-    $aCheckProLicense = get_transient( 'fv_flowplayer_license' );
-    $aCheckPlayerLicense = get_transient( 'fv-player-pro_license' );
-    if( !empty($aCheckProLicense->expired) || !empty($aCheckProLicense->error) ) {
-      $sMessage .= 'Since your license is expired, so you will loose your custom logo and Pro features might not work.\n\n';
-    } if( !empty($aCheckPlayerLicense->expired) || !empty($aCheckPlayerLicense->error) ) {
-      $sMessage .= 'Since your license is expired, so you will loose your custom logo.\n\nAre you sure you want to upgrade?\n\n';
+    ob_start(); // first check if we can perform the update automatically!
+    $creds = request_filesystem_credentials( admin_url(), '', false, false, array() );
+    if( !WP_Filesystem($creds) ) { // if not, then don't try to do it at all
+      ob_get_clean();
+      echo "<div class='error'><p>Unfortunately rollback is not supported as your site can't install plugins without FTP. Please login to your Foliovision.com account and download the previous plugin version there using the \"Show Previous Version\" button.</p></div>";
+      return;
     }
+
+    echo ob_get_clean();
+
+    global $fv_fp, $fv_wp_flowplayer_ver;
+    $fv_fp->pointer_boxes = array(); // no pointer boxes here!
+
+    $plugin_slug = false;
+    $active_plugins = get_option( 'active_plugins' );
+    foreach( $active_plugins AS $plugin ) {
+      if( stripos($plugin,'fv-wordpress-flowplayer') === 0 && stripos($plugin,'/flowplayer.php') !== false ) {
+        $plugin_slug = $plugin;
+      }
+    }    
+
+    $plugin_transient 	= get_site_transient( 'update_plugins' );
+    $plugin_folder    	= plugin_basename( dirname( $plugin_slug ) );
+    $plugin_file      	= basename( $plugin_slug );
+    $version          	= $fv_wp_flowplayer_ver;
+    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.6.6.6.zip';
+    $temp_array 		= array(
+      'slug'        => $plugin_folder,
+      'new_version' => $version,
+      'url'         => 'https://foliovision.com',
+      'package'     => $url,
+    );
+
+    $temp_object = (object) $temp_array;
+    $plugin_transient->response[ $plugin_folder . '/' . $plugin_file ] = $temp_object;
+    set_site_transient( 'update_plugins', $plugin_transient );
+
+    add_filter( 'upgrader_pre_download', 'fv_player_rollback_message' );
+
+    require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
+    $title = 'FV Player Rollback';
+    $nonce = 'upgrade-plugin_' . $plugin_slug;
+    $url = 'update.php?action=upgrade-plugin&plugin=' . urlencode( $plugin_slug );
+    $upgrader_skin = new Plugin_Upgrader_Skin( compact( 'title', 'nonce', 'url', 'plugin' ) );
+    $upgrader = new Plugin_Upgrader( $upgrader_skin );
+    $upgrader->upgrade( $plugin_slug );
+
+    include( ABSPATH . 'wp-admin/admin-footer.php' );
     
-    $sMessage .= 'Are you sure you want to upgrade?';
+    delete_option('fv-player-pro-release');
     
-    if( stripos($aUpdates->response[$plugin_path]->new_version,'7.') === 0 ) {
-      ?>
-      <script>
-      ( function($) {        
-        $('[data-plugin=<?php echo str_replace( array('/','.'), array('\\\/','\\\.'), $plugin_path ); ?>]').find('.update-link').click( function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          return confirm("<?php echo $sMessage; ?>");
-        });
-      })(jQuery);
-      </script>
-      <?php
-    }
+    
+    $active_plugins = get_option( 'active_plugins' );
+    foreach( $active_plugins AS $plugin ) {
+      if( stripos( $plugin, 'fv-player-pro' ) === 0 ) {
+        delete_plugins( array($plugin) ); // deleting the FV Player Pro plugin here means that he FV Player activation process in the iframe will already re-install it in the iframe, so in the iframe you will get the FV Player settings screen!
+      }
+    }    
+    
+    wp_die( '', 'FV Player Rollback', array( 'response' => 200 ) );
+    
   }
 }
+
+function fv_player_rollback_message( $val ) {
+  echo "<div class='updated'>";
+  echo "<p>Please wait until the plugin download and reactivation is completed.</p>";
+  if( flowplayer::is_licensed() ) {
+    echo "<p>We also rollback the FV Player Pro plugin in the process.</p>";
+    if( class_exists('FV_Player_Pro') ) echo "<style>#wpbody-content iframe[title=\"Update progress\"] { display: none; }</style>";
+  }
+  echo "</div>";
+  return $val;
+}
+
+add_action( 'admin_notices', 'fv_player_pro_version_check' );
+
+function fv_player_pro_version_check() {
+  global $FV_Player_Pro;
+  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.1.14.727' ) == -1 ) :
+  ?>
+  <div class="error">
+      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.1.14.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
+  </div>
+  <?php
+  endif;
+}
+
