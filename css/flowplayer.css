@@ -1095,6 +1095,7 @@
   	padding: 0 !important;
 	float: left;
   	font-family: "Lucida Console", Monaco, monospace;
+	list-style: none;
 }
 .fvp-share-bar label {
 	text-align: center !important;
