@@ -455,7 +455,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     if(scannedFiles.length) {
       
       function fileGetBase( link ) {
-        link = link.replace(/\.\S$/,'');
+        link = link.replace(/\.[a-z0-9]+$/,'');
         return link;
       }
 
@@ -465,20 +465,36 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           $url_input       = jQuery('.fv_flowplayer_target'),
           $popup_close_btn = jQuery('.media-modal-close:visible');
 
-        var base = fileGetBase($this.attr('href'));
-        console.log(base);
-        scannedFiles.forEach(function(f) {
-          if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == base && f.link != $this.attr('href') ) {
-            console.log(f);
+        var find = [ fileGetBase($this.attr('href')) ];
+        if( window.fv_player_shortcode_editor_qualities ) {
+          Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
+            var re = new RegExp(prefix+'$');
+            if( find[0].match(re) ) {
+              find.push( find[0].replace(re,'') );
+            }
+          });
+        }
+        
+        var splash = false;
+        for( var i in find ) {
+          for( var j in scannedFiles ) {
+            var f = scannedFiles[j];
+            if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != $this.attr('href') ) {
+              splash = f.link;
+            }
           }
-        });
-        console.log($this.attr('href'));
-        return false;
-
+        }
 
         $url_input
           .val($this.attr('href'))
           .removeClass('fv_flowplayer_target' );
+
+        if( splash && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/) ) {
+          var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
+          if( splash_input.val() == '' ) {
+            splash_input.val(splash);
+          }
+        }
 
         $popup_close_btn.click();
 
