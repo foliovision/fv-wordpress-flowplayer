@@ -69,9 +69,10 @@ if( is_admin() ) {
   include_once( dirname( __FILE__ ) . '/controller/backend.php' );
   include_once( dirname( __FILE__ ) . '/controller/editor.php' );
   include_once( dirname( __FILE__ ) . '/controller/settings.php' );
-  include_once(dirname( __FILE__ ) . '/models/media-browser.php');
-  include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
-  
+  if( version_compare(phpversion(),'5.5.0') != -1 ) {
+    include_once(dirname( __FILE__ ) . '/models/media-browser.php');
+    include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
+  }
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
 } 
