@@ -12,13 +12,7 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
   public static function wpSetUpBeforeClass() {
     set_current_screen( 'settings_page_fvplayer' );
     
-    parent::wpSetUpBeforeClass();    
-    
-    remove_action( 'admin_init', 'wp_admin_headers' );
-    do_action( 'admin_init' );
-  }    
-    
-    parent::wpSetUpBeforeClass();    
+    parent::wpSetUpBeforeClass();
     
     remove_action( 'admin_init', 'wp_admin_headers' );
     do_action( 'admin_init' );
