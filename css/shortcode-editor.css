@@ -145,3 +145,7 @@ a #add-format, a #add-rtmp {
 #fv-wordpress-flowplayer-popup table td {
 	padding: 4px 2px;
 }
+
+#fv-player-shortcode-editor-editor ::placeholder {
+  opacity:.5;
+}

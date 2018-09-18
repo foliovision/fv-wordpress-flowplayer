@@ -29,12 +29,14 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 $fv_wp_flowplayer_ver = '7.1.15.727';
 $fv_wp_flowplayer_core_ver = '7.2.7.1';
 
-include( dirname( __FILE__ ) . '/includes/extra-functions.php' );
+include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
-  include( dirname( __FILE__ ) . '/includes/module.php' );
+  include_once( dirname( __FILE__ ) . '/includes/module.php' );
 }
 
-include( dirname( __FILE__ ) . '/models/checker.php' );
+include_once( dirname( __FILE__ ) . '/models/checker.php' );
+
+global $FV_Player_Checker;
 $FV_Player_Checker = new FV_Player_Checker();
 
 include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
@@ -64,13 +66,15 @@ global $fv_fp;
 $fv_fp = new flowplayer_frontend();
 
 if( is_admin() ) {
-	include( dirname( __FILE__ ) . '/controller/backend.php' );
-  include( dirname( __FILE__ ) . '/controller/editor.php' );
-  include( dirname( __FILE__ ) . '/controller/settings.php' );
+  include_once( dirname( __FILE__ ) . '/controller/backend.php' );
+  include_once( dirname( __FILE__ ) . '/controller/editor.php' );
+  include_once( dirname( __FILE__ ) . '/controller/settings.php' );
+  include_once(dirname( __FILE__ ) . '/models/media-browser.php');
+  include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
 } 
 	
-include( dirname( __FILE__ ) . '/controller/frontend.php' );
-require_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
+include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');

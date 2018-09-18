@@ -142,8 +142,19 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 	</div>
 
 ";
+<<<<<<< HEAD
+
+    // replace the player's ID by a preset one, so we can actually test the output
+    $regex = '/(id|rel)="wpfp_[^"]+"/';
+    $substitution = '$1="some-test-hash"';
+    $output = preg_replace($regex, $substitution, $output);
+
+    // test the HTML
+    $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($output));
+=======
     
     $this->assertEquals( $this->fix_newlines($expect), $this->fix_newlines($output) );
+>>>>>>> master
     
     $current_user;
   }
