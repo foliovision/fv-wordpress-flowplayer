@@ -361,6 +361,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * New feature - S3 Bucket browser
 * CSS improvements - sharing buttons
+* Lightbox - will autoplay the video when opened
 
 = 7.1.15.727 - 2018/09/11 =
 
