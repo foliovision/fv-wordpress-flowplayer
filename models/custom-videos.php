@@ -434,6 +434,7 @@ class FV_Player_Custom_Videos_Master {
 }
 
 
+global $FV_Player_Custom_Videos_Master;
 $FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
 
 
