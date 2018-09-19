@@ -768,7 +768,7 @@ class FV_Player_Db_Shortcode {
     $post_data = null;
     if( is_array($data) ) {
       $post_data = $data;
-    } else if( !empty($_POST['data']) ) {
+    } else if( !empty($_POST['data']) && wp_verify_nonce( $_POST['nonce'],"fv-player-preview-".get_current_user_id() ) ) {
       if( json_decode( stripslashes($_POST['data']) ) ) {
         $post_data = json_decode( stripslashes($_POST['data']), true );
       }

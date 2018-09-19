@@ -2379,6 +2379,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
       jQuery.post(ajaxurl, {
         action: 'fv_wp_flowplayer_db_store_player_data',
         data: JSON.stringify(ajax_data),
+        nonce: fv_flowplayer_preview_nonce,
         cookie: encodeURIComponent(document.cookie),
       }, function(playerID) {
         if (playerID == parseInt(playerID)) {

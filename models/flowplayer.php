@@ -2094,7 +2094,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           // note: we need to put "src" into the code or it won't get parsed at all
           //       and at the same time, it displays the correct SRC in the preview
           if( count($shortcode['videos']) > 0 ) {
-            $item = array_pop(array_reverse($shortcode['videos']));
+            $tmp = array_reverse($shortcode['videos']);
+            $item = array_pop($tmp);
             $src = $item['fv_wp_flowplayer_field_src'];            
           } else {
             $src = 'none';
