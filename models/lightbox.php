@@ -151,7 +151,7 @@ class FV_Player_lightbox {
         $html = "<a".$this->fancybox_opts()." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
         
       } else {
-        $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iPlayerWidth) ? $iPlayerWidth : $iConfWidth );
+        $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
         $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
 
         $sSplash = apply_filters('fv_flowplayer_playlist_splash', $aArgs[1]->aCurArgs['splash'], $fv_fp);
