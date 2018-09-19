@@ -1804,6 +1804,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $media = apply_filters( 'fv_flowplayer_video_src', $media, $aArgs );          
       }
       
+      $media = trim($media);
+      
       //  fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
       $source_flash_encoded = false;  
       if( $this->is_secure_amazon_s3($media) /*&& stripos($media,'.webm') === false && stripos($media,'.ogv') === false */) {
@@ -1820,14 +1822,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( $aArgs['flash'] && $source_flash_encoded ) {
           return array( 'media' => $media, 'flash' => $source_flash_encoded );
         } else {
-          return trim($media);
+          return strip_tags($media);
         }
       } else {
 
-        $sReturn = '<source '.$sID.'src="'.trim($media).'" type="'.$mime_type.'" />'."\n";
+        $sReturn = '<source '.$sID.'src="'.esc_attr($media).'" type="'.$mime_type.'" />'."\n";
         
         if( $source_flash_encoded && strcmp($mime_type,'video/mp4') == 0 ) {
-          $sReturn .= '<source '.$sID.'src="'.trim($source_flash_encoded).'" type="video/flash" />'."\n";
+          $sReturn .= '<source '.$sID.'src="'.esc_attr($source_flash_encoded).'" type="video/flash" />'."\n";
         }
         return $sReturn;
       }
@@ -2011,9 +2013,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 <body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
-    if( !is_user_logged_in() || !current_user_can('manage_options') ){
-      ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script><?php
-      wp_die('Please log in.');
+    if( !is_user_logged_in() || !current_user_can('manage_options') || !wp_verify_nonce( get_query_var('fv_player_embed'),"fv-player-preview-".get_current_user_id() ) ){
+      ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
+      <div style="background:white;">
+        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
+        </div>
+      </div>
+      <?php
+      die();
     }
     $shortcode = base64_decode($_GET['fv_player_preview']);
     $matches = null;
@@ -2030,13 +2038,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
-        if(preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+        if(preg_match('/\[fvplayer.*?[^\\\]\]/i',$shortcode,$match)) {
           global $fv_fp;
-          $aAtts = shortcode_parse_atts($shortcode);
+          $aAtts = shortcode_parse_atts($match[0]);
           if( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
           }
-          echo do_shortcode($shortcode);          
+          echo do_shortcode($match[0]);          
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php
