@@ -2107,7 +2107,7 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
   }
 
   $previewDiv.attr('class','preview-loading');
-  var url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=';
+  var url = fv_Player_site_base + '?fv_player_embed='+fv_flowplayer_preview_nonce+'&fv_player_preview=';
 
   if (typeof(is_post) !== 'undefined') {
     url += 'POST';

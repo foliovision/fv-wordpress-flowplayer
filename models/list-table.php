@@ -21,11 +21,8 @@ class FV_Player_List_Table_View {
   }
   
   function load_options() {
-    global $fv_fp;
-    if( isset($fv_fp) && $fv_fp->is_beta() ) {
-      add_action( 'admin_menu', array($this, 'admin_menu') );
-      add_action( 'admin_head', array($this, 'styling') );
-    }
+    add_action( 'admin_menu', array($this, 'admin_menu') );
+    add_action( 'admin_head', array($this, 'styling') );    
   }
   
   function styling() {
