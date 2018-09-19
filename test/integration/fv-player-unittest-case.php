@@ -40,6 +40,9 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     //  tabbed playlist test
     $html = preg_replace( '~tabs-\d+~', 'tabs-1', $html);
     
+    // splash end
+    $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
+    
     return $html;
   }
 
@@ -51,7 +54,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     //include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
 
     // include the flowplayer loader
-    include_once "../../../fv-wordpress-flowplayer/flowplayer.php";
+    include "../../../fv-wordpress-flowplayer/flowplayer.php";
 
     // include the PRO plugin class, so it can intercept data saving
     // and update the ads structure as needed for saving

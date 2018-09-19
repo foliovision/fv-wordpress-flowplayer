@@ -155,7 +155,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   }
   
   global $fv_fp;
-  if( !isset($fv_fp->conf['integrations']['featured_img']) || $fv_fp->conf['integrations']['featured_img'] != 'true' ){
+  if( !$fv_fp->_get_option( array('integrations','featured_img') ) ){
     return;
   }
   

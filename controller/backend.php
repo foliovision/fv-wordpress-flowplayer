@@ -608,23 +608,6 @@ function fv_wp_flowplayer_admin_notice() {
           </div>';
   }
   
-  global $FV_Player_Pro;
-  if( $FV_Player_Pro && version_compare($FV_Player_Pro->version,'0.5') == -1 ) : 
-  ?>
-  <div class="error">
-      <p><?php _e( 'FV Player: Your pro extension is installed, but it\'s not compatible with FV Player 6! Make sure you upgrade your FV Player Pro to version 0.5 or above.', 'my-text-domain' ); ?></p>
-  </div>
-  <?php
-  endif;
-  
-  /*if( isset($_GET['page']) && $_GET['page'] == 'backend.php' ) {
-	  $options = get_option( 'fvwpflowplayer' );
-    if( $options['key'] == 'false' ) {
-  		echo '<div class="updated"><p>'; 
-    	printf(__('Brand new version of Flowplayer for HTML5. <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">Licenses half price</a> in May.' ) );
-    	echo "</p></div>";
-    }
-  }*/
 }
 
 
@@ -716,42 +699,6 @@ function fv_player_admin_notice_expired_license() {
 }
 
 
-add_action( 'admin_footer', 'fv_player_block_update', 999 );
-
-function fv_player_block_update( $arg ) {
-  global $pagenow;
-  if( isset($pagenow) && $pagenow == 'plugins.php' ) {
-    $plugin_path = str_replace( trailingslashit(plugins_url()), '', plugins_url('',dirname(__FILE__)) ).'/flowplayer.php';
-    $aUpdates = get_site_transient('update_plugins');
-    if( !$aUpdates || empty($aUpdates->response) || empty($aUpdates->response[$plugin_path]) ) return;
-    
-    $sMessage = 'You are about to upgrade to FV Player 7 which uses the new core video player with some visual changes.\n\n';
-    $aCheckProLicense = get_transient( 'fv_flowplayer_license' );
-    $aCheckPlayerLicense = get_transient( 'fv-player-pro_license' );
-    if( !empty($aCheckProLicense->expired) || !empty($aCheckProLicense->error) ) {
-      $sMessage .= 'Since your license is expired, so you will loose your custom logo and Pro features might not work.\n\n';
-    } if( !empty($aCheckPlayerLicense->expired) || !empty($aCheckPlayerLicense->error) ) {
-      $sMessage .= 'Since your license is expired, so you will loose your custom logo.\n\nAre you sure you want to upgrade?\n\n';
-    }
-    
-    $sMessage .= 'Are you sure you want to upgrade?';
-    
-    if( stripos($aUpdates->response[$plugin_path]->new_version,'7.') === 0 ) {
-      ?>
-      <script>
-      ( function($) {        
-        $('[data-plugin=<?php echo str_replace( array('/','.'), array('\\\/','\\\.'), $plugin_path ); ?>]').find('.update-link').click( function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          return confirm("<?php echo $sMessage; ?>");
-        });
-      })(jQuery);
-      </script>
-      <?php
-    }
-  }
-}
-
 /*
  *  DB based player data saving
  */
@@ -760,44 +707,6 @@ global $FV_Db_Shortcode;
 // these have to be here, as using them in constructor doesn't work
 add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', array($FV_Db_Shortcode, 'db_store_player_data'));
 add_filter('heartbeat_received', array($FV_Db_Shortcode, 'check_db_edit_lock'), 10, 2);
-
-
-/*
-Beta plugin needs to show different version on the plugins screen
-*/
-add_filter( 'all_plugins', 'fv_player_beta_adjust_plugin_version' );
-
-function fv_player_beta_adjust_plugin_version( $aPlugins ) {
-  if( flowplayer::is_beta() ) {
-    $current_plugin = basename(dirname(dirname(__FILE__))).'/flowplayer.php';
-    if( !empty($aPlugins[$current_plugin]) && !empty($aPlugins[$current_plugin]['Version']) ) {
-      global $fv_wp_flowplayer_ver_beta;
-      $aPlugins[$current_plugin]['Version'] = $fv_wp_flowplayer_ver_beta;
-    }
-  }
-  return $aPlugins;
-}
-
-
-/*
-Beta version to not show release updates
-*/
-add_filter( 'site_transient_update_plugins', 'fv_player_beta_stop_release_updates' );
-
-function fv_player_beta_stop_release_updates( $objUpdates ) {
-  if( !flowplayer::is_beta() || !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
-
-  global $fv_wp_flowplayer_ver_beta;
-  foreach( $objUpdates->response AS $key => $objUpdate ) {
-    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
-      if( version_compare($objUpdate->new_version,$fv_wp_flowplayer_ver_beta) == -1 ) {
-        unset($objUpdates->response[$key]);
-      }
-    }
-  }
-
-  return $objUpdates;
-}
 
 
 add_action( 'admin_notices', 'fv_player_rollback' );
@@ -809,7 +718,7 @@ function fv_player_rollback() {
     $creds = request_filesystem_credentials( admin_url(), '', false, false, array() );
     if( !WP_Filesystem($creds) ) { // if not, then don't try to do it at all
       ob_get_clean();
-      echo "<div class='error'><p>Unfortunately rollback is not supported as your site can't install plugins without FTP. Please login to your Foliovision.com account and download the previous plugin version there.</p></div>";
+      echo "<div class='error'><p>Unfortunately rollback is not supported as your site can't install plugins without FTP. Please login to your Foliovision.com account and download the previous plugin version there using the \"Show Previous Version\" button.</p></div>";
       return;
     }
 
@@ -849,7 +758,7 @@ function fv_player_rollback() {
     $nonce = 'upgrade-plugin_' . $plugin_slug;
     $url = 'update.php?action=upgrade-plugin&plugin=' . urlencode( $plugin_slug );
     $upgrader_skin = new Plugin_Upgrader_Skin( compact( 'title', 'nonce', 'url', 'plugin' ) );
-    $upgrader = new Plugin_Upgrader( $upgrader_skin );      
+    $upgrader = new Plugin_Upgrader( $upgrader_skin );
     $upgrader->upgrade( $plugin_slug );
 
     include( ABSPATH . 'wp-admin/admin-footer.php' );
@@ -874,7 +783,22 @@ function fv_player_rollback_message( $val ) {
   echo "<p>Please wait until the plugin download and reactivation is completed.</p>";
   if( flowplayer::is_licensed() ) {
     echo "<p>We also rollback the FV Player Pro plugin in the process.</p>";
+    if( class_exists('FV_Player_Pro') ) echo "<style>#wpbody-content iframe[title=\"Update progress\"] { display: none; }</style>";
   }
   echo "</div>";
   return $val;
 }
+
+add_action( 'admin_notices', 'fv_player_pro_version_check' );
+
+function fv_player_pro_version_check() {
+  global $FV_Player_Pro;
+  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.1.14.727' ) == -1 ) :
+  ?>
+  <div class="error">
+      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.1.14.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
+  </div>
+  <?php
+  endif;
+}
+

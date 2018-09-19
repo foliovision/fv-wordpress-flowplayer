@@ -68,8 +68,9 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
+  <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\">Facebook</a></li>
     <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\">Twitter</a></li>
@@ -125,8 +126,9 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash fvp-play-button\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
+  <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\">Facebook</a></li>
     <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\">Twitter</a></li>

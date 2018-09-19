@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9.5
+Tested up to: 4.9.8
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,86 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
 
 == Changelog ==
+
+= 7.2.0.727 - 2018/09/18 =
+
+* New feature - S3 Bucket browser
+* CSS improvements - sharing buttons
+* Lightbox - will autoplay the video when opened
+
+= 7.1.15.727 - 2018/09/11 =
+
+* Audio player - fixing speed menu and avoiding "No Picture" button
+* CSS cleanup
+* Iframe embedding - fix for playlists - always use "Slider" style to keep it simple 
+* Lightbox - update to latest FancyBox version to prevent issues with element data key "target" used by Popups plugin
+* Playlist - fixing width for the "Slider" playlist style
+* Playlist - fixing start/end parsing for "Tabs" playlist style
+
+= 7.1.14.727 - 2018/09/04 =
+
+* First stable release of FV Player 7
+
+= 7.1.13.727.beta =
+
+* Updating to Flowplayer 7.2.7
+* Disallowing minimal skin for audio player as it doesn't work properly with it
+
+= 7.1.12.726.beta =
+
+* Audio player - making sure "Force fullscreen on mobile" doesn't work for it as it makes no sense
+* Getting rid of the old video tag code
+
+= 7.1.11.726.beta =
+
+* Fixing subtitle size setting
+
+= 7.1.10.726.beta =
+
+* Fixing fp-header and notices click action
+* Fixing fullscreen when Fancybox is enabled for images, but not used for video
+
+= 7.1.7.726 =
+
+* Fixes for lightbox - proper title for images in h5, hiding WP admin bar and Social Warfare bar, support for WP Rocket image lazyload
+
+= 7.1.6.726 =
+
+* New lightbox library - using fancyBox 3
+* Playlist - setting maximum player width to 100% to prevent display issues
+* Preventing right mouse click on player
+* XML Video Sitemap and Schema.org - fixing exclusion for CloudFront domains
+
+= 7.1.5.726 =
+
+* Lightbox - fixing height bug if video is bigger than screen size and taller
+
+= 7.1.4.726 =
+
+* Fix for MPEG-DASH (Vimeo) stream seeking issues which appeared when seeking too often
+
+= 7.1.3.726 =
+
+* Autoplay - fix for MPEG-DASH (Vimeo) silent autoplay, important for Chrome
+
+= 7.1.2.726 =
+
+* iOS < 10 fix
+* Quality Switching - qualities in menu are now sorted
+* Quality Switching - HLS quality remembering
+* Quality Switching - button now shows proper quality label
+* Samsung Browser set to shows warning to use other browser if there is a video error
+* Speed control - the menu now gets a vertical scrollbar if needed
+
+= 7.1.1.726 =
+
+* New core Flowplayer
+* Quality Switching - current quality bold in menu for MPEG-DASH streams
+* Quality Switching - MPEG-DASH quality remembering
+
+= 7.0.726 =
+
+* Initial FV Player 7 release for FV Player Pro Beta users
 
 = 6.6.6 - 2018/07/10 =
 
@@ -1710,6 +1790,10 @@ Once the plugin is uploaded and activated, there will be a submenu of settings m
 On the right side of this screen, you can see the current visual configuration of flowplayer. If you click Apply Changes button, this player's looks refreshes.
 
 == Upgrade Notice ==
+
+= 7.1.14.727 =
+
+* Brand new FV Player version. If you can't upgrade due to a popup dialog saying 'Are you sure you want to upgrade?' please open the update link in a new browser tab.
 
 = 6.6.1 =
 
