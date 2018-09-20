@@ -78,6 +78,7 @@ class flowplayer_frontend extends flowplayer
    */
   function build_min_player($media,$args = array()) {
 
+    $this->hash = md5($media.$this->_salt()); //  unique player id
     // todo: harmonize this, the media arg was a bad idea in the first place
     if( !empty($media) && $media != $this->aCurArgs['src'] ) {
       $this->aCurArgs['src'] = $media;

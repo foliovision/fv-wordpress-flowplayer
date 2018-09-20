@@ -647,7 +647,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
         foreach ($cached_player->getAllDataValues() as $key => $value) {
           if( is_array($value) ) continue; // problem with video_objects when exporting
           
-          $this->$key = stripslashes($value);
+          $this->$key = $value === null ? $value : stripslashes($value);
         }
 
         // add meta data
@@ -1004,7 +1004,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified'))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified'))) {
         $export_data[$property] = $value;
       }
     }

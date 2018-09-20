@@ -33,12 +33,12 @@ class FV_Player_Db {
     add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
     add_action('wp_head', array($this, 'cache_players_and_videos' ));
 
-    add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_import_player_data', array($this, 'import_player_data') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_clone_player', array($this, 'clone_player') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_remove_player', array($this, 'remove_player') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') );
+    add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') ); // todo: nonce
+    add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') ); // todo: nonce
+    add_action( 'wp_ajax_fv_wp_flowplayer_import_player_data', array($this, 'import_player_data') ); // todo: nonce
+    add_action( 'wp_ajax_fv_wp_flowplayer_clone_player', array($this, 'clone_player') ); // todo: nonce
+    add_action( 'wp_ajax_fv_wp_flowplayer_remove_player', array($this, 'remove_player') ); // todo: nonce
+    add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce
   }
 
   public function getVideosCache() {

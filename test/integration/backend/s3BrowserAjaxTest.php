@@ -13,7 +13,6 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     global $fv_fp;
 
     $_POST = array (
-      'key' => '$613126731011358',
       'amazon_bucket' => array(FV_PLAYER_AMAZON_BUCKET),
       's3_browser' => 1,
       'fv-wp-flowplayer-submit' => 'Save All Changes'
