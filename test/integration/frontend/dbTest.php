@@ -11,8 +11,8 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   public function setUp() {
     parent::setUp();
         
-    global $FV_Db_Shortcode;
-    $FV_Db_Shortcode->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
+    global $FV_Player_Db;
+    $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
 
     // create a post with playlist shortcode
     $this->post_id_testEndActions= $this->factory->post->create( array(
@@ -109,8 +109,8 @@ HTML;
   }
   
   public function testDBExport() {
-    global $FV_Db_Shortcode;        
-    $output = json_encode( $FV_Db_Shortcode->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
+    global $FV_Player_Db;        
+    $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
     $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );  
   }
   
