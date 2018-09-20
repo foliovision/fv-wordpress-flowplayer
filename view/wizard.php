@@ -116,7 +116,6 @@ var fv_Player_site_base = "<?php echo home_url('/'); ?>";
 <?php global $fv_fp; if( $fv_fp->_get_option('postthumbnail') || $fv_fp->_get_option( array('integrations','featured_img') ) ) : ?>
 var fv_flowplayer_set_post_thumbnail_id = <?php echo $post_id; ?>;
 var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_post_thumbnail-$post_id" ); ?>';
-var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>';
 <?php endif; ?>
 </script>
 

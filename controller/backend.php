@@ -705,7 +705,6 @@ function fv_player_admin_notice_expired_license() {
 global $FV_Player_Db;
 
 // these have to be here, as using them in constructor doesn't work
-add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', array($FV_Player_Db, 'db_store_player_data'));
 add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10, 2);
 
 

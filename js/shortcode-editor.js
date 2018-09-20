@@ -72,7 +72,7 @@ jQuery(document).ready(function($){
         href: "#fv-player-shortcode-editor",
         inline: true,
         title: 'Export FV Player',
-        onComplete : function() { fv_player_export($element.data('player_id')); },
+        onComplete : function() { fv_player_export($element); },
         onClosed : fv_wp_flowplayer_big_loader_close,
         onOpen: function(){
           jQuery("#fv_player_box").addClass("fv-flowplayer-shortcode-editor");
@@ -127,7 +127,8 @@ jQuery(document).ready(function($){
       $element.after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
       jQuery.post(ajaxurl, {
-        action: "fv_wp_flowplayer_remove_player",
+        action: "fv_player_db_remove",
+        nonce: $element.data('nonce'),
         playerID: $element.data('player_id')
       }, function(rows_affected){
         if (!isNaN(parseFloat(rows_affected)) && isFinite(rows_affected)) {
@@ -140,6 +141,8 @@ jQuery(document).ready(function($){
             'background': 'none',
             'width': 'auto'
           }).html('Error');
+          
+          alert(rows_affected);
 
           $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
         }
@@ -163,7 +166,8 @@ jQuery(document).ready(function($){
         .after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
       jQuery.post(ajaxurl, {
-        action: "fv_wp_flowplayer_clone_player",
+        action: "fv_player_db_clone",
+        nonce: $element.data('nonce'),
         playerID: $element.data('player_id')
       }, function(playerID){
         if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
@@ -1092,7 +1096,11 @@ function fv_wp_flowplayer_edit() {
 
       // now load playlist data
       // load video data via an AJAX call
-      jQuery.post(ajaxurl, { 'action' : 'return_shortcode_db_data', 'playerID' :  result[1] }, function(response) {
+      jQuery.post(ajaxurl, {
+        action : 'fv_player_db_load',
+        nonce : fv_player_editor_conf.db_load_nonce, 
+        playerID :  result[1]
+      }, function(response) {
         var vids = response['videos'];
 
         if (response) {
@@ -2107,7 +2115,7 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
   }
 
   $previewDiv.attr('class','preview-loading');
-  var url = fv_Player_site_base + '?fv_player_embed='+fv_flowplayer_preview_nonce+'&fv_player_preview=';
+  var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=';
 
   if (typeof(is_post) !== 'undefined') {
     url += 'POST';
@@ -2211,16 +2219,17 @@ function fv_wp_flowplayer_copy_to_clipboard() {
 
 
 
-function fv_player_export(id_player) {
+function fv_player_export(element) {
   fv_wp_flowplayer_big_loader_show();
 
   jQuery.post(ajaxurl, {
-    action: 'fv_wp_flowplayer_export_player_data',
-    playerID : id_player,
+    action: 'fv_player_db_export',
+    playerID : element.data('player_id'),
+    nonce : element.data('nonce'),
     cookie: encodeURIComponent(document.cookie),
   }, function(json_export_data) {
     json_export_data = jQuery('<div/>').text(json_export_data).html();
-    jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_copied_to_clipboard_message">&nbsp;</div>').css('background-image', 'none');
+    jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">' + json_export_data + '</textarea><br /><br /><input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" /> &nbsp; <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_copied_to_clipboard_message">&nbsp;</div>').css('background-image', 'none');
     jQuery('#fv_player_copy_to_clipboard').select();
     fv_wp_flowplayer_dialog_resize();
   }).error(function() {
@@ -2231,9 +2240,12 @@ function fv_player_export(id_player) {
 
 
 
-function fv_player_import(failed, failed_data) {
+function fv_player_import(failed, failed_data, message) {
+  
+  if( !message ) message = 'Please try again.';
+  
   fv_wp_flowplayer_big_loader_show();
-  jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="Paste your FV Player Export JSON data here">' + (typeof(failed_data) != 'undefined' ? failed_data : '') + '</textarea><br /><br /><input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Player" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />Please try again.' : '&nbsp;') + '</div>').css('background-image', 'none');
+  jQuery('.fv-spinner-clone').html('<p>&nbsp;</p><p align="center"><textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="Paste your FV Player Export JSON data here">' + (typeof(failed_data) != 'undefined' ? failed_data : '') + '</textarea><br /><br /><input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Player" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" /></p><div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />'+message : '&nbsp;') + '</div>').css('background-image', 'none');
 
   if (typeof(failed) != 'undefined') {
     jQuery('#fv_player_imported_message')
@@ -2276,7 +2288,8 @@ function fv_wp_flowplayer_import_routine() {
   fv_wp_flowplayer_big_loader_show();
 
   jQuery.post(ajaxurl, {
-    action: 'fv_wp_flowplayer_import_player_data',
+    action: 'fv_player_db_import',
+    nonce: fv_player_editor_conf.db_import_nonce,
     data: data,
     cookie: encodeURIComponent(document.cookie),
   }, function(playerID) {
@@ -2292,7 +2305,7 @@ function fv_wp_flowplayer_import_routine() {
       });
     } else {
       jQuery('.fv-spinner-clone').remove();
-      fv_player_import(true, data);
+      fv_player_import(true, data, playerID);
     }
   }).error(function() {
     jQuery('.fv-spinner-clone').remove();
@@ -2377,9 +2390,9 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
 
       // save data
       jQuery.post(ajaxurl, {
-        action: 'fv_wp_flowplayer_db_store_player_data',
+        action: 'fv_player_db_save',
         data: JSON.stringify(ajax_data),
-        nonce: fv_flowplayer_preview_nonce,
+        nonce: fv_player_editor_conf.preview_nonce,
         cookie: encodeURIComponent(document.cookie),
       }, function(playerID) {
         if (playerID == parseInt(playerID)) {
@@ -3409,7 +3422,7 @@ jQuery( function($) {
     shortcode     = shortcode.replace( /(width=[\'"])\d*([\'"])/, "$1320$2" );  // 320
     shortcode     = shortcode.replace( /(height=[\'"])\d*([\'"])/, "$1240$2" ); // 240
 
-    var url = fv_Player_site_base + '?fv_player_embed='+fv_flowplayer_preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
+    var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
     $.get(url, function(response) {
       wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
       $(document).trigger('fvp-preview-complete');

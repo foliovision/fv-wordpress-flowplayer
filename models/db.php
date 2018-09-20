@@ -33,12 +33,13 @@ class FV_Player_Db {
     add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
     add_action('wp_head', array($this, 'cache_players_and_videos' ));
 
-    add_action( 'wp_ajax_return_shortcode_db_data', array($this, 'return_shortcode_db_data') ); // todo: nonce
-    add_action( 'wp_ajax_fv_wp_flowplayer_export_player_data', array($this, 'export_player_data') ); // todo: nonce
-    add_action( 'wp_ajax_fv_wp_flowplayer_import_player_data', array($this, 'import_player_data') ); // todo: nonce
-    add_action( 'wp_ajax_fv_wp_flowplayer_clone_player', array($this, 'clone_player') ); // todo: nonce
-    add_action( 'wp_ajax_fv_wp_flowplayer_remove_player', array($this, 'remove_player') ); // todo: nonce
+    add_action( 'wp_ajax_fv_player_db_load', array($this, 'return_shortcode_db_data') );
+    add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
+    add_action( 'wp_ajax_fv_player_db_import', array($this, 'import_player_data') );
+    add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
+    add_action( 'wp_ajax_fv_player_db_remove', array($this, 'remove_player') );
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce
+    add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') ); // todo: error message on failure
   }
 
   public function getVideosCache() {
@@ -1018,6 +1019,10 @@ class FV_Player_Db {
 
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
       $out = array();
+      
+      if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-load-".get_current_user_id() ) ) {
+        die('Security check failed'); // todo: this doesn't show up for the user
+      }
 
       // load player and its videos from DB
       if (!$this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ))) {
@@ -1190,6 +1195,10 @@ class FV_Player_Db {
       $id  = $_POST['playerID'];
     }
     
+    if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-export-".$id ) ) {
+      die('Security check failed');
+    }
+    
     if ( $id ) {
       // first, load the player
       $player = new FV_Player_Db_Player($id, array(), $this);
@@ -1265,7 +1274,7 @@ class FV_Player_Db {
    * @param bool $output_result If true, the import result will be returned instead of outputted.
    *                            Used when cloning a player.
    * @param array|null $alternative_data If set, this is an alternative source of data to import.
-   *                                     Used when cloning a player.
+   *                                     Used when cloning a player. This also skips the nonce check!
    *
    * @return string Returns the actual player ID, if $output_result is false.
    *
@@ -1275,6 +1284,10 @@ class FV_Player_Db {
     global $FV_Player_Db;
 
     if (($alternative_data !== null && $data = $alternative_data) || (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true))) {
+      if( !$alternative_data && ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-import-".get_current_user_id() ) ) ) {
+        die('Security check failed');
+      }      
+      
       try {
         // first, create the player
         $player_keys = $data;
@@ -1338,9 +1351,9 @@ class FV_Player_Db {
       }
     } else {
       if ($output_result) {
-        die('no valid import data found, import unsuccessful');
+        die('No valid import data found, import unsuccessful');
       } else {
-        return 'no valid import data found, import unsuccessful';
+        return 'No valid import data found, import unsuccessful';
       }
     }
   }
@@ -1352,6 +1365,10 @@ class FV_Player_Db {
    */
   public function remove_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
+      if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) ) {
+        die('Security check failed');
+      }
+      
       // first, load the player
       $player = new FV_Player_Db_Player($_POST['playerID'], array(), $this);
       if ($player && $player->getIsValid()) {
@@ -1360,13 +1377,13 @@ class FV_Player_Db {
           echo 1;
           exit;
         } else {
-          die( 'could not remove player - please use the close button and try again' );
+          die( 'Could not remove player' );
         }
       } else {
-        die( 'invalid player ID, removal unsuccessful - please use the close button and try again' );
+        die( 'Invalid player ID' );
       }
     } else {
-      die( 'invalid player ID, removal unsuccessful - please use the close button and try again' );
+      die( 'Invalid player ID' );
     }
   }
 

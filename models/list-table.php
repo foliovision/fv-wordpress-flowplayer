@@ -158,25 +158,29 @@ class FV_Player_List_Table extends WP_List_Table {
     return $html;
   }
 	
-	public function column_cb( $log ) {
+	public function column_cb( $player ) {
 		return sprintf(
 			'<input type="checkbox" name="%1$s[]" value="%2$s" />',
 			'log_id',
-			$log->id
+			$player->id
 		);
 	}
   
-	public function column_default( $log, $column_name ) {
+	public function column_default( $player, $column_name ) {
 		switch ( $column_name ) {
-          case 'id':
-                $id = (isset($log->$column_name) && $log->$column_name ? $log->$column_name : '');
-                $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
-                break;
+      case 'id':
+        $id = (isset($player->$column_name) && $player->$column_name ? $player->$column_name : '');
+        $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
+        break;
 			case 'edit' :
-				$value = "<a href='#' class='fv-player-edit' data-player_id='{$log->id}'>Edit</a><span> | </span><a href='#' class='fv-player-export' data-player_id='{$log->id}'>Export</a><span> | </span><a href='#' class='fv-player-clone' data-player_id='{$log->id}'>Clone</a><span> | </span><a href='#' class='fv-player-remove' data-player_id='{$log->id}'>Delete</a>";
+        $id = $player->id;
+				$value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a><span> | ";
+        $value .= "</span><a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
+        $value .= "</span><a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
+        $value .= "</span><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a>";
 				break;
 			default:
-				$value = isset($log->$column_name) && $log->$column_name ? $log->$column_name : '';
+				$value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';
 				break;
 
 		}

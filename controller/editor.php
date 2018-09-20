@@ -21,6 +21,12 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
   wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
   
+  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
+    'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
+    'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() )
+  ) );
+  
   global $fv_fp;
   if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
     wp_enqueue_script('fvwpflowplayer-shortcode-editor-old');
