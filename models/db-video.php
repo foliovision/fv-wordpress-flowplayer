@@ -143,7 +143,7 @@ class FV_Player_Db_Video {
   }
 
   /**
-   * Checks for DB tables existence and creates it as necessary.
+   * Checks for DB tables existence and creates it as necessary. It can add new table fields but remove them, which can result in the 'Unknown property for new DB video:' error
    *
    * @param $wpdb The global WordPress database object.
    */
