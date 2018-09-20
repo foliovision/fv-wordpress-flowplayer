@@ -263,7 +263,7 @@ class FV_Player_Db {
 
                 $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
 
-                $result_row->player_name[] = $arr;
+                $result_row->player_name[] = urldecode($arr);
               }
             }
 
@@ -283,6 +283,7 @@ class FV_Player_Db {
                 );
 
                 $txt = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
+                $txt = esc_attr( urldecode($txt) );
               }
 
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . $txt . '" title="' . $txt . '" /><span>' . $txt . '</span></div>';
@@ -300,6 +301,7 @@ class FV_Player_Db {
               );
 
               $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
+              $arr = esc_attr( urldecode($arr) );
 
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $arr . '"><span>' . $arr . '</span></div>';
             }
