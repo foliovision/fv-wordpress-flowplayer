@@ -357,6 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.2.0.727 - 2018/09/20 =
+
+* Security - adding nonce for the Shortcode Editor preview
+
 = 7.2.0.727 - 2018/09/18 =
 
 * New feature - S3 Bucket browser
