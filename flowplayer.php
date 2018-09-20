@@ -61,11 +61,11 @@ include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
-include_once(dirname( __FILE__ ) . '/models/db-shortcode-player.php');
-include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-video.php');
-include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-video-meta.php');
-include_once(dirname( __FILE__ ) . '/models/db-shortcode-player-player-meta.php');
-include_once(dirname( __FILE__ ) . '/models/db-shortcode.php');
+include_once(dirname( __FILE__ ) . '/models/db-player.php');
+include_once(dirname( __FILE__ ) . '/models/db-video.php');
+include_once(dirname( __FILE__ ) . '/models/db-video-meta.php');
+include_once(dirname( __FILE__ ) . '/models/db-player-meta.php');
+include_once(dirname( __FILE__ ) . '/models/db.php');
 
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();
