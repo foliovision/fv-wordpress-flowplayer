@@ -17,7 +17,7 @@
 */
 
 // player meta data instance with options that's stored in a DB
-class FV_Player_Db_Shortcode_Player_Player_Meta {
+class FV_Player_Db_Player_Meta {
 
   private
     $id, // automatic ID for the meta data
@@ -25,7 +25,7 @@ class FV_Player_Db_Shortcode_Player_Player_Meta {
     $id_player, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
     $meta_value, // arbitrary meta value
-    $DB_Shortcode_Instance = null;
+    $DB_Instance = null;
 
   private static $db_table_name;
 
@@ -129,20 +129,20 @@ CREATE TABLE `" . self::$db_table_name . "` (
   }
 
   /**
-   * FV_Player_Db_Shortcode_Player_Player_Meta constructor.
+   * FV_Player_Db_Player_Meta constructor.
    *
    * @param int $id         ID of player meta data to load data from the DB for.
    * @param array $options  Options for a newly created player meta data that will be stored in a DB.
-   * @param FV_Player_Db_Shortcode $DB_Shortcode Instance of the DB shortcode global object that handles caching
+   * @param FV_Player_Db    $DB_Cache Instance of the DB shortcode global object that handles caching
    *                        of videos, players and their meta data.
    *
    * @throws Exception When no valid ID nor options are provided.
    */
-  function __construct($id, $options = array(), $DB_Shortcode = null) {
+  function __construct($id, $options = array(), $DB_Cache = null) {
     global $wpdb;
 
-    if ($DB_Shortcode) {
-      $this->DB_Shortcode_Instance = $DB_Shortcode;
+    if ($DB_Cache) {
+      $this->DB_Instance = $DB_Cache;
     }
 
     $this->initDB($wpdb);
@@ -175,8 +175,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
       }
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
-      /* @var $cache FV_Player_Db_Shortcode_Player_Player_Meta[] */
-      $cache = ($DB_Shortcode ? $DB_Shortcode->getPlayerMetaCache() : array());
+      /* @var $cache FV_Player_Db_Player_Meta[] */
+      $cache = ($DB_Cache ? $DB_Cache->getPlayerMetaCache() : array());
       $all_cached = false;
       $some_meta_exist = false;
 
@@ -311,8 +311,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
             $this->$key = stripslashes($value);
           }
 
-          // cache this meta in DB Shortcode object
-          if ($DB_Shortcode) {
+          // cache this meta in DB object
+          if ($DB_Cache) {
             $cache[$this->id_player][$this->id] = $this;
           }
         } else {
@@ -328,8 +328,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
               $first_done = true;
 
-              // cache this meta in DB Shortcode object
-              if ($DB_Shortcode) {
+              // cache this meta in DB object
+              if ($DB_Cache) {
                 $cache[$db_record->id_player][$this->id] = $this;
               }
             } else {
@@ -338,12 +338,12 @@ CREATE TABLE `" . self::$db_table_name . "` (
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
 
-              if ($DB_Shortcode && !$DB_Shortcode->isPlayerMetaCached($db_record->id_player, $record_id)) {
-                $player_meta_object = new FV_Player_Db_Shortcode_Player_Player_Meta( null, get_object_vars( $db_record ), $DB_Shortcode );
+              if ($DB_Cache && !$DB_Cache->isPlayerMetaCached($db_record->id_player, $record_id)) {
+                $player_meta_object = new FV_Player_Db_Player_Meta( null, get_object_vars( $db_record ), $DB_Cache );
                 $player_meta_object->link2db( $record_id );
 
-                // cache this meta in DB Shortcode object
-                if ( $DB_Shortcode ) {
+                // cache this meta in DB object
+                if ( $DB_Cache ) {
                   $cache[ $db_record->id_player ][ $record_id ] = $player_meta_object;
                 }
               }
@@ -371,7 +371,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
         }
 
         // $cached_meta will remain numeric if there are no meta data in the database
-        if ($cached_meta instanceof FV_Player_Db_Shortcode_Player_Player_Meta) {
+        if ($cached_meta instanceof FV_Player_Db_Player_Meta) {
           foreach ( $cached_meta->getAllDataValues() as $key => $value ) {
             $this->$key = stripslashes($value);
           }
@@ -385,7 +385,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
     // update cache, if changed
     if (isset($cache) && ($force_cache_update || !isset($all_cached) || !$all_cached)) {
-      $this->DB_Shortcode_Instance->setPlayerMetaCache($cache);
+      $this->DB_Instance->setPlayerMetaCache($cache);
     }
   }
 
@@ -397,7 +397,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
         $data[$property] = $value;
       }
     }
@@ -421,7 +421,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
         $is_player_id = ($property == 'id_player');
         $data_keys[] = $property . ' = '.($is_player_id ? (int) $value : '%s');
 
@@ -445,9 +445,9 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
     if (!$wpdb->last_error) {
       // add this meta into cache
-      $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
+      $cache = $this->DB_Instance->getPlayerMetaCache();
       $cache[$this->id_player][$this->id] = $this;
-      $this->DB_Shortcode_Instance->setPlayerMetaCache($cache);
+      $this->DB_Instance->setPlayerMetaCache($cache);
 
       return $this->id;
     } else {
@@ -466,7 +466,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'id_player' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance') {
+      if ($property != 'id' && $property != 'id_player' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
         $export_data[$property] = $value;
       }
     }
@@ -492,10 +492,10 @@ CREATE TABLE `" . self::$db_table_name . "` (
 
     if (!$wpdb->last_error) {
       // remove this meta from cache
-      $cache = $this->DB_Shortcode_Instance->getPlayerMetaCache();
+      $cache = $this->DB_Instance->getPlayerMetaCache();
       if (isset($cache[$this->id_player][$this->id])) {
         unset($cache[$this->id_player][$this->id]);
-        $this->DB_Shortcode_Instance->setPlayerMetaCache($cache);
+        $this->DB_Instance->setPlayerMetaCache($cache);
       }
 
       return true;

@@ -17,7 +17,7 @@
 */
 
 // video instance with options that's stored in a DB
-class FV_Player_Db_Shortcode_Player_Video {
+class FV_Player_Db_Video {
 
   private
     $id, // automatic ID for the video
@@ -33,7 +33,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $src_1, // alternative source path #1 for the video
     $src_2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $DB_Shortcode_Instance = null,
+    $DB_Instance = null,
     $meta_data = null; // object of this video's meta data
 
   private static $db_table_name;
@@ -180,20 +180,20 @@ class FV_Player_Db_Shortcode_Player_Video {
   }
 
   /**
-   * FV_Player_Db_Shortcode_Player_Video constructor.
+   * FV_Player_Db_Video constructor.
    *
    * @param int $id         ID of video to load data from the DB for.
    * @param array $options  Options for a newly created video that will be stored in a DB.
-   * @param FV_Player_Db_Shortcode $DB_Shortcode Instance of the DB shortcode global object that handles caching
+   * @param FV_Player_Db    $DB_Cache Instance of the DB shortcode global object that handles caching
    *                        of videos, players and their meta data.
    *
    * @throws Exception When no valid ID nor options are provided.
    */
-  function __construct($id, $options = array(), $DB_Shortcode = null) {
+  function __construct($id, $options = array(), $DB_Cache = null) {
     global $wpdb;
 
-    if ($DB_Shortcode) {
-      $this->DB_Shortcode_Instance = $DB_Shortcode;
+    if ($DB_Cache) {
+      $this->DB_Instance = $DB_Cache;
     }
 
     $this->initDB($wpdb);
@@ -220,8 +220,8 @@ class FV_Player_Db_Shortcode_Player_Video {
 
       $this->is_valid = true;
     } else if ($multiID || (is_numeric($id) && $id > 0)) {
-      /* @var $cache FV_Player_Db_Shortcode_Player_Video[] */
-      $cache = ($DB_Shortcode ? $DB_Shortcode->getVideosCache() : array());
+      /* @var $cache FV_Player_Db_Video[] */
+      $cache = ($DB_Cache ? $DB_Cache->getVideosCache() : array());
       $all_cached = false;
 
       // no options, load data from DB
@@ -277,8 +277,8 @@ class FV_Player_Db_Shortcode_Player_Video {
             $this->$key = stripslashes($value);
           }
 
-          // cache this video in DB Shortcode object
-          if ($DB_Shortcode) {
+          // cache this video in DB object
+          if ($DB_Cache) {
             $cache[$this->id] = $this;
           }
         } else {
@@ -294,8 +294,8 @@ class FV_Player_Db_Shortcode_Player_Video {
 
               $first_done = true;
 
-              // cache this video in DB Shortcode object
-              if ($DB_Shortcode) {
+              // cache this video in DB object
+              if ($DB_Cache) {
                 $cache[$this->id] = $this;
               }
             } else {
@@ -304,12 +304,12 @@ class FV_Player_Db_Shortcode_Player_Video {
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
 
-              if ($DB_Shortcode && !$DB_Shortcode->isVideoCached($record_id)) {
-                $video_object = new FV_Player_Db_Shortcode_Player_Video( null, get_object_vars( $db_record ), $this->DB_Shortcode_Instance );
+              if ($DB_Cache && !$DB_Cache->isVideoCached($record_id)) {
+                $video_object = new FV_Player_Db_Video( null, get_object_vars( $db_record ), $this->DB_Instance );
                 $video_object->link2db( $record_id );
 
-                // cache this video in DB Shortcode object
-                if ( $DB_Shortcode ) {
+                // cache this video in DB object
+                if ( $DB_Cache ) {
                   $cache[ $record_id ] = $video_object;
                 }
               }
@@ -341,7 +341,7 @@ class FV_Player_Db_Shortcode_Player_Video {
 
     // update cache, if changed
     if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
-      $this->DB_Shortcode_Instance->setVideosCache($cache);
+      $this->DB_Instance->setVideosCache($cache);
     }
   }
 
@@ -361,7 +361,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $this->id = (int) $id;
 
     if ($load_meta) {
-      $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($id)), $this->DB_Shortcode_Instance);
+      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($id)), $this->DB_Instance);
     }
   }
 
@@ -370,7 +370,7 @@ class FV_Player_Db_Shortcode_Player_Video {
    * Used when not using save() method to link meta data to video while saving it
    * into the database (i.e. while previewing etc.)
    *
-   * @param FV_Player_Db_Shortcode_Player_Video_Meta $meta_data The meta data object to link to this video.
+   * @param FV_Player_Db_Video_Meta $meta_data The meta data object to link to this video.
    *
    * @throws Exception When an underlying meta data object throws an exception.
    */
@@ -380,7 +380,7 @@ class FV_Player_Db_Shortcode_Player_Video {
       $first_done = false;
       foreach ($meta_data as $meta_record) {
         // create new record in DB
-        $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record, $this->DB_Shortcode_Instance);
+        $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, $this->DB_Instance);
 
         // link to DB, if the meta record has an ID
         if (!empty($meta_record['id'])) {
@@ -467,7 +467,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance' && $property != 'meta_data') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data[$property] = $value;
       }
     }
@@ -478,7 +478,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   /**
    * Returns meta data for this video.
    *
-   * @return FV_Player_Db_Shortcode_Player_Video_Meta[] Returns all meta data for this video.
+   * @return FV_Player_Db_Video_Meta[] Returns all meta data for this video.
    * @throws Exception When an underlying meta data object throws an exception.
    */
   public function getMetaData() {
@@ -488,8 +488,8 @@ class FV_Player_Db_Shortcode_Player_Video {
       // from database at the time when player is initially created
       if (is_array($this->meta_data)) {
         return $this->meta_data;
-      } else if ( $this->DB_Shortcode_Instance->isVideoMetaCached($this->id) ) {
-        $cache = $this->DB_Shortcode_Instance->getVideoMetaCache();
+      } else if ( $this->DB_Instance->isVideoMetaCached($this->id) ) {
+        $cache = $this->DB_Instance->getVideoMetaCache();
         return $cache[$this->id];
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
@@ -500,7 +500,7 @@ class FV_Player_Db_Shortcode_Player_Video {
       }
     } else if ($this->meta_data === null) {
       // meta data not loaded yet - load them now
-      $this->meta_data = new FV_Player_Db_Shortcode_Player_Video_Meta(null, array('id_video' => array($this->id)), $this->DB_Shortcode_Instance);
+      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($this->id)), $this->DB_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$this->meta_data->getIsValid()) {
@@ -538,7 +538,7 @@ class FV_Player_Db_Shortcode_Player_Video {
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance' && $property != 'meta_data') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = $value;
       }
@@ -565,7 +565,7 @@ class FV_Player_Db_Shortcode_Player_Video {
           $meta_record['id_video'] = $this->id;
 
           // create new record in DB
-          $meta_object = new FV_Player_Db_Shortcode_Player_Video_Meta(null, $meta_record, $this->DB_Shortcode_Instance);
+          $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, $this->DB_Instance);
 
           // add meta data ID
           if ($is_update) {
@@ -578,9 +578,9 @@ class FV_Player_Db_Shortcode_Player_Video {
       }
 
       // add this meta into cache
-      $cache = $this->DB_Shortcode_Instance->getVideosCache();
+      $cache = $this->DB_Instance->getVideosCache();
       $cache[$this->id] = $this;
-      $this->DB_Shortcode_Instance->setVideosCache($cache);
+      $this->DB_Instance->setVideosCache($cache);
 
       return $this->id;
     } else {
@@ -599,7 +599,7 @@ class FV_Player_Db_Shortcode_Player_Video {
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Shortcode_Instance' && $property != 'meta_data') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $export_data[$property] = $value;
       }
     }
@@ -624,10 +624,10 @@ class FV_Player_Db_Shortcode_Player_Video {
 
     if (!$wpdb->last_error) {
       // remove this meta from cache
-      $cache = $this->DB_Shortcode_Instance->getVideosCache();
+      $cache = $this->DB_Instance->getVideosCache();
       if (isset($cache[$this->id])) {
         unset($cache[$this->id]);
-        $this->DB_Shortcode_Instance->setVideosCache($cache);
+        $this->DB_Instance->setVideosCache($cache);
       }
 
       return true;

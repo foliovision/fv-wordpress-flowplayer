@@ -51,7 +51,7 @@ class flowplayer_frontend extends flowplayer
    * Retrieves instance of current player
    * with data loaded from database.
    *
-   * @return FV_Player_Db_Shortcode_Player | null
+   * @return FV_Player_Db_Player | null
    */
   function current_player() {
     return $this->currentPlayerObject;
@@ -61,7 +61,7 @@ class flowplayer_frontend extends flowplayer
    * Retrieves instance of current video
    * with data loaded from database.
    *
-   * @return FV_Player_Db_Shortcode_Player_Video | null
+   * @return FV_Player_Db_Video | null
    */
   function current_video() {
     return $this->currentVideoObject;

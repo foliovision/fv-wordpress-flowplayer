@@ -193,11 +193,11 @@ class FV_Player_List_Table extends WP_List_Table {
 	}
   
 	public function get_result_counts() {
-      $this->total_items = FV_Player_Db_Shortcode_Player::getTotalPlayersCount();
+      $this->total_items = FV_Player_Db_Player::getTotalPlayersCount();
 	}
 
 	public function get_data() {
-	  global $FV_Db_Shortcode;
+	  global $FV_Player_Db;
 
 	  $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
       $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'asc';
@@ -207,7 +207,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
 	  $per_page = $this->per_page;
 	  $offset = ( $current - 1 ) * $per_page;
-      return $FV_Db_Shortcode::getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
+      return $FV_Player_Db::getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
 	}
 	
 	public function prepare_items() {

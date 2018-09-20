@@ -702,11 +702,11 @@ function fv_player_admin_notice_expired_license() {
 /*
  *  DB based player data saving
  */
-global $FV_Db_Shortcode;
+global $FV_Player_Db;
 
 // these have to be here, as using them in constructor doesn't work
-add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', array($FV_Db_Shortcode, 'db_store_player_data'));
-add_filter('heartbeat_received', array($FV_Db_Shortcode, 'check_db_edit_lock'), 10, 2);
+add_action('wp_ajax_fv_wp_flowplayer_db_store_player_data', array($FV_Player_Db, 'db_store_player_data'));
+add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10, 2);
 
 
 add_action( 'admin_notices', 'fv_player_rollback' );
