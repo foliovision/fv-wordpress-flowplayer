@@ -824,7 +824,7 @@ function fv_flowplayer_playlist_show() {
     
     var video_preview = current.find('#fv_wp_flowplayer_field_splash').val();
     playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? '<img src="' + video_preview + '" />':'');
-    playlist_row.find('.fvp_item_video-filename').html( currentUrl.split("/").pop() );
+    playlist_row.find('.fvp_item_video-filename').html( decodeURIComponent(currentUrl).split("/").pop() );
 
     var playlist_row_div = playlist_row.find('.fvp_item_caption div');
     if (!playlist_row_div.hasClass('fv-player-shortcode-editor-small-spinner')) {
