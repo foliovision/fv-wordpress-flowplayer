@@ -247,64 +247,34 @@ class FV_Player_Db {
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
+            $caption = $videos[ $video_id ]->getCaption();
+            $caption_src = $videos[ $video_id ]->getCaptionFromSrc();
+            
             // assemble video name, if there's no player name
             if (is_array($result_row->player_name) && isset($videos[ $video_id ])) {
-              if ( $videos[ $video_id ]->getCaption() ) {
+              if ( $caption ) {
                 // use caption
-                $result_row->player_name[] = $videos[ $video_id ]->getCaption();
+                $result_row->player_name[] = $caption;
               } else {
-                // use source
-                $arr = explode('/', $videos[ $video_id ]->getSrc());
-                $arr = end($arr);
-
-                // update YouTube and other video names
-                $vid_replacements = array(
-                  'watch?v=' => 'YouTube: '
-                );
-
-                $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
-
-                $result_row->player_name[] = urldecode($arr);
+                $result_row->player_name[] = $caption_src;
               }
             }
 
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
               // use splash with caption / filename in a span
-              if ( isset($videos[ $video_id ]) && $videos[ $video_id ]->getCaption() ) {
-                $txt = $videos[ $video_id ]->getCaption();
+              if ( isset($videos[ $video_id ]) && $caption ) {
+                $txt = $caption;
               } else {
-                // use source
-                $arr = explode('/', $videos[ $video_id ]->getSrc());
-                $arr = end($arr);
-
-                // update YouTube and other video names
-                $vid_replacements = array(
-                  'watch?v=' => 'YouTube: '
-                );
-
-                $txt = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
-                $txt = esc_attr( urldecode($txt) );
+                $txt = esc_attr($caption_src);
               }
 
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . $txt . '" title="' . $txt . '" /><span>' . $txt . '</span></div>';
-            } else if ( isset($videos[ $video_id ]) && $videos[ $video_id ]->getCaption() ) {
+            } else if ( isset($videos[ $video_id ]) && $caption ) {
               // use caption
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $videos[ $video_id ]->getCaption() . '"><span>' . $videos[ $video_id ]->getCaption() . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption) . '"><span>' . $caption . '</span></div>';
             } else if (isset($videos[ $video_id ])) {
-              // use source
-              $arr = explode('/', $videos[ $video_id ]->getSrc());
-              $arr = end($arr);
-
-              // update YouTube and other video names
-              $vid_replacements = array(
-                'watch?v=' => 'YouTube: '
-              );
-
-              $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
-              $arr = esc_attr( urldecode($arr) );
-
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . $arr . '"><span>' . $arr . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption_src) . '"><span>' . $caption_src . '</span></div>';
             }
           }
 
