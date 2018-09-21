@@ -76,6 +76,9 @@
 #fv-player-list-thumb-toggle > a{ box-shadow:none; }
 #fv-player-shortcode-editor td > input[type="checkbox"]{margin-top:-4px}
 
+#fv-player-shortcode-editor-loading-spinner {background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white; background-repeat: no-repeat; background-position: center; position:absolute; z-index: 2; height: 100%; width: 100%;}
+#fv-player-shortcode-editor-loading-spinner.loaded {background: white}
+
 /*Preview iframe*/
 #fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
 #fv-player-shortcode-editor-preview div.fv-player-shortcode-editor-helper {display:none;}
