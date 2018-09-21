@@ -1,6 +1,5 @@
 #id { width: 6em }
 #player_name { width: 20em }
-#fv_player_players_table { max-width: 140em }
 #edit {width: 13em}
 #date_created {width: 12em}
 
@@ -13,3 +12,6 @@
 .fv_player_splash_list_preview.fv_player_list_preview_no_splash span {display: block}
 
 .fv-player-remove, .fv-player-remove:hover, .fv-player-remove-confirm, .fv-player-remove-confirm:hover {color: #ff0000}
+
+.column-shortcode { width: 10em }
+.column-shortcode input { width: 100% }

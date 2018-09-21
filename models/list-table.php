@@ -124,6 +124,7 @@ class FV_Player_List_Table extends WP_List_Table {
       'date_created' => __( 'Date', 'fv-wordpress-flowplayer' ),
       //'author'       => __( 'Author', 'fv-wordpress-flowplayer' ),
 			'thumbs'       => __( 'Videos', 'fv-wordpress-flowplayer' ),
+      'shortcode'    => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
 		);
 	}
   
@@ -182,6 +183,9 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
         $value .= "</div>";
+        break;
+      case 'shortcode':        
+        $value = '<input type="text" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
         break;
 			default:
 				$value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';

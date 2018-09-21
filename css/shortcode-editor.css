@@ -39,6 +39,7 @@
 
 .fv-player-shortcode-editor-left{ width:40%; }
 .fv-player-shortcode-editor-right{ width:60%; }
+#fv-player-shortcode-editor #fv_wp_flowplayer_field_player_name { width: 88% }
 .fv-player-tab{position:relative;}
 .fv-player-tabs #fv-player-list-thumb-toggle{ position:absolute;right:10px;text-align:right;top:9px; }
 #fv-player-list-thumb-toggle a{ text-decoration:none;margin-left:6px;color:#b4b9be; }
