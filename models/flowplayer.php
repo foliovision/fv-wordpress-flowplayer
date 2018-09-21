@@ -2033,7 +2033,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 <body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
-    if( !is_user_logged_in() || !current_user_can('manage_options') || !wp_verify_nonce( get_query_var('fv_player_embed'),"fv-player-preview-".get_current_user_id() ) ){
+    if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( get_query_var('fv_player_embed'),"fv-player-preview-".get_current_user_id() ) ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
       <div style="background:white;">
         <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
