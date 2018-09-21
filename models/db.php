@@ -1020,7 +1020,9 @@ class FV_Player_Db {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
       $out = array();
       
-      if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-load-".get_current_user_id() ) ) {
+      if( defined('DOING_AJAX') && DOING_AJAX &&
+        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-load-".get_current_user_id() ) )
+      ) {
         die('Security check failed'); // todo: this doesn't show up for the user
       }
 
@@ -1195,7 +1197,9 @@ class FV_Player_Db {
       $id  = $_POST['playerID'];
     }
     
-    if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-export-".$id ) ) {
+    if( defined('DOING_AJAX') && DOING_AJAX && 
+      ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-export-".$id ) )
+    ) {
       die('Security check failed');
     }
     
@@ -1284,7 +1288,9 @@ class FV_Player_Db {
     global $FV_Player_Db;
 
     if (($alternative_data !== null && $data = $alternative_data) || (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true))) {
-      if( !$alternative_data && ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-import-".get_current_user_id() ) ) ) {
+      if( defined('DOING_AJAX') && DOING_AJAX && !$alternative_data 
+        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-import-".get_current_user_id() ) )
+      ) {
         die('Security check failed');
       }      
       
@@ -1365,7 +1371,9 @@ class FV_Player_Db {
    */
   public function remove_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-      if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) ) {
+      if( defined('DOING_AJAX') && DOING_AJAX && 
+        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) )
+      ) {
         die('Security check failed');
       }
       
