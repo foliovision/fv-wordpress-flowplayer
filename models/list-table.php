@@ -172,7 +172,7 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
         break;
       case 'date_created' :
-        $value = "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>";
+        $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :        
         $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
