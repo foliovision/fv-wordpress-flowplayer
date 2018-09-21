@@ -2253,11 +2253,11 @@ function fv_player_import(failed, failed_data, message) {
   if( !message ) message = 'Please try again.';
   
   fv_wp_flowplayer_big_loader_show('<textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="Paste your FV Player Export JSON data here">' + (typeof(failed_data) != 'undefined' ? failed_data : '') + '</textarea>\
-  <br />\
-  <br />\
-  <input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Player" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; \
-  <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" />\
-  <div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />'+message : '&nbsp;') + '</div>');
+    <br />\
+    <br />\
+    <input type="button" name="fv_player_import_btn" id="fv_player_import_btn" value="Import Player" class="button button-primary button-large" onClick="fv_wp_flowplayer_import_routine()" /> &nbsp; \
+    <input type="button" name="close_import_overlay" id="close_import_overlay" value="Close" class="button button-large" onClick="jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close()" />\
+    <div class="notice notice-success" id="fv_player_imported_message">' + (typeof(failed) != 'undefined' ? '<strong>Error importing data!</strong><br />'+message : '&nbsp;') + '</div>');
 
   if (typeof(failed) != 'undefined') {
     jQuery('#fv_player_imported_message')
@@ -2432,10 +2432,17 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
         } else {
-          fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
+          json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+          fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please copy the player raw data below and <a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">submit a support ticket to Foliovision</a>:\
             <br />\
             <br />\
-            <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" />');
+            <textarea name="fv_player_copy_to_clipboard" id="fv_player_copy_to_clipboard" cols="150" rows="15">'+json_export_data+'</textarea>\
+            <br />\
+            <br />\
+            <input type="button" name="fv_player_copy_to_clipboard_btn" id="fv_player_copy_to_clipboard_btn" value="Copy To Clipboard" class="button button-primary button-large" onClick="fv_wp_flowplayer_copy_to_clipboard()" />\
+            <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-large" onClick="fv_wp_flowplayer_big_loader_close()" />\
+            <div class="notice notice-success" id="fv_player_copied_to_clipboard_message">&nbsp;</div>');
+          jQuery('#fv_player_copy_to_clipboard').select();
         }
       }).error(function() {
         fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
