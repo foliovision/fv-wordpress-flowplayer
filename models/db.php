@@ -20,7 +20,7 @@
 class FV_Player_Db {
 
   private
-    $edit_lock_timeout_seconds = 300,
+    $edit_lock_timeout_seconds = 120,
     $videos_cache = array(),
     $video_atts_cache = array(),
     $video_meta_cache = array(),
@@ -1036,8 +1036,10 @@ class FV_Player_Db {
       $userID = get_current_user_id();
       if ($fv_fp->current_player() && count($fv_fp->current_player()->getMetaData())) {
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
-          if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
-            if (str_replace('edit_lock_', '', $meta_object->getMetaKey()) != $userID) {
+          $key = $meta_object->getMetaKey();
+          $user_locked = str_replace('edit_lock_', '', $key);
+          if ( strstr($key, 'edit_lock_') !== false ) {
+            if ( $user_locked != $userID) {
               // someone else is editing this video, first check the timestamp
               $last_tick = $meta_object->getMetaValue();
               if (time() - $last_tick > $this->edit_lock_timeout_seconds) {
@@ -1052,7 +1054,13 @@ class FV_Player_Db {
 
                 $meta->save();
               } else {
-                header( 'HTTP/1.0 403 Forbidden' );
+                $user = get_userdata($user_locked);
+                $name = 'Somebody else';
+                if( $user ) {
+                  if( !empty($user->display_name) ) $name = $user->display_name;
+                  if( !empty($user->user_nicename) ) $name = $user->user_nicename;
+                }
+                echo $name." is editing this player at the moment. Please try again later.";
                 die();
               }
             } else {

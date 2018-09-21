@@ -1352,8 +1352,6 @@ function fv_wp_flowplayer_edit() {
       }).error(function(xhr) {
         if (xhr.status == 404) {
           fv_wp_flowplayer_big_loader_show('The requested player could not be found. Please try again.');
-        } else if (xhr.status == 403) {
-          fv_wp_flowplayer_big_loader_show('Someone else is editing this player at the moment. Please, try again later.');
         } else {
           fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.');
         }
