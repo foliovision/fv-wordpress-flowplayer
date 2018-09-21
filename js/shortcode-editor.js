@@ -3478,3 +3478,7 @@ jQuery( function($) {
 
 
 
+
+jQuery(document).on('click','.fv_player_splash_list_preview', function() {
+  jQuery(this).parents('tr').find('.fv-player-edit').click();
+});

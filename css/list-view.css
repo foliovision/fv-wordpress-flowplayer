@@ -4,7 +4,7 @@
 #edit {width: 13em}
 #date_created {width: 12em}
 
-.fv_player_splash_list_preview { height: 72px; margin: 0 5px 2px 0; display: inline; float: left; position: relative}
+.fv_player_splash_list_preview { height: 72px; margin: 0 5px 2px 0; display: inline; float: left; position: relative; cursor: pointer}
 .fv_player_splash_list_preview img { height: 72px; width: auto }
 .fv_player_splash_list_preview span {display: none; color: #fff; position: absolute; top: 0; left: 0; margin-top: 20%; right: 0; text-align: center; text-shadow: 0 0 5px black; }
 .fv_player_splash_list_preview:hover span {display: block; }
