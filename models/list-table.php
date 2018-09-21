@@ -124,7 +124,6 @@ class FV_Player_List_Table extends WP_List_Table {
       'date_created' => __( 'Date', 'fv-wordpress-flowplayer' ),
       //'author'       => __( 'Author', 'fv-wordpress-flowplayer' ),
 			'thumbs'       => __( 'Videos', 'fv-wordpress-flowplayer' ),
-			'edit'			   => ''
 		);
 	}
   
@@ -167,18 +166,23 @@ class FV_Player_List_Table extends WP_List_Table {
 	}
   
 	public function column_default( $player, $column_name ) {
+    $id = $player->id;
 		switch ( $column_name ) {
-      case 'id':
-        $id = (isset($player->$column_name) && $player->$column_name ? $player->$column_name : '');
+      case 'id':        
         $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
         break;
-			case 'edit' :
-        $id = $player->id;
-				$value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a><span> | ";
-        $value .= "</span><a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
-        $value .= "</span><a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
-        $value .= "</span><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a>";
-				break;
+      case 'date_created' :
+        $value = "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>";
+        break;
+      case 'player_name' :        
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
+        $value .= "<div class='row-actions'>";
+        $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
+        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
+        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
+        $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
+        $value .= "</div>";
+        break;
 			default:
 				$value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';
 				break;
