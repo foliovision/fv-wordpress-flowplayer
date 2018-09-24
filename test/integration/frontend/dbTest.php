@@ -39,7 +39,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     $output = apply_filters( 'the_content', '[fvplayer id="1"]' );     
     
     $sample = <<< HTML
-<div id="wpfp_034c92b7716ddbcf3a90a3a26440386e" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg);" data-ratio="0.5625" data-advance="true">
+<div id="wpfp_034c92b7716ddbcf3a90a3a26440386e" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
 
@@ -59,7 +59,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="1" sort="oldest"]' );
     
     $sample = <<< HTML
-<div id="wpfp_034c92b7716ddbcf3a90a3a26440386e" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg);" data-ratio="0.5625" data-advance="true">
+<div id="wpfp_034c92b7716ddbcf3a90a3a26440386e" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
 
@@ -76,7 +76,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="1" sort="newest"]' );
     
     $sample = <<< HTML
-<div id="wpfp_abbc39b8f78820ec7d8d7a8e34d43856" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png);" data-ratio="0.5625" data-advance="true">
+<div id="wpfp_abbc39b8f78820ec7d8d7a8e34d43856" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
 
@@ -93,7 +93,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="1" sort="title"]' );
     
     $sample = <<< HTML
-<div id="wpfp_4836d78a28ea12e5df615a50be31878f" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png);" data-ratio="0.5625" data-advance="true">
+<div id="wpfp_4836d78a28ea12e5df615a50be31878f" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 100%; background-image: url(https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
 

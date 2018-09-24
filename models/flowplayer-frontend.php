@@ -86,7 +86,7 @@ class flowplayer_frontend extends flowplayer
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
     $media = $this->aCurArgs['src'];
 
-    if (!$media) {
+    if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
       return;
     }
 
@@ -582,8 +582,6 @@ class flowplayer_frontend extends flowplayer
             if( $this->_get_option('playlist_advance') ) {
               $attributes['data-advance'] = 'false';
             }
-          } else if( isset($this->aCurArgs['playlist_advance']) && ($this->aCurArgs['playlist_advance'] == 'on' || $this->aCurArgs['playlist_advance'] == 'true') ){
-            $attributes['data-advance'] = 'true';
           }
         }
         
