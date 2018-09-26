@@ -1129,22 +1129,34 @@
 .fvp-share-bar .fvp-sharing a {
 	width: 24px;
 	height: 24px;
+	border-radius: 12px;
 	display: block;
 	overflow: hidden;	
+	position: relative;
 	-wekbit-box-shadow: none !important;
 	-moz-box-shadow: none !important;
 	box-shadow: none !important;
 	border-bottom: 0 !important;
-	text-decoration: none !important;	
+	text-decoration: none !important;
+	background-color: rgb(0,0,0);
+	background-color: rgba(0,0,0,.5);
 }
-.fvp-share-bar .fvp-sharing a.sharing-twitter {
-	background-position: 0 -28px;	
+.fvp-share-bar .fvp-sharing a svg {
+	margin: -8px 0 0 -8px;
+	padding: 0;
+	position: absolute;
+	left: 50%;
+	top: 50%;
 }
-.fvp-share-bar .fvp-sharing a.sharing-google {
-	background-position: 0 -56px;	
+.fvp-share-bar .fvp-sharing .sharing-google svg{
+	margin: -9px 0 0 -9px;
+	width: 18px;
+	height: 18px;
 }
-.fvp-share-bar .fvp-sharing a.sharing-email {
-	background-position: 0 -84px;	
+.fvp-share-bar .fvp-sharing .sharing-email svg {
+	margin: -7px 0 0 -7px;
+	width: 14px;
+	height: 14px;
 }
 .fvp-share-bar .sharing-link{
     float: left;
