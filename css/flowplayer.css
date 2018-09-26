@@ -1023,7 +1023,6 @@
 .flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
 .flowplayer .fp-header .fp-icon { margin: .5em .5em 0 0;line-height: 1 }
 
-.flowplayer .fvp-share-bar .fvp-sharing a {background: url("img/flp-share-icons-x2.png") no-repeat;background-size:100%}
 .flowplayer.is-fullscreen{ max-height:100% !important; }
 
 
@@ -1131,9 +1130,7 @@
 	width: 24px;
 	height: 24px;
 	display: block;
-	overflow: hidden;
-	background: url("img/flp-share-icons.png") no-repeat;
-	text-indent: -9999em;
+	overflow: hidden;	
 	-wekbit-box-shadow: none !important;
 	-moz-box-shadow: none !important;
 	box-shadow: none !important;
