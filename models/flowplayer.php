@@ -848,14 +848,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( count($flash_media) ) {
         $bHaveFlash = false;
         foreach( $aItem AS $key => $aItemFile ) { //  how to avoid duplicates?
-          if( in_array( 'flash', array_keys($aItemFile) ) ) {
+          if( $aItemFile['type'] == 'video/flash' ) {
             $bHaveFlash = true;
           }
         }
         
         if( !$bHaveFlash ) {
           foreach( $flash_media AS $flash_media_items ) {
-            $aItem[] = array( 'flash' => $flash_media_items );
+            $aItem[] = array( 'src' => $flash_media_items, 'type' => 'video/flash' );
           }
         }      
       }
