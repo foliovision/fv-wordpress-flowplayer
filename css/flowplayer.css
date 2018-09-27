@@ -1602,6 +1602,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   
 }
 @media (max-width: 39.9375em){
+	.flowplayer .fv_player_popup { padding: 12px 0 0 }
   	.flowplayer .fp-captions{line-height:14px !important}
   	.flowplayer .fp-captions p{font-size:14px !important;line-height:20px !important}
 	.flowplayer .fp-help p{font-size:9px;}
@@ -1615,7 +1616,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 @media only screen and (max-width: 29.9375em) {
 	.flowplayer .fp-captions{bottom:4px;line-height:12px !important}
 	.flowplayer .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
-	.flowplayer .fv_player_popup {width:99%;font-size:14px;top:0;}
+	.flowplayer .fv_player_popup {width:99%;font-size:12px;top:0;}
 	.flowplayer.is-fv-narrow .fv_player_popup{font-size:.8em}
 	.flowplayer.is-audio .fp-time em {font-size:12px}
 	.fp-playlist-external a h4 {font-size:10px}  
