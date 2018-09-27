@@ -817,7 +817,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $media_item_tmp = $media_item;
         }
         
-        $media_url = $this->get_video_src( $media_item_tmp, array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+        $media_url = $this->get_video_src( $media_item_tmp, array( 'suppress_filters' => $suppress_filters ) );
         
         //  add domain for relative video URLs if it's not RTMP
         if( stripos($media_item,'rtmp://') === false && $key != 3 ) {
@@ -844,7 +844,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
       
       if( !empty($aArgs['mobile']) ) {
-        $mobile = $this->get_video_url($aArgs['mobile']);
+        $mobile = $this->get_video_src( $this->get_video_url($aArgs['mobile']) );
         $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
       
@@ -889,7 +889,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               continue;
             }
             
-            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'suppress_filters' => $suppress_filters ) );
             
             if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
               if( !preg_match( '~^[a-z0-9]+:~', $media_url ) ) { //  no RTMP extension provided
@@ -2054,10 +2054,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
       
       if( isset($post->ID) && !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-        $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true, 'flash' => false ) );
-        if( !is_array($video_secured) ) {
-          $video_secured = array( 'media' => $video_secured );
-        }
+        $video_secured = array( 'media' => $fv_fp->get_video_src( $video, array( 'dynamic' => true ) ) );
         if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
           if( isset($_GET['fv_flowplayer_checker'] ) ) {
