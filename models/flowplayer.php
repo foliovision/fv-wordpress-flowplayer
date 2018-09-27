@@ -823,7 +823,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } 
                  
       $aItem = array();      
-      $flash_media = array();
       
       if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
         $rtmp = 'rtmp:'.$rtmp;  
@@ -855,21 +854,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         } else {
           $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) );
         }        
-      }
-      
-      if( count($flash_media) ) {
-        $bHaveFlash = false;
-        foreach( $aItem AS $key => $aItemFile ) { //  how to avoid duplicates?
-          if( $aItemFile['type'] == 'video/flash' ) {
-            $bHaveFlash = true;
-          }
-        }
-        
-        if( !$bHaveFlash ) {
-          foreach( $flash_media AS $flash_media_items ) {
-            $aItem[] = array( 'src' => $flash_media_items, 'type' => 'video/flash' );
-          }
-        }      
       }
       
       $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
@@ -918,7 +902,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
           $aItem = array();
           $sSplashImage = false;
-          $flash_media = array();
 
           foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
             if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
@@ -927,43 +910,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             }
             
             $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
-            if( is_array($media_url) ) {
-              $actual_media_url = $media_url['media'];
-              if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
-                $flash_media[] = $media_url['flash'];
-              }
-            } else {
-              $actual_media_url = $media_url;
-            }
+            
             if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
-              if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
-                $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
-                $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+              if( !preg_match( '~^[a-z0-9]+:~', $media_url ) ) { //  no RTMP extension provided
+                $ext = $this->get_mime_type($media_url,false,true) ? $this->get_mime_type($media_url,false,true).':' : false;
+                $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $media_url ), 'type' => 'video/flash' );
               } else {
-                $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+                $aItem[] = array( 'src' => str_replace( '+', ' ', $media_url ), 'type' => 'video/flash' );
               }             
             } else {
-              $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
+              $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) ); 
             }                
             
           }
           
           $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
-          
-          if( count($flash_media) ) {
-            $bHaveFlash = false;
-            foreach( $aItem AS $key => $aItemFile ) {
-              if( in_array( 'flash', array_keys($aItemFile) ) ) {
-                $bHaveFlash = true;
-              }
-            }
-            
-            if( !$bHaveFlash ) {
-              foreach( $flash_media AS $flash_media_items ) {
-                $aItem[] = array( 'flash' => $flash_media_items );
-              }
-            }      
-          }
 
           $aPlayer = array( 'sources' => $aItem );      
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
