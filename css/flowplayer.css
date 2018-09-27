@@ -965,6 +965,7 @@
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
 .flowplayer.has-video-checker {overflow: visible}
+.flowplayer.is-long .fp-elapsed {min-width: 3.35em}
 
 .fv-fp-splash-text { position: absolute;bottom:20%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 2px #333;background-color: rgba(0,0,0,0.5); font-size: 18px; padding: 5px 36px; pointer-events: none }
 .flowplayer.is-error .fv-fp-splash-text {display: none}
@@ -1628,6 +1629,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 	.flowplayer.is-fv-narrow .fv_player_popup{font-size:.8em}
 	.flowplayer.is-audio .fp-time em {font-size:12px}
 	.fp-playlist-external a h4 {font-size:10px}  
+	.flowplayer.is-long .fp-elapsed {min-width: 0}
 }
 @media only screen and (max-width: 22.44em) {
 	.flowplayer.is-fv-narrow .mailchimp-form{padding:10px 1.5%}
