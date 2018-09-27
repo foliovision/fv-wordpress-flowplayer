@@ -1286,7 +1286,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region', $amazon_key ) ) ? 4 : 2;
       
       if( $iAWSVersion == 4 ) {
-        $url_components['path'] = str_replace('+', ' ', $url_components['path']);
+        $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
       }
       
       $url_components['path'] = rawurlencode($url_components['path']);
