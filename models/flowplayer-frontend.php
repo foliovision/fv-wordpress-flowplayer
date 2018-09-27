@@ -282,10 +282,12 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= ">\n";
           
           if (!empty($mobile)) {
-            $this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile' ) );
+            $src = $this->get_video_src($mobile);
+            $this->ret['html'] .= '<source src="'.esc_attr($src).'" type="'.$this->get_mime_type($src).'" />';
           } else {
-             foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-              $this->ret['html'] .= $this->get_video_src($media_item);
+             foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {
+               $src = $this->get_video_src($media_item);
+               $this->ret['html'] .= '<source src="'.esc_attr($src).'" type="'.$this->get_mime_type($src).'" />';
             }
           }
           
@@ -534,95 +536,6 @@ class flowplayer_frontend extends flowplayer
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
           $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>'."\n";
-        }
-
-        if( count($aPlaylistItems) == 0 ) {  // todo: this stops subtitles, mobile video, preload etc.
-          $this->ret['html'] .= "\t".'<video class="fp-engine" preload="none"';
-          if (isset($splash_img) && !empty($splash_img)) {
-            $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
-          } 
-
-          $this->ret['html'] .= ">\n";
-
-          if( isset($rtmp) && !empty($rtmp) ) {
-            
-            foreach( apply_filters( 'fv_player_media_rtmp', array($rtmp),$this ) AS $rtmp_item ) {            
-              $rtmp_item = apply_filters( 'fv_flowplayer_video_src', $rtmp_item, $this );
-
-              if( preg_match( '~([a-zA-Z0-9]+)?:~', $rtmp ) ) {
-                $aTMP = preg_split( '~([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
-  
-                if( isset($aTMP[1]) && isset($aTMP[2]) ) {             
-                  $rtmp_file = $aTMP[2];
-                  $extension = $this->get_mime_type($rtmp_file, $aTMP[1], true);
-                } else {
-                  $rtmp_file = $aTMP[1];
-                  $extension = $this->get_mime_type($rtmp_file, false, true);                  
-                }
-              } else {
-                $rtmp_url = parse_url($rtmp_item);
-                $rtmp_file = $rtmp_url['path'] . ( ( !empty($rtmp_url['query']) ) ? '?'. str_replace( '&amp;', '&', $rtmp_url['query'] ) : '' );
-                $extension = $this->get_mime_type($rtmp_url['path'], false, true);                
-              }
-
-              if( $extension ) {
-                $extension .= ':';
-              } else {
-                //$extension = 'mp4:';  //  https://github.com/flowplayer/flowplayer/search?q=rtmp&type=Issues&utf8=%E2%9C%93
-              }
-
-              $this->ret['html'] .= "\t"."\t".'<source src="'.$extension.trim($rtmp_file, " \t\n\r\0\x0B/").'" type="video/flash" />'."\n";
-            }
-          }          
-          
-          foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2), $this ) AS $media_item ) {    
-            $this->ret['html'] .= $this->get_video_src($media_item, array( 'rtmp' => $rtmp ) );
-          }
-          if (!empty($mobile)) {
-            $this->ret['script']['fv_flowplayer_mobile_switch'][$this->hash] = true;
-            $this->ret['html'] .= $this->get_video_src($mobile, array( 'id' => 'wpfp_'.$this->hash.'_mobile', 'rtmp' => $rtmp ) );
-          }      
-          
-          if (isset($aSubtitles) && !empty($aSubtitles)) {
-            $aLangs = self::get_languages();
-            $countSubtitles = 0;
-            foreach( $aSubtitles AS $key => $subtitles ) {
-              if( $key == 'subtitles' ) {                   
-                $aLang = explode('-', get_bloginfo('language'));
-                $sExtra = !empty($aLang[0]) ? 'srclang="'.$aLang[0].'" ' : '';
-                $sCode = $aLang[0];
-                
-                $sCaption = '';
-                if( !empty($sCode) && $sCode == 'en' ) {
-                  $sCaption = 'English';
-                
-                } elseif( !empty($sCode) ) {
-                  $translations = get_site_transient( 'available_translations' );
-                  $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
-                  if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
-                    $sCaption = $translations[$sLangCode]['native_name'];
-                  }
-                  
-                }
-                
-                if( $sCaption ) {
-                  $sExtra .= 'label="'.$sCaption.'" ';
-                }
-                
-              } else {
-                $sExtra = 'srclang="'.$key.'" label="'.$aLangs[strtoupper($key)].'" ';
-              }
-              
-              if( $countSubtitles == 0 && $this->_get_option('subtitleOn') ) {
-                $sExtra .= 'default ';
-              }
-              
-              $countSubtitles++;
-              $this->ret['html'] .= "\t"."\t".'<track '.$sExtra.'src="'.esc_attr($subtitles).'" />'."\n";
-            }
-          }     
-          
-          $this->ret['html'] .= "\t".'</video>';//."\n";
         }
         
         $this->ret['html'] .= $this->get_buttons();
@@ -1051,13 +964,13 @@ class flowplayer_frontend extends flowplayer
       $aTest_media = array();
       foreach( array( $media, $src1, $src2, $rtmp ) AS $media_item ) {
         if( $media_item ) {
-          $aTest_media[] = $this->get_video_src( $media_item, array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
+          $aTest_media[] = $this->get_video_src( $media_item, array( 'dynamic' => true ) );
           //break;
         } 
       }
       
       if( !empty($this->aCurArgs['mobile']) ) {
-        $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'flash' => false, 'url_only' => true, 'dynamic' => true ) );
+        $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'dynamic' => true ) );
       }
 
       if( isset($aTest_media) && count($aTest_media) > 0 ) {
