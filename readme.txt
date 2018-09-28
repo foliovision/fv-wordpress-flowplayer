@@ -350,7 +350,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 == Screenshots ==
 
 1. FV Player different skin options
-2. Adding three players with different arguments into a post
+2. FV Player shortcode in post content
 3. It's easy to use our shortcode editor to add videos
 4. Plugin settings screen
 5. Video checker helps you find issues with your video encoding
