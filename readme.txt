@@ -349,15 +349,21 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Screenshots ==
 
-1. Post containing modified flowplayer playing a video.
-2. Adding three players with different arguments into a post.
-3. Add new video dialog window in editing mode.
-4. Configuration menu for administrators.
-5. Video checker. This shows up for admins only. Click on Admin: Video Ok or Admin: Video Issues in top left corner of the video when you are logged in as admin to get it.
+1. FV Player different skin options
+2. Adding three players with different arguments into a post
+3. It's easy to use our shortcode editor to add videos
+4. Plugin settings screen
+5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
 
-= 7.2.0.727 - 2018/09/20 =
+= 7.2.2.727 - 2018/09/28 =
+
+* Amazon S3 - fixing issues caused by Flash version of signed URL
+* Amazon S3 - fixing handling of blank spaces for S3 bucket browser
+* Amazon S3 - fixing handling of blank spaces for URL signature
+
+= 7.2.1.727 - 2018/09/20 =
 
 * Security - adding nonce for the Shortcode Editor preview
 
