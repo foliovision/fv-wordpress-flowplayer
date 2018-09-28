@@ -797,7 +797,7 @@
 	}
     .flowplayer .fp-speed-menu.fp-active.wont-fit {
 		overflow-y: scroll;
-		height: 86%;
+		height: 83%;
 	}
 .flowplayer .fp-speed-menu::-webkit-scrollbar {
     	width: 8px;
