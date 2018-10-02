@@ -731,6 +731,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function link2meta($meta_data) {
     if (is_array($meta_data) && count($meta_data)) {
       // we have meta, let's insert that
+      $first_done = false;
       foreach ($meta_data as $meta_record) {
         // create new record in DB
         $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, $this->DB_Instance);
@@ -740,7 +741,12 @@ CREATE TABLE `" . self::$db_table_name . "` (
           $meta_object->link2db($meta_record['id']);
         }
 
-        $this->meta_data = $meta_object;
+        if (!$first_done) {
+          $this->meta_data = array($meta_object);
+          $first_done = true;
+        } else {
+          $this->meta_data[] = $meta_object;
+        }
       }
     }
   }
@@ -774,7 +780,9 @@ CREATE TABLE `" . self::$db_table_name . "` (
   public function getMetaData() {
     // meta data already loaded and present, return them
     if ($this->meta_data && $this->meta_data !== -1) {
-      if ( $this->DB_Instance && $this->DB_Instance->isPlayerMetaCached($this->id) ) {
+      if (is_array($this->meta_data)) {
+        return $this->meta_data;
+      } else if ( $this->DB_Instance && $this->DB_Instance->isPlayerMetaCached($this->id) ) {
         $cache = $this->DB_Instance->getPlayerMetaCache();
         return $cache[$this->id];
       } else {
