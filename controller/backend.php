@@ -132,7 +132,7 @@ function fv_wp_flowplayer_check_template() {
       $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Please follow our instructions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
     }      
     
-    $ok[] = __('Template checker has changed. Just open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
+    $ok[] = __('We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
     
     $response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
     
@@ -149,6 +149,8 @@ function fv_wp_flowplayer_check_template() {
         } else if( $check == 1 ) {
           $ok[] = __('FV Flowplayer script found: ', 'fv-wordpress-flowplayer') . "<code>$flowplayer_script</code>!";
           $fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
+        } else if( $check == 0 ) {
+          $errors[] = "<p>It appears there are <strong>stripping the query string versions</strong> as <code>$flowplayer_script</code> appears without the plugin version number.</p><p>Some site speed analysis tools recommend doing so, but it means you loose control over what version of plugin files is cached (in users' browsers and on CDN). That way users hang on to the old plugin files and might experience visual or functional issues with FV Player (and any other plugin).</p><p>You can read all the details in our article: <a href='https://foliovision.com/2017/06/wordpress-cdn-best-practices' target='_blank'>How to use WordPress with CDN<a>.</p>";	
         }
       }
     } else if( count($flowplayer_scripts[1]) < 1 ) {
