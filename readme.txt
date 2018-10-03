@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.2.3.727 - 2018/10/03 =
+
+* HLS - improving quality labels (M, SD and HD)
+* Lightbox - fixing full screen sizing issue when using Chrome on Windows
+* Subtitles - fixing language codes for Hebrew, Indonesian and Javanese
+* Check template function - adding warning for websites which strip the query string versions
+* Fixing Admin JavaScript warning
+
 = 7.2.2.727 - 2018/09/28 =
 
 * Amazon S3 - fixing issues caused by Flash version of signed URL

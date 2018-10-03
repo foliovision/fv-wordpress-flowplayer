@@ -913,6 +913,12 @@ function fv_flowplayer_language_add( sInput, sLang, iTabIndex, sId ) {
   }
   
   if ( sLang ) {
+    if( sLang == 'iw' ) sLang = 'he';
+    if( sLang == 'in' ) sLang = 'id';
+    if( sLang == 'jw' ) sLang = 'jv';
+    if( sLang == 'mo' ) sLang = 'ro';
+    if( sLang == 'sh' ) sLang = 'sr';
+    
     jQuery('.fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang' , oTab).val(sLang);
     var
       sel = jQuery('.fv-fp-subtitle:last select.fv_wp_flowplayer_field_subtitles_lang' , oTab).get(0),
