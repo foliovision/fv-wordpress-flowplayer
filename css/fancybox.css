@@ -15,8 +15,8 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
 
 /* Make sure FV Player respects fancybox fullscreen mode */
 .fancybox-is-fullscreen .flowplayer {
-    max-width: 9999px !important;
-    max-height: 9999px !important;
+    max-width: 99% !important;
+    max-height: 99% !important;
 }
 .fancybox-is-fullscreen .flowplayer .fp-fullscreen:before {
     content: "\e016"; }
@@ -26,7 +26,7 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
   content: "\e116"; }
 .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-outlined .fp-fullscreen:before, .fancybox-is-fullscreen .flowplayer.fp-edgy.fp-minimal .fp-fullscreen:before {
   content: "\e316"; }
-  
+
 .fv-player-fancybox-play-icon {
     position: absolute;
     left: 0;
