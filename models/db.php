@@ -30,7 +30,7 @@ class FV_Player_Db {
 
   public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
-    add_filter('fv_player_item', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
+    add_filter('fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
     add_action('wp_head', array($this, 'cache_players_and_videos' ));
 
     add_action( 'wp_ajax_fv_player_db_load', array($this, 'return_shortcode_db_data') );
@@ -295,83 +295,15 @@ class FV_Player_Db {
 
     return array();
   }
-
-  /**
-   * Returns playlist video item formatted for a shortcode,
-   * so it's in the form of "video-src, video-src1, video-src2, rtmp:some-path, splash:some-url"
-   * and can be added to the playlist section of that shortcode.
-   *
-   * @param $vid The video object from which to prepare the string data.
-   *
-   * @return string Returns the string data for a playlist item.
-   */
-  private function getPlaylistItemData($vid) {
-    $item = (!empty($vid['src']) ? $vid['src'] : '');
-
-    if (!empty($vid['src1'])) {
-      $item .= ',' . $vid['src1'];
-    }
-
-    if (!empty($vid['src2'])) {
-      $item .= ',' . $vid['src2'];
-    }
-
-    if (!empty($vid['rtmp_path'])) {
-      $item .= ',rtmp:' . $vid['rtmp_path'];
-    }
-
-    if (!empty($vid['splash'])) {
-      $item .= ',' . $vid['splash'];
-    }
-
-    return $item;
-  }
-
-
-
-  /**
-   * Returns caption formatted for a shortcode, so it can be used there.
-   * Also, this function is used on 2 places, so that's why it's a function :P
-   *
-   * @param $vid The video object from which to prepare the string data.
-   *
-   * @return string Returns the string data for a captions item.
-   */
-  private function getCaptionData($vid) {
-    return (!empty($vid['caption']) ? $vid['caption'] : '');
-  }
-
-
-
-  /**
-   * Returns startend tag formatted for a shortcode, so it can be used there.
-   * Also, this function is used on 2 places, so that's why it's a function :P
-   *
-   * @param $vid The video object from which to prepare the string data.
-   *
-   * @return string Returns the string data for a startend item.
-   */
-  private function getStartEndData($vid) {
-    $str = (!empty($vid['start']) ? $vid['start'] : '');
-
-    if ($str) {
-      $str .= (!empty($vid['end']) ? '-' . $vid['end'] : '');
-    }
-
-    if (!$str) {
-      $str = '-';
-    }
-
-    return $str;
-  }
+  
 
 
   /**
    * Generates a full code for a playlist from one that uses video IDs
-   * stored in the database to one that conforms to the original long
-   * playlist shortcode format (with multiple sources, rtmp, splashes etc.).
+   * stored in the database to one that uses the first video src attribute
+   * Playlist items stay as IDs and are filled in flowplayer::build_playlist_html()
    *
-   * @param array $atts Player attributes to build the actual playlist from.
+   * @param array $atts Player attributes to build the player shortcode from.
    * @param array $preview_data Alternative data to use instead of the $atts array
    *                            when we want to show previews etc.
    *
@@ -384,9 +316,7 @@ class FV_Player_Db {
 
     // check if we should change anything in the playlist code
     if ($preview_data || (isset($atts['playlist']) && preg_match('/^[\d,]+$/m', $atts['playlist']))) {
-      $new_playlist_tag = array();
-      $new_caption_tag = array();
-      $new_startend_tag = array();
+      $new_playlist_tag = array();      
       $first_video_data_cached = false;
 
       // serve what we can from the cache
@@ -403,9 +333,7 @@ class FV_Player_Db {
         // prepare cached data and IDs that still need loading from DB
         foreach ( $ids as $id ) {
           if ( isset( $this->video_atts_cache[ $id ] ) ) {
-            $new_playlist_tag[] = $this->getPlaylistItemData( $this->video_atts_cache[ $id ] );
-            $new_caption_tag[]  = $this->getCaptionData( $this->video_atts_cache[ $id ] );
-            $new_startend_tag[] = $this->getStartEndData( $this->video_atts_cache[ $id ] );
+            $new_playlist_tag[] = $id;            
           } else {
             $newids[] = (int) $id;
           }
@@ -430,69 +358,24 @@ class FV_Player_Db {
             $this->video_atts_cache[ $vid['id'] ] = $vid;
           }
 
-          $caption = $this->getCaptionData($vid);
-          if ($caption) {
-            $new_caption_tag[] = $caption;
-          }
-
-          $startend = $this->getStartEndData($vid);
-          if ($startend != '-') {
-            $new_startend_tag[] = $startend;
-          }
-
           // remove the first video and keep adding the rest of the videos to the playlist tag
           array_shift( $videos );
         }
 
         // add rest of the videos into the playlist tag
         if ($videos && count($videos)) {
-          // if this remains false, the caption tag does not need to be present
-          $has_captions = false;
-
-          // if this remains false, the startend tag does not need to be present
-          $has_timings = false;
-
           foreach ( $videos as $vid_object ) {
             $vid                              = $vid_object->getAllDataValues();
             $atts['video_objects'][]          = $vid_object;
             $this->video_atts_cache[ $vid['id'] ] = $vid;
-            $new_playlist_tag[]               = $this->getPlaylistItemData( $vid );
-
-            $caption = $this->getCaptionData($vid);
-            if ($caption) {
-              $has_captions = true;
-            }
-            $new_caption_tag[] = $caption;
-
-            $startend = $this->getStartEndData($vid);
-            if ($startend != '-') {
-              $has_timings = true;
-            }
-            $new_startend_tag[] = $startend;
+            $new_playlist_tag[]               = $vid['id'];
           }
 
           $atts['playlist'] = implode(';', $new_playlist_tag);
 
-          if ($has_captions) {
-            $atts['caption'] = implode( ';', $new_caption_tag );
-          }
-
-          if ($has_timings) {
-            $atts['startend'] = implode( ';', $new_startend_tag );
-          }
         } else if (isset($videos) && is_array($videos)) {
           // only one video found, therefore this is not a playlist
           unset($atts['playlist']);
-
-          $caption = $this->getCaptionData($vid);
-          if ($caption) {
-            $atts['caption'] = $caption;
-          }
-
-          $startend = $this->getStartEndData($vid);
-          if ($startend != '-') {
-            $atts['startend'] = $startend;
-          }
         }
       } else {
         // remove the first video from playlist, since that is
@@ -501,17 +384,9 @@ class FV_Player_Db {
         array_shift($new_playlist_tag);
 
         $atts['playlist'] = implode(';', $new_playlist_tag);
-
-        if (count($new_caption_tag)) {
-          $atts['caption'] = implode( ';', $new_caption_tag );
-        }
-
-        if (count($new_startend_tag)) {
-          $atts['startend'] = implode( ';', $new_startend_tag );
-        }
       }
     }
-
+    
     return $atts;
   }
 

@@ -759,20 +759,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
-  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ){
-    global $fv_fp;
-    
+  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ) {
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
-
-    // check for live video meta and update as neccessary
-    if (method_exists($fv_fp, 'current_video') && $fv_fp->current_video() && count($fv_fp->current_video()->getMetaData())) {
-      foreach ($fv_fp->current_video()->getMetaData() as $meta) {
-          if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
-            // if the video is live, update player data
-            $aPlayer['live'] = 'true';
-          }
-      }
-    }
     
     if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
     
@@ -879,6 +867,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = array();
       
       if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
+        
+        $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, 0, $aArgs );
+        
         $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
       }else{
         $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
@@ -888,6 +879,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         foreach( $sItems AS $iKey => $sItem ) {
           
           if( !$sItem ) continue;
+          
+          $index = $iKey + 1;
           
           $aPlaylist_item = explode( ',', $sItem );
         
@@ -938,7 +931,54 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $sSplashImage = $this->_get_option('splash');
           }
           
-          $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $iKey + 1 );
+          $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, $index, $aArgs );
+          
+          if ($this->current_video()) {
+            if( is_numeric($aPlayer['sources'][0]['src']) ) {
+              $new = array( 'sources' => array() );
+              if( $src = $this->current_video()->getSrc() ) {
+                $new['sources'][] = array( 'src' => $src, 'type' => $this->get_mime_type($src) );
+              }
+              if( $src1 = $this->current_video()->getSrc1() ) {
+                $new['sources'][] = array( 'src' => $src1, 'type' => $this->get_mime_type($src1) );
+              }
+              if( $src2 = $this->current_video()->getSrc2() ) {
+                $new['sources'][] = array( 'src' => $src2, 'type' => $this->get_mime_type($src2));
+              }
+              if( $rtmp = $this->current_video()->getRtmp() ) {
+                $new['rtmp'] = $rtmp;
+              }
+              if( $rtmp_path = $this->current_video()->getRtmpPath() ) {
+                $new['sources'][] = array( 'src' => $rtmp_path, 'type' => 'video/flash' );
+              }
+              
+              if( count($new['sources']) ) {
+                $aPlayer = $new;
+              }
+            }
+            
+            // check for live video meta and update as neccessary
+            if ( count($this->current_video()->getMetaData())) {
+              foreach ($this->current_video()->getMetaData() as $meta) {
+                if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
+                  $aPlayer['live'] = 'true';
+                }
+              }
+            }            
+            
+            $sSplashImage = $this->current_video()->getSplash();
+            
+            $sItemCaption = $this->current_video()->getCaption();
+            
+            if( $start = $this->current_video()->getStart() ) {
+              $aPlayer['fv_start'] = $start;
+            }
+            if( $end = $this->current_video()->getEnd() ) {
+              $aPlayer['fv_end'] = $end;
+            }
+          }          
+          
+          $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {
             $aSplashScreens[] = $sSplashImage;  
           } 
