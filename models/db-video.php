@@ -58,20 +58,25 @@ class FV_Player_Db_Video {
   public function getCaptionFromSrc() {
     $src = $this->getSrc();
     $arr = explode('/', $src);
-    $arr = end($arr);
+    $caption = end($arr);
+    
+    if( $caption == 'index.m3u8' ) {
+      unset($arr[count($arr)-1]);
+      $caption = end($arr);
+    }
 
     // update YouTube and other video names
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
     );  
 
-    $arr = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $arr);
+    $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
     
-    if( is_numeric($arr) && intval($arr) == $arr && stripos($src,'vimeo.com/') !== false ) {
-      $arr = "Vimeo: ".$arr;
+    if( is_numeric($caption) && intval($caption) == $caption && stripos($src,'vimeo.com/') !== false ) {
+      $caption = "Vimeo: ".$caption;
     }
     
-    return urldecode($arr);
+    return urldecode($caption);
   }
 
   /**
