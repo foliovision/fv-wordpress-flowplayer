@@ -3492,3 +3492,6 @@ jQuery( function($) {
 jQuery(document).on('click','.fv_player_splash_list_preview', function() {
   jQuery(this).parents('tr').find('.fv-player-edit').click();
 });
+jQuery(document).on('click','.column-shortcode input', function() {
+  jQuery(this).select();
+});
