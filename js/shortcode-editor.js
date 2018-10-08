@@ -661,6 +661,8 @@ function fv_wp_flowplayer_init() {
   jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
 
   fv_player_refresh_tabs();
+  
+  jQuery('#fv-player-shortcode-editor-preview-target').html('');
 }
 
 /*
@@ -1726,7 +1728,7 @@ function fv_wp_flowplayer_on_close() {
 
   if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' && typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) == 'undefined') {
     fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
-    jQuery('#fv-player-shortcode-editor-preview-target').html('');
+    
   } else {
     var
       $buttonClicked = jQuery(fv_player_editor_button_clicked),
