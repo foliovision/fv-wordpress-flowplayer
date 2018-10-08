@@ -433,7 +433,21 @@ CREATE TABLE `" . self::$db_table_name . "` (
    * Fills non-orm variables that are not directly linked
    * from received POST data to the DB.
    */
-  private function fill_non_orm_properties() {
+  private function fill_properties( $options, $DB_Cache = false ) {
+    // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
+    foreach ($options as $key => $value) {
+      if (property_exists($this, $key)) {
+        $this->$key = stripslashes($value);
+      } else {
+        // ignore old database structure records
+        if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
+          // generate warning
+          trigger_error('Unknown property for new DB player: ' . $key);
+        }
+      }
+    }    
+    
+    // make sure we fill the appropriate non-orm object properties
     $this->propagate_end_action_value();
   }
 
@@ -486,22 +500,14 @@ CREATE TABLE `" . self::$db_table_name . "` (
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
     if (is_array($options) && count($options) && !isset($options['db_options'])) {
-      foreach ($options as $key => $value) {
-        if (property_exists($this, $key)) {
-          if ($key !== 'id') {
-            $this->$key = stripslashes($value);
-          } else {
-            // ID cannot be set, as it's automatically assigned to all new players
-            trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
-          }
-        } else {
-          // ignore old database structure records
-          if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
-            // generate warning
-            trigger_error('Unknown property for new DB player: ' . $key);
-          }
-        }
+      
+      if( !empty($options['id']) ) {
+        // ID cannot be set, as it's automatically assigned to all new players
+        trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
+        unset($options['id']);
       }
+      
+      $this->fill_properties($options);
 
       // add dates for newly created players
       if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
@@ -586,13 +592,7 @@ CREATE TABLE `" . self::$db_table_name . "` (
       if (isset($player_data) && $player_data !== -1 && count($player_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
-          // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
-          foreach ( $player_data as $key => $value ) {
-            $this->$key = stripslashes($value);
-          }
-
-          // make sure we fill the appropriate non-orm object properties
-          $this->fill_non_orm_properties();
+          $this->fill_properties($player_data,$DB_Cache);
 
           // cache this player in DB object
           if ($DB_Cache) {
@@ -605,13 +605,8 @@ CREATE TABLE `" . self::$db_table_name . "` (
           $first_done = false;
           foreach ($player_data as $db_record) {
             if (!$first_done) {
-              // fill-in our internal variables
-              foreach ( $db_record as $key => $value ) {
-                $this->$key = stripslashes($value);
-              }
-
-              // make sure we fill the appropriate non-orm object variables
-              $this->fill_non_orm_properties();
+              $this->fill_properties($db_record,$DB_Cache);
+              
               $first_done = true;
 
               // cache this player in DB object
