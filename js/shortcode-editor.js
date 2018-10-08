@@ -610,6 +610,10 @@ function fv_wp_flowplayer_init() {
   fv_player_refresh_tabs();
   
   jQuery('#fv-player-shortcode-editor-preview-target').html('');
+  
+  if( typeof(fv_player_shortcode_editor_ajax) != "undefined" ) {
+    fv_player_shortcode_editor_ajax.abort();
+  }
 }
 
 /*
@@ -1128,7 +1132,7 @@ function fv_wp_flowplayer_edit() {
 
       // now load playlist data
       // load video data via an AJAX call
-      jQuery.post(ajaxurl, {
+      fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
         action : 'fv_player_db_load',
         nonce : fv_player_editor_conf.db_load_nonce, 
         playerID :  result[1]
@@ -2190,12 +2194,12 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
     $previewTarget.html('');
 
     if (typeof(is_post) != 'undefined') {
-      jQuery.post(url, { 'fv_player_preview_json' : JSON.stringify(data) }, function (response) {
+      fv_player_shortcode_editor_ajax = jQuery.post(url, { 'fv_player_preview_json' : JSON.stringify(data) }, function (response) {
         $previewTarget.html(jQuery('#wrapper', response));
         jQuery(document).trigger('fvp-preview-complete');
       });
     } else {
-      jQuery.get(url, function (response) {
+      fv_player_shortcode_editor_ajax = jQuery.get(url, function (response) {
         $previewTarget.html(jQuery('#wrapper', response));
         jQuery(document).trigger('fvp-preview-complete');
       });
