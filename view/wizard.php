@@ -219,18 +219,18 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                       </td>
                     </tr>
 
-                    <tr style="display: none;" class="fv_wp_flowplayer_field_src_1_wrapper">
+                    <tr style="display: none;" class="fv_wp_flowplayer_field_src1_wrapper">
                       <th scope="row" class="label" style="width: 19%"></th>
-                      <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src_1" name="fv_wp_flowplayer_field_src_1" value="" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
+                      <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src1" name="fv_wp_flowplayer_field_src1" value="" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
                         <?php if ($allow_uploads == "true") { ?> 
                           <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                         <?php }; //allow uplads video ?>
                       </td>
                     </tr>
 
-                    <tr style="display: none;" class="fv_wp_flowplayer_field_src_2_wrapper">
+                    <tr style="display: none;" class="fv_wp_flowplayer_field_src2_wrapper">
                       <th scope="row" class="label" style="width: 19%"></th>
-                      <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src_2" name="fv_wp_flowplayer_field_src_2" value="" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
+                      <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src2" name="fv_wp_flowplayer_field_src2" value="" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
                         <?php if ($allow_uploads == "true") { ?>  
                           <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                         <?php }; //allow uplads video ?>

@@ -162,7 +162,7 @@ class FV_Player_Db {
     } else if ($search) {
       // search for videos that are consistent with the search text
       // and load their players only
-      $vids = FV_Player_Db_Video::search(array('src', 'src_1', 'src_2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
+      $vids = FV_Player_Db_Video::search(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
 
       // if we have any data, assemble video IDs and load their players
       if ($vids !== false) {

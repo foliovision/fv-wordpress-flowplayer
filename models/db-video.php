@@ -30,8 +30,8 @@ class FV_Player_Db_Video {
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
     $src, // the main video source
-    $src_1, // alternative source path #1 for the video
-    $src_2, // alternative source path #2 for the video
+    $src1, // alternative source path #1 for the video
+    $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
     $DB_Instance = null,
     $meta_data = null; // object of this video's meta data
@@ -132,14 +132,14 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getSrc1() {
-    return $this->src_1;
+    return $this->src1;
   }
 
   /**
    * @return string
    */
   public function getSrc2() {
-    return $this->src_2;
+    return $this->src2;
   }
 
   /**
@@ -185,8 +185,8 @@ class FV_Player_Db_Video {
   CREATE TABLE `" . self::$db_table_name . "` (
     `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `src` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'the main video source',
-    `src_1` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
-    `src_2` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
+    `src1` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #1 for the video',
+    `src2` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'alternative source path #2 for the video',
     `splash` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'URL to the splash screen picture',
     `splash_text` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'an optional splash screen text',
     `caption` varchar(1024) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'optional video caption',
