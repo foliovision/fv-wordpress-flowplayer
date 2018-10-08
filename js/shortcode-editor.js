@@ -1338,7 +1338,9 @@ function fv_wp_flowplayer_edit() {
 
           // show playlist instead of the "add new video" form
           // if we have more than 1 video
-          if (vids.length > 1) {
+          if( fv_flowplayer_conf.current_video_to_edit ) {
+            fv_flowplayer_editor_item_show(fv_flowplayer_conf.current_video_to_edit);
+          } else if (vids.length > 1) {
             fv_flowplayer_playlist_show();
           } else {
             fv_flowplayer_editor_item_show(0);
@@ -1767,6 +1769,10 @@ function fv_wp_flowplayer_on_close() {
 
     fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[fv_flowplayer_conf.current_player_db_id] = 1;
     delete fv_flowplayer_conf.current_player_db_id;
+  }
+  
+  if( fv_flowplayer_conf.current_video_to_edit ) {
+    delete fv_flowplayer_conf.current_video_to_edit;
   }
 
   // fv_player_editor_button_clicked = false; // TODO: this was commented out on top of this function, do we need this at all?
@@ -3510,6 +3516,7 @@ jQuery( function($) {
 
 
 jQuery(document).on('click','.fv_player_splash_list_preview', function() {
+  fv_flowplayer_conf.current_video_to_edit = jQuery(this).parents('.thumbs').find('.fv_player_splash_list_preview').index(this);
   jQuery(this).parents('tr').find('.fv-player-edit').click();
 });
 jQuery(document).on('click','.column-shortcode input', function() {
