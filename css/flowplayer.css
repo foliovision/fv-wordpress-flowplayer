@@ -1768,3 +1768,19 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .fp-menu a.is-current {
   font-weight: 800;
 }
+
+.fv-fp-prevbtn:before, .fv-fp-nextbtn:before {
+  content: "\e107";
+  border-right: 2px solid white;
+  font-size: .9em;
+}
+.fv-fp-prevbtn {
+  -moz-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+.flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn {
+  display: none;
+} 
