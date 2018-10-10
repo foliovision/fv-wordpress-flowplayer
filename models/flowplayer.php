@@ -121,7 +121,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     //add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
-    add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure'), 10, 2 );
+    add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure') );
     
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
@@ -803,7 +803,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } 
                  
       $aItem = array();      
-      $flash_media = array();
       
       if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
         $rtmp = 'rtmp:'.$rtmp;  
@@ -818,46 +817,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $media_item_tmp = $media_item;
         }
         
-        $media_url = $this->get_video_src( $media_item_tmp, array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
+        $media_url = $this->get_video_src( $media_item_tmp, array( 'suppress_filters' => $suppress_filters ) );
         
         //  add domain for relative video URLs if it's not RTMP
         if( stripos($media_item,'rtmp://') === false && $key != 3 ) {
           $media_url = $this->get_video_url($media_url);
         }
         
-        if( is_array($media_url) ) {
-          $actual_media_url = $media_url['media'];
-          if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
-            $flash_media[] = $media_url['flash'];
-          }
-        } else {
-          $actual_media_url = $media_url;
-        }
         if( stripos( $media_item, 'rtmp:' ) === 0 ) {
-          if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
-            $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
-            $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+          if( !preg_match( '~^[a-z0-9]+:~', $media_url ) ) { //  no RTMP extension provided
+            $ext = $this->get_mime_type($media_url,false,true) ? $this->get_mime_type($media_url,false,true).':' : false;
+            $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $media_url ), 'type' => 'video/flash' );
           } else {
-            $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+            $aItem[] = array( 'src' => str_replace( '+', ' ', $media_url ), 'type' => 'video/flash' );
           }
         } else {
-          $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($actual_media_url) );
+          $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) );
         }        
-      }
-      
-      if( count($flash_media) ) {
-        $bHaveFlash = false;
-        foreach( $aItem AS $key => $aItemFile ) { //  how to avoid duplicates?
-          if( in_array( 'flash', array_keys($aItemFile) ) ) {
-            $bHaveFlash = true;
-          }
-        }
-        
-        if( !$bHaveFlash ) {
-          foreach( $flash_media AS $flash_media_items ) {
-            $aItem[] = array( 'flash' => $flash_media_items );
-          }
-        }      
       }
       
       $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
@@ -868,7 +844,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
       
       if( !empty($aArgs['mobile']) ) {
-        $mobile = $this->get_video_url($aArgs['mobile']);
+        $mobile = $this->get_video_src( $this->get_video_url($aArgs['mobile']) );
         $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
       
@@ -906,7 +882,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
           $aItem = array();
           $sSplashImage = false;
-          $flash_media = array();
 
           foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
             if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
@@ -914,44 +889,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               continue;
             }
             
-            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'url_only' => true, 'suppress_filters' => $suppress_filters ) );
-            if( is_array($media_url) ) {
-              $actual_media_url = $media_url['media'];
-              if( $this->get_mime_type($actual_media_url) == 'video/mp4' ) {
-                $flash_media[] = $media_url['flash'];
-              }
-            } else {
-              $actual_media_url = $media_url;
-            }
+            $media_url = $this->get_video_src( preg_replace( '~^rtmp:~', '', $aPlaylist_item_i ), array( 'suppress_filters' => $suppress_filters ) );
+            
             if( stripos( $aPlaylist_item_i, 'rtmp:' ) === 0 ) {
-              if( !preg_match( '~^[a-z0-9]+:~', $actual_media_url ) ) { //  no RTMP extension provided
-                $ext = $this->get_mime_type($actual_media_url,false,true) ? $this->get_mime_type($actual_media_url,false,true).':' : false;
-                $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+              if( !preg_match( '~^[a-z0-9]+:~', $media_url ) ) { //  no RTMP extension provided
+                $ext = $this->get_mime_type($media_url,false,true) ? $this->get_mime_type($media_url,false,true).':' : false;
+                $aItem[] = array( 'src' => $ext.str_replace( '+', ' ', $media_url ), 'type' => 'video/flash' );
               } else {
-                $aItem[] = array( 'src' => str_replace( '+', ' ', $actual_media_url ), 'type' => 'video/flash' );
+                $aItem[] = array( 'src' => str_replace( '+', ' ', $media_url ), 'type' => 'video/flash' );
               }             
             } else {
-              $aItem[] = array( 'src' => $actual_media_url, 'type' => $this->get_mime_type($aPlaylist_item_i) ); 
+              $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) ); 
             }                
             
           }
           
           $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
-          
-          if( count($flash_media) ) {
-            $bHaveFlash = false;
-            foreach( $aItem AS $key => $aItemFile ) {
-              if( in_array( 'flash', array_keys($aItemFile) ) ) {
-                $bHaveFlash = true;
-              }
-            }
-            
-            if( !$bHaveFlash ) {
-              foreach( $flash_media AS $flash_media_items ) {
-                $aItem[] = array( 'flash' => $flash_media_items );
-              }
-            }      
-          }
 
           $aPlayer = array( 'sources' => $aItem );      
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
@@ -1295,9 +1248,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( stripos($media,'X-Amz-Expires') !== false || stripos($media,'AWSAccessKeyId') !== false ) return $media;
     
-    $aArgs = func_get_args();
-    $aArgs = isset($aArgs[1]) ? $aArgs[1] : array();
-    
     global $fv_fp;
   
     $amazon_key = -1;
@@ -1336,7 +1286,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region', $amazon_key ) ) ? 4 : 2;
       
       if( $iAWSVersion == 4 ) {
-        $url_components['path'] = str_replace('+', ' ', $url_components['path']);
+        $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
       }
       
       $url_components['path'] = rawurlencode($url_components['path']);
@@ -1345,8 +1295,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
       $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
       $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
-          
-      $sGlue = ( !empty($aArgs['url_only']) && $aArgs['url_only'] ) ? '&' : '&amp;';
       
       if( $iAWSVersion == 4 ) {
         $sXAMZDate = gmdate('Ymd\THis\Z');
@@ -1378,11 +1326,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                 
         //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html        
         $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";        
-        $resource .= $sGlue."X-Amz-Credential=$sXAMZCredential";
-        $resource .= $sGlue."X-Amz-Date=$sXAMZDate";
-        $resource .= $sGlue."X-Amz-Expires=$time";
-        $resource .= $sGlue."X-Amz-SignedHeaders=$sSignedHeaders";
-        $resource .= $sGlue."X-Amz-Signature=".$sSignature;              
+        $resource .= "&X-Amz-Credential=$sXAMZCredential";
+        $resource .= "&X-Amz-Date=$sXAMZDate";
+        $resource .= "&X-Amz-Expires=$time";
+        $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
+        $resource .= "&X-Amz-Signature=".$sSignature;              
         
         $this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
   
@@ -1405,7 +1353,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $signature = urlencode($signature);        
         } while( stripos($signature,'%2B') !== false );      
       
-        $resource .= '?AWSAccessKeyId='.$fv_fp->_get_option( array('amazon_key', $amazon_key) ).$sGlue.'Expires='.$expires.$sGlue.'Signature='.$signature;
+        $resource .= '?AWSAccessKeyId='.$fv_fp->_get_option( array('amazon_key', $amazon_key) ).'&Expires='.$expires.'&Signature='.$signature;
         
       }
       
@@ -1548,24 +1496,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'GN' => 'Guarani',
       'GU' => 'Gujarati',
       'HA' => 'Hausa',
-      'IW' => 'Hebrew',
+      'HE' => 'Hebrew',
       'HI' => 'Hindi',
       'HU' => 'Hungarian',
       'IS' => 'Icelandic',
-      'IN' => 'Indonesian',
+      'ID' => 'Indonesian',
       'IA' => 'Interlingua',
       'IE' => 'Interlingue',
       'IK' => 'Inupiak',
       'GA' => 'Irish',
       'IT' => 'Italian',
       'JA' => 'Japanese',
-      'JW' => 'Javanese',
+      'JV' => 'Javanese',
       'KN' => 'Kannada',
       'KS' => 'Kashmiri',
       'KK' => 'Kazakh',
       'RW' => 'Kinyarwanda',
-      'KY' => 'Kirghiz',
-      'RN' => 'Kirundi',
+      'KY' => 'Kirghiz',      
       'KO' => 'Korean',
       'KU' => 'Kurdish',
       'LO' => 'Laothian',
@@ -1579,8 +1526,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'ML' => 'Malayalam',
       'MT' => 'Maltese',
       'MI' => 'Maori',
-      'MR' => 'Marathi',
-      'MO' => 'Moldavian',
+      'MR' => 'Marathi',      
       'MN' => 'Mongolian',
       'NA' => 'Nauru',
       'NE' => 'Nepali',
@@ -1596,12 +1542,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'QU' => 'Quechua',
       'RM' => 'Rhaeto-Romance',
       'RO' => 'Romanian',
+      'RN' => 'Rundi',
       'RU' => 'Russian',
       'SM' => 'Samoan',
       'SG' => 'Sangro',
       'SA' => 'Sanskrit',
-      'SR' => 'Serbian',
-      'SH' => 'Serbo-Croatian',
+      'SR' => 'Serbian',      
       'ST' => 'Sesotho',
       'TN' => 'Setswana',
       'SN' => 'Shona',
@@ -1787,52 +1733,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function get_video_src($media, $aArgs = array() ) {
     $aArgs = wp_parse_args( $aArgs, array(
-          'dynamic' => false,
-          'flash' => true,
-          'id' => false,          
-          'rtmp' => false,        
+          'dynamic' => false, // apply URL signature for CDNs which normally use Ajax
           'suppress_filters' => false,
-          'url_only' => false
         )
       );
     
     if( $media ) { 
-      $mime_type = $this->get_mime_type($media);
-      $sID = ($aArgs['id']) ? 'id="'.$aArgs['id'].'" ' : '';
-  
       if( !$aArgs['suppress_filters'] ) {
         $media = apply_filters( 'fv_flowplayer_video_src', $media, $aArgs );          
       }
-      
-      $media = trim($media);
-      
-      //  fix for signed Amazon URLs, we actually need it for Flash only, so it gets into an extra source tag
-      $source_flash_encoded = false;  
-      if( $this->is_secure_amazon_s3($media) /*&& stripos($media,'.webm') === false && stripos($media,'.ogv') === false */) {
-          $media_fixed = str_replace('%2B', '%25252B',$media);   
-          $media_fixed = str_replace('%23', '%252523',$media_fixed );
-          $media_fixed = str_replace('+', '%2B',$media_fixed ); 
-          //  only if there was a change and we don't have an RTMP for Flash
-          if( $media_fixed != $media && empty($aArgs['rtmp']) ) {
-            $source_flash_encoded = $media_fixed;
-          }
-      }
-      
-      if( $aArgs['url_only'] ) {
-        if( $aArgs['flash'] && $source_flash_encoded ) {
-          return array( 'media' => $media, 'flash' => $source_flash_encoded );
-        } else {
-          return strip_tags($media);
-        }
-      } else {
-
-        $sReturn = '<source '.$sID.'src="'.esc_attr($media).'" type="'.$mime_type.'" />'."\n";
-        
-        if( $source_flash_encoded && strcmp($mime_type,'video/mp4') == 0 ) {
-          $sReturn .= '<source '.$sID.'src="'.esc_attr($source_flash_encoded).'" type="video/flash" />'."\n";
-        }
-        return $sReturn;
-      }
+      return strip_tags(trim($media));
     }
     return null;
   }
@@ -2142,10 +2052,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
       
       if( isset($post->ID) && !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-        $video_secured = $fv_fp->get_video_src( $video, array( 'dynamic' => true, 'url_only' => true, 'flash' => false ) );
-        if( !is_array($video_secured) ) {
-          $video_secured = array( 'media' => $video_secured );
-        }
+        $video_secured = array( 'media' => $fv_fp->get_video_src( $video, array( 'dynamic' => true ) ) );
         if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
           if( isset($_GET['fv_flowplayer_checker'] ) ) {

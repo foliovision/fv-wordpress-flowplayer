@@ -57,6 +57,7 @@ function fv_fancybox_check_size() {
     $player = jQuery('.fancybox-slide--current .flowplayer:visible'),
     player_height = $player.outerHeight(),
     $caption = jQuery('.fancybox-caption'),
+    $infobar = jQuery('.fancybox-infobar'),
     $toolbar = jQuery('.fancybox-toolbar'),
     $fs_button = $player.find('.fp-fullscreen');
 
@@ -78,10 +79,15 @@ function fv_fancybox_check_size() {
       .css('max-width', (height/$player.data('ratio'))+'px');
   
 
-    // hide caption if it would cover the player
+    // hide caption and infobar if it would cover the player
     if ($caption.length) {      
       if ( $caption.position().top - 5 < $player.position().top + player_height ) $caption.hide();        
       else $caption.show();
+    }
+    
+    if ($infobar.length) {      
+      if ( $infobar.position().top+$infobar.height() > $player.position().top && $infobar.position().left+$infobar.width() > $player.position().left ) $infobar.hide();        
+      else $infobar.show();
     }
     
     // hide FV Player fullscreen button if it would be covered.

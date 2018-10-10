@@ -97,13 +97,13 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
       
       try {
 
-        $s3Client = Aws\CloudFront\CloudFrontClient::factory( array(
+        $cfClient = Aws\CloudFront\CloudFrontClient::factory( array(
         'credentials' => $credentials,
         'region' => 'us-east-1',
         'version' => 'latest'
         ) );
 
-        $cloudfronts = $s3Client->listDistributions();        
+        $cloudfronts = $cfClient->listDistributions();        
         foreach( $cloudfronts['DistributionList']['Items'] AS $item ) {
           if( !$item['Enabled'] ) continue;
           
@@ -157,7 +157,8 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           if ( $object['Size'] != '0' ) {
 
             $link = (string) $s3Client->getObjectUrl( $bucket, $name );
-
+            $link = str_replace( '%20', '+', $link );
+            
             // replace link with CloudFront URL, if we have one
             if( !empty($domains[$array_id]) ) {
               // replace S3 URLs with buckets in the S3 subdomain

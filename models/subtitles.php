@@ -18,6 +18,12 @@ class FV_Player_Subtitles {
     $aOutput = array();
     
     foreach( $aSubtitles AS $key => $subtitles ) {
+      if( $key == 'iw' ) $key = 'he';
+      if( $key == 'in' ) $key = 'id';
+      if( $key == 'jw' ) $key = 'jv';
+      if( $key == 'mo' ) $key = 'ro';
+      if( $key == 'sh' ) $key = 'sr';
+      
       $objSubtitle = new stdClass;
       if( $key == 'subtitles' ) {                   
         $aLang = explode('-', get_bloginfo('language'));
