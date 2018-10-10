@@ -175,12 +175,21 @@ function fv_wp_flowplayer_featured_image($post_id) {
     return;
   }
   
-  $sThumbUrl = array();
-  if (!preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $sThumbUrl) || empty($sThumbUrl[1])) {
-    return;
+  $url = false;
+  
+  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) {
+    $url = $splash[1];
+  } else if( preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) {
+    global $FV_Player_Db;    
+    $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
+    if( !empty($atts['splash']) ) {
+      $url = $atts['splash'];
+    }
   }
   
-  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl[1], $post_id);
+  if( !$url ) return;
+  
+  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id);
   if($thumbnail_id){
     set_post_thumbnail($post_id, $thumbnail_id);
   }
