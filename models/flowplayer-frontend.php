@@ -476,14 +476,6 @@ class flowplayer_frontend extends flowplayer
             $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
           }
         }
-        
-        global $fv_wp_flowplayer_ver;
-        //$attributes['data-swf'] = FV_FP_RELATIVE_PATH.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver;  //  it's better to have this in flowplayer.conf
-        //$attributes['data-flashfit'] = "true";
-        
-        if( $this->_get_option('googleanalytics') ) {
-          $attributes['data-analytics'] = $this->_get_option('googleanalytics');
-        }  
                 
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {

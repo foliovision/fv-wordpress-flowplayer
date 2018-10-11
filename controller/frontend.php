@@ -376,6 +376,10 @@ function flowplayer_prepare_scripts() {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     
+    if( $fv_fp->_get_option('googleanalytics') ) {
+      $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
+    }  
+    
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
       wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
