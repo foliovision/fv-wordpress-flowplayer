@@ -949,7 +949,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                 $new['rtmp'] = $rtmp;
               }
               if( $rtmp_path = $this->current_video()->getRtmpPath() ) {
-                $new['sources'][] = array( 'src' => $rtmp_path, 'type' => 'video/flash' );
+                $ext = $this->get_mime_type($rtmp_path,false,true) ? $this->get_mime_type($rtmp_path,false,true).':' : false;
+                $new['sources'][] = array( 'src' => $ext.$rtmp_path, 'type' => 'video/flash' );
               }
               
               if( count($new['sources']) ) {
