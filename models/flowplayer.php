@@ -841,13 +841,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
         } else {
           $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) );
-        }        
+        }
       }
       
-      $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
-      $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
-      
-      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;      
       
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
       
@@ -858,6 +855,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       $aPlayer = array( 'sources' => $aItem );      
       if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
+            
+      $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, 0, $aArgs );
+      
+      if ($this->current_video()) {
+        if( !$splash_img ) $splash_img = $this->current_video()->getSplash();            
+        if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
+      }
+      
+      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -867,8 +874,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = array();
       
       if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
-        
-        $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, 0, $aArgs );
         
         $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
       }else{
@@ -915,17 +920,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) ); 
             }                
             
-          }
-          
-          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+          }          
 
           $aPlayer = array( 'sources' => $aItem );      
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
       
           $aPlaylistItems[] = $aPlayer;
-          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
-          $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
-          
+          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;                    
           
           if( !$sSplashImage && $this->_get_option('splash') ) {
             $sSplashImage = $this->_get_option('splash');
@@ -934,50 +935,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, $index, $aArgs );
           
           if ($this->current_video()) {
-            if( is_numeric($aPlayer['sources'][0]['src']) ) {
-              $new = array( 'sources' => array() );
-              if( $src = $this->current_video()->getSrc() ) {
-                $new['sources'][] = array( 'src' => $src, 'type' => $this->get_mime_type($src) );
-              }
-              if( $src1 = $this->current_video()->getSrc1() ) {
-                $new['sources'][] = array( 'src' => $src1, 'type' => $this->get_mime_type($src1) );
-              }
-              if( $src2 = $this->current_video()->getSrc2() ) {
-                $new['sources'][] = array( 'src' => $src2, 'type' => $this->get_mime_type($src2));
-              }
-              if( $rtmp = $this->current_video()->getRtmp() ) {
-                $new['rtmp'] = $rtmp;
-              }
-              if( $rtmp_path = $this->current_video()->getRtmpPath() ) {
-                $ext = $this->get_mime_type($rtmp_path,false,true) ? $this->get_mime_type($rtmp_path,false,true).':' : false;
-                $new['sources'][] = array( 'src' => $ext.$rtmp_path, 'type' => 'video/flash' );
-              }
-              
-              if( count($new['sources']) ) {
-                $aPlayer = $new;
-              }
-            }
-            
-            // check for live video meta and update as neccessary
-            if ( count($this->current_video()->getMetaData())) {
-              foreach ($this->current_video()->getMetaData() as $meta) {
-                if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
-                  $aPlayer['live'] = 'true';
-                }
-              }
-            }            
-            
-            $sSplashImage = $this->current_video()->getSplash();
-            
-            $sItemCaption = $this->current_video()->getCaption();
-            
-            if( $start = $this->current_video()->getStart() ) {
-              $aPlayer['fv_start'] = $start;
-            }
-            if( $end = $this->current_video()->getEnd() ) {
-              $aPlayer['fv_end'] = $end;
-            }
-          }          
+            if( !$sSplashImage ) $sSplashImage = $this->current_video()->getSplash();            
+            if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
+          }
+          
+          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+          $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
           $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {

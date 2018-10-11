@@ -94,7 +94,48 @@ class FV_Player_Db {
     global $fv_fp;
 
     if (!empty($aPlayer['video_objects'][$index])) {
-      $fv_fp->currentVideoObject = $aPlayer['video_objects'][$index];
+      $vid_obj = $aPlayer['video_objects'][$index];
+      $fv_fp->currentVideoObject = $vid_obj;
+      
+      if( is_numeric($aItem['sources'][0]['src']) ) {
+        $new = array( 'sources' => array() );
+        if( $src = $vid_obj->getSrc() ) {
+          $new['sources'][] = array( 'src' => $src, 'type' => $fv_fp->get_mime_type($src) );
+        }
+        if( $src1 = $vid_obj->getSrc1() ) {
+          $new['sources'][] = array( 'src' => $src1, 'type' => $fv_fp->get_mime_type($src1) );
+        }
+        if( $src2 = $vid_obj->getSrc2() ) {
+          $new['sources'][] = array( 'src' => $src2, 'type' => $fv_fp->get_mime_type($src2));
+        }
+        if( $rtmp = $vid_obj->getRtmp() ) {
+          $new['rtmp'] = $rtmp;
+        }
+        if( $rtmp_path = $vid_obj->getRtmpPath() ) {
+          $ext = $fv_fp->get_mime_type($rtmp_path,false,true) ? $fv_fp->get_mime_type($rtmp_path,false,true).':' : false;
+          $new['sources'][] = array( 'src' => $ext.$rtmp_path, 'type' => 'video/flash' );
+        }
+        
+        if( count($new['sources']) ) {
+          $aItem = $new;
+        }
+      }
+            
+      if ( count($vid_obj->getMetaData())) {
+        foreach ($vid_obj->getMetaData() as $meta) {
+          if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
+            $aItem['live'] = 'true';
+          }
+        }
+      }
+      
+      if( $start = $vid_obj->getStart() ) {
+        $aItem['fv_start'] = $start;
+      }
+      if( $end = $vid_obj->getEnd() ) {
+        $aItem['fv_end'] = $end;
+      }      
+      
     } else {
       $fv_fp->currentVideoObject = null;
       $fv_fp->currentPlayerObject = null;
