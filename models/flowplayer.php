@@ -924,8 +924,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
           $aPlayer = array( 'sources' => $aItem );      
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
-      
-          $aPlaylistItems[] = $aPlayer;
+          
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;                    
           
           if( !$sSplashImage && $this->_get_option('splash') ) {
@@ -939,6 +938,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
           }
           
+          $aPlaylistItems[] = $aPlayer;
           $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
