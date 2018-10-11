@@ -357,6 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.2.4.727 - 2018/10/11 =
+
+* Lightbox - fixing display bugs caused by some of the floating header bars (z-index)
+* HLS - using HLS.js instead of HLS.light.js as it had issues with some of the EXT-X-BYTERANGE streams
+* Site speed improvements - allowing FV Player Pro to load Dash JS and HLS JS only when needed
+
 = 7.2.3.727 - 2018/10/03 =
 
 * HLS - improving quality labels (M, SD and HD)
