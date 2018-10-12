@@ -1335,8 +1335,10 @@ class FV_Player_Db {
     if (!isset($_POST['video_url'])) {
       exit;
     }
+    
+    $url = $_POST['video_url'];
 
-    $json_data = apply_filters('fv_player_meta_data', $_POST['video_url'], false);
+    $json_data = apply_filters('fv_player_meta_data', $url, false);
     if ($json_data !== false) {
       header('Content-Type: application/json');
       $json_data['ts'] = time();
@@ -1349,8 +1351,12 @@ class FV_Player_Db {
     );
 
     // add duration
-    global $FV_Player_Checker;
-    $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($_POST['video_url']), false, true);
+    global $FV_Player_Checker, $fv_fp;        
+    if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
+      $url = $secured_url;
+    }    
+    
+    $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($url), false, true);
     $json_data['duration'] = $json_data['duration']['duration'];
 
     header('Content-Type: application/json');
