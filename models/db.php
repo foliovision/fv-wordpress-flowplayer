@@ -309,8 +309,10 @@ class FV_Player_Db {
               } else {
                 $txt = esc_attr($caption_src);
               }
+              
+              $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
 
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.$videos[ $video_id ]->getSplash().'" width="100" alt="' . $txt . '" title="' . $txt . '" /><span>' . $txt . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($txt).'" title="'.esc_attr($txt).'" /><span>' . $txt . '</span></div>';
             } else if ( isset($videos[ $video_id ]) && $caption ) {
               // use caption
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption) . '"><span>' . $caption . '</span></div>';
@@ -1194,6 +1196,14 @@ class FV_Player_Db {
         // first, create the player
         $player_keys = $data;
         unset($player_keys['meta'], $player_keys['videos']);
+        
+        foreach( $player_keys AS $k => $v ) {
+          if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
+            $new = str_replace( 'fv_wp_flowplayer_field_', '', $k );
+            $player_keys[$new] = $v;
+            unset($player_keys[$k]);
+          }
+        }
 
         $player = new FV_Player_Db_Player(null, $player_keys, $FV_Player_Db);
         $player_video_ids = array();
@@ -1203,6 +1213,15 @@ class FV_Player_Db {
         //     before doing so
         if (isset($data['videos'])) {
           foreach ($data['videos'] as $video_data) {
+            
+            foreach( $video_data AS $k => $v ) {
+              if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
+                $new = str_replace( 'fv_wp_flowplayer_field_', '', $k );
+                $video_data[$new] = $v;
+                unset($video_data[$k]);
+              }
+            }
+            
             $video_object = new FV_Player_Db_Video(null, $video_data, $FV_Player_Db);
             $id_video = $video_object->save();
 
