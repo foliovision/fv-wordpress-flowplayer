@@ -78,6 +78,21 @@ class FV_Player_Db_Video {
     
     return urldecode($caption);
   }
+  
+  /**
+   * @return string
+   */
+  public function getDuration() {
+    $sDuration = false;
+    if( $tDuration = $this->getMetaValue('duration',true) ) {
+      if( $tDuration < 3600 ) {
+        $sDuration = gmdate( "i:s", $tDuration );
+      } else {
+        $sDuration = gmdate( "H:i:s", $tDuration );
+      }
+    }
+    return $sDuration;
+  }
 
   /**
    * @return string
@@ -544,6 +559,24 @@ class FV_Player_Db_Video {
       return array();
     }
   }
+  
+  /**
+   * Returns actual meta data for a key for this video.
+   */
+  public function getMetaValue( $key, $single = false ) {
+    $output = array();
+    $data = $this->getMetaData();    
+    if (count($data)) {
+      foreach ($data as $meta_object) {
+        if ($meta_object->getMetaKey() == $key) {
+          if( $single ) return $meta_object->getMetaValue();
+          $output[] = $meta_object->getMetaValue();
+        }
+      }
+    }
+    if( $single ) return false;
+    return $output;
+  }    
 
   /**
    * Stores new video instance or updates and existing one
