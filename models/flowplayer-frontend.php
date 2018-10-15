@@ -332,6 +332,10 @@ class flowplayer_frontend extends flowplayer
           $timeline_class = 'fp-slim';
         }
         $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
+        
+        if( $this->_get_option(array($skin, 'bottom-fs')) ) {
+          $attributes['class'] .= ' bottom-fs';
+        }
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
@@ -1003,10 +1007,10 @@ class flowplayer_frontend extends flowplayer
 
           
     $sHTMLSharing = '<ul class="fvp-sharing">
-    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank">Facebook</a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank">Twitter</a></li>
-    <li><a class="sharing-google" href="https://plus.google.com/share?url=' . $sPermalink . '" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank">Email</a></li></ul>';
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank"></a></li>
+    <li><a class="sharing-google" href="https://plus.google.com/share?url=' . $sPermalink . '" target="_blank"></a></li>
+    <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank"></a></li></ul>';
     
     if( isset($post) && isset($post->ID) ) {
       $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';

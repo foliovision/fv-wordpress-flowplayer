@@ -132,3 +132,8 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 #fp-preview-wrapper .fp-subtitle{height:50px}
 
 #dashboard-widgets .flowplayer-wrapper h3, #dashboard-widgets .flowplayer-wrapper h4 {color:inherit;margin:0 auto;padding:0;font-weight:700;font-size:inherit}
+
+#wpfp_options .minicolors-theme-default.minicolors {display:block}
+#wpfp_options .minicolors-input {padding-left:5px; height:auto}
+#wpfp_options .minicolors-input-swatch {display:none}
+#wpfp_options input[data-opacity] { background-image: url(checkered.png) }
