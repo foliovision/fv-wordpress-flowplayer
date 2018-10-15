@@ -1250,7 +1250,7 @@ function fv_flowplayer_admin_skin() {
         'type'    => 'input_text',
         'key'     => array('skin-custom', 'backgroundColor'),
         'name'    => __( 'Controlbar', 'fv-wordpress-flowplayer' ),
-        'class'   => 'color',
+        'class'   => 'color-opacity',
         'default' => '333333',
         'data'    => array( 'fv-preview' => $aPreview['backgroundColor'] )
       ),

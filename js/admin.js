@@ -13,6 +13,15 @@
     ] : null;
   }
   
+  function rgb2hex(rgb){
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+      ("0" + parseInt(rgb[1],10).toString(16)).slice(-2).toUpperCase() +
+      ("0" + parseInt(rgb[2],10).toString(16)).slice(-2).toUpperCase() +
+      ("0" + parseInt(rgb[3],10).toString(16)).slice(-2).toUpperCase() : '';
+  }
+
+  
   function sanitizeCSS(val) {
     if (val.indexOf('#rgba') > -1) {
       val = val.replace(/#rgba/g, 'rgba');
@@ -144,6 +153,10 @@
           
         } else {
           var value = $this.val().replace(/^#/,'');
+          if( opacity = $this.minicolors('opacity') ) {
+            value = hexToRgb(value);
+            value = 'rgba('+value[0]+','+value[1]+','+value[2]+','+opacity+')';
+          }
           newStyle = preview.replace(/%val%/g, value);
           style += sanitizeCSS(newStyle);
           
@@ -162,5 +175,51 @@
     $('[data-fv-preview]').on('select change', skinPreviewDropdownChanged);
   });
 
+  $(document).ready( function() {
+    var settings = {
+      animationSpeed: 0,
+      letterCase: 'uppercase'      
+    }
+    $('input.color').minicolors(settings);
+    settings.opacity = true;
+    $('input.color-opacity').minicolors(settings);    
+    
+    $('input.color, input.color-opacity').on('change', color_inputs);
+    $('input.color, input.color-opacity').each(color_inputs);
+    
+    $('form#wpfp_options').submit( function(e) {
+      $('input.color-opacity').each( function() {
+        var input = $(this);
+        if( opacity = input.minicolors('opacity') ) {          
+          var color = hexToRgb( input.val() );
+          input.val( 'rgba('+color[0]+','+color[1]+','+color[2]+','+opacity+')' );
+        }
+      })
+    });    
+  });
   
+  function color_inputs() {
+    var input = $(this);
+    var color = input.val();
+    var rgba = hexToRgb( color );
+    if( color.match(/rgba\(.*?\)/) ) {
+      rgba = hexToRgb( rgb2hex(color) );
+      input.val( rgb2hex(color) );
+    }
+    
+    if( opacity = input.minicolors('opacity') ) {      
+      input.css('box-shadow', 'inset 0 0 0 1000px rgba('+rgba[0]+','+rgba[1]+','+rgba[2]+','+opacity+')' );
+    } else {
+      input.css('background-color', input.val());
+    }
+    
+    if( rgba && (
+      (rgba[0] < 160 && rgba[1] < 160) || (rgba[1] < 160 && rgba[2] < 160) || (rgba[0] < 160 && rgba[2] < 160)
+    ) ) {
+      input.css('color', 'white');
+    } else {
+      input.css('color', '');
+    }
+  }
+
 }(jQuery));

@@ -296,8 +296,8 @@ function fv_flowplayer_admin_scripts() {
 		wp_enqueue_script('wp-lists');
 		wp_enqueue_script('postbox');
     
-    wp_register_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery'), $fv_wp_flowplayer_ver );
-    wp_enqueue_script('fv-player-admin');    
+    wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
+    wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), $fv_wp_flowplayer_ver );
   }
 }
 
@@ -307,14 +307,12 @@ function fv_flowplayer_admin_scripts() {
 add_action('admin_head', 'flowplayer_admin_head');
 
 function flowplayer_admin_head() {  
-  if( !fv_player_is_admin_screen() ) return; 
+  if( !fv_player_is_admin_screen() ) return;
 
   global $fv_wp_flowplayer_ver;
-  // TODO: do this properly
+  wp_enqueue_style('fv-player-admin', flowplayer::get_plugin_url().'/css/license.css',array(), $fv_wp_flowplayer_ver );
+  wp_enqueue_style('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.css',array(), $fv_wp_flowplayer_ver );
   ?>      
-    <script type="text/javascript" src="<?php echo FV_FP_RELATIVE_PATH; ?>/js/jscolor/jscolor.js"></script>
-    <link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/license.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
-    
     <script>
     jQuery(window).on('unload', function(){
       window.fv_flowplayer_wp = window.wp;
