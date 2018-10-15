@@ -1104,6 +1104,7 @@ function fv_flowplayer_admin_skin() {
   
   $aPreview = array(
     'hasBorder' => '.flowplayer{border:%val%px solid !important;}',
+    'bottom-fs' => '',
     'borderColor' => '.flowplayer{border-color:#%val% !important;}',
     'marginBottom' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
                 .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
@@ -1201,6 +1202,13 @@ function fv_flowplayer_admin_skin() {
         'name' => __( 'Border', 'fv-wordpress-flowplayer' ),
         'data'    => array( 'fv-preview' => $aPreview['hasBorder'] )
       ),
+      
+      array(
+        'type' => 'checkbox',
+        'key'  => array('skin-custom', 'bottom-fs'),
+        'name' => __( 'Controlbar Fullscreen', 'fv-wordpress-flowplayer' ),
+        'data'    => array( 'fv-preview' => '' )
+      ),      
 
       array(
         'type'    => 'input_text',

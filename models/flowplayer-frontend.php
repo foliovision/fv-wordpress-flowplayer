@@ -332,6 +332,10 @@ class flowplayer_frontend extends flowplayer
           $timeline_class = 'fp-slim';
         }
         $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
+        
+        if( $this->_get_option(array($skin, 'bottom-fs')) ) {
+          $attributes['class'] .= ' bottom-fs';
+        }
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';

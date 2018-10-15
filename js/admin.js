@@ -110,7 +110,7 @@
           newStyle = '',
           $this = $(this),
           $parent = $this.closest('table');
-          
+        
         var preview = $this.data('fv-preview').replace(/\.flowplayer/g,'.flowplayer.skin-'+jQuery('[data-fv-skin]:checked').val() );
 
         if ($parent.css('display') == 'none') {
@@ -120,6 +120,13 @@
         if ($this.attr('name').endsWith('player-position]')) {
           if ($this.val() === 'left')
             style += preview;
+
+        } else if ($this.attr('name').endsWith('bottom-fs]')) {
+          if ($this.prop('checked') || $this.attr('type') == 'hidden' && $this.val() ) {
+            jQuery('.flowplayer').addClass('bottom-fs');
+          } else {
+            jQuery('.flowplayer').removeClass('bottom-fs');
+          }
 
         } else if ($this.attr('name').endsWith('subtitleBgColor')) {
           var replacement = hexToRgb($this.val());
