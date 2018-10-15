@@ -62,6 +62,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public $aDefaultSkins = array(
       'skin-slim' => array(
           'hasBorder' => false,
+          'bottom-fs' => false,
           'borderColor' => false,
           'bufferColor' => false,
           'canvas' => '#000000',
@@ -75,6 +76,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         ),
       'skin-youtuby' => array(
           'hasBorder' => false,
+          'bottom-fs' => true,
           'borderColor' => false,        
           'bufferColor' => false,          
           'canvas' => '#000000',
@@ -526,8 +528,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';
     if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
     if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
-    if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = '#000000';
-    if( !isset( $conf['subtitleBgAlpha'] ) ) $conf['subtitleBgAlpha'] = 0.5;
+    if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = 'rgba(0,0,0,0.5)';  
     if( !isset( $conf['subtitleSize'] ) ) $conf['subtitleSize'] = 16;
 
     //unset( $conf['playlistBgColor'], $conf['playlistFontColor'], $conf['playlistSelectedColor']);
@@ -678,18 +679,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         // now that we have skin colors separated in an arrayed sub-values,
         // we also need to check their values for HEX colors
         foreach ($value as $sub_array_key => $sub_array_value) {
-          if( ((strpos( $sub_array_key, 'Color' ) !== FALSE )||(strpos( $sub_array_key, 'canvas' ) !== FALSE)) && strpos($sub_array_value, 'rgba') === FALSE) {
+          if( ( strpos( $sub_array_key, 'Color' ) !== FALSE || strpos( $sub_array_key, 'canvas' ) !== FALSE ) && strpos($sub_array_value, 'rgba') === FALSE) {
             $aNewOptions[$key][$sub_array_key] = (strpos($sub_array_value, '#') === FALSE ? '#' : '').strtolower($sub_array_value);
           }
         }
       } else if( in_array( $key, array('width', 'height') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
       }
-      if( ((strpos( $key, 'Color' ) !== FALSE )||(strpos( $key, 'canvas' ) !== FALSE)) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
+      if( ( strpos( $key, 'Color' ) !== FALSE || strpos( $key, 'canvas' ) !== FALSE ) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
         $aNewOptions[$key] = (strpos($aNewOptions[$key], '#') === FALSE ? '#' : '').strtolower($aNewOptions[$key]);
       }
     }
@@ -991,6 +992,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $this->_get_conf(); //  todo: without this the colors for skin-slim might end up empty, why?
     
     $sSubtitleBgColor = $this->_get_option('subtitleBgColor');
+    if( $sSubtitleBgColor[0] == '#' && $this->_get_option('subtitleBgAlpha') ) {
+      $sSubtitleBgColor = 'rgba('.hexdec(substr($sSubtitleBgColor,1,2)).','.hexdec(substr($sSubtitleBgColor,3,2)).','.hexdec(substr($sSubtitleBgColor,5,2)).','.$this->_get_option('subtitleBgAlpha').')';
+    }
 
     if( !$skip_style_tag ) : ?>
       <style type="text/css">
@@ -1028,6 +1032,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
         $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fv-fp-prevbtn:before, ".$sel." .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {
@@ -1089,7 +1094,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-captions p { background-color: rgba(<?php echo hexdec(substr($sSubtitleBgColor,1,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,3,2)); ?>,<?php echo hexdec(substr($sSubtitleBgColor,5,2)); ?>,<?php echo $this->_get_option('subtitleBgAlpha'); ?>); }
+    .flowplayer .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
   
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
