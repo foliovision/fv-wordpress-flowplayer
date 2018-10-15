@@ -137,12 +137,6 @@
             jQuery('.flowplayer').removeClass('bottom-fs');
           }
 
-        } else if ($this.attr('name').endsWith('subtitleBgColor')) {
-          var replacement = hexToRgb($this.val());
-          replacement.push($('#subtitleBgAlpha').val());
-          newStyle = preview.replace(/%val%/g, replacement.join(', '));
-          style += sanitizeCSS(newStyle);
-          
         } else if($this.attr('type') == 'checkbox' ) {          
           if ($this.prop('checked')) {
             newStyle = preview.replace(/%val%/g, '1');
@@ -178,6 +172,7 @@
   $(document).ready( function() {
     var settings = {
       animationSpeed: 0,
+      changeDelay: 10,
       letterCase: 'uppercase'      
     }
     $('input.color').minicolors(settings);
@@ -207,7 +202,7 @@
       input.val( rgb2hex(color) );
     }
     
-    if( opacity = input.minicolors('opacity') ) {      
+    if( rgba && ( opacity = input.minicolors('opacity') ) ) {      
       input.css('box-shadow', 'inset 0 0 0 1000px rgba('+rgba[0]+','+rgba[1]+','+rgba[2]+','+opacity+')' );
     } else {
       input.css('background-color', input.val());

@@ -1402,6 +1402,11 @@ function fv_flowplayer_admin_skin_playlist() {
 
 function fv_flowplayer_admin_skin_subtitles() {
 	global $fv_fp;
+  $subtitleBgColor = $fv_fp->_get_option('subtitleBgColor');
+  if( $subtitleBgColor[0] == '#' && $opacity = $fv_fp->_get_option('subtitleBgAlpha') ) {
+    $rgb = array_map('hexdec', array($subtitleBgColor[1].$subtitleBgColor[2], $subtitleBgColor[3].$subtitleBgColor[4], $subtitleBgColor[5].$subtitleBgColor[6]) );
+    $subtitleBgColor = 'rgba('.implode(",",$rgb).','.$opacity.')';
+  }
 ?>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>  
@@ -1421,14 +1426,9 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgColor' ) ); ?>"
-                 data-fv-preview=".flowplayer .fp-captions p { background-color: rgba(%val%) !important; }"/></td>
+      <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr($subtitleBgColor); ?>"
+                 data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
-    <tr>
-      <td><label for="subtitleBgAlpha"><?php _e('Background Opacity', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="<?php echo esc_attr( $fv_fp->_get_option('subtitleBgAlpha') ); ?>"
-                 data-fv-preview=""/></td>
-    </tr>
     <tr>    		
       <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -1436,7 +1436,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>
   </table>
   <div id="fp-preview-wrapper">
-    <div class="flowplayer" id="preview"> 
+    <div class="flowplayer skin-<?php echo $fv_fp->_get_option('skin'); ?>" id="preview"> 
       <div class="fp-captions fp-shown">
         <p><?php _e('The quick brown fox jumps over the lazy dog.', 'fv-wordpress-flowplayer'); ?></p>
         <p><?php _e('Second line.', 'fv-wordpress-flowplayer'); ?></p>
