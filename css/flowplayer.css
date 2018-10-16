@@ -1087,7 +1087,7 @@
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 
 /* style reset first */
-.flowplayer .fvp-sharing ul {
+.flowplayer .fvp-sharing ul, .flowplayer .fvp-sharing li {
 	  list-style: none !important;
 }
 .fvp-share-bar ul,
