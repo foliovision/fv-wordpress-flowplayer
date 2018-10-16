@@ -272,7 +272,7 @@ class FV_Player_Email_Subscription {
         var aInputs = row.find('input, select');
         var key = row.attr('id').replace(/fv-player-list-item-/,'');
         
-        fv_player_open_preview_window(null,<?php echo $fv_fp->_get_option('width') ?>,<?php echo $fv_fp->_get_option('height') ?>+100);
+        fv_player_open_preview_window(null,720,480);
         
         button.prop('disabled',true);
         jQuery.ajax( {
