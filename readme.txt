@@ -357,6 +357,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.2.5.727 - 2018/10/16 =
+
+* HLS - player size now limits the ABR
+* Playlist - adding prev/next buttons
+* Skin - new color picker with transparency for control bar
+* Skin - setting to move fullscreen button to control bar
+* Styling - using SVG for sharing icons
+* Bugfix - volume bar usability
+
 = 7.2.4.727 - 2018/10/11 =
 
 * Lightbox - fixing display bugs caused by some of the floating header bars (z-index)
