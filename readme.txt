@@ -357,6 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.2.6.727 - 2018/10/18 =
+
+* Chromecast - fixing multiple Chromecast buttons appearing
+* Redirection - not creating the popup window anymore as in 99% of cases it's blocked
+* Styling - fixing problem with small buttons in fullscreen
+
 = 7.2.5.727 - 2018/10/16 =
 
 * HLS - player size now limits the ABR
