@@ -130,7 +130,7 @@
 
 .flowplayer.is-tiny:not(.is-fullscreen) { font-size: .7em; }
 
-.flowplayer.is-small { font-size: .8em; }
+.flowplayer.is-small:not(.is-fullscreen) { font-size: .8em; }
 
 .flowplayer.no-buffer .fp-ui .fp-controls .fp-timeline .fp-buffer {
   display: none; }
