@@ -482,6 +482,7 @@ class FV_Player_Db {
    * @throws Exception When the underlying video object throws.
    */
   public function getPlayerAttsFromDb($atts) {
+    
     global $fv_fp, $FV_Player_Db;
 
     $is_multi_playlist = false;
@@ -604,6 +605,12 @@ class FV_Player_Db {
             $data['videos'] = implode(',', $ordered_videos);
           }
 
+          // video attributes which can still be set in shortcode
+          $preserve = array();
+          if( !empty($atts['splash']) ) {
+            $preserve['splash'] = $atts['splash'];
+          }          
+
           // add playlist / single video data
           $atts = array_merge( $atts, $this->generateFullPlaylistCode(
           // we need to prepare the same attributes array here
@@ -613,6 +620,10 @@ class FV_Player_Db {
               'playlist' => $data['videos']
             )
           ) );
+          
+          if( count($preserve) > 0 ) {
+            $atts = array_merge( $atts, $preserve );
+          }
 
         }
       } else {
