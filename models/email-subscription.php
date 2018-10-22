@@ -318,7 +318,7 @@ class FV_Player_Email_Subscription {
     $aLists = get_option('fv_player_email_lists',array());
     $list = isset($aLists[$id]) ? $aLists[$id] : array('disabled' => '1');
     
-    if( empty($list['title']) || !empty($list['disabled']) && $list['disabled'] === '1'){
+    if( empty($list['title']) || isset($list['disabled']) && $list['disabled'] === '1'){
       return '';
     }
     $popupItems = '';

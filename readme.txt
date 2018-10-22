@@ -38,7 +38,7 @@ Back to school special 25% off pro licenses until end of September.
 
 **Additional Technical information**
 
-* Core video engine: open source Flowplayer 6. Flowplayer 7 in beta testing.
+* Core video engine: open source Flowplayer 7.
 * Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
 * Supported video streaming formats are HLS (Flash and JavaScript fallback available for incompatible devices), MPEG DASH and RTMP.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
@@ -324,7 +324,7 @@ Read our guide [Using FV Player with Minify Plugins](https://foliovision.com/pla
 No worries.
 
 1. You can always downgrade to version the Flash version ([delete the plugin then grab older version here and install from the ZIP file](https://wordpress.org/plugins/fv-wordpress-flowplayer/developers/)). If you downgrade to version 1.x you do lose a lot of mobile and iOS capability but you didn't have it in the first place.
-1. Contact us via [support](https://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Flowplayer 6 working in your environment.
+1. Contact us via [support](https://foliovision.com/support). We are actively investigating and fixing people's sites now during the initial release period. We will help you to get FV Player 7 working in your environment.
 
 = 33. I can't see overlay ads on my videos =
 
@@ -356,6 +356,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.2.8.727 - 2018/10/22 =
+
+* Performance fixes - loading SVGs and window resize hooks
+* Alternative iOS fullscreen mode setting - for users who notice site elements such as header bar ovelaying the player in fullscreen on iOS
+* Bugfix - preventing duplicate fullscreen button on Youtuby skin
 
 = 7.2.7.727 - 2018/10/18 =
 

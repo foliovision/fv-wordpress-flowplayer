@@ -963,7 +963,8 @@
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
 .flowplayer.has-video-checker {overflow: visible}
-.flowplayer.is-long .fp-elapsed {min-width: 3.35em}
+.flowplayer .fp-elapsed {min-width: 5.1ch}
+.flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
 
 .fv-fp-splash-text { position: absolute;bottom:20%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 2px #333;background-color: rgba(0,0,0,0.5); font-size: 18px; padding: 5px 36px; pointer-events: none }
 .flowplayer.is-error .fv-fp-splash-text {display: none}
