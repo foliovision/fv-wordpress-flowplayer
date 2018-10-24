@@ -1764,9 +1764,14 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .fv-fp-playlist.mode-repeat-playlist .fvp-icon.fvp-replay-list,
 .fv-fp-playlist.mode-shuffle-playlist .fvp-icon.fvp-shuffle,
-.fv-fp-playlist.mode-repeat-track .fvp-icon.fvp-replay-track,
-.fv-fp-playlist.mode-normal #fvp-playlist-play {
+.fv-fp-playlist.mode-repeat-track .fvp-icon.fvp-replay-track {
 	display: block;
+}
+.fv-fp-playlist.mode-normal #fvp-playlist-play {
+	display: inline-block;
+}
+.fv-fp-playlist.mode-normal #fvp-playlist-play {
+	display: inline-block;
 }
 .fv-fp-playlist.mode-normal .fvp-icon.fvp-playlist-play {
 	margin-top: 4px;
@@ -1781,6 +1786,11 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fp-controls .fv-fp-prevbtn,
 .flowplayer .fp-controls .fv-fp-nextbtn {
 	margin: 0 .4em;
+	display: flex;
+	vertical-align: middle;
+}
+.flowplayer .fp-controls .fv-fp-nextbtn {
+	margin: 0 .4em 0 .2em;
 }
 .flowplayer.is-audio .fp-controls .fp-playbtn {
 	margin: 0 .2em 0 .4em;
@@ -1808,11 +1818,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .fp-outlined .fv-fp-nextbtn:before {
 	border-right: 1px solid #fff;
-}
-
-
-.fv-fp-nextbtn {
-	margin: 0 .4em;
 }
 
 .flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn {
