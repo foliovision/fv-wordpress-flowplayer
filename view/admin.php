@@ -757,9 +757,11 @@ function fv_flowplayer_admin_popups(){
                       </table>
                     </td>
                     <td>
-                      <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
+                      <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />                      
+                      <input id='PopupAdPause-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][pause]' value='1' <?php echo (isset($aPopup['pause']) && $aPopup['pause'] ? 'checked="checked"' : ''); ?> />
+                      <label for='PopupAdPause-<?php echo $key; ?>'><?php _e('Show on pause', 'fv-wordpress-flowplayer'); ?></label><br />
                       <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> />
-                      <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />
+                      <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e('Disable', 'fv-wordpress-flowplayer'); ?></label><br />                      
                       <a class='fv-player-popup-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a></td>
                   </tr>
               <?php
@@ -1717,6 +1719,15 @@ add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'
         <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e($val['name'],'fv-wordpress-flowplayer');?></a>
         <?php endforeach;?>
         <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+        <style>
+          #fv_player_js_warning {
+            animation: cssAnimation 0s 5s forwards;
+            visibility: hidden;
+          }
+          @keyframes cssAnimation {
+            to { visibility: visible; }
+          }
+        </style>
       </h2>
     </div>    
   

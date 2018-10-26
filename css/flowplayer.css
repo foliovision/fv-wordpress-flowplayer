@@ -1078,6 +1078,7 @@
 .flowplayer .fp-logo {max-width:25%;-webkit-tap-highlight-color: rgba(0,0,0,0);}
 .flowplayer .fp-logo img {box-shadow:none}
 .flowplayer.fixed-controls .fp-logo {bottom: 15px}
+.flowplayer.is-popup-showing .fp-logo {display: none}
 
 /* Share bar, todo: check!  */
 .flowplayer .fp-embed-code{display:none;}
