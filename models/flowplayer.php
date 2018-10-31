@@ -1871,7 +1871,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( empty($val['css']) ){
           continue;
         }
-        $sNewCss .= stripslashes($val['css'])."\n";
+        $sNewCss .= '.flowplayer '.stripslashes($val['css'])."\n";
       }
     }
     if( strlen($sNewCss) ){

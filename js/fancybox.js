@@ -200,8 +200,9 @@ function fv_player_lightbox_bind(){
   
 }
 
-jQuery(document).on('click', '.flowplayer.lightbox-starter', function() {  
-  var api = jQuery(jQuery(this).attr('href')).data('flowplayer');
+jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-link', function() {  
+  var ref = jQuery(this).data('src') || jQuery(this).attr('href');
+  var api = jQuery(ref).data('flowplayer');
   if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
     if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
   }

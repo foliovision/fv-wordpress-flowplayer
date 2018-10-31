@@ -361,6 +361,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Performance fixes - loading SVGs and window resize hooks
 * Alternative iOS fullscreen mode setting - for users who notice site elements such as header bar ovelaying the player in fullscreen on iOS
+* Styling - fixing timeline jumping left-right a bit when using "inherit from template" font face skin setting with some of the WP themes
 * Bugfix - preventing duplicate fullscreen button on Youtuby skin
 
 = 7.2.7.727 - 2018/10/18 =

@@ -829,7 +829,7 @@ class flowplayer_frontend extends flowplayer
     }
 
     $iPopupIndex = 1;
-    if ($popup === 'random' || is_numeric($popup)) {
+    if ($popup === 'random' || is_numeric($popup)) { // we don't get there if it's email-1 or direct HTML
       $aPopupData = get_option('fv_player_popups');
       if ($popup === 'random') {
         $iPopupIndex = rand(1, count($aPopupData));
@@ -850,7 +850,8 @@ class flowplayer_frontend extends flowplayer
 
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
-          'html' => '<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>'
+          'html' => '<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>',
+          'pause' => isset($aPopupData) && isset($aPopupData[$iPopupIndex]['pause']) ? $aPopupData[$iPopupIndex]['pause'] : false
       );
       return $popup_contents;
     }

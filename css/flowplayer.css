@@ -1028,9 +1028,10 @@
 .flowplayer.bottom-fs .fp-header .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-controls .fp-fullscreen {display:block}
 
-/* Mailchimp integration, todo: check! */
+/* Mailchimp integration */
 .flowplayer .fv_player_popup p{margin:0 12px 6px;line-height:1.35}
-.flowplayer .wpfp_custom_popup{width:100%;top:0;bottom:0;margin-bottom:2.4em;-webkit-transition:all .2s;-moz-transition:all .2s;transition:all .2s}
+.flowplayer .wpfp_custom_popup{width:100%;top:0;bottom:0;margin-bottom:2.4em;-webkit-transition:all .2s;-moz-transition:all .2s;transition:all .2s;overflow:hidden}
+.flowplayer.fp-full .wpfp_custom_popup{margin-bottom:2.8em}
 .flowplayer .fv_player_popup {background-color:#222;position:relative;top:0;width:100%;height:100%;padding:2em 0 1%}
 .flowplayer .fv_player_popup h1,.flowplayer .fv_player_popup h2,.flowplayer .fv_player_popup h3,.flowplayer .fv_player_popup h4,.flowplayer .fv_player_popup h5,.flowplayer .fv_player_popup h6{margin:0 0 6px !important}
 .mailchimp-form input{width:31.33333333%;max-width:31.33333333%;margin:0 1%}
@@ -1058,7 +1059,7 @@
 .flowplayer.is-fullscreen .fp-player{background-color:#000}
 
 
-/* error icon, todo: check! */
+/* error icon */
 .is-error.flowplayer .fp-player:before {
 	background: url("img/no-play-white.svg") no-repeat center center;
 	background-size: 14%;
@@ -1077,8 +1078,9 @@
 .flowplayer .fp-logo {max-width:25%;-webkit-tap-highlight-color: rgba(0,0,0,0);}
 .flowplayer .fp-logo img {box-shadow:none}
 .flowplayer.fixed-controls .fp-logo {bottom: 15px}
+.flowplayer.is-popup-showing .fp-logo {display: none}
 
-/* Share bar, todo: check!  */
+/* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
 .flowplayer .fvp-share-bar{font-size:12px}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
@@ -1162,9 +1164,9 @@
 	background-color: #3B5998;
 }
 .fvp-share-bar .fvp-sharing .sharing-email svg {
-	margin: -7px 0 0 -7px;
-	width: 14px;
-	height: 14px;
+	margin: -6px 0 0 -6px;
+	width: 12px;
+	height: 12px;
 }
 .fvp-share-bar .fvp-sharing .sharing-twitter {
 	background-color: #0084b4;
@@ -1196,7 +1198,7 @@
 
 
 
-/*  Prev/next playlist, todo: check!  */
+/*  Prev/next playlist  */
 .flowplayer .fp-prev, .flowplayer .fp-next {
   position: absolute;
   top: 44%;
@@ -1319,7 +1321,7 @@
 #content .flowplayer a, .flowplayer a, .flowplayer a:hover { -wekbit-box-shadow: none !important; -moz-box-shadow: none !important; box-shadow: none !important; border-bottom: 0 !important; text-decoration: none !important; }
 
 
-/*  Popups, todo: check!  */
+/*  Popups */
 .flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }  	
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
 .flowplayer.is-playing .wpfp_custom_ad, .flowplayer.is-ready .wpfp_custom_ad { display: block; }  
@@ -1340,7 +1342,7 @@
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebtn {visibility:visible;display:block}
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebar {display:none}
 
-/* Caption, todo: check!*/
+/* Caption */
 p.fp-caption { text-align: center;max-width: 100%;  }
 
 /* Buttons, todo: check! or better not use! */
@@ -1467,7 +1469,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer:hover .fvfp_admin_error { display: block }
 
 
-/*  Duration, todo: check!*/
+/*  Duration */
 .fvfp_duration { position: absolute; bottom: 0; right: 1%; z-index: 2; text-align: center; color: #fff; display:none }
 .is-ready .fvfp_duration, .is-loading .fvfp_duration  { display: none }
 .fp-playlist-external .dur { font-style:normal;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
@@ -1478,7 +1480,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 
 /*
- *  FV Flowplayer Tabs, todo: check!
+ *  FV Flowplayer Tabs
  */
 .fv_flowplayer_tabs { margin: 0 auto; }
 .fv_flowplayer_tabs ul.ui-tabs,.fv_flowplayer_tabs ul.ui-tabs-nav{margin:0 !important;font-size:13px;font-family:Arial, Helvetica, sans-serif;font-weight:bold;line-height:24px !important}
@@ -1520,7 +1522,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .fv-player-reload { font-size: 5em; display: block }
 
 
-/* Disable selection, todo: check!  */
+/* Disable selection  */
 .flowplayer {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -1550,10 +1552,10 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.chrome55fix-subtitles video::-webkit-media-controls-panel { width: calc(100% + 96px); }
 
 
-/*  Audio player, todo: check!  */
+/*  Audio player  */
 .is-audio .fp-player {background-size: contain; background-position: top center; background-repeat: no-repeat}
 
-/* Audio player playlist, todo: check! */ 
+/* Audio player playlist */ 
 .flowplayer.is-audio,.site-content .flowplayer.is-audio,.flowplayer.fixed-controls.is-audio {margin-top:2.8em}
 .flowplayer.is-audio .fv-player-buttons li {margin:0}
 .site-content .flowplayer.is-audio .fp-controls,.site-content .flowplayer.is-audio .fv-ab-loop,.site-content .fv-player-buttons a:active,.site-content .fv-player-buttons a { background-color:#888 !important }
@@ -1764,9 +1766,14 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .fv-fp-playlist.mode-repeat-playlist .fvp-icon.fvp-replay-list,
 .fv-fp-playlist.mode-shuffle-playlist .fvp-icon.fvp-shuffle,
-.fv-fp-playlist.mode-repeat-track .fvp-icon.fvp-replay-track,
-.fv-fp-playlist.mode-normal #fvp-playlist-play {
+.fv-fp-playlist.mode-repeat-track .fvp-icon.fvp-replay-track {
 	display: block;
+}
+.fv-fp-playlist.mode-normal #fvp-playlist-play {
+	display: inline-block;
+}
+.fv-fp-playlist.mode-normal #fvp-playlist-play {
+	display: inline-block;
 }
 .fv-fp-playlist.mode-normal .fvp-icon.fvp-playlist-play {
 	margin-top: 4px;
@@ -1781,6 +1788,11 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fp-controls .fv-fp-prevbtn,
 .flowplayer .fp-controls .fv-fp-nextbtn {
 	margin: 0 .4em;
+	display: flex;
+	vertical-align: middle;
+}
+.flowplayer .fp-controls .fv-fp-nextbtn {
+	margin: 0 .4em 0 .2em;
 }
 .flowplayer.is-audio .fp-controls .fp-playbtn {
 	margin: 0 .2em 0 .4em;
@@ -1808,11 +1820,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .fp-outlined .fv-fp-nextbtn:before {
 	border-right: 1px solid #fff;
-}
-
-
-.fv-fp-nextbtn {
-	margin: 0 .4em;
 }
 
 .flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn {

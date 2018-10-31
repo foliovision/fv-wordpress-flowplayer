@@ -386,7 +386,23 @@ function flowplayer_prepare_scripts() {
         
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
-    }  
+    }
+    
+    $aConf['hlsjs'] = array(
+      'startLevel' => -1,
+      'fragLoadingMaxRetry' => 3,
+      'levelLoadingMaxRetry' => 3,
+      'capLevelToPlayerSize' => true
+    );
+    
+    // The above HLS.js config doesn't work well on Chrome and Firefox, so we detect that in JS and use this config for it instead. Todo: make this a per-video thing
+    if( class_exists('FV_Player_Pro_DaCast') ) {
+      $aConf['dacast_hlsjs'] = array(        
+        'autoLevelEnabled' => false // disable ABR. If you set startLevel or capLevelToPlayerSize it will be enabled again. So this way everybody on desktop gets top quality and they have to switch to lower each time.
+      );
+    }
+    
+    $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
