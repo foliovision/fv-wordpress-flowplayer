@@ -60,7 +60,7 @@ HTML;
     flowplayer_prepare_scripts();
     
     global $wp_scripts;
-    $this->assertTrue( stripos( $this->fix_newlines($wp_scripts->registered['flowplayer']->extra['data']), $this->fix_newlines('var fv_flowplayer_popup = {"wpfp_282c498132552aaa754164072eaaa0d0":{"html":"<div class=\"fv_player_popup fv_player_popup-1 wpfp_custom_popup_content\"><h3>Subscribe to list one<\/h3><p>Two good reasons to subscribe right now<\/p><form class=\"mailchimp-form  mailchimp-form-2\"><input type=\"hidden\" name=\"list\" value=\"1\" \/><input type=\"email\" placeholder=\"Email Address\" name=\"email\"\/><input type=\"text\" placeholder=\"First Name\" name=\"first_name\" required\/><input type=\"submit\" value=\"Subscribe\"\/><\/form><\/div>"}}') ) !== false );
+    $this->assertTrue( stripos( $this->fix_newlines($wp_scripts->registered['flowplayer']->extra['data']), $this->fix_newlines('var fv_flowplayer_popup = {"wpfp_282c498132552aaa754164072eaaa0d0":{"html":"<div class=\"fv_player_popup fv_player_popup-1 wpfp_custom_popup_content\"><h3>Subscribe to list one<\/h3><p>Two good reasons to subscribe right now<\/p><form class=\"mailchimp-form  mailchimp-form-2\"><input type=\"hidden\" name=\"list\" value=\"1\" \/><input type=\"email\" placeholder=\"Email Address\" name=\"email\"\/><input type=\"text\" placeholder=\"First Name\" name=\"first_name\" required\/><input type=\"submit\" value=\"Subscribe\"\/><\/form><\/div>","pause":false}}') ) !== false );
     
     global $fv_fp;
     $fv_fp->aPopups = array();
@@ -98,7 +98,7 @@ HTML;
     flowplayer_prepare_scripts();
     
     global $wp_scripts;
-    $this->assertTrue( stripos( $this->fix_newlines($wp_scripts->registered['flowplayer']->extra['data']), $this->fix_newlines('var fv_flowplayer_popup = {"wpfp_40dd5c9f6426b9d96be06d43e9224af8":{"html":"<div class=\"fv_player_popup fv_player_popup-1 wpfp_custom_popup_content\"><a href=\"https:\/\/foliovision.com\/2018\/07\/panamax\"><img src=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg\" class=\"alignleft post-image entry-image lazyloaded \" alt=\"PanamaX\" itemprop=\"image\" sizes=\"(max-width: 400px) 100vw, 400px\" srcset=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg 400w, https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5.jpg 1128w\" width=\"400\" height=\"239\"><\/a><\/div>"}};') ) !== false );
+    $this->assertTrue( stripos( $this->fix_newlines($wp_scripts->registered['flowplayer']->extra['data']), $this->fix_newlines('var fv_flowplayer_popup = {"wpfp_40dd5c9f6426b9d96be06d43e9224af8":{"html":"<div class=\"fv_player_popup fv_player_popup-1 wpfp_custom_popup_content\"><a href=\"https:\/\/foliovision.com\/2018\/07\/panamax\"><img src=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg\" class=\"alignleft post-image entry-image lazyloaded \" alt=\"PanamaX\" itemprop=\"image\" sizes=\"(max-width: 400px) 100vw, 400px\" srcset=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg 400w, https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5.jpg 1128w\" width=\"400\" height=\"239\"><\/a><\/div>","pause":false}};') ) !== false );
     
     global $fv_fp;
     $fv_fp->aPopups = array();
@@ -122,7 +122,7 @@ HTML;
     flowplayer_prepare_scripts();
     
     global $wp_scripts;
-    $this->assertTrue( stripos( $this->fix_newlines($wp_scripts->registered['flowplayer']->extra['data']), $this->fix_newlines('var fv_flowplayer_popup = {"wpfp_40dd5c9f6426b9d96be06d43e9224af8":{"html":"<div class=\"fv_player_popup fv_player_popup-1 wpfp_custom_popup_content\"><a href=\"https:\/\/foliovision.com\/2018\/07\/panamax\"><img src=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg\" class=\"alignleft post-image entry-image lazyloaded \" alt=\"PanamaX\" itemprop=\"image\" sizes=\"(max-width: 400px) 100vw, 400px\" srcset=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg 400w, https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5.jpg 1128w\" width=\"400\" height=\"239\"><\/a><\/div>"}};') ) !== false );
+    $this->assertTrue( stripos( $this->fix_newlines($wp_scripts->registered['flowplayer']->extra['data']), $this->fix_newlines('var fv_flowplayer_popup = {"wpfp_40dd5c9f6426b9d96be06d43e9224af8":{"html":"<div class=\"fv_player_popup fv_player_popup-1 wpfp_custom_popup_content\"><a href=\"https:\/\/foliovision.com\/2018\/07\/panamax\"><img src=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg\" class=\"alignleft post-image entry-image lazyloaded \" alt=\"PanamaX\" itemprop=\"image\" sizes=\"(max-width: 400px) 100vw, 400px\" srcset=\"https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5-400x239.jpg 400w, https:\/\/cdn.foliovision.com\/images\/2018\/07\/PanamaX-5.jpg 1128w\" width=\"400\" height=\"239\"><\/a><\/div>","pause":false}};') ) !== false );
     
     global $fv_fp;
     $fv_fp->aPopups = array();
