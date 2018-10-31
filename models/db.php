@@ -563,6 +563,16 @@ class FV_Player_Db {
 
                 ksort($ordered_videos_tmp);
                 $ordered_videos = array_values($ordered_videos_tmp);
+                
+                $new_objects = array();
+                foreach( $ordered_videos_tmp AS $v ) {
+                  foreach( $atts['video_objects'] AS $i ) {
+                    if( $i->getId() == $v ) {
+                      $new_objects[] = $i;
+                    }
+                  }                
+                }
+                $atts['video_objects'] = $new_objects;                
                 break;
 
               case 'newest':
@@ -574,6 +584,16 @@ class FV_Player_Db {
                 }
 
                 $ordered_videos = array_values($ordered_videos_tmp);
+                
+                $new_objects = array();
+                foreach( $ordered_videos_tmp AS $v ) {
+                  foreach( $atts['video_objects'] AS $i ) {
+                    if( $i->getId() == $v ) {
+                      $new_objects[] = $i;
+                    }
+                  }                
+                }
+                $atts['video_objects'] = $new_objects;
                 break;
 
               case 'title':
@@ -599,6 +619,16 @@ class FV_Player_Db {
 
                 ksort($ordered_videos_tmp);
                 $ordered_videos = array_values($ordered_videos_tmp);
+                
+                $new_objects = array();
+                foreach( $ordered_videos_tmp AS $v ) {
+                  foreach( $atts['video_objects'] AS $i ) {
+                    if( $i->getId() == $v ) {
+                      $new_objects[] = $i;
+                    }
+                  }                
+                }
+                $atts['video_objects'] = $new_objects;                
                 break;
             }
 
