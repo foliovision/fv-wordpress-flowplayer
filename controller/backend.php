@@ -734,13 +734,13 @@ function fv_player_rollback() {
       if( stripos($plugin,'fv-wordpress-flowplayer') === 0 && stripos($plugin,'/flowplayer.php') !== false ) {
         $plugin_slug = $plugin;
       }
-    }    
+    }
 
     $plugin_transient 	= get_site_transient( 'update_plugins' );
     $plugin_folder    	= plugin_basename( dirname( $plugin_slug ) );
     $plugin_file      	= basename( $plugin_slug );
-    $version          	= $fv_wp_flowplayer_ver;
-    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.6.6.6.zip';
+    $version            = isset($_GET['version']) ? $_GET['version'] : '6.6.6';
+    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.'.$version.'.zip';
     $temp_array 		= array(
       'slug'        => $plugin_folder,
       'new_version' => $version,
