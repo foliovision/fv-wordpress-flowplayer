@@ -126,11 +126,7 @@ function fv_wp_flowplayer_check_template() {
         $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
         echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
       }
-    }
-    
-    if( stripos( $response['body'], '/html5.js') === FALSE && stripos( $response['body'], '/html5shiv.js') === FALSE ) {
-      $errors[] = 'html5.js not found in your template! Videos might not play in old browsers, like Internet Explorer 6-8. Please follow our instructions <a href="https://foliovision.com/player/installation#html5js">here</a>.';
-    }      
+    }    
     
     $ok[] = __('We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
     
