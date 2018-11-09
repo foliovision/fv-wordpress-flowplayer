@@ -1739,7 +1739,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fv-fp-playlist-menu .screen-reader-text { clip: rect(1px, 1px, 1px, 1px); height: 1px; overflow: hidden; position: absolute !important; width: 1px; }
 .flowplayer .fp-controls #no-picture-icon,   .flowplayer .fp-controls .fvp-icon.fvp-playlist { vertical-align: top; }
 .flowplayer .fvp-icon { vertical-align: middle; }
-.flowplayer svg.fvp-icon, .flowplayer .fvp-icon .svg-color { fill: #ffffff; }
+.flowplayer svg.fvp-icon, .flowplayer .fvp-icon .svg-color { fill: #fff; }
+.flowplayer.skin-custom svg.fvp-icon, .flowplayer .fvp-icon .svg-color { fill: #eee; }
 .flowplayer .fp-menu.fv-fp-playlist-menu { width: 4em; }
 .flowplayer .fp-menu.fv-fp-playlist-menu .fp-selected::before { content: '' }
 
