@@ -85,6 +85,7 @@ if( is_admin() ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
+  include_once(dirname( __FILE__ ) . '/models/system-info.php');
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
 } 
