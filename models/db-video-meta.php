@@ -93,8 +93,8 @@ class FV_Player_Db_Video_Meta {
 CREATE TABLE `" . self::$db_table_name . "` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_video` int(10) UNSIGNED NOT NULL,
-  `meta_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_value` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_key` varchar(255) NOT NULL,
+  `meta_value` longtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_video` (`id_video`),
   KEY `meta_key` (`meta_key`(191))
