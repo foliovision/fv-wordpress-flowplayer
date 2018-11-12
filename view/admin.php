@@ -502,6 +502,23 @@ function fv_flowplayer_admin_description_actions() {
 }
 
 /*
+ * Actions Tab Description
+ */
+function fv_flowplayer_admin_description_tools() {
+?>
+  <table class="form-table">
+    <tr>
+      <td colspan="4">
+        <p>
+          <?php _e('Maintenance tools and debug info.', 'fv-wordpress-flowplayer'); ?>
+        </p>
+      </td>
+    </tr>
+  </table>
+<?php
+}
+
+/*
  * Video Ads Tab Description
  */
 function fv_flowplayer_admin_description_video_ads() {
@@ -1390,8 +1407,8 @@ function fv_flowplayer_admin_skin_playlist() {
       <td>
         <input class="color" id="playlistFontColor-proxy" name="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" data-fv-preview=".fp-playlist-external a h4 span { color:#%val% !important; }, .fp-playlist-external > a { color:#%val% !important; }, #dashboard-widgets .flowplayer-wrapper .fp-playlist-external h4{color: #%val% !important;}" />
         <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" />
-        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?></a>
-        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?></a>
+        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?><?php _e('', 'fv-wordpress-flowplayer'); ?></a>
+        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?><?php _e('', 'fv-wordpress-flowplayer'); ?></a>
       </td>      
     </tr>  
     <tr>    		
@@ -1489,71 +1506,100 @@ function fv_flowplayer_admin_usage() {
 				<table class="form-table">
 					<tr>
 						<td colspan="4">  
-							<div class="column">
-								<div class="icon32" id="icon-users"><br></div>							
-								<p><?php _e('Illustrated user guides', 'fv-wordpress-flowplayer'); ?>:</p>
+							<div class="column">					
+								<p><?php _e('Basic Setup', 'fv-wordpress-flowplayer'); ?>:</p>
 								<div class="clear"></div>
 								<ul>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide#insert-videos"><?php _e('Inserting videos', 'fv-wordpress-flowplayer'); ?></a>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide"><?php _e('License key and custom logo', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists"><?php _e('How to create a playlist', 'fv-wordpress-flowplayer'); ?></a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/ads"><?php _e('Using ads', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/ads/incorporating-google-adsense"><?php _e('Using Google Ads', 'fv-wordpress-flowplayer'); ?></a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/rtmp-streams"><?php _e('RTMP streams', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/advanced/subtitles"><?php _e('Subtitles', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide"><?php _e('Amazon S3 secure content guide', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/hls-stream"><?php _e('How to setup a HLS stream', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/advanced/google-analytics-flowplayer"><?php _e('Google Analytics support', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-lightbox"><?php _e('Video lightbox', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player"><?php _e('YouTube integration', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/setting-quality-switching"><?php _e('Quality Switching', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo"><?php _e('Vimeo integration', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/ads/using-preroll-postroll-ads"><?php _e('Custom video ads', 'fv-wordpress-flowplayer'); ?></a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/serving-private-cloudfront"><?php _e('CloudFront CDN - protected video downloads', 'fv-wordpress-flowplayer'); ?></a></li>
+                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/installation"><?php _e('Installation', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide"><?php _e('Start up guide', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/post-interface-options"><?php _e('Post Interface Options', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/alignment-settings"><?php _e('Alignment Settings', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/customizing-fv-player-skin"><?php _e('Customizing FV Player Skin', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/managing-sharing-buttons"><?php _e('Sharing Videos on Social Media', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/customing-email-sharing"><?php _e('Email Sharing', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-iframe-embedding"><?php _e('Using the Iframe Embedding', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-lightbox"><?php _e('Using the Video Lightbox Effect', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding"><?php _e('Video Encoding for HTML 5', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists"><?php _e('How to Create Playlists', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/vtt-chapters"><?php _e('VTT Chapters', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/adding-captions-and-splash-text"><?php _e('Adding Captions and Splash Text', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/quality-switching"><?php _e('Setting Up Video Quality Switching', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/how-to-use-video-checker"><?php _e('How to Use the Built-in Video Checker', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-video-links"><?php _e('Creating Video Links in FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/switching-fv-player-pro-to-beta"><?php _e('Switching FV Player Pro to Beta', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/faq"><?php _e('FAQ', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/comparison-table"><?php _e('WordPress Video Plugins Comparison', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/shortcode-parameters"><?php _e('List of Shortcode Parameters', 'fv-wordpress-flowplayer'); ?></a></li>
 								</ul>
+                <p><?php _e('Video Hosting', 'fv-wordpress-flowplayer'); ?>:</p>
+								<div class="clear"></div>
+								<ul>
+                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player"><?php _e('Using YouTube with FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo"><?php _e('How to Use Vimeo with WordPress', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide"><?php _e('Serving Private Videos with Amazon S3', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/video-hosting/serving-private-cloudfront"><?php _e('Serving Private Videos via CloudFront', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/video-hosting/using-bunnycdn-with-fvplayer-pro"><?php _e('Using BunnyCDN with FV Player Pro', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/video-hosting/using-keycdn-with-fvplayer"><?php _e('Using KeyCDN With FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/video-hosting/hls"><?php _e('Using HLS With FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+								</ul>         
+                <p><?php _e('Ads', 'fv-wordpress-flowplayer'); ?>:</p>
+								<div class="clear"></div>                       
+                <ul>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/advertising-with-fv-flowplayer"><?php _e('Advertising Options with FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/using-preroll-postroll-ads"><?php _e('Custom Video Ads in FV Player (pre-roll and post-roll)', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/adding-popup-ads"><?php _e('Overlay Ads in FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/google-advertising-options"><?php _e('Google Video Advertising Options', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/incorporating-google-adsense"><?php _e('Incorporating Google Ads (AdSense)', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/setting-up-html-popups"><?php _e('Video Actions: HTML Pop-ups', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/ads/using-exoclick-ads"><?php _e('Using ExoClick Ads With FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                </ul>                
 							</div>
-							<div class="column">
-								<div class="icon32" id="icon-tools"><br></div>							
-								<p><?php _e('Troubleshooting', 'fv-wordpress-flowplayer'); ?>:</p>
+							<div class="column">					
+								<p><?php _e('Advanced', 'fv-wordpress-flowplayer'); ?>:</p>
 								<div class="clear"></div>
-								<ul>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/installation"><?php _e('Automated checks', 'fv-wordpress-flowplayer'); ?></a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding"><?php _e('Video encoding tips', 'fv-wordpress-flowplayer'); ?></a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding#flash-only"><?php _e('Video formats to avoid', 'fv-wordpress-flowplayer'); ?></a></li>		
-									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide/fix-amazon-mime-type"><?php _e('Fixing mime type on Amazon S3', 'fv-wordpress-flowplayer'); ?></a></li>		
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/faq"><?php _e('Plugin FAQ', 'fv-wordpress-flowplayer'); ?></a></li>									
-									<li><a target="_blank" href="http://foliovision.com/support/fv-wordpress-flowplayer/"><?php _e('Support forums', 'fv-wordpress-flowplayer'); ?></a></li>										
-								</ul>
+                <ul>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/how-player-widget"><?php _e('How to use FV Player Widget', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/video-custom-fields"><?php _e('Setting up Video Custom Fields', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/google-analytics-fv-player"><?php _e('Using Google Analytics with FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/ab-loop-function"><?php _e('AB Loop Function', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/subtitles"><?php _e('How to Create Subtitles', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/interactive-video-transcript"><?php _e('Interactive Video Transcript', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/custom-start-end-time"><?php _e('How to Use Custom Start/End Time', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/sticky-video"><?php _e('Sticky Video', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/css-tips-and-fixes"><?php _e('CSS Tips and Fixes', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/player-minify-plugins"><?php _e('Using FV Player with Minify Plugins', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/speed-buttons"><?php _e('How to Use the Speed Buttons', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/sub-domains-and-multi-domains"><?php _e('Using FV Player with Sub-domains and Multi-Domains', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/profile-videos"><?php _e('FV Player Profile Videos', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/video-downloading-with-simple-history"><?php _e('Video Downloading With Simple History Support', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/email-subscription-form-popups"><?php _e('Email Subscription Form Pop-ups', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/using-fv-player-with-amp"><?php _e('Using FV Player With AMP', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/api-programming"><?php _e('Programmer&#8217;s Guide', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/downgrading"><?php _e('FV WordPress Flowplayer Downgrading', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/changelog"><?php _e('Changelog', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/advanced/compatibility"><?php _e('Incompatible Plugins and Scripts', 'fv-wordpress-flowplayer'); ?></a></li>
+                </ul>
+                <p><?php _e('Securing Your Video', 'fv-wordpress-flowplayer'); ?>:</p>
+								<div class="clear"></div>
+                <ul class='children'>
+                	<li><a target="_blank" href="https://foliovision.com/player/securing-your-video/protecting-video-from-downloading"><?php _e('How to Protect Your Videos from Being Downloaded', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/securing-your-video/rtmp-streams"><?php _e('How to use RTMP streams with Flash', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/securing-your-video/hls-stream"><?php _e('How to setup encrypted HLS stream with Amazon Elastic Transcoder', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/securing-your-video/protecting-videos-with-drm-text"><?php _e('Protecting Videos With DRM Text', 'fv-wordpress-flowplayer'); ?></a></li>
+                </ul>
+                <p><?php _e('VAST/VPAID Ads', 'fv-wordpress-flowplayer'); ?>:</p>
+								<div class="clear"></div>
+                <ul>
+                	<li><a target="_blank" href="https://foliovision.com/player/vast/how-to-use-vast"><?php _e('How to Use FV Player VAST', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/vast/url-tags"><?php _e('Using URL Tags', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/vast/tester"><?php _e('VAST Tester', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/vast/tracking-vast-with-analytics"><?php _e('Tracking VAST and VPAID Ads With Google Analytics', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/vast/using-fv-vast-outside-wordpress"><?php _e('Using FV Player VAST Outside WordPress', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/vast/sample-vast-tags"><?php _e('List of Sample VAST/VPAID Ad Tags', 'fv-wordpress-flowplayer'); ?></a></li>
+                </ul>              
 							</div>
 							<div class="clear"></div>
-							<!--<p>
-							To embed video "example.mp4", simply include the following code inside any post or page: 
-							<code>[fvplayer src=example.mp4]</code>
-							</p>
-							<p>
-							<code>src</code> is the only compulsory parameter, specifying the video file. Its value can be either a full URL of the file, 
-							or just a filename (if it is located in the /videos/ directory in the root of the web).
-							</p>
-							<p>When user uploads are allowed, uploading or selecting video from WP Media Library is available. To insert selected video, simply use the 'Insert into Post' button.</p>
-							<h4>Optional parameters:</h4>
-							<ul style="text-align: left;">
-								<li><code><strong>width</strong></code> and <code><strong>height</strong></code> specify the dimensions of played video in pixels. If they are not set, the default size is 320x240.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' width=640 height=480]</code></li>
-								<li><code><strong>splash</strong></code> parameter can be used to display a custom splash image before the video starts. Just like in case of <code>src</code> 
-								parameter, its value can be either complete URL, or filename of an image located in /videos/ folder.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' splash=image.jpg]</code></li>
-								<li><code><strong>splashend</strong></code> parameter can be used to display a custom splash image after the video ends.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' splashend=show]</code></li>
-								<li><code><strong>autoplay</strong></code> parameter specify wheter the video should start to play automaticaly after the page is loaded. This parameter overrides the default autoplay setting above. Its value can be either true or false.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' autoplay=true]</code></li>
-								<li><code><strong>loop</strong></code> parameter specify wheter the video starts again from the beginning when the video ends. Its value can be either true or false.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' loop=true]</code></li>
-								<li><code><strong>popup</strong></code> parameter can be used to display any HTML code after the video finishes (ideal for advertisment or links to similar videos). 
-								Content you want to display must be between simple quotes (<code>''</code>).<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' popup='&lt;p&gt;some HTML content&lt;/p&gt;']</code></li>      			
-								<li><code><strong>redirect</strong></code> parameter can be used to redirect to another page (in a new tab) after the video ends.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' redirect='http://www.site.com']</code></li>
-							</ul>-->
 						</td>
 						<td></td>
 					</tr>
@@ -1590,6 +1636,7 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_hosting',   'hash' => 'tab_hosting',  	'name' => __('Hosting', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_actions',   'hash' => 'tab_actions',  	'name' => __('Actions', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_video_ads',	'hash' => 'tab_video_ads', 	'name' => __('Video Ads', 'fv-wordpress-flowplayer') ),
+  array('id' => 'fv_flowplayer_settings_tools',     'hash' => 'tab_tools',     	'name' => __('Tools', 'fv-wordpress-flowplayer') ),
   array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') ),
 );
 
@@ -1636,9 +1683,12 @@ if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_flowplayer_ads', __('Video Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_video_ads', 'fv_flowplayer_settings_video_ads', 'normal' );
 }
 
+/* Tools tab */
+add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
+add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal' );
+
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_help', 'normal' );
 
 ?>
 
