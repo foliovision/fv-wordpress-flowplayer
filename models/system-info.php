@@ -4,15 +4,27 @@ class FV_Player_System_Info {
 
   public function __construct() {
     add_action( 'admin_init', array($this, 'admin__add_meta_boxes') );
-    
-    if( !empty($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
-      add_action('admin_init', array( $this, 'csv_export' ) );
-    }
-
+    add_action('admin_init', array( $this, 'export' ) );
   }
 
-  public function admin__add_meta_boxes() {    
-    add_meta_box('fv_flowplayer_system_information', __('System Info', 'fv-wordpress-flowplayer'), array($this, 'settings_box'), 'fv_flowplayer_settings_help', 'normal');
+  public function admin__add_meta_boxes() {
+    add_meta_box('fv_flowplayer_system_information', __('System Info', 'fv-wordpress-flowplayer'), array($this, 'settings_box'), 'fv_flowplayer_settings_tools', 'normal');
+  }
+  
+  public function export() {
+    if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-system-info' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-system-info' ) ) {
+      ob_start();
+      $this->settings_box();
+      $html = ob_get_clean();
+      if( preg_match( '~<textarea.*?>([\s\S]*?)</textarea>~', $html, $match ) ) {
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=".sanitize_title( get_bloginfo('name').' FV Player debug info.txt' ) );
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        echo $match[1];
+        die();
+      }      
+    }
   }
   
   public function settings_box () {
@@ -34,7 +46,7 @@ class FV_Player_System_Info {
       $host = 'Pagely';
     }
     ?>
-<textarea readonly="readonly" onclick="this.focus();this.select()" id="system-info-textarea" title="<?php _e( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 'edd' ); ?>">
+<textarea readonly="readonly" rows="10" id="fv-player-system-info-textarea">
 ### Begin System Info ###
 
 ## Please include this information when posting support requests ##
@@ -46,19 +58,19 @@ HOME_URL:                 <?php echo home_url() . "\n"; ?>
 
 FV Player version:        <?php echo $fv_wp_flowplayer_ver . "\n"; ?>
 FV Player core version:   <?php echo $fv_wp_flowplayer_core_ver . "\n"; ?>
-FV Player license:        <?php $license = get_transient('fv_flowplayer_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid\n"; ?>
+FV Player license:        <?php $license = get_transient('fv_flowplayer_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv_flowplayer_license'))." GMT)\n"; ?>
 
 <?php if( isset($FV_Player_Pro) ) : ?>
 FV Player Pro version:    <?php if( isset($FV_Player_Pro->version) ) echo $FV_Player_Pro->version."\n"; ?>
-FV Player Pro license:    <?php $license = get_transient('fv-player-pro_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid\n"; ?>
+FV Player Pro license:    <?php $license = get_transient('fv-player-pro_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pro_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_VAST) ) : ?>
 FV Player VAST version:   <?php if( isset($FV_Player_VAST->version) ) echo $FV_Player_VAST->version."\n"; ?>
-FV Player VAST license:   <?php $license = get_transient('fv-player-vast_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid\n"; ?>
+FV Player VAST license:   <?php $license = get_transient('fv-player-vast_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-vast_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_PayPerView) ) : ?>
 FV Player PPV version:    <?php if( isset($FV_Player_PayPerView->version) ) echo $FV_Player_PayPerView->version."\n"; ?>
-FV Player PPV license:    <?php $license = get_transient('fv-player-pay-per-view_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid\n"; ?>
+FV Player PPV license:    <?php $license = get_transient('fv-player-pay-per-view_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pay-per-view_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_Video_Intelligence) ) : ?>
 FV Player vi version:     <?php if( isset($FV_Player_Video_Intelligence->version) ) echo $FV_Player_Video_Intelligence->version."\n"; echo "\n"; ?>
@@ -90,20 +102,8 @@ PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? "Yes" : "No\
 
 WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
 
-WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
-
-Session:                  <?php echo isset( $_SESSION ) ? 'Enabled' : 'Disabled'; ?><?php echo "\n"; ?>
-Session Name:             <?php echo esc_html( ini_get( 'session.name' ) ); ?><?php echo "\n"; ?>
-Cookie Path:              <?php echo esc_html( ini_get( 'session.cookie_path' ) ); ?><?php echo "\n"; ?>
-Save Path:                <?php echo esc_html( ini_get( 'session.save_path' ) ); ?><?php echo "\n"; ?>
-Use Cookies:              <?php echo ini_get( 'session.use_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
-Use Only Cookies:         <?php echo ini_get( 'session.use_only_cookies' ) ? 'On' : 'Off'; ?><?php echo "\n"; ?>
-
 DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
-FSOCKOPEN:                <?php echo ( function_exists( 'fsockopen' ) ) ? 'Your server supports fsockopen.' : 'Your server does not support fsockopen.'; ?><?php echo "\n"; ?>
 cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
-SOAP Client:              <?php echo ( class_exists( 'SoapClient' ) ) ? 'Your server has the SOAP Client enabled.' : 'Your server does not have the SOAP Client enabled.'; ?><?php echo "\n"; ?>
-SUHOSIN:                  <?php echo ( extension_loaded( 'suhosin' ) ) ? 'Your server has SUHOSIN installed.' : 'Your server does not have SUHOSIN installed.'; ?><?php echo "\n"; ?>
 
 ACTIVE PLUGINS:
 
@@ -151,11 +151,20 @@ $conf = get_option('fvwpflowplayer');
 foreach( $conf AS $k => $v ) {
   if( stripos($k,'nonce') !== false ) unset($conf[$k]);
 }
+unset($conf['_wp_http_referer']);
 
-if( isset($conf['amazon_key']) && count($conf['amazon_key']) > 0 ) $conf['amazon_key'] = '(redacted)';
-if( isset($conf['amazon_secret']) && count($conf['amazon_secret']) > 0 ) $conf['amazon_secret'] = '(redacted)';
+if( !empty($conf['key']) ) $conf['key'] = '(redacted)';
+if( !empty($conf['key7']) ) $conf['key7'] = '(redacted)';
+
+if( !empty($conf['googleanalytics']) ) $conf['googleanalytics'] = '(redacted)';
+
+if( isset($conf['amazon_key']) && count($conf['amazon_key']) > 0 ) $conf['amazon_key'] = '(redacted, '.count($conf['amazon_key']).')';
+if( isset($conf['amazon_secret']) && count($conf['amazon_secret']) > 0 ) $conf['amazon_secret'] = '(redacted, '. count($conf['amazon_secret']).')';
 
 if( isset($conf['pro']) ) {
+  if( !empty($conf['pro']['vimeo_at']) ) $conf['pro']['vimeo_at'] = '(redacted)';
+  if( !empty($conf['pro']['youtube_key']) ) $conf['pro']['youtube_key'] = '(redacted)';
+  
   if( !empty($conf['pro']['cf_key_id']) ) $conf['pro']['cf_key_id'] = '(redacted)';
   if( !empty($conf['pro']['cf_pk']) ) $conf['pro']['cf_pk'] = '(redacted)';
   
@@ -169,7 +178,8 @@ if( isset($conf['pro']) ) {
 }
 
 if( isset($conf['addon-video-intelligence']) && !empty($conf['addon-video-intelligence']['jwt']) ) {
-  $conf['addon-video-intelligence']['jwt'] = '(redacted)';
+  if( !empty($conf['addon-video-intelligence']['jwt']) ) $conf['addon-video-intelligence']['jwt'] = '(redacted)';
+  if( !empty($conf['addon-video-intelligence']['publisherId']) ) $conf['addon-video-intelligence']['publisherId'] = '(redacted)';
 }
 
 
@@ -192,8 +202,8 @@ foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos',
 
 ### End System Info ###
 </textarea>
+<a class="button" href="<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php _e('Export', 'fv-wordpress-flowplayer'); ?></a>
     <?php
-    die();
   }
 
 }

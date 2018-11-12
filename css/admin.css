@@ -142,3 +142,5 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 
 /* otherwise "Drag boxes here" appears when you hide a meta box initially and then you show it with JS */
 .metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }
+
+#fv-player-system-info-textarea { font-family: monospace; width: 100%; }
