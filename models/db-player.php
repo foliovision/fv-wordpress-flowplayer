@@ -490,6 +490,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if ($DB_Cache) {
       $this->DB_Instance = $DB_Cache;
+    } else {
+      global $FV_Player_Db;
+      $this->DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);

@@ -32,6 +32,8 @@ class FV_Player_Db {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
     add_filter('fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
     add_action('wp_head', array($this, 'cache_players_and_videos' ));
+    
+    add_action('save_post', array($this, 'store_post_ids' ));
 
     add_action( 'wp_ajax_fv_player_db_load', array($this, 'return_shortcode_db_data') );
     add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
@@ -1414,6 +1416,80 @@ class FV_Player_Db {
 
     header('Content-Type: application/json');
     die(json_encode($json_data));
+  }
+  
+  /**
+   * Runs on save_post hook and it stored the post ID in player meta. It also checks any player meta which is pointing to this post and if it's no longer found in it the meta is removed.
+   *
+   * @param int $post_id        Populated by WordPress, the post ID
+   */  
+  public function store_post_ids( $post_id ) {
+    if ( wp_is_post_revision( $post_id ) ) return;
+    
+    $post = get_post($post_id);
+    
+    $matches = array();
+    if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', $post->post_content, $matches1 ) ) {
+      $matches = array_merge( $matches, $matches1[1] );
+    }
+    
+    if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
+      $matches = array_merge( $matches, $matches2[1] );
+    }
+    
+    if( $matches ) {
+      
+      $ids = array();
+      foreach( $matches AS $match ) {
+        foreach( explode(',',$match) AS $match_match ) {
+          $ids[] = $match_match;
+        }
+      }
+      
+      $ids = array_unique($ids);
+      foreach( $ids AS $player_id ) {
+        
+        $player = new FV_Player_Db_Player($player_id);
+        if( $player->getIsValid() ) {
+          
+          $add = true;
+          $metas = $player->getMetaData();
+          if( count($metas) ) {
+            foreach( $metas as $meta_object ) {
+              if( $meta_object->getMetaKey() == 'post_id' ) {
+                if( $meta_object->getMetaValue() == $post_id ) {
+                  $add = false;
+                }
+              }
+            }
+          }
+          
+          if( $add ) {
+            $meta = new FV_Player_Db_Player_Meta(null, array(
+              'id_player' => $player_id,
+              'meta_key' => 'post_id',
+              'meta_value' => $post_id
+            ) );
+
+            $meta->save();
+          }
+        }
+
+      }
+      
+      global $wpdb;
+      $remove = $wpdb->get_results( "SELECT * FROM ".FV_Player_Db_Player_Meta::init_db_name()." WHERE meta_key = 'post_id' AND meta_value = '{$post_id}' ");
+      if( $remove ) {
+        foreach( $remove AS $removal ) {
+          if( !in_array($removal->id_player,$ids) ) {
+            $d_meta = new FV_Player_Db_Player_Meta($removal->id);
+            $d_meta->link2db( $removal->id );
+            $d_meta->delete();
+          }
+        }
+      }
+      
+    }
   }
 
 }

@@ -141,6 +141,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if ($DB_Cache) {
       $this->DB_Instance = $DB_Cache;
+    } else {
+      global $FV_Player_Db;
+      $this->DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);
@@ -264,8 +267,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single player meta data record
-          $meta_data = $wpdb->get_row( $wpdb->query( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . $id ) );
-
+          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . $id );
+          
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
           // for cache-filling purposes

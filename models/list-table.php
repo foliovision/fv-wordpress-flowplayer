@@ -123,6 +123,7 @@ class FV_Player_List_Table extends WP_List_Table {
       'date_created' => __( 'Date', 'fv-wordpress-flowplayer' ),
       //'author'       => __( 'Author', 'fv-wordpress-flowplayer' ),
 			'thumbs'       => __( 'Videos', 'fv-wordpress-flowplayer' ),
+      'embeds'       => __( 'Embedded on', 'fv-wordpress-flowplayer' ),
       'shortcode'    => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
       'shortcode-copy'    => '',
 		);
@@ -184,6 +185,20 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
         $value .= "</div>";
         break;
+      case 'embeds':        
+        $player = new FV_Player_Db_Player($id);
+        $value = '';
+        if( $player->getIsValid() ) {
+          if( $posts = $player->getMetaValue('post_id') ) {
+            foreach( $posts AS $post ) {
+              $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.get_the_title($post).'</a></li>';
+            }
+          }
+        }
+        
+        if( $value ) $value = '<ul>'.$value.'</ul>';
+        
+        break;        
       case 'shortcode':        
         $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
         break;
