@@ -97,14 +97,14 @@ class FV_Player_Db_Player_Meta {
     if (is_admin() || !$fv_fp->_get_option('player_meta_model_db_checked')) {
       if ( $fv_fp->_get_option('player_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
         $sql = "
-CREATE TABLE `" . self::$db_table_name . "` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_player` int(10) UNSIGNED NOT NULL,
-  `meta_key` varchar(255) NOT NULL,
-  `meta_value` longtext NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_player` (`id_player`),
-  KEY `meta_key` (`meta_key`(191))
+CREATE TABLE " . self::$db_table_name . " (
+  id bigint(20) unsigned NOT NULL auto_increment,
+  id_player bigint(20) unsigned NOT NULL default '0',
+  meta_key varchar(255) NOT NULL,
+  meta_value longtext NOT NULL,
+  PRIMARY KEY  (id),
+  KEY id_player (id_player),
+  KEY meta_key (meta_key(191))
 )" . $wpdb->get_charset_collate() . ";";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $sql );
