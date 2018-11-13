@@ -83,13 +83,13 @@ Active Theme:             <?php echo $theme . "\n"; ?>
 Host:                     <?php echo $host . "\n"; ?>
 <?php endif; ?>
 
-Browser:                  <?php echo $_SERVER['HTTP_USER_AGENT']; ?>
+Browser:                  <?php echo isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none'; ?>
 
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
 MySQL Version:            <?php $connection = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME); echo mysqli_get_server_info($connection) . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 
-WordPress Memory Limit:   <?php echo ( edd_let_to_num( WP_MEMORY_LIMIT )/( 1024 ) )."MB"; ?><?php echo "\n"; ?>
+WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT."\n"; ?>
 PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
 PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
 PHP Upload Max Size:      <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
