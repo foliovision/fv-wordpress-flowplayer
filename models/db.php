@@ -129,6 +129,10 @@ class FV_Player_Db {
         }
       }
       
+      if( $id = $vid_obj->getId() ) {
+        $aItem['id'] = $id;
+      }
+      
       if( $start = $vid_obj->getStart() ) {
         $aItem['fv_start'] = $start;
       }
