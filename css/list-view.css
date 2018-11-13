@@ -1,6 +1,7 @@
 #id { width: 6em }
 #player_name { width: 20em }
-#date_created {width: 12em}
+#date_created { width: 8em }
+#shortcode-copy { width: 3em }
 
 .fv_player_splash_list_preview { height: 72px; margin: 0 5px 2px 0; display: inline; float: left; position: relative; cursor: pointer}
 .fv_player_splash_list_preview img { height: 72px; width: auto }
@@ -12,5 +13,10 @@
 
 .fv-player-remove, .fv-player-remove:hover, .fv-player-remove-confirm, .fv-player-remove-confirm:hover {color: #ff0000}
 
+td.column-shortcode { padding-right: 0 }
 .column-shortcode { width: 10em }
 .column-shortcode input { width: 100% }
+
+.shortcode-copy a.button {
+  padding: 0 5px 1px;
+}

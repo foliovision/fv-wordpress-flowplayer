@@ -124,6 +124,7 @@ class FV_Player_List_Table extends WP_List_Table {
       //'author'       => __( 'Author', 'fv-wordpress-flowplayer' ),
 			'thumbs'       => __( 'Videos', 'fv-wordpress-flowplayer' ),
       'shortcode'    => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
+      'shortcode-copy'    => '',
 		);
 	}
   
@@ -184,7 +185,10 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "</div>";
         break;
       case 'shortcode':        
-        $value = '<input type="text" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
+        $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
+        break;
+      case 'shortcode-copy':        
+        $value = '<a href="#" class="button fv-player-shortcode-copy">Copy</a>';
         break;
 			default:
 				$value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';

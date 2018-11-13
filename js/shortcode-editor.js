@@ -2230,8 +2230,7 @@ function fv_wp_flowplayer_big_loader_close() {
 
 
 
-function fv_wp_flowplayer_copy_to_clipboard() {
-  jQuery('#fv_player_copy_to_clipboard').get(0).select();
+function fv_wp_flowplayer_copy_to_clipboard() {  
 
   fv_player_clipboard(jQuery('#fv_player_copy_to_clipboard').val(), function() {
     jQuery('#fv_player_copied_to_clipboard_message')
@@ -3435,6 +3434,19 @@ jQuery( function($) {
     new_wrapper.insertAfter( $('[data-key='+wrapper.data('key')+']:last') );  //  insert after last of the kind
     $(this).hide();
 
+    return false;
+  });
+  
+  $(document).on( 'click', '.fv-player-shortcode-copy', function(e) {
+    var button = $(this);
+    fv_player_clipboard( $(this).parents('tr').find('.fv-player-shortcode-input').val(), function() {
+      button.html('Ok!');
+      setTimeout( function() {
+        button.html('Copy');
+      }, 1000 );
+    }, function() {
+      button.html('Error');
+    } );
     return false;
   });
 
