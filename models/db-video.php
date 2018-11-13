@@ -194,30 +194,28 @@ class FV_Player_Db_Video {
 
     self::init_db_name();
 
-    if (is_admin() || !$fv_fp->_get_option('video_model_db_checked')) {
-      if ( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
-        $sql = "
-  CREATE TABLE " . self::$db_table_name . " (
-    id bigint(20) unsigned NOT NULL auto_increment,
-    src varchar(1024) NOT NULL,
-    src1 varchar(1024) NOT NULL,
-    src2 varchar(1024) NOT NULL,
-    splash varchar(1024) NOT NULL,
-    splash_text varchar(1024) NOT NULL,
-    caption varchar(1024) NOT NULL,
-    end varchar(1024) NOT NULL,
-    mobile varchar(1024) NOT NULL,
-    rtmp varchar(1024) NOT NULL,
-    rtmp_path varchar(1024) NOT NULL,
-    start varchar(1024) NOT NULL,
-    PRIMARY KEY  (id),
-    KEY src (src(191)),
-    KEY caption (caption(191))
-  )" . $wpdb->get_charset_collate() . ";";
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta( $sql );
-        $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
-      }
+    if( is_admin() || !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
+      $sql = "
+CREATE TABLE " . self::$db_table_name . " (
+  id bigint(20) unsigned NOT NULL auto_increment,
+  src varchar(1024) NOT NULL,
+  src1 varchar(1024) NOT NULL,
+  src2 varchar(1024) NOT NULL,
+  splash varchar(1024) NOT NULL,
+  splash_text varchar(1024) NOT NULL,
+  caption varchar(1024) NOT NULL,
+  end varchar(1024) NOT NULL,
+  mobile varchar(1024) NOT NULL,
+  rtmp varchar(1024) NOT NULL,
+  rtmp_path varchar(1024) NOT NULL,
+  start varchar(1024) NOT NULL,
+  PRIMARY KEY  (id),
+  KEY src (src(191)),
+  KEY caption (caption(191))
+)" . $wpdb->get_charset_collate() . ";";
+      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+      dbDelta( $sql );
+      $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
     }
   }
 

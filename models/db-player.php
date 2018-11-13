@@ -379,9 +379,8 @@ class FV_Player_Db_Player {
 
     self::init_db_name();
 
-    if (is_admin() || !$fv_fp->_get_option('player_model_db_checked')) {
-      if ( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
-        $sql = "
+    if( is_admin() || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+      $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
   player_name varchar(255) NOT NULL,
@@ -422,10 +421,9 @@ CREATE TABLE " . self::$db_table_name . " (
   width varchar(7) NOT NULL,
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta( $sql );
-        $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
-      }
+      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+      dbDelta( $sql );
+      $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
     }
   }
 
