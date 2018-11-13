@@ -25,7 +25,7 @@ class FV_Player_Db {
     $video_atts_cache = array(),
     $video_meta_cache = array(),
     $players_cache = array(),
-    $player_atts_cache = array(),
+    //$player_atts_cache = array(),
     $player_meta_cache = array();
 
   public function __construct() {
@@ -493,9 +493,9 @@ class FV_Player_Db {
         $is_multi_playlist = (strpos($atts['id'], ',') !== false);
         $real_id = ($is_multi_playlist ? substr($atts['id'], 0, strpos($atts['id'], ',')) : $atts['id']);
 
-        if ( isset( $this->player_atts_cache[ $real_id ]) && empty($atts['sort']) ) {
-          return $this->player_atts_cache[ $real_id ];
-        }
+        //if ( isset( $this->player_atts_cache[ $real_id ]) && empty($atts['sort']) ) {
+          //return $this->player_atts_cache[ $real_id ];
+        //}
 
         if ($this->isPlayerCached($real_id)) {
           $player = $this->getPlayersCache();
@@ -663,7 +663,7 @@ class FV_Player_Db {
 
         }
         
-        $this->player_atts_cache[ $real_id ] = $atts;
+        //$this->player_atts_cache[ $real_id ] = $atts;
         
       } else {
         // when ID is not numeric, it's most probably a preview that we need to build
