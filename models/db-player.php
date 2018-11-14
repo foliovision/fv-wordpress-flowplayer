@@ -656,7 +656,7 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->is_valid = false;
       }
     } else {
-      throw new \Exception('No options nor a valid ID was provided for DB player instance.');
+      throw new Exception('No options nor a valid ID was provided for DB player instance.');
     }
 
     // update cache, if changed

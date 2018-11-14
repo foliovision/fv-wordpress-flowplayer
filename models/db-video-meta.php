@@ -373,7 +373,7 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->is_valid = false;
       }
     } else {
-      throw new \Exception('No options nor a valid ID was provided for DB video meta data item.');
+      throw new Exception('No options nor a valid ID was provided for DB video meta data item.');
     }
 
     // update cache, if changed

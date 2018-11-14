@@ -376,7 +376,7 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->is_valid = true;
       }
     } else {
-      throw new \Exception('No options nor a valid ID was provided for DB video instance.');
+      throw new Exception('No options nor a valid ID was provided for DB video instance.');
     }
 
     // update cache, if changed
