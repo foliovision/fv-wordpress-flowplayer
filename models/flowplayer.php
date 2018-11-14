@@ -494,6 +494,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$conf ) { // new install, hide some of the notices
       $conf['nag_fv_player_7'] = true;
       $conf['notice_new_lightbox'] = true;
+      $conf['notice_db'] = true;
     } 
         
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
