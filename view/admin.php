@@ -632,8 +632,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>-->
 
-          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Use database', 'fv-wordpress-flowplayer').' (beta)', 'new_shortcode', __('FV Player configuration will no longer be stored in shortcode but in database tables', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>          
 
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>

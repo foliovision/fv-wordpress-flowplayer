@@ -540,11 +540,7 @@ function fv_wp_flowplayer_init() {
   fv_player_shortcode_preview = false;
   fv_player_shortcode_editor_last_url = false;
 
-  if (!fv_player_db_editor) {
-    jQuery('#fv_wp_flowplayer_field_player_name').hide();
-  } else {
-    jQuery('#fv_wp_flowplayer_field_player_name').show();
-  }
+  jQuery('#fv_wp_flowplayer_field_player_name').show();
 
   jQuery('#player_id_top_text').html('');
 
@@ -860,18 +856,8 @@ function fv_flowplayer_editor_item_show( new_index ) {
     $('.fv_wp_flowplayer_field_rtmp',video_tab).val($('.fv_wp_flowplayer_field_rtmp',$('.fv-player-tab-video-files table').eq(0)).val());
     $('.fv_wp_flowplayer_field_rtmp',video_tab).attr('readonly',true);
   }
-   
   
-  
-  
-  /*
-   * temporary untill we fix multilang subs for playlist
-   */
-  if( !fv_player_db_editor && new_index > 1){
-    $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').hide();
-  }else{
-    $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').attr('style',false);
-  }
+  $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').attr('style',false);
 
   fv_player_refresh_tabs();
 
@@ -1534,12 +1520,6 @@ function fv_wp_flowplayer_edit() {
       if( sad_skip != null && sad_skip[1] != null && sad_skip[1] == 'yes' )
         document.getElementById("fv_wp_flowplayer_field_ad_skip").checked = 1;
 
-      // classic shortcode being used instead of DB ones
-      if (!fv_player_db_editor) {
-        if (slive != null && slive[1] != null && slive[1] == 'true')
-          document.getElementById("fv_wp_flowplayer_field_live").checked = 1;
-      }
-
       if( sspeed != null && sspeed[1] != null ) {
         if (sspeed[1] == 'buttons')
           document.getElementById("fv_wp_flowplayer_field_speed").selectedIndex = 1;
@@ -1656,14 +1636,11 @@ function fv_wp_flowplayer_edit() {
 
       //???
       jQuery('#cboxContent').css('background','white');
-
-      // do this only with new DB-based shortcodes
-      if (fv_player_db_editor) {
-        if (slive != null && slive[1] != null && slive[1] == 'true') {
-          jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
-            this.checked = 1;
-          });
-        }
+      
+      if (slive != null && slive[1] != null && slive[1] == 'true') {
+        jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
+          this.checked = 1;
+        });
       }
 
 
@@ -2402,7 +2379,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     previewHeight = null;
 
   // if we're using the new DB-related shortcode, let's handle it here
-  if (fv_player_db_editor) {
+  if (1) {
 	  var ajax_data = fv_wp_flowplayer_build_ajax_data();
 
 	  if (preview) {
