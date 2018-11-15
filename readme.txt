@@ -357,6 +357,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.0.727 - 2018/11/15 =
+
+* New feature - new FV Player instances are now saved into database - no longer using WordPress shortcode format to store all the information
+* New feature - adding System info into FV Player setting screen for easier debugging
+* Reliability - detecting that the video has stalled in Safari and on iOS
+* Lightbox - autoplay fix for bar MP4 links
+* Popups - option to show on pause
+* Removing html5.js recommendation from Check template function.
+
 = 7.2.8.727 - 2018/10/22 =
 
 * Performance fixes - loading SVGs and window resize hooks
