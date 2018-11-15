@@ -137,3 +137,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 #wpfp_options .minicolors-input {padding-left:5px; height:auto}
 #wpfp_options .minicolors-input-swatch {display:none}
 #wpfp_options input[data-opacity] { background-image: url(checkered.png) }
+
+.fv-player-editor-wrapper { float: left }
+
+/* otherwise "Drag boxes here" appears when you hide a meta box initially and then you show it with JS */
+.metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }
+
+#fv-player-system-info-textarea { font-family: monospace; width: 100%; }

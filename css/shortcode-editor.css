@@ -39,6 +39,7 @@
 
 .fv-player-shortcode-editor-left{ width:40%; }
 .fv-player-shortcode-editor-right{ width:60%; }
+#fv-player-shortcode-editor #fv_wp_flowplayer_field_player_name { width: 88% }
 .fv-player-tab{position:relative;}
 .fv-player-tabs #fv-player-list-thumb-toggle{ position:absolute;right:10px;text-align:right;top:9px; }
 #fv-player-list-thumb-toggle a{ text-decoration:none;margin-left:6px;color:#b4b9be; }
@@ -76,6 +77,9 @@
 #fv-player-list-thumb-toggle > a{ box-shadow:none; }
 #fv-player-shortcode-editor td > input[type="checkbox"]{margin-top:-4px}
 
+#fv-player-shortcode-editor-loading-spinner {background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white; background-repeat: no-repeat; background-position: center; position:absolute; z-index: 2; height: 100%; width: 100%;}
+#fv-player-shortcode-editor-loading-spinner.loaded {background: white}
+
 /*Preview iframe*/
 #fv-player-shortcode-editor-preview{ width: 460px;position:relative; }
 #fv-player-shortcode-editor-preview div.fv-player-shortcode-editor-helper {display:none;}
@@ -85,7 +89,9 @@
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-target,
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-target{display:none}
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-iframe-refresh{display:none!important}
-#fv-player-shortcode-editor-preview-spinner{background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center; position:absolute; z-index: 2; height: 200px; width: 100%;}
+#fv-player-shortcode-editor-preview-spinner, .fv-player-shortcode-editor-small-spinner {background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center}
+#fv-player-shortcode-editor-preview-spinner{position:absolute; z-index: 2; height: 200px; width: 100%;}
+.fv-player-shortcode-editor-small-spinner {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
 .fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
 #fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}
@@ -146,6 +152,10 @@ a #add-format, a #add-rtmp {
 	padding: 4px 2px;
 }
 
+#fv_player_copy_to_clipboard, #fv_player_import_data {width: 80%}
+#fv_player_copied_to_clipboard_message, #fv_player_imported_message {margin: 22px auto 0 auto; visibility: hidden; width: 20%; text-align: center}
+
 #fv-player-shortcode-editor-editor ::placeholder {
   opacity:.5;
 }
+

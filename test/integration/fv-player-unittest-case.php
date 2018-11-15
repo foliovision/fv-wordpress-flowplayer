@@ -43,6 +43,8 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     // splash end
     $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
     
+    $html = preg_replace( '~\?ver=[0-9\.]+~', '?ver=1.2.3', $html);
+    
     return $html;
   }
 

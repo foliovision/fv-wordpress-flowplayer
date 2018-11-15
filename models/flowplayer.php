@@ -494,6 +494,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$conf ) { // new install, hide some of the notices
       $conf['nag_fv_player_7'] = true;
       $conf['notice_new_lightbox'] = true;
+      $conf['notice_db'] = true;
     } 
         
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
@@ -650,7 +651,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   public function _set_conf( $aNewOptions = false ) {
     if( !$aNewOptions ) $aNewOptions = $_POST;
-    $sKey = $aNewOptions['key'];
+    $sKey = !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
     $sKey7 = !empty($aNewOptions['key7']) ? trim($aNewOptions['key7']) : false;
     
     //  make sure the preset Skin properties are not over-written
@@ -695,7 +696,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
     
-    $aNewOptions['key'] = trim($sKey);
+    if( $sKey ) $aNewOptions['key'] = trim($sKey);
     if( $sKey7 ) $aNewOptions['key7'] = $sKey7;
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
@@ -733,6 +734,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     return true;  
   }
+
+  public function _set_option($key, $value) {
+    $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
+    $aNewOptions = array_merge($aOldOptions,array($key => $value));
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
+    update_option( 'fvwpflowplayer', $aNewOptions );
+    $this->_get_conf();
+  }
+
   /**
    * Salt function - returns pseudorandom string hash.
    * @return Pseudorandom string hash.
@@ -751,23 +761,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
-  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ){
-    
+  private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ) {
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
     if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
     
     $sHTML = "\t\t<a href='#' onclick='return false' data-item='".$this->json_encode($aPlayer)."'>";
     if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
+        
+    $sDuration = false;    
+    if ($this->current_video()) {
+      $sDuration = $this->current_video()->getDuration();
+    }
+    
+    global $post;
+    if( !$sDuration && $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
+      $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] );
+    }   
     
     if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
     
-    global $post;
-    if( $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
-      if( $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] ) ) {
-        $sItemCaption .= '<i class="dur">'.$sDuration.'</i>';
-      } 
-    }   
+    if( $sDuration ) {
+      $sItemCaption .= '<i class="dur">'.$sDuration.'</i>';
+    }
     
     if( $sItemCaption ) {
       $sHTML .= "<h4>".$sItemCaption."</h4>";
@@ -788,7 +804,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
       $replace_from = array('&amp;','\;', '\,');        
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');        
-      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );      
+      $sShortcode = str_replace( $replace_from, $replace_to, $sShortcode );
       $sItems = explode( ';', $sShortcode );
 
       if( $sCaption ) {
@@ -834,13 +850,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
         } else {
           $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) );
-        }        
+        }
       }
       
-      $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
-      $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
-      
-      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;      
       
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
       
@@ -851,6 +864,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       $aPlayer = array( 'sources' => $aItem );      
       if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
+            
+      $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, 0, $aArgs );
+      
+      if ($this->current_video()) {
+        if( !$splash_img ) $splash_img = $this->current_video()->getSplash();            
+        if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
+      }
+      
+      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -860,6 +883,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = array();
       
       if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
+        
         $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
       }else{
         $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
@@ -869,6 +893,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         foreach( $sItems AS $iKey => $sItem ) {
           
           if( !$sItem ) continue;
+          
+          $index = $iKey + 1;
           
           $aPlaylist_item = explode( ',', $sItem );
         
@@ -903,23 +929,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               $aItem[] = array( 'src' => $media_url, 'type' => $this->get_mime_type($media_url) ); 
             }                
             
-          }
-          
-          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+          }          
 
           $aPlayer = array( 'sources' => $aItem );      
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
-      
-          $aPlaylistItems[] = $aPlayer;
-          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
-          $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
+          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;                    
           
           if( !$sSplashImage && $this->_get_option('splash') ) {
             $sSplashImage = $this->_get_option('splash');
           }
           
-          $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $iKey + 1 );
+          $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, $index, $aArgs );
+          
+          if ($this->current_video()) {
+            if( !$sSplashImage ) $sSplashImage = $this->current_video()->getSplash();            
+            if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
+          }
+          
+          $aPlaylistItems[] = $aPlayer;
+          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+          $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
+          
+          $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {
             $aSplashScreens[] = $sSplashImage;  
           } 
@@ -1928,7 +1960,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 <body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
-    if( !is_user_logged_in() || !current_user_can('manage_options') || !wp_verify_nonce( get_query_var('fv_player_embed'),"fv-player-preview-".get_current_user_id() ) ){
+    if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( get_query_var('fv_player_embed'),"fv-player-preview-".get_current_user_id() ) ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
       <div style="background:white;">
         <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
@@ -1938,28 +1970,64 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <?php
       die();
     }
-    $shortcode = base64_decode($_GET['fv_player_preview']);
+    $dataInPost = ($_GET['fv_player_preview'] === 'POST');
+    $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
     $matches = null;
     $width ='';
     $height ='';
-    if(preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
+
+    // width from regular shortcdode data
+    if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
       $width = 'width:'.$matches[1].'px;';
     }
-    if(preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
+
+    // width from DB shortcdode data
+    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])){
+      $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
+    }
+
+    // height from regular shortcdode data
+    if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
       $height = 'min-height:'.$matches[1].'px;';
     }
-    
+
+    // height from DB shortcdode data
+    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])){
+      $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
+    }
+
     ?> 
     <div style="background:white;">
       <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
         <?php
-        if(preg_match('/\[fvplayer.*?[^\\\]\]/i',$shortcode,$match)) {
-          global $fv_fp;
-          $aAtts = shortcode_parse_atts($match[0]);
-          if( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
+        // regular shortcode data with source
+        global $fv_fp;
+        if (!$dataInPost && preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+          $aAtts = shortcode_parse_atts($shortcode);
+          if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
           }
-          echo do_shortcode($match[0]);          
+          echo do_shortcode($shortcode);          
+        } else if ($dataInPost) {
+          // DB-based shortcode data
+          if (
+            !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
+            $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
+            $fv_fp->_get_option('liststyle') == 'vertical'
+          ) {
+            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+          }
+
+          // note: we need to put "src" into the code or it won't get parsed at all
+          //       and at the same time, it displays the correct SRC in the preview
+          if( count($shortcode['videos']) > 0 ) {
+            $tmp = array_reverse($shortcode['videos']);
+            $item = array_pop($tmp);
+            $src = $item['fv_wp_flowplayer_field_src'];            
+          } else {
+            $src = 'none';
+          }
+          echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
         } else { ?>
           <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
           <?php

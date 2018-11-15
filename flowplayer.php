@@ -26,6 +26,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+global $fv_wp_flowplayer_ver;
 $fv_wp_flowplayer_ver = '7.2.8.727';
 $fv_wp_flowplayer_core_ver = '7.2.7.1';
 
@@ -60,6 +61,17 @@ include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
+include_once(dirname( __FILE__ ) . '/models/db-player.php');
+include_once(dirname( __FILE__ ) . '/models/db-video.php');
+include_once(dirname( __FILE__ ) . '/models/db-video-meta.php');
+include_once(dirname( __FILE__ ) . '/models/db-player-meta.php');
+include_once(dirname( __FILE__ ) . '/models/db.php');
+
+global $FV_Player_Db;
+$FV_Player_Db = new FV_Player_Db();
+
+include_once(dirname( __FILE__ ) . '/models/list-table.php');
+
 include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
 
 global $fv_fp;
@@ -73,6 +85,7 @@ if( is_admin() ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
+  include_once(dirname( __FILE__ ) . '/models/system-info.php');
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 
 } 

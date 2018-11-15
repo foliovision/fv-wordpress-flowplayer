@@ -139,6 +139,14 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
     [script_dash_js_version] => 2.7
+    [hlsjs] => Array
+        (
+            [startLevel] => -1
+            [fragLoadingMaxRetry] => 3
+            [levelLoadingMaxRetry] => 3
+            [capLevelToPlayerSize] => 1
+        )
+
 )
 
 Localizing flowplayer with fv_flowplayer_translations = Array

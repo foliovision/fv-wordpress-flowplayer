@@ -41,18 +41,55 @@ class flowplayer_frontend extends flowplayer
   var $sHTMLAfter = false;
   
   var $count_tabs = 0;
-  
+
+  var $currentPlayerObject = null;
+
+  var $currentVideoObject = null;
+
+
+  /**
+   * Retrieves instance of current player
+   * with data loaded from database.
+   *
+   * @return FV_Player_Db_Player | null
+   */
+  function current_player() {
+    return $this->currentPlayerObject;
+  }
+
+  /**
+   * Retrieves instance of current video
+   * with data loaded from database.
+   *
+   * @return FV_Player_Db_Video | null
+   */
+  function current_video() {
+    return $this->currentVideoObject;
+  }
 
   /**
    * Builds the HTML and JS code of single flowplayer instance on a page/post.
+   *
    * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
    * @param array $args Array of arguments (name => value).
-   * @return Returns array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
+   *
+   * @return array array with 2 elements - 'html' => html code displayed anywhere on page/post, 'script' => javascript code displayed before </body> tag
+   * @throws Exception If any of the underlying classes throws an exception.
    */
   function build_min_player($media,$args = array()) {
 
     $this->hash = md5($media.$this->_salt()); //  unique player id
+    // todo: harmonize this, the media arg was a bad idea in the first place
+    if( !empty($media) && $media != $this->aCurArgs['src'] ) {
+      $this->aCurArgs['src'] = $media;
+    }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
+    $media = $this->aCurArgs['src'];
+
+    if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
+      return;
+    }
+
     $this->sHTMLAfter = false;
     $player_type = 'video';
     $rtmp = false;
@@ -80,8 +117,8 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);    
             
     $src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
-    $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;  
-    
+    $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;
+
     $splash_img = $this->get_splash();
 
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
@@ -179,7 +216,21 @@ class flowplayer_frontend extends flowplayer
       return $res;
     }  
     
-    
+
+    /*
+     * Playlist Start Position Splash Screen
+     */
+    global $fv_fp;
+
+    if (isset($this->aCurArgs['playlist_start']) && $fv_fp && method_exists($fv_fp, 'current_player') && $fv_fp->current_player() && $fv_fp->current_player()->getVideos()) {
+      foreach ($fv_fp->current_player()->getVideos() as $video_index => $video) {
+        if ($video_index + 1 == $this->aCurArgs['playlist_start']) {
+          $splash_img = $video->getSplash();
+          break;
+        }
+      }
+    }
+
     /*
      *  Video player tabs
      */
@@ -196,7 +247,7 @@ class flowplayer_frontend extends flowplayer
     if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
       $autoplay = true;
     }  
-    if( isset($this->aCurArgs['autoplay']) && $this->aCurArgs['autoplay'] == 'true') {
+    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = true;
     }
 
@@ -207,7 +258,7 @@ class flowplayer_frontend extends flowplayer
     if( $this->_get_option('sticky') && $this->aCurArgs['sticky'] != 'false'  ) {
       $sticky = true;
     }  
-    if( isset($this->aCurArgs['sticky']) && $this->aCurArgs['sticky'] == 'true') {
+    if( isset($this->aCurArgs['sticky']) && ($this->aCurArgs['sticky'] == 'true' || $this->aCurArgs['sticky'] == 'on')) {
       $sticky = true;
     }    
     
@@ -311,9 +362,13 @@ class flowplayer_frontend extends flowplayer
         
         $aSubtitles = $this->get_subtitles();
       
-        $show_splashend = false;
-        if (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {      
-          $show_splashend = true;
+        if(
+          // new, DB playlist code
+          (!empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'splashend')
+        ||
+          // compatibility fallback for classic (non-DB) shortcode
+          (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash']))
+        ) {
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
   
@@ -394,15 +449,15 @@ class flowplayer_frontend extends flowplayer
         if( $this->_get_option('engine') || $this->aCurArgs['engine'] == 'flash' ) {
           $attributes['data-engine'] = 'flash';
         }
-        
+
         if( $this->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
-          if( $this->aCurArgs['embed'] == 'false' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
-            
+          if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+
           } else {
             $attributes['data-fv-embed'] = $this->get_embed_url();
           }
         } else {
-          if( $this->aCurArgs['embed'] == 'false' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+          if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
             $attributes['data-embed'] = 'false';
           } 
         }
@@ -493,26 +548,35 @@ class flowplayer_frontend extends flowplayer
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
-        
-        if( !empty($this->aCurArgs['redirect']) ) {
+        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' ) {
+          $attributes['data-fv_redirect'] = trim($this->aCurArgs['end_action_value']);
+        } else if( !empty($this->aCurArgs['redirect']) ) {
+          // compatibility fallback for classic (non-DB) shortcode
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
-        
-        if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+
+        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
+          $attributes['data-fv_loop'] = true;
+        } else if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
+          // compatibility fallback for classic (non-DB) shortcode
           $attributes['data-fv_loop'] = true;
         }
         
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
         }
-        
+
+        if( isset($this->aCurArgs['playlist_start']) ) {
+          $attributes['data-playlist_start'] = $this->aCurArgs['playlist_start'];
+        }
+
         if( $this->_get_option('ad_show_after') ) {
           $attributes['data-ad_show_after'] = $this->_get_option('ad_show_after');
         }
         if( count($aPlaylistItems) ) {
-          if( isset($this->aCurArgs['playlist_advance']) && $this->aCurArgs['playlist_advance'] === 'false' ){
+          if( isset($this->aCurArgs['playlist_advance']) && ($this->aCurArgs['playlist_advance'] === 'false' || $this->aCurArgs['playlist_advance'] === 'off') ){
             $attributes['data-advance'] = 'false';
-          }elseif(empty($this->aCurArgs['playlist_advance']) ) {
+          } elseif (empty($this->aCurArgs['playlist_advance']) ) {
             if( $this->_get_option('playlist_advance') ) {
               $attributes['data-advance'] = 'false';
             }
@@ -528,7 +592,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
-        
+
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
           $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>'."\n";
@@ -542,6 +606,7 @@ class flowplayer_frontend extends flowplayer
         if( $popup_contents = $this->get_popup_code() ) {
           $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;  
         }
+
         if( $ad_contents = $this->get_ad_code() ) {
           $this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
         }
@@ -733,7 +798,21 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_popup_code() {
-    if (!empty($this->aCurArgs['popup'])) {
+    if ( isset($this->aCurArgs['id']) && !isset($this->aCurArgs['end_actions'])) {
+      return;
+    }
+
+    // static and e-mail popups share the same parameter in old non-DB shortcode
+    $is_static_popup = (!empty($this->aCurArgs['popup']) || !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'popup');
+    $is_email_popup = (!empty($this->aCurArgs['popup']) || !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'email_list');
+
+    if( !empty($this->aCurArgs['end_actions']) && ($is_static_popup || $is_email_popup) ) {
+      if ($is_static_popup) {
+        $popup = (!empty($this->aCurArgs['popup']) ? trim($this->aCurArgs['popup']) : trim( $this->aCurArgs['end_action_value'] ));
+      } else if ($is_email_popup) {
+        $popup = 'email-'.trim( $this->aCurArgs['end_action_value'] );
+      }
+    } else if (!empty($this->aCurArgs['popup'])) {
       $popup = trim($this->aCurArgs['popup']);
     } else {
       $popup = $this->_get_option('popups_default');
@@ -768,6 +847,7 @@ class flowplayer_frontend extends flowplayer
     $sClass = ' fv_player_popup-' . $iPopupIndex;
 
     $popup = apply_filters('fv_flowplayer_popup_html', $popup);
+
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
           'html' => '<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>',
@@ -854,47 +934,68 @@ class flowplayer_frontend extends flowplayer
     }    
     
     $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
+
     return $splash_img;
   }
-  
-  
-  function get_subtitles($index = 0) {
-    $aSubtitles = array();
 
-    if( $this->aCurArgs && count($this->aCurArgs) > 0 ) {
-      $protocol = is_ssl() ? 'https' : 'http';
-      foreach( $this->aCurArgs AS $key => $subtitles ) {
-        if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
-          continue;
-        }
-        
-        $subtitles = explode( ";",$subtitles);
-        if( empty($subtitles[$index]) ) continue;
-        
-        $subtitles = $subtitles[$index];
-  
-        if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-          //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
-          if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-            if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-              $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
-            }
-            else
-            if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-              $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-            }
-            else {
-              //if the videos are not in the videos directory but they are adressed relatively
-              $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-              $subtitles = $protocol.'://'.$subtitles;
-            }
+  function get_subtitles_url($protocol, $subtitles) {
+    if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
+      //$splash_img = VIDEO_PATH.trim($args['splash']);
+      if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
+      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
+        $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+      }
+      else
+        if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
+          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
         }
         else {
-          $subtitles = trim($subtitles);
+          //if the videos are not in the videos directory but they are adressed relatively
+          $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
+          $subtitles = $protocol.'://'.$subtitles;
         }
-        
-        $aSubtitles[str_replace( 'subtitles_', '', $key )] = apply_filters( 'fv_flowplayer_resource', $subtitles );
-        
+    }
+    else {
+      $subtitles = trim($subtitles);
+    }
+
+    $subtitles = apply_filters( 'fv_flowplayer_resource', $subtitles );
+
+    return $subtitles;
+  }
+
+  function get_subtitles($index = 0) {
+    global $fv_fp;
+
+    $aSubtitles = array();
+    $args = $this->aCurArgs;
+    $protocol = is_ssl() ? 'https' : 'http';
+
+    // each video can have subtitles in any language with new DB-based shortcodes
+    if ($this->current_video()) {
+      if ($this->current_video()->getMetaData()) {
+        foreach ($this->current_video()->getMetaData() as $meta_object) {
+          if (strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
+            // subtitles meta data found, create URL from it
+            // note: we ignore $index here, as it's used to determine an index
+            //       for a single subtitle file from all subtitles set for the whole
+            //       playlist, which was the old way of doing stuff
+            $aSubtitles[str_replace( 'subtitles_', '', $meta_object->getMetaKey() )] = $this->get_subtitles_url($protocol, $meta_object->getMetaValue());
+          }
+        }
+      }
+    } else {
+      if( $args && count($args) > 0 ) {
+        foreach( $args AS $key => $subtitles ) {
+          if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
+            continue;
+          }
+
+          $subtitles = explode( ";",$subtitles);
+          if( empty($subtitles[$index]) ) continue;
+
+          $aSubtitles[str_replace( 'subtitles_', '', $key )] = $this->get_subtitles_url($protocol, $subtitles[$index]);
+        }
       }
     }
 
@@ -926,6 +1027,7 @@ class flowplayer_frontend extends flowplayer
     foreach( $aPlaylistItems AS $key => $aSrc ) {
       if( !empty($aStartend[$key]) ) $this->aCurArgs['startend'] = $aStartend[$key];
       
+      unset($this->aCurArgs['id']);
       unset($this->aCurArgs['playlist']);
       $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
       
@@ -1019,14 +1121,14 @@ class flowplayer_frontend extends flowplayer
       $sHTMLVideoLink = false;
     }
     
-    if( $this->aCurArgs['embed'] == 'false' ) {
+    if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) {
       $sHTMLVideoLink = false;
     }
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
 
-    if( $this->aCurArgs['embed'] == 'false' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+    if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
       $sHTMLEmbed = '';
     }
     

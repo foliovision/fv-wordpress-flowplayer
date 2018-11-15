@@ -104,7 +104,7 @@ class FV_Player_Checker {
   
   
   
-  public function check_mimetype( $URLs = false, $meta = false ) {
+  public function check_mimetype( $URLs = false, $meta = false, $force_is_cron = false ) {
 
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
     
@@ -119,7 +119,7 @@ class FV_Player_Checker {
     if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
       $URLs = json_decode( stripslashes( trim($_POST['media']) ));
     }
-    
+
     if( isset($URLs) ) {
       $all_sources = $URLs;
 
@@ -133,8 +133,7 @@ class FV_Player_Checker {
               
       //$random = rand( 0, 10000 );
       $random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
-      
-      if( isset($media) ) {	     
+      if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
   
@@ -180,7 +179,7 @@ class FV_Player_Checker {
          
             if( $out ) {
               $aArgs = array( 'file' => $out );
-              if( !$this->is_cron ) {
+              if( !$this->is_cron && !$force_is_cron ) {
                 $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
               }
               list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
@@ -232,7 +231,7 @@ class FV_Player_Checker {
           Only check file length
           */
           
-          if( isset($meta_action) && $meta_action == 'check_time' ) {
+          if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
             $time = false;
             if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
               $time = $ThisFileInfo['playtime_seconds'];    	
@@ -287,7 +286,7 @@ class FV_Player_Checker {
 
             if( $time > 0 || $this->is_cron ) {
               update_post_meta( $post->ID, flowplayer::get_video_key($meta_original), $fv_flowplayer_meta );
-              return true;
+              return $fv_flowplayer_meta;
             }
             //} else {
               //self::queue_add($post->ID);

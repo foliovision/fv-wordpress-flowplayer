@@ -697,6 +697,15 @@ function fv_player_admin_notice_expired_license() {
 }
 
 
+/*
+ *  DB based player data saving
+ */
+global $FV_Player_Db;
+
+// these have to be here, as using them in constructor doesn't work
+add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10, 2);
+
+
 add_action( 'admin_notices', 'fv_player_rollback' );
 
 function fv_player_rollback() {
@@ -721,13 +730,13 @@ function fv_player_rollback() {
       if( stripos($plugin,'fv-wordpress-flowplayer') === 0 && stripos($plugin,'/flowplayer.php') !== false ) {
         $plugin_slug = $plugin;
       }
-    }    
+    }
 
     $plugin_transient 	= get_site_transient( 'update_plugins' );
     $plugin_folder    	= plugin_basename( dirname( $plugin_slug ) );
     $plugin_file      	= basename( $plugin_slug );
-    $version          	= $fv_wp_flowplayer_ver;
-    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.6.6.6.zip';
+    $version            = isset($_GET['version']) ? $_GET['version'] : '6.6.6';
+    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.'.$version.'.zip';
     $temp_array 		= array(
       'slug'        => $plugin_folder,
       'new_version' => $version,

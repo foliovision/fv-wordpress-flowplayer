@@ -3,7 +3,7 @@
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
-  if( $page !== 'post.php' && $page !== 'post-new.php' && ( empty($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+  if( $page !== 'post.php' && $page !== 'post-new.php' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
     return;
   }
   
@@ -20,6 +20,12 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   
   wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
   wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
+  
+  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
+    'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
+    'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() )
+  ) );
   
   global $fv_fp;
   if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
@@ -169,12 +175,21 @@ function fv_wp_flowplayer_featured_image($post_id) {
     return;
   }
   
-  $sThumbUrl = array();
-  if (!preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $sThumbUrl) || empty($sThumbUrl[1])) {
-    return;
+  $url = false;
+  
+  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) {
+    $url = $splash[1];
+  } else if( preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) {
+    global $FV_Player_Db;    
+    $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
+    if( !empty($atts['splash']) ) {
+      $url = $atts['splash'];
+    }
   }
   
-  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($sThumbUrl[1], $post_id);
+  if( !$url ) return;
+  
+  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id);
   if($thumbnail_id){
     set_post_thumbnail($post_id, $thumbnail_id);
   }
