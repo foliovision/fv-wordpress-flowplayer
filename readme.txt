@@ -357,6 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.1.727 - 2017/11/16 =
+
+* Fix for PHP warning in wp-admin when no database table is present yet
+
 = 7.3.0.727 - 2018/11/15 =
 
 * New feature - new FV Player instances are now saved into database - no longer using WordPress shortcode format to store all the information
