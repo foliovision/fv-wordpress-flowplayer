@@ -14,7 +14,7 @@ class FV_Player_List_Table_View {
 
   function admin_menu(){    
     global $wpdb;
-    if( current_user_can('edit_posts') && $wpdb->get_var("SELECT count(*) FROM {$wpdb->prefix}fv_player_players") ) {
+    if( current_user_can('edit_posts') && $wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}fv_player_players'") == $wpdb->prefix.'fv_player_players' && $wpdb->get_var("SELECT count(*) FROM {$wpdb->prefix}fv_player_players") ) {
       add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', 'dashicons-welcome-widgets-menus', 30 );
       add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
     }
