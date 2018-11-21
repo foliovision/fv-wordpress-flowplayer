@@ -413,8 +413,13 @@ class flowplayer_frontend extends flowplayer
         }
         
         //  Fixed control bar
+        $bFixedSubtitles = $this->_get_option('show_subtitlebar');
         $bFixedControlbar = $this->_get_option('show_controlbar');
         if( isset($this->aCurArgs['controlbar']) ) {
+          if( strcmp($this->aCurArgs['controlbar'],'withsubs') == 0 ) {
+            $bFixedSubtitles = true;
+            $bFixedControlbar = true;
+          }
           if( strcmp($this->aCurArgs['controlbar'],'yes') == 0 || strcmp($this->aCurArgs['controlbar'],'show') == 0 ) {
             $bFixedControlbar = true;
           } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 ) {
@@ -424,6 +429,9 @@ class flowplayer_frontend extends flowplayer
         }
         if( $bFixedControlbar ) {
           $attributes['class'] .= ' fixed-controls';
+        }
+        if( $bFixedSubtitles ) {
+          $attributes['class'] .= ' fixed-subtitles';
         }
         
         //  Play button
