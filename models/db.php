@@ -1060,8 +1060,12 @@ class FV_Player_Db {
         $out['videos'][] = $vid;
       }
 
-      header('Content-Type: application/json');
-      echo json_encode($out, true);
+      header('Content-Type: application/json');      
+      if (version_compare(phpversion(), '5.3', '<')) {
+        echo json_encode($out);
+      } else {        
+        echo json_encode($out, true);
+      }
     }
 
     wp_die();
@@ -1208,7 +1212,11 @@ class FV_Player_Db {
       }
 
       if ($output_result) {
-        echo json_encode( $export_data, JSON_UNESCAPED_SLASHES );
+        if (version_compare(phpversion(), '5.3', '<')) {
+          echo json_encode($out);
+        } else {        
+          echo json_encode($out, true);
+        }
         exit;
       } else {
         return $export_data;
