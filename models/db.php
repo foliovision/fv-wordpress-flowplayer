@@ -1213,9 +1213,9 @@ class FV_Player_Db {
 
       if ($output_result) {
         if (version_compare(phpversion(), '5.3', '<')) {
-          echo json_encode($out);
+          echo json_encode($export_data);
         } else {        
-          echo json_encode($out, true);
+          echo json_encode($export_data, true);
         }
         exit;
       } else {
