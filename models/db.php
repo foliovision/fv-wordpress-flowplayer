@@ -294,6 +294,10 @@ class FV_Player_Db {
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
+            if( empty($videos[ $video_id ]) ) { // the videos field might point to a missing video
+              continue;
+            }
+            
             $caption = $videos[ $video_id ]->getCaption();
             $caption_src = $videos[ $video_id ]->getCaptionFromSrc();
             
