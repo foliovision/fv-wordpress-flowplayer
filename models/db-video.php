@@ -288,6 +288,10 @@ CREATE TABLE " . self::$db_table_name . " (
             ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
             ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
           );
+          
+          if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
+            $all_cached = true;
+          }
         } else {
           $all_cached = true;
         }
