@@ -357,6 +357,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.3.727 - 2017/12/05 =
+
+* Compatiblity - improving old Samsung phone detection for warning messages
+* Database - PHP 5.2 compatibility fixes
+* Database - schema changes for better compatibility (maximum row size error)
+* MPEG-DASH - upgrading Dash.js to 2.8.0
+
 = 7.3.1.727 - 2017/11/16 =
 
 * Fix for PHP warning in wp-admin when no database table is present yet
