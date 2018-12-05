@@ -555,10 +555,7 @@ class FV_Player_Db {
 
             $player->setVideos($data['videos']);
           }
-
-          // preload all videos
-          $player->getVideos();
-
+          
           // check if we should change order of videos
           $ordered_videos = explode(',', $data['videos']);
           if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'title'))) {
@@ -573,18 +570,6 @@ class FV_Player_Db {
 
                 ksort($ordered_videos_tmp);
                 $ordered_videos = array_values($ordered_videos_tmp);
-                
-                if( !empty($atts['video_objects']) ) {
-                  $new_objects = array();
-                  foreach( $ordered_videos_tmp AS $v ) {
-                    foreach( $atts['video_objects'] AS $i ) {
-                      if( $i->getId() == $v ) {
-                        $new_objects[] = $i;
-                      }
-                    }                
-                  }
-                  $atts['video_objects'] = $new_objects;                
-                }
                 break;
 
               case 'newest':
@@ -596,18 +581,6 @@ class FV_Player_Db {
                 }
 
                 $ordered_videos = array_values($ordered_videos_tmp);
-                
-                if( !empty($atts['video_objects']) ) {
-                  $new_objects = array();
-                  foreach( $ordered_videos_tmp AS $v ) {
-                    foreach( $atts['video_objects'] AS $i ) {
-                      if( $i->getId() == $v ) {
-                        $new_objects[] = $i;
-                      }
-                    }                
-                  }
-                  $atts['video_objects'] = $new_objects;                
-                }
                 break;
 
               case 'title':
@@ -633,23 +606,28 @@ class FV_Player_Db {
 
                 ksort($ordered_videos_tmp);
                 $ordered_videos = array_values($ordered_videos_tmp);
-                
-                if( !empty($atts['video_objects']) ) {
-                  $new_objects = array();
-                  foreach( $ordered_videos_tmp AS $v ) {
-                    foreach( $atts['video_objects'] AS $i ) {
-                      if( $i->getId() == $v ) {
-                        $new_objects[] = $i;
-                      }
-                    }                
-                  }
-                  $atts['video_objects'] = $new_objects;                
-                }       
                 break;
             }
-
+            
             $data['videos'] = implode(',', $ordered_videos);
-          }
+            $player->setVideos($data['videos']);
+            
+            if( !empty($atts['video_objects']) ) {
+              $new_objects = array();
+              foreach( $ordered_videos AS $v ) {
+                foreach( $atts['video_objects'] AS $i ) {
+                  if( $i->getId() == $v ) {
+                    $new_objects[] = $i;
+                  }
+                }                
+              }
+              $atts['video_objects'] = $new_objects;                
+            }
+            
+          }          
+
+          // preload all videos
+          $player->getVideos();
 
           // video attributes which can still be set in shortcode
           $preserve = array();
