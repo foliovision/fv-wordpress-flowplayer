@@ -385,7 +385,7 @@ CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
   player_name varchar(255) NOT NULL,
   player_slug varchar(255) NOT NULL,
-  videos varchar(65535) NOT NULL,
+  videos text NOT NULL,
   ab varchar(3) NOT NULL,
   ad text NOT NULL,
   ad_height varchar(7) NOT NULL,
