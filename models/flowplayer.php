@@ -774,6 +774,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sDuration = $this->current_video()->getDuration();
     }
     
+    if( !empty($aArgs['durations']) ) {
+      $durations = explode( ';', $aArgs['durations'] );
+      if( !empty($durations[$index]) ) {
+        $sDuration = $durations[$index];
+      }
+    }
+    
     global $post;
     if( !$sDuration && $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
       $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] );
