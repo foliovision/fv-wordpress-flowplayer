@@ -1268,7 +1268,9 @@
 .fp-playlist-external a:hover h4,.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper a:hover h4,.fp-playlist-external a.is-active:hover h4, .fp-playlist-external a:hover .dur {opacity:1;color:#fff}
 .fp-playlist-horizontal a.is-active {-webkit-transition:all .3s;-moz-transition:all .3s;transition:all .3s}
 .is-touch + .fp-playlist-horizontal a h4 {opacity:1;background-color:transparent;text-shadow:0 0 12px #000;top:20%;bottom:20%;font-family:"myriad pro",Helvetica,Arial,sans-serif !important}
+.is-touch + .fp-playlist-horizontal.is-audio a h4 {text-shadow:none}
 .is-touch + .fp-playlist-horizontal a h4 span {background-color:rgba(0,0,0,.3)}
+.is-touch + .fp-playlist-horizontal.is-audio a h4 span {background-color:transparent}
 .fp-playlist-horizontal.is-wide a,.entry-content .fp-playlist-horizontal.is-wide a {width: 20%}
 .fp-playlist-horizontal.is-wide a:nth-child(3n+1) div:before {display: block}
 .fp-playlist-horizontal.is-wide a:nth-child(5n+1) div:before {display: none}
