@@ -473,7 +473,8 @@ class FV_Player_Db {
   private function mapDbAttributeValue2Shortcode($att_name, $att_value) {
     switch ($att_name) {
       case 'playlist_advance':
-        return ($att_value == 'off' ? 'false' : 'true');
+        if($att_value == 'on' ) return 'true';
+        if($att_value == 'off' ) return 'false';
     }
 
     return $att_value;
