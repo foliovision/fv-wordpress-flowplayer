@@ -457,7 +457,7 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
       $bridge_atts['playlist'] .= ';';
     }
     $bridge_atts['playlist'] = trim($bridge_atts['playlist'],';');
-    $bridge_atts['caption'] = implode(';',$aPlaylistCaptions);
+    if( count($aPlaylistCaptions) > 1 ) $bridge_atts['caption'] = implode(';',$aPlaylistCaptions);
     $bridge_atts['durations'] = implode(';',$aPlaylistDurations);
      
     if( isset($atts['width']) ) {
