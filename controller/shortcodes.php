@@ -457,9 +457,13 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
       $bridge_atts['playlist'] .= ';';
     }
     $bridge_atts['playlist'] = trim($bridge_atts['playlist'],';');
-    if( count($aPlaylistCaptions) > 1 ) $bridge_atts['caption'] = implode(';',$aPlaylistCaptions);
+    if( count($aPlaylistCaptions) > 1 || $atts['tracklist'] ) $bridge_atts['caption'] = implode(';',$aPlaylistCaptions);
     $bridge_atts['durations'] = implode(';',$aPlaylistDurations);
      
+    if( $atts['tracklist'] ) {
+      $bridge_atts['listshow'] = true;
+    }
+    
     if( isset($atts['width']) ) {
       $bridge_atts['width'] = $atts['width'];
     }

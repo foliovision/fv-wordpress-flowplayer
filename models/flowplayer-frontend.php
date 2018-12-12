@@ -197,7 +197,7 @@ class flowplayer_frontend extends flowplayer
     
     list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );    
     
-    if( count($aPlaylistItems) == 1 ) {
+    if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
       $playlist_items_external_html = false;
       $attributes['data-item'] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
     }
@@ -518,7 +518,7 @@ class flowplayer_frontend extends flowplayer
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
           
-          if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) ) {
+          if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['listshow']) ) {
             $attributes['class'] .= ' has-caption';
             $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           }
