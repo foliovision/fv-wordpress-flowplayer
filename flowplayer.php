@@ -87,8 +87,8 @@ if( is_admin() ) {
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
+}
 
-} 
-	
 include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
 include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
