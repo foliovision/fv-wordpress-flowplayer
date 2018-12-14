@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.4.727 - 2017/12/14 =
+
+* FV Player top level wp-admin menu item icon
+* WordPress 5 - Gutenberg editor support
+* Database - bugfix for mapping of Disable Playlist Autoadvance
+* Database - making it work with XML sitemap
+* Handle WordPress shortcodes - improved to work with [playlist] as well
+
 = 7.3.3.727 - 2017/12/05 =
 
 * Compatiblity - improving old Samsung phone detection for warning messages
