@@ -112,6 +112,11 @@ class FV_Xml_Video_Sitemap {
             $increment_video_counter = false;
             $aArgs = shortcode_parse_atts( rtrim( $shortcode, ']' ) );
             
+            global $FV_Player_Db;
+            if( !empty($aArgs['id']) && !empty($FV_Player_Db) ) {
+              $aArgs = $FV_Player_Db->getPlayerAttsFromDb( $aArgs );
+            }
+            
             if( !empty($did_videos[$aArgs['src']]) ) continue;
             $did_videos[$aArgs['src']] = true;
 
@@ -125,14 +130,16 @@ class FV_Xml_Video_Sitemap {
 
             // this crazyness needs to be first converted into non-html characters (so &quot; becomes "), then
             // stripped of them all and returned back HTML-encoded for the XML formatting to be correct
-            $splash = !empty($aArgs['poster']) ? $aArgs['poster'] : $aArgs['splash'];
+            $splash = false;
+            if( !empty($aArgs['poster']) ) $splash = $aArgs['poster'];
+            if( !empty($aArgs['splash']) ) $splash = $aArgs['splash'];
             $splash = htmlspecialchars(trim(html_entity_decode($splash), "\n\t\r\0\x0B".'"'));
             
             // make sure the URLs are absolute
             if( $splash ) {
               if( stripos($splash,'http://') !== 0 && stripos($splash,'https://') !== 0 && stripos($splash,'//') !== 0 ) {
                 $splash = home_url($splash);
-              } else if( stripos($trimmed_splash,'//') === 0 ) {
+              } else if( stripos($splash,'//') === 0 ) {
                 $splash = 'http:'.$splash;
               }
             } else {
@@ -142,7 +149,7 @@ class FV_Xml_Video_Sitemap {
             // check for caption - if none present, build it up from page title and video position
             // note: html characters must be substituted or enclosed in CDATA, from which the first
             //       is easier to do correctly on a single line
-            $sanitized_caption = htmlspecialchars(strip_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+            $sanitized_caption = !empty($aArgs['caption']) ? htmlspecialchars(strip_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE ) : false;
             $sanitized_src = htmlspecialchars(strip_tags(trim($aArgs['src'])), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
             
             // make sure the URLs are absolute
