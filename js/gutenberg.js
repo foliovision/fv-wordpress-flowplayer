@@ -17,7 +17,7 @@
   
       edit: function( props ) {
         var content = props.attributes.content;
-        function onChangeContent( newContent ) {console.log('onChangeContent',newContent);
+        function onChangeContent( newContent ) {
           props.setAttributes( { content: newContent } );
         }
         
@@ -43,7 +43,7 @@
         );
       },
   
-      save: function( props ) {console.log('save',props.attributes.content);
+      save: function( props ) {
         return el( wp.element.RawHTML,
                   null,
                   props.attributes.content
