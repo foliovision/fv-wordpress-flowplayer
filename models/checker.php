@@ -136,166 +136,116 @@ class FV_Player_Checker {
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
-  
-        if( $fv_fp->is_secure_amazon_s3($remotefilename_encoded) || 1>0 ) {	//	skip headers check for Amazon S3, as it's slow
-          $headers = false;
-        } else {
-          $headers = wp_remote_head( trim( str_replace(' ', '%20', $remotefilename_encoded ) ), array( 'method' => 'GET', 'redirection' => 3 ) );
-        }
-           
+
         $bValidFile = true;
-        if( is_wp_error($headers) ) {
-          $video_errors[] = 'Error checking '.$media.'!<br />'.print_r($headers,true);  
-        } else {
-          if( $headers ) {
+        
+        if ( ! class_exists( 'getID3' ) ) {
+          require( ABSPATH . WPINC . '/ID3/getid3.php' );
+        }    
+        $getID3 = new getID3;     
+        
+        if( function_exists('curl_init') ) {
+          $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
+  
+          //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
+          $upload_dir = wp_upload_dir();      
+          $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
+  
+          $out = @fopen( $localtempfilename,'wb' );
+       
+          if( $out ) {
+            $aArgs = array( 'file' => $out );
+            if( !$this->is_cron && !$force_is_cron ) {
+              $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
+            }
+            list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
+            
+            if( $sHTTPError ) {
+              $bValidFile = false;
+            }
+            fclose($out);
+
+            $headers = WP_Http::processHeaders( $header );			
+
             list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
             if( $bFatal ) {
               $bValidFile = false;
             }
-            if( $aVideoErrors ) {
-              $video_errors = array_merge( $video_errors, $aVideoErrors );
-            }
-          }
-          
-          if( function_exists('is_utf8') && is_utf8($remotefilename) ) {
-             $video_errors[] = '<p><strong>UTF-8 error</strong>: Your file name is using non-latin characters, the file might not play in browsers using Flash for the video!</p>';
-          }
-                  
-          if ( ! class_exists( 'getID3' ) ) {
-            require( ABSPATH . WPINC . '/ID3/getid3.php' );
-          }    
-          $getID3 = new getID3;     
-          
-          if( !function_exists('curl_init') ) {
-            $video_errors[] = 'cURL for PHP not found, please contact your server administrator.';
-          } else {
-            $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
   
-            //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
-            $upload_dir = wp_upload_dir();      
-            $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
-
-            $out = @fopen( $localtempfilename,'wb' );
-         
-            if( $out ) {
-              $aArgs = array( 'file' => $out );
-              if( !$this->is_cron && !$force_is_cron ) {
-                $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
-              }
-              list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
-
-              $video_errors = array();
-              if( $sHTTPError ) {
-                $video_errors[] = $sHTTPError;
-                $bValidFile = false;
-              }
-              fclose($out);
+            if( $bValidFile ) {
+              $ThisFileInfo = $getID3->analyze( $localtempfilename );
+            }      
+          }                 
+        }
   
-              if( !$headers ) {
-                $headers = WP_Http::processHeaders( $header );			
-
-                list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
-                if( $bFatal ) {
-                  $bValidFile = false;
-                }
-
-                if( $aVideoErrors ) {
-                  $video_errors = array_merge( $video_errors, $aVideoErrors );
-                }
-          
-                if( isset($hearders['headers']['server']) && $hearders['headers']['server'] == 'AmazonS3' && $headers['response']['code'] == '403' ) {
-                  $error = new SimpleXMLElement($body);
-                  
-                  if( stripos( $error->Message, 'Request has expired' ) !== false ) {
-                    $video_errors[] = '<p><strong>Amazon S3</strong>: Your secure link is expired, there might be problem with your Amazon S3 plugin. Please test if the above URL opens in your browser.</p>';		
-                  } else {
-                    $video_errors[] = '<p><strong>Amazon S3</strong>: '.$error->Message.'</p>';				
-                  }
-                  
-                }
-              }
-
-              if( $bValidFile ) {
-                $ThisFileInfo = $getID3->analyze( $localtempfilename );
-              }
-              if( !@unlink($localtempfilename) ) {
-                $video_errors[] = 'Can\'t remove temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
-              }      
-            } else {
-              $video_errors[] = 'Can\'t create temporary file for video analysis in <tt>'.$localtempfilename.'</tt>!';
-            }                  
-          }
-
-          
-          /*
-          Only check file length
-          */
-          
-          if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
-            $time = false;
-            if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
-              $time = $ThisFileInfo['playtime_seconds'];    	
-            }
-                     
-            
         
-            if(preg_match('/.m3u8(\?.*)?$/i', $meta_original)){
-              
-              remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-              
-              $request = wp_remote_get($meta_original);
-              $response = wp_remote_retrieve_body( $request );
-
-              $playlist = false;
-              $duration = 0;
-              $segments = false;
-
-              if(!preg_match_all('/^[^#].*\.m3u8(\?.*)?$/im', $response,$playlist)){
-                if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
+        /*
+        Only check file length
+        */
+        
+        if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
+          $time = false;
+          if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
+            $time = $ThisFileInfo['playtime_seconds'];    	
+          }
+          
+          if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
+            
+            remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
+            
+            $request = wp_remote_get($remotefilename_encoded);
+            $response = wp_remote_retrieve_body( $request );
+  
+            $playlist = false;
+            $duration = 0;
+            $segments = false;
+  
+            if(!preg_match_all('/^[^#].*\.m3u8(\?.*)?$/im', $response,$playlist)){
+              if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
+                foreach($segments[1] as $segment_item){
+                  $duration += $segment_item;
+                }  
+              }
+            }else{
+              foreach($playlist[0] as $item){
+                $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $remotefilename_encoded);
+                $request = wp_remote_get($item_url);
+                $playlist_item = wp_remote_retrieve_body( $request );
+                if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
                   foreach($segments[1] as $segment_item){
                     $duration += $segment_item;
                   }  
                 }
-              }else{
-                foreach($playlist[0] as $item){
-                  $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $meta_original);
-                  $request = wp_remote_get($item_url);
-                  $playlist_item = wp_remote_retrieve_body( $request );
-                  if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
-                    foreach($segments[1] as $segment_item){
-                      $duration += $segment_item;
-                    }  
-                  }
-                  if($duration > 0)
-                    break;
-                }
+                if($duration > 0)
+                  break;
               }
-
-              $time = $duration;
             }
-            
-            $time = apply_filters( 'fv_flowplayer_checker_time', $time, $meta_original );
-            
-            global $post;
-            $fv_flowplayer_meta = get_post_meta( $post->ID, flowplayer::get_video_key($meta_original), true );
-            $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
-            $fv_flowplayer_meta['duration'] = $time;
-            $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
-            $fv_flowplayer_meta['date'] = time();
-            $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
-
-            if( $time > 0 || $this->is_cron ) {
-              update_post_meta( $post->ID, flowplayer::get_video_key($meta_original), $fv_flowplayer_meta );
-              return $fv_flowplayer_meta;
-            }
-            //} else {
-              //self::queue_add($post->ID);
-              //return false;
-            //}
-            
-          } 				
+  
+            $time = $duration;
+          }
           
-        }	//	end is_wp_error check			
+          $time = apply_filters( 'fv_flowplayer_checker_time', $time, $remotefilename_encoded );
+          $key = flowplayer::get_video_key($remotefilename_encoded);
+          
+          global $post;
+          $fv_flowplayer_meta = array();
+          if( !empty($post) ) {
+            $fv_flowplayer_meta = get_post_meta( $post->ID, $key, true );
+          }
+         
+          $fv_flowplayer_meta['duration'] = $time;
+          $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
+          $fv_flowplayer_meta['date'] = time();
+          $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
+  
+          if( $time > 0 || $this->is_cron ) {
+            if( !empty($post) ) {
+              update_post_meta( $post->ID, $key, $fv_flowplayer_meta );
+            }
+            return $fv_flowplayer_meta;
+          }
+          
+        }
         
       }	//	end isset($media) 
     }
