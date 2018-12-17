@@ -591,7 +591,54 @@ CREATE TABLE " . self::$db_table_name . " (
     }
     if( $single ) return false;
     return $output;
-  }    
+  }
+  
+  /**
+   * Updates or instert a video meta row
+   *
+   * @param string $key       The meta key
+   * @param string $value     The meta value     
+   * @param int $id           ID of the existing video meta row
+   *
+   * @throws Exception When the underlying Meta object throws.
+   *
+   * @return bool|int Returns record ID if successful, false otherwise.
+   * 
+   */
+  public function updateMetaValue( $key, $value, $id = false ) {
+    $to_update = false;
+    $data = $this->getMetaData();
+    var_dump(1, $data);
+    if (count($data)) {      
+      foreach ($data as $meta_object) {
+        // find the matching video meta row and if id is provided as well, match on that too
+        if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
+          if( $meta_object->getMetaValue() != $value ) {
+            $to_update = $meta_object->getId();
+          }
+        }
+      }
+    }
+
+    // if matching row has been found or if it was not found and no row id is provided (insert)
+    if( $to_update || !$to_update && !$id ) {
+      $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), $this->DB_Instance );
+      if( $to_update ) $meta->link2db($to_update);
+      return $meta->save();        
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Lets you alter any of the video properties and then call save()
+   *
+   * @param string $key       The meta key
+   * @param string $value     The meta value     
+   */
+  public function set( $key, $value ) {
+    $this->$key = stripslashes($value);
+  }
 
   /**
    * Stores new video instance or updates and existing one
