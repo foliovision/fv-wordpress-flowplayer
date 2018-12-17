@@ -21,7 +21,7 @@ var fv_player_shortcode_preview_unsupported = false;
 var fv_player_editor_matcher = {
   default: {
     // matches URL of the video
-    matcher: /\.mp4$/i,
+    matcher: /\.(mp4|webm|m3u8)$/i,
     // AJAX will return these fields which can be auto-updated via JS
     update_fields: ['duration', 'last_video_meta_check'],
   }
