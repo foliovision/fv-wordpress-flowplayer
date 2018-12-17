@@ -552,7 +552,20 @@ CREATE TABLE " . self::$db_table_name . " (
         return array();
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
-          return array( $this->meta_data );
+          // meta data will be an array if we filled all of them at once
+          // from database at the time when player is initially created
+          if (is_array($this->meta_data)) {
+            return $this->meta_data;
+          } else if ( $this->DB_Instance->isVideoMetaCached($this->id) ) {
+            $cache = $this->DB_Instance->getVideoMetaCache();
+            return $cache[$this->id];
+          } else {
+            if ($this->meta_data && $this->meta_data->getIsValid()) {
+              return array( $this->meta_data );
+            } else {
+              return array();
+            }
+          }
         } else {
           return array();
         }
