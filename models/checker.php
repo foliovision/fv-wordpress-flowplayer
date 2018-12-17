@@ -231,6 +231,7 @@ class FV_Player_Checker {
           $fv_flowplayer_meta = array();
           if( !empty($post) ) {
             $fv_flowplayer_meta = get_post_meta( $post->ID, $key, true );
+            if( !$fv_flowplayer_meta ) $fv_flowplayer_meta = array();
           }
          
           $fv_flowplayer_meta['duration'] = $time;
