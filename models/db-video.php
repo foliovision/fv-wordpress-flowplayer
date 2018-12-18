@@ -608,7 +608,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function updateMetaValue( $key, $value, $id = false ) {
     $to_update = false;
     $data = $this->getMetaData();
-    var_dump(1, $data);
+    
     if (count($data)) {      
       foreach ($data as $meta_object) {
         // find the matching video meta row and if id is provided as well, match on that too
