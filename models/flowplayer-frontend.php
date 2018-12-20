@@ -1154,8 +1154,8 @@ class flowplayer_frontend extends flowplayer
     $sSpinURL = site_url('wp-includes/images/wpspin.gif');
 
     $sHTML = <<< HTML
-<div title="This note is visible to logged-in admins only." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
-  <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Report Issue</div>
+<div title="Only you and other admins can see this warning." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
+  <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Video Checker</div>
   <small>Admin: <span class="video-checker-result">Checking the video file...</span></small>
   <div style="display: none;" class="fv_wp_fp_notice_content" id="fv_wp_fp_notice_{$this->hash}">
     <div class="mail-content-notice">
