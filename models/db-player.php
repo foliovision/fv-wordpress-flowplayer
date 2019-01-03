@@ -590,7 +590,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       }
 
-      if (isset($player_data) && $player_data !== -1 && count($player_data)) {
+      if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
           $this->fill_properties($player_data,$DB_Cache);
