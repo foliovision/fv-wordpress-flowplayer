@@ -1152,14 +1152,6 @@
 	left: 50%;
 	top: 50%;
 }
-.fvp-share-bar .fvp-sharing .sharing-google {
-	background-color: #dd4b39;
-}
-.fvp-share-bar .fvp-sharing .sharing-google svg{
-	margin: -9px 0 0 -9px;
-	width: 18px;
-	height: 18px;
-}
 .fvp-share-bar .fvp-sharing .sharing-facebook {
 	background-color: #3B5998;
 }
