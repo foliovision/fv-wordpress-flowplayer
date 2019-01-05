@@ -312,7 +312,6 @@ CREATE TABLE " . self::$db_table_name . " (
             ' . self::$db_table_name . '
           WHERE
             id = ' . intval($id)
-          )
           );
         } else {
           $all_cached = true;
