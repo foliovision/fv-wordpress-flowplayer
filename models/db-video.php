@@ -278,16 +278,23 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
-          $video_data = $wpdb->get_results( '
-          SELECT
-            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . $options['db_options']['select_fields'] : '*' ) . '
-          FROM
-            ' . self::$db_table_name . '
-          WHERE
-            id IN(' . implode( ',', $query_ids ) . ')' .
-            ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
-            ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
-          );
+          $select = '*';
+          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'id,'.esc_sql($options['db_options']['select_fields']);
+          
+          $where = ' WHERE id IN('. implode(',', $query_ids).') ';
+          
+          $order = '';
+          if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
+            $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
+            if( !empty($options['db_options']['order']) ) $order .= ' '.esc_sql($options['db_options']['order']);
+          }
+          
+          $limit = '';
+          if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
+            $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
+          }
+          
+          $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$order.$limit);
           
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;
@@ -300,13 +307,12 @@ CREATE TABLE " . self::$db_table_name . " (
           // load a single video
           $video_data = $wpdb->get_row( '
           SELECT
-            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . $options['db_options']['select_fields'] : '*' ) . '
+            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . esc_sql($options['db_options']['select_fields']) : '*' ) . '
           FROM
             ' . self::$db_table_name . '
           WHERE
-            id = ' . $id .
-            ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
-            ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
+            id = ' . intval($id)
+          )
           );
         } else {
           $all_cached = true;
@@ -491,7 +497,7 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach ($fields_to_search as $field_name) {
       $where[] = "`$field_name` ". ($like ? 'LIKE "%'.esc_sql($search_string).'%"' : '="'.esc_sql($search_string).'"');
     }
-    $where = implode(' '.$and_or.' ', $where);
+    $where = implode(' '.esc_sql($and_or).' ', $where);
 
     self::init_db_name();
     $data = $wpdb->get_results("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE $where ORDER BY id DESC");

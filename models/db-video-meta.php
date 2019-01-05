@@ -259,7 +259,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single video meta data record
-          $meta_data = $wpdb->get_row( $wpdb->query( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . $id ) );
+          $meta_data = $wpdb->get_row( $wpdb->query( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . intval($id) ) );
 
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
