@@ -834,6 +834,8 @@ function fv_flowplayer_editor_item_show( new_index ) {
   jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);    
  
   var $ = jQuery;
+  
+  $(document).trigger('fv_flowplayer_shortcode_item_switch', [ new_index ] );
  
   $('a[data-tab=fv-player-tab-video-files]').click();    
   
