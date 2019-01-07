@@ -8,7 +8,7 @@
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-player-shortcode-editor table input[type=text], #fv-flowplayer-playlist table input[type=text].with-button { width: 93%; }
 #fv-player-shortcode-editor table input[type=text].half-field { width: 46%; }
-#fv-player-shortcode-editor table/*:first-child*/ input.with-button { width: 70%; }
+#fv-player-shortcode-editor table/*:first-child*/ input.with-button { width: 75%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
 #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; }
@@ -27,6 +27,8 @@
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
 /*#fv-flowplayer-playlist table:first-child .button { display: inline-block; }*/
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
+
+#fv-player-shortcode-editor table .button { width: 22% }
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
