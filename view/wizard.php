@@ -161,7 +161,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <thead>
                     <tr>
                       <th><a>Video</a></th>
-                      <th><a<?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] != 'true' ) echo ' class="fv_player_interface_hide"'; ?>>Caption</a></th>
+                      <th><a<?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] != 'true' ) echo ' class="fv_player_interface_hide"'; ?>>Title</a></th>
                       <!--<th>Dimension</th>
                       <th>Time</th>-->
                     </tr>  
@@ -283,7 +283,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </tr>
                     
                     <tr class="<?php if (isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true') echo 'playlist_caption'; else echo 'fv_player_interface_hide'; ?>" >
-                      <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Caption', 'fv_flowplayer'); ?></label></th>
+                      <th scope="row" class="label"><label for="fv_wp_flowplayer_field_caption" class="alignright"><?php _e('Title', 'fv_flowplayer'); ?></label></th>
                       <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_caption" name="fv_wp_flowplayer_field_caption" value=""/></td>
                     </tr>
 

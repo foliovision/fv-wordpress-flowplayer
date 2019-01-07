@@ -402,7 +402,7 @@ class FV_Player_lightbox {
           <input type="checkbox" id="fv_wp_flowplayer_field_lightbox" name="fv_wp_flowplayer_field_lightbox" />        
           <input type="text" id="fv_wp_flowplayer_field_lightbox_width" name="fv_wp_flowplayer_field_lightbox_width" style="width: 12%" placeholder="Width" />
           <input type="text" id="fv_wp_flowplayer_field_lightbox_height" name="fv_wp_flowplayer_field_lightbox_height" style="width: 12%" placeholder="Height" />
-          <input type="text" id="fv_wp_flowplayer_field_lightbox_caption" name="fv_wp_flowplayer_field_lightbox_caption" style="width: 62%" placeholder="Caption" />
+          <input type="text" id="fv_wp_flowplayer_field_lightbox_caption" name="fv_wp_flowplayer_field_lightbox_caption" style="width: 62%" placeholder="Title" />
         </td>
       </tr>
       <script>
