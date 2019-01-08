@@ -29,6 +29,7 @@
 /*#colorbox, #cboxOverlay, #cboxWrapper{ z-index: 100000; }*/
 
 #fv-player-shortcode-editor table .button { width: 22% }
+#fv-player-shortcode-editor .submit-button-wrapper .button { width: auto; }
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
