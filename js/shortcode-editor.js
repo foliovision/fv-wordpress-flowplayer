@@ -622,6 +622,8 @@ function fv_wp_flowplayer_insert( shortcode ) {
       var ev2 = new Event('change', { bubbles: true});
       gutenberg[0].dispatchEvent(ev2,shortcode);
       
+      fv_player_gutenberg_preview(jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper'),shortcode);
+      
     } else if (field.length) {
       field.val(shortcode);
       field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
@@ -3504,3 +3506,12 @@ jQuery(document).on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplaye
   console.log(this.id+' has been updated manually!');
   $element.data('fv_player_user_updated', 1);
 });
+
+
+function fv_player_gutenberg_preview( parent, shortcode ) {
+  console.log('fv_player_gutenberg_preview',parent,shortcode);
+  var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
+  jQuery.get(url, function(response) {
+    jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
+  } );        
+}
