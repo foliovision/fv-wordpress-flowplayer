@@ -28,10 +28,14 @@ class FV_Player_lightbox {
 
     add_action('fv_flowplayer_admin_default_options_after', array( $this, 'lightbox_admin_default_options_html' ) );
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
+    add_filter('fv_flowplayer_admin_integration_options_after', array( $this, 'lightbox_admin_integrations_html' ) );
     
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
 
     add_filter('fv_player_conf_defaults', array( $this, 'conf_defaults' ) );
+    
+    add_action('wp_head', array( $this, 'remove_other_fancybox' ), 8 );
+    add_action('wp_footer', array( $this, 'remove_other_fancybox' ), 19 );
 
     //TODO is this hack needed?
     $conf = get_option('fvwpflowplayer');
@@ -96,6 +100,20 @@ class FV_Player_lightbox {
 
     return $sType;
   }
+  
+  function remove_other_fancybox() {
+    global $fv_fp;
+    if( $fv_fp->_get_option('lightbox_force') ) {
+      global $wp_scripts;
+      if( isset($wp_scripts) && isset($wp_scripts->queue) && is_array($wp_scripts->queue) ) {
+        foreach( $wp_scripts->queue as $handle ) {
+          if( stripos($handle,'fancybox') !== false ) {
+            wp_dequeue_script($handle);
+          }
+        }
+      }
+    }    
+  }  
 
   function shortcode($attrs) {
     $aArgs = func_get_args();
@@ -384,7 +402,7 @@ class FV_Player_lightbox {
           <input type="checkbox" id="fv_wp_flowplayer_field_lightbox" name="fv_wp_flowplayer_field_lightbox" />        
           <input type="text" id="fv_wp_flowplayer_field_lightbox_width" name="fv_wp_flowplayer_field_lightbox_width" style="width: 12%" placeholder="Width" />
           <input type="text" id="fv_wp_flowplayer_field_lightbox_height" name="fv_wp_flowplayer_field_lightbox_height" style="width: 12%" placeholder="Height" />
-          <input type="text" id="fv_wp_flowplayer_field_lightbox_caption" name="fv_wp_flowplayer_field_lightbox_caption" style="width: 62%" placeholder="Caption" />
+          <input type="text" id="fv_wp_flowplayer_field_lightbox_caption" name="fv_wp_flowplayer_field_lightbox_caption" style="width: 62%" placeholder="Title" />
         </td>
       </tr>
       <script>
@@ -439,6 +457,11 @@ class FV_Player_lightbox {
       </script>
       <?php
     }
+  }
+  
+  function lightbox_admin_integrations_html() {
+    global $fv_fp;
+    $fv_fp->_get_checkbox(__('Remove fancyBox', 'fv-wordpress-flowplayer'), 'lightbox_force', __('Use if FV Player lightbox is not working and you see a "fancyBox already initialized" message on JavaScript console.', 'fv-wordpress-flowplayer'));
   }
 
   function lightbox_admin_interface_html() {

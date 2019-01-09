@@ -834,7 +834,7 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Mobile Video', 'fv-wordpress-flowplayer'), array('interface', 'mobile') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Auto Advance', 'fv-wordpress-flowplayer'), array('interface', 'playlist_advance') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Style', 'fv-wordpress-flowplayer'), array('interface', 'playlist') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Playlist Captions', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Item Titles', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
@@ -1522,7 +1522,7 @@ function fv_flowplayer_admin_usage() {
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding"><?php _e('Video Encoding for HTML 5', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists"><?php _e('How to Create Playlists', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/vtt-chapters"><?php _e('VTT Chapters', 'fv-wordpress-flowplayer'); ?></a></li>
-                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/adding-captions-and-splash-text"><?php _e('Adding Captions and Splash Text', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/adding-captions-and-splash-text"><?php _e('Adding Titles and Splash Text', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/quality-switching"><?php _e('Setting Up Video Quality Switching', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/how-to-use-video-checker"><?php _e('How to Use the Built-in Video Checker', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-video-links"><?php _e('Creating Video Links in FV Player', 'fv-wordpress-flowplayer'); ?></a></li>

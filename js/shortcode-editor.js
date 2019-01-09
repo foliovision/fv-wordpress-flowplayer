@@ -21,7 +21,7 @@ var fv_player_shortcode_preview_unsupported = false;
 var fv_player_editor_matcher = {
   default: {
     // matches URL of the video
-    matcher: /\.mp4$/i,
+    matcher: /\.(mp4|webm|m3u8)$/i,
     // AJAX will return these fields which can be auto-updated via JS
     update_fields: ['duration', 'last_video_meta_check'],
   }
@@ -544,7 +544,7 @@ function fv_wp_flowplayer_init() {
 
   jQuery('#player_id_top_text').html('');
 
-  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
   if( field.length ) {
     fv_wp_flowplayer_content = jQuery(field).val();
 
@@ -614,7 +614,15 @@ function fv_wp_flowplayer_init() {
 function fv_wp_flowplayer_insert( shortcode ) {
   if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' && typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) == 'undefined') {
     var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
-    if (field.length) {
+    var gutenberg = jQuery(fv_player_editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field');
+    
+    if( gutenberg.length ) {
+      var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+      nativeInputValueSetter.call(gutenberg[0], shortcode);
+      var ev2 = new Event('change', { bubbles: true});
+      gutenberg[0].dispatchEvent(ev2,shortcode);
+      
+    } else if (field.length) {
       field.val(shortcode);
       field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
 
@@ -826,6 +834,8 @@ function fv_flowplayer_editor_item_show( new_index ) {
   jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);    
  
   var $ = jQuery;
+  
+  $(document).trigger('fv_flowplayer_shortcode_item_switch', [ new_index ] );
  
   $('a[data-tab=fv-player-tab-video-files]').click();    
   
@@ -990,7 +1000,7 @@ function fv_wp_flowplayer_edit() {
   jQuery("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
   jQuery(".fv_player_field_insert-button").attr( 'value', 'Insert' );
   
-  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
   if( field.length || jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
     //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
     if(fv_wp_flowplayer_content.match(/\[/) ) {
@@ -1758,7 +1768,15 @@ function fv_wp_flowplayer_on_close() {
 
 function fv_wp_flowplayer_set_html( html ) {
   var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
-  if( field.length ) {
+  var gutenberg = jQuery(fv_player_editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field');
+  
+  if( gutenberg.length ) {
+    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+    nativeInputValueSetter.call(gutenberg[0], html);
+    var ev2 = new Event('change', { bubbles: true});
+    gutenberg[0].dispatchEvent(ev2,html);
+    
+  } else if( field.length ) {
     field.val(html);
     field.trigger('fv_flowplayer_shortcode_insert', [ html ] );
 

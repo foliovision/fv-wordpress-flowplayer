@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 4.9.8
+Tested up to: 5.0.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,23 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.3.6.727 - 2017/01/08 =
+
+* Caption field - renaming to Title
+* Database - enabling background processing for videos in DB
+* Editor - fix for WebM and HLS duration scanning
+* Lightbox - added Remove fancyBox setting - use if you see a "fancyBox already initialized" message on JavaScript console
+* Sharing - removing Google+ as it's deprecated
+* Bugfix - PHP 7.2 compatiblity
+
+= 7.3.4.727 - 2017/12/14 =
+
+* FV Player top level wp-admin menu item icon
+* WordPress 5 - Gutenberg editor support
+* Database - bugfix for mapping of Disable Playlist Autoadvance
+* Database - making it work with XML sitemap
+* Handle WordPress shortcodes - improved to work with [playlist] as well
 
 = 7.3.3.727 - 2017/12/05 =
 

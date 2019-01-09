@@ -2009,7 +2009,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         <?php
         // regular shortcode data with source
         global $fv_fp;
-        if (!$dataInPost && preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+        if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
           $aAtts = shortcode_parse_atts($shortcode);
           if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');

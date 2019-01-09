@@ -539,30 +539,39 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         if ($id === null || count($query_ids)) {
+          
+          // load multiple players via their IDs but a single query and return their values
+          $select = '*';
+          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'id,'.esc_sql($options['db_options']['select_fields']);
+          
+          $where = '';
+          if( $id !== null ) {
+            $where = ' WHERE id IN('. implode(',', $query_ids).') ';
+            
           // if we have multiple video IDs to load players for, let's prepare a like statement here
-          $where_like_part = '';
-
-          if ($options && !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids'])){
+          } else if( !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids'])){
             $where_like_part = array();
-
             foreach ($options['db_options']['search_by_video_ids'] as $player_video_id) {
+              $player_video_id = intval($player_video_id);
               $where_like_part[] = "(videos = \"$player_video_id\" OR videos LIKE \"%,$player_video_id\" OR videos LIKE \"$player_video_id,%\")";
             }
 
-            $where_like_part = implode(' OR ', $where_like_part);
+            $where = ' WHERE '.implode(' OR ', $where_like_part);
           }
-
-          // load multiple players via their IDs but a single query and return their values
-          $player_data = $wpdb->get_results('
-          SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
-          FROM
-            '.self::$db_table_name.($id !== null ? '
-          WHERE
-            id IN('. implode(',', $query_ids).')' : ($options && !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids']) ? ' WHERE '.$where_like_part : '')).
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
-          );
+          
+          $order = '';
+          if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
+            $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
+            if( !empty($options['db_options']['order']) ) $order .= ' '.esc_sql($options['db_options']['order']);
+          }
+          
+          $limit = '';
+          if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
+            $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
+          }
+          
+          $player_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit );
+          
         } else if ($id !== null && !count($query_ids)) {
           $all_cached = true;
         } else {
@@ -574,13 +583,12 @@ CREATE TABLE " . self::$db_table_name . " (
           // load a single video
           $player_data = $wpdb->get_row('
           SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.esc_sql( $options['db_options']['select_fields'] ) : '*').'
           FROM
             '.self::$db_table_name.'
           WHERE
-            id = '.$id.
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+            id = '.intval($id),
+            ARRAY_A
           );
         } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
           $all_cached = true;
@@ -590,7 +598,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       }
 
-      if (isset($player_data) && $player_data !== -1 && count($player_data)) {
+      if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
           $this->fill_properties($player_data,$DB_Cache);

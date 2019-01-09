@@ -14,8 +14,8 @@ class FV_Player_List_Table_View {
 
   function admin_menu(){    
     global $wpdb;
-    if( current_user_can('edit_posts') && $wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}fv_player_players'") == $wpdb->prefix.'fv_player_players' && $wpdb->get_var("SELECT count(*) FROM {$wpdb->prefix}fv_player_players") ) {
-      add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', 'dashicons-welcome-widgets-menus', 30 );
+    if( current_user_can('edit_posts')  ) {
+      add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', flowplayer::get_plugin_url().'/images/icon@x2.png', 30 );
       add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
     }
   }
@@ -30,6 +30,9 @@ class FV_Player_List_Table_View {
       global $fv_wp_flowplayer_ver;
       wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
     }
+		?>
+		<style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px}</style>
+		<?php
   }
   
   function tools_panel() {
