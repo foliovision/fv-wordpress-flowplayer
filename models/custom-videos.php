@@ -79,7 +79,7 @@ class FV_Player_Custom_Videos {
   
   public function get_html_part( $video, $edit = false ) {
     global $FV_Player_Custom_Videos_Master, $post;
-    $args = $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta];
+    $args = !empty($FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type]) ? $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta] : array( 'multiple' => true );
     
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
     if( $edit ) {
@@ -226,13 +226,15 @@ class FV_Player_Custom_Videos_Master {
         foreach( $aMeta AS $key => $aMetas ) {
           $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
           if( $objVideos->have_videos() ) {
-            add_meta_box( 'fv_player_custom_videos-field_'.$key,
+            global $FV_Player_Custom_Videos_form_instances;
+            $id = 'fv_player_custom_videos-field_'.$key;
+            $FV_Player_Custom_Videos_form_instances[$id] = $objVideos;
+            add_meta_box( $id,
                         ucfirst(str_replace( array('_','-'),' ',$key)),
                         array( $this, 'meta_box' ),
                         null,
                         'normal',
-                        'high',
-                        $objVideos );
+                        'high' );
           }
                       
         }
