@@ -2,8 +2,6 @@
 
 class FV_Player_Custom_Videos {
   
-  var $did_form = false;
-  
   var $id;
   
   var $instance_id;
@@ -28,17 +26,6 @@ class FV_Player_Custom_Videos {
   }
   
   public function get_form( $args = array() ) {
-    
-    global $FV_Player_Custom_Videos_form_instances;
-    if( isset($FV_Player_Custom_Videos_form_instances[$this->meta]) ) {
-      $number = rand();
-      echo "<span id='fv-player-custom-videos-form-".$number."'></span>";
-      echo "<script>jQuery('span#fv-player-custom-videos-form-".$number."').parents('.postbox').remove();</script>";
-      return false;
-    }
-    $FV_Player_Custom_Videos_form_instances[$this->meta] = true;
-    
-    $this->did_form = true;
     
     $args = wp_parse_args( $args, array( 'wrapper' => 'div', 'edit' => true, 'limit' => 1000, 'no_form' => false ) );
     
@@ -213,14 +200,16 @@ class FV_Player_Custom_Videos_Master {
     global $post;
     if( !empty($this->aMetaBoxes[$post->post_type]) ) {
       foreach( $this->aMetaBoxes[$post->post_type] AS $meta_key => $name ) {
-        $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $meta_key, 'type' => 'post' ) );
-        add_meta_box( 'fv_player_custom_videos-field_'.$meta_key,
+        global $FV_Player_Custom_Videos_form_instances;
+        $id = 'fv_player_custom_videos-field_'.$meta_key;
+        $FV_Player_Custom_Videos_form_instances[$id] = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $meta_key, 'type' => 'post' ) );
+        add_meta_box( $id,
                     $name,
                     array( $this, 'meta_box' ),
                     null,
                     'normal',
-                    'high',
-                    $objVideos );
+                    'high'
+                    );
       }
     }
     
@@ -292,10 +281,9 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function meta_box( $aPosts, $args ) {
-    global $FV_Player_Custom_Videos_form_instances;
-    $objVideos = $args['args'];
-    unset($FV_Player_Custom_Videos_form_instances[$objVideos->meta]);
-    echo $objVideos->get_form();
+    global $FV_Player_Custom_Videos_form_instances;    
+    $objVideos = $FV_Player_Custom_Videos_form_instances[$args['id']];
+    echo $objVideos->get_form();    
   }
   
   function register_metabox( $name, $meta_key, $post_type, $display ) {
