@@ -440,8 +440,8 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
       
       $meta = wp_get_attachment_metadata( $attachment->ID );
       if( !empty($meta) ) {
-        if( !empty($meta['length_formatted']) ) {
-          $aPlaylistDurations[] = $meta['length_formatted'];
+        if( !empty($meta['length']) ) {
+          $aPlaylistDurations[] = $meta['length'];
         }
       }
 

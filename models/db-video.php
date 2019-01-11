@@ -83,15 +83,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getDuration() {
-    $sDuration = false;
-    if( $tDuration = intval($this->getMetaValue('duration',true)) ) {
-      if( $tDuration < 3600 ) {
-        $sDuration = gmdate( "i:s", $tDuration );
-      } else {
-        $sDuration = gmdate( "H:i:s", $tDuration );
-      }
-    }
-    return $sDuration;
+    return intval($this->getMetaValue('duration',true));
   }
 
   /**

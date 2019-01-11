@@ -764,36 +764,43 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   private function build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index ) {
     $aPlayer = apply_filters( 'fv_player_item', $aPlayer, $index, $aArgs );
     
-    if( !$sItemCaption && isset($aArgs['liststyle']) && $aArgs['liststyle'] == 'text' ) $sItemCaption = 'Video '.($index+1);
+    $aItem = isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) ? $aPlayer['sources'][0] :  false;
+    $sListStyle = !empty($aArgs['liststyle']) ? $aArgs['liststyle'] : false;
+    
+    if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
     $sHTML = "\t\t<a href='#' onclick='return false' data-item='".$this->json_encode($aPlayer)."'>";
-    if( !isset($aArgs['liststyle']) || $aArgs['liststyle'] != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
+    if( $sListStyle != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
         
-    $sDuration = false;    
+    $tDuration = false;    
     if ($this->current_video()) {
-      $sDuration = $this->current_video()->getDuration();
+      $tDuration = $this->current_video()->getDuration();
     }
     
     if( !empty($aArgs['durations']) ) {
-      $durations = explode( ';', $aArgs['durations'] );
-      if( !empty($durations[$index]) ) {
-        $sDuration = $durations[$index];
+      $aDurations = explode( ';', $aArgs['durations'] );
+      if( !empty($aDurations[$index]) ) {
+        $tDuration = $aDurations[$index];
       }
     }
     
     global $post;
-    if( !$sDuration && $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
-      $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] );
+    if( !$sDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
+      $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
     }   
     
     if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
     
-    if( $sDuration ) {
-      $sItemCaption .= '<i class="dur">'.$sDuration.'</i>';
+    if( $tDuration ) {
+      $sItemCaption .= '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
     }
     
     if( $sItemCaption ) {
       $sHTML .= "<h4>".$sItemCaption."</h4>";
+    }
+    
+    if( $sListStyle != 'text' && intval($tDuration) > 0 && !empty($aItem['position']) ) {
+      $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
     }
     
     $sHTML .= "</a>\n";
@@ -1035,7 +1042,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
-      $css .= $sel." .fp-color, ".$sel." .fp-selected { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
+      $css .= $sel." .fp-color, ".$sel." .fp-selected, .fp-playlist-external.".$skin." .fvp-progress { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
@@ -1408,20 +1415,26 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
   
+  public static function format_hms( $seconds ) {
+    if( $seconds < 3600 ) {
+      return gmdate( "i:s", $seconds );
+    } else {
+      return gmdate( "H:i:s", $seconds );
+    }
+  }
   
-  public static function get_duration( $post_id, $video_src ) {
-    $sDuration = false;
+  
+  public static function get_duration( $post_id, $video_src, $seconds = false ) {
     if( $sVideoMeta = get_post_meta( $post_id, flowplayer::get_video_key($video_src), true ) ) {  //  todo: should probably work regardles of quality version
       if( isset($sVideoMeta['duration']) && $sVideoMeta['duration'] > 0 ) {
-        $tDuration = $sVideoMeta['duration'];
-        if( $tDuration < 3600 ) {
-          $sDuration = gmdate( "i:s", $tDuration );
-        } else {
-          $sDuration = gmdate( "H:i:s", $tDuration );
+        if( $seconds ) {
+          return $sVideoMeta['duration'];
         }
-      }      
+        
+        return flowplayer::format_hms($sVideoMeta['duration']);
+      }
     }
-    return $sDuration;
+    return false;
   }
   
   
@@ -1753,6 +1766,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( get_query_var('fv_player_embed') ) {
       $sPlaylistClass .= ' fp-is-embed';
+    }
+    
+    if( !empty($this->aCurArgs['skin']) ) {
+      $sPlaylistClass .= ' skin-'.$this->aCurArgs['skin'];
+    } else {
+      $sPlaylistClass .= ' skin-'.$this->_get_option('skin');
     }
 
     return $sPlaylistClass;
