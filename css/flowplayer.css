@@ -51,7 +51,8 @@
   -webkit-box-shadow: 0 !important;
           box-shadow: 0 !important;
   background-image: none !important;
-  background-color: #333; }
+  background-color: #333;
+  border-radius: 0; }
   .flowplayer.is-fullscreen .fp-player {
     background-color: #333; }
   .flowplayer.is-fullscreen .fp-fullscreen:before {
