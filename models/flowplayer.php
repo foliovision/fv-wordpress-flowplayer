@@ -785,7 +785,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     
     global $post;
-    if( !$sDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
+    if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
       $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
     }   
     
@@ -1186,7 +1186,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
       if( $this->bCSSInline ) {
-        $this->css_generate(false);        
+        $this->css_generate(false);
       }
       
     } else {
@@ -1200,8 +1200,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( $this->bCSSInline ) {
-        add_action( 'wp_head', array( $this, 'css_generate' ) );
-        add_action( 'admin_head', array( $this, 'css_generate' ) );
+        if( did_action('wp_footer') ) {
+          $this->css_generate(false);
+        } else {
+          add_action( 'wp_head', array( $this, 'css_generate' ) );
+          add_action( 'admin_head', array( $this, 'css_generate' ) );
+        }
       }
       
     }
