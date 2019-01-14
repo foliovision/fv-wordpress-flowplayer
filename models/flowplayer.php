@@ -770,7 +770,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
     $sHTML = "\t\t<a href='#' onclick='return false' data-item='".$this->json_encode($aPlayer)."'>";
-    if( $sListStyle != 'text' ) $sHTML .= $sSplashImage ? "<div style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div></div>";
+    if( $sListStyle != 'text' ) $sHTML .= $sSplashImage ? "<div class='fvp-playlist-thumb' style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div class='fvp-playlist-thumb'></div>";
         
     $tDuration = false;    
     if ($this->current_video()) {
@@ -1752,33 +1752,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public function get_playlist_class($aCaptions) {
-    $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
+    $sClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
 
-    if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
-      $sPlaylistClass .= ' fp-playlist-horizontal';
-    } else if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'vertical' ){
-      $sPlaylistClass .= ' fp-playlist-vertical';
-    } else if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' ){
-      $sPlaylistClass = 'fp-playlist-vertical';
-    }
-    //var_dump($aCaptions);
-    if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'text' ){
-      $sPlaylistClass .= ' fp-playlist-only-captions';
-    } else if( isset($this->aCurArgs['liststyle']) && sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ){
-      $sPlaylistClass .= ' fp-playlist-has-captions';
+    if( isset($this->aCurArgs['liststyle']) ) {
+      $list_style = $this->aCurArgs['liststyle'];
+      if( $list_style == 'slider' ) {
+        $sClass .= ' fp-playlist-horizontal';
+      } else if( $list_style == 'text' ) {
+        $sClass = 'fp-playlist-vertical';
+      } else {
+        $sClass = 'fp-playlist-'.$list_style;
+      }
+      
+      if( $list_style == 'text' ) {
+        $sClass .= ' fp-playlist-only-captions';
+      } else if( sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ) {
+        $sClass .= ' fp-playlist-has-captions';
+      }
     }
     
     if( get_query_var('fv_player_embed') ) {
-      $sPlaylistClass .= ' fp-is-embed';
+      $sClass .= ' fp-is-embed';
     }
     
     if( !empty($this->aCurArgs['skin']) ) {
-      $sPlaylistClass .= ' skin-'.$this->aCurArgs['skin'];
+      $sClass .= ' skin-'.$this->aCurArgs['skin'];
     } else {
-      $sPlaylistClass .= ' skin-'.$this->_get_option('skin');
+      $sClass .= ' skin-'.$this->_get_option('skin');
     }
 
-    return $sPlaylistClass;
+    return $sClass;
   }
   
   
