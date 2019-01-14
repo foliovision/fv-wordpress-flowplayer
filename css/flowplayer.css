@@ -1836,3 +1836,32 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   position: absolute;
   left: 0;
 }
+
+.fvp-playlist-item-info {
+  float: right;
+  text-align: left;
+  width: 65%;
+}
+.fp-playlist-season a:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.fp-playlist-season a .fvp-playlist-thumb {
+  width: 33%;
+  height: 200px;
+  padding-top: 0;
+}
+.fp-playlist-season a h4 {
+  opacity: 100;
+  position: static;
+}
+.fp-playlist-season a h4 span {
+  position: static;
+}
+.fp-playlist-season .dur {
+  opacity: 100;
+  position: static;
+  color: inherit;
+  text-shadow: none;
+}

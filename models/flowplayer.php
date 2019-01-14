@@ -770,8 +770,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
     $sHTML = "\t\t<a href='#' onclick='return false' data-item='".$this->json_encode($aPlayer)."'>";
-    if( $sListStyle != 'text' ) $sHTML .= $sSplashImage ? "<div class='fvp-playlist-thumb' style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div class='fvp-playlist-thumb'></div>";
-        
+    
     $tDuration = false;    
     if ($this->current_video()) {
       $tDuration = $this->current_video()->getDuration();
@@ -787,20 +786,49 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     global $post;
     if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
       $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
-    }   
-    
-    if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
-    
-    if( $tDuration ) {
-      $sItemCaption .= '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
     }
     
-    if( $sItemCaption ) {
-      $sHTML .= "<h4>".$sItemCaption."</h4>";
-    }
-    
-    if( $sListStyle != 'text' && intval($tDuration) > 0 && !empty($aItem['position']) ) {
-      $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
+    if( $sListStyle == 'season' ) {
+      $sHTML .= "<div class='fvp-playlist-item-info'>";
+      if( $sItemCaption ) {
+        $sHTML .= "<h4>".$sItemCaption."</h4>";
+      }
+      if ($this->current_video()) {
+        $sSynopsis = $this->current_video()->getMetaValue('synopsis',true);
+        if( $sSynopsis ) {
+          $sHTML .= wpautop($sSynopsis);
+        }
+      }
+      
+      if( $tDuration ) {
+        $sHTML .= '<i class="dur">('.round($tDuration/60).'m)</i>';
+      }
+      
+      $sHTML .= "</div>";
+      
+      if( $sSplashImage ) {
+        $sSplashImage = " style='background-image: url(\"".$sSplashImage."\")'";
+      }
+      
+      $sHTML .= "<div class='fvp-playlist-thumb no-image'".$sSplashImage.">";      
+      if( intval($tDuration) > 0 && !empty($aItem['position']) ) {
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
+      }
+      $sHTML .= "</div>";
+      
+    } else {
+      if( $sListStyle != 'text' ) $sHTML .= $sSplashImage ? "<div class='fvp-playlist-thumb' style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div class='fvp-playlist-thumb no-image'></div>";
+      
+      if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
+      
+      if( $tDuration ) {
+        $sItemCaption .= '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
+      }
+      
+      if( $sItemCaption ) {
+        $sHTML .= "<h4>".$sItemCaption."</h4>";
+      }
+      
     }
     
     $sHTML .= "</a>\n";
