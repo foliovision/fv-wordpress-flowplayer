@@ -391,6 +391,10 @@ class flowplayer_frontend extends flowplayer
         if( $this->_get_option(array($skin, 'bottom-fs')) ) {
           $attributes['class'] .= ' bottom-fs';
         }
+        
+        if( !empty($this->aCurArgs['playlist']) ) {
+          $attributes['class'] .= ' has-playlist has-playlist-'.$this->aCurArgs['liststyle'];
+        }
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
