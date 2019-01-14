@@ -9,7 +9,7 @@ class FV_Player_Position_Save {
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
   }
 
-  private function get_extensionless_file_name($path) {
+  public static function get_extensionless_file_name($path) {
     return pathinfo($path, PATHINFO_FILENAME);
   }
 
@@ -44,6 +44,13 @@ class FV_Player_Position_Save {
       foreach ($times as $record) {
         update_user_meta($uid, 'fv_wp_flowplayer_position_'.$this->get_extensionless_file_name($record['name']), $record['position']);
       }
+      
+      if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
+        foreach ($_POST['sawVideo'] as $record) {
+          update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$this->get_extensionless_file_name($record['name']), true);
+        }
+      }
+      
       wp_send_json_success();
     } else {
       wp_send_json_error();
