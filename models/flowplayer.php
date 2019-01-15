@@ -810,9 +810,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sSplashImage = " style='background-image: url(\"".$sSplashImage."\")'";
       }
       
-      $sHTML .= "<div class='fvp-playlist-thumb no-image'".$sSplashImage.">";      
+      $sHTML .= "<div class='fvp-playlist-thumb no-image'".$sSplashImage.">";
       if( intval($tDuration) > 0 && !empty($aItem['position']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
+      } else if( !empty($aItem['saw']) ) {
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
       $sHTML .= "</div>";
       
