@@ -55,7 +55,7 @@ class FV_Player_Position_Save {
           update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
         }
         
-        if( !empty($record['saw']) && $record['saw'] ) {
+        if( !empty($record['saw']) && $record['saw'] == 'true' ) {
           update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
         }
       }
