@@ -1,4 +1,7 @@
 jQuery( function($) {
+    
+    window.fv_player_browser = '';
+    
     function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback) {
       if (!jQuery('#' + tabId).length) {
         // add Vimeo browser tab
@@ -141,14 +144,14 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
   // This event listener monitors changes on the URL. We use it to
   // capture back/forward navigation in the browser.
 
-  jQuery(window).on('hashchange', function(){
+  jQuery(window).on('fv-player-browser-hashchange', function(){
 
-    goto(window.location.hash);
+    goto(window.fv_player_browser);
 
     // We are triggering the event. This will execute
     // this function on page load, so that we show the correct folder:
 
-  }).trigger('hashchange');
+  }).trigger('fv-player-browser-hashchange');
 
 
   // Hiding and showing the search box
@@ -185,14 +188,16 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
       filemanager.addClass('searching');
 
       // Update the hash on every key stroke
-      window.location.hash = 'search=' + value.trim();
+      window.fv_player_browser = 'search=' + value.trim();
+      jQuery(window).trigger('fv-player-browser-hashchange');
 
     }
 
     else {
 
       filemanager.removeClass('searching');
-      window.location.hash = encodeURIComponent(currentPath);
+      window.fv_player_browser = encodeURIComponent(currentPath);
+      jQuery(window).trigger('fv-player-browser-hashchange');
 
     }
 
@@ -221,7 +226,9 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
     if(!search.val().trim().length) {
 
-      window.location.hash = encodeURIComponent(currentPath);
+      window.fv_player_browser = encodeURIComponent(currentPath);
+      jQuery(window).trigger('fv-player-browser-hashchange');
+      
       search.hide();
       search.parent().find('span').show();
 
@@ -251,7 +258,9 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
       breadcrumbsUrls.push(nextDir);
     }
 
-    window.location.hash = encodeURIComponent(nextDir);
+    window.fv_player_browser = encodeURIComponent(nextDir);
+    jQuery(window).trigger('fv-player-browser-hashchange');
+    
     currentPath = nextDir;
   });
 
@@ -266,7 +275,8 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
     breadcrumbsUrls.length = Number(index);
 
-    window.location.hash = encodeURIComponent(nextDir);
+    window.fv_player_browser = encodeURIComponent(nextDir);
+    jQuery(window).trigger('fv-player-browser-hashchange');
 
   });
 
@@ -275,7 +285,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
   function goto(hash) {
 
-    hash = decodeURIComponent(hash).slice(1).split('=');
+    hash = decodeURIComponent(hash).split('=');
 
     if (hash.length) {
       var rendered = '';
