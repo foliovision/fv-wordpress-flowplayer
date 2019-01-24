@@ -29,6 +29,8 @@ class FV_Player_List_Table_View {
     if( isset($_GET['page']) && $_GET['page'] == 'fv_player' ) {
       global $fv_wp_flowplayer_ver;
       wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
+      
+      wp_enqueue_media();
     }
 		?>
 		<style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px}</style>

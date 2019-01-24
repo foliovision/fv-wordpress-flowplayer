@@ -102,13 +102,13 @@ class FV_Player_Db {
       if( is_numeric($aItem['sources'][0]['src']) ) {
         $new = array( 'sources' => array() );
         if( $src = $vid_obj->getSrc() ) {
-          $new['sources'][] = array( 'src' => $src, 'type' => $fv_fp->get_mime_type($src) );
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src,array()), 'type' => $fv_fp->get_mime_type($src) );
         }
         if( $src1 = $vid_obj->getSrc1() ) {
-          $new['sources'][] = array( 'src' => $src1, 'type' => $fv_fp->get_mime_type($src1) );
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src1,array()), 'type' => $fv_fp->get_mime_type($src1) );
         }
         if( $src2 = $vid_obj->getSrc2() ) {
-          $new['sources'][] = array( 'src' => $src2, 'type' => $fv_fp->get_mime_type($src2));
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src2,array()), 'type' => $fv_fp->get_mime_type($src2));
         }
         if( $rtmp = $vid_obj->getRtmp() ) {
           $new['rtmp'] = $rtmp;
