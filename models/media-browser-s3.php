@@ -5,6 +5,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   function __construct( $ajax_action_name ) {
     add_action( 'edit_form_after_editor', array($this, 'init'), 1 );
     add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg') );
+    add_action( 'admin_print_footer_scripts', array($this, 'init'), 1 );
     parent::__construct( $ajax_action_name );
   }
 

@@ -497,7 +497,8 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
         $url_input
           .val($this.attr('href'))
-          .removeClass('fv_flowplayer_target' );
+          .removeClass('fv_flowplayer_target' )
+          .trigger('keyup'); // this changes the HLS key field visibility in FV Player Pro
 
         if( splash && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/) ) {
           var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');

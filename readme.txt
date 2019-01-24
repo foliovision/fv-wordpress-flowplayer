@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.7.727 - 2019/01/24 =
+
+* Database - performance fix
+* Bugfix - fullscreen mode corners when using the YouTuby skin
+* Bugfix - FV Player Meta Box (Custom Videos) fixes
+* Bugfix - WP Media Library not loading for FV Player screen
+* Bugfix - S3 Browser not loading FV Player screen and Gutenberg (block editor)
+
 = 7.3.6.727 - 2019/01/08 =
 
 * Caption field - renaming to Title
