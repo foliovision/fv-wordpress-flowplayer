@@ -806,12 +806,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       $sHTML .= "</div>";
       
+      $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
-        $sSplashImage = " style='background-image: url(\"".$sSplashImage."\")'";
+        if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
+          $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='$sSplashImage' />";
+        } else {
+          $sHTML .= "<img src='$sSplashImage' />";
+        }
+        
       }
-      
-      $sHTML .= "<div class='fvp-playlist-thumb no-image'".$sSplashImage.">";
-      if( intval($tDuration) > 0 && !empty($aItem['position']) ) {
+      if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
