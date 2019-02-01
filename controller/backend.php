@@ -190,7 +190,7 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	}
 	
 	global $fv_wp_flowplayer_ver;
-	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
+	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
 	}
 	return 0;
