@@ -288,8 +288,8 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </tr>
 										
 					<tr class="<?php if (isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true') echo 'playlist_synopsis'; else echo 'fv_player_interface_hide'; ?>" >
-                      <th scope="row" class="label"><label for="fv_wp_flowplayer_field_synopsis" class="alignright"><?php _e('Synopsis', 'fv_flowplayer'); ?></label></th>
-                      <td class="field" colspan="2"><textarea id="fv_wp_flowplayer_field_synopsis" name="fv_wp_flowplayer_field_synopsis"></textarea></td>
+                      <th scope="row" class="label" valign="top"><label for="fv_wp_flowplayer_field_synopsis" class="alignright"><?php _e('Synopsis', 'fv_flowplayer'); ?></label></th>
+                      <td class="field" colspan="2"><textarea id="fv_wp_flowplayer_field_synopsis" name="fv_wp_flowplayer_field_synopsis" class="<?php echo $upload_field_class; ?>"></textarea></td>
                     </tr>
 
                     <tr <?php if( !isset($fv_flowplayer_conf["interface"]["live"]) || $fv_flowplayer_conf["interface"]["live"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
