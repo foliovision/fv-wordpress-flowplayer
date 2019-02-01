@@ -2066,6 +2066,8 @@ flowplayer(function(api, root) {
   
   if( root.hasClass('is-audio') ) return;
   
+  if( root.data('fsforce') == false ) return;
+  
   var force = 1 || flowplayer.conf.mobile_force_fullscreen && ( 'ontouchstart' in window ) && flowplayer.support.fvmobile; // todo: setting
   
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
@@ -2504,8 +2506,7 @@ jQuery(document).on('mfpClose', function() {
  */
 flowplayer( function(api,root) {
   var
-    $root = jQuery(root),
-    enabled = flowplayer.conf.video_position_save_enable || $root.data('save-position'),
+    $root = jQuery(root),    
     progressEventsCount = 0,
     // number of events to pass before we auto-send current video positions
     sendPositionsEvery = 60,
@@ -2728,6 +2729,9 @@ flowplayer( function(api,root) {
       clearInterval(do_seek);
     }, 10 );
   };
+  
+  var enabled = flowplayer.conf.video_position_save_enable || $root.data('save-position');
+  if( $root.data('save-position') == false ) enabled = false;
     
   if( !enabled ) return;
 
@@ -2743,9 +2747,11 @@ flowplayer( function(api,root) {
 
   // TODO: find out what event can be used to force saving of playlist video positions on video change
   //api.bind('finish', forceSavePosition);
-  jQuery(window).on('beforeunload', function () {
-    flowplayer.conf.closingPage = true;
-    sendVideoPositions();
+  api.one('progress', function() {
+    jQuery(window).on('beforeunload', function () {
+      flowplayer.conf.closingPage = true;
+      sendVideoPositions();
+    });
   });
 
   // check whether local storage is enabled
@@ -2854,7 +2860,7 @@ flowplayer( function(api,root) {
   if( api.conf.playlist.length == 0 ) return;
   
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
-  if( !playlist.hasClass('fp-playlist-season') ) return;
+  //if( !playlist.hasClass('fp-playlist-season') ) return; // todo: what about mobile? Should we always allow this?
   
   var playlist_button = jQuery('<strong class="fv-fp-list">Item 1.</strong>'),
     playlist_menu = jQuery('<div class="fp-menu fv-fp-list-menu"></div>').insertAfter( root.find('.fp-controls') );

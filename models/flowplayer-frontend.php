@@ -447,6 +447,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-button-repeat'] = true;
         }
         
+        if( !empty($this->aCurArgs['fsforce']) ) {
+          $attributes['data-fsforce'] = $this->aCurArgs['fsforce'];
+        }
+        
         //  Align
         $attributes['class'] .= $this->get_align();
         
