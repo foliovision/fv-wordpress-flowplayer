@@ -90,8 +90,8 @@ class FV_Player_Custom_Videos {
             <div class='fv-player-editor-preview'>".($video ? do_shortcode($video) : '')."</div>
             <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
             <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
-              <button class='button fv-player-editor-button'>Edit Video</button>
-              <button class='button fv-player-editor-remove'>Remove Video</button>
+              <button class='button fv-player-editor-button'>".$args['labels']['edit']."</button>
+              <button class='button fv-player-editor-remove'>".$args['labels']['remove']."</button>
               $add_another
             </div>
 
@@ -444,7 +444,13 @@ class FV_Player_MetaBox {
                    );
     }
     
-    $args = wp_parse_args( $args, array( 'display' => false, 'multiple' => true ) );
+    $args = wp_parse_args( $args, array(
+      'display' => false,
+      'multiple' => true,
+      'labels' => array(
+        'edit' => 'Edit Video',
+        'remove' => 'Remove Video'
+      ) ) );
     
     global $FV_Player_Custom_Videos_Master;
     $FV_Player_Custom_Videos_Master->register_metabox($args);
