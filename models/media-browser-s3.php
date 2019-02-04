@@ -92,7 +92,12 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
     if ($regioned_bucket_found) {
       
-      $output = array();
+      $output = array(
+        'name' => 'Home',
+        'type' => 'folder',
+        'path' => !empty($_POST['path']) ? $_POST['path'] : 'Home/',
+        'items' => array()
+      );
       
       $region = $regions[ $array_id ];
       $secret = $secrets[ $array_id ];
@@ -102,14 +107,20 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
       $credentials = new Aws\Credentials\Credentials( $key, $secret );
       
       try {
-
-        $cfClient = Aws\CloudFront\CloudFrontClient::factory( array(
-        'credentials' => $credentials,
-        'region' => 'us-east-1',
-        'version' => 'latest'
-        ) );
-
-        $cloudfronts = $cfClient->listDistributions();        
+        $cloudfronts = get_transient('fv_player_s3_browser_cf');
+        if( !$cloudfronts ) {
+          $cfClient = Aws\CloudFront\CloudFrontClient::factory( array(
+          'credentials' => $credentials,
+          'region' => 'us-east-1',
+          'version' => 'latest'
+          ) );
+  
+          $cloudfronts = $cfClient->listDistributions();
+          if( !empty($cloudfronts['DistributionList']['Items']) ) {
+            set_transient('fv_player_s3_browser_cf',$cloudfronts,60);
+          }
+        }
+        
         foreach( $cloudfronts['DistributionList']['Items'] AS $item ) {
           if( !$item['Enabled'] ) continue;
           
@@ -142,27 +153,56 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
       ) );
 
       try {
-        $objects = $s3Client->getIterator( 'ListObjects', array( 'Bucket' => $bucket ) );
+        $args = array(
+          'Bucket' => $bucket,
+          'Delimiter' => '/',
+        );
+        
+        $request_path = !empty($_POST['path']) ? str_replace( 'Home/', '', stripslashes($_POST['path']) ) : false;
+        
+        if( $request_path ) {
+          $args['Prefix'] = $request_path;
+        }
+        
+        $res = $s3Client->ListObjects( $args );
+        $objects = array_merge( !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array(), $res->get('Contents') );
+        
+        if( isset($_REQUEST['debug']) ) {
+          var_dump($args,$objects);
+          die();
+        }
 
-        $path_array = array();
-        $size_array = array();
-        $link_array = array();
-
+        $sum_up = array();
         foreach ( $objects as $object ) {
           if ( ! isset( $objectarray ) ) {
             $objectarray = array();
           }
-          //print_r($object);
-          $name = $object['Key'];
-          $size = $object['Size'];
-
-          if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
+          
+          $item = array();
+          
+          $path = $object['Prefix'] ? $object['Prefix'] : $object['Key'];
+          
+          if( !empty($object['Key']) && preg_match( '~\.ts$~', $object['Key'] ) ) {
+            if( empty($sum_up['ts']) ) $sum_up['ts'] = 0;
+            $sum_up['ts']++;
             continue;
           }
-
-          if ( $object['Size'] != '0' ) {
-
-            $link = (string) $s3Client->getObjectUrl( $bucket, $name );
+          
+          $item['path'] = 'Home/' . $path;
+          
+          if( $request_path ) {
+            if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
+            
+            $item['name'] = str_replace( $request_path, '', $path );
+          } else {
+            $item['name'] = $path;
+          }
+          
+          if( !empty($object['Size']) ) {
+            $item['type'] = 'file';
+            $item['size'] = $object['Size'];
+            
+            $link = (string) $s3Client->getObjectUrl( $bucket, $path );
             $link = str_replace( '%20', '+', $link );
             
             // replace link with CloudFront URL, if we have one
@@ -173,87 +213,35 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
               // replace S3 URLs with bucket name as a subfolder
               $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
             }
+            
+            $item['link'] = $link;
+            
+          } else {
+            $item['type'] = 'folder';
+            $item['items'] = array();
+          }
+          
+          $output['items'][] = $item;
 
-            $path = 'Home/' . $name;
-
-            $path_array[] = $path;
-            $size_array[] = $size;
-            $link_array[] = $link;
-
+          if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
+            continue;
           }
 
         }
-
-        function &placeInArray( array &$dest, array $path_array, $size, $pathorig, $link ) {
-          // If we're at the leaf of the tree, just push it to the array and return
-          //echo $pathorig;
-          //echo $size."<br>";
-
-          global $folders_added;
-          if ( count( $path_array ) === 1 ) {
-            if ( $path_array[0] !== '' ) {
-              $file_array         = array();
-              $file_array['name'] = $path_array[0];
-              $file_array['size'] = $size;
-              $file_array['type'] = 'file';
-              $file_array['path'] = $pathorig;
-              $file_array['link'] = $link;
-              array_push( $dest['items'], $file_array );
-            }
-
-            return $dest;
-          }
-
-          // If not (if multiple elements exist in path_array) then shift off the next path-part...
-          // (this removes $path_array's first element off, too)
-          $path = array_shift( $path_array );
-
-          if ( $path ) {
-
-            $newpath_temp = explode( $path, $pathorig );
-            $newpath      = $newpath_temp[0] . $path . '/';
-            // ...make a new sub-array for it...
-
-
-            //if (!isset($dest['items'][$path])) {
-            if ( ! in_array( $newpath, $folders_added, true ) ) {
-              $dest['items'][] = array(
-
-                'name'  => $path,
-                'type'  => 'folder',
-                'path'  => $newpath,
-                'items' => array()
-
-              );
-              $folders_added[] = $newpath;
-              //print_r($folders_added);
-            }
-            $count = count( $dest['items'] );
-            $count --;
-            //echo $count.'<br>';
-            //print_r($dest['items'][$path]);
-
-            // ...and continue the process on the sub-array
-            return placeInArray( $dest['items'][ $count ], $path_array, $size, $pathorig, $link );
-          }
-
-          // This is just here to blow past multiple slashes (an empty path-part), like
-          // /path///to///thing
-          return placeInArray( $dest, $path_array, $size, $pathorig, $link );
+        
+        foreach( $sum_up AS $ext => $count ) {
+          $output['items'][] = array(
+            'name' => '*.ts',
+            'link' => '',
+            'size' => $count.' .'.$ext.' files hidden',
+            'type' => 'placeholder'
+            );
         }
 
-        $folders_added = array();
-        $i             = 0;
-        foreach ( $path_array as $path ) {
-          $size = $size_array[ $i ];
-          $link = $link_array[ $i ];
-          placeInArray( $output, explode( '/', $path ), $size, $path, $link );
-          $i ++;
-        }
       } catch ( Aws\S3\Exception\S3Exception $e ) {
         //echo $e->getMessage() . "\n";
         $err = $e->getMessage();
-        $output['items'] = array(
+        $output = array(
           'items' => array(),
           'name' => '/',
           'path' => '/',
@@ -279,7 +267,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
       'active_bucket_id' => $array_id,
       'items'            => (
       $regioned_bucket_found ?
-        $output['items'][0] :
+        $output :
         array(
           'items' => array(),
           'name' => '/',
