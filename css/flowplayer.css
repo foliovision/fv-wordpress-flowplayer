@@ -1872,3 +1872,63 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.has-playlist-season.is-fullscreen {
   display: block;
 }
+
+/* Editing Movies and Shows */
+
+.fp-playlist-external.fp-playlist-season .fp-playlist-external a {
+    clear: both;
+    display: block;
+    margin: 0 0 2em;
+    max-width: 600px;
+}
+.fp-playlist-external.fp-playlist-season .fvp-playlist-item-info {
+	float: right;
+	font-weight: 300;
+	font-family: inherit;
+	margin: 0 0 .5em;
+	width: 48%;
+}
+.fp-playlist-external.fp-playlist-season .fvp-playlist-thumb-img {
+	float: left;
+	width: 48%;
+	position: relative;
+	margin: 0 2% 0 0;
+}
+.fp-playlist-external.fp-playlist-season .fvp-playlist-thumb-img img {
+	display: block;
+}
+.fp-playlist-external.fp-playlist-season .fp-playlist-external a h4 {
+	background: none;
+	text-align: left;
+	padding: 0;
+	font-size: 18px;
+	font-size: 1.125rem;
+	font-weight: 700;
+	margin-bottom: .5em;
+}
+.fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p:last-child {
+	margin-bottom: .5em;
+}
+.fp-playlist-external.fp-playlist-season .fp-playlist-season .dur {
+	color: #aaa;
+	font-weight: 300;
+}
+.fp-playlist-external.fp-playlist-season .fp-playlist-external a h4 {
+	background-color: transparent;
+	color: #000;
+	width: auto;
+	text-align: left;
+}
+.fp-playlist-external.fp-playlist-season .fvp-progress-wrap {
+	background-color: #999;
+	background-color: rgba(255,255,255,0.5);
+	-webkit-box-shadow: 0 0 3px #000;
+	-moz-box-shadow: 	0 0 3px #000;
+	box-shadow: 		0 0 3px #000;
+}
+.fp-playlist-external.fp-playlist-season a:hover h4, 
+.fp-playlist-external.fp-playlist-season a.fvp-video-thumb-no-splash h4,
+.fp-playlist-external.fp-playlist-season a.is-active:hover h4, 
+.fp-playlist-external.fp-playlist-season a:hover .dur {
+	color: #000;
+}
