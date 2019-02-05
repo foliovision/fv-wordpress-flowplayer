@@ -38,9 +38,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       this.nextAutoLevel = nextLevel;
     }
     
-    FVAbrController.prototype.destroy = function() {
-      EventHandler.prototype.destroy.call(this);
-    }
+    FVAbrController.prototype.destroy = function() {}
     
     flowplayer.conf.hlsjs = {      
       startLevel: -1, // todo: doesn't seem to work, fix it to pick quality matching the player size
@@ -2183,22 +2181,14 @@ flowplayer( function(api,root) {
       var stream_info = bitrates[api.engine.dash.getQualityFor('video')];
       if( stream_info.qualityIndex != last_quality ) {
         last_quality = stream_info.qualityIndex;
-        var low = 100000;
-        for( var i in bitrates ) {
-          if( bitrates[i].height < low ) low = bitrates[i].height;
-        }
-        quality_label(stream_info.qualityIndex,stream_info.height,low);
+        quality_label( stream_info.qualityIndex, bitrates );
       }
       if( search.match(/dash_debug/) ) quality_debug(stream_info.width,stream_info.height,stream_info.bitrate);      
       
     } else if( api.engine.engineName == 'hlsjs-lite' ) {
       if( hlsjs.currentLevel != last_quality ) {
         last_quality = hlsjs.currentLevel;
-        var low = 100000;
-        for( var i in hlsjs.levels ) {
-          if( hlsjs.levels[i].height < low ) low = hlsjs.levels[i].height;
-        }
-        quality_label( hlsjs.currentLevel, hlsjs.levels[hlsjs.currentLevel].height, low );
+        quality_label( hlsjs.currentLevel, hlsjs.levels );
       }
       
       if( search.match(/hls_debug/) ) {
@@ -2209,13 +2199,23 @@ flowplayer( function(api,root) {
     }
   }
   
-  function quality_label(index,height,low) {
+  function quality_label(index,qualities) {
+    if( !qualities[index] ) return;
+    
+    var height = qualities[index].height,
+      hd_limit = 541,
+      lowest = 100000;
+    jQuery(qualities).each( function(k,v) {
+      if( v.height >= 720 && v.height < 1400 ) hd_limit = 720;
+      if( v.height < lowest ) lowest = v.height;
+    });
+    
     root.find('a[data-quality]').removeClass('is-current');
     root.find('a[data-quality='+index+']').addClass('is-current');    
     var label = 'M';
-    if( height >= 360 && low < height ) label = 'SD';
-    if( height > 540 ) label = 'HD';
-    if( height >= 1400 ) label = '4K';        
+    if( height >= 360 && lowest < height ) label = 'SD';
+    if( height >= hd_limit ) label = 'HD';
+    if( height >= 1400 ) label = '4K';
     root.find('.fp-qsel').html(label);    
   }
   
@@ -2783,10 +2783,12 @@ flowplayer( function(api,root) {
     time_delay = 0;
   
   api.on('load', function(e,api,video) {
+    clearInterval(no_progress);
     time_start = new Date().getTime();
   });
   
   api.on('ready', function() {
+    clearInterval(no_progress);
     root.find('video').on( "stalled", function(e) {} ); // could be helpful, but just using this event alone is not enough: https://github.com/flowplayer/flowplayer/issues/1403
     
     if( api.engine.engineName == 'html5' ) {

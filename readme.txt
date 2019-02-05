@@ -357,6 +357,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.9.727 - 2019/02/05 =
+
+* FV Player wp-admin menu - sorting by player date, latest first
+* S3 Bucket browser - improving to work well with large quantities of files. The search function was removed gone as AWS S3 doesn't have that, unfortunately.
+* Quality Switching - improving the label for qualities in range of 540-720p (HD if there is no higher quality, otherwise SD)
+* Bugfix - iOS video recovery issues in playlists
+
 = 7.3.7.727 - 2019/01/24 =
 
 * Database - performance fix
