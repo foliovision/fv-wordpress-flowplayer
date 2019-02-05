@@ -709,7 +709,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
     new_item.find('[name=fv_wp_flowplayer_field_splash_text]').val(objVid.splash_text);
     
     jQuery(objVid.meta).each( function(k,v) {
-      if( v.meta_key == 'synopsis' ) new_item.find('[name=fv_wp_flowplayer_field_synopsis]').val(v.meta_value);
+      if( v.meta_key == 'synopsis' ) new_item.find('[name=fv_wp_flowplayer_field_synopsis]').val(v.meta_value).attr('data-id',v.id);
     });
     
     if (typeof sSubtitles === 'object' && sSubtitles.length && sSubtitles[0].lang) {
