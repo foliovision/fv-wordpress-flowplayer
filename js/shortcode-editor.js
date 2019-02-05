@@ -798,6 +798,7 @@ function fv_flowplayer_playlist_show() {
     playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? '<img src="' + video_preview + '" />':'');
     
     var video_name = decodeURIComponent(currentUrl).split("/").pop();
+    video_name = video_name.replace(/\+/g,' ');
     video_name = video_name.replace(/watch\?v=/,'YouTube: ');
     
     playlist_row.find('.fvp_item_video-filename').html( video_name );
