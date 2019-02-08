@@ -1891,7 +1891,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function rewrite_check( $aRules ) {
     $aRewriteRules = get_option('rewrite_rules');
-    if( empty($aRewriteRules) ) {
+    if( empty($aRewriteRules) || !is_array($aRewriteRules) || count($aRewriteRules) == 0 ) {
       return;
     }
     
