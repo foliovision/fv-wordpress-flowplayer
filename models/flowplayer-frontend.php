@@ -372,7 +372,11 @@ class flowplayer_frontend extends flowplayer
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
   
-        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );          
+        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );
+        
+        if( !$bIsAudio && $video = $this->current_video() ) {          
+          $bIsAudio = $video->getMetaValue('audio',true);
+        }
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
         
