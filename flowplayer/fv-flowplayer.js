@@ -2868,8 +2868,9 @@ flowplayer( function(api,root) {
     playlist_menu = jQuery('<div class="fp-menu fv-fp-list-menu"></div>').insertAfter( root.find('.fp-controls') );
   
   jQuery(api.conf.playlist).each( function(k,v) {
-    
-    playlist_menu.append('<a data-index="'+k+'">'+(k+1)+'. '+playlist.find('h4').eq(k).text()+'</a>');
+    var tmp = playlist.find('h4').eq(k).clone();
+    tmp.find('i.dur').remove();console.log('playlist menu',tmp.text());
+    playlist_menu.append('<a data-index="'+k+'">'+(k+1)+'. '+tmp.text()+'</a>');
   });
   
   playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
