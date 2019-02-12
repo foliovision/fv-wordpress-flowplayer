@@ -30,8 +30,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     $this->fv_wp_flowplayer_include_aws_sdk();
     global $fv_fp, $s3Client;
 
-    $error = false;
-
     $regions = $fv_fp->_get_option('amazon_region');
     $secrets = $fv_fp->_get_option('amazon_secret');
     $keys    = $fv_fp->_get_option('amazon_key');
@@ -142,7 +140,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         }
 
       } catch ( Aws\CloudFront\Exception\CloudFrontException $e ) {
-        $error = 'It appears that the policy of AWS IAM user identified by '.$key.' doesn\'t permit List and Read operations for the CloudFront service. Please add these access levels if you are using CloudFront for your S3 buckets in order to obtain CloudFront links for your videos.';
+        $err = 'It appears that the policy of AWS IAM user identified by '.$key.' doesn\'t permit List and Read operations for the CloudFront service. Please add these access levels if you are using CloudFront for your S3 buckets in order to obtain CloudFront links for your videos.';
       }
       
       // instantiate the S3 client with AWS credentials
@@ -281,10 +279,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         )
       )
     );
-    
-    if( $error ) {
-      $json_final['error'] = $error;
-    }
 
     if (isset($err) && $err) {
       $json_final['err'] = $err;
