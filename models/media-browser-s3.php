@@ -165,7 +165,12 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         }
         
         $res = $s3Client->ListObjects( $args );
-        $objects = array_merge( !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array(), $res->get('Contents') );
+        
+        $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
+        $files = $res->get('Contents');
+        if( !$files ) $files = array();
+        
+        $objects = array_merge( $folders, $files );
         
         if( isset($_REQUEST['debug']) ) {
           var_dump($args,$objects);
