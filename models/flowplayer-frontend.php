@@ -84,6 +84,16 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
+    
+    // force horizontal playlist style for audio as that the only one styled properly
+    if( $player = $this->current_player() ) {
+      if( $videos = $player->getVideos() ) {
+        if( !empty($videos[0]) && $videos[0]->getMetaValue('audio',true) ) {
+          $this->aCurArgs['liststyle'] = 'horizontal';
+        }
+      }
+    }
+    
     $media = $this->aCurArgs['src'];
 
     if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
