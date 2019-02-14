@@ -901,7 +901,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_speed_attribute( $attributes ) {
     $bShow = false;
-    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && ( $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' ) ) {
       $bShow = true;
     }
     
