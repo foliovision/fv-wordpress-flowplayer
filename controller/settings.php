@@ -352,6 +352,7 @@ function flowplayer_admin_footer() {
   if( !fv_player_is_admin_screen() ) return;
   
   flowplayer_prepare_scripts();
+  flowplayer_display_scripts();
 }
 
 
