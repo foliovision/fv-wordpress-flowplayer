@@ -1428,6 +1428,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public static function get_duration_post( $post_id = false ) {
     global $post, $fv_fp;
     $post_id = ( $post_id ) ? $post_id : $post->ID;
+    
+    global $wpdb;
+    $tDuration = intval( $wpdb->get_var( "SELECT vm.meta_value FROM {$wpdb->prefix}fv_player_playermeta AS pm JOIN {$wpdb->prefix}fv_player_players AS p ON p.id = pm.id_player JOIN {$wpdb->prefix}fv_player_videos AS v ON FIND_IN_SET(v.id, p.videos) > 0 JOIN {$wpdb->prefix}fv_player_videometa AS vm ON v.id = vm.id_video WHERE pm.meta_key = 'post_id' AND pm.meta_value = ".intval($post_id)." AND vm.meta_key = 'duration' ORDER BY CAST(vm.meta_value AS UNSIGNED) DESC LIMIT 1" ) );
+    if( $tDuration > 3600 ) {
+      return gmdate( "H:i:s", $tDuration );
+    } else if( $tDuration > 0 ) {
+      return gmdate( "i:s", $tDuration );
+    }
 
     $content = false;
     $objPost = get_post($post_id);
