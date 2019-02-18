@@ -162,74 +162,73 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           $args['Prefix'] = $request_path;
         }
         
-        $res = $s3Client->ListObjects( $args );
-        
-        $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
-        $files = $res->get('Contents');
-        if( !$files ) $files = array();
-        
-        $objects = array_merge( $folders, $files );
-        
-        if( isset($_REQUEST['debug']) ) {
-          var_dump($args,$objects);
-          die();
-        }
+        $paged = $s3Client->getPaginator('ListObjects',$args);
 
         $sum_up = array();
-        foreach ( $objects as $object ) {
-          if ( ! isset( $objectarray ) ) {
-            $objectarray = array();
-          }
+        
+        foreach( $paged AS $res ) {
           
-          $item = array();
+          $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
+          $files = $res->get('Contents');
+          if( !$files ) $files = array();
           
-          $path = $object['Prefix'] ? $object['Prefix'] : $object['Key'];
+          $objects = array_merge( $folders, $files );
           
-          if( !empty($object['Key']) && preg_match( '~\.ts$~', $object['Key'] ) ) {
-            if( empty($sum_up['ts']) ) $sum_up['ts'] = 0;
-            $sum_up['ts']++;
-            continue;
-          }
-          
-          $item['path'] = 'Home/' . $path;
-          
-          if( $request_path ) {
-            if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
-            
-            $item['name'] = str_replace( $request_path, '', $path );
-          } else {
-            $item['name'] = $path;
-          }
-          
-          if( !empty($object['Size']) ) {
-            $item['type'] = 'file';
-            $item['size'] = $object['Size'];
-            
-            $link = (string) $s3Client->getObjectUrl( $bucket, $path );
-            $link = str_replace( '%20', '+', $link );
-            
-            // replace link with CloudFront URL, if we have one
-            if( !empty($domains[$array_id]) ) {
-              // replace S3 URLs with buckets in the S3 subdomain
-              $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
-
-              // replace S3 URLs with bucket name as a subfolder
-              $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
+          foreach ( $objects as $object ) {
+            if ( ! isset( $objectarray ) ) {
+              $objectarray = array();
             }
             
-            $item['link'] = $link;
+            $item = array();
             
-          } else {
-            $item['type'] = 'folder';
-            $item['items'] = array();
+            $path = $object['Prefix'] ? $object['Prefix'] : $object['Key'];
+            
+            if( !empty($object['Key']) && preg_match( '~\.ts$~', $object['Key'] ) ) {
+              if( empty($sum_up['ts']) ) $sum_up['ts'] = 0;
+              $sum_up['ts']++;
+              continue;
+            }
+            
+            $item['path'] = 'Home/' . $path;
+            
+            if( $request_path ) {
+              if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
+              
+              $item['name'] = str_replace( $request_path, '', $path );
+            } else {
+              $item['name'] = $path;
+            }
+            
+            if( !empty($object['Size']) ) {
+              $item['type'] = 'file';
+              $item['size'] = $object['Size'];
+              
+              $link = (string) $s3Client->getObjectUrl( $bucket, $path );
+              $link = str_replace( '%20', '+', $link );
+              
+              // replace link with CloudFront URL, if we have one
+              if( !empty($domains[$array_id]) ) {
+                // replace S3 URLs with buckets in the S3 subdomain
+                $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
+  
+                // replace S3 URLs with bucket name as a subfolder
+                $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
+              }
+              
+              $item['link'] = $link;
+              
+            } else {
+              $item['type'] = 'folder';
+              $item['items'] = array();
+            }
+            
+            $output['items'][] = $item;
+  
+            if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
+              continue;
+            }
+  
           }
-          
-          $output['items'][] = $item;
-
-          if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
-            continue;
-          }
-
         }
         
         foreach( $sum_up AS $ext => $count ) {
