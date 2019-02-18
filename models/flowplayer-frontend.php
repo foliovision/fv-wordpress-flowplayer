@@ -456,6 +456,9 @@ class flowplayer_frontend extends flowplayer
         if( $this->_get_option('ui_repeat_button') ) {
           $attributes['data-button-repeat'] = true;
         }
+        if( $this->_get_option('ui_rewind_button') ) {
+          $attributes['data-button-rewind'] = true;
+        }
         
         //  Align
         $attributes['class'] .= $this->get_align();
