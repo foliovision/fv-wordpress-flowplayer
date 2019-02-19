@@ -278,7 +278,7 @@ jQuery(document).ready(function($){
     start: function( event, ui ) {
       FVFP_sStoreRTMP = jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val();
     },
-    update: function( event, ui ) {    
+    update: function( event, ui ) {
       var items = []; 
       $('.fv-player-tab-playlist table tbody tr').each(function(){
         var
@@ -303,7 +303,10 @@ jQuery(document).ready(function($){
      
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( FVFP_sStoreRTMP );
       
-      fv_wp_flowplayer_submit('refresh-button');      
+      fv_wp_flowplayer_submit('refresh-button');
+      
+      $(document).trigger('fv_flowplayer_shortcode_item_sort');
+      
     },
     axis: 'y',
     //handle: '.fvp_item_sort',
@@ -1341,7 +1344,7 @@ function fv_wp_flowplayer_edit() {
 
           // show playlist instead of the "add new video" form
           // if we have more than 1 video
-          if( fv_flowplayer_conf.current_video_to_edit ) {
+          if( typeof(fv_flowplayer_conf.current_video_to_edit) != "undefined" ) {
             fv_flowplayer_editor_item_show(fv_flowplayer_conf.current_video_to_edit);
           } else if (vids.length > 1) {
             fv_flowplayer_playlist_show();
@@ -1729,7 +1732,8 @@ function fv_wp_flowplayer_on_close() {
   fv_wp_flowplayer_init();
 
   if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' && typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) == 'undefined') {
-    fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
+    // todo: what it the point of this call being made?
+    //fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
     
   } else {
     var
@@ -1830,14 +1834,14 @@ function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueL
 
 
 
-function fv_wp_flowplayer_build_ajax_data() {
+function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
   var
       $editor                = jQuery('#fv-player-shortcode-editor')
       $tabs                  = $editor.find('.fv-player-tab'),
       regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
       data                   = {'video_meta' : {}, 'player_meta' : {}},
       end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val(),
-      single_video_showing   = jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').length,
+      single_video_showing   = !give_it_all && jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').length,
       single_video_id        = (single_video_showing ? jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').closest('table').data('index') : -1);
 
   // special processing for end video actions
@@ -3547,3 +3551,113 @@ function fv_player_editor_show_stream_fields(e,index) {
   item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show);
   
 }
+
+( function($) {
+  var previous = false,
+    saving = false,
+    next = false,
+    save_please = false,
+    loading = true;
+  
+  $(document).on("keyup change", "#fv-player-shortcode-editor input, #fv-player-shortcode-editor textarea, #fv-player-shortcode-editor select", save );
+  
+  $(document).on('fv_flowplayer_shortcode_new', function() {
+    $('#fv-player-shortcode-editor .button-primary').show();
+  });
+  
+  $(document).on('fv_flowplayer_video_meta_load', function() {
+    $('#fv-player-shortcode-editor .button-primary').hide();
+    
+    // not a good solution!
+    setTimeout( function() {
+      loading = false;
+    },100);
+  });
+  
+  jQuery(document).on('fv_flowplayer_shortcode_item_sort', save );
+  
+  function save(e){
+    if( loading ) return;
+     
+    console.log('Change?',e.type,e.currentTarget);
+    
+    var ajax_data = fv_wp_flowplayer_build_ajax_data(true);
+    if( previous && JSON.stringify(ajax_data) == JSON.stringify(previous) ) {
+      console.log('Not really!');
+      return;
+    }
+    
+    if( saving ) {
+      console.log('Still saving!');
+      next = ajax_data;
+      return;
+    }
+        
+    previous = ajax_data;
+    
+    ajax(ajax_data);
+    
+  }
+  
+  function ajax( data ) {
+    // version with interval
+    save_please = data;
+    
+    // straight version, first save is as fast as possible
+    /*console.log('Saving!',data);
+    saving = true;
+    
+    jQuery('#fv-player-shortcode-editor .spinner').addClass('is-active');
+    
+    var start = performance.now();
+    
+    jQuery.post(ajaxurl+'?fv_player_db_save=1', {
+      action: 'fv_player_db_save',
+      data: JSON.stringify(data),
+      nonce: fv_player_editor_conf.preview_nonce
+    }, function() {
+      
+      var time = performance.now() - start;
+      console.log('delaying next ajax by '+(2000 - time)+'ms');
+      setTimeout( function() {  
+        if( next ) {console.log('There is more to do...');
+          ajax(next);
+          next = false;
+        } else {
+          console.log('Done!');      
+          saving = false;
+          jQuery('#fv-player-shortcode-editor .spinner').removeClass('is-active');
+        }
+      }, 2000 - time)
+    });*/
+  }
+  
+  setInterval( function() {    
+    if( !save_please ) return;
+    
+    saving = true;
+    
+    jQuery('#fv-player-shortcode-editor .spinner').addClass('is-active');
+    
+    jQuery.post(ajaxurl+'?fv_player_db_save=1', {
+      action: 'fv_player_db_save',
+      data: JSON.stringify(save_please),
+      nonce: fv_player_editor_conf.preview_nonce
+    }, function() {      
+      if( next ) {console.log('There is more to do...');
+        ajax(next);
+        next = false;
+      } else {
+        console.log('Done!');      
+        saving = false;
+        jQuery('#fv-player-shortcode-editor .spinner').removeClass('is-active');
+        jQuery('<p>Saved!</p>').insertAfter('#fv-player-shortcode-editor .spinner').delay( 800 ).fadeOut( 400 )
+      }
+    });
+     
+    save_please = false;
+    
+  }, 1500 );
+  
+})(jQuery);
+

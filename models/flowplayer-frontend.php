@@ -196,7 +196,7 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = $this->_get_option('liststyle');
     }
     
-    if( get_query_var('fv_player_embed') && $this->aCurArgs['liststyle'] != 'tabs' && $this->aCurArgs['liststyle'] != 'season' ) { // force vertical playlist when using embed and not using tabs
+    if( get_query_var('fv_player_embed') && empty($_REQUEST['fv_player_preview']) && $this->aCurArgs['liststyle'] != 'tabs' && $this->aCurArgs['liststyle'] != 'season' ) { // force vertical playlist when using embed and not using tabs, nor season style and it's not a preview for editing
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
