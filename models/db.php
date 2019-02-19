@@ -916,6 +916,9 @@ class FV_Player_Db {
           }
 
           echo $id;
+          
+          do_action('fv_player_db_save', $id);
+          
         } else {
           echo -1;
         }

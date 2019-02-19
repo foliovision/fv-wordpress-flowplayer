@@ -174,8 +174,12 @@ class FV_Player_Checker {
   
             if( $bValidFile ) {
               $ThisFileInfo = $getID3->analyze( $localtempfilename );
-            }      
-          }                 
+            }                        
+          } 
+          
+          foreach( glob( trailingslashit($upload_dir['basedir']).'fv_flowlayer_tmp_*' ) AS $file ) {
+            @unlink($file);
+          }
         }
   
         

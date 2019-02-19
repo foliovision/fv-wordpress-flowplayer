@@ -84,6 +84,16 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
+    
+    // force horizontal playlist style for audio as that the only one styled properly
+    if( $player = $this->current_player() ) {
+      if( $videos = $player->getVideos() ) {
+        if( !empty($videos[0]) && $videos[0]->getMetaValue('audio',true) ) {
+          $this->aCurArgs['liststyle'] = 'horizontal';
+        }
+      }
+    }
+    
     $media = $this->aCurArgs['src'];
 
     if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
@@ -372,7 +382,11 @@ class flowplayer_frontend extends flowplayer
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
   
-        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );          
+        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );
+        
+        if( !$bIsAudio && $video = $this->current_video() ) {          
+          $bIsAudio = $video->getMetaValue('audio',true);
+        }
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
         
@@ -445,6 +459,9 @@ class flowplayer_frontend extends flowplayer
         }
         if( $this->_get_option('ui_repeat_button') ) {
           $attributes['data-button-repeat'] = true;
+        }
+        if( $this->_get_option('ui_rewind_button') ) {
+          $attributes['data-button-rewind'] = true;
         }
         
         if( !empty($this->aCurArgs['fsforce']) ) {
@@ -895,7 +912,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_speed_attribute( $attributes ) {
     $bShow = false;
-    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && $this->aCurArgs['speed'] == 'buttons' ) {
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && ( $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' ) ) {
       $bShow = true;
     }
     

@@ -494,8 +494,6 @@ class FV_Player_lightbox {
     </tr>
     <script>
       jQuery(document).ready(function(){
-        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p><?php _e('Setting <a href="#interface[live]">moved</a>', 'fv-wordpress-flowplayer'); ?></p></td>');
-        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p><?php _e('Setting <a href="#subtitleOn">moved</a>', 'fv-wordpress-flowplayer'); ?></p></td>');
         var lightbox_images = jQuery('#lightbox_images');
         if(lightbox_images.attr('checked')){
             jQuery('#lightbox-wp-galleries').show();
