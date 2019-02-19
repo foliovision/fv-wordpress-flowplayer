@@ -769,9 +769,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
-    $click = !empty($aArgs['members_only']) ? " data-fancybox='".esc_attr($aArgs['members_only'])."' data-src='".esc_attr($aArgs['members_only'])."'" : " onclick='return false' data-item='".$this->json_encode($aPlayer)."'"; // todo: figure out if the user has or has not access??
-    
-    $sHTML = "\t\t<a href='#'".$click.">";
+    if( !empty($aArgs['members_only']) ) {
+      $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
+    } else {
+      $sHTML = "\t\t<a href='#' onclick='return false' data-item='".$this->json_encode($aPlayer)."'>";
+    }
     
     $tDuration = false;    
     if ($this->current_video()) {
