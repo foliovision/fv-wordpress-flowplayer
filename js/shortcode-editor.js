@@ -3574,6 +3574,10 @@ function fv_player_editor_show_stream_fields(e,index) {
     },100);
   });
   
+  $(document).on('fv_flowplayer_player_editor_reset', function() {
+    loading = true;
+  });
+  
   jQuery(document).on('fv_flowplayer_shortcode_item_sort', save );
   
   function save(e){
