@@ -121,7 +121,7 @@ class FV_Player_List_Table extends WP_List_Table {
 	}
   
 	public function get_columns() {
-		return array(
+		 $cols = array(
 			//'cb'          => '<input type="checkbox" />',
 			'id'           => __( 'Playlist', 'fv-wordpress-flowplayer' ),
       'player_name'  => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
@@ -129,9 +129,17 @@ class FV_Player_List_Table extends WP_List_Table {
       //'author'       => __( 'Author', 'fv-wordpress-flowplayer' ),
 			'thumbs'       => __( 'Videos', 'fv-wordpress-flowplayer' ),
       'embeds'       => __( 'Embedded on', 'fv-wordpress-flowplayer' ),
-      'shortcode'    => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
-      'shortcode-copy'    => '',
 		);
+    
+    global $fv_fp;
+    if( $fv_fp->_get_option('video_stats_enable') ) {
+      $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
+    }
+    
+    $cols['shortcode'] = __( 'Shortcode', 'fv-wordpress-flowplayer' );
+    $cols['shortcode-copy'] = '';
+    
+    return $cols;
 	}
   
 	public function get_sortable_columns() {

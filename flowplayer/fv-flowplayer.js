@@ -2868,9 +2868,7 @@ flowplayer( function(api,root) {
     playlist_menu = jQuery('<div class="fp-menu fv-fp-list-menu"></div>').insertAfter( root.find('.fp-controls') );
   
   jQuery(api.conf.playlist).each( function(k,v) {
-    var tmp = playlist.find('h4').eq(k).clone();
-    tmp.find('i.dur').remove();console.log('playlist menu',tmp.text());
-    playlist_menu.append('<a data-index="'+k+'">'+(k+1)+'. '+tmp.text()+'</a>');
+    playlist_menu.append('<a data-index="'+k+'">'+(k+1)+'. '+parse_title(playlist.find('h4').eq(k))+'</a>');    
   });
   
   playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
@@ -2894,8 +2892,38 @@ flowplayer( function(api,root) {
   
   api.on('ready', function(e,api,video) {
     playlist_menu.find('a').removeClass('fp-selected');
-    playlist_menu.find('a[data-index='+video.index+']').addClass('fp-selected');
-    playlist_button.html('Item '+(video.index+1)+'.');
+    var thumb = playlist_menu.find('a[data-index='+video.index+']');
+    thumb.addClass('fp-selected');
+    var label = fv_flowplayer_translations.playlist_item_no
+    label = label.replace( /%d/, video.index+1 );
+    label = label.replace( /%s/, parse_title( thumb.find('h4') ) );
+    playlist_button.html(label);
   });
   
+  function parse_title(el) {
+    var tmp = el.clone();
+    tmp.find('i.dur').remove();
+    return tmp.text();
+  }
+  
+});
+
+// Video stats
+flowplayer( function(api,root) {
+  root = jQuery(root);
+  
+  if( !api.conf.fv_stats.enabled && ( !root.data('fv_stats') || root.data('fv_stats') == 'no' ) ) return;
+  
+  api.on('ready', function(e,api) {
+    api.one('progress', function(e,api) {
+      if( api.video.id ) {
+        jQuery.post( api.conf.fv_stats.url, {
+          'blog_id' : api.conf.fv_stats.blog_id,
+          'tag' : 'play',
+          'video_id' : api.video.id
+        } );
+      }
+    });
+  });
+
 });

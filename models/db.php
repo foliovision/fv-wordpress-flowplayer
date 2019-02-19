@@ -245,6 +245,9 @@ class FV_Player_Db {
         )
       ), $FV_Player_Db );
     }
+    
+    global $fv_fp;
+    $stats_enabled = $fv_fp->_get_option('video_stats_enable');
 
     $players = $FV_Player_Db->getPlayersCache();
 
@@ -298,36 +301,29 @@ class FV_Player_Db {
               continue;
             }
             
-            $caption = $videos[ $video_id ]->getCaption();
-            $caption_src = $videos[ $video_id ]->getCaptionFromSrc();
+            $video = $videos[ $video_id ];
+            
+            $caption = $video->getCaption();
+            if( !$caption ) {
+              $caption = $video->getCaptionFromSrc();
+            }            
             
             // assemble video name, if there's no player name
-            if (is_array($result_row->player_name) && isset($videos[ $video_id ])) {
-              if ( $caption ) {
-                // use caption
-                $result_row->player_name[] = $caption;
-              } else {
-                $result_row->player_name[] = $caption_src;
-              }
+            if (is_array($result_row->player_name)) {
+              $result_row->player_name[] = $caption;
             }
 
             // assemble video splash
-            if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
-              // use splash with caption / filename in a span
-              if ( isset($videos[ $video_id ]) && $caption ) {
-                $txt = $caption;
-              } else {
-                $txt = esc_attr($caption_src);
-              }
-              
-              $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
-
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($txt).'" title="'.esc_attr($txt).'" /><span>' . $txt . '</span></div>';
-            } else if ( isset($videos[ $video_id ]) && $caption ) {
-              // use caption
+            if ($video->getSplash()) {
+              $splash = apply_filters( 'fv_flowplayer_playlist_splash', $video->getSplash() );
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($caption).'" title="'.esc_attr($caption).'" /><span>' . $caption . '</span></div>';
+            } else {
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption) . '"><span>' . $caption . '</span></div>';
-            } else if (isset($videos[ $video_id ])) {
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption_src) . '"><span>' . $caption_src . '</span></div>';
+            }
+            
+            if( $stats_enabled ) {
+              if( !isset($result_row->stats_play) ) $result_row->stats_play = 0;
+              $result_row->stats_play += intval($video->getMetaValue('stats_play',true)); // todo: lower SQL count
             }
           }
 
