@@ -3571,10 +3571,12 @@ function fv_player_editor_show_stream_fields(e,index) {
   
   $(document).on('fv_flowplayer_shortcode_new', function() {
     $('#fv-player-shortcode-editor .button-primary').show();
+    $('#fv-player-shortcode-editor .button.playlist_edit').show();
   });
   
   $(document).on('fv_flowplayer_video_meta_load', function() {
     $('#fv-player-shortcode-editor .button-primary').hide();
+    $('#fv-player-shortcode-editor .button.playlist_edit').hide(); // todo: only hide if you clicked on a live preview thumbnail
     
     // not a good solution!
     setTimeout( function() {
