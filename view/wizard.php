@@ -317,7 +317,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                       <td></td>
                       <td colspan="2">
                         <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
-                        <a onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button-primary <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+                        <a onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
                         
                         <span class="waiting spinner"></span>
                       </td>
@@ -331,7 +331,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
 
                 <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend'); ?>
 
-                  <tr <?php if( !isset($fv_flowplayer_conf["interface"]["subtitles"]) || $fv_flowplayer_conf["interface"]["subtitles"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+                  <tr>
                     <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
                     <td class="field fv-fp-subtitles" colspan="2">
                       <div class="fv-fp-subtitle">
@@ -367,7 +367,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     <td></td>
                     <td colspan="2">
                       <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
-                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button-primary <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
                       
                       <span class="waiting spinner"></span>
                     </td>
@@ -414,7 +414,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     <td></td>
                     <td>
                       <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
-                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button-primary <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
                       
                       <span class="waiting spinner"></span>
                     </td>
@@ -493,7 +493,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     <td></td>
                     <td>
                       <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />    
-                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button-primary <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button <?php if( !isset($fv_flowplayer_conf["interface"]["playlist"]) || $fv_flowplayer_conf["interface"]["playlist"] !== 'true' ) echo ' fv_player_interface_hide'; ?>" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
                       
                       <span class="waiting spinner"></span>
                     </td>

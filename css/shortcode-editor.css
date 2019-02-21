@@ -54,7 +54,7 @@
 .fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
 
 /*Playlist view*/
-.is-playlist .fv-player-playlist-item-title{ display:block;padding:0 10px 12px; }
+.is-playlist .fv-player-playlist-item-title{ display:block;padding-top:15px; }
 .is-playlist .fv_player_field_insert-button{ display:none; }
 .is-playlist-active .playlist_edit{ display:none; }
 
