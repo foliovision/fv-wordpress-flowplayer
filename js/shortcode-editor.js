@@ -3651,7 +3651,10 @@ function fv_player_editor_show_stream_fields(e,index) {
     
     saving = true;
     
-    var indicator = $('#fv-player-shortcode-editor .spinner');
+    var indicator = $('#fv-player-shortcode-editor .fv-player-tab .spinner');
+    if( indicator.length == 0 ) {
+      indicator = $('<span class="waiting spinner"></span>').appendTo('#fv-player-shortcode-editor .fv-player-tab');
+    }
     indicator.addClass('is-active');
     
     $.post(ajaxurl+'?fv_player_db_save=1', {
