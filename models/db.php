@@ -711,7 +711,7 @@ class FV_Player_Db {
 
     if ($post_data) {
       // parse and resolve deleted videos
-      if (!$data && !empty($post_data['deleted_videos'])) {
+      if (!$data && !empty($post_data['deleted_videos'])) { // todo: ajax!
         $deleted_videos = explode(',', $post_data['deleted_videos']);
         foreach ($deleted_videos as $d_id) {
           // we don't need to load this video data, just link it to a database
@@ -725,7 +725,7 @@ class FV_Player_Db {
       }
 
       // parse and resolve deleted meta data
-      if (!$data && !empty($post_data['deleted_video_meta'])) {
+      if (!$data && !empty($post_data['deleted_video_meta'])) { // todo: probably not needed with Ajax saving
         $deleted_meta = explode(',', $post_data['deleted_video_meta']);
         foreach ($deleted_meta as $d_id) {
           // we don't need to load this meta data, just link it to a database
@@ -739,7 +739,7 @@ class FV_Player_Db {
       }
 
       // parse and resolve deleted meta data
-      if (!$data && !empty($post_data['deleted_player_meta'])) {
+      if (!$data && !empty($post_data['deleted_player_meta'])) { // todo: probably not needed with Ajax saving
         $deleted_meta = explode(',', $post_data['deleted_player_meta']);
         foreach ($deleted_meta as $d_id) {
           // we don't need to load this meta data, just link it to a database
