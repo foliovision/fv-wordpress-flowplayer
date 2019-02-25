@@ -62,7 +62,7 @@
 .is-singular .hide-if-singular{display:none;}
 .is-playlist-active .hide-if-playlist-active{display:none;}
 
-.playlist_edit{ display:block; }
+.submit-button-wrapper .playlist_edit{ display:none; }
 .fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{visibility: hidden;}
 .fv-player-tab-playlist tr:hover .fvp_item_remove{visibility: visible;color: #a00;}
 .fv-player-tab-playlist a{cursor:pointer;}

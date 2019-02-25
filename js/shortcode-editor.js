@@ -222,6 +222,8 @@ jQuery(document).ready(function($){
     fv_player_preview_single = new_index;
     
     fv_flowplayer_editor_item_show(new_index);
+    
+    $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
   $(document).on('input','.fv_wp_flowplayer_field_width', function(e) {
@@ -1747,12 +1749,18 @@ function fv_wp_flowplayer_dialog_resize() {
 
 function fv_wp_flowplayer_on_close() {
   //fv_player_editor_button_clicked = false;  //  todo: is it not too early?
+  
+  delete(fv_flowplayer_conf.current_video_to_edit);
 
   fv_wp_flowplayer_init();
 
   if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined' && typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) == 'undefined') {
     // todo: what it the point of this call being made?
     //fv_wp_flowplayer_set_html( fv_wp_flowplayer_content.replace( fv_wp_flowplayer_re_insert, '' ) );
+    
+    // trigger update for the FV Player Custom Videos/Meta Box
+    var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
+    field.trigger('fv_flowplayer_shortcode_insert');
     
   } else {
     var
@@ -3434,7 +3442,8 @@ jQuery( function($) {
 
   function fv_load_video_preview( wrapper ) {
     var shortcode = $(wrapper).find('.fv-player-editor-field').val();
-    console.log('fv_load_video_preview',shortcode);
+    var indicator = $("<div class='fv-player-editor-player-loading'><span class='waiting spinner is-active'></span></div>").appendTo('.fp-playlist-external');
+    
     if( shortcode && shortcode.length === 0 ) {
       return false;
     }
@@ -3446,6 +3455,7 @@ jQuery( function($) {
     $.get(url, function(response) {
       wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
       $(document).trigger('fvp-preview-complete');
+      indicator.remove();
     } );
 
     fv_show_video(wrapper);
@@ -3591,12 +3601,11 @@ function fv_player_editor_show_stream_fields(e,index) {
   
   $(document).on('fv_flowplayer_shortcode_new', function() {
     $('#fv-player-shortcode-editor .button-primary').show();
-    $('#fv-player-shortcode-editor .button.playlist_edit').show();
+    $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
   
   $(document).on('fv_flowplayer_video_meta_load', function() {
     $('#fv-player-shortcode-editor .button-primary').hide();
-    //$('#fv-player-shortcode-editor .button.playlist_edit').hide(); // todo: only hide if you clicked on a live preview thumbnail
     
     // not a good solution!
     setTimeout( function() {
