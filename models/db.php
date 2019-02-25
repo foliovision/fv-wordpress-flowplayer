@@ -915,7 +915,13 @@ class FV_Player_Db {
             }
           }
 
-          echo $id;
+          $output = array( 'id' => $id );
+          $videos = array();
+          foreach( $player->getVideos() AS $video ) {
+            $videos[] = $video->getId();
+          }
+          $output = array( 'id' => $id, 'videos' => $videos );
+          echo wp_json_encode( $output );
           
           do_action('fv_player_db_save', $id);
           

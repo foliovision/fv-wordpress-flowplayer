@@ -167,3 +167,13 @@ a #add-format, a #add-rtmp {
   opacity:.5;
 }
 
+.fv-player-save-waiting {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+}
+.fv-player-save-completed {
+  position: absolute;
+  bottom: 10px;
+  right: 2px;
+}
