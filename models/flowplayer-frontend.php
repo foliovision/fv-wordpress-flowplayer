@@ -552,10 +552,6 @@ class flowplayer_frontend extends flowplayer
           if( $this->_get_option('old_code') ) {
             $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
           }
-
-          if( !empty($splash_img) ) {
-            $attributes['style'] .= "background-image: url({$splash_img});";
-          }
           
         } else if( !empty($this->aCurArgs['caption']) ) {
           $attributes['class'] .= ' has-caption';
@@ -620,6 +616,7 @@ class flowplayer_frontend extends flowplayer
 
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+          $this->ret['html'] .= "\t".'<img class="fp-splash" src="'.esc_attr($splash_img).'" />'."\n";
           $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>'."\n";
         }
         
