@@ -357,6 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.12.727 - 2019/02/26 =
+
+* New Feature - Rewind Button - seeks 10 seconds back in the video, enable in Settings -> FV Player -> Sitewide FV Player Defaults
+* Live stream - removing from Post Interface Options and showing it for HLS streams automatically
+* Audio - checkbox for HLS streams to make them audio-only
+* Bugfix - video duration check forgetting to remove fv_flowlayer_tmp_* temporary files
+* Bugfix - video position saving too many requests when leaving the web page
+* Bugfix - video start/end time editing for FV Player Pro
+* Bugfix - too many database checks in wp-admin
+
 = 7.3.9.727 - 2019/02/05 =
 
 * FV Player wp-admin menu - sorting by player date, latest first
