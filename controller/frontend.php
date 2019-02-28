@@ -403,6 +403,8 @@ function flowplayer_prepare_scripts() {
       );
     }
     
+    if( is_admin() ) $aConf['wpadmin'] = true;
+    
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
