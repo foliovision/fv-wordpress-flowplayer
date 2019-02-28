@@ -140,7 +140,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         }
 
       } catch ( Aws\CloudFront\Exception\CloudFrontException $e ) {
-        $err = 'It appears that the policy of AWS IAM user identified by '.$key.' doesn\'t permit List and Read operations for the CloudFront service. Please add these access levels if you are using CloudFront for your S3 buckets in order to obtain CloudFront links for your videos.';
+        $err = 'It appears that the policy of AWS IAM user identified by '.$key.' doesn\'t permit List and Read operations for the CloudFront service. Please add CloudFrontReadOnlyAccess policy for the user if you are using CloudFront for your S3 buckets. Otherwise you won\'t be getting the proper CloudFront links for your videos.';
       }
       
       // instantiate the S3 client with AWS credentials
