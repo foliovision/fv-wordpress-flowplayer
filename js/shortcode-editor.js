@@ -732,6 +732,9 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
     new_item.find('[name=fv_wp_flowplayer_field_splash]').val(objVid.splash);
     new_item.find('[name=fv_wp_flowplayer_field_splash_text]').val(objVid.splash_text);
     
+    new_item.find('[name=fv_wp_flowplayer_field_start]').val(objVid.start);
+    new_item.find('[name=fv_wp_flowplayer_field_end]').val(objVid.end);
+    
     jQuery(objVid.meta).each( function(k,v) {
       if( v.meta_key == 'synopsis' ) new_item.find('[name=fv_wp_flowplayer_field_synopsis]').val(v.meta_value).attr('data-id',v.id);
       if( v.meta_key == 'audio' ) new_item.find('[name=fv_wp_flowplayer_field_audio]').prop('checked',v.meta_value).attr('data-id',v.id);
