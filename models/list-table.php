@@ -30,6 +30,7 @@ class FV_Player_List_Table_View {
   }
   
   function screen_options() {
+  	$screen = get_current_screen();
   	if(!is_object($screen) || $screen->id != $this->list_page)
   		return;
    
