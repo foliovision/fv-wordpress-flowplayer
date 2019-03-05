@@ -7,6 +7,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 class FV_Player_List_Table_View {
+  
+  var $list_page = false;
 
   function __construct() {
     add_action( 'init', array( $this, 'load_options' ) );
@@ -16,13 +18,27 @@ class FV_Player_List_Table_View {
     global $wpdb;
     if( current_user_can('edit_posts')  ) {
       add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', flowplayer::get_plugin_url().'/images/icon@x2.png', 30 );
-      add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
+      $this->list_page = add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
+      
+      add_action( 'load-'.$this->list_page,  array( $this, 'screen_options' ) );
     }
   }
   
   function load_options() {
     add_action( 'admin_menu', array($this, 'admin_menu') );
     add_action( 'admin_head', array($this, 'styling') );    
+  }
+  
+  function screen_options() {
+  	if(!is_object($screen) || $screen->id != $this->list_page)
+  		return;
+   
+  	$args = array(
+  		'label' => __('Players per page', 'pippin'),
+  		'default' => 25,
+  		'option' => 'fv_player_per_page'
+  	);
+  	add_screen_option( 'per_page', $args );
   }
   
   function styling() {
