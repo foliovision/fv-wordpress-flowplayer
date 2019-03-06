@@ -20,13 +20,44 @@ class FV_Player_List_Table_View {
       add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', flowplayer::get_plugin_url().'/images/icon@x2.png', 30 );
       $this->list_page = add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
       
-      add_action( 'load-'.$this->list_page,  array( $this, 'screen_options' ) );
+      add_action( 'load-'.$this->list_page, array( $this, 'screen_options' ) );
+      add_filter( 'manage_toplevel_page_fv_player_columns', array( $this, 'screen_columns' ) );
+      add_filter( 'hidden_columns', array( $this, 'screen_columns_hidden' ), 10, 3 );
     }
   }
   
   function load_options() {
     add_action( 'admin_menu', array($this, 'admin_menu') );
-    add_action( 'admin_head', array($this, 'styling') );    
+    add_action( 'admin_head', array($this, 'styling') );
+    add_filter( 'set-screen-option', array($this, 'set_screen_option'), 10, 3);
+  }
+  
+  function set_screen_option($status, $option, $value) {
+    if( 'fv_player_per_page' == $option ) return $value;
+  }
+  
+  function screen_columns() {
+    return array(
+      //'cb'             => '<input type="checkbox" />',
+      'id'               => __( 'Playlist', 'fv-wordpress-flowplayer' ),
+      'player_name'      => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
+      'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
+      //'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
+      'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
+      'subtitles_count'  => __( 'Subtitles', 'fv-wordpress-flowplayer' ),
+      'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
+      'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
+      'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' ),
+      'shortcode'        => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
+      'shortcode-copy'   => '',
+    );
+  }
+  
+  function screen_columns_hidden( $hidden, $screen, $use_defaults ) {
+    if( $use_defaults && $screen->id == $this->list_page) {
+  		$hidden = array( 'subtitles_count', 'chapters_count', 'transcript_count' );
+    }
+    return $hidden;
   }
   
   function screen_options() {
@@ -55,7 +86,18 @@ class FV_Player_List_Table_View {
   }
   
   function tools_panel() {
-		$table = new FV_Player_List_Table();
+    
+    $user = get_current_user_id();
+    $screen = get_current_screen();
+    $screen_option = $screen->get_option('per_page', 'option');
+    $per_page = get_user_meta($user, $screen_option, true);
+    if ( empty ( $per_page) || $per_page < 1 ) {
+      $per_page = $screen->get_option( 'per_page', 'default' );
+    }
+		$table = new FV_Player_List_Table( array(
+      'per_page' => $per_page
+    ) );
+    
 		$table->prepare_items();
   	?>
   	<div class="wrap">
@@ -88,7 +130,7 @@ $FV_Player_List_Table_View = new FV_Player_List_Table_View;
   
 class FV_Player_List_Table extends WP_List_Table {
 
-	public $per_page = 25;
+  public $args;
 
 	public $base_url;
   
@@ -102,10 +144,9 @@ class FV_Player_List_Table extends WP_List_Table {
   
   private $dropdown_cache = false;
 
-	public function __construct() {
-
-		global $status, $page;
-
+	public function __construct( $args ) {
+    $this->args = $args;
+    //var_dump($args);
 		parent::__construct( array(
 			'singular' => 'Log entry',
 			'plural'   => 'Log entries',
@@ -137,7 +178,7 @@ class FV_Player_List_Table extends WP_List_Table {
     <?php
 	}
   
-	public function get_columns() {
+	/*public function get_columns() {
 		return array(
 			//'cb'          => '<input type="checkbox" />',
 			'id'           => __( 'Playlist', 'fv-wordpress-flowplayer' ),
@@ -149,13 +190,16 @@ class FV_Player_List_Table extends WP_List_Table {
       'shortcode'    => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
       'shortcode-copy'    => '',
 		);
-	}
+	}*/
   
 	public function get_sortable_columns() {
 		return array(
-		  'id'           => array( 'ID', true ),
-      'player_name'  => array( 'player_name', true ),
-      'date_created' => array( 'date_created', true )
+		  'id'               => array( 'ID', true ),
+      'player_name'      => array( 'player_name', true ),
+      'date_created'     => array( 'date_created', true ),
+      'subtitles_count'  => array( 'subtitles_count', true ),
+      'chapters_count'   => array( 'chapters_count', true ),
+      'transcript_count' => array( 'transcript_count', true )
 		);
 	}
   
@@ -251,11 +295,11 @@ class FV_Player_List_Table extends WP_List_Table {
 	public function get_data() {
 	  $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
     $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
-    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'id';
+    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'p.id';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? esc_sql($_GET['s']) : null;
 
-	  $per_page = $this->per_page;
+	  $per_page = $this->args['per_page'];
 	  $offset = ( $current - 1 ) * $per_page;
     return FV_Player_Db::getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
 	}
@@ -264,26 +308,26 @@ class FV_Player_List_Table extends WP_List_Table {
 
 		wp_reset_vars( array( 'action', 'payment', 'orderby', 'order', 's' ) );
 
-		$columns  = $this->get_columns();
-		$hidden   = array(); // No hidden columns
-		$sortable = $this->get_sortable_columns();
+		//$columns  = $this->get_columns();
+		//$hidden   = array(); // No hidden columns
+		//$sortable = $this->get_sortable_columns();
 		$data     = $this->get_data();
 
 		// re-count number of players to show when searching
 		if (isset($_GET['s']) && $_GET['s']) {
-          $this->get_result_counts();
-        }
+      $this->get_result_counts();
+    }
 
 		$status   = isset( $_GET['status'] ) ? $_GET['status'] : 'all';
 
-		$this->_column_headers = array( $columns, $hidden, $sortable );
+		//$this->_column_headers = array( $columns, $hidden, $sortable );
 		
 		$this->items = $data;
 
 		$this->set_pagination_args( array(
 				'total_items' => $this->total_items,
-				'per_page'    => $this->per_page,
-				'total_pages' => ceil( $this->total_items / $this->per_page ),
+				'per_page'    => $this->args['per_page'],
+				'total_pages' => ceil( $this->total_items / $this->args['per_page'] ),
 			)
 		);
 	}

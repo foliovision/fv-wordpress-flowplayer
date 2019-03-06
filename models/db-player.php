@@ -65,7 +65,10 @@ class FV_Player_Db_Player {
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $DB_Instance = null,
-    $meta_data = null;
+    $meta_data = null,
+    $subtitles_count,
+    $chapters_count,
+    $transcript_count;
 
   /**
    * @param mixed $videos
@@ -193,6 +196,12 @@ class FV_Player_Db_Player {
    */
   public function getCopyText() {
     return $this->copy_text;
+  }
+  
+  public function getCount($video_meta) {
+    if( $video_meta == 'subtitles' ) return $this->subtitles_count;
+    if( $video_meta == 'chapters' ) return $this->chapters_count;
+    if( $video_meta == 'transcript' ) return $this->transcript_count;
   }
 
   /**
@@ -542,7 +551,7 @@ CREATE TABLE " . self::$db_table_name . " (
           
           // load multiple players via their IDs but a single query and return their values
           $select = '*';
-          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'id,'.esc_sql($options['db_options']['select_fields']);
+          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'p.id,'.esc_sql($options['db_options']['select_fields']);
           
           $where = '';
           if( $id !== null ) {
@@ -570,7 +579,20 @@ CREATE TABLE " . self::$db_table_name . " (
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
           
-          $player_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit );
+          $player_data = $wpdb->get_results('SELECT
+  '.$select.',
+  count(subtitles.id) as subtitles_count,
+  count(chapters.id) as chapters_count,
+  count(transcript.id) as transcript_count,
+  p.*
+  FROM `'.self::$db_table_name.'` AS p
+  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
+  '.$where.'
+  GROUP BY p.id
+  '.$order.$limit);
           
         } else if ($id !== null && !count($query_ids)) {
           $all_cached = true;

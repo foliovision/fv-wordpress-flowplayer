@@ -224,7 +224,7 @@ class FV_Player_Db {
 
         new FV_Player_Db_Player( null, array(
           'db_options' => array(
-            'select_fields'       => 'id, player_name, date_created, videos',
+            'select_fields'       => 'player_name, date_created, videos',
             'order_by'            => $order_by,
             'order'               => $order,
             'offset'              => $offset,
@@ -237,7 +237,7 @@ class FV_Player_Db {
       // load all players, which will put them into the cache automatically
       new FV_Player_Db_Player( null, array(
         'db_options' => array(
-          'select_fields' => 'id, player_name, date_created, videos',
+          'select_fields' => 'player_name, date_created, videos',
           'order_by'      => $order_by,
           'order'         => $order,
           'offset'        => $offset,
@@ -287,6 +287,9 @@ class FV_Player_Db {
           $result_row->player_name = $player->getPlayerName();
           $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
+          $result_row->subtitles_count = $player->getCount('subtitles');
+          $result_row->chapters_count = $player->getCount('chapters');
+          $result_row->transcript_count = $player->getCount('transcript');
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
