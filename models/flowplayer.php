@@ -772,7 +772,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !empty($aArgs['members_only']) ) {
       $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
     } else {
-      $sHTML = "\t\t<a href='#' onclick='return false' data-item='".$this->json_encode($aPlayer)."'>";
+      $arg = !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item';
+      $sHTML = "\t\t<a href='#' onclick='return false' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
     $tDuration = false;    
