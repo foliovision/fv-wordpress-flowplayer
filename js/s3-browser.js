@@ -1,4 +1,5 @@
 jQuery( function($) {
+    
     function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback) {
       if (!jQuery('#' + tabId).length) {
         // add Vimeo browser tab
@@ -15,7 +16,7 @@ jQuery( function($) {
       }
     };
 
-    function fv_flowplayer_s3_browser_load_assets(bucket) {
+    function fv_flowplayer_s3_browser_load_assets(bucket,path) {
       var
         $this = jQuery(this),
         $media_frame_content = jQuery('.media-frame-content:visible'),
@@ -24,7 +25,6 @@ jQuery( function($) {
         }),
         ajax_data = {
           action: "load_s3_assets",
-          cookie: encodeURIComponent(document.cookie)
         };
 
       $this.addClass('active').siblings().removeClass('active')
@@ -32,6 +32,9 @@ jQuery( function($) {
 
       if (typeof bucket === 'string' && bucket) {
         ajax_data['bucket'] = bucket;
+      }
+      if (typeof path === 'string' && path) {
+        ajax_data['path'] = path;
       }
 
       jQuery.post(ajaxurl, ajax_data, function(ret) {
@@ -63,8 +66,7 @@ jQuery( function($) {
             select_html = '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has complete settings (region, key ID and secret key).</strong>';
           }
 
-          html += select_html + '</div>' +
-            '<hr /><br />';
+          html += select_html + '</div>';
         }
 
         if (ret.err) {
@@ -114,6 +116,11 @@ jQuery( function($) {
   $( document ).on( "mediaBrowserOpen", function(event) {
     fv_flowplayer_media_browser_add_tab('fv_flowplayer_s3_browser_media_tab', 'Amazon S3', fv_flowplayer_s3_browser_load_assets);
   });
+  
+  $( document ).on( "click", ".folders, .breadcrumbs a", function(event) {
+    fv_flowplayer_s3_browser_load_assets( jQuery('#bucket-dropdown').val(), jQuery(this).attr('href') );
+    return false;
+  });
 });
 
 
@@ -125,34 +132,21 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     breadcrumbs = jQuery('.breadcrumbs'),
     fileList = filemanager.find('.data');
 
-  // Start by fetching the file data from scan.php with an AJAX request
-
-  // jQuery.get('scan.php', function(data) {
-
   var response = [data],
     currentPath = '',
     breadcrumbsUrls = [];
 
-  // console.log(response);
-
   var folders = [],
     files = [];
 
-  // This event listener monitors changes on the URL. We use it to
-  // capture back/forward navigation in the browser.
-
-  jQuery(window).on('hashchange', function(){
-
-    goto(window.location.hash);
-
-    // We are triggering the event. This will execute
-    // this function on page load, so that we show the correct folder:
-
-  }).trigger('hashchange');
-
+  jQuery(window).off('fv-player-browser-open-folder');
+  jQuery(window).on('fv-player-browser-open-folder', function(e, path){
+    currentPath = data.path;
+    breadcrumbsUrls.push(data.path);
+    render(data.items);
+  }).trigger('fv-player-browser-open-folder', [ '' ] );
 
   // Hiding and showing the search box
-
   filemanager.find('.search').click(function(){
 
     var search = jQuery(this);
@@ -160,7 +154,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     search.find('span').hide();
     search.find('input[type=search]').show().focus();
 
-  });
+  }).hide(); // not implemented for S3
 
 
   // Listening for keyboard input on the search field.
@@ -185,15 +179,13 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
       filemanager.addClass('searching');
 
       // Update the hash on every key stroke
-      window.location.hash = 'search=' + value.trim();
-
+      jQuery(window).trigger('fv-player-browser-open-folder', [ 'search=' + value.trim() ]);
     }
 
     else {
 
       filemanager.removeClass('searching');
-      window.location.hash = encodeURIComponent(currentPath);
-
+      jQuery(window).trigger('fv-player-browser-open-folder', [ currentPath ] );
     }
 
   }).on('keyup', function(e){
@@ -220,116 +212,16 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     var search = jQuery(this);
 
     if(!search.val().trim().length) {
+      jQuery(window).trigger('fv-player-browser-open-folder', [ currentPath ] );
 
-      window.location.hash = encodeURIComponent(currentPath);
       search.hide();
       search.parent().find('span').show();
-
     }
 
   });
 
-
-  // Clicking on folders
-
-  fileList.on('click', 'li.folders', function(e){
-    e.preventDefault();
-
-    var nextDir = jQuery(this).find('a.folders').attr('href');
-
-    if(filemanager.hasClass('searching')) {
-
-      // Building the breadcrumbs
-
-      breadcrumbsUrls = generateBreadcrumbs(nextDir);
-
-      filemanager.removeClass('searching');
-      filemanager.find('input[type=search]').val('').hide();
-      filemanager.find('span').show();
-    }
-    else {
-      breadcrumbsUrls.push(nextDir);
-    }
-
-    window.location.hash = encodeURIComponent(nextDir);
-    currentPath = nextDir;
-  });
-
-
-  // Clicking on breadcrumbs
-
-  breadcrumbs.on('click', 'a', function(e){
-    e.preventDefault();
-
-    var index = breadcrumbs.find('a').index(jQuery(this)),
-      nextDir = breadcrumbsUrls[index];
-
-    breadcrumbsUrls.length = Number(index);
-
-    window.location.hash = encodeURIComponent(nextDir);
-
-  });
-
-
-  // Navigates to the given hash (path)
-
-  function goto(hash) {
-
-    hash = decodeURIComponent(hash).slice(1).split('=');
-
-    if (hash.length) {
-      var rendered = '';
-
-      // if hash has search in it
-
-      if (hash[0] === 'search') {
-
-        filemanager.addClass('searching');
-        rendered = searchData(response, hash[1].toLowerCase());
-
-        if (rendered.length) {
-          currentPath = hash[0];
-          render(rendered);
-        }
-        else {
-          render(rendered);
-        }
-
-      }
-
-      // if hash is some path
-
-      else if (hash[0].trim().length) {
-
-        rendered = searchByPath(hash[0]);
-
-        if (rendered.length) {
-
-          currentPath = hash[0];
-          breadcrumbsUrls = generateBreadcrumbs(hash[0]);
-          render(rendered);
-
-        }
-        else {
-          currentPath = hash[0];
-          breadcrumbsUrls = generateBreadcrumbs(hash[0]);
-          render(rendered);
-        }
-
-      }
-
-      // if there is no hash
-
-      else if (typeof(data) !== 'undefined' && data && data.path) {
-        currentPath = data.path;
-        breadcrumbsUrls.push(data.path);
-        render(searchByPath(data.path));
-      }
-    }
-  }
 
   // Splits a file path and turns it into clickable breadcrumbs
-
   function generateBreadcrumbs(nextDir){
     var path = nextDir.split('/').slice(0);
     for(var i=1;i<path.length;i++){
@@ -338,54 +230,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     return path;
   }
 
-
-  // Locates a file by path
-
-  function searchByPath(dir) {
-    var path = dir.split('/'),
-      demo = response,
-      flag = 0;
-
-    for(var i=0;i<path.length;i++){
-      for(var j=0;j<demo.length;j++){
-        if(demo[j] && demo[j].name === path[i]){
-          flag = 1;
-          demo = demo[j].items;
-          break;
-        }
-      }
-    }
-
-    demo = flag ? demo : [];
-    return demo;
-  }
-
-
-  // Recursively search through the file tree
-
-  function searchData(data, searchTerms) {
-
-    data.forEach(function(d){
-      if(d.type === 'folder') {
-
-        searchData(d.items,searchTerms);
-
-        if(d.name.toLowerCase().match(searchTerms)) {
-          folders.push(d);
-        }
-      }
-      else if(d.type === 'file') {
-        if(d.name.toLowerCase().match(searchTerms)) {
-          files.push(d);
-        }
-      }
-    });
-    return {folders: folders, files: files};
-  }
-
-
   // Render the HTML for the file manager
-
   function render(data) {
 
     var scannedFolders = [],
@@ -398,25 +243,21 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
         if (d.type === 'folder') {
           scannedFolders.push(d);
         }
-        else if (d.type === 'file') {
+        else {
           scannedFiles.push(d);
         }
 
       });
 
-    }
-    else if(typeof data === 'object') {
-
+    } else if(typeof data === 'object') {
       scannedFolders = data.folders;
       scannedFiles = data.files;
 
     }
 
-
     // Empty the old result and make the new one
-
     fileList.empty().hide();
-
+    
     if(!scannedFolders.length && !scannedFiles.length) {
       filemanager.find('.nothingfound').show();
     }
@@ -427,27 +268,8 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     if(scannedFolders.length) {
 
       scannedFolders.forEach(function(f) {
-
-        var itemsLength = f.items.length,
-          name = escapeHTML(f.name),
-          icon = '<span class="icon folder"></span>';
-
-        if(itemsLength) {
-          icon = '<span class="icon folder full"></span>';
-        }
-
-        if(itemsLength == 1) {
-          itemsLength += ' item';
-        }
-        else if(itemsLength > 1) {
-          itemsLength += ' items';
-        }
-        else {
-          itemsLength = 'Empty';
-        }
-
-        var folder = jQuery('<li class="folders"><a href="'+ f.path +'" title="'+ name +'" class="folders">'+icon+'<span class="name">' + name + '</span> <span class="details">' + itemsLength + '</span></a></li>');
-        fileList.append(folder);
+        var name = escapeHTML(f.name).replace(/\/$/,'');
+        fileList.append( jQuery('<li class="folders"><a href="'+f.path+'" title="'+name+'" class="folders"><span class="icon folder"></span><span class="name">'+name+'</span></a></li>'));
       });
 
     }
@@ -487,7 +309,9 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
         $url_input
           .val($this.attr('href'))
-          .removeClass('fv_flowplayer_target' );
+          .removeClass('fv_flowplayer_target' )
+          .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
+          .trigger('change'); // this check the video duration etc.
 
         if( splash && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/) ) {
           var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
@@ -503,20 +327,23 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
       scannedFiles.forEach(function(f) {
 
-        var fileSize = bytesToSize(f.size),
+        var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
           name = escapeHTML(f.name),
           fileType = name.split('.'),
-          icon = '<span class="icon file"></span>';
-
-        fileType = fileType[fileType.length-1];
-
-        icon = '<span class="icon file f-'+fileType+'">.'+fileType+'</span>';
-
-        var
-          $href = jQuery('<a href="'+ f.link+'" title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>'),
+          icon = '<span class="icon file"></span>',
+          fileType = fileType[fileType.length-1],
+          icon = '<span class="icon file f-'+fileType+'">.'+fileType+'</span>',
+          link = f.link ? 'href="'+ f.link+'"' : '',
+          $href = jQuery('<a '+link+' title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>'),
           file = jQuery('<li class="files"></li>');
 
-        $href.on('click', fileUrlIntoShortcodeEditor);
+        if( f.link ) {
+          $href.on('click', fileUrlIntoShortcodeEditor);
+        } else { // click on placeholder
+          $href.on('click', function() {
+            return false;
+          });
+        }
 
         file.append($href);
         file.appendTo(fileList);
@@ -526,33 +353,26 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
 
     // Generate the breadcrumbs
-
     var url = '';
-
     if(filemanager.hasClass('searching')){
-
       url = '<span>Search results: </span>';
       fileList.removeClass('animated');
-
     }
     else {
-
       fileList.addClass('animated');
 
       var right_arrow =  '<span class="arrow_sign">→</span> ';
       breadcrumbsUrls.forEach(function (u, i) {
-
-        var name = u.split('/');
-        if (!name[name.length-1]) {
-          url = url.substr(0, url.length - right_arrow.length - 1);
-          return;
-        }
-
-        if (i !== breadcrumbsUrls.length - 1) {
-          url += '<a href="'+u+'"><span class="folderName">' + name[name.length-1] + '</span></a>' + right_arrow;
-        }
-        else {
-          url += '<span class="folderName">' + name[name.length-1] + '</span>';
+        var name = u.replace(/\/$/,'').split('/');
+        if( name.length > 1 ) {
+          name.forEach(function (n, k) {
+            var path = '';
+            for( var j=0; j<k+1; j++ ) {
+              path += name[j]+'/';
+            }
+            url += '<a href="'+path+'"><span class="folderName">'+n+'</span></a>';
+            if( k < name.length-1 ) url += right_arrow;
+          });
         }
 
       });
@@ -561,11 +381,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
     breadcrumbs.text('').append(url);
 
-
-    // Show the generated elements
-
     fileList.fadeIn();
-
   }
 
 

@@ -69,10 +69,13 @@ function flowplayer_add_media_button() {
 add_action('media_upload_fvplayer_video', '__return_false'); // keep for compatibility!
 
 
-add_action( 'block_editor_meta_box_hidden_fields', 'fv_wp_flowplayer_gutenberg_editor_load' );
+add_action( 'enqueue_block_editor_assets', 'fv_wp_flowplayer_gutenberg_editor_load' );
 
 function fv_wp_flowplayer_gutenberg_editor_load() {
   add_action( 'admin_footer', 'fv_wp_flowplayer_edit_form_after_editor', 0 );
+	
+  // if we are loading for Gutenberg, then forget about the load method for old editor
+  remove_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );
 }
 
 add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );

@@ -84,7 +84,7 @@ class FV_Player_Db_Video {
    */
   public function getDuration() {
     $sDuration = false;
-    if( $tDuration = $this->getMetaValue('duration',true) ) {
+    if( $tDuration = intval($this->getMetaValue('duration',true)) ) {
       if( $tDuration < 3600 ) {
         $sDuration = gmdate( "i:s", $tDuration );
       } else {
@@ -194,7 +194,7 @@ class FV_Player_Db_Video {
 
     self::init_db_name();
 
-    if( is_admin() || !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -294,7 +294,7 @@ CREATE TABLE " . self::$db_table_name . " (
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
           
-          $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$order.$limit);
+          $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
           
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;

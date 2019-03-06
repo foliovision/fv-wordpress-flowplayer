@@ -7,6 +7,8 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 class FV_Player_List_Table_View {
+  
+  var $list_page = false;
 
   function __construct() {
     add_action( 'init', array( $this, 'load_options' ) );
@@ -16,7 +18,9 @@ class FV_Player_List_Table_View {
     global $wpdb;
     if( current_user_can('edit_posts')  ) {
       add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', flowplayer::get_plugin_url().'/images/icon@x2.png', 30 );
-      add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
+      $this->list_page = add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
+      
+      add_action( 'load-'.$this->list_page,  array( $this, 'screen_options' ) );
     }
   }
   
@@ -25,10 +29,25 @@ class FV_Player_List_Table_View {
     add_action( 'admin_head', array($this, 'styling') );    
   }
   
+  function screen_options() {
+  	$screen = get_current_screen();
+  	if(!is_object($screen) || $screen->id != $this->list_page)
+  		return;
+   
+  	$args = array(
+  		'label' => __('Players per page', 'pippin'),
+  		'default' => 25,
+  		'option' => 'fv_player_per_page'
+  	);
+  	add_screen_option( 'per_page', $args );
+  }
+  
   function styling() {
     if( isset($_GET['page']) && $_GET['page'] == 'fv_player' ) {
       global $fv_wp_flowplayer_ver;
       wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
+      
+      wp_enqueue_media();
     }
 		?>
 		<style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px}</style>
@@ -231,7 +250,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
 	public function get_data() {
 	  $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
-    $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'asc';
+    $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'id';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? esc_sql($_GET['s']) : null;

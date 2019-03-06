@@ -357,7 +357,32 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.3.6.727 - 2017/01/08 =
+= 7.3.12.727 - 2019/02/26 =
+
+* New Feature - Rewind Button - seeks 10 seconds back in the video, enable in Settings -> FV Player -> Sitewide FV Player Defaults
+* Live stream - removing from Post Interface Options and showing it for HLS streams automatically
+* Audio - checkbox for HLS streams to make them audio-only
+* Bugfix - video duration check forgetting to remove fv_flowlayer_tmp_* temporary files
+* Bugfix - video position saving too many requests when leaving the web page
+* Bugfix - video start/end time editing for FV Player Pro
+* Bugfix - too many database checks in wp-admin
+
+= 7.3.9.727 - 2019/02/05 =
+
+* FV Player wp-admin menu - sorting by player date, latest first
+* S3 Bucket browser - improving to work well with large quantities of files. The search function was removed gone as AWS S3 doesn't have that, unfortunately.
+* Quality Switching - improving the label for qualities in range of 540-720p (HD if there is no higher quality, otherwise SD)
+* Bugfix - iOS video recovery issues in playlists
+
+= 7.3.7.727 - 2019/01/24 =
+
+* Database - performance fix
+* Bugfix - fullscreen mode corners when using the YouTuby skin
+* Bugfix - FV Player Meta Box (Custom Videos) fixes
+* Bugfix - WP Media Library not loading for FV Player screen
+* Bugfix - S3 Browser not loading FV Player screen and Gutenberg (block editor)
+
+= 7.3.6.727 - 2019/01/08 =
 
 * Caption field - renaming to Title
 * Database - enabling background processing for videos in DB
@@ -366,7 +391,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Sharing - removing Google+ as it's deprecated
 * Bugfix - PHP 7.2 compatiblity
 
-= 7.3.4.727 - 2017/12/14 =
+= 7.3.4.727 - 2018/12/14 =
 
 * FV Player top level wp-admin menu item icon
 * WordPress 5 - Gutenberg editor support
@@ -374,14 +399,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Database - making it work with XML sitemap
 * Handle WordPress shortcodes - improved to work with [playlist] as well
 
-= 7.3.3.727 - 2017/12/05 =
+= 7.3.3.727 - 2018/12/05 =
 
 * Compatiblity - improving old Samsung phone detection for warning messages
 * Database - PHP 5.2 compatibility fixes
 * Database - schema changes for better compatibility (maximum row size error)
 * MPEG-DASH - upgrading Dash.js to 2.8.0
 
-= 7.3.1.727 - 2017/11/16 =
+= 7.3.1.727 - 2018/11/16 =
 
 * Fix for PHP warning in wp-admin when no database table is present yet
 

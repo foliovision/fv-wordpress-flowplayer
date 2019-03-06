@@ -51,7 +51,8 @@
   -webkit-box-shadow: 0 !important;
           box-shadow: 0 !important;
   background-image: none !important;
-  background-color: #333; }
+  background-color: #333;
+  border-radius: 0; }
   .flowplayer.is-fullscreen .fp-player {
     background-color: #333; }
   .flowplayer.is-fullscreen .fp-fullscreen:before {
@@ -1855,6 +1856,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	border-right: 1px solid #fff;
 }
 
-.flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn {
+.flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn, .flowplayer.is-tiny .fv-fp-rewind {
   display: none;
 } 
