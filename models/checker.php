@@ -274,7 +274,7 @@ class FV_Player_Checker {
         $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
         $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
         
-        if( $last_check && intval($last_check) + 3600 > time() ) {
+        if( $last_check && intval($last_check) + 86400 > time() ) {
           continue;
         }
         
