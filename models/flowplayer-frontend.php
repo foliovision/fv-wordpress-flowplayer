@@ -196,7 +196,7 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = $this->_get_option('liststyle');
     }
     
-    if( get_query_var('fv_player_embed') && $this->aCurArgs['liststyle'] != 'tabs' ) { // force vertical playlist when using embed and not using tabs
+    if( get_query_var('fv_player_embed') && empty($_REQUEST['fv_player_preview']) && $this->aCurArgs['liststyle'] != 'tabs' && $this->aCurArgs['liststyle'] != 'season' ) { // force vertical playlist when using embed and not using tabs, nor season style and it's not a preview for editing
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
@@ -405,6 +405,10 @@ class flowplayer_frontend extends flowplayer
         if( $this->_get_option(array($skin, 'bottom-fs')) ) {
           $attributes['class'] .= ' bottom-fs';
         }
+        
+        if( !empty($this->aCurArgs['playlist']) ) {
+          $attributes['class'] .= ' has-playlist has-playlist-'.$this->aCurArgs['liststyle'];
+        }
       
         if( $autoplay ) {
           $attributes['data-fvautoplay'] = 'true';
@@ -460,6 +464,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-button-rewind'] = true;
         }
         
+        if( !empty($this->aCurArgs['fsforce']) ) {
+          $attributes['data-fsforce'] = $this->aCurArgs['fsforce'];
+        }
+        
         //  Align
         $attributes['class'] .= $this->get_align();
         
@@ -484,7 +492,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
-        if( !empty($this->aCurArgs['playlist']) && ( in_array($this->_get_option('liststyle'), array('horizontal','slider') ) || isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'] == 'horizontal', array('horizontal','slider')) ) ) {
+        if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
           $attributes['style'] .= 'max-width: 100%; ';
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
@@ -497,7 +505,7 @@ class flowplayer_frontend extends flowplayer
             $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
           }
         }
-                
+        
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
           $attributes['data-rtmp'] = $rtmp_server;
@@ -543,10 +551,6 @@ class flowplayer_frontend extends flowplayer
           
           if( $this->_get_option('old_code') ) {
             $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
-          }
-
-          if( !empty($splash_img) ) {
-            $attributes['style'] .= "background-image: url({$splash_img});";
           }
           
         } else if( !empty($this->aCurArgs['caption']) ) {
@@ -612,6 +616,7 @@ class flowplayer_frontend extends flowplayer
 
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+          if( !empty($splash_img) ) $this->ret['html'] .= "\t".'<img class="fp-splash" src="'.esc_attr($splash_img).'" />'."\n";
           $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
         }
         
@@ -698,7 +703,7 @@ class flowplayer_frontend extends flowplayer
     }
     
     
-    if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 ){
+    if( in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
     }
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );

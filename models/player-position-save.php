@@ -9,7 +9,7 @@ class FV_Player_Position_Save {
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
   }
 
-  private function get_extensionless_file_name($path) {
+  public static function get_extensionless_file_name($path) {
     return pathinfo($path, PATHINFO_FILENAME);
   }
 
@@ -22,10 +22,16 @@ class FV_Player_Position_Save {
       is_user_logged_in() &&
       is_array($aItemArray) &&
       isset($aItemArray['sources']) &&
-      isset($aItemArray['sources'][0]) &&
-      ($metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $this->get_extensionless_file_name($aItemArray['sources'][0]['src']), true ))
+      isset($aItemArray['sources'][0])
     ) {
-      $aItemArray['sources'][0]['position'] = $metaPosition;
+      $name = $this->get_extensionless_file_name($aItemArray['sources'][0]['src']);
+      if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
+        $aItemArray['sources'][0]['position'] = intval($metaPosition);
+      }
+      
+      if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_saw_' . $name, true ) ) {
+        $aItemArray['sources'][0]['saw'] = true;
+      }
     }
     return $aItemArray;
   }
@@ -35,8 +41,24 @@ class FV_Player_Position_Save {
     if (is_user_logged_in() && isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
       $uid = get_current_user_id();
       foreach ($times as $record) {
-        update_user_meta($uid, 'fv_wp_flowplayer_position_'.$this->get_extensionless_file_name($record['name']), $record['position']);
+        $name = $this->get_extensionless_file_name($record['name']);
+        if( $record['position'] == 0 ) {
+          delete_user_meta($uid, 'fv_wp_flowplayer_position_'.$name );
+        } else {
+          update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
+        }
+        
+        if( !empty($record['saw']) && $record['saw'] == 'true' ) {
+          update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
+        }
       }
+      
+      if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
+        foreach ($_POST['sawVideo'] as $record) {
+          update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$this->get_extensionless_file_name($record['name']), true);
+        }
+      }
+      
       wp_send_json_success();
     } else {
       wp_send_json_error();
@@ -45,7 +67,7 @@ class FV_Player_Position_Save {
 
   function player_position_save_admin_default_options_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Remember video position', 'fv-wordpress-flowplayer'), 'video_position_save_enable', __('Stores the last video play position for users, so they can continue watching from where they left.'), __('It stored in usermeta for logged in users and in a localStorage or cookie for guest users.'));
+    $fv_fp->_get_checkbox(__('Remember video position', 'fv-wordpress-flowplayer'), 'video_position_save_enable', __('Stores the last video play position for users, so they can continue watching from where they left.'), __('Uses <code>usermeta</code> for logged in users and  localStorage or cookies for guest users.'));
   }
   
   function shortcode( $attributes, $media, $fv_fp ) {

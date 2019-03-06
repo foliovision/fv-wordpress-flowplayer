@@ -85,10 +85,21 @@ class FV_Player_Custom_Videos {
     if( $edit ) {
       $add_another = $args['multiple'] ? "<button class='button fv-player-editor-more' style='display:none'>Add Another Video</button>" : false;
       
+      $preview = false;
+      $before = 0;
+      if( $video ) {
+        $preview = do_shortcode($video);
+        global $fv_fp;
+        if( $fv_fp->current_player() ) {
+          $before = count($fv_fp->current_player()->getVideos());
+        }
+      }
+      
       $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
           <div class='inside inside-child'>    
-            <div class='fv-player-editor-preview'>".($video ? do_shortcode($video) : '')."</div>
+            <div class='fv-player-editor-preview'>".$preview."</div>
             <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
+            <input name='fv_player_videos_before[".$this->meta."][]' type='hidden' value='".$before."' />
             <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
               <button class='button fv-player-editor-button'>".$args['labels']['edit']."</button>
               <button class='button fv-player-editor-remove'>".$args['labels']['remove']."</button>
@@ -331,7 +342,7 @@ class FV_Player_Custom_Videos_Master {
     //  todo: permission check!
     
     foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
-      if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' ) {
+      if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' && $_POST['fv-player-custom-videos-entity-id'][$meta] == $post_id ) {
         delete_post_meta( $post_id, $meta );
 
         if( is_array($value) && count($value) > 0 ) {
