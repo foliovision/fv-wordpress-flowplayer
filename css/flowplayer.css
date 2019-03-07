@@ -1984,3 +1984,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .fp-playlist-external.fp-playlist-season a:hover .dur {
 	color: #000;
 }
+
+.flowplayer .fv-fp-list-menu {width: auto;}
+.flowplayer .fv-fp-list-menu a {text-align:left}
