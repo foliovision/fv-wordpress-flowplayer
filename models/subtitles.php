@@ -97,9 +97,15 @@ class FV_Player_Subtitles {
       
 
       $objSubtitle->src = $subtitles;
-      if( $countSubtitles == 0 && $fv_fp->_get_option('subtitleOn') ) {
-        $objSubtitle->default = true;
-      }      
+      if( $fv_fp->_get_option('subtitleOn') ) {
+        if( defined('ICL_LANGUAGE_CODE') ) {
+          if( $objSubtitle->srclang == ICL_LANGUAGE_CODE ) {
+            $objSubtitle->default = true;
+          }
+        } else if( $countSubtitles == 0 ) {
+          $objSubtitle->default = true;
+        }
+      }
       $aOutput[] = $objSubtitle;
       
       $countSubtitles++;
