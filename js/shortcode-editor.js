@@ -2447,8 +2447,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_save',
         data: JSON.stringify(ajax_data),
-        nonce: fv_player_editor_conf.preview_nonce,
-        cookie: encodeURIComponent(document.cookie),
+        nonce: fv_player_editor_conf.preview_nonce        
       }, function(playerID) {
         if (playerID == parseInt(playerID)) {
           // we have extra parameters to keep

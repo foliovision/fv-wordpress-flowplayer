@@ -65,10 +65,7 @@ class FV_Player_Db_Player {
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $DB_Instance = null,
-    $meta_data = null,
-    $subtitles_count,
-    $chapters_count,
-    $transcript_count;
+    $meta_data = null;
 
   /**
    * @param mixed $videos
@@ -199,9 +196,10 @@ class FV_Player_Db_Player {
   }
   
   public function getCount($video_meta) {
-    if( $video_meta == 'subtitles' ) return $this->subtitles_count;
-    if( $video_meta == 'chapters' ) return $this->chapters_count;
-    if( $video_meta == 'transcript' ) return $this->transcript_count;
+    if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
+    if( $video_meta == 'chapters' && isset($this->chapters_count) ) return $this->chapters_count;
+    if( $video_meta == 'transcript' && isset($this->transcript_count) ) return $this->transcript_count;
+    return 0;
   }
 
   /**
@@ -445,12 +443,14 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach ($options as $key => $value) {
       if (property_exists($this, $key)) {
         $this->$key = stripslashes($value);
-      } else {
-        // ignore old database structure records
-        if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
-          // generate warning
-          trigger_error('Unknown property for new DB player: ' . $key);
-        }
+        
+      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
+        $this->$key = stripslashes($value);
+        
+      } else if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
+        // generate warning
+        trigger_error('Unknown property for new DB player: ' . $key);
+        
       }
     }    
     
