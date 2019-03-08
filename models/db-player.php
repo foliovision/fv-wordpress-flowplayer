@@ -550,12 +550,12 @@ CREATE TABLE " . self::$db_table_name . " (
         if ($id === null || count($query_ids)) {
           
           // load multiple players via their IDs but a single query and return their values
-          $select = '*';
+          $select = 'p.*';
           if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'p.id,'.esc_sql($options['db_options']['select_fields']);
           
           $where = '';
           if( $id !== null ) {
-            $where = ' WHERE id IN('. implode(',', $query_ids).') ';
+            $where = ' WHERE p.id IN('. implode(',', $query_ids).') ';
             
           // if we have multiple video IDs to load players for, let's prepare a like statement here
           } else if( !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids'])){
@@ -583,8 +583,7 @@ CREATE TABLE " . self::$db_table_name . " (
   '.$select.',
   count(subtitles.id) as subtitles_count,
   count(chapters.id) as chapters_count,
-  count(transcript.id) as transcript_count,
-  p.*
+  count(transcript.id) as transcript_count
   FROM `'.self::$db_table_name.'` AS p
   JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
