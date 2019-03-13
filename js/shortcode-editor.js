@@ -3539,10 +3539,11 @@ function fv_player_editor_show_stream_fields(e,index) {
   // on fv_flowplayer_shortcode_new
   if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
   
-  var rtmp = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val();
-  var show = rtmp || src.match(/\.m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/);
+  var rtmp = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val(),
+    show_live = rtmp || src.match(/\.m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//),
+    show_audio = src.match(/\.m3u8/);
   
-  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show);
-  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show);
+  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_live);
+  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_audio);
   
 }
