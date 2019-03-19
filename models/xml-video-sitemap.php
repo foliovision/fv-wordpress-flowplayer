@@ -110,7 +110,7 @@ class FV_Xml_Video_Sitemap {
           }
         }
         
-        $content_no_tags = explode( "\n", strip_tags($content) );
+        $content_no_tags = explode( "\n", strip_tags( preg_replace( '~</p>~', "</p>\n", $content ) ) );
         
         // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
         $content = str_replace( array('[fvplayer','[flowplayer'), '[noplayer', $content );
@@ -212,8 +212,8 @@ class FV_Xml_Video_Sitemap {
             
             $xml_video['description'] = $description;
             
-            if( !empty($used_descriptions[$description]) ) {
-              
+            // if description is already in use try to find the previous sentence
+            if( !empty($used_descriptions[$description]) ) {              
               $last = false;
               foreach( $content_no_tags AS $p ) {
                 if( stripos($p,$shortcode) !== false ) break;
