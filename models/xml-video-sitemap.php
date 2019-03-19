@@ -86,7 +86,8 @@ class FV_Xml_Video_Sitemap {
             'video' => array()
           );
         
-        $titles_used = array();
+        $used_titles = array();
+        $used_descriptions = array();
         
         $content = $objPost->post_content;
         $content = preg_replace( '~<code>.*?</code>~', '', $content );
@@ -108,22 +109,24 @@ class FV_Xml_Video_Sitemap {
           }
         }
         
+        $content_no_tags = explode( "\n", strip_tags($content) );
+        
         // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
         $content = str_replace( array('[fvplayer','[flowplayer'), '[noplayer', $content );
         $content = do_shortcode($content);
         $content = str_replace( '[noplayer', '[fvplayer', $content );
         
         if( $meta = get_post_meta($objPost->ID, '_aioseop_description', true ) ) {
-          $sanitized_description = $meta;
+          $description = $meta;
         } else if( $meta = get_post_meta($objPost->ID, '_yoast_wpseo_metadesc', true ) ) {
-          $sanitized_description = $meta;
+          $description = $meta;
         } else if( $meta = get_post_meta($objPost->ID, '_genesis_description', true ) ) {
-          $sanitized_description = $meta;
+          $description = $meta;
         } else {
-          $sanitized_description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');          
+          $description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');
         }
         
-        $sanitized_description = htmlspecialchars( $sanitized_description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+        $description = htmlspecialchars( $description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
         foreach ( $matches AS $meta_key => $partial ) {          
 
@@ -185,27 +188,45 @@ class FV_Xml_Video_Sitemap {
 
             // set video title
             if (!empty($sanitized_caption)) {
-              $xml_video['title'] = $sanitized_caption;
+              $title = $sanitized_caption;
+            } else if (!empty($sanitized_page_title)) {
+              $title = $sanitized_page_title;
             } else {
-              if (!empty($sanitized_page_title)) {
-                $xml_video['title'] = $sanitized_page_title;
-              } else {
-                $xml_video['title'] = 'Video';
-              }
+              $title = 'Video';
             }
             
-            if( !empty($titles_used[$xml_video['title']]) ) {
-              $titles_used[$xml_video['title']]++;
-              $xml_video['title'] .= ' '.$titles_used[$xml_video['title']];
+            if( !empty($used_titles[$title]) ) {
+              $used_titles[$title]++;
+              $title .= ' '.$used_titles[$title];
             } else {
-              $titles_used[$xml_video['title']] = 1;
+              $used_titles[$title] = 1;
             }
+            
+            $xml_video['title'] = $title;
 
             // don't return empty descriptions (can happen if the video tag it the only thing on the page)            
-            if( strlen(trim($sanitized_description)) == 0 ) {
-              $xml_video['description'] = $xml_video['title'];
+            if( strlen(trim($description)) == 0 ) {
+              $description = $xml_video['title'];
+            }
+            
+            $xml_video['description'] = $description;
+            
+            if( !empty($used_descriptions[$description]) ) {
+              
+              $last = false;
+              foreach( $content_no_tags AS $p ) {
+                if( stripos($p,$shortcode) !== false ) break;
+                $last = $p;
+              }
+              
+              if( $last ) {
+                $xml_video['description'] = wp_trim_words($last,20,'...');
+              } else {              
+                $used_descriptions[$description]++;
+                $xml_video['description'] .= ' '.$used_descriptions[$description];
+              }
             } else {
-              $xml_video['description'] = $sanitized_description;
+              $used_descriptions[$description] = 1;
             }
             
             if( $aCategories = get_the_category($objPost->ID) ) {

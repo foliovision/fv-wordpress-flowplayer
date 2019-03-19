@@ -91,6 +91,9 @@
 				</thead>
 				<tbody>
 					<xsl:for-each select="sitemap:urlset/sitemap:url">
+            <xsl:variable name="itemURL">
+              <xsl:value-of select="sitemap:loc"/>
+            </xsl:variable>
             <xsl:for-each select="video:video">
               <tr>
                 <xsl:if test="position() mod 2 = 1">
@@ -111,10 +114,7 @@
                   </a>
                 </td>
   
-                <td>
-                  <xsl:variable name="itemURL">
-                    <xsl:value-of select="sitemap:loc"/>
-                  </xsl:variable>
+                <td>                  
                   <a href="{$itemURL}">
                     <strong><xsl:value-of disable-output-escaping="yes" select="video:title"/></strong>
                   </a>
