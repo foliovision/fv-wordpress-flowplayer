@@ -90,7 +90,8 @@ class FV_Xml_Video_Sitemap {
         $used_descriptions = array();
         
         $content = $objPost->post_content;
-        $content = preg_replace( '~<code>.*?</code>~', '', $content );
+        $content = preg_replace( '~<code.*?</code>~', '', $content );
+        $content = preg_replace( '~<pre[\s\S]*?</pre>~', '', $content );
         
         $content = $this->strip_membership_content($content);
         
