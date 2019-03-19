@@ -80,12 +80,13 @@ class FV_Xml_Video_Sitemap {
           
         $permalink = get_permalink($objPost);
 
-        // and leave everything else that was defined
         $xml_loc = array(
             // landing page
             'loc' => $permalink,
             'video' => array()
-          );          
+          );
+        
+        $titles_used = array();
         
         $content = $objPost->post_content;
         $content = preg_replace( '~<code>.*?</code>~', '', $content );
@@ -124,9 +125,7 @@ class FV_Xml_Video_Sitemap {
         
         $sanitized_description = htmlspecialchars( $sanitized_description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
-        foreach ( $matches AS $meta_key => $partial ) {
-
-          $video_alt_captions_counter = 1;
+        foreach ( $matches AS $meta_key => $partial ) {          
 
           foreach ( $partial AS $key => $shortcode ) {
             $count++;
@@ -191,15 +190,20 @@ class FV_Xml_Video_Sitemap {
               if (!empty($sanitized_page_title)) {
                 $xml_video['title'] = $sanitized_page_title;
               } else {
-                $xml_video['title'] = 'Video ' . $video_alt_captions_counter;
-                $increment_video_counter = true;
+                $xml_video['title'] = 'Video';
               }
+            }
+            
+            if( !empty($titles_used[$xml_video['title']]) ) {
+              $titles_used[$xml_video['title']]++;
+              $xml_video['title'] .= ' '.$titles_used[$xml_video['title']];
+            } else {
+              $titles_used[$xml_video['title']] = 1;
             }
 
             // don't return empty descriptions (can happen if the video tag it the only thing on the page)            
             if( strlen(trim($sanitized_description)) == 0 ) {
               $xml_video['description'] = $xml_video['title'];
-              $increment_video_counter = true;
             } else {
               $xml_video['description'] = $sanitized_description;
             }
@@ -208,11 +212,6 @@ class FV_Xml_Video_Sitemap {
               $xml_video['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
             }
             $xml_video['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
-
-            // update video counter used for naming videos without caption on pages without titles
-            if ($increment_video_counter) {
-              $video_alt_captions_counter++;
-            }
             
             if ((strpos($aArgs['src'], '.') !== false) && ($extension = substr(strrchr($aArgs['src'], "."), 1)) && strlen($extension) < 10) {
               // filename URL

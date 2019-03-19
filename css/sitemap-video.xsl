@@ -76,7 +76,7 @@
 		<div id="content">
 			<h1>FV Player Video Sitemap</h1>
 			<p class="expl">
-				This sitemap contains <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URLs.
+				This sitemap contains <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URLs with <xsl:value-of select="count(sitemap:urlset/sitemap:url/video:video)"/> videos.
 			</p>
 			<div class="content">
 				<table id="sitemap">
@@ -91,54 +91,58 @@
 				</thead>
 				<tbody>
 					<xsl:for-each select="sitemap:urlset/sitemap:url">
-						<tr>
-							<xsl:if test="position() mod 2 = 1">
-								<xsl:attribute name="class">odd</xsl:attribute>
-							</xsl:if>
-
-							<td>
-								<xsl:variable name="thumbURL">
-									<xsl:value-of select="video:video/video:thumbnail_loc"/>
-								</xsl:variable>
-
-								<xsl:variable name="flvURL">
-									<xsl:value-of select="video:video/video:player_loc"/>
-								</xsl:variable>
-
-								<img src="{$thumbURL}" width="100" />
-							</td>
-
-							<td>
-								<xsl:variable name="itemURL">
-									<xsl:value-of select="sitemap:loc"/>
-								</xsl:variable>
-								<a href="{$itemURL}">
-									<strong><xsl:value-of disable-output-escaping="yes" select="video:video/video:title"/></strong>
-								</a>
-							</td>
-
-							<td>
-								<xsl:variable name="desc">
-									<xsl:value-of disable-output-escaping="yes" select="video:video/video:description"/>
-								</xsl:variable>
-								<xsl:choose>
-									<xsl:when test="string-length($desc) &lt; 200">
-										<xsl:value-of select="$desc"/>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="concat(substring($desc,1,200),' ...')"/>
-									</xsl:otherwise>
-								</xsl:choose>
-							</td>
-
-							<td>
-								<xsl:value-of select="video:video/video:category"/>
-							</td>
-              
-							<td>
-								<xsl:value-of select="concat(substring(video:video/video:publication_date,0,11),concat(' ', substring(video:video/video:publication_date,12,5)))"/>
-							</td>
-						</tr>
+            <xsl:for-each select="video:video">
+              <tr>
+                <xsl:if test="position() mod 2 = 1">
+                  <xsl:attribute name="class">odd</xsl:attribute>
+                </xsl:if>
+  
+                <td>
+                  <xsl:variable name="thumbURL">
+                    <xsl:value-of select="video:thumbnail_loc"/>
+                  </xsl:variable>
+  
+                  <xsl:variable name="videoURL">
+                    <xsl:value-of select="video:player_loc"/>
+                    <xsl:value-of select="video:content_loc"/>
+                  </xsl:variable>
+                  <a href="{$videoURL}">
+                    <img src="{$thumbURL}" width="100" />
+                  </a>
+                </td>
+  
+                <td>
+                  <xsl:variable name="itemURL">
+                    <xsl:value-of select="sitemap:loc"/>
+                  </xsl:variable>
+                  <a href="{$itemURL}">
+                    <strong><xsl:value-of disable-output-escaping="yes" select="video:title"/></strong>
+                  </a>
+                </td>
+  
+                <td>
+                  <xsl:variable name="desc">
+                    <xsl:value-of disable-output-escaping="yes" select="video:description"/>
+                  </xsl:variable>
+                  <xsl:choose>
+                    <xsl:when test="string-length($desc) &lt; 200">
+                      <xsl:value-of select="$desc"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="concat(substring($desc,1,200),' ...')"/>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </td>
+  
+                <td>
+                  <xsl:value-of select="video:category"/>
+                </td>
+                
+                <td>
+                  <xsl:value-of select="concat(substring(video:publication_date,0,11),concat(' ', substring(video:publication_date,12,5)))"/>
+                </td>
+              </tr>
+            </xsl:for-each>
 					</xsl:for-each>
 					</tbody>
 				</table>
