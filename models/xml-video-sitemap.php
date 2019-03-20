@@ -220,7 +220,7 @@ class FV_Xml_Video_Sitemap {
               $last = false;
               foreach( $content_no_tags AS $p ) {
                 if( stripos($p,$shortcode) !== false ) break;
-                $last = $p;
+                $last = trim( strip_shortcodes($p) );
               }
               
               if( $last ) {
