@@ -632,9 +632,7 @@ function fv_flowplayer_admin_integrations() {
               <input type="hidden" name="integrations[optimizepress2]" value="false" />
               <input type="checkbox" name="integrations[optimizepress2]" id="optimizepress2" value="true" <?php if( $fv_fp->_get_option( array( 'integrations', 'optimizepress2' ) ) ) echo 'checked="checked"'; ?> />
 						</td>
-					</tr>-->
-
-          <?php $fv_fp->_get_checkbox(__('Use iframe embedding', 'fv-wordpress-flowplayer'), array( 'integrations', 'embed_iframe' ), __('Beta version! New kind of embedding which supports all the features in embedded player.', 'fv-wordpress-flowplayer') ); ?>          
+					</tr>-->       
 
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
 					<tr>

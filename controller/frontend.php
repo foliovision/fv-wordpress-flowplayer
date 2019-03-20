@@ -320,12 +320,6 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('rtmp-live-buffer') ) {
       $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
     }
-
-    if( $fv_fp->_get_option( array( 'integrations', 'embed_iframe') ) ) {
-      $aConf['embed'] = false;
-    } else {
-      $aConf['embed'] = array( 'library' => $sPluginUrl.'/flowplayer/fv-flowplayer.min.js', 'script' => $sPluginUrl.'/flowplayer/embed.min.js', 'skin' => $sPluginUrl.'/css/flowplayer.css', 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
-    }
    
     if( $fv_fp->_get_option('ui_speed_increment') == 0.25){
       $aConf['speeds'] = array( 0.25,0.5,0.75,1,1.25,1.5,1.75,2 );

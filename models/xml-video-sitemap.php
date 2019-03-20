@@ -238,12 +238,14 @@ class FV_Xml_Video_Sitemap {
             if ((strpos($aArgs['src'], '.') !== false) && ($extension = substr(strrchr($aArgs['src'], "."), 1)) && strlen($extension) < 10) {
               // filename URL
               $xml_video['content_loc'] = $sanitized_src;
-            } else if( $fv_fp->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
+              
+            } else if( $aArgs['embed'] == 'false' || $aArgs['embed'] == 'off' || ( $fv_fp->_get_option('disableembedding') && $aArgs['embed'] != 'true' ) ) {
+              continue;
+            
+            } else {
               $embed_id = 'fvp';
               if( $count > 1 ) $embed_id .= $count;
               $xml_video['player_loc'] = user_trailingslashit( trailingslashit($permalink).$embed_id );
-            } else {
-              continue;
             }
 
             $xml_loc['video'][] = $xml_video;
@@ -444,6 +446,14 @@ class FV_Xml_Video_Sitemap {
     function options() {
       global $fv_fp;
       $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ), __('As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.', 'fv-wordpress-flowplayer') );
+      
+      if( $fv_fp->_get_option('disableembedding') ) : ?>
+        <tr>
+          <td></td>
+          <td><strong>Note:</strong> Since <a href="#fv_flowplayer_default_options">Disable Embed Button</a> setting is on the video sitemap can only present the bare MP4 or HLS videos. Disable that option to make it show your other video types too.</td>
+        </tr>
+      <?php endif;
+      
       $fv_fp->_get_input_text( array( 'name' => __('Sitemap Post Meta', 'fv-wordpress-flowplayer'), 'key' => 'video_sitemap_meta', 'help' => __('You can enter post meta keys here, use <code>,</code> to separate multiple values.', 'fv-wordpress-flowplayer') ) );
     }
     

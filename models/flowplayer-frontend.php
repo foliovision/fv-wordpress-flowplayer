@@ -467,16 +467,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-engine'] = 'flash';
         }
 
-        if( $this->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
-          if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+        if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
 
-          } else {
-            $attributes['data-fv-embed'] = $this->get_embed_url();
-          }
         } else {
-          if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
-            $attributes['data-embed'] = 'false';
-          } 
+          $attributes['data-fv-embed'] = $this->get_embed_url();
         }
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
