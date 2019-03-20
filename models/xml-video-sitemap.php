@@ -142,10 +142,7 @@ class FV_Xml_Video_Sitemap {
             $aArgs = shortcode_parse_atts( rtrim( $shortcode, ']' ) );
             
             global $FV_Player_Db;
-            if( !empty($aArgs['id']) && !empty($FV_Player_Db) ) {
-              if( !empty($used_videos[$aArgs['id']]) ) continue;
-              
-              $used_videos[$aArgs['id']] = true;
+            if( !empty($FV_Player_Db) ) {
               $aArgs = $FV_Player_Db->getPlayerAttsFromDb( $aArgs );
             }
             
