@@ -246,8 +246,12 @@ class FV_Xml_Video_Sitemap {
               continue;
             
             } else {
-              $embed_id = 'fvp';
-              if( $count > 1 ) $embed_id .= $count;
+              if( $player = $fv_fp->current_player() ) {
+                $embed_id = 'fvp-'.$player->getId();
+              } else {
+                $embed_id = 'fvp';
+                if( $count > 1 ) $embed_id .= $count;
+              }
               $xml_video['player_loc'] = user_trailingslashit( trailingslashit($permalink).$embed_id );
             }
 

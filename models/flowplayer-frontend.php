@@ -789,7 +789,10 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_embed_url() {
-    if( empty($this->aPlayers[get_the_ID()]) ) {
+    if( $player = $this->current_player() ) {
+      $append = 'fvp-'.$player->getId();
+      $append_num = $append;
+    } else if( empty($this->aPlayers[get_the_ID()]) ) {
       $this->aPlayers[get_the_ID()] = 1;
       $append = 'fvp';
       $append_num = 1;
