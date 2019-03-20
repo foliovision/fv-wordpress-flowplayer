@@ -74,8 +74,6 @@ class FV_Xml_Video_Sitemap {
       }
 
       foreach ($posts as $objPost) {
-        $did_videos = array();
-        
         $count = 0;
           
         $permalink = get_permalink($objPost);
@@ -86,6 +84,7 @@ class FV_Xml_Video_Sitemap {
             'video' => array()
           );
         
+        $used_videos = array();
         $used_titles = array();
         $used_descriptions = array();
         
@@ -144,11 +143,14 @@ class FV_Xml_Video_Sitemap {
             
             global $FV_Player_Db;
             if( !empty($aArgs['id']) && !empty($FV_Player_Db) ) {
+              if( !empty($used_videos[$aArgs['id']]) ) continue;
+              
+              $used_videos[$aArgs['id']] = true;
               $aArgs = $FV_Player_Db->getPlayerAttsFromDb( $aArgs );
             }
             
-            if( empty($aArgs['src']) || !empty($did_videos[$aArgs['src']]) ) continue;
-            $did_videos[$aArgs['src']] = true;
+            if( empty($aArgs['src']) || !empty($used_videos[$aArgs['src']]) ) continue;
+            $used_videos[$aArgs['src']] = true;
 
             // this crazyness needs to be first converted into non-html characters (so &quot; becomes "), then
             // stripped of them all and returned back HTML-encoded for the XML formatting to be correct
@@ -225,7 +227,7 @@ class FV_Xml_Video_Sitemap {
               
               if( $last ) {
                 $xml_video['description'] = wp_trim_words($last,20,'...');
-              } else {              
+              } else {
                 $used_descriptions[$description]++;
                 $xml_video['description'] .= ' '.$used_descriptions[$description];
               }

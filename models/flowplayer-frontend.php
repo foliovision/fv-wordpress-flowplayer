@@ -789,22 +789,25 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_embed_url() {
+    if( empty($this->aPlayers[get_the_ID()]) ) {
+      $num = $this->aPlayers[get_the_ID()] = 1;
+    } else {
+      $num = ++$this->aPlayers[get_the_ID()];
+    }
+    
+    $append = 'fvp';
+    if( $num > 1 ) {
+      $append .= $num;
+    }
+    
     if( $player = $this->current_player() ) {
       $append = 'fvp-'.$player->getId();
-      $append_num = $append;
-    } else if( empty($this->aPlayers[get_the_ID()]) ) {
-      $this->aPlayers[get_the_ID()] = 1;
-      $append = 'fvp';
-      $append_num = 1;
-    } else {
-      $this->aPlayers[get_the_ID()]++;
-      $append_num = $this->aPlayers[get_the_ID()];
-      $append = 'fvp'.$append_num;      
+      $num = $append;
     }
     
     $rewrite = get_option('rewrite_rules');
     if( empty($rewrite) ) {
-      return add_query_arg( 'fv_player_embed', $append_num, get_permalink() );
+      return add_query_arg( 'fv_player_embed', $num, get_permalink() );
     } else {
       return user_trailingslashit( trailingslashit( get_permalink() ).$append );
     }
