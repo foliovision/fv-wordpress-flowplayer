@@ -110,7 +110,10 @@ class FV_Xml_Video_Sitemap {
           }
         }
         
-        $content_no_tags = explode( "\n", strip_tags( preg_replace( '~</p>~', "</p>\n", $content ) ) );
+        $content_no_tags = preg_replace( '~</p>~', "</p>\n", $content );
+        $content_no_tags = preg_replace( '~\n+~', "\n", $content );
+        $content_no_tags = strip_tags( $content_no_tags );
+        $content_no_tags = explode( "\n", $content_no_tags );
         
         // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
         $content = str_replace( array('[fvplayer','[flowplayer'), '[noplayer', $content );
