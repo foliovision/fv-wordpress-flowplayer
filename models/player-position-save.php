@@ -3,7 +3,7 @@ class FV_Player_Position_Save {
 
   public function __construct() {
     add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save') );
-    add_filter('fv_player_item', array($this, 'set_last_position') );
+    add_filter('fv_player_item', array($this, 'set_last_position'), 10, 3 );
     add_filter('fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );
     
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
@@ -13,27 +13,38 @@ class FV_Player_Position_Save {
     return pathinfo($path, PATHINFO_FILENAME);
   }
 
-  public function set_last_position($aItemArray) {
+  public function set_last_position( $aItem, $index, $aArgs ) {
     global $fv_fp;
     // we only use the first source to check for stored position,
     // since other sources would be alternatives (in quality, etc.)
     if (
       ( !empty($fv_fp->aCurArgs['saveposition']) || $fv_fp->_get_option('video_position_save_enable') ) &&
       is_user_logged_in() &&
-      is_array($aItemArray) &&
-      isset($aItemArray['sources']) &&
-      isset($aItemArray['sources'][0])
+      is_array($aItem) &&
+      isset($aItem['sources']) &&
+      isset($aItem['sources'][0])
     ) {
-      $name = $this->get_extensionless_file_name($aItemArray['sources'][0]['src']);
-      if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
-        $aItemArray['sources'][0]['position'] = intval($metaPosition);
-      }
       
-      if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_saw_' . $name, true ) ) {
-        $aItemArray['sources'][0]['saw'] = true;
+      $try = array();
+      if( $fv_fp->current_player() ) {
+        $aVideos = $fv_fp->current_player()->getVideos();
+        if( $aVideos && !empty($aVideos[$index]) ) {
+          $try[] = $aVideos[$index]->getId();
+        }
+      }
+      $try[] = $this->get_extensionless_file_name($aItem['sources'][0]['src']);
+      
+      foreach( $try AS $name ) {
+        if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
+          $aItem['sources'][0]['position'] = intval($metaPosition);
+        }
+        
+        if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_saw_' . $name, true ) ) {
+          $aItem['sources'][0]['saw'] = true;
+        }
       }
     }
-    return $aItemArray;
+    return $aItem;
   }
 
   public function video_position_save() {
