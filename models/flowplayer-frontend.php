@@ -750,7 +750,7 @@ class flowplayer_frontend extends flowplayer
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {      
         $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_display;'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_display;'>\n\t\t<div class='fv_fp_close'><a href='#'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
                              'width' => $ad_width,
                              'height' => $ad_height
                             );                 
