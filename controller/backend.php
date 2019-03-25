@@ -674,12 +674,6 @@ function flowplayer_deactivate() {
   }
   delete_option( 'fv_flowplayer_extension_install' );
   wp_clear_scheduled_hook('fv_flowplayer_checker_event');
-  
-  global $fv_fp;
-  $fv_fp->_set_option('player_model_db_checked', false);
-  $fv_fp->_set_option('player_meta_model_db_checked', false);
-  $fv_fp->_set_option('video_model_db_checked', false);
-  $fv_fp->_set_option('video_meta_model_db_checked', false);
 }
 
 
