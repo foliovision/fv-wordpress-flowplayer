@@ -1614,7 +1614,7 @@ function fv_flowplayer_admin_rollback() {
   ?>  		
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
     <p>You can go back to the last version without FV Player Database here:</p>
-    <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.2.7.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.2.7.727</a></p>
+    <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.2.8.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.2.8.727</a></p>
     <p>You can reinstall the last FV Player 6 here:</p>
     <p><a href="<?php echo wp_nonce_url( admin_url($base.'6.6.6'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 6.6.6</a></p>
   <?php			
