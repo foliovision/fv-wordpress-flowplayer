@@ -456,7 +456,17 @@ class flowplayer_frontend extends flowplayer
         if( $this->_get_option('ui_repeat_button') ) {
           $attributes['data-button-repeat'] = true;
         }
-        if( $this->_get_option('ui_rewind_button') ) {
+        
+        //  Rewind button
+        $bRewindButton = $this->_get_option('ui_rewind_button');
+        if( isset($this->aCurArgs['rewind_button']) ) {
+          if( strcmp($this->aCurArgs['rewind_button'],'yes') == 0 ) {
+            $bRewindButton = true;
+          } else if( strcmp($this->aCurArgs['rewind_button'],'no') == 0 ) {
+            $bRewindButton = false;
+          }
+        }
+        if( $bRewindButton ) {
           $attributes['data-button-rewind'] = true;
         }
         
