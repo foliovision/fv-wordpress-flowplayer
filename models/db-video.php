@@ -84,7 +84,7 @@ class FV_Player_Db_Video {
    */
   public function getDuration() {
     $sDuration = false;
-    if( $tDuration = $this->getMetaValue('duration',true) ) {
+    if( $tDuration = intval($this->getMetaValue('duration',true)) ) {
       if( $tDuration < 3600 ) {
         $sDuration = gmdate( "i:s", $tDuration );
       } else {
@@ -194,7 +194,7 @@ class FV_Player_Db_Video {
 
     self::init_db_name();
 
-    if( is_admin() || !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -278,16 +278,27 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
-          $video_data = $wpdb->get_results( '
-          SELECT
-            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . $options['db_options']['select_fields'] : '*' ) . '
-          FROM
-            ' . self::$db_table_name . '
-          WHERE
-            id IN(' . implode( ',', $query_ids ) . ')' .
-            ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
-            ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
-          );
+          $select = '*';
+          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'id,'.esc_sql($options['db_options']['select_fields']);
+          
+          $where = ' WHERE id IN('. implode(',', $query_ids).') ';
+          
+          $order = '';
+          if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
+            $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
+            if( !empty($options['db_options']['order']) ) $order .= ' '.esc_sql($options['db_options']['order']);
+          }
+          
+          $limit = '';
+          if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
+            $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
+          }
+          
+          $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
+          
+          if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
+            $all_cached = true;
+          }
         } else {
           $all_cached = true;
         }
@@ -296,13 +307,11 @@ CREATE TABLE " . self::$db_table_name . " (
           // load a single video
           $video_data = $wpdb->get_row( '
           SELECT
-            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . $options['db_options']['select_fields'] : '*' ) . '
+            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . esc_sql($options['db_options']['select_fields']) : '*' ) . '
           FROM
             ' . self::$db_table_name . '
           WHERE
-            id = ' . $id .
-            ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['order_by'] ) ? ' ORDER BY ' . $options['db_options']['order_by'] . ( ! empty( $options['db_options']['order'] ) ? ' ' . $options['db_options']['order'] : '' ) : '' ) .
-            ( $options && ! empty( $options['db_options'] ) && isset( $options['db_options']['offset'] ) && isset( $options['db_options']['per_page'] ) ? ' LIMIT ' . $options['db_options']['offset'] . ', ' . $options['db_options']['per_page'] : '' )
+            id = ' . intval($id)
           );
         } else {
           $all_cached = true;
@@ -487,7 +496,7 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach ($fields_to_search as $field_name) {
       $where[] = "`$field_name` ". ($like ? 'LIKE "%'.esc_sql($search_string).'%"' : '="'.esc_sql($search_string).'"');
     }
-    $where = implode(' '.$and_or.' ', $where);
+    $where = implode(' '.esc_sql($and_or).' ', $where);
 
     self::init_db_name();
     $data = $wpdb->get_results("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE $where ORDER BY id DESC");
@@ -548,7 +557,20 @@ CREATE TABLE " . self::$db_table_name . " (
         return array();
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
-          return array( $this->meta_data );
+          // meta data will be an array if we filled all of them at once
+          // from database at the time when player is initially created
+          if (is_array($this->meta_data)) {
+            return $this->meta_data;
+          } else if ( $this->DB_Instance->isVideoMetaCached($this->id) ) {
+            $cache = $this->DB_Instance->getVideoMetaCache();
+            return $cache[$this->id];
+          } else {
+            if ($this->meta_data && $this->meta_data->getIsValid()) {
+              return array( $this->meta_data );
+            } else {
+              return array();
+            }
+          }
         } else {
           return array();
         }
@@ -574,7 +596,54 @@ CREATE TABLE " . self::$db_table_name . " (
     }
     if( $single ) return false;
     return $output;
-  }    
+  }
+  
+  /**
+   * Updates or instert a video meta row
+   *
+   * @param string $key       The meta key
+   * @param string $value     The meta value     
+   * @param int $id           ID of the existing video meta row
+   *
+   * @throws Exception When the underlying Meta object throws.
+   *
+   * @return bool|int Returns record ID if successful, false otherwise.
+   * 
+   */
+  public function updateMetaValue( $key, $value, $id = false ) {
+    $to_update = false;
+    $data = $this->getMetaData();
+    
+    if (count($data)) {      
+      foreach ($data as $meta_object) {
+        // find the matching video meta row and if id is provided as well, match on that too
+        if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
+          if( $meta_object->getMetaValue() != $value ) {
+            $to_update = $meta_object->getId();
+          }
+        }
+      }
+    }
+
+    // if matching row has been found or if it was not found and no row id is provided (insert)
+    if( $to_update || !$to_update && !$id ) {
+      $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), $this->DB_Instance );
+      if( $to_update ) $meta->link2db($to_update);
+      return $meta->save();        
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Lets you alter any of the video properties and then call save()
+   *
+   * @param string $key       The meta key
+   * @param string $value     The meta value     
+   */
+  public function set( $key, $value ) {
+    $this->$key = stripslashes($value);
+  }
 
   /**
    * Stores new video instance or updates and existing one

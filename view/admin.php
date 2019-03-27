@@ -291,6 +291,8 @@ function fv_flowplayer_admin_default_options() {
             <?php $fv_fp->_get_checkbox(__('Popup Box', 'fv-wordpress-flowplayer'), 'popupbox', __('Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-wordpress-flowplayer') ); ?>
             
             <?php $fv_fp->_get_checkbox(__('Repeat Button', 'fv-wordpress-flowplayer'), 'ui_repeat_button', __('Adds a button to set playlist/track repeat and shuffle.', 'fv-wordpress-flowplayer') ); ?>
+            
+            <?php $fv_fp->_get_checkbox(__('Rewind Button', 'fv-wordpress-flowplayer'), 'ui_rewind_button', __('Adds a button to go 10 seconds back.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
               <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -584,7 +586,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
 
-          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '...and also the YouTube links', '' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '...and also <code><small>[playlist]</small></code> and the YouTube links', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
@@ -830,11 +832,10 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), array('interface', 'autoplay') ); ?>
           <?php $fv_fp->_get_checkbox(__('Controlbar', 'fv-wordpress-flowplayer'), array('interface', 'controlbar') ); ?>
           <?php $fv_fp->_get_checkbox(__('Embed', 'fv-wordpress-flowplayer'), array('interface', 'embed') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Live Stream', 'fv-wordpress-flowplayer'), array('interface', 'live') ); ?>
           <?php $fv_fp->_get_checkbox(__('Mobile Video', 'fv-wordpress-flowplayer'), array('interface', 'mobile') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Auto Advance', 'fv-wordpress-flowplayer'), array('interface', 'playlist_advance') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Style', 'fv-wordpress-flowplayer'), array('interface', 'playlist') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Playlist Captions', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Item Titles', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
@@ -1522,7 +1523,7 @@ function fv_flowplayer_admin_usage() {
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding"><?php _e('Video Encoding for HTML 5', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists"><?php _e('How to Create Playlists', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/vtt-chapters"><?php _e('VTT Chapters', 'fv-wordpress-flowplayer'); ?></a></li>
-                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/adding-captions-and-splash-text"><?php _e('Adding Captions and Splash Text', 'fv-wordpress-flowplayer'); ?></a></li>
+                	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/adding-captions-and-splash-text"><?php _e('Adding Titles and Splash Text', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/quality-switching"><?php _e('Setting Up Video Quality Switching', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/how-to-use-video-checker"><?php _e('How to Use the Built-in Video Checker', 'fv-wordpress-flowplayer'); ?></a></li>
                 	<li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-video-links"><?php _e('Creating Video Links in FV Player', 'fv-wordpress-flowplayer'); ?></a></li>
@@ -1613,7 +1614,7 @@ function fv_flowplayer_admin_rollback() {
   ?>  		
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
     <p>You can go back to the last version without FV Player Database here:</p>
-    <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.2.7.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.2.7.727</a></p>
+    <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.2.8.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.2.8.727</a></p>
     <p>You can reinstall the last FV Player 6 here:</p>
     <p><a href="<?php echo wp_nonce_url( admin_url($base.'6.6.6'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 6.6.6</a></p>
   <?php			

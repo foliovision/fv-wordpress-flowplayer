@@ -102,13 +102,13 @@ class FV_Player_Db {
       if( is_numeric($aItem['sources'][0]['src']) ) {
         $new = array( 'sources' => array() );
         if( $src = $vid_obj->getSrc() ) {
-          $new['sources'][] = array( 'src' => $src, 'type' => $fv_fp->get_mime_type($src) );
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src,array()), 'type' => $fv_fp->get_mime_type($src) );
         }
         if( $src1 = $vid_obj->getSrc1() ) {
-          $new['sources'][] = array( 'src' => $src1, 'type' => $fv_fp->get_mime_type($src1) );
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src1,array()), 'type' => $fv_fp->get_mime_type($src1) );
         }
         if( $src2 = $vid_obj->getSrc2() ) {
-          $new['sources'][] = array( 'src' => $src2, 'type' => $fv_fp->get_mime_type($src2));
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src2,array()), 'type' => $fv_fp->get_mime_type($src2));
         }
         if( $rtmp = $vid_obj->getRtmp() ) {
           $new['rtmp'] = $rtmp;
@@ -224,7 +224,7 @@ class FV_Player_Db {
 
         new FV_Player_Db_Player( null, array(
           'db_options' => array(
-            'select_fields'       => 'id, player_name, date_created, videos',
+            'select_fields'       => 'player_name, date_created, videos',
             'order_by'            => $order_by,
             'order'               => $order,
             'offset'              => $offset,
@@ -237,7 +237,7 @@ class FV_Player_Db {
       // load all players, which will put them into the cache automatically
       new FV_Player_Db_Player( null, array(
         'db_options' => array(
-          'select_fields' => 'id, player_name, date_created, videos',
+          'select_fields' => 'player_name, date_created, videos',
           'order_by'      => $order_by,
           'order'         => $order,
           'offset'        => $offset,
@@ -287,6 +287,9 @@ class FV_Player_Db {
           $result_row->player_name = $player->getPlayerName();
           $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
+          $result_row->subtitles_count = $player->getCount('subtitles');
+          $result_row->chapters_count = $player->getCount('chapters');
+          $result_row->transcript_count = $player->getCount('transcript');
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
@@ -294,6 +297,10 @@ class FV_Player_Db {
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
+            if( empty($videos[ $video_id ]) ) { // the videos field might point to a missing video
+              continue;
+            }
+            
             $caption = $videos[ $video_id ]->getCaption();
             $caption_src = $videos[ $video_id ]->getCaptionFromSrc();
             
@@ -469,7 +476,8 @@ class FV_Player_Db {
   private function mapDbAttributeValue2Shortcode($att_name, $att_value) {
     switch ($att_name) {
       case 'playlist_advance':
-        return ($att_value == 'off' ? 'false' : 'true');
+        if($att_value == 'on' ) return 'true';
+        if($att_value == 'off' ) return 'false';
     }
 
     return $att_value;
@@ -551,10 +559,7 @@ class FV_Player_Db {
 
             $player->setVideos($data['videos']);
           }
-
-          // preload all videos
-          $player->getVideos();
-
+          
           // check if we should change order of videos
           $ordered_videos = explode(',', $data['videos']);
           if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'title'))) {
@@ -569,18 +574,6 @@ class FV_Player_Db {
 
                 ksort($ordered_videos_tmp);
                 $ordered_videos = array_values($ordered_videos_tmp);
-                
-                if( !empty($atts['video_objects']) ) {
-                  $new_objects = array();
-                  foreach( $ordered_videos_tmp AS $v ) {
-                    foreach( $atts['video_objects'] AS $i ) {
-                      if( $i->getId() == $v ) {
-                        $new_objects[] = $i;
-                      }
-                    }                
-                  }
-                  $atts['video_objects'] = $new_objects;                
-                }
                 break;
 
               case 'newest':
@@ -592,18 +585,6 @@ class FV_Player_Db {
                 }
 
                 $ordered_videos = array_values($ordered_videos_tmp);
-                
-                if( !empty($atts['video_objects']) ) {
-                  $new_objects = array();
-                  foreach( $ordered_videos_tmp AS $v ) {
-                    foreach( $atts['video_objects'] AS $i ) {
-                      if( $i->getId() == $v ) {
-                        $new_objects[] = $i;
-                      }
-                    }                
-                  }
-                  $atts['video_objects'] = $new_objects;                
-                }
                 break;
 
               case 'title':
@@ -629,23 +610,28 @@ class FV_Player_Db {
 
                 ksort($ordered_videos_tmp);
                 $ordered_videos = array_values($ordered_videos_tmp);
-                
-                if( !empty($atts['video_objects']) ) {
-                  $new_objects = array();
-                  foreach( $ordered_videos_tmp AS $v ) {
-                    foreach( $atts['video_objects'] AS $i ) {
-                      if( $i->getId() == $v ) {
-                        $new_objects[] = $i;
-                      }
-                    }                
-                  }
-                  $atts['video_objects'] = $new_objects;                
-                }       
                 break;
             }
-
+            
             $data['videos'] = implode(',', $ordered_videos);
-          }
+            $player->setVideos($data['videos']);
+            
+            if( !empty($atts['video_objects']) ) {
+              $new_objects = array();
+              foreach( $ordered_videos AS $v ) {
+                foreach( $atts['video_objects'] AS $i ) {
+                  if( $i->getId() == $v ) {
+                    $new_objects[] = $i;
+                  }
+                }                
+              }
+              $atts['video_objects'] = $new_objects;                
+            }
+            
+          }          
+
+          // preload all videos
+          $player->getVideos();
 
           // video attributes which can still be set in shortcode
           $preserve = array();
@@ -937,6 +923,9 @@ class FV_Player_Db {
           }
 
           echo $id;
+          
+          do_action('fv_player_db_save', $id);
+          
         } else {
           echo -1;
         }
@@ -1060,8 +1049,12 @@ class FV_Player_Db {
         $out['videos'][] = $vid;
       }
 
-      header('Content-Type: application/json');
-      echo json_encode($out, true);
+      header('Content-Type: application/json');      
+      if (version_compare(phpversion(), '5.3', '<')) {
+        echo json_encode($out);
+      } else {        
+        echo json_encode($out, true);
+      }
     }
 
     wp_die();
@@ -1208,7 +1201,11 @@ class FV_Player_Db {
       }
 
       if ($output_result) {
-        echo json_encode( $export_data, JSON_UNESCAPED_SLASHES );
+        if (version_compare(phpversion(), '5.3', '<')) {
+          echo json_encode($export_data);
+        } else {        
+          echo json_encode($export_data, true);
+        }
         exit;
       } else {
         return $export_data;

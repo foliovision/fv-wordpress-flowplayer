@@ -3,7 +3,7 @@
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.7.
-Version: 7.3.1.727
+Version: 7.3.12.727
 Author URI: http://foliovision.com/
 License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -27,7 +27,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.3.1.727.1';
+$fv_wp_flowplayer_ver = '7.3.12.727.1';
 $fv_wp_flowplayer_core_ver = '7.2.7.1';
 
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
@@ -87,8 +87,8 @@ if( is_admin() ) {
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
+}
 
-} 
-	
 include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
 include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );

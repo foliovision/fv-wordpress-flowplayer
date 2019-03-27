@@ -194,6 +194,13 @@ class FV_Player_Db_Player {
   public function getCopyText() {
     return $this->copy_text;
   }
+  
+  public function getCount($video_meta) {
+    if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
+    if( $video_meta == 'chapters' && isset($this->chapters_count) ) return $this->chapters_count;
+    if( $video_meta == 'transcript' && isset($this->transcript_count) ) return $this->transcript_count;
+    return 0;
+  }
 
   /**
    * @return string
@@ -379,13 +386,13 @@ class FV_Player_Db_Player {
 
     self::init_db_name();
 
-    if( is_admin() || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
   player_name varchar(255) NOT NULL,
   player_slug varchar(255) NOT NULL,
-  videos varchar(65535) NOT NULL,
+  videos text NOT NULL,
   ab varchar(3) NOT NULL,
   ad text NOT NULL,
   ad_height varchar(7) NOT NULL,
@@ -436,12 +443,14 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach ($options as $key => $value) {
       if (property_exists($this, $key)) {
         $this->$key = stripslashes($value);
-      } else {
-        // ignore old database structure records
-        if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
-          // generate warning
-          trigger_error('Unknown property for new DB player: ' . $key);
-        }
+        
+      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
+        $this->$key = stripslashes($value);
+        
+      } else if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
+        // generate warning
+        trigger_error('Unknown property for new DB player: ' . $key);
+        
       }
     }    
     
@@ -539,30 +548,51 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         if ($id === null || count($query_ids)) {
+          
+          // load multiple players via their IDs but a single query and return their values
+          $select = 'p.*';
+          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'p.id,'.esc_sql($options['db_options']['select_fields']);
+          
+          $where = '';
+          if( $id !== null ) {
+            $where = ' WHERE p.id IN('. implode(',', $query_ids).') ';
+            
           // if we have multiple video IDs to load players for, let's prepare a like statement here
-          $where_like_part = '';
-
-          if ($options && !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids'])){
+          } else if( !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids'])){
             $where_like_part = array();
-
             foreach ($options['db_options']['search_by_video_ids'] as $player_video_id) {
+              $player_video_id = intval($player_video_id);
               $where_like_part[] = "(videos = \"$player_video_id\" OR videos LIKE \"%,$player_video_id\" OR videos LIKE \"$player_video_id,%\")";
             }
 
-            $where_like_part = implode(' OR ', $where_like_part);
+            $where = ' WHERE '.implode(' OR ', $where_like_part);
           }
-
-          // load multiple players via their IDs but a single query and return their values
-          $player_data = $wpdb->get_results('
-          SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
-          FROM
-            '.self::$db_table_name.($id !== null ? '
-          WHERE
-            id IN('. implode(',', $query_ids).')' : ($options && !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids']) ? ' WHERE '.$where_like_part : '')).
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
-          );
+          
+          $order = '';
+          if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
+            $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
+            if( !empty($options['db_options']['order']) ) $order .= ' '.esc_sql($options['db_options']['order']);
+          }
+          
+          $limit = '';
+          if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
+            $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
+          }
+          
+          $player_data = $wpdb->get_results('SELECT
+  '.$select.',
+  count(subtitles.id) as subtitles_count,
+  count(chapters.id) as chapters_count,
+  count(transcript.id) as transcript_count
+  FROM `'.self::$db_table_name.'` AS p
+  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
+  '.$where.'
+  GROUP BY p.id
+  '.$order.$limit);
+          
         } else if ($id !== null && !count($query_ids)) {
           $all_cached = true;
         } else {
@@ -574,13 +604,12 @@ CREATE TABLE " . self::$db_table_name . " (
           // load a single video
           $player_data = $wpdb->get_row('
           SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.$options['db_options']['select_fields'] : '*').'
+            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.esc_sql( $options['db_options']['select_fields'] ) : '*').'
           FROM
             '.self::$db_table_name.'
           WHERE
-            id = '.$id.
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['order_by']) ? ' ORDER BY '.$options['db_options']['order_by'].(!empty($options['db_options']['order']) ? ' '.$options['db_options']['order'] : '') : '').
-            ($options && !empty($options['db_options']) && !empty($options['db_options']['offset']) && !empty($options['db_options']['per_page']) ? ' LIMIT '.$options['db_options']['offset'].', '.$options['db_options']['per_page'] : '')
+            id = '.intval($id),
+            ARRAY_A
           );
         } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
           $all_cached = true;
@@ -590,7 +619,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       }
 
-      if (isset($player_data) && $player_data !== -1 && count($player_data)) {
+      if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
         // single ID, just populate our own data
         if (!$multiID) {
           $this->fill_properties($player_data,$DB_Cache);

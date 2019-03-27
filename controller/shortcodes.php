@@ -361,10 +361,6 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     $aArgs = func_get_args();
     $atts = $aArgs[1];
 
-    if( !empty($atts['type']) && $atts['type'] != 'video' ) {
-      return false;
-    }
-        
     //  copy from wp-includes/media.php wp_playlist_shortcode()
     global $post;
     if ( ! empty( $attr['ids'] ) ) {
@@ -416,6 +412,8 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     $bridge_atts = array();
     $aPlaylistItems = array();
     $aPlaylistImages = array();
+    $aPlaylistCaptions = array();
+    $aPlaylistDurations = array();
     $i = 0;
     foreach ( $attachments as $attachment ) {
       $i++;
@@ -437,6 +435,15 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
       } else {
         $aPlaylistImages[] = $src;
       }      
+      
+      $aPlaylistCaptions[] = str_replace( array('"',';'), '', flowplayer::esc_caption($attachment->post_title) );
+      
+      $meta = wp_get_attachment_metadata( $attachment->ID );
+      if( !empty($meta) ) {
+        if( !empty($meta['length_formatted']) ) {
+          $aPlaylistDurations[] = $meta['length_formatted'];
+        }
+      }
 
     }
     
@@ -450,7 +457,13 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
       $bridge_atts['playlist'] .= ';';
     }
     $bridge_atts['playlist'] = trim($bridge_atts['playlist'],';');
+    if( count($aPlaylistCaptions) > 1 || $atts['tracklist'] ) $bridge_atts['caption'] = implode(';',$aPlaylistCaptions);
+    $bridge_atts['durations'] = implode(';',$aPlaylistDurations);
      
+    if( $atts['tracklist'] ) {
+      $bridge_atts['listshow'] = true;
+    }
+    
     if( isset($atts['width']) ) {
       $bridge_atts['width'] = $atts['width'];
     }
@@ -461,7 +474,11 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     if( count($bridge_atts) == 0 ) {
       return "<!--FV Flowplayer video shortcode integration - no attributes recognized-->";
     }
-
+    
+    if( !empty($atts['type']) && $atts['type'] == 'audio' ) {
+      $bridge_atts['liststyle'] = 'horizontal';
+    }
+    
     return flowplayer_content_handle( $bridge_atts, false, 'video' );
   }
   

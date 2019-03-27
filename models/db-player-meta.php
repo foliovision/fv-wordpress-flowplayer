@@ -94,7 +94,7 @@ class FV_Player_Db_Player_Meta {
 
     self::init_db_name();
 
-    if( is_admin() || !$fv_fp->_get_option('player_meta_model_db_checked') || $fv_fp->_get_option('player_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( !$fv_fp->_get_option('player_meta_model_db_checked') || $fv_fp->_get_option('player_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -267,7 +267,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single player meta data record
-          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . $id );
+          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . intval($id) );
           
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays

@@ -774,6 +774,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sDuration = $this->current_video()->getDuration();
     }
     
+    if( !empty($aArgs['durations']) ) {
+      $durations = explode( ';', $aArgs['durations'] );
+      if( !empty($durations[$index]) ) {
+        $sDuration = $durations[$index];
+      }
+    }
+    
     global $post;
     if( !$sDuration && $post && isset($post->ID) && isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) && isset($aPlayer['sources'][0]['src']) ) {
       $sDuration = flowplayer::get_duration( $post->ID, $aPlayer['sources'][0]['src'] );
@@ -1421,7 +1428,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public static function get_duration_post( $post_id = false ) {
     global $post, $fv_fp;
     $post_id = ( $post_id ) ? $post_id : $post->ID;
-
+    
+    if( $fv_fp->_get_option('player_model_db_checked') && $fv_fp->_get_option('player_meta_model_db_checked') && $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
+      global $wpdb;
+      $tDuration = intval( $wpdb->get_var( "SELECT vm.meta_value FROM {$wpdb->prefix}fv_player_playermeta AS pm JOIN {$wpdb->prefix}fv_player_players AS p ON p.id = pm.id_player JOIN {$wpdb->prefix}fv_player_videos AS v ON FIND_IN_SET(v.id, p.videos) > 0 JOIN {$wpdb->prefix}fv_player_videometa AS vm ON v.id = vm.id_video WHERE pm.meta_key = 'post_id' AND pm.meta_value = ".intval($post_id)." AND vm.meta_key = 'duration' ORDER BY CAST(vm.meta_value AS UNSIGNED) DESC LIMIT 1" ) );
+      if( $tDuration > 3600 ) {
+        return gmdate( "H:i:s", $tDuration );
+      } else if( $tDuration > 0 ) {
+        return gmdate( "i:s", $tDuration );
+      }
+    }
+    
     $content = false;
     $objPost = get_post($post_id);
     if( $aVideos = FV_Player_Checker::get_videos($objPost->ID) ) {
@@ -1884,7 +1901,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function rewrite_check( $aRules ) {
     $aRewriteRules = get_option('rewrite_rules');
-    if( empty($aRewriteRules) ) {
+    if( empty($aRewriteRules) || !is_array($aRewriteRules) || count($aRewriteRules) == 0 ) {
       return;
     }
     
@@ -2002,7 +2019,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         <?php
         // regular shortcode data with source
         global $fv_fp;
-        if (!$dataInPost && preg_match('/src="[^"][^"]*"/i',$shortcode)) {
+        if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
           $aAtts = shortcode_parse_atts($shortcode);
           if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
             _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
