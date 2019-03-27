@@ -23,8 +23,7 @@
 .fp-unload:before { content: "\e00f"; }
 .fp-prevbtn:after, .fv-fp-prevbtn:after, .fp-nextbtn:before, .fv-fp-nextbtn:before { content: "\e007"; }
 
-.flowplayer.is-mouseover .fp-captions, .flowplayer.is-paused .fp-captions, .flowplayer.is-fullscreen .fp-captions, .flowplayer.is-fullscreen.is-mouseover .fp-captions, .flowplayer.is-fullscreen.is-paused.fixed-controls .fp-captions, .flowplayer.is-fullscreen.is-mouseover.fixed-controls .fp-captions { bottom: 3em; }
-.flowplayer.fixed-controls.is-mouseover .fp-captions, .flowplayer.fixed-controls.is-paused .fp-captions { bottom: 1.2em; }
+.flowplayer.is-mouseover .fp-captions, .flowplayer.is-paused .fp-captions { bottom: 3em; }
 .flowplayer.is-loading .fp-engine { top: -9999em; }
 .flowplayer.is-poster .fp-engine,.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
 .flowplayer.is-splash .fp-ui > *,.flowplayer.is-poster .fp-ui > * { display: none; }
@@ -1822,3 +1821,10 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn, .flowplayer.is-tiny .fv-fp-rewind {
   display: none;
 } 
+
+.flowplayer.is-mouseover.fixed-subtitles .fp-captions, .flowplayer.is-paused.fixed-subtitles .fp-captions {
+    bottom: 1.2em;
+}
+.flowplayer.is-fullscreen.fixed-controls .fp-captions {
+    bottom: 3em;
+}
