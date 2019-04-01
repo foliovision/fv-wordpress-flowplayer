@@ -128,8 +128,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
     
-    add_filter('fv_flowplayer_css_writeout', array( $this, 'css_writeout_option' ) );
-    
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
@@ -1203,7 +1201,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   function css_option() {
-    return 'css_writeout-'.sanitize_title(WP_CONTENT_URL);
+    return 'css_writeout-'.sanitize_title(home_url());
   }
   
   
@@ -1227,7 +1225,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   function css_writeout() {
-    if( !apply_filters('fv_flowplayer_css_writeout', true ) ) {
+    if( $this->_get_option('css_disable') ) {
       return false;
     }
     
@@ -1870,14 +1868,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     } else {
       return str_replace( "'", '\u0027', json_encode( $input ) );
     }
-  }
-  
-  
-  function css_writeout_option( $value ) {
-    if( $this->_get_option('css_disable') ) {
-      return false;
-    }
-    return $value;
   }
   
 
