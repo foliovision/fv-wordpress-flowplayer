@@ -88,10 +88,16 @@ class flowplayer_frontend extends flowplayer
     // force horizontal playlist style for audio as that the only one styled properly
     if( $player = $this->current_player() ) {
       if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && $videos[0]->getMetaValue('audio',true) ) {
+        if( !empty($videos[0]) && (
+            $videos[0]->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
+          )
+        ) {
           $this->aCurArgs['liststyle'] = 'horizontal';
         }
       }
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
     
     $media = $this->aCurArgs['src'];
