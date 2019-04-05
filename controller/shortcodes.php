@@ -316,10 +316,13 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     if( isset($atts['src']) ) {
       $bridge_atts['src'] = $atts['src'];
     }
-    foreach( array('mp4','webm','ogv','mov','flv','wmv','m4v') AS $key => $value ) {
-      $src = 'src'.(( $key > 0 ) ? $key : '');
-      if( isset($atts[$value]) ) {
+    
+    $count = 0;
+    foreach( array('mp4','webm','ogv','mov','flv','wmv','m4v') AS $key => $value ) {      
+      if( !empty($atts[$value]) ) {
+        $src = 'src'.(( $count > 0 ) ? $count : '');
         $bridge_atts[$src] = $atts[$value];
+        $count++;
       }
     }
     

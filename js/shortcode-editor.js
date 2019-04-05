@@ -1075,7 +1075,7 @@ function fv_wp_flowplayer_edit() {
   // create empty shortcode for Add New button on the list page
     fv_wp_flowplayer_content = '';
     shortcode = '';
-  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
+  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
       fv_wp_flowplayer_oEditor.InsertHtml('<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>');
@@ -1829,7 +1829,7 @@ function fv_wp_flowplayer_set_html( html ) {
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
   }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
     jQuery('#content:not([aria-hidden=true])').val(html); 
-  }else if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
+  }else if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_oEditor.SetHTML( html );      
   }
   else {		
@@ -2481,8 +2481,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_save',
         data: JSON.stringify(ajax_data),
-        nonce: fv_player_editor_conf.preview_nonce,
-        cookie: encodeURIComponent(document.cookie),
+        nonce: fv_player_editor_conf.preview_nonce
       }, function(response) {
         var playerID = -1;
         var player = JSON.parse(response);
@@ -3145,23 +3144,25 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
   }
 };
 
-// extending DB player edit lock's timer
-jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
-  if (fv_flowplayer_conf.current_player_db_id) {
-    data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
-  }
+if( typeof(fv_flowplayer_conf) != "undefined" ) {
+  // extending DB player edit lock's timer
+  jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+    if (fv_flowplayer_conf.current_player_db_id) {
+      data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
+    }
+    
+    if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+      data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
+    }
+  });
   
-  if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-    data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
-  }
-});
-
-// remove edit locks in the config if it was removed on the server
-jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
-  if ( data.fv_flowplayer_edit_locks_removed ) {
-    fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
-  }
-});
+  // remove edit locks in the config if it was removed on the server
+  jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
+    if ( data.fv_flowplayer_edit_locks_removed ) {
+      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+    }
+  });
+}
 
 
 
@@ -3577,11 +3578,12 @@ function fv_player_editor_show_stream_fields(e,index) {
   // on fv_flowplayer_shortcode_new
   if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
   
-  var rtmp = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val();
-  var show = rtmp || src.match(/\.m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/);
+  var rtmp = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val(),
+    show_live = rtmp || src.match(/\.m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//),
+    show_audio = src.match(/\.m3u8/);
   
-  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show);
-  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show);
+  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_live);
+  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_audio);
   
 }
 
