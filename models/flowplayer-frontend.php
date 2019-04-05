@@ -635,7 +635,7 @@ class flowplayer_frontend extends flowplayer
         
         if( flowplayer::is_special_editor() ) {
           $this->ret['html'] .= '<div class="fp-ui"></div>';       
-        } else if( current_user_can('manage_options') ) {
+        } else if( current_user_can('manage_options') && empty($this->aCurArgs['lazy']) ) {
           $this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="https://foliovision.com/pro-support" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         
@@ -650,7 +650,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
-        if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') ) {
+        if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') && empty($this->aCurArgs['checker']) ) {
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
         }
         
