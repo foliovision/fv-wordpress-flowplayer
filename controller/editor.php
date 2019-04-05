@@ -24,7 +24,8 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
-    'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() )
+    'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
+    'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id())
   ) );
   
   global $fv_fp;
@@ -281,75 +282,85 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 add_action( 'wp_ajax_fv_player_splashcreen_action', 'fv_player_splashcreen_action' );
 
 function fv_player_splashcreen_action() {
-	global $wpdb; // This is how you get access to the database
+  global $wpdb; //access to the database
+  $security  = $_POST['security'];
+  $jsonReturn = '';
   
-  $img = $_POST['img'];
-  $img = str_replace('data:image/jpeg;base64,', '', $img);
-  $img = str_replace(' ', '+', $img);
+  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ){
   
-  $decoded = base64_decode($img) ;
+    $img = $_POST['img'];
+    $img = str_replace('data:image/jpeg;base64,', '', $img);
+    $img = str_replace(' ', '+', $img);
+    
+    $decoded = base64_decode($img) ;
 
-  $upload_dir = wp_upload_dir();
-  $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
+    $upload_dir = wp_upload_dir();
+    $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
-  $filename = 'base64-image.jpeg';
-	
-  $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
+    $filename = 'base64-image.jpeg';
+    
+    $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
 
-  $image_upload = file_put_contents( $upload_path . $hashed_filename, $decoded );
+    $image_upload = file_put_contents( $upload_path . $hashed_filename, $decoded );
 
-  // Handle upload file
-  if( !function_exists( 'wp_handle_sideload' ) ) {
-    require_once( ABSPATH . 'wp-admin/includes/file.php' );
-  }
+    // Handle upload file
+    if( !function_exists( 'wp_handle_sideload' ) ) {
+      require_once( ABSPATH . 'wp-admin/includes/file.php' );
+    }
 
-  // Debug error
-  if( !function_exists( 'wp_get_current_user' ) ) {
-    require_once( ABSPATH . 'wp-includes/pluggable.php' );
-  }
-  
-  // New file
-  $file             = array();
-  $file['error']    = '';
-  $file['tmp_name'] = $upload_path . $hashed_filename;
-  $file['name']     = $hashed_filename;
-  $file['type']     = 'image/jpeg';
-  $file['size']     = filesize( $upload_path . $hashed_filename );
+    // Debug error
+    if( !function_exists( 'wp_get_current_user' ) ) {
+      require_once( ABSPATH . 'wp-includes/pluggable.php' );
+    }
+    
+    // New file
+    $file             = array();
+    $file['error']    = '';
+    $file['tmp_name'] = $upload_path . $hashed_filename;
+    $file['name']     = $hashed_filename;
+    $file['type']     = 'image/jpeg';
+    $file['size']     = filesize( $upload_path . $hashed_filename );
 
-  $file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
+    $file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
 
-  if ( ! empty( $file_return['error'] ) ) {
+    if ( ! empty( $file_return['error'] ) ) {
+      $jsonReturn = array(
+        'src'     =>  '',
+        'error'   =>  $file_return['error']
+      ); 
+    }else{
+      $filename = $file_return['file'];
+      
+      $attachment = array(
+      'post_mime_type' => $file_return['type'],
+      'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
+      'post_content' => '',
+      'post_status' => 'inherit',
+      'guid' => $upload_dir['url'] . '/' . basename($filename)
+      );
+      $attach_id = wp_insert_attachment( $attachment, $filename );
+
+      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      
+      $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+      wp_update_attachment_metadata( $attach_id, $attach_data );
+
+      $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
+
+      $jsonReturn = array(
+        'src'     =>  $src,
+        'error'   =>  ''
+      );
+    }      
+  }else{
     $jsonReturn = array(
       'src'     =>  '',
-      'error'   =>  $file_return['error']
-    ); 
-  }else{
-    $filename = $file_return['file'];
-    
-    $attachment = array(
-    'post_mime_type' => $file_return['type'],
-    'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
-    'post_content' => '',
-    'post_status' => 'inherit',
-    'guid' => $upload_dir['url'] . '/' . basename($filename)
+      'error'   =>  'Nonce error - please reload your page'
     );
-    $attach_id = wp_insert_attachment( $attachment, $filename );
-
-    require_once(ABSPATH . 'wp-admin/includes/image.php');
-    
-    $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
-    wp_update_attachment_metadata( $attach_id, $attach_data );
-
-    $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
-
-    $jsonReturn = array(
-      'src'     =>  $src,
-      'error'   =>  ''
-	  );
   }
-  
+
   header('Content-Type: application/json');      
   echo json_encode($jsonReturn);
 
-	wp_die(); // this is required to terminate immediately and return a proper response
+	wp_die(); 
 }
