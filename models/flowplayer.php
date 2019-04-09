@@ -771,7 +771,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
     } else {
       $arg = !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item';
-      $sHTML = "\t\t<a href='#' onclick='return false' ".$arg."='".$this->json_encode($aPlayer)."'>";
+      $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
     $tDuration = false;    
@@ -937,7 +937,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         
         $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
       }else{
-        $sHTML[] = "<a href='#' class='is-active' onclick='return false'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
+        $sHTML[] = "<a href='#' class='is-active'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
       }
       
       if( count($sItems) > 0 ) {
