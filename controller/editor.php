@@ -20,7 +20,8 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   
   wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
   wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
-  
+  wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
+
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
@@ -33,6 +34,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
     wp_enqueue_script('fvwpflowplayer-shortcode-editor-old');
   } else {
     wp_enqueue_script('fvwpflowplayer-shortcode-editor');
+    wp_enqueue_script('fvwpflowplayer-editor-screenshots');
   }
   
   wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
@@ -283,7 +285,6 @@ add_action( 'wp_ajax_fv_player_splashcreen_action', 'fv_player_splashcreen_actio
 
 function fv_player_splashcreen_action() {
   global $wpdb; //access to the database
-  $security  = $_POST['security'];
   $jsonReturn = '';
   
   if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ){
@@ -332,11 +333,11 @@ function fv_player_splashcreen_action() {
       $filename = $file_return['file'];
       
       $attachment = array(
-      'post_mime_type' => $file_return['type'],
-      'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
-      'post_content' => '',
-      'post_status' => 'inherit',
-      'guid' => $upload_dir['url'] . '/' . basename($filename)
+        'post_mime_type' => $file_return['type'],
+        'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
+        'post_content' => '',
+        'post_status' => 'inherit',
+        'guid' => $upload_dir['url'] . '/' . basename($filename)
       );
       $attach_id = wp_insert_attachment( $attachment, $filename );
 
@@ -362,5 +363,5 @@ function fv_player_splashcreen_action() {
   header('Content-Type: application/json');      
   echo json_encode($jsonReturn);
 
-	wp_die(); 
+  wp_die(); 
 }
