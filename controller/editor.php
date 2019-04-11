@@ -284,25 +284,50 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 add_action( 'wp_ajax_fv_player_splashcreen_action', 'fv_player_splashcreen_action' );
 
 function fv_player_splashcreen_action() {
+
   global $wpdb; //access to the database
   $jsonReturn = '';
-  
+
+   function getTitleFromUrl($url) {
+    $arr = explode('/', $url);
+    $caption = end($arr);
+    
+    if( $caption == 'index.m3u8' ) {
+      unset($arr[count($arr)-1]);
+      $caption = end($arr);
+    }
+    
+    $vid_replacements = array(
+      'watch?v=' => 'YouTube: '
+    );  
+    $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
+    
+    if( is_numeric($caption) && intval($caption) == $caption && stripos($url,'vimeo.com/') !== false ) {
+      $caption = "Vimeo: ".$caption;
+    } 
+    return urldecode($caption);
+  }
+
   if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ){
-  
+    $title = $_POST['title'];
     $img = $_POST['img'];
+    
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     
+    $title = getTitleFromUrl($title);
+    $title = sanitize_title($title);
+  
     $decoded = base64_decode($img) ;
-
+    
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
-    $filename = 'base64-image.jpeg';
+    $filename = $title .'.jpeg';
     
-    $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
+    // $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
 
-    $image_upload = file_put_contents( $upload_path . $hashed_filename, $decoded );
+    $image_upload = file_put_contents( $upload_path . $filename, $decoded );
 
     // Handle upload file
     if( !function_exists( 'wp_handle_sideload' ) ) {
@@ -317,10 +342,10 @@ function fv_player_splashcreen_action() {
     // New file
     $file             = array();
     $file['error']    = '';
-    $file['tmp_name'] = $upload_path . $hashed_filename;
-    $file['name']     = $hashed_filename;
+    $file['tmp_name'] = $upload_path . $filename;
+    $file['name']     = $filename;
     $file['type']     = 'image/jpeg';
-    $file['size']     = filesize( $upload_path . $hashed_filename );
+    $file['size']     = filesize( $upload_path . $filename );
 
     $file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
 
@@ -331,7 +356,7 @@ function fv_player_splashcreen_action() {
       ); 
     }else{
       $filename = $file_return['file'];
-      
+
       $attachment = array(
         'post_mime_type' => $file_return['type'],
         'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),

@@ -8,9 +8,10 @@ flowplayer( function(api,root) {
   root = jQuery(root);
   var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
   spinner =jQuery('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
-  message = jQuery('.fv-messages');
+  message = jQuery('.fv-messages'),
+  title ='';
 
-  function takeScreenshot(){
+  function takeScreenshot() {
     var video = root.find('video').get(0);
     var canvas = document.createElement("canvas");
     canvas.width = video.videoWidth * 1;
@@ -24,32 +25,41 @@ flowplayer( function(api,root) {
   }
 
   button.click(function(){
-    if(!button.hasClass('nocors')){
+    if(!button.hasClass('nocors')) {
       try {
-      spinner.insertAfter(button)
-      button.prop("disabled",true);
-      
-      var screenshot = takeScreenshot();
-      
-      var data = {
+        spinner.insertAfter(button)
+        button.prop("disabled",true);
+        
+        var screenshot = takeScreenshot();
+        var item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
+        // Check title
+        if(item.find('#fv_wp_flowplayer_field_caption').val()){
+           title = item.find('#fv_wp_flowplayer_field_caption').val()
+        }else{
+           title = item.find('#fv_wp_flowplayer_field_src').val()
+        }
+        console.log(title);  
+        
+        var data = {
           'action': 'fv_player_splashcreen_action',
           'img': screenshot,
+          'title': title,
           'security': fv_player_editor_conf.splashscreen_nonce
-      };
+        };
       }
       catch(err) {
-      spinner.remove();
-      button.prop("disabled",false);
-      message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="#">CORS headers</a>.</p></div>');
-      return;
+        spinner.remove();
+        button.prop("disabled",false);
+        message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="#">CORS headers</a>.</p></div>');
+        return;
       }
 
       jQuery.post(fv_fp_ajaxurl, data, function(response) {
-        if(response.src){
-          var splashInput =  jQuery('.fv-player-playlist-item[data-index="'+index+'"] #fv_wp_flowplayer_field_splash');
+        if(response.src) {
+          var splashInput = item.find('#fv_wp_flowplayer_field_splash');
           splashInput.val(response.src);
         }
-        if(response.error){
+        if(response.error) {
           message.html('<div class="error"><p>'+response.error+'</p></div>');
           console.log(response.error);
         }
@@ -61,8 +71,9 @@ flowplayer( function(api,root) {
     }
   });
 
+  // Compatibility test
   api.bind('ready', function(e,api) {
-  if(jQuery('.fv-playlist-slider-wrapper').length == 0){
+  if(jQuery('.fv-playlist-slider-wrapper').length == 0) {
     button.appendTo('.fv-player-shortcode-editor-left');
   }
     api.one('progress', function(e,api){
