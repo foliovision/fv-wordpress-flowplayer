@@ -38,8 +38,6 @@ flowplayer( function(api,root) {
         }else{
            title = item.find('#fv_wp_flowplayer_field_src').val()
         }
-        console.log(title);  
-        
         var data = {
           'action': 'fv_player_splashcreen_action',
           'img': screenshot,
@@ -61,7 +59,6 @@ flowplayer( function(api,root) {
         }
         if(response.error) {
           message.html('<div class="error"><p>'+response.error+'</p></div>');
-          console.log(response.error);
         }
         spinner.remove();
         button.prop("disabled",false);
@@ -73,27 +70,26 @@ flowplayer( function(api,root) {
 
   // Compatibility test
   api.bind('ready', function(e,api) {
-  if(jQuery('.fv-playlist-slider-wrapper').length == 0) {
+  if(jQuery('#fv_player_boxLoadedContent').length == 1) {
     button.appendTo('.fv-player-shortcode-editor-left');
   }
     api.one('progress', function(e,api){
       try{
       takeScreenshot();
       }catch(err){
-      button.addClass('nocors');
-      // button.prop("disabled",true);
+        button.addClass('nocors');
       }
     });
   });
 
   });
 
-  // Remove button
+  // Remove button, spinner, message
   jQuery(document).on('fv_flowplayer_player_editor_reset', function() {
     jQuery('#fv-splash-screen-button').remove();
     jQuery('.fv-player-shortcode-editor-small-spinner').remove();
     jQuery('.fv-messages').empty();
-    index = 0;  
+    index = 0;
   });
 
   jQuery(document).on('fvp-preview-complete', function() {

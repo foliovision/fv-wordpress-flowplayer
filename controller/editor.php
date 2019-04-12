@@ -291,17 +291,17 @@ function fv_player_splashcreen_action() {
    function getTitleFromUrl($url) {
     $arr = explode('/', $url);
     $caption = end($arr);
-    
-    if( $caption == 'index.m3u8' ) {
+
+    if( strpos($caption, ".m3u8") !== false ) {
       unset($arr[count($arr)-1]);
       $caption = end($arr);
     }
-    
+
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
     );  
     $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
-    
+
     if( is_numeric($caption) && intval($caption) == $caption && stripos($url,'vimeo.com/') !== false ) {
       $caption = "Vimeo: ".$caption;
     } 
