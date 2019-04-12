@@ -48,10 +48,10 @@ flowplayer( function(api,root) {
       catch(err) {
         spinner.remove();
         button.prop("disabled",false);
-        message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="#">CORS headers</a>.</p></div>');
+        message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
         return;
       }
-
+      https://foliovision.com/player/video-hosting/hls#hls-js
       jQuery.post(fv_fp_ajaxurl, data, function(response) {
         if(response.src) {
           var splashInput = item.find('#fv_wp_flowplayer_field_splash');
@@ -64,7 +64,7 @@ flowplayer( function(api,root) {
         button.prop("disabled",false);
       });
     }else{
-      message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="#">CORS headers</a>.</p></div>');
+      message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
     }
   });
 
