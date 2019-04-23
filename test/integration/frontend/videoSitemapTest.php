@@ -28,7 +28,7 @@ Paragraph after first player
 
 Paragraph after second player
 
-[fvplayer src="https://cdn.site.com/video.mp4"]
+[fvplayer src="https://cdn.site.com/video-2.mp4"]
 
 Paragraph after third player
 HTML
@@ -40,7 +40,7 @@ HTML
     
     ob_start();
     global $FV_Xml_Video_Sitemap;    
-    $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );    
+    $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );die();
     $output = ob_get_clean();
     
     $this->assertEquals( $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') ), $this->fix_newlines($output) );      
