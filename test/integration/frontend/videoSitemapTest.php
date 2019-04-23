@@ -12,8 +12,8 @@ final class FV_Player_Video_SitemapTest extends FV_Player_UnitTestCase {
     parent::setUp();
         
     global $FV_Player_Db;
-    $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
-
+    $this->import_id = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
+    
     // create a post with playlist shortcode
     $this->post_id_testEndActions= $this->factory->post->create( array(
       'post_title' => 'Video Sitemap Test',
@@ -40,14 +40,23 @@ HTML
     
     ob_start();
     global $FV_Xml_Video_Sitemap;    
-    $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );die();
+    $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );
     $output = ob_get_clean();
     
     $this->assertEquals( $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') ), $this->fix_newlines($output) );      
   }
   
   public function tearDown() {
-    //delete_option('fv_player_popups');
+    global $FV_Player_Db;
+    
+    // when you delete a player loaded from cache it won't remove the player and player meta, so we do a hard cache purge here! The player ID is not passed in contructor when loading from cache.
+    $FV_Player_Db->setPlayersCache( array() );
+    $FV_Player_Db->setPlayerMetaCache( array() );
+    $FV_Player_Db->setVideosCache( array() );
+    $FV_Player_Db->setVideoMetaCache( array() );
+    
+    $player = new FV_Player_Db_Player( $this->import_id, array() );
+    $player->delete();
   }
 
 }
