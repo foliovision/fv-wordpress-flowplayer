@@ -55,6 +55,7 @@ Multisite:                <?php echo is_multisite() ? 'Yes' . "\n" : 'No' . "\n"
 
 SITE_URL:                 <?php echo site_url() . "\n"; ?>
 HOME_URL:                 <?php echo home_url() . "\n"; ?>
+Plugin URL:               <?php echo flowplayer::get_plugin_url() . "\n"; ?>
 
 FV Player version:        <?php echo $fv_wp_flowplayer_ver . "\n"; ?>
 FV Player core version:   <?php echo $fv_wp_flowplayer_core_ver . "\n"; ?>

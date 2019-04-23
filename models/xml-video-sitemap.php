@@ -331,10 +331,10 @@ class FV_Xml_Video_Sitemap {
     }
 
     function fv_generate_video_sitemap() {
-      global $wpdb, $fv_wp_flowplayer_ver, $fv_fp;
-      
-      if( !$fv_fp->_get_option('video_sitemap') ) return;
+      global $fv_fp;
 
+      if( !$fv_fp->_get_option('video_sitemap') ) return;
+      
       // if output buffering is active, clear it
       if ( ob_get_level() ) ob_clean();
 
@@ -349,9 +349,15 @@ class FV_Xml_Video_Sitemap {
         newrelic_disable_autorum();
       }
       
-      $date_query = false;
       $year = intval(get_query_var('fvp_sitemap_year'));
       $month = intval(get_query_var('fvp_sitemap_monthnum'));
+      echo $this->fv_generate_video_sitemap_do( $year, $month );
+    }
+    
+    function fv_generate_video_sitemap_do( $year, $month ) {
+      global $wpdb, $fv_wp_flowplayer_ver;
+      
+      $date_query = false;
       if( $year && $month ) {
         $date_query = " year(post_date) = ".$year." AND month(post_date) = ".$month." AND ";
       } else if( get_query_var('year') ) {
@@ -485,4 +491,5 @@ class FV_Xml_Video_Sitemap {
     }
 }
 
+global $FV_Xml_Video_Sitemap;
 $FV_Xml_Video_Sitemap = new FV_Xml_Video_Sitemap();

@@ -88,10 +88,16 @@ class flowplayer_frontend extends flowplayer
     // force horizontal playlist style for audio as that the only one styled properly
     if( $player = $this->current_player() ) {
       if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && $videos[0]->getMetaValue('audio',true) ) {
+        if( !empty($videos[0]) && (
+            $videos[0]->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
+          )
+        ) {
           $this->aCurArgs['liststyle'] = 'horizontal';
         }
       }
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
     
     $media = $this->aCurArgs['src'];
@@ -456,7 +462,17 @@ class flowplayer_frontend extends flowplayer
         if( $this->_get_option('ui_repeat_button') ) {
           $attributes['data-button-repeat'] = true;
         }
-        if( $this->_get_option('ui_rewind_button') ) {
+        
+        //  Rewind button
+        $bRewindButton = $this->_get_option('ui_rewind_button');
+        if( isset($this->aCurArgs['rewind_button']) ) {
+          if( strcmp($this->aCurArgs['rewind_button'],'yes') == 0 ) {
+            $bRewindButton = true;
+          } else if( strcmp($this->aCurArgs['rewind_button'],'no') == 0 ) {
+            $bRewindButton = false;
+          }
+        }
+        if( $bRewindButton ) {
           $attributes['data-button-rewind'] = true;
         }
         
@@ -744,7 +760,7 @@ class flowplayer_frontend extends flowplayer
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {      
         $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_display;'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_display;'>\n\t\t<div class='fv_fp_close'><a href='#'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
                              'width' => $ad_width,
                              'height' => $ad_height
                             );                 

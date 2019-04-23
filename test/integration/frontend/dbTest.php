@@ -34,6 +34,12 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     
   }
   
+  public function testDBExport() {
+    global $FV_Player_Db;        
+    $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
+    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );  
+  }  
+  
   public function testDBShortcode() {
         
     $output = apply_filters( 'the_content', '[fvplayer id="1"]' );     
@@ -82,9 +88,9 @@ HTML;
 
 </div>
 	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_abbc39b8f78820ec7d8d7a8e34d43856">
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Carly-Simon-Anticipation-1971.mp4","type":"video\/mp4"}],"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/images\/2014\/01\/carly-simon-1971-anticipation.vtt"}]}'><div style='background-image: url("https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png")'></div><h4><span>Carly Simon</span></h4></a>
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Paypal-video-on-home-page.mp4","type":"video\/mp4"}],"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/videos\/paypal-splash.vtt"}]}'><div style='background-image: url("https://foliovision.com/videos/paypal-splash.jpg")'></div><h4><span>PayPal Background Video</span></h4></a>
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/dominika-960-31.mp4","type":"video\/mp4"}]}'><div style='background-image: url("https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg")'></div><h4><span>Fire</span></h4></a>
+		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Carly-Simon-Anticipation-1971.mp4","type":"video\/mp4"}],"id":3,"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/images\/2014\/01\/carly-simon-1971-anticipation.vtt"}]}'><div style='background-image: url("https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png")'></div><h4><span>Carly Simon</span></h4></a>
+		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Paypal-video-on-home-page.mp4","type":"video\/mp4"}],"id":2,"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/videos\/paypal-splash.vtt"}]}'><div style='background-image: url("https://foliovision.com/videos/paypal-splash.jpg")'></div><h4><span>PayPal Background Video</span></h4></a>
+		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/dominika-960-31.mp4","type":"video\/mp4"}],"id":1}'><div style='background-image: url("https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg")'></div><h4><span>Fire</span></h4></a>
 	</div>
 HTML;
     
@@ -99,19 +105,13 @@ HTML;
 
 </div>
 	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_4836d78a28ea12e5df615a50be31878f">
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Carly-Simon-Anticipation-1971.mp4","type":"video\/mp4"}],"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/images\/2014\/01\/carly-simon-1971-anticipation.vtt"}]}'><div style='background-image: url("https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png")'></div><h4><span>Carly Simon</span></h4></a>
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/dominika-960-31.mp4","type":"video\/mp4"}]}'><div style='background-image: url("https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg")'></div><h4><span>Fire</span></h4></a>
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Paypal-video-on-home-page.mp4","type":"video\/mp4"}],"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/videos\/paypal-splash.vtt"}]}'><div style='background-image: url("https://foliovision.com/videos/paypal-splash.jpg")'></div><h4><span>PayPal Background Video</span></h4></a>
+		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Carly-Simon-Anticipation-1971.mp4","type":"video\/mp4"}],"id":3,"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/images\/2014\/01\/carly-simon-1971-anticipation.vtt"}]}'><div style='background-image: url("https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png")'></div><h4><span>Carly Simon</span></h4></a>
+		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/dominika-960-31.mp4","type":"video\/mp4"}],"id":1}'><div style='background-image: url("https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg")'></div><h4><span>Fire</span></h4></a>
+		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Paypal-video-on-home-page.mp4","type":"video\/mp4"}],"id":2,"subtitles":[{"srclang":"en","label":"English","src":"https:\/\/foliovision.com\/videos\/paypal-splash.vtt"}]}'><div style='background-image: url("https://foliovision.com/videos/paypal-splash.jpg")'></div><h4><span>PayPal Background Video</span></h4></a>
 	</div>
 HTML;
     
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );      
-  }
-  
-  public function testDBExport() {
-    global $FV_Player_Db;        
-    $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
-    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );  
   }
   
   public function tearDown() {

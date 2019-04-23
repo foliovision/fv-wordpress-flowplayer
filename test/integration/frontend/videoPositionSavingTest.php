@@ -73,8 +73,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
   <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-google\" href=\"https://plus.google.com/share?url=\" target=\"_blank\"></a></li>
+    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>    
     <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
 	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal\" rel=\"some-test-hash\">
@@ -131,8 +130,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
   <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-google\" href=\"https://plus.google.com/share?url=\" target=\"_blank\"></a></li>
+    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>    
     <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
 	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal\" rel=\"some-test-hash\">
