@@ -146,6 +146,8 @@ class FV_Xml_Video_Sitemap {
               $aArgs = $FV_Player_Db->getPlayerAttsFromDb( $aArgs );
             }
             
+            if( empty($aArgs['embed']) ) $aArgs['embed'] = '';
+            
             if( empty($aArgs['src']) || !empty($used_videos[$aArgs['src']]) ) continue;
             $used_videos[$aArgs['src']] = true;
 
