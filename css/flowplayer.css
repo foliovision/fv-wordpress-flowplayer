@@ -1,6 +1,7 @@
 @charset "UTF-8";
 @font-face {
   font-family: flowplayer;
+  font-display: swap;
   src: url("icons/flowplayer.eot?#iefix") format("embedded-opentype"), url("icons/flowplayer.woff2") format("woff2"), url("icons/flowplayer.woff") format("woff"); }
 
 .fp-icon { display: inline-block; }
