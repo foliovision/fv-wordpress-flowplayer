@@ -1337,7 +1337,7 @@ function fv_wp_flowplayer_edit() {
             }
 
             // fire up meta load event for this video, so plugins can process it and react
-            $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab]);
+            $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab , $subtitles_tab]);
           }
 
           // show playlist instead of the "add new video" form
