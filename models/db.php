@@ -166,24 +166,27 @@ class FV_Player_Db {
       }
 
       if (count($player_ids)) {
-        // load all players at once
-        new FV_Player_Db_Player( $player_ids, array(), $this );
-
-        // load all player meta
-        new FV_Player_Db_Player_Meta( null, array( 'id_player' => $player_ids ), $this );
-
-        // pre load all videos and their meta for these players
-        $video_ids = array();
-
-        foreach ( $this->players_cache as $player ) {
-          $video_ids = array_merge( $video_ids, explode( ',', $player->getVideoIds() ) );
-        }
-
-        if ( count( $video_ids ) ) {
-          new FV_Player_Db_Video( $video_ids, array(), $this );
-          new FV_Player_Db_Video_Meta( null, array( 'id_video' => $video_ids ), $this );
-        }
+        $this->cache_players_and_videos_do( $player_ids );
       }
+    }
+  }
+  
+  public function cache_players_and_videos_do( $player_ids ) {
+    // load all players at once
+    new FV_Player_Db_Player( $player_ids, array(), $this );
+
+    // load all player meta
+    new FV_Player_Db_Player_Meta( null, array( 'id_player' => $player_ids ), $this );
+
+    // pre load all videos and their meta for these players
+    $video_ids = array();
+    foreach( $this->players_cache as $player ) {
+      $video_ids = array_merge( $video_ids, explode( ',', $player->getVideoIds() ) );
+    }
+
+    if( count( $video_ids ) ) {
+      new FV_Player_Db_Video( $video_ids, array(), $this );
+      new FV_Player_Db_Video_Meta( null, array( 'id_video' => $video_ids ), $this );
     }
   }
 
@@ -1489,6 +1492,12 @@ class FV_Player_Db {
       }
       
     }
+  }
+  
+  public static function get_player_duration( $id ) {
+    global $wpdb;
+    return $wpdb->get_var( "SELECT sum(vm.meta_value) FROM {$wpdb->prefix}fv_player_videometa AS vm JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) WHERE p.id = ".intval($id)." AND vm.meta_key = 'duration'" );
+    
   }
 
 }
