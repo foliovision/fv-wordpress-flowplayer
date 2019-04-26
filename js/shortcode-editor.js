@@ -3028,7 +3028,6 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
     $valueLessOptions = null,
     isDropdown = $element.get(0).nodeName == 'SELECT',
     value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
-
   // don't do anything if we've not found the actual element
   if (!$element.length) {
     return;
