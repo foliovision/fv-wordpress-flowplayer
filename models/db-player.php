@@ -579,17 +579,24 @@ CREATE TABLE " . self::$db_table_name . " (
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
           
-          $player_data = $wpdb->get_results('SELECT
-  '.$select.',
+          $meta_counts_select = '';
+          $meta_counts_join = '';
+          if( is_admin() ) {
+            $meta_counts_select = ',
   count(subtitles.id) as subtitles_count,
   count(chapters.id) as chapters_count,
-  count(transcript.id) as transcript_count
-  FROM `'.self::$db_table_name.'` AS p
-  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  count(transcript.id) as transcript_count';
+            $meta_counts_join = 'LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
-  '.$where.'
+  ';
+          }
+          
+          $player_data = $wpdb->get_results('SELECT
+  '.$select.$meta_counts_select.'
+  FROM `'.self::$db_table_name.'` AS p
+  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+  '.$meta_counts_join.$where.'
   GROUP BY p.id
   '.$order.$limit);
           
