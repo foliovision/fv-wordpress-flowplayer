@@ -474,6 +474,7 @@ class flowplayer_frontend extends flowplayer
         }
         if( $bRewindButton ) {
           $attributes['data-button-rewind'] = true;
+          add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
         }
         
         //  Align
