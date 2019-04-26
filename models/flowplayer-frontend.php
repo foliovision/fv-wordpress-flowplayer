@@ -446,36 +446,11 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' fixed-controls';
         }
         
-        //  Play button
-        $bPlayButton = $this->_get_option('ui_play_button');
-        if( isset($this->aCurArgs['play_button']) ) {
-          if( strcmp($this->aCurArgs['play_button'],'yes') == 0 ) {
-            $bPlayButton = true;
-          } else if( strcmp($this->aCurArgs['play_button'],'no') == 0 ) {
-            $bPlayButton = false;
-          }
-        }
+        $attributes = $this->get_button_data( $attributes, 'no_picture', $this->aCurArgs );
         
-        if( $this->_get_option('ui_no_picture_button') ) {
-          $attributes['data-button-no-picture'] = true;
-        }
-        if( $this->_get_option('ui_repeat_button') ) {
-          $attributes['data-button-repeat'] = true;
-        }
+        $attributes = $this->get_button_data( $attributes, 'repeat', $this->aCurArgs );
         
-        //  Rewind button
-        $bRewindButton = $this->_get_option('ui_rewind_button');
-        if( isset($this->aCurArgs['rewind_button']) ) {
-          if( strcmp($this->aCurArgs['rewind_button'],'yes') == 0 ) {
-            $bRewindButton = true;
-          } else if( strcmp($this->aCurArgs['rewind_button'],'no') == 0 ) {
-            $bRewindButton = false;
-          }
-        }
-        if( $bRewindButton ) {
-          $attributes['data-button-rewind'] = true;
-          add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
-        }
+        $attributes = $this->get_button_data( $attributes, 'rewind', $this->aCurArgs );
         
         //  Align
         $attributes['class'] .= $this->get_align();
@@ -799,9 +774,32 @@ class flowplayer_frontend extends flowplayer
     if( $sHTML ) {
       $sHTML = "<div class='fv-player-buttons-wrap'>$sHTML</div>";
     }
-
-//var_dump($sHTML);die();
+    
     return $sHTML;
+  }
+  
+  
+  function get_button_data( $attributes, $type, $args ) {
+    $show = $this->_get_option('ui_'.$type.'_button');
+    if( isset($args[$type.'_button']) ) {
+      if( strcmp($args[$type.'_button'],'yes') == 0 ) {
+        $show = true;
+      } else if( strcmp($args[$type.'_button'],'no') == 0 ) {
+        $show = false;
+      }
+    }
+    if( $show ) {
+      $attributes['data-button-'.$type] = true;
+      
+      if( $type == 'rewind' ) {
+        add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
+      } else if( $type == 'repeat' || $type == 'no_picture' ) {
+        add_action( 'wp_footer', 'fv_player_footer_svg_playlist', 101 );
+      }
+      
+    }    
+    
+    return $attributes;
   }
   
   

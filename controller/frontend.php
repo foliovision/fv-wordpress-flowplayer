@@ -444,11 +444,6 @@ function flowplayer_prepare_scripts() {
  * Prints flowplayer javascript content to the bottom of the page.
  */
 function flowplayer_display_scripts() {
-  global $fv_fp;
-  if( ( $fv_fp->_get_option('ui_repeat_button') || $fv_fp->_get_option('ui_no_picture_button') ) && file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) { //  todo: only include if it's going to be used!
-    include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
-  }
-  
   if( flowplayer::is_special_editor() ) {
     return;  
   }  
@@ -580,6 +575,12 @@ function fv_player_comment_text( $comment_text ) {
   }
   
   return $comment_text;
+}
+
+function fv_player_footer_svg_playlist() {
+  if( file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) {
+    include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
+  }
 }
 
 function fv_player_footer_svg_rewind() {
