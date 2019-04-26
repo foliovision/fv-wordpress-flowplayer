@@ -499,7 +499,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
         </tr>
       </table>
       <span class="fv-player-save-waiting waiting spinner"></span>
-      <p class="fv-player-save-completed" style="display: none">Saved!</p>
+      <div class="fv-player-save-completed" style="display: none"><p>Saved!</p></div>
     </div>   
   </div>
 </div>
