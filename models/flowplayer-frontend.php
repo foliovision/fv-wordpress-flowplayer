@@ -527,7 +527,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-rtmp'] = $rtmp_server;
         }
         
-        if( !$bIsAudio ) {
+        if( !$bIsAudio && empty($this->aCurArgs['checker']) && !$this->_get_option('disable_videochecker') && current_user_can('manage_options') ) {
           $this->get_video_checker_media($attributes, $media, $src1, $src2, $rtmp);
         }
     
@@ -666,7 +666,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
-        if( current_user_can('manage_options') && !$this->_get_option('disable_videochecker') && empty($this->aCurArgs['checker']) ) {
+        if( empty($this->aCurArgs['checker']) && !$this->_get_option('disable_videochecker') && current_user_can('manage_options') ) {
           $this->ret['html'] .= $this->get_video_checker_html()."\n";
         }
         
