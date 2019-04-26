@@ -328,14 +328,23 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
       scannedFiles.forEach(function(f) {
 
         var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
-          name = escapeHTML(f.name),
-          fileType = name.split('.'),
-          icon = '<span class="icon file"></span>',
-          fileType = fileType[fileType.length-1],
-          icon = '<span class="icon file f-'+fileType+'">.'+fileType+'</span>',
-          link = f.link ? 'href="'+ f.link+'"' : '',
-          $href = jQuery('<a '+link+' title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>'),
+          name = escapeHTML(f.name),          
+          link = f.link ? 'href="'+ f.link+'"' : '',          
           file = jQuery('<li class="files"></li>');
+        
+        if( f.splash ) {
+          icon = '<img src="'+f.splash+'" />';
+        } else {
+          var fileType = name.split('.');
+          if( fileType.length > 1 ) {
+            fileType = fileType[fileType.length-1];
+            icon = '<span class="icon file f-'+fileType+'">.'+fileType+'</span>';
+          } else {
+            icon = '<span class="icon file"></span>';
+          }
+        }
+                
+        var $href = jQuery('<a '+link+' title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>');
 
         if( f.link ) {
           $href.on('click', fileUrlIntoShortcodeEditor);
