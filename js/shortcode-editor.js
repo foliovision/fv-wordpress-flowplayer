@@ -1888,7 +1888,6 @@ function fv_wp_flowplayer_build_ajax_data() {
       var
         $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
         table_index = jQuery(this).data('index');
-
       save_index++;
 
       $inputs.each(function() {
@@ -1917,7 +1916,8 @@ function fv_wp_flowplayer_build_ajax_data() {
           if (m.index === regex.lastIndex) {
             regex.lastIndex++;
           }
-
+          // let plugins update video meta, if applicable
+          jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, save_index, this]);
           // videos tab
           if (is_videos_tab) {
             if (!data['videos'][save_index]) {
@@ -1925,9 +1925,6 @@ function fv_wp_flowplayer_build_ajax_data() {
                 id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
               };
             }
-
-            // let plugins update video meta, if applicable
-            jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, save_index, this]);
 
             // check for a meta field
             if (fv_wp_flowplayer_check_for_video_meta_field(m[1])) {
