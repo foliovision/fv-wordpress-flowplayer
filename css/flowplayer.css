@@ -67,6 +67,11 @@
 .flowplayer.is-fullscreen.fp-edgy.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-edgy.fp-minimal .fp-fullscreen:before {
   content: "\e316"; }
 
+.flowplayer.fake-fullscreen .fp-fullscreen:before { content: "\e002"; }
+.flowplayer.fake-fullscreen.fp-edgy .fp-fullscreen:before { content: "\e102"; }
+.flowplayer.fake-fullscreen.fp-outlined .fp-fullscreen:before { content: "\e202"; }
+.flowplayer.fake-fullscreen.fp-minimal .fp-fullscreen:before { content: "\e202"; }
+
 .flowplayer.is-fullscreen.is-mouseout.is-playing .fp-ui {
   cursor: none; }
 
