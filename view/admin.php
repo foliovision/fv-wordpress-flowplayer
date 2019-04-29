@@ -25,12 +25,13 @@ delete_option('fv_wordpress_flowplayer_deferred_notices');
 
 function fv_flowplayer_admin_ads() {
 	global $fv_fp;
+  $lines = substr_count( $fv_fp->_get_option('ad'), "\n" ) + 2;
 ?>
 					<table class="form-table2">	
 						<tr>
 							<td colspan="2">
 								<label for="ad"><?php _e('Default Ad Code', 'fv-wordpress-flowplayer'); ?>:</label><br />
-								<textarea id="ad" name="ad" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('ad')); ?></textarea>			
+								<textarea id="ad" name="ad" class="large-text code" rows="<?php echo $lines; ?>"><?php echo esc_textarea($fv_fp->_get_option('ad')); ?></textarea>			
 							</td>
 						</tr>
 						<tr>
