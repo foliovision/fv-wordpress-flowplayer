@@ -341,7 +341,6 @@
   font-size: 16px;
   position: relative;
   max-height: 100%;
-  overflow: hidden;
   border-radius: .24em;
   background-position: center;
   background-repeat: no-repeat;
@@ -959,12 +958,11 @@
 .flowplayer.fixed-controls.is-splash .fp-bar-slider, .flowplayer.fixed-controls.is-poster .fp-bar-slider { cursor: pointer; pointer-events: none }
 
 .flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.is-loading .fp-ui .fp-controls { opacity: 1; filter: alpha(opacity=100); }
-.flowplayer.fixed-controls {overflow: visible; margin-bottom: 4em}  
+.flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
-.flowplayer.has-video-checker {overflow: visible}
 .flowplayer .fp-elapsed {min-width: 5.1ch}
 .flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
 
@@ -1318,7 +1316,8 @@
 
 
 /*  Popups */
-.flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }  	
+.flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }
+.flowplayer .wpfp_custom_ad.tall-ad { top: 0; bottom: auto; }
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
 .flowplayer.is-playing .wpfp_custom_ad, .flowplayer.is-ready .wpfp_custom_ad { display: block; }  
 .flowplayer.is-poster .wpfp_custom_ad { display: none; }  
