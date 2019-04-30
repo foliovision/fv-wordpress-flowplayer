@@ -192,9 +192,16 @@ DATABASE
 <?php
 global $wpdb;
 foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos', 'fv_player_videometa' ) AS $table) {
-  $res = $wpdb->get_row( "SHOW CREATE TABLE {$wpdb->prefix}{$table}", ARRAY_A );
-  if( isset($res['Create Table']) ) {
-    echo $res['Create Table']."\n\n";
+  $found = false;
+  $table_name = $wpdb->prefix.$table;
+  if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) == $table_name ) {
+    $res = $wpdb->get_row( "SHOW CREATE TABLE {$table_name}", ARRAY_A );
+    if( $res && $res['Create Table'] ) {
+      $found = $res['Create Table'];
+    }
+  }
+  if( $found ) {
+    echo $found."\n\n";
   } else {
     echo $table." not found!\n";
   }
