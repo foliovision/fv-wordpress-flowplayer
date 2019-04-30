@@ -493,8 +493,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $conf['nag_fv_player_7'] = true;
       $conf['notice_new_lightbox'] = true;
       $conf['notice_db'] = true;
-    } 
-        
+      $conf['notice_xml_sitemap_iframes'] = true;
+    }
+    
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
