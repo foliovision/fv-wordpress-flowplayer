@@ -74,59 +74,82 @@ class FV_Xml_Video_Sitemap {
       }
 
       foreach ($posts as $objPost) {
-        $did_videos = array();
+        $count = 0;
+          
+        $permalink = get_permalink($objPost);
+
+        $xml_loc = array(
+            // landing page
+            'loc' => $permalink,
+            'video' => array()
+          );
         
-        if ( $objPost ) {
-          $content = $objPost->post_content;
-          $content = preg_replace( '~<code>.*?</code>~', '', $content );
-          if( $this->get_meta_keys() ) {
-            foreach( $this->get_meta_keys() AS $meta_key ) {
-              $content .= implode( get_post_meta($objPost->ID, $meta_key) );
+        $used_videos = array();
+        $used_titles = array();
+        $used_descriptions = array();
+        
+        $content = $objPost->post_content;
+        $content = preg_replace( '~<code.*?</code>~', '', $content );
+        $content = preg_replace( '~<pre[\s\S]*?</pre>~', '', $content );
+        
+        $content = $this->strip_membership_content($content);
+        
+        preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
+        
+        if( $this->get_meta_keys() ) {
+          foreach( $this->get_meta_keys() AS $meta_key ) {
+            $meta_values = implode( get_post_meta($objPost->ID, $meta_key) );
+            
+            $meta_values = $this->strip_membership_content($meta_values);
+            
+            preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_values, $meta_matches );
+            if( is_array($meta_matches) && count($meta_matches) > 0 ) {
+              $matches[$meta_key] = $meta_matches[0];
             }
           }
-          
-          // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
-          $content = str_replace( array('[fvplayer','[flowplayer'), '[noplayer', $content );
-          $content = do_shortcode($content);
-          $content = str_replace( '[noplayer', '[fvplayer', $content );
-          
-          preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
         }
+        
+        $content_no_tags = preg_replace( '~</p>~', "</p>\n", $content );
+        $content_no_tags = preg_replace( '~\n+~', "\n", $content );
+        $content_no_tags = strip_tags( $content_no_tags );
+        $content_no_tags = explode( "\n", $content_no_tags );
+        
+        // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
+        $content = str_replace( array('[fvplayer','[flowplayer'), '[noplayer', $content );
+        $content = do_shortcode($content);
+        $content = str_replace( '[noplayer', '[fvplayer', $content );
         
         if( $meta = get_post_meta($objPost->ID, '_aioseop_description', true ) ) {
-          $sanitized_description = $meta;
+          $description = $meta;
         } else if( $meta = get_post_meta($objPost->ID, '_yoast_wpseo_metadesc', true ) ) {
-          $sanitized_description = $meta;
+          $description = $meta;
         } else if( $meta = get_post_meta($objPost->ID, '_genesis_description', true ) ) {
-          $sanitized_description = $meta;
+          $description = $meta;
         } else {
-          $sanitized_description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');          
+          $description = !empty($objPost->post_excerpt) ? $objPost->post_excerpt : wp_trim_words( strip_shortcodes($objPost->post_content),10, '...');
         }
         
-        $sanitized_description = htmlspecialchars( $sanitized_description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+        $description = htmlspecialchars( $description,ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
-        if ( isset( $matches[0] ) && count( $matches[0] ) ) {
-          $video_alt_captions_counter = 1;
+        foreach ( $matches AS $meta_key => $partial ) {          
 
-          foreach ( $matches[0] AS $shortcode ) {
+          foreach ( $partial AS $key => $shortcode ) {
+            $count++;
+            
+            $xml_video = array();
+            
             $increment_video_counter = false;
             $aArgs = shortcode_parse_atts( rtrim( $shortcode, ']' ) );
             
             global $FV_Player_Db;
-            if( !empty($aArgs['id']) && !empty($FV_Player_Db) ) {
+            if( !empty($FV_Player_Db) ) {
               $aArgs = $FV_Player_Db->getPlayerAttsFromDb( $aArgs );
             }
             
-            if( !empty($did_videos[$aArgs['src']]) ) continue;
-            $did_videos[$aArgs['src']] = true;
-
-            // sitemap data generation - remove the first item (start of the tag)
-            // and leave everything else that was defined
-            $new_video_record = array(
-                // landing page
-                'loc' => get_permalink($objPost),
-                'video' => array()
-              );
+            if( empty($aArgs['embed']) ) $aArgs['embed'] = '';
+            
+            if( empty($aArgs['src']) || !empty($used_videos[$aArgs['src']]) ) continue;
+            $used_videos[$aArgs['src']] = true;
 
             // this crazyness needs to be first converted into non-html characters (so &quot; becomes "), then
             // stripped of them all and returned back HTML-encoded for the XML formatting to be correct
@@ -143,7 +166,8 @@ class FV_Xml_Video_Sitemap {
                 $splash = 'http:'.$splash;
               }
             } else {
-              $splash = plugins_url('css/img/play_white.png', __DIR__);
+              $splash = get_the_post_thumbnail_url( $objPost->ID, 'thumbnail' );
+              if( !$splash ) $splash = plugins_url('css/img/play_white.png', __DIR__);
             }            
 
             // check for caption - if none present, build it up from page title and video position
@@ -165,70 +189,83 @@ class FV_Xml_Video_Sitemap {
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // set thumbnail
-            $new_video_record['video']['thumbnail_loc'] = apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID );
+            $xml_video['thumbnail_loc'] = apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID );
 
             // set video title
             if (!empty($sanitized_caption)) {
-              $new_video_record['video']['title'] = $sanitized_caption;
+              $title = $sanitized_caption;
+            } else if (!empty($sanitized_page_title)) {
+              $title = $sanitized_page_title;
             } else {
-              if (!empty($sanitized_page_title)) {
-                $new_video_record['video']['title'] = $sanitized_page_title;
-              } else {
-                $new_video_record['video']['title'] = 'Video ' . $video_alt_captions_counter;
-                $increment_video_counter = true;
-              }
+              $title = 'Video';
             }
+            
+            if( !empty($used_titles[$title]) ) {
+              $used_titles[$title]++;
+              $title .= ' '.$used_titles[$title];
+            } else {
+              $used_titles[$title] = 1;
+            }
+            
+            $xml_video['title'] = $title;
 
             // don't return empty descriptions (can happen if the video tag it the only thing on the page)            
-            if( strlen(trim($sanitized_description)) == 0 ) {
-              $new_video_record['video']['description'] = $new_video_record['video']['title'];
-              $increment_video_counter = true;
+            if( strlen(trim($description)) == 0 ) {
+              $description = $xml_video['title'];
+            }
+            
+            $xml_video['description'] = $description;
+            
+            // if description is already in use try to find the previous sentence
+            if( !empty($used_descriptions[$description]) ) {              
+              $last = false;
+              foreach( $content_no_tags AS $p ) {
+                if( stripos($p,$shortcode) !== false ) break;
+                $last = trim( strip_shortcodes($p) );
+              }
+              
+              if( $last ) {
+                $xml_video['description'] = wp_trim_words($last,20,'...');
+              } else {
+                $used_descriptions[$description]++;
+                $xml_video['description'] .= ' '.$used_descriptions[$description];
+              }
             } else {
-              $new_video_record['video']['description'] = $sanitized_description;
+              $used_descriptions[$description] = 1;
             }
             
             if( $aCategories = get_the_category($objPost->ID) ) {
-              $new_video_record['video']['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
+              $xml_video['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
             }
-            $new_video_record['video']['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
-
-            // update video counter used for naming videos without caption on pages without titles
-            if ($increment_video_counter) {
-              $video_alt_captions_counter++;
-            }
+            $xml_video['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
             
-            if( count($dynamic_domains) ) {
-              $is_dynamic = false;
-              foreach( $dynamic_domains AS $domain ) {
-                if( stripos($sanitized_src,$domain) !== false ) {
-                  $is_dynamic = true;
-                }
-              }
-              if( $is_dynamic ) continue;
-            }
-
-            // files with extensions are considered direct video files,
-            // everything else is considered a path to player location
-            // note: we check for strlen($extension) < 10, since abc.com would otherwise register as extension
             if ((strpos($aArgs['src'], '.') !== false) && ($extension = substr(strrchr($aArgs['src'], "."), 1)) && strlen($extension) < 10) {
               // filename URL
-              $new_video_record['video']['content_loc'] = $sanitized_src;
-            } else {
+              $xml_video['content_loc'] = $sanitized_src;
+              
+            } else if( $aArgs['embed'] == 'false' || $aArgs['embed'] == 'off' || ( $fv_fp->_get_option('disableembedding') && $aArgs['embed'] != 'true' ) ) {
               continue;
+            
+            } else {
+              if( $player = $fv_fp->current_player() ) {
+                $embed_id = 'fvp-'.$player->getId();
+              } else {
+                $embed_id = 'fvp';
+                if( $count > 1 ) $embed_id .= $count;
+              }
+              $xml_video['player_loc'] = user_trailingslashit( trailingslashit($permalink).$embed_id );
             }
 
-            $videos[] = $new_video_record;
+            $xml_loc['video'][] = $xml_video;
             
           }
         }
 
-        if ( count( $videos ) > 0 ) {
-
-        } else {
-          $videos = false;
+        if ( count($xml_loc['video']) > 0 ) {
+          $videos[] = $xml_loc;
         }
       }
-
+      
       return $videos;
     }
     
@@ -347,14 +384,16 @@ class FV_Xml_Video_Sitemap {
         echo '<'.'?xml version="1.0" encoding="UTF-8"?'.'>'."\n";
         echo '<'.'?xml-stylesheet type="text/xsl" href="'.flowplayer::get_plugin_url().'/css/sitemap-video.xsl?ver='.$fv_wp_flowplayer_ver.'"?'.'>'."\n";
         echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">'."\n";
-        foreach ($data as $video) {
+        foreach ($data as $xml_loc) {
           echo "\t<url>\n";
-          echo "\t\t<loc>".$video['loc']."</loc>\n";
-          echo "\t\t<video:video>\n";
-          foreach ($video['video'] as $videoTag => $videoTagValue) {
-            echo "\t\t\t<video:$videoTag>$videoTagValue</video:$videoTag>\n";
-          }
-          echo "\t\t</video:video>\n";
+          echo "\t\t<loc>".$xml_loc['loc']."</loc>\n";          
+          foreach ($xml_loc['video'] as $xml_video ) {
+            echo "\t\t<video:video>\n";
+            foreach( $xml_video AS $videoTag => $videoTagValue) {
+              echo "\t\t\t<video:$videoTag>$videoTagValue</video:$videoTag>\n";
+            }
+            echo "\t\t</video:video>\n";
+          }          
           echo "\t</url>\n";
         }
         echo "</urlset>\n";
@@ -421,6 +460,14 @@ class FV_Xml_Video_Sitemap {
     function options() {
       global $fv_fp;
       $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ), __('As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.', 'fv-wordpress-flowplayer') );
+      
+      if( $fv_fp->_get_option('disableembedding') ) : ?>
+        <tr>
+          <td></td>
+          <td><strong>Note:</strong> Since <a href="#fv_flowplayer_default_options">Disable Embed Button</a> setting is on the video sitemap can only present the bare MP4 or HLS videos. Disable that option to make it show your other video types too.</td>
+        </tr>
+      <?php endif;
+      
       $fv_fp->_get_input_text( array( 'name' => __('Sitemap Post Meta', 'fv-wordpress-flowplayer'), 'key' => 'video_sitemap_meta', 'help' => __('You can enter post meta keys here, use <code>,</code> to separate multiple values.', 'fv-wordpress-flowplayer') ) );
     }
     
@@ -436,6 +483,13 @@ class FV_Xml_Video_Sitemap {
         $settings['video_sitemap_meta'] = trim( preg_replace( '~[^A-Za-z0-9.:\-_\/,]~', '', $_POST['video_sitemap_meta']) );
       }
       return $settings;
+    }
+    
+    function strip_membership_content( $content ) {
+      $content = preg_replace( '~\[is_paid[\s\S]*?\[/is_paid\]~', '', $content );
+      $content = preg_replace( '~\[restrict[\s\S]*?\[/restrict\]~', '', $content );
+      $content = preg_replace( '~\[am4show[\s\S]*?\[/am4show\]~', '', $content );
+      return $content;
     }
 }
 

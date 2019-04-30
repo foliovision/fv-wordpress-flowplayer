@@ -493,8 +493,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $conf['nag_fv_player_7'] = true;
       $conf['notice_new_lightbox'] = true;
       $conf['notice_db'] = true;
-    } 
-        
+      $conf['notice_xml_sitemap_iframes'] = true;
+    }
+    
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
@@ -1897,7 +1898,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $bFound = false;
     foreach( $aRewriteRules AS $k => $v ) {
-      if( stripos($v,'&fv_player_embed=') !== false ) {
+      if( stripos($k,'/fvp(-?\d+)?/') !== false ) {
         $bFound = true;
         break;
       }
@@ -1917,7 +1918,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $new_k = str_replace( '/trackback/', '/fvp/', $k );
         $new_v = str_replace( '&tb=1', '&fv_player_embed=1', $v );
         $aRulesNew[$new_k] = $new_v;
-        $new_k = str_replace( '/trackback/', '/fvp(\d+)?/', $k );
+        $new_k = str_replace( '/trackback/', '/fvp(-?\d+)?/', $k );
         $new_v = str_replace( '&tb=1', '&fv_player_embed=$matches['.(substr_count($v,'$matches[')+1).']', $v );
         $aRulesNew[$new_k] = $new_v;        
       }
@@ -1947,8 +1948,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   function template_embed() {
-  
-    if( get_query_var('fv_player_embed') ) {
+    
+    if( $embed_id = get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
       
@@ -1967,7 +1968,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 <body class="fv-player-preview">
   <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
     
-    if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( get_query_var('fv_player_embed'),"fv-player-preview-".get_current_user_id() ) ){
+    if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
       ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
       <div style="background:white;">
         <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
@@ -2050,12 +2051,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
-        $sLink = 'fv_player_embed='.get_query_var('fv_player_embed');
+        $sLink = 'fv_player_embed='.$embed_id;
       } else {
-        $sPostfix = get_query_var('fv_player_embed') > 1 ? 'fvp'.get_query_var('fv_player_embed') : 'fvp';
+        $sPostfix = $embed_id == 1 ? 'fvp' : 'fvp'.$embed_id;
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
-            
+      
       $aPlayers = explode( '<!--fv player end-->', $content );
       if( $aPlayers ) {
         foreach( $aPlayers AS $k => $v ) {
@@ -2065,6 +2066,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             break;
           }
         }
+      }
+      
+      if( !$bFound && is_numeric($embed_id) && !empty($aPlayers[$embed_id-1]) ) {
+        echo substr($aPlayers[$embed_id-1], stripos($aPlayers[$embed_id-1],'<div id="wpfp_') );
+        $bFound = true;
       }
       
       if( !$bFound ) {
