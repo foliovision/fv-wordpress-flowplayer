@@ -176,7 +176,7 @@ function fv_player_admin_pointer_boxes() {
     );
   }  
   
-  if( !$fv_fp->_get_option('nag_fv_player_7') ) {
+  if( !$fv_fp->_get_option('notice_db') && !$fv_fp->_get_option('nag_fv_player_7') ) {
     $fv_fp->pointer_boxes['fv_flowplayer_fv_player_7'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_fv_player_7',
