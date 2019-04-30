@@ -365,6 +365,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * HLS - added support for multiple audio tracks on desktop browsers
 * Iframe embedding - removed the settings as it's the only way of embedding, you can still use "Disable Embed Button"
 * Screen options - added to the wp-admin -> FV Player screen, allowing you to see count of subtitle, chapter and transcript files
+* Styling - new loading indicator which also appears before the player is initialized on slow connections
 * XML Video Sitemap - includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.
 
 = 7.3.12.727 - 2019/02/26 =
