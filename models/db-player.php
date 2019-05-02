@@ -66,7 +66,7 @@ class FV_Player_Db_Player {
     $numeric_properties = array('id', 'author', 'changed_by'),
     $meta_data = null;
 
-	private static
+  private static
     $db_table_name,
     $DB_Instance = null;
 
