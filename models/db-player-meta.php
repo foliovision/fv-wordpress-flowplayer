@@ -27,8 +27,8 @@ class FV_Player_Db_Player_Meta {
     $meta_value; // arbitrary meta value
 
   private static
-	  $db_table_name,
-	  $DB_Instance = null;
+    $db_table_name,
+    $DB_Instance = null;
 
   /**
    * @param mixed $meta_value
@@ -107,7 +107,7 @@ CREATE TABLE " . self::$db_table_name . " (
   KEY meta_key (meta_key(191))
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	    dbDelta( $sql );
+      dbDelta( $sql );
       $fv_fp->_set_option('player_meta_model_db_checked', $fv_wp_flowplayer_ver);
     }
   }

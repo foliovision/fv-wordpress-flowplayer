@@ -36,8 +36,8 @@ class FV_Player_Db_Video {
     $meta_data = null; // object of this video's meta data
 
   private static
-	  $db_table_name,
-	  $DB_Instance = null;
+    $db_table_name,
+    $DB_Instance = null;
   
   /**
    * @return int
@@ -241,11 +241,11 @@ CREATE TABLE " . self::$db_table_name . " (
     $multiID = is_array($id);
 
     // don't load anything, if we've only created this instance
-	  // to initialize the database (this comes from list-table.php)
-	  if ($id === -1) {
-		  self::$DB_Instance = null;
-	  	return;
-	  }
+    // to initialize the database (this comes from list-table.php)
+    if ($id === -1) {
+      self::$DB_Instance = null;
+      return;
+    }
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video into the DB in such case

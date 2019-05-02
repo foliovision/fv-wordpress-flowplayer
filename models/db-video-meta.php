@@ -27,8 +27,8 @@ class FV_Player_Db_Video_Meta {
     $meta_value; // arbitrary meta value
 
   private static
-	  $db_table_name,
-	  $DB_Instance = null;
+    $db_table_name,
+    $DB_Instance = null;
 
   /**
    * @return int
@@ -100,8 +100,8 @@ CREATE TABLE " . self::$db_table_name . " (
   KEY meta_key (meta_key(191))
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	    dbDelta( $sql );
-	    $fv_fp->_set_option('video_meta_model_db_checked', $fv_wp_flowplayer_ver);
+      dbDelta( $sql );
+      $fv_fp->_set_option('video_meta_model_db_checked', $fv_wp_flowplayer_ver);
     }
   }
 
@@ -142,12 +142,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $this->initDB($wpdb);
     $multiID = is_array($id);
 
-	  // don't load anything, if we've only created this instance
-	  // to initialize the database (this comes from list-table.php)
-	  if ($id === -1) {
-		  self::$DB_Instance = null;
-		  return;
-	  }
+    // don't load anything, if we've only created this instance
+    // to initialize the database (this comes from list-table.php)
+    if ($id === -1) {
+      self::$DB_Instance = null;
+      return;
+    }
 
     // check whether we're not trying to load data for a single video
     // rather than meta data by its own ID

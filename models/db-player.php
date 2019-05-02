@@ -67,8 +67,8 @@ class FV_Player_Db_Player {
     $meta_data = null;
 
 	private static
-		$db_table_name,
-		$DB_Instance = null;
+    $db_table_name,
+    $DB_Instance = null;
 
   /**
    * @param mixed $videos
@@ -691,7 +691,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // update cache, if changed
     if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
-	    self::$DB_Instance->setPlayersCache($cache);
+      self::$DB_Instance->setPlayersCache($cache);
     }
   }
 
