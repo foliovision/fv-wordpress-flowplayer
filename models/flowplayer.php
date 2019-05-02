@@ -1744,7 +1744,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public function get_playlist_class($aCaptions) {
-    $sPlaylistClass = 'fv-playlist-design-'.$this->_get_option('playlist-design');
+    $sPlaylistClass = 'fv-playlist-design-';
+    if( !empty($this->aCurArgs['listdesign']) ) {
+      $sPlaylistClass .= $this->aCurArgs['listdesign'];
+    } else {
+      $sPlaylistClass .= $this->_get_option('playlist-design');
+    }
 
     if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
       $sPlaylistClass .= ' fp-playlist-horizontal';
