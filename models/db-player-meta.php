@@ -24,10 +24,11 @@ class FV_Player_Db_Player_Meta {
     $is_valid = true, // used when loading meta data from DB to determine whether we've found it
     $id_player, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
-    $meta_value, // arbitrary meta value
-    $DB_Instance = null;
+    $meta_value; // arbitrary meta value
 
-  private static $db_table_name;
+  private static
+	  $db_table_name,
+	  $DB_Instance = null;
 
   /**
    * @param mixed $meta_value
@@ -106,7 +107,7 @@ CREATE TABLE " . self::$db_table_name . " (
   KEY meta_key (meta_key(191))
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta( $sql );
+	    dbDelta( $sql );
       $fv_fp->_set_option('player_meta_model_db_checked', $fv_wp_flowplayer_ver);
     }
   }
@@ -140,10 +141,10 @@ CREATE TABLE " . self::$db_table_name . " (
     global $wpdb;
 
     if ($DB_Cache) {
-      $this->DB_Instance = $DB_Cache;
+      self::$DB_Instance = $DB_Cache;
     } else {
       global $FV_Player_Db;
-      $this->DB_Instance = $DB_Cache = $FV_Player_Db;
+      self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);
@@ -386,7 +387,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // update cache, if changed
     if (isset($cache) && ($force_cache_update || !isset($all_cached) || !$all_cached)) {
-      $this->DB_Instance->setPlayerMetaCache($cache);
+      self::$DB_Instance->setPlayerMetaCache($cache);
     }
   }
 
@@ -446,9 +447,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // add this meta into cache
-      $cache = $this->DB_Instance->getPlayerMetaCache();
+      $cache = self::$DB_Instance->getPlayerMetaCache();
       $cache[$this->id_player][$this->id] = $this;
-      $this->DB_Instance->setPlayerMetaCache($cache);
+      self::$DB_Instance->setPlayerMetaCache($cache);
 
       return $this->id;
     } else {
@@ -493,10 +494,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // remove this meta from cache
-      $cache = $this->DB_Instance->getPlayerMetaCache();
+      $cache = self::$DB_Instance->getPlayerMetaCache();
       if (isset($cache[$this->id_player][$this->id])) {
         unset($cache[$this->id_player][$this->id]);
-        $this->DB_Instance->setPlayerMetaCache($cache);
+        self::$DB_Instance->setPlayerMetaCache($cache);
       }
 
       return true;

@@ -64,8 +64,11 @@ class FV_Player_Db_Player {
     $videos, // comma-delimited IDs of videos for this player
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
-    $DB_Instance = null,
     $meta_data = null;
+
+	private static
+		$db_table_name,
+		$DB_Instance = null;
 
   /**
    * @param mixed $videos
@@ -101,8 +104,6 @@ class FV_Player_Db_Player {
   public function getDateModified() {
     return $this->date_modified;
   } // object of this player's meta data
-
-  private static $db_table_name;
 
   /**
    * @return string
@@ -498,10 +499,10 @@ CREATE TABLE " . self::$db_table_name . " (
     global $wpdb;
 
     if ($DB_Cache) {
-      $this->DB_Instance = $DB_Cache;
+      self::$DB_Instance = $DB_Cache;
     } else {
       global $FV_Player_Db;
-      $this->DB_Instance = $DB_Cache = $FV_Player_Db;
+      self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);
@@ -578,7 +579,7 @@ CREATE TABLE " . self::$db_table_name . " (
           if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
-          
+
           $player_data = $wpdb->get_results('SELECT
   '.$select.',
   count(subtitles.id) as subtitles_count,
@@ -649,8 +650,8 @@ CREATE TABLE " . self::$db_table_name . " (
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
 
-              if ($this->DB_Instance && !$this->DB_Instance->isPlayerCached($record_id)) {
-                $player_object = new FV_Player_Db_Player( null, get_object_vars( $db_record ), $this->DB_Instance );
+              if (self::$DB_Instance && !self::$DB_Instance->isPlayerCached($record_id)) {
+                $player_object = new FV_Player_Db_Player( null, get_object_vars( $db_record ), self::$DB_Instance );
                 $player_object->link2db( $record_id );
 
                 // cache this player in DB object
@@ -690,7 +691,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // update cache, if changed
     if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
-      $this->DB_Instance->setPlayersCache($cache);
+	    self::$DB_Instance->setPlayersCache($cache);
     }
   }
 
@@ -712,9 +713,15 @@ CREATE TABLE " . self::$db_table_name . " (
         $total = 0;
       }
     } else {
-      $total = $wpdb->get_row('SELECT Count(*) AS Total FROM '.self::$db_table_name);
-      if ($total) {
-        $total = $total->Total;
+      // if we don't yet have instance of FV_Player_Db_Player created the DB for players
+      // has not yet been created at all... thus we return 0 records
+      if (!self::$DB_Instance) {
+      	$total = 0;
+      } else {
+	      $total = $wpdb->get_row( 'SELECT Count(*) AS Total FROM ' . self::$db_table_name );
+	      if ( $total ) {
+		      $total = $total->Total;
+	      }
       }
     }
 
@@ -740,7 +747,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $this->id = (int) $id;
 
     if ($load_meta) {
-      $this->meta_data = new FV_Player_Db_Player_Meta(null, array('id_player' => array($id)), $this->DB_Instance);
+      $this->meta_data = new FV_Player_Db_Player_Meta(null, array('id_player' => array($id)), self::$DB_Instance);
     }
   }
 
@@ -759,7 +766,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $first_done = false;
       foreach ($meta_data as $meta_record) {
         // create new record in DB
-        $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, $this->DB_Instance);
+        $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, self::$DB_Instance);
 
         // link to DB, if the meta record has an ID
         if (!empty($meta_record['id'])) {
@@ -807,8 +814,8 @@ CREATE TABLE " . self::$db_table_name . " (
     if ($this->meta_data && $this->meta_data !== -1) {
       if (is_array($this->meta_data)) {
         return $this->meta_data;
-      } else if ( $this->DB_Instance && $this->DB_Instance->isPlayerMetaCached($this->id) ) {
-        $cache = $this->DB_Instance->getPlayerMetaCache();
+      } else if ( self::$DB_Instance && self::$DB_Instance->isPlayerMetaCached($this->id) ) {
+        $cache = self::$DB_Instance->getPlayerMetaCache();
         return $cache[$this->id];
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
@@ -819,7 +826,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     } else if ($this->meta_data === null) {
       // meta data not loaded yet - load them now
-      $this->meta_data = new FV_Player_Db_Player_Meta(null, array('id_player' => array($this->id)), $this->DB_Instance);
+      $this->meta_data = new FV_Player_Db_Player_Meta(null, array('id_player' => array($this->id)), self::$DB_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this player
       if (!$this->meta_data->getIsValid()) {
@@ -828,8 +835,8 @@ CREATE TABLE " . self::$db_table_name . " (
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
           // we want to return all meta data for this player
-          if ( $this->DB_Instance && $this->DB_Instance->isPlayerMetaCached($this->id) ) {
-            $cache = $this->DB_Instance->getPlayerMetaCache();
+          if ( self::$DB_Instance && self::$DB_Instance->isPlayerMetaCached($this->id) ) {
+            $cache = self::$DB_Instance->getPlayerMetaCache();
             return $cache[$this->id];
           } else {
             if ($this->meta_data && $this->meta_data->getIsValid()) {
@@ -878,14 +885,14 @@ CREATE TABLE " . self::$db_table_name . " (
     } else if ($this->video_objects === null) {
       // video objects not loaded yet - load them now
       $videos_in_order = explode(',', trim($this->videos, ','));
-      $videos = new FV_Player_Db_Video($videos_in_order, array(), $this->DB_Instance);
+      $videos = new FV_Player_Db_Video($videos_in_order, array(), self::$DB_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$videos->getIsValid()) {
         $this->video_objects = -1;
         return array();
       } else {
-        $this->video_objects = $this->DB_Instance->getVideosCache();
+        $this->video_objects = self::$DB_Instance->getVideosCache();
 
         // load meta data for all videos at once, then link them to those videos,
         // as we will always load meta data for those, so it's no use to lazy-load
@@ -895,14 +902,14 @@ CREATE TABLE " . self::$db_table_name . " (
           $ids[] = $video->getId();
         }
 
-        new FV_Player_Db_Video_Meta(null, array('id_video' => $ids), $this->DB_Instance);
+        new FV_Player_Db_Video_Meta(null, array('id_video' => $ids), self::$DB_Instance);
 
         // assign all meta data to their respective videos
         foreach ( $this->video_objects as $video ) {
-          if ( $this->DB_Instance->isVideoMetaCached($video->getId()) ) {
+          if ( self::$DB_Instance->isVideoMetaCached($video->getId()) ) {
             // prepare meta data
             $meta_2_video = array();
-            $cache = $this->DB_Instance->getVideoMetaCache();
+            $cache = self::$DB_Instance->getVideoMetaCache();
             foreach ($cache[$video->getId()] as $meta_object) {
               $meta_2_video[] = $meta_object->getAllDataValues();
             }
@@ -1003,7 +1010,7 @@ CREATE TABLE " . self::$db_table_name . " (
           $meta_record['id_player'] = $this->id;
 
           // create new record in DB
-          $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, $this->DB_Instance);
+          $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, self::$DB_Instance);
 
           // add meta data ID
           if ($is_update) {
@@ -1016,9 +1023,9 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       // cache this instance
-      $cache = $this->DB_Instance->getPlayersCache();
+      $cache = self::$DB_Instance->getPlayersCache();
       $cache[$this->id] = $this;
-      $this->DB_Instance->setPlayersCache($cache);
+      self::$DB_Instance->setPlayersCache($cache);
 
       return $this->id;
     } else {
@@ -1069,7 +1076,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $videos = $this->getVideos();
 
     // this line will load and cache meta for all videos at once
-    new FV_Player_Db_Video_Meta(null, array('id_video' => explode(',', $this->getVideoIds())), $this->DB_Instance);
+    new FV_Player_Db_Video_Meta(null, array('id_video' => explode(',', $this->getVideoIds())), self::$DB_Instance);
 
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
@@ -1078,8 +1085,8 @@ CREATE TABLE " . self::$db_table_name . " (
         $video->delete();
 
         // load all meta data for this video
-        if ($this->DB_Instance->isVideoMetaCached($video->getId())) {
-          $cache = $this->DB_Instance->getVideoMetaCache();
+        if (self::$DB_Instance->isVideoMetaCached($video->getId())) {
+          $cache = self::$DB_Instance->getVideoMetaCache();
           foreach ($cache[$video->getId()] as $meta) {
             $meta->delete();
           }

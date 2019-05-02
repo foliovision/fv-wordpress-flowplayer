@@ -24,10 +24,11 @@ class FV_Player_Db_Video_Meta {
     $is_valid = true, // used when loading meta data from DB to determine whether we've found it
     $id_video, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
-    $meta_value, // arbitrary meta value
-    $DB_Instance = null;
+    $meta_value; // arbitrary meta value
 
-  private static $db_table_name;
+  private static
+	  $db_table_name,
+	  $DB_Instance = null;
 
   /**
    * @return int
@@ -99,8 +100,8 @@ CREATE TABLE " . self::$db_table_name . " (
   KEY meta_key (meta_key(191))
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta( $sql );
-      $fv_fp->_set_option('video_meta_model_db_checked', $fv_wp_flowplayer_ver);
+	    dbDelta( $sql );
+	    $fv_fp->_set_option('video_meta_model_db_checked', $fv_wp_flowplayer_ver);
     }
   }
 
@@ -135,11 +136,18 @@ CREATE TABLE " . self::$db_table_name . " (
     global $wpdb;
 
     if ($DB_Cache) {
-      $this->DB_Instance = $DB_Cache;
+      self::$DB_Instance = $DB_Cache;
     }
 
     $this->initDB($wpdb);
     $multiID = is_array($id);
+
+	  // don't load anything, if we've only created this instance
+	  // to initialize the database (this comes from list-table.php)
+	  if ($id === -1) {
+		  self::$DB_Instance = null;
+		  return;
+	  }
 
     // check whether we're not trying to load data for a single video
     // rather than meta data by its own ID
@@ -331,8 +339,8 @@ CREATE TABLE " . self::$db_table_name . " (
               // if we don't unset this, we'll get warnings
               unset($db_record->id);
 
-              if (!$this->DB_Instance->isVideoMetaCached($db_record->id_video, $record_id)) {
-                $video_meta_object = new FV_Player_Db_Video_Meta(null, get_object_vars($db_record), $this->DB_Instance);
+              if (!self::$DB_Instance->isVideoMetaCached($db_record->id_video, $record_id)) {
+                $video_meta_object = new FV_Player_Db_Video_Meta(null, get_object_vars($db_record), self::$DB_Instance);
                 $video_meta_object->link2db($record_id);
 
                 // cache this meta in DB object
@@ -378,7 +386,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // update cache, if changed
     if (isset($cache) && ($force_cache_update || !isset($all_cached) || !$all_cached)) {
-      $this->DB_Instance->setVideoMetaCache($cache);
+      self::$DB_Instance->setVideoMetaCache($cache);
     }
   }
 
@@ -438,9 +446,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // add this meta into cache
-      $cache = $this->DB_Instance->getVideoMetaCache();
+      $cache = self::$DB_Instance->getVideoMetaCache();
       $cache[$this->id_video][$this->id] = $this;
-      $this->DB_Instance->setVideoMetaCache($cache);
+      self::$DB_Instance->setVideoMetaCache($cache);
 
       return $this->id;
     } else {
@@ -484,10 +492,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // remove this meta from cache
-      $cache = $this->DB_Instance->getVideoMetaCache();
+      $cache = self::$DB_Instance->getVideoMetaCache();
       if (isset($cache[$this->id_video][$this->id])) {
         unset($cache[$this->id_video][$this->id]);
-        $this->DB_Instance->setVideoMetaCache($cache);
+        self::$DB_Instance->setVideoMetaCache($cache);
       }
 
       return true;
