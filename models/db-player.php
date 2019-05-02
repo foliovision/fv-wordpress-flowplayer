@@ -508,6 +508,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $this->initDB($wpdb);
     $multiID = is_array($id) || $id === null;
 
+    // don't load anything, if we've only created this instance
+    // to initialize the database (this comes from list-table.php and unit tests)
+    if ($id === -1) {
+      return;
+    }
+
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
     if (is_array($options) && count($options) && !isset($options['db_options'])) {

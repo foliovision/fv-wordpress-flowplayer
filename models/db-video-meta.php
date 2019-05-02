@@ -143,9 +143,8 @@ CREATE TABLE " . self::$db_table_name . " (
     $multiID = is_array($id);
 
     // don't load anything, if we've only created this instance
-    // to initialize the database (this comes from list-table.php)
+    // to initialize the database (this comes from list-table.php and unit tests)
     if ($id === -1) {
-      self::$DB_Instance = null;
       return;
     }
 

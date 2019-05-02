@@ -150,6 +150,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $this->initDB($wpdb);
     $multiID = is_array($id);
 
+    // don't load anything, if we've only created this instance
+    // to initialize the database (this comes from list-table.php and unit tests)
+    if ($id === -1) {
+      return;
+    }
+
     // check whether we're not trying to load data for a single player
     // rather than meta data by its own ID
     $load_for_player = false;
