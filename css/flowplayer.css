@@ -1624,6 +1624,19 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio.is-loading.fp-default-playlist .fp-waiting svg {left: 2.5em}
 .flowplayer.is-audio .fp-bar {background-color: #ccc}
 
+.flowplayer.is-audio.is-loading .fp-preload {
+  z-index: 10;
+  left: 0.3em;
+  top: 3.2em;
+  width: 2.7em;
+}
+
+.flowplayer.is-audio.is-loading .fp-preload b {
+  margin: 0 .15em;
+  height: 0.9em;
+  width: 0.35em;
+}
+
 
 .flowplayer.is-audio .fp-fullscreen,.flowplayer.is-audio .fp-ratio,.flowplayer.is-audio.is-splash .fp-timeline-tooltip {display:none}
 .flowplayer.is-audio.is-error {border:0;margin-bottom:50px}
