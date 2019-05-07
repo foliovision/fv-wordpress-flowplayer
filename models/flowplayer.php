@@ -1878,16 +1878,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     if( strpos($media,'http://') !== 0 && strpos($media,'https://') !== 0 && strpos($media,'//') !== 0 ) {
       $http = is_ssl() ? 'https://' : 'http://';
+      $server = $_SERVER['SERVER_NAME'];
+      if( !empty($_SERVER['SERVER_PORT']) && intval($_SERVER['SERVER_PORT']) != 80 ) {
+        $server .= ':'.$_SERVER['SERVER_PORT'];
+      }
       // strip the first / from $media
       if($media[0]=='/') $media = substr($media, 1);
       if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
-        $media = $http.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
+        $media = $http.$server.dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
       }
       else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
-        $media = $http.$_SERVER['SERVER_NAME'].VIDEO_DIR.$media;//VIDEO_PATH.$media;
+        $media = $http.$server.VIDEO_DIR.$media;//VIDEO_PATH.$media;
       }
       else{ // if the videos are not in the videos directory but they are adressed relatively
-        $media_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$media);
+        $media_path = str_replace('//','/',$server.'/'.$media);
         $media = $http.$media_path;
       }
     }
