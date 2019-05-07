@@ -1813,7 +1813,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } else if( $list_style == 'text' ) {
         $sClass = 'fp-playlist-vertical';
       } else {
-        $sClass = 'fp-playlist-'.$list_style;
+        $sClass .= ' fp-playlist-'.$list_style;
       }
       
       if( $list_style == 'text' ) {
