@@ -70,6 +70,7 @@ function fv_flowplayer_get_js_translations() {
   'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
   'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
   'playlist_current' =>__('Now Playing','fv-wordpress-flowplayer'),
+  'playlist_item_no' =>__('Item %d.','fv-wordpress-flowplayer'),
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
@@ -395,6 +396,8 @@ function flowplayer_prepare_scripts() {
         'autoLevelEnabled' => false // disable ABR. If you set startLevel or capLevelToPlayerSize it will be enabled again. So this way everybody on desktop gets top quality and they have to switch to lower each time.
       );
     }
+    
+    if( is_admin() ) $aConf['wpadmin'] = true;
     
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
     
