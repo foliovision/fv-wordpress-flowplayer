@@ -792,7 +792,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
     }
     
-    if( $sListStyle == 'season' ) {
+    if( $sListStyle != 'text' ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
         if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
@@ -801,14 +801,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='$sSplashImage' />";
         }
         
+      } else {
+        $sHTML .= "<div class='fvp-playlist-thumb-img no-image'>";
       }
+      
       if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
-      $sHTML .= "</div>";      
-      
+      $sHTML .= "</div>";
+    }
+    
+    if( $sListStyle == 'season' ) {
       $sHTML .= "<div class='fvp-playlist-item-info'>";
       if( $sItemCaption ) {
         $sHTML .= "<h4>".$sItemCaption."</h4>";
@@ -827,8 +832,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML .= "</div>";
       
     } else {
-      if( $sListStyle != 'text' ) $sHTML .= $sSplashImage ? "<div class='fvp-playlist-thumb' style='background-image: url(\"".$sSplashImage."\")'></div>" : "<div class='fvp-playlist-thumb no-image'></div>";
-      
       if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
       
       if( $tDuration ) {
