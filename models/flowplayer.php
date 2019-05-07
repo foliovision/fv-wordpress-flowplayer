@@ -802,7 +802,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
         
       } else {
-        $sHTML .= "<div class='fvp-playlist-thumb-img no-image'>";
+        $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
       }
       
       if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
