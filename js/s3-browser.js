@@ -78,7 +78,7 @@ jQuery( function($) {
           '</div>' +
           '\t\t<div class="breadcrumbs"></div>\n' +
           '\n' +
-          '\t\t<ul class="data"></ul>\n' +
+          '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__s3-view"></ul>\n' +
           '\n' +
           '\t\t<div class="nothingfound">\n' +
           '\t\t\t<div class="nofiles"></div>\n' +
@@ -116,7 +116,7 @@ jQuery( function($) {
   $( document ).on( "mediaBrowserOpen", function(event) {
     fv_flowplayer_media_browser_add_tab('fv_flowplayer_s3_browser_media_tab', 'Amazon S3', fv_flowplayer_s3_browser_load_assets);
   });
-  
+
   $( document ).on( "click", ".folders, .breadcrumbs a", function(event) {
     fv_flowplayer_s3_browser_load_assets( jQuery('#bucket-dropdown').val(), jQuery(this).attr('href') );
     return false;
@@ -154,7 +154,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     search.find('span').hide();
     search.find('input[type=search]').show().focus();
 
-  }).hide(); // not implemented for S3
+  })//.hide(); // not implemented for S3
 
 
   // Listening for keyboard input on the search field.
@@ -269,9 +269,19 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
       scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
-        fileList.append( jQuery('<li class="folders"><a href="'+f.path+'" title="'+name+'" class="folders"><span class="icon folder"></span><span class="name">'+name+'</span></a></li>'));
+        fileList.append( jQuery(
+          '<li class="folders attachment save-ready">'
+          + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
+          + '<div class="thumbnail">'
+          + '<a href="' + f.path + '" title="' + name + '" class="folders">'
+          + '<span class="icon folder"></span>'
+          + '<span class="name">' + name + '</span>'
+          + '</a>'
+          + '</div>'
+          + '</div>'
+          + '</li>')
+        );
       });
-
     }
 
     if(scannedFiles.length) {
@@ -330,21 +340,21 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
         var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
           name = escapeHTML(f.name),          
           link = f.link ? 'href="'+ f.link+'"' : '',          
-          file = jQuery('<li class="files"></li>');
-        
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" data-id="-1" class="folders attachment save-ready"></li>');
+
         if( f.splash ) {
-          icon = '<img src="'+f.splash+'" />';
+          icon = '<img src="'+f.splash+'" draggable="false" class="icon" />';
         } else {
           var fileType = name.split('.');
           if( fileType.length > 1 ) {
             fileType = fileType[fileType.length-1];
-            icon = '<span class="icon file f-'+fileType+'">.'+fileType+'</span>';
+            icon = '<span class="icon file f-'+fileType+'" >.'+fileType+'</span>';
           } else {
             icon = '<span class="icon file"></span>';
           }
         }
-                
-        var $href = jQuery('<a '+link+' title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>');
+
+        /*var $href = jQuery('<a '+link+' title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>');
 
         if( f.link ) {
           $href.on('click', fileUrlIntoShortcodeEditor);
@@ -352,9 +362,18 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           $href.on('click', function() {
             return false;
           });
-        }
+        }*/
 
-        file.append($href);
+        file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
+          + '<div class="thumbnail">'
+          + icon
+          + '<div class="filename">'
+          + '<div>' + name + '</div>'
+          + '</div>'
+          + '</div>'
+          + '</div>');
+
+        //file.append($href);
         file.appendTo(fileList);
       });
 
