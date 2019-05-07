@@ -1165,7 +1165,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
     $sVer = $fv_wp_flowplayer_ver;
 
-    if( apply_filters('fv_flowplayer_css_writeout', true ) && $this->_get_option($this->css_option()) ) {      
+    if( !$this->_get_option('css_disable') && $this->_get_option($this->css_option()) ) {      
       if( @file_exists($this->css_path()) ) {
         $sURL = $this->css_path('url');
         $sVer = $this->_get_option($this->css_option());
@@ -1192,7 +1192,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( $this->bCSSInline ) {
-        add_action( 'wp_head', array( $this, 'css_generate' ) );
+        add_action( did_action('wp_footer') ? 'wp_footer' : 'wp_head', array( $this, 'css_generate' ) );
         add_action( 'admin_head', array( $this, 'css_generate' ) );
       }
       
