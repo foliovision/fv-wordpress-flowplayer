@@ -835,7 +835,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
       
       if( $tDuration ) {
-        $sItemCaption .= '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
+        $sDuration = '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
+        if( $this->aCurArgs['listdesign'] == '2014' || empty($this->aCurArgs['listdesign']) && $this->_get_option('playlist-design') == 2014 ) {
+          $sHTML .= $sDuration;
+        } else {
+          $sItemCaption .= $sDuration;
+        }
       }
       
       if( $sItemCaption ) {
