@@ -1,5 +1,28 @@
 jQuery( function($) {
-    
+    var
+      columns = 7,
+      idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
+
+    // this function is from WP JS
+    function fv_flowplayer_media_browser_setColumns() {
+      var
+        prev = columns,
+        width = jQuery('#__s3-view').width(); // from WP
+
+      if ( width ) {
+        columns = Math.min( Math.round( width / idealColumnWidth ), 12 ) || 1;
+
+        if ( ! prev || prev !== columns ) {
+          jQuery('#__s3-view').closest( '.media-frame-content' ).attr( 'data-columns', columns );
+        }
+      }
+    }
+
+    // calculate number of columns on each window resize
+    jQuery(window).on('resize', function() {
+      setTimeout(fv_flowplayer_media_browser_setColumns, 500);
+    });
+
     function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback) {
       if (!jQuery('#' + tabId).length) {
         // add Vimeo browser tab
@@ -27,7 +50,8 @@ jQuery( function($) {
           action: "load_s3_assets",
         };
 
-      $this.addClass('active').siblings().removeClass('active')
+      $this.addClass('active').siblings().removeClass('active');
+      $media_frame_content.attr('data-columns', 7);
       $media_frame_content.html($overlay_div);
 
       if (typeof bucket === 'string' && bucket) {
@@ -39,15 +63,16 @@ jQuery( function($) {
 
       jQuery.post(ajaxurl, ajax_data, function(ret) {
         var
-          html = '<div class="files-div"><div class="filemanager">',
+          html = '<div class="attachments-browser">',
           last_selected_bucket = null;
 
         if (ret.buckets){
-          html += '<div class="bucket-dropdown">';
+          html += '<div class="media-toolbar"><div class="media-toolbar-secondary">';
 
           // prepare dropdown HTML
           var
-            select_html = '<strong>S3 Bucket:</strong> &nbsp; <select name="bucket-dropdown" id="bucket-dropdown">',
+            select_html = '<label for="bucket-dropdown" class="screen-reader-text">S3 Bucket</label>'
+              + '<select name="bucket-dropdown" id="bucket-dropdown" class="attachment-filters">',
             one_bucket_enabled = false;
 
           for (var i in ret.buckets) {
@@ -58,7 +83,7 @@ jQuery( function($) {
             }
           }
 
-          select_html += '</select>';
+          select_html += '</select><span class="spinner"></span>';
 
           // check if we have at least a single enabled bucket
           // and if not, replace the whole select HTML with a warning message
@@ -73,19 +98,20 @@ jQuery( function($) {
           html += '<div class="errors"><strong>' + ret.err + '</strong></div><hr /><br />';
         }
 
-        html += '<div class="search">' +
-          '<input type="search" placeholder="Find a file.." />' +
+        html += '<div class="media-toolbar-primary search-form">' +
+          '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
+          '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
+          '</div>' +
           '</div>' +
           '\t\t<div class="breadcrumbs"></div>\n' +
           '\n' +
           '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__s3-view"></ul>\n' +
-          '\n' +
+          '<div class="media-sidebar"></div>' +
           '\t\t<div class="nothingfound">\n' +
           '\t\t\t<div class="nofiles"></div>\n' +
           '\t\t\t<span>No files here.</span>\n' +
           '\t\t</div>\n' +
           '\n' +
-          '\t</div>\n' +
           '\t</div>';
 
         $media_frame_content.html(html);
@@ -128,7 +154,7 @@ jQuery( function($) {
 
 fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
-  var filemanager = jQuery('.filemanager'),
+  var filemanager = jQuery('.attachments-browser'),
     breadcrumbs = jQuery('.breadcrumbs'),
     fileList = filemanager.find('.data');
 
@@ -146,79 +172,12 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     render(data.items);
   }).trigger('fv-player-browser-open-folder', [ '' ] );
 
-  // Hiding and showing the search box
-  filemanager.find('.search').click(function(){
-
-    var search = jQuery(this);
-
-    search.find('span').hide();
-    search.find('input[type=search]').show().focus();
-
-  })//.hide(); // not implemented for S3
-
 
   // Listening for keyboard input on the search field.
   // We are using the "input" event which detects cut and paste
   // in addition to keyboard input.
 
-  filemanager.find('input').on('input', function(e){
-
-    // do nothing if we should use AJAX to perform the search
-    // ... in such case, we'll use the Enter key to search
-    if (typeof(ajax_search_callback) !== 'undefined') {
-      return;
-    }
-
-    folders = [];
-    files = [];
-
-    var value = this.value.trim();
-
-    if(value.length) {
-
-      filemanager.addClass('searching');
-
-      // Update the hash on every key stroke
-      jQuery(window).trigger('fv-player-browser-open-folder', [ 'search=' + value.trim() ]);
-    }
-
-    else {
-
-      filemanager.removeClass('searching');
-      jQuery(window).trigger('fv-player-browser-open-folder', [ currentPath ] );
-    }
-
-  }).on('keyup', function(e){
-
-    // Clicking 'ESC' button triggers focusout and cancels the search
-
-    var search = jQuery(this);
-
-    if(e.keyCode == 27) {
-
-      search.trigger('focusout');
-
-    } else if (e.keyCode == 13) {
-      // Clicking 'Enter' button triggers AJAX search callback
-      if (typeof(ajax_search_callback) !== 'undefined') {
-        ajax_search_callback();
-      }
-    }
-
-  }).focusout(function(e){
-
-    // Cancel the search
-
-    var search = jQuery(this);
-
-    if(!search.val().trim().length) {
-      jQuery(window).trigger('fv-player-browser-open-folder', [ currentPath ] );
-
-      search.hide();
-      search.parent().find('span').show();
-    }
-
-  });
+  //filemanager.find('input').on('input', function(e){
 
 
   // Splits a file path and turns it into clickable breadcrumbs
@@ -275,7 +234,9 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           + '<div class="thumbnail">'
           + '<a href="' + f.path + '" title="' + name + '" class="folders">'
           + '<span class="icon folder"></span>'
-          + '<span class="name">' + name + '</span>'
+          + '<div class="filename">'
+          + '<div>' + name + '</div>'
+          + '</div>'
           + '</a>'
           + '</div>'
           + '</div>'
