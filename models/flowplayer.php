@@ -826,7 +826,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( $tDuration ) {
-        $sHTML .= '<i class="dur">('.round($tDuration/60).'m)</i>';
+        $sHTML .= '<i class="dur">('.ceil($tDuration/60).'m)</i>';
       }
       
       $sHTML .= "</div>";
