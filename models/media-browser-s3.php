@@ -202,7 +202,8 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
             if( !empty($object['Size']) ) {
               $item['type'] = 'file';
               $item['size'] = $object['Size'];
-              
+              $item['modified'] = date('m-d-Y H:i:s', strtotime($object['LastModified']));
+
               $link = (string) $s3Client->getObjectUrl( $bucket, $path );
               $link = str_replace( '%20', '+', $link );
               

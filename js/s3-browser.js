@@ -2,7 +2,9 @@ jQuery( function($) {
     var
       columns = 7,
       idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150,
-      $lastElementSelected = null;
+      $lastElementSelected = null,
+      scannedFolders = [],
+      scannedFiles = [];
 
     // this function is from WP JS
     function fv_flowplayer_media_browser_setColumns() {
@@ -140,6 +142,54 @@ jQuery( function($) {
       return false;
     };
 
+  function fileGetBase( link ) {
+    link = link.replace(/\.[a-z0-9]+$/,'');
+    return link;
+  }
+
+  function fileUrlIntoShortcodeEditor(href) {
+    var
+      $url_input       = jQuery('.fv_flowplayer_target'),
+      $popup_close_btn = jQuery('.media-modal-close:visible');
+
+    var find = [ fileGetBase(href) ];
+    if( window.fv_player_shortcode_editor_qualities ) {
+      Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
+        var re = new RegExp(prefix+'$');
+        if( find[0].match(re) ) {
+          find.push( find[0].replace(re,'') );
+        }
+      });
+    }
+
+    var splash = false;
+    for( var i in find ) {
+      for( var j in scannedFiles ) {
+        var f = scannedFiles[j];
+        if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
+          splash = f.link;
+        }
+      }
+    }
+
+    $url_input
+      .val(href)
+      .removeClass('fv_flowplayer_target' )
+      .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
+      .trigger('change'); // this check the video duration etc.
+
+    if( splash && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/) ) {
+      var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
+      if( splash_input.val() == '' ) {
+        splash_input.val(splash);
+      }
+    }
+
+    $popup_close_btn.click();
+
+    return false;
+  }
+
   $( document ).on( "mediaBrowserOpen", function(event) {
     fv_flowplayer_media_browser_add_tab('fv_flowplayer_s3_browser_media_tab', 'Amazon S3', fv_flowplayer_s3_browser_load_assets);
   });
@@ -170,6 +220,62 @@ jQuery( function($) {
           $e
             .attr('aria-checked', 'true')
             .addClass('selected details');
+
+          var
+            $filenameDiv = $e.find('.filename div'),
+            fSize = parseInt($filenameDiv.data('size')),
+            sizeSuffix = 'bytes';
+
+          // if filesize is too small, show it in KBytes
+          if (fSize > 10000) {
+            if (fSize <= 999999) {
+              fSize /= 100000;
+              sizeSuffix = 'KB';
+            } else if (fSize <= 999999999) {
+              fSize /= 1000000;
+              sizeSuffix = 'MB';
+            } else {
+              fSize /= 1000000000;
+              sizeSuffix = 'GB';
+            }
+          }
+
+          // "round" to 2 decimals
+          if (parseFloat(fSize) != parseInt(fSize)) {
+            fSize += '';
+            fSize = fSize.substring(0, fSize.indexOf('.') + 3);
+          }
+
+          // show info about the file in right sidebar
+          jQuery('.media-sidebar').html('<div tabindex="0" class="attachment-details save-ready">\n' +
+            '\t\t<h2>Media Details</h2>\n' +
+            '\t\t<div class="attachment-info">\n' +
+            '\t\t\t<div class="thumbnail thumbnail-image">\n' +
+            '\t\t\t\t\n' +
+            '\t\t\t\t\t' + $e.find('.icon').get(0).outerHTML + '\n' +
+            '\t\t\t\t\n' +
+            '\t\t\t</div>\n' +
+            '\t\t\t<div class="details">\n' +
+            '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
+            '\t\t\t\t<div class="uploaded">' + $filenameDiv.data('modified') + '</div>\n' +
+            '\n' +
+            '\t\t\t\t<div class="file-size">' + fSize + ' ' + sizeSuffix +'</div>\n' +
+            '\t\t\t</div>\n' +
+            '\t\t</div>\n' +
+            '\n' +
+            '\t\t\n' +
+            '\t\t\n' +
+            '\t\t\t<label class="setting" data-setting="url">\n' +
+            '\t\t\t<span class="name">Copy Link</span>\n' +
+            '\t\t\t<input type="text" value="' + $filenameDiv.data('link') + '" readonly="">\n' +
+            '\t\t</label>\n' +
+            '\t</div>');
+
+          // enable Choose button
+          jQuery('.media-button-select').removeAttr('disabled');
+        } else {
+          // disable Choose button
+          jQuery('.media-button-select').prop('disabled', 'disabled');
         }
 
         $lastElementSelected = $e;
@@ -179,17 +285,31 @@ jQuery( function($) {
   });
 
   $( document ).on( "click", ".check .media-modal-icon", function(event) {
+    // deselect media element
     $lastElementSelected
       .attr('aria-checked', 'false')
       .removeClass('selected details');
 
     $lastElementSelected = null;
+
+    // disable Choose button
+    jQuery('.media-button-select').prop('disabled', 'disabled');
+
+    return false;
+  });
+
+  $( document ).on( "click", ".media-button-select", function(event) {
+    var
+      $e = jQuery('#__s3-view li.selected'),
+      filenameDiv = $e.find('.filename div');
+
+    if (filenameDiv.length && filenameDiv.data('link')) {
+      fileUrlIntoShortcodeEditor(filenameDiv.data('link'));
+    }
+
     return false;
   });
 });
-
-
-
 
 fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
@@ -231,8 +351,8 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
   // Render the HTML for the file manager
   function render(data) {
 
-    var scannedFolders = [],
-      scannedFiles = [];
+    scannedFolders = [];
+    scannedFiles = [];
 
     if(Array.isArray(data)) {
 
@@ -285,55 +405,6 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     }
 
     if(scannedFiles.length) {
-      
-      function fileGetBase( link ) {
-        link = link.replace(/\.[a-z0-9]+$/,'');
-        return link;
-      }
-
-      function fileUrlIntoShortcodeEditor() {
-        var
-          $this            = jQuery(this),
-          $url_input       = jQuery('.fv_flowplayer_target'),
-          $popup_close_btn = jQuery('.media-modal-close:visible');
-
-        var find = [ fileGetBase($this.attr('href')) ];
-        if( window.fv_player_shortcode_editor_qualities ) {
-          Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
-            var re = new RegExp(prefix+'$');
-            if( find[0].match(re) ) {
-              find.push( find[0].replace(re,'') );
-            }
-          });
-        }
-        
-        var splash = false;
-        for( var i in find ) {
-          for( var j in scannedFiles ) {
-            var f = scannedFiles[j];
-            if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != $this.attr('href') ) {
-              splash = f.link;
-            }
-          }
-        }
-
-        $url_input
-          .val($this.attr('href'))
-          .removeClass('fv_flowplayer_target' )
-          .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
-          .trigger('change'); // this check the video duration etc.
-
-        if( splash && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/) ) {
-          var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
-          if( splash_input.val() == '' ) {
-            splash_input.val(splash);
-          }
-        }
-
-        $popup_close_btn.click();
-
-        return false;
-      }
 
       scannedFiles.forEach(function(f) {
 
@@ -354,21 +425,11 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           }
         }
 
-        /*var $href = jQuery('<a '+link+' title="'+ name +'" class="files">'+icon+'<span class="name">'+ name +'</span> <span class="details">'+fileSize+'</span></a>');
-
-        if( f.link ) {
-          $href.on('click', fileUrlIntoShortcodeEditor);
-        } else { // click on placeholder
-          $href.on('click', function() {
-            return false;
-          });
-        }*/
-
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
           + '<div class="thumbnail">'
           + icon
           + '<div class="filename">'
-          + '<div>' + name + '</div>'
+          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '">' + name + '</div>'
           + '</div>'
           + '</div>'
           + '</div>' +

@@ -265,6 +265,7 @@
 
 #__s3-view {
     top: 55px;
+    z-index: 1; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
 .attachments-browser .s3-media-toolbar {
