@@ -1298,6 +1298,20 @@
 .fp-playlist-external a,.fp-playlist-external a h4,.fp-playlist-vertical-wrapper .fp-playlist-external {-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 .fp-playlist-external a .fvp-playlist-thumb:empty,.fp-playlist-horizontal a.fvp-video-thumb-no-splash h4 {background-color:#aaa}
 .fp-playlist-external a .fvp-playlist-thumb {-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+.fp-playlist-external .fvp-playlist-thumb-img {
+  height: 0;
+  overflow: hidden;
+  padding-top: 56%;
+  position: relative;
+}
+.fp-playlist-external .fvp-playlist-thumb-img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+} 
 .fp-playlist-external a.is-active .fvp-playlist-thumb:after {opacity:0;position:absolute;content:"";top:0;bottom:0;left:0;right:0;opacity:0;border:0;transition: all ease-in-out 1s;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;z-index:98}
 .fp-playlist-external a h4 {font-family:Helvetica Neue,Helvetica,Arial,sans-serif;letter-spacing:0;font-weight:400;line-height:1.25}
 .fp-playlist-external a .now-playing {opacity:0;width:100%;height:100%;transition: all 1s ease-in-out 0s;position:absolute;top:0;bottom:0;left:0;right:0;box-shadow: inset 0 0 250px #000;color:#fff;font-size:16px;font-family:"myriad pro",Helvetica,Arial,sans-serif;font-weight:700;text-transform:uppercase;text-shadow:0 0 5px #333;z-index:99;-webkit-animation:blending 3s ease-in-out 1s alternate infinite;-moz-animation:blending 3s ease-in-out 1s alternate infinite;animation:blending 3s ease-in-out 1s alternate infinite}
@@ -1525,7 +1539,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 /*  Duration */
 .fvfp_duration { position: absolute; bottom: 0; right: 1%; z-index: 2; text-align: center; color: #fff; display:none }
 .is-ready .fvfp_duration, .is-loading .fvfp_duration  { display: none }
-.fp-playlist-external .dur { font-style:normal;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
+.fp-playlist-external .dur { font-style:normal;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
 
 
 /*  No animation, todo: check!  */
@@ -1671,6 +1685,9 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 .is-audio .fp-player {background-size:contain;background-position:top center;background-repeat:no-repeat}
 
+.fp-playlist-external.is-audio .fvp-playlist-thumb-img {
+  padding-top: 0;
+}
 
 /* Media Queries - done */        
 
@@ -1964,6 +1981,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	width: 48%;
 	position: relative;
 	margin: 0 2% 0 0;
+	padding-top: 28%;
+	margin-bottom: 30px;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-thumb-img img {
 	display: block;
