@@ -1,7 +1,8 @@
 jQuery( function($) {
     var
       columns = 7,
-      idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
+      idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150,
+      $lastElementSelected = null;
 
     // this function is from WP JS
     function fv_flowplayer_media_browser_setColumns() {
@@ -67,7 +68,7 @@ jQuery( function($) {
           last_selected_bucket = null;
 
         if (ret.buckets){
-          html += '<div class="media-toolbar"><div class="media-toolbar-secondary">';
+          html += '<div class="media-toolbar s3-media-toolbar"><div class="media-toolbar-secondary">';
 
           // prepare dropdown HTML
           var
@@ -144,7 +145,45 @@ jQuery( function($) {
   });
 
   $( document ).on( "click", ".folders, .breadcrumbs a", function(event) {
-    fv_flowplayer_s3_browser_load_assets( jQuery('#bucket-dropdown').val(), jQuery(this).attr('href') );
+    // coming directly from a link
+    if (this.tagName == 'A') {
+      fv_flowplayer_s3_browser_load_assets( jQuery('#bucket-dropdown').val(), jQuery(this).attr('href') );
+    } else {
+      // coming from a LI where the link is located
+      var
+        $e = jQuery(this),
+        href = $e.find('a:first').attr('href');
+      if (typeof(href) != 'undefined') {
+        fv_flowplayer_s3_browser_load_assets(jQuery('#bucket-dropdown').val(), href);
+      } else {
+        // we clicked on a file, not a folder... add a confirmation tick icon to it
+        var wasSelected = $e.hasClass('selected');
+
+        if ($lastElementSelected !== null) {
+          $lastElementSelected
+            .attr('aria-checked', 'false')
+            .removeClass('selected details');
+        }
+
+        // if we clicked on the same selected LI, don't re-select it, as we just deselected it
+        if (!wasSelected) {
+          $e
+            .attr('aria-checked', 'true')
+            .addClass('selected details');
+        }
+
+        $lastElementSelected = $e;
+      }
+    }
+    return false;
+  });
+
+  $( document ).on( "click", ".check .media-modal-icon", function(event) {
+    $lastElementSelected
+      .attr('aria-checked', 'false')
+      .removeClass('selected details');
+
+    $lastElementSelected = null;
     return false;
   });
 });
@@ -332,7 +371,11 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           + '<div>' + name + '</div>'
           + '</div>'
           + '</div>'
-          + '</div>');
+          + '</div>' +
+          '<button type="button" class="check" tabindex="0">' +
+          '<span class="media-modal-icon"></span>' +
+          '<span class="screen-reader-text">Deselect</span>' +
+          '</button>');
 
         //file.append($href);
         file.appendTo(fileList);

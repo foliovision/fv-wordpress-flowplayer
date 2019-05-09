@@ -8,6 +8,7 @@
     font-size: 18px;
     font-weight: 700;
     line-height: 35px;
+    margin: 31px 0 0 17px;
 }
 .attachments-browser .breadcrumbs a:link, .attachments-browser .breadcrumbs a:visited {
     color: #000;
@@ -260,4 +261,12 @@
         margin-right:0px!important;
 
     }
+}
+
+#__s3-view {
+    top: 55px;
+}
+
+.attachments-browser .s3-media-toolbar {
+    height: 37px !important;
 }
