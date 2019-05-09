@@ -1241,7 +1241,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( $this->bCSSInline ) {
-        add_action( did_action('wp_footer') ? 'wp_footer' : 'wp_head', array( $this, 'css_generate' ) );
+        add_action( did_action('wp_footer') ? 'wp_footer' : 'wp_head', array( $this, 'css_generate' ), 999 );
         add_action( 'admin_head', array( $this, 'css_generate' ) );
       }
       
