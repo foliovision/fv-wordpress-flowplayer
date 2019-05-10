@@ -155,11 +155,7 @@ jQuery( function($) {
     return link;
   }
 
-  function fileUrlIntoShortcodeEditor(href) {
-    var
-      $url_input       = jQuery('.fv_flowplayer_target'),
-      $popup_close_btn = jQuery('.media-modal-close:visible');
-
+  function getSplashImageForMediaFileHref(href) {
     var find = [ fileGetBase(href) ];
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
@@ -175,10 +171,19 @@ jQuery( function($) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
         if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
-          splash = f.link;
+          splash = (f.splash ? f.splash : f.link);
         }
       }
     }
+
+    return splash;
+  }
+
+  function fileUrlIntoShortcodeEditor(href) {
+    var
+      $url_input       = jQuery('.fv_flowplayer_target'),
+      $popup_close_btn = jQuery('.media-modal-close:visible'),
+      splash = getSplashImageForMediaFileHref(href);
 
     $url_input
       .val(href)
@@ -260,13 +265,25 @@ jQuery( function($) {
             fSize = fSize.substring(0, fSize.indexOf('.') + 3);
           }
 
+          // load splash image
+          var
+            isPicture = $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/),
+            splashValue = getSplashImageForMediaFileHref($filenameDiv.data('link')),
+            splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" />');
+
+          // if we didn't find a splash image for a media file,
+          // use its icon
+          if (!splashValue) {
+            splash = $e.find('.icon').get(0).outerHTML;
+          }
+
           // show info about the file in right sidebar
           jQuery('.media-sidebar').html('<div tabindex="0" class="attachment-details save-ready">\n' +
             '\t\t<h2>Media Details</h2>\n' +
             '\t\t<div class="attachment-info">\n' +
             '\t\t\t<div class="thumbnail thumbnail-image">\n' +
             '\t\t\t\t\n' +
-            '\t\t\t\t\t' + $e.find('.icon').get(0).outerHTML + '\n' +
+            '\t\t\t\t\t' + splash + '\n' +
             '\t\t\t\t\n' +
             '\t\t\t</div>\n' +
             '\t\t\t<div class="details">\n' +
@@ -275,6 +292,7 @@ jQuery( function($) {
             '\n' +
             '\t\t\t\t<div class="file-size">' + fSize + ' ' + sizeSuffix +'</div>\n' +
             '\t\t\t</div>\n' +
+            (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
             '\n' +
             '\t\t\n' +
