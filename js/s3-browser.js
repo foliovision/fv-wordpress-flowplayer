@@ -1,10 +1,12 @@
+var
+  fv_flowplayer_scannedFolders = [],
+  fv_flowplayer_scannedFiles = [];
+
 jQuery( function($) {
     var
       columns = 7,
       idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150,
-      $lastElementSelected = null,
-      scannedFolders = [],
-      scannedFiles = [];
+      $lastElementSelected = null;
 
     // this function is from WP JS
     function fv_flowplayer_media_browser_setColumns() {
@@ -124,6 +126,9 @@ jQuery( function($) {
 
         jQuery('#bucket-dropdown').on('change', function() {
           if (this.value >= 0) {
+            // disable Choose button
+            jQuery('.media-button-select').prop('disabled', 'disabled');
+            // load bucket contents
             fv_flowplayer_s3_browser_load_assets(this.value);
           } else {
             var $err_div = jQuery('.filemanager .errors');
@@ -167,8 +172,8 @@ jQuery( function($) {
 
     var splash = false;
     for( var i in find ) {
-      for( var j in scannedFiles ) {
-        var f = scannedFiles[j];
+      for( var j in fv_flowplayer_scannedFiles ) {
+        var f = fv_flowplayer_scannedFiles[j];
         if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
           splash = f.link;
         }
@@ -360,41 +365,41 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
   // Render the HTML for the file manager
   function render(data) {
 
-    scannedFolders = [];
-    scannedFiles = [];
+    fv_flowplayer_scannedFolders = [];
+    fv_flowplayer_fv_flowplayer_scannedFiles = [];
 
     if(Array.isArray(data)) {
 
       data.forEach(function (d) {
 
         if (d.type === 'folder') {
-          scannedFolders.push(d);
+          fv_flowplayer_scannedFolders.push(d);
         }
         else {
-          scannedFiles.push(d);
+          fv_flowplayer_scannedFiles.push(d);
         }
 
       });
 
     } else if(typeof data === 'object') {
-      scannedFolders = data.folders;
-      scannedFiles = data.files;
+      fv_flowplayer_scannedFolders = data.folders;
+      fv_flowplayer_scannedFiles = data.files;
 
     }
 
     // Empty the old result and make the new one
     fileList.empty().hide();
     
-    if(!scannedFolders.length && !scannedFiles.length) {
+    if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
       filemanager.find('.nothingfound').show();
     }
     else {
       filemanager.find('.nothingfound').hide();
     }
 
-    if(scannedFolders.length) {
+    if(fv_flowplayer_scannedFolders.length) {
 
-      scannedFolders.forEach(function(f) {
+      fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
         fileList.append( jQuery(
           '<li class="folders attachment save-ready">'
@@ -413,9 +418,9 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
       });
     }
 
-    if(scannedFiles.length) {
+    if(fv_flowplayer_scannedFiles.length) {
 
-      scannedFiles.forEach(function(f) {
+      fv_flowplayer_scannedFiles.forEach(function(f) {
 
         var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
           name = escapeHTML(f.name),          
