@@ -120,7 +120,7 @@ jQuery( function($) {
         $media_frame_content.html(html);
 
         // hide search, as it's not supported for AWS
-        jQuery('.search-form').hide();
+        jQuery('#media-search-input').parent().hide();
 
         jQuery('#bucket-dropdown').on('change', function() {
           if (this.value >= 0) {
@@ -421,10 +421,10 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           name = escapeHTML(f.name),          
           link = f.link ? 'href="'+ f.link+'"' : '',          
           file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" data-id="-1" class="folders attachment save-ready"></li>'),
-          isPicture = f.link.match(/\.(jpg|jpeg|png|gif)$/);
+          isPicture = name.match(/\.(jpg|jpeg|png|gif)$/);
 
-        if( f.splash || isPicture ) {
-          icon = '<img src="' + (f.splash ? f.splash : f.link) + '" draggable="false" class="icon thumb" title="' + name + '" />';
+        if( f.splash ) {
+          icon = '<img src="' + f.splash + '" draggable="false" class="icon thumb" title="' + name + '" />';
         } else {
           var fileType = name.split('.');
           if( fileType.length > 1 ) {

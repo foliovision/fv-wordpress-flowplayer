@@ -215,17 +215,20 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
                 // replace S3 URLs with bucket name as a subfolder
                 $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
               }
-              
+
               $item['link'] = $link;
-              
+
+              if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item['name'])) {
+                $item['splash'] = apply_filters('fv_flowplayer_splash', $link );
+              }
             } else {
               $item['type'] = 'folder';
               $item['items'] = array();
             }
-            
+
             $output['items'][] = $item;
   
-            if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
+            if (strtolower(substr($item['name'], strrpos($item['name'], '.') + 1)) === 'ts') {
               continue;
             }
   
