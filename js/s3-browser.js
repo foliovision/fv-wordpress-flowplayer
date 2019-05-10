@@ -1,27 +1,27 @@
 var
   fv_flowplayer_scannedFolders = [],
-  fv_flowplayer_scannedFiles = [];
+  fv_flowplayer_scannedFiles = [],
+  fv_flowplayer_media_browser_columns = 7,
+  fv_flowplayer_idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
+
+// this function is from WP JS
+function fv_flowplayer_media_browser_setColumns() {
+  var
+    prev = fv_flowplayer_media_browser_columns,
+    width = jQuery('#__s3-view').width(); // from WP
+
+  if ( width ) {
+    fv_flowplayer_media_browser_columns = Math.min( Math.round( width / fv_flowplayer_idealColumnWidth ), 12 ) || 1;
+
+    if ( ! prev || prev !== fv_flowplayer_media_browser_columns ) {
+      jQuery('#__s3-view').closest( '.media-frame-content' ).attr( 'data-columns', fv_flowplayer_media_browser_columns );
+    }
+  }
+}
 
 jQuery( function($) {
     var
-      columns = 7,
-      idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150,
       $lastElementSelected = null;
-
-    // this function is from WP JS
-    function fv_flowplayer_media_browser_setColumns() {
-      var
-        prev = columns,
-        width = jQuery('#__s3-view').width(); // from WP
-
-      if ( width ) {
-        columns = Math.min( Math.round( width / idealColumnWidth ), 12 ) || 1;
-
-        if ( ! prev || prev !== columns ) {
-          jQuery('#__s3-view').closest( '.media-frame-content' ).attr( 'data-columns', columns );
-        }
-      }
-    }
 
     // calculate number of columns on each window resize
     jQuery(window).on('resize', function() {
@@ -508,6 +508,8 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     breadcrumbs.text('').append(url);
 
     fileList.fadeIn();
+
+    fv_flowplayer_media_browser_setColumns();
   }
 
 
