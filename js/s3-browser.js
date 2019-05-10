@@ -420,10 +420,11 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
         var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
           name = escapeHTML(f.name),          
           link = f.link ? 'href="'+ f.link+'"' : '',          
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" data-id="-1" class="folders attachment save-ready"></li>');
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" data-id="-1" class="folders attachment save-ready"></li>'),
+          isPicture = f.link.match(/\.(jpg|jpeg|png|gif)$/);
 
-        if( f.splash ) {
-          icon = '<img src="'+f.splash+'" draggable="false" class="icon" />';
+        if( f.splash || isPicture ) {
+          icon = '<img src="' + (f.splash ? f.splash : f.link) + '" draggable="false" class="icon thumb" title="' + name + '" />';
         } else {
           var fileType = name.split('.');
           if( fileType.length > 1 ) {
@@ -435,9 +436,9 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
         }
 
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
-          + '<div class="thumbnail">'
+          + '<div class="thumbnail"' + (isPicture ? ' title="' + name + '"' : '') + '>'
           + icon
-          + '<div class="filename">'
+          + '<div class="filename' + (isPicture ? ' hidden' : '') + '">'
           + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '">' + name + '</div>'
           + '</div>'
           + '</div>'

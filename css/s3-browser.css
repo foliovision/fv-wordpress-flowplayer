@@ -105,6 +105,15 @@
     height: 2.15em;
     box-shadow: 0 -0.12em 0 0 #ffffff;
 }
+.attachments-browser .icon.thumb {
+    text-align: center;
+    margin: 0 !important;
+    position: relative !important;
+    overflow: hidden;
+    font-size: 1em;
+    width: auto;
+    height: auto;
+}
 .attachments-browser .icon.file {
     width: 2.5em;
     height: 3em;
