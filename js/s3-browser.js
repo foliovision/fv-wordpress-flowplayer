@@ -119,6 +119,9 @@ jQuery( function($) {
 
         $media_frame_content.html(html);
 
+        // hide search, as it's not supported for AWS
+        jQuery('.search-form').hide();
+
         jQuery('#bucket-dropdown').on('change', function() {
           if (this.value >= 0) {
             fv_flowplayer_s3_browser_load_assets(this.value);
