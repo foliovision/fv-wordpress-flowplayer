@@ -197,6 +197,9 @@ jQuery( function($) {
   $( document ).on( "click", ".folders, .breadcrumbs a", function(event) {
     // coming directly from a link
     if (this.tagName == 'A') {
+      // disable Choose button
+      jQuery('.media-button-select').prop('disabled', 'disabled');
+      // load folder contents
       fv_flowplayer_s3_browser_load_assets( jQuery('#bucket-dropdown').val(), jQuery(this).attr('href') );
     } else {
       // coming from a LI where the link is located
@@ -204,6 +207,9 @@ jQuery( function($) {
         $e = jQuery(this),
         href = $e.find('a:first').attr('href');
       if (typeof(href) != 'undefined') {
+        // disable Choose button
+        jQuery('.media-button-select').prop('disabled', 'disabled');
+        // load folder conents
         fv_flowplayer_s3_browser_load_assets(jQuery('#bucket-dropdown').val(), href);
       } else {
         // we clicked on a file, not a folder... add a confirmation tick icon to it
