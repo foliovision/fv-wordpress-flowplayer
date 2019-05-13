@@ -6,16 +6,12 @@ var
 
 // this function is from WP JS
 function fv_flowplayer_media_browser_setColumns() {
-  var
-    prev = fv_flowplayer_media_browser_columns,
-    width = jQuery('#__s3-view').width(); // from WP
+  var  width = jQuery('#__s3-view').width(); // from WP
 
   if ( width ) {
-    fv_flowplayer_media_browser_columns = Math.min( Math.round( width / fv_flowplayer_idealColumnWidth ), 12 ) || 1;
-
-    if ( ! prev || prev !== fv_flowplayer_media_browser_columns ) {
-      jQuery('#__s3-view').closest( '.media-frame-content' ).attr( 'data-columns', fv_flowplayer_media_browser_columns );
-    }
+    var columns = Math.min( Math.round( width / fv_flowplayer_idealColumnWidth ), 12 ) || 1;
+    jQuery('#__s3-view').closest( '.media-frame-content' ).attr( 'data-columns', columns );
+    fv_flowplayer_media_browser_columns = columns;
   }
 }
 
@@ -507,9 +503,11 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
 
     breadcrumbs.text('').append(url);
 
-    fileList.fadeIn();
-
-    fv_flowplayer_media_browser_setColumns();
+    fileList.fadeIn({
+      complete: function() {
+        setTimeout(fv_flowplayer_media_browser_setColumns, 500);
+      }
+    });
   }
 
 
