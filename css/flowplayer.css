@@ -1052,14 +1052,11 @@
   .flowplayer .fp-captions p:first-of-type,.flowplayer .fp-captions p:last-of-type{-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px}	
   .flowplayer .fp-captions p:last-of-type{padding-left:0.4em}
 }
-@media (max-width: 40em){
-  .flowplayer .fp-captions{line-height:14px !important}
-  .flowplayer .fp-captions p{font-size:14px !important;line-height:20px !important}
-}
-@media (max-width: 30em) {
-  .flowplayer .fp-captions{bottom:4px;line-height:12px !important}
-  .flowplayer .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
-}
+.flowplayer.is-small .fp-captions{line-height:14px !important}
+.flowplayer.is-small .fp-captions p{font-size:14px !important;line-height:20px !important}
+
+.flowplayer.is-tiny .fp-captions{bottom:4px;line-height:12px !important}
+.flowplayer.is-tiny .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
 /* Fullscreen captions on large screens */
 @media (min-width: 64.063em) {
 .flowplayer.is-fullscreen .fp-captions p{font-size:175%;max-width:75%}
@@ -1707,8 +1704,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 }
 @media (max-width: 39.9375em){
 	.flowplayer .fv_player_popup { padding: 12px 0 0 }
-  	.flowplayer .fp-captions{line-height:14px !important}
-  	.flowplayer .fp-captions p{font-size:14px !important;line-height:20px !important}
 	.flowplayer .fp-help p{font-size:9px;}
   	.fv_fp_close a {width:24px;height:24px;background-size:24px 24px}
   	.fp-playlist-vertical-wrapper .fp-playlist-vertical {padding:0}
@@ -1718,8 +1713,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
     .fp-playlist-vertical a:nth-child(2n+1) {clear:both;margin-left:0}
 }
 @media only screen and (max-width: 29.9375em) {
-	.flowplayer .fp-captions{bottom:4px;line-height:12px !important}
-	.flowplayer .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
 	.flowplayer .fv_player_popup {width:99%;font-size:12px;top:0;}
 	.flowplayer.is-fv-narrow .fv_player_popup{font-size:.8em}
 	.flowplayer.is-audio .fp-time em {font-size:12px}
