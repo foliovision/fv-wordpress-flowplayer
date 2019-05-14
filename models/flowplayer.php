@@ -357,7 +357,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-more">(?)</a>'; ?>:</label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
@@ -367,7 +367,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             }
           ?> />          
           <?php if ( $help ) { ?>
-            <p class="description"><span class="more"><?php echo $help; ?></span></p>
+            <p class="description fv-player-admin-tooltip"><span class="info"><?php echo $help; ?></span></p>
           <?php } ?>
         </td>
       </tr>
@@ -1073,6 +1073,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sProgress = $this->_get_option(array($skin, 'progressColor'));
       $sTime = $this->_get_option( array($skin, 'timeColor') );
       $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
+      $sAccent = $this->_get_option( array($skin, 'accent') );
       
       if( $this->_get_option(array($skin, 'hasBorder')) ) {
         $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))."; }\n";
@@ -1097,21 +1098,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {
-        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background, ".$sel." .fv-ab-loop .noUi-handle { background-color: ".$sBuffer." !important; }\n";
+        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background { background-color: ".$sBuffer." !important; }\n";
       }
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
       }
       
-      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration, ".$sel." .noUI-time-in, ".$sel." .noUI-time-out { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
       $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
       
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
-        $css .= $sel." .fv-ab-loop .noUi-handle { color: ".$sBackground." !important; }\n";
         $css .= $sel." .fv_player_popup, .fvfp_admin_error_content {  background: ".$sBackground."; }\n";
       }
-      $css .= $sel." .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
+      if( $sAccent ) {
+        $css .= $sel." .fv-ab-loop .noUi-connect { background-color: ".$sAccent." !important; }\n";
+      }
+      $css .= ".fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
       $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
       $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";      
     }

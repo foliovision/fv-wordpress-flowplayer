@@ -1048,6 +1048,8 @@ function fv_flowplayer_admin_skin_get_table($options) {
 ?>
     <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
+      $options = apply_filters( 'fv_player_skin_settings', $options );
+      
       foreach ($options['items'] as $item) {
         $setup = wp_parse_args( $item, array( 'name' => false, 'data' => false, 'optoins' => false, 'attributes' => false, 'class' => false, 'default' => false ) );
 
@@ -1915,12 +1917,11 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       
       more.toggle();
       
-      if( jQuery(':visible', more ).length > 0 ) {
-        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
-        jQuery(this).html('(hide)');
-      } else {
-        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
-      }      
+    } );
+    
+    jQuery('.show-info').click( function(e) {
+      e.preventDefault();
+      jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
     
     /*
