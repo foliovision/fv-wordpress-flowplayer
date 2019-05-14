@@ -504,6 +504,7 @@ class FV_Player_Email_Subscription {
     if(empty($data['email']) || filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)===false){
       $result['status'] = 'ERROR';
       $result['text'] = __('Malformed Email Address.', 'fv-wordpress-flowplayer');
+      die(json_encode($result));
     };
 
     $count = $wpdb->get_var('SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"' );
@@ -511,12 +512,12 @@ class FV_Player_Email_Subscription {
 
     if(intval($count) === 0){
       $wpdb->insert($table_name, array(
-        'email' => $data['email'],
+        'email' => strip_tags($data['email']),
         'data' => serialize($data),
-        'id_list'=>$list_id,
-        'date'=>date("Y-m-d H:i:s"),
-        'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
-        'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
+        'id_list'=> intval($list_id),
+        'date' => date("Y-m-d H:i:s"),
+        'first_name' => isset($data['first_name']) ? strip_tags($data['first_name']) : '',
+        'last_name' => isset($data['last_name']) ? strip_tags($data['last_name']) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -531,12 +532,12 @@ class FV_Player_Email_Subscription {
       
     }else{
       $wpdb->insert($table_name, array(
-        'email' => $data['email'],
+        'email' => strip_tags($data['email']),
         'data' => serialize($data),
-        'id_list'=>$list_id,
-        'date'=>date("Y-m-d H:i:s"),
-        'first_name' => isset($data['first_name']) ? $data['first_name'] : '',
-        'last_name' => isset($data['last_name']) ? $data['last_name'] : '',
+        'id_list' => intval($list_id),
+        'date' => date("Y-m-d H:i:s"),
+        'first_name' => isset($data['first_name']) ? strip_tags($data['first_name']) : '',
+        'last_name' => isset($data['last_name']) ? strip_tags($data['last_name']) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -624,7 +625,7 @@ class FV_Player_Email_Subscription {
             $item = $tmp['title'];
           }
         }
-        echo '<td>' . $item . '</td>';
+        echo '<td>' . strip_tags($item) . '</td>';
       }
       echo '</tr>';
     }
