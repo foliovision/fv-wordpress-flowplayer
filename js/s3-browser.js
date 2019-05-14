@@ -340,7 +340,7 @@ jQuery( function($) {
   });
 });
 
-fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
+fv_flowplayer_s3_browse = function(data, options) {
 
   var filemanager = jQuery('.attachments-browser'),
     breadcrumbs = jQuery('.breadcrumbs'),
@@ -354,7 +354,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
   jQuery(window).on('fv-player-browser-open-folder', function(e, path){
     currentPath = data.path;
     breadcrumbsUrls.push(data.path);
-    render(data.items);
+    render(data.items, options);
   }).trigger('fv-player-browser-open-folder', [ '' ] );
 
 
@@ -375,7 +375,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
   }
 
   // Render the HTML for the file manager
-  function render(data) {
+  function render(data, options) {
 
     fv_flowplayer_scannedFolders = [];
     fv_flowplayer_scannedFiles = [];
@@ -452,10 +452,10 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           }
         }
 
-        file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
-          + '<div class="thumbnail"' + (isPicture ? ' title="' + name + '"' : '') + '>'
+        file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
+          + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
-          + '<div class="filename' + (isPicture ? ' hidden' : '') + '">'
+          + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
           + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '">' + name + '</div>'
           + '</div>'
           + '</div>'
@@ -465,7 +465,6 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
           '<span class="screen-reader-text">Deselect</span>' +
           '</button>');
 
-        //file.append($href);
         file.appendTo(fileList);
       });
 

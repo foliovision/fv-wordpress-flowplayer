@@ -280,3 +280,7 @@
 .attachments-browser .s3-media-toolbar {
     height: 40px !important;
 }
+
+.attachment-preview.vimeo img {
+    padding-top: 20%;
+}
