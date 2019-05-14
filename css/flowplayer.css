@@ -2016,6 +2016,12 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	-moz-box-shadow: 	0 0 3px #000;
 	box-shadow: 		0 0 3px #000;
 }
+.fp-playlist-external.fp-playlist-season .fvp-playlist-item-info h4 {
+	background-color: rgba(0,0,0,0.75);
+	text-align: left;
+	font-size: 0.8em;
+	padding: 10px 15px;
+}
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p {
 	color: black;
 	font-size: 0.75em;
