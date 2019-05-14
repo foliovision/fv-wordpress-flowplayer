@@ -64,11 +64,11 @@ jQuery( function($) {
 
       jQuery.post(ajaxurl, ajax_data, function(ret) {
         var
-          html = '<div class="attachments-browser">',
+          html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">',
           last_selected_bucket = null;
 
         if (ret.buckets){
-          html += '<div class="media-toolbar s3-media-toolbar"><div class="media-toolbar-secondary">';
+          html += '<div class="media-toolbar-secondary">';
 
           // prepare dropdown HTML
           var
@@ -95,18 +95,19 @@ jQuery( function($) {
           html += select_html + '</div>';
         }
 
-        if (ret.err) {
-          html += '<div class="errors"><strong>' + ret.err + '</strong></div><hr /><br />';
-        }
-
         html += '<div class="media-toolbar-primary search-form">' +
           '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
           '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
           '</div>' +
           '</div>' +
           '\t\t<div class="breadcrumbs"></div>\n' +
-          '\n' +
-          '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__s3-view"></ul>\n' +
+          '\n';
+
+        if (ret.err) {
+          html += '<div class="errors"><strong>' + ret.err + '</strong></div><hr /><br />';
+        }
+
+        html += '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__s3-view"></ul>\n' +
           '<div class="media-sidebar"></div>' +
           '\t\t<div class="nothingfound">\n' +
           '\t\t\t<div class="nofiles"></div>\n' +
@@ -349,9 +350,6 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
     currentPath = '',
     breadcrumbsUrls = [];
 
-  var folders = [],
-    files = [];
-
   jQuery(window).off('fv-player-browser-open-folder');
   jQuery(window).on('fv-player-browser-open-folder', function(e, path){
     currentPath = data.path;
@@ -380,7 +378,7 @@ fv_flowplayer_s3_browse = function(data, ajax_search_callback) {
   function render(data) {
 
     fv_flowplayer_scannedFolders = [];
-    fv_flowplayer_fv_flowplayer_scannedFiles = [];
+    fv_flowplayer_scannedFiles = [];
 
     if(Array.isArray(data)) {
 
