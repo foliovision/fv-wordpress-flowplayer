@@ -2017,10 +2017,11 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	box-shadow: 		0 0 3px #000;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info h4 {
-	background-color: rgba(0,0,0,0.75);
 	text-align: left;
 	font-size: 0.8em;
-	padding: 10px 15px;
+  padding: 0;
+  color: black;
+  font-weight: bold;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p {
 	color: black;
@@ -2035,7 +2036,11 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .fp-playlist-external.fp-playlist-season a:hover h4 {
- 	color: #ccc !important;
+ 	color: #333 !important;
+}
+.fp-playlist-external.fv-playlist-design-2017 a.is-active h4 {
+  display: block;
+  text-decoration: underline;
 }
 .fp-playlist-external.fp-playlist-season a:hover h4, 
 .fp-playlist-external.fp-playlist-season a.fvp-video-thumb-no-splash h4,
