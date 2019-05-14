@@ -1343,7 +1343,7 @@
 
 .fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px;-webkit-overflow-scrolling: touch;display:block}
 .fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px;text-align:left }
-.fv-playlist-slider-wrapper .fp-playlist-horizontal a { width: 200px }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal a { min-width: 200px }
 
 .fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
 .fp-playlist-vertical-player {float:left!important;max-width:calc( 100% - 156px)!important}
