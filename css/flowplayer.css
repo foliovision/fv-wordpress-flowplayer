@@ -1961,6 +1961,20 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   display: block;
 }
 
+/* Subtitles */
+.flowplayer.is-small,
+.flowplayer.is-tiny {
+  line-height: 1;
+}
+.flowplayer.is-small .fp-player .fp-shown p {
+  font-size: 14px;
+  line-height: 20px;
+}
+.flowplayer.is-tiny .fp-player .fp-shown p {
+  font-size: 11px;
+  line-height: 18px;
+}
+
 /* Editing Movies and Shows */
 
 .fp-playlist-external.fp-playlist-season .fp-playlist-external a {
