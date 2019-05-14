@@ -357,6 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.14.727 - 2019/05/14 =
+
+* Security - fix for XSS vulnerability in email subscription
+* Audio player - loading indiciator fix
+* CSS - removing old unused web fonts and graphics
+
 = 7.3.13.727 - 2019/04/30 =
 
 * Ad codes - sensing size of the Google AdSense ad unit, allowing the ad to expand from the player container for maximum ad revenue
