@@ -362,7 +362,20 @@ fv_flowplayer_s3_browse = function(data, options) {
   // We are using the "input" event which detects cut and paste
   // in addition to keyboard input.
 
-  //filemanager.find('input').on('input', function(e){
+  if (options && options.ajaxSearchCallback) {
+    var timedSearchTask = -1;
+    jQuery('#media-search-input').on('input', function (e) {
+      // if we have old search timed task, cancel it and create a new one
+      if (timedSearchTask > -1) {
+        clearTimeout(timedSearchTask);
+      }
+
+      timedSearchTask = setTimeout(function() {
+        options.ajaxSearchCallback();
+        timedSearchTask = -1;
+      }, 1000);
+    });
+  }
 
 
   // Splits a file path and turns it into clickable breadcrumbs
