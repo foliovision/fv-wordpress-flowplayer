@@ -2056,5 +2056,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	color: #000;
 }
 
+.flowplayer.is-small .fv-fp-list {display: none}
+.flowplayer.is-tiny .fv-fp-list {display: none}
 .flowplayer .fv-fp-list-menu {width: auto;}
 .flowplayer .fv-fp-list-menu a {text-align:left}
