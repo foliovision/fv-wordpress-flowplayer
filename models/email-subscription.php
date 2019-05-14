@@ -625,7 +625,7 @@ class FV_Player_Email_Subscription {
             $item = $tmp['title'];
           }
         }
-        echo '<td>' . $item . '</td>';
+        echo '<td>' . strip_tags($item) . '</td>';
       }
       echo '</tr>';
     }
