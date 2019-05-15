@@ -284,3 +284,7 @@
 .attachment-preview.vimeo img {
     padding-top: 20%;
 }
+
+#overlay-loader-li {
+    height: 100%;
+}

@@ -350,19 +350,25 @@ fv_flowplayer_s3_browse = function(data, options) {
     currentPath = '',
     breadcrumbsUrls = [];
 
-  jQuery(window).off('fv-player-browser-open-folder');
-  jQuery(window).on('fv-player-browser-open-folder', function(e, path){
-    currentPath = data.path;
-    breadcrumbsUrls.push(data.path);
+  // if we're appending data, don't do all this
+  if (!options || !options.append) {
+    jQuery(window).off('fv-player-browser-open-folder');
+    jQuery(window).on('fv-player-browser-open-folder', function (e, path) {
+      currentPath = data.path;
+      breadcrumbsUrls.push(data.path);
+      render(data.items, options);
+    }).trigger('fv-player-browser-open-folder', ['']);
+  } else if (options.append) {
+    // we're appending, just render new items
     render(data.items, options);
-  }).trigger('fv-player-browser-open-folder', [ '' ] );
+  }
 
 
   // Listening for keyboard input on the search field.
   // We are using the "input" event which detects cut and paste
   // in addition to keyboard input.
 
-  if (options && options.ajaxSearchCallback) {
+  if (options && options.ajaxSearchCallback && !options.append) {
     var timedSearchTask = -1;
     jQuery('#media-search-input').on('input', function (e) {
       // if we have old search timed task, cancel it and create a new one
@@ -413,7 +419,10 @@ fv_flowplayer_s3_browse = function(data, options) {
     }
 
     // Empty the old result and make the new one
-    fileList.empty().hide();
+    // ... don't do this if we're appending data
+    if (!options || !options.append) {
+      fileList.empty().hide();
+    }
     
     if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
       filemanager.find('.nothingfound').show();
@@ -450,7 +459,7 @@ fv_flowplayer_s3_browse = function(data, options) {
         var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
           name = escapeHTML(f.name),          
           link = f.link ? 'href="'+ f.link+'"' : '',          
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" data-id="-1" class="folders attachment save-ready"></li>'),
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/);
 
         if( f.splash ) {
