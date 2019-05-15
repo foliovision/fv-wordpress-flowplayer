@@ -67,7 +67,7 @@ jQuery( function($) {
           html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">',
           last_selected_bucket = null;
 
-        if (ret.buckets){
+        if (ret.buckets) {
           html += '<div class="media-toolbar-secondary">';
 
           // prepare dropdown HTML
