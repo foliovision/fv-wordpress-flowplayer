@@ -240,26 +240,42 @@ jQuery( function($) {
           var
             $filenameDiv = $e.find('.filename div'),
             fSize = parseInt($filenameDiv.data('size')),
+            fDuration = parseInt($filenameDiv.data('duration')),
             sizeSuffix = 'bytes';
 
           // if filesize is too small, show it in KBytes
-          if (fSize > 10000) {
-            if (fSize <= 999999) {
-              fSize /= 100000;
-              sizeSuffix = 'KB';
-            } else if (fSize <= 999999999) {
-              fSize /= 1000000;
-              sizeSuffix = 'MB';
-            } else {
-              fSize /= 1000000000;
-              sizeSuffix = 'GB';
+          if (fSize > -1) {
+            if (fSize > 10000) {
+              if (fSize <= 999999) {
+                fSize /= 100000;
+                sizeSuffix = 'KB';
+              } else if (fSize <= 999999999) {
+                fSize /= 1000000;
+                sizeSuffix = 'MB';
+              } else {
+                fSize /= 1000000000;
+                sizeSuffix = 'GB';
+              }
+            }
+
+            // "round" to 2 decimals
+            if (parseFloat(fSize) != parseInt(fSize)) {
+              fSize += '';
+              fSize = fSize.substring(0, fSize.indexOf('.') + 3);
             }
           }
 
-          // "round" to 2 decimals
-          if (parseFloat(fSize) != parseInt(fSize)) {
-            fSize += '';
-            fSize = fSize.substring(0, fSize.indexOf('.') + 3);
+          if (fDuration) {
+            var sec_num = parseInt(fDuration, 10); // don't forget the second param
+            var hours   = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num % 3600) / 60);
+            var seconds = Math.floor(sec_num % 60);
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+
+            fDuration = hours + ':' + minutes + ':' + seconds;
           }
 
           // load splash image
@@ -287,7 +303,7 @@ jQuery( function($) {
             '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
             '\t\t\t\t<div class="uploaded">' + $filenameDiv.data('modified') + '</div>\n' +
             '\n' +
-            '\t\t\t\t<div class="file-size">' + fSize + ' ' + sizeSuffix +'</div>\n' +
+            '\t\t\t\t<div class="file-size">' + (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) +'</div>\n' +
             '\t\t\t</div>\n' +
             (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
@@ -456,7 +472,8 @@ fv_flowplayer_s3_browse = function(data, options) {
 
       fv_flowplayer_scannedFiles.forEach(function(f) {
 
-        var fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
+        var
+          fileSize = typeof(f.size) == "number" ? bytesToSize(f.size) : f.size, // just show the size for placeholders
           name = escapeHTML(f.name),          
           link = f.link ? 'href="'+ f.link+'"' : '',          
           file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
@@ -478,7 +495,7 @@ fv_flowplayer_s3_browse = function(data, options) {
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
-          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '">' + name + '</div>'
+          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + '>' + name + '</div>'
           + '</div>'
           + '</div>'
           + '</div>' +
