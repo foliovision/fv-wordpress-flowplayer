@@ -1536,7 +1536,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 /*  Duration */
 .fvfp_duration { position: absolute; bottom: 0; right: 1%; z-index: 2; text-align: center; color: #fff; display:none }
 .is-ready .fvfp_duration, .is-loading .fvfp_duration  { display: none }
-.fp-playlist-external .dur { font-style:normal;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
+.fp-playlist-external .dur { font-style:normal;font-size:13px;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
 
 
 /*  No animation, todo: check!  */
@@ -1952,20 +1952,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .flowplayer.has-playlist-season.is-fullscreen {
   display: block;
-}
-
-/* Subtitles */
-.flowplayer.is-small,
-.flowplayer.is-tiny {
-  line-height: 1;
-}
-.flowplayer.is-small .fp-player .fp-shown p {
-  font-size: 14px;
-  line-height: 20px;
-}
-.flowplayer.is-tiny .fp-player .fp-shown p {
-  font-size: 11px;
-  line-height: 18px;
 }
 
 /* Editing Movies and Shows */
