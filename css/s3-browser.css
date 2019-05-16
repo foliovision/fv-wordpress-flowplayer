@@ -286,10 +286,10 @@
     padding-top: 12%;
 }
 
-#overlay-loader-li {
-    height: 100%;
-}
-
 .attachments-browser .errors {
     padding: 16px;
+}
+
+#overlay-loader-li #fv-player-shortcode-editor-preview-spinner {
+    top: 0;
 }
