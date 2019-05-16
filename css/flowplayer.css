@@ -2029,7 +2029,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .fp-playlist-external.fp-playlist-season a:hover h4 {
- 	color: #333 !important;
+ 	color: #333;
 }
 .fp-playlist-external.fv-playlist-design-2017 a.is-active h4 {
   display: block;
