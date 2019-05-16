@@ -68,13 +68,12 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
-  <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
+  <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-google\" href=\"https://plus.google.com/share?url=\" target=\"_blank\"></a></li>
+    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>    
     <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
 	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal\" rel=\"some-test-hash\">
@@ -126,13 +125,12 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
-  <div class=\"fp-ui\"><div class=\"fp-play fp-visible\"><a class=\"fp-icon fp-playbtn\"></a></div></div>
+  <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
     <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-google\" href=\"https://plus.google.com/share?url=\" target=\"_blank\"></a></li>
+    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/home?status=Test+Blog+\" target=\"_blank\"></a></li>    
     <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
 	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal\" rel=\"some-test-hash\">

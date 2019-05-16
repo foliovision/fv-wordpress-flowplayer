@@ -193,7 +193,7 @@ function fv_player_lightbox_bind(){
       , PLAY_SHARP_OUTLINE = "PHN2ZyBjbGFzcz0iZnAtcGxheS1zaGFycC1vdXRsaW5lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5OS44NDQgOTkuODQzNCI+PGRlZnM+PHN0eWxlPi5jb250cm9sYnV0dG9uYmd7b3BhY2l0eTowLjY1O30uY29udHJvbGJ1dHRvbntmaWxsOiNmZmY7fTwvc3R5bGU+CjwvZGVmcz48dGl0bGU+cGxheS1zaGFycC1vdXRsaW5lPC90aXRsZT48cGF0aCBjbGFzcz0iZnAtY29sb3ItcGxheSIgZD0iTTQ5LjkyMTctLjA3OGE1MCw1MCwwLDEsMCw1MCw1MEE1MC4wNTY0LDUwLjA1NjQsMCwwLDAsNDkuOTIxNy0uMDc4WiIvPjxwYXRoIGNsYXNzPSJjb250cm9sYnV0dG9uIiBkPSJNMzYuOTQ0Myw3Mi4yNDczVjI3LjI5MTZMNzUuODc3Niw0OS43N1ptMi4yLTQxLjE0NTVWNjguNDM3MUw3MS40Nzc2LDQ5Ljc3WiIgZmlsdGVyPSJ1cmwoI2YxKSIvPjwvc3ZnPgo=";
       
     if( flowplayer.version.match(/^7/) && flowplayer.support.svg ) {
-      jQuery(this).find('.fp-play').append( atob(PLAY_ROUNDED_OUTLINE) + atob(PLAY_ROUNDED_FILL) + atob(PLAY_SHARP_FILL) + atob(PLAY_SHARP_OUTLINE) )
+      jQuery(this).find('.fp-preload').replaceWith( '<div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a>' + atob(PLAY_ROUNDED_OUTLINE) + atob(PLAY_ROUNDED_FILL) + atob(PLAY_SHARP_FILL) + atob(PLAY_SHARP_OUTLINE) + '</div>' )
       jQuery(this).removeClass('no-svg');
     }
   } );

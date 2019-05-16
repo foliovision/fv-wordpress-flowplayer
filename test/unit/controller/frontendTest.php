@@ -109,15 +109,6 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [fullscreen] => 1
     [swf] => fv-wordpress-flowplayer/flowplayer/flowplayer.swf?ver=1.2.3.4
     [swfHls] => fv-wordpress-flowplayer/flowplayer/flowplayerhls.swf?ver=1.2.3.4
-    [embed] => Array
-        (
-            [library] => fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js
-            [script] => fv-wordpress-flowplayer/flowplayer/embed.min.js
-            [skin] => fv-wordpress-flowplayer/css/flowplayer.css
-            [swf] => fv-wordpress-flowplayer/flowplayer/flowplayer.swf?ver=1.2.3.4
-            [swfHls] => fv-wordpress-flowplayer/flowplayer/flowplayerhls.swf?ver=1.2.3.4
-        )
-
     [speeds] => Array
         (
             [0] => 0.25

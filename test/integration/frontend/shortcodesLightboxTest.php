@@ -15,11 +15,11 @@ final class FV_Player_ShortcodeLightboxTestCase extends FV_Player_UnitTestCase {
     $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true" share="no" embed="false"]' );
     
     $sample = <<< HTML
-<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter'  href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
+<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter'  href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
 <div class='fv_player_lightbox_hidden' style='display: none'>
-  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
    <div class="fp-ratio" style="padding-top: 56.25%"></div>
-   <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
    </div>
 </div>
 HTML;
@@ -31,11 +31,11 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true;Video 1" share="no" embed="false"]' );
     
     $sample = <<< HTML
-<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter' title='Video 1' href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
+<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter' title='Video 1' href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
 <div class='fv_player_lightbox_hidden' style='display: none'>
-  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
    <div class="fp-ratio" style="padding-top: 56.25%"></div>
-   <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
    </div>
 </div>
 HTML;
@@ -46,11 +46,11 @@ HTML;
   public function testCaptionAndDimensions() {    
     $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true;320;240;Video 1" share="no" embed="false"]' );
     $sample = <<< HTML
-<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_f1f51bb87ed9702bd91ac63990cee57b_lightbox_starter' title='Video 1' href='#wpfp_f1f51bb87ed9702bd91ac63990cee57b' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 320px; max-height: 240px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.75"><div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div><div class="fp-ratio" style="padding-top: 75%"></div></div>
+<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_f1f51bb87ed9702bd91ac63990cee57b_lightbox_starter' title='Video 1' href='#wpfp_f1f51bb87ed9702bd91ac63990cee57b' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 320px; max-height: 240px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.75"><div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div><div class="fp-ratio" style="padding-top: 75%"></div></div>
 <div class='fv_player_lightbox_hidden' style='display: none'>
-  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+  <div id="some-test-hash" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
    <div class="fp-ratio" style="padding-top: 56.25%"></div>
-   <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
    </div>
 </div>
 HTML;
@@ -72,9 +72,9 @@ HTML;
     
     $sample = <<< HTML
 <div style='display: none'>
-<div id="wpfp_11361d379334c11f2eaa75f6aacd8386" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+<div id="wpfp_11361d379334c11f2eaa75f6aacd8386" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 1</p></div>
@@ -92,23 +92,23 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true"]' );
     
     $sample = <<< HTML
-<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter'  href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
+<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id='fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter'  href='#wpfp_5d2ac904592b20b5bf87a2a85df7ace7' class='flowplayer lightbox-starter is-splash no-svg is-paused skin-slim fp-slim fp-edgy' style="max-width: 640px; max-height: 360px; background-image: url('https://cdn.site.com/video1.jpg')" data-ratio="0.5625"><div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div><div class="fp-ratio" style="padding-top: 56.25%"></div></div>
 <div class='fv_player_lightbox_hidden' style='display: none'>
-<div id="wpfp_5d2ac904592b20b5bf87a2a85df7ace7" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+<div id="wpfp_5d2ac904592b20b5bf87a2a85df7ace7" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 1</p></div><div class='fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions'><a id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById("fv_flowplayer_5d2ac904592b20b5bf87a2a85df7ace7_lightbox_starter").click(); return false'><div style="background-image: url('https://cdn.site.com/video1.jpg')"></div><h4><span>Video 1</span></h4></a><a data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video2.jpg"}'  id='fv_flowplayer_lightbox_starter' class='fv-player-lightbox-link' href='#' data-src='#wpfp_e802b17ebbace952275cd50709bf549b'><div style="background-image: url('https://cdn.site.com/video2.jpg')"></div><h4><span>Video 2</span></h4></a><a data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video3.jpg"}'  id='fv_flowplayer_lightbox_starter' class='fv-player-lightbox-link' href='#' data-src='#wpfp_2ffbd4e84c1ecf2e00db5edf98996de3'><div style="background-image: url('https://cdn.site.com/video3.jpg')"></div><h4><span>Video 3</span></h4></a></div><div class='fv_player_lightbox_hidden' style='display: none'>
-<div id="wpfp_e802b17ebbace952275cd50709bf549b" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video2.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video2.jpg);" data-ratio="0.5625">
+<div id="wpfp_e802b17ebbace952275cd50709bf549b" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video2.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video2.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 2</p></div><div class='fv_player_lightbox_hidden' style='display: none'>
-<div id="wpfp_2ffbd4e84c1ecf2e00db5edf98996de3" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video3.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video3.jpg);" data-ratio="0.5625">
+<div id="wpfp_2ffbd4e84c1ecf2e00db5edf98996de3" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video3.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video3.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 3</p></div>
@@ -136,23 +136,23 @@ HTML;
 
     $sample = <<< HTML
 <div style='display: none'>
-<div id="wpfp_41dd59eae18defa2521bb63946885f69" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+<div id="wpfp_41dd59eae18defa2521bb63946885f69" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 1</p></div>
 <div style='display: none'>
-<div id="wpfp_c189727d02321b2388ebc844c1fdc0c7" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video2.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video2.jpg);" data-ratio="0.5625">
+<div id="wpfp_c189727d02321b2388ebc844c1fdc0c7" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video2.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video2.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 2</p></div>
 <div style='display: none'>
-<div id="wpfp_51771d567d4dd88882f65b4b89fc81d6" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video3.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" data-embed="false" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video3.jpg);" data-ratio="0.5625">
+<div id="wpfp_51771d567d4dd88882f65b4b89fc81d6" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video3.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video3.jpg);" data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>
+  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
 <p class='fp-caption'>Video 3</p></div>

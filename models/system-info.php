@@ -87,7 +87,7 @@ Host:                     <?php echo $host . "\n"; ?>
 Browser:                  <?php echo isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none'; ?>
 
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-MySQL Version:            <?php $connection = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME); echo mysqli_get_server_info($connection) . "\n"; ?>
+MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 
 WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT."\n"; ?>
@@ -190,11 +190,17 @@ print_r( $conf );
 DATABASE
 
 <?php
-global $wpdb;
 foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos', 'fv_player_videometa' ) AS $table) {
-  $res = $wpdb->get_row( "SHOW CREATE TABLE {$wpdb->prefix}{$table}", ARRAY_A );
-  if( isset($res['Create Table']) ) {
-    echo $res['Create Table']."\n\n";
+  $found = false;
+  $table_name = $wpdb->prefix.$table;
+  if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) == $table_name ) {
+    $res = $wpdb->get_row( "SHOW CREATE TABLE {$table_name}", ARRAY_A );
+    if( $res && $res['Create Table'] ) {
+      $found = $res['Create Table'];
+    }
+  }
+  if( $found ) {
+    echo $found."\n\n";
   } else {
     echo $table." not found!\n";
   }
