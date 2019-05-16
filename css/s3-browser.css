@@ -282,9 +282,14 @@
 }
 
 .attachment-preview.vimeo img {
-    padding-top: 20%;
+    width: 100% !important;
+    padding-top: 12%;
 }
 
 #overlay-loader-li {
     height: 100%;
+}
+
+.attachments-browser .errors {
+    padding: 16px;
 }
