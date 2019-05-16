@@ -357,6 +357,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.15.727 - 2019/05/16 =
+
+* Security - fix for SQL injection vulnerability in email subscription
+* Security - fix for email subscription CSV export capability available to guest users 
+
 = 7.3.14.727 - 2019/05/14 =
 
 * Security - fix for XSS vulnerability in email subscription
