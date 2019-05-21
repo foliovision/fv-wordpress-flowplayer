@@ -29,11 +29,31 @@ jQuery( function($) {
         // add Vimeo browser tab
         var
           $router = jQuery('.media-router:visible'),
-          $item = $router.find('.media-menu-item:last').clone();
+          $lastItem = $router.find('.media-menu-item:not(.artificial):last'),
+          $firstItem = $router.find('.media-menu-item:first'),
+          $item = $lastItem.clone(),
+          switchClicking = false;
+
+        // this is a super-ugly hack to circumvent heavily complicated Backbone WP hackery,
+        // since on our browser tab click, WP still thinks Media Library is actually the active tab
+        // and won't allow us to click on that tab to actually show Media Library
+        // TODO: study up on Backbone WP functionality and fix this hack by at least showing the correct Backbonw view!
+        if (!$lastItem.hasClass('clickbaited')) {
+          $lastItem.addClass('clickbaited');
+          $lastItem.on('click', function() {
+            if (!switchClicking) {
+              switchClicking = true;
+              $firstItem.click();
+              $lastItem.click();
+              switchClicking = false;
+            }
+          });
+        }
 
         $item
           .attr('id', tabId)
           .text(tabText)
+          .addClass('artificial')
           .on('click', tabOnClickCallback);
 
         $router.append($item);
