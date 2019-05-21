@@ -165,7 +165,8 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         $paged = $s3Client->getPaginator('ListObjects',$args);
 
         $sum_up = array();
-        
+
+        $date_format = get_option( 'date_format' );
         foreach( $paged AS $res ) {
           
           $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
@@ -202,7 +203,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
             if( !empty($object['Size']) ) {
               $item['type'] = 'file';
               $item['size'] = $object['Size'];
-              $item['modified'] = date('m-d-Y H:i:s', strtotime($object['LastModified']));
+              $item['modified'] = date($date_format, strtotime($object['LastModified']));
 
               $link = (string) $s3Client->getObjectUrl( $bucket, $path );
               $link = str_replace( '%20', '+', $link );
