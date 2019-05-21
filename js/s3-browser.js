@@ -73,6 +73,8 @@ jQuery( function($) {
 
       $this.addClass('active').siblings().removeClass('active');
       $media_frame_content.attr('data-columns', 7);
+      // remove infinite scroll checks from other tabs
+      $media_frame_content.off('mousewheel');
       $media_frame_content.html($overlay_div);
 
       if (typeof bucket === 'string' && bucket) {
