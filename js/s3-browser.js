@@ -411,9 +411,11 @@ fv_flowplayer_s3_browse = function(data, options) {
   // Listening for keyboard input on the search field.
   // We are using the "input" event which detects cut and paste
   // in addition to keyboard input.
-
   if (options && options.ajaxSearchCallback && !options.append) {
     var timedSearchTask = -1;
+    // remove any previous binds to the same input element
+    // which could originate from other browsers (and would generate duplicate AJAX calls)
+    jQuery('#media-search-input').off('input');
     jQuery('#media-search-input').on('input', function (e) {
       // if we have old search timed task, cancel it and create a new one
       if (timedSearchTask > -1) {
