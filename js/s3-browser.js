@@ -567,11 +567,9 @@ fv_flowplayer_s3_browse = function(data, options) {
 
     breadcrumbs.text('').append(url);
 
-    fileList.fadeIn({
-      complete: function() {
-        setTimeout(fv_flowplayer_media_browser_setColumns, 500);
-      }
-    });
+    fileList.show();
+    fv_flowplayer_media_browser_setColumns();
+    fileList.hide().fadeIn();
   }
 
 
