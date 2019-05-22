@@ -54,7 +54,13 @@ jQuery( function($) {
           .attr('id', tabId)
           .text(tabText)
           .addClass('artificial')
-          .on('click', tabOnClickCallback);
+          .on('click', function() {
+            // disable Choose button
+            jQuery('.media-button-select').prop('disabled', 'disabled');
+            $router.find('.media-menu-item.active').removeClass('active');
+            jQuery(this).addClass('active');
+            return tabOnClickCallback();
+          });
 
         $router.append($item);
       }
