@@ -282,8 +282,9 @@
 }
 
 .attachment-preview.vimeo img {
-    width: 100% !important;
-    padding-top: 12%;
+    width: auto !important;
+    height: 100% !important;
+    padding: 0;
 }
 
 .attachments-browser .errors {
