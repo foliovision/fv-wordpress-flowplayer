@@ -930,7 +930,7 @@
   display: block;
 	height: 0
 }
-.flowplayer.is-splash .fp-preload, .fp-waiting .fp-preload {
+.flowplayer.is-splash .fp-preload, .flowplayer.is-poster .fp-preload, .fp-waiting .fp-preload {
 	position: absolute;
   display: block;
 	height: 2em;
