@@ -29,26 +29,39 @@ jQuery( function($) {
         // add Vimeo browser tab
         var
           $router = jQuery('.media-router:visible'),
-          $lastItem = $router.find('.media-menu-item:not(.artificial):last'),
-          $firstItem = $router.find('.media-menu-item:first'),
-          $item = $lastItem.clone(),
+          $nativeTabs = $router.find('.media-menu-item:not(.artificial)'),
+          $item = jQuery($nativeTabs[$nativeTabs.length - 1]).clone(),
           switchClicking = false;
 
         // this is a super-ugly hack to circumvent heavily complicated Backbone WP hackery,
         // since on our browser tab click, WP still thinks Media Library is actually the active tab
         // and won't allow us to click on that tab to actually show Media Library
         // TODO: study up on Backbone WP functionality and fix this hack by at least showing the correct Backbonw view!
-        if (!$lastItem.hasClass('clickbaited')) {
-          $lastItem.addClass('clickbaited');
-          $lastItem.on('click', function() {
-            if (!switchClicking) {
-              switchClicking = true;
-              $firstItem.click();
-              $lastItem.click();
-              switchClicking = false;
-            }
-          });
-        }
+        $nativeTabs.each(function() {
+          var
+            $e = jQuery(this),
+            $prev = $e.prev(),
+            $next = $e.next();
+
+          if (!$e.hasClass('clickbaited')) {
+            $e.addClass('clickbaited');
+            $e.on('click', function() {
+              if (!switchClicking) {
+                switchClicking = true;
+                // find a tab that is native and is not our clicked tab and click on it
+                if ($prev.length && !$prev.hasClass('artificial')) {
+                  $prev.click();
+                } else {
+                  $next.click();
+                }
+
+                // then click back on our tab to activate it
+                $e.click();
+                switchClicking = false;
+              }
+            });
+          }
+        });
 
         $item
           .attr('id', tabId)
