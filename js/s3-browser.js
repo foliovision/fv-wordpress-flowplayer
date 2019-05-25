@@ -306,7 +306,7 @@ jQuery( function($) {
             }
           }
 
-          if (fDuration) {
+          if (fDuration && fDuration > 0) {
             var sec_num = parseInt(fDuration, 10); // don't forget the second param
             var hours   = Math.floor(sec_num / 3600);
             var minutes = Math.floor((sec_num % 3600) / 60);
@@ -317,6 +317,8 @@ jQuery( function($) {
             if (seconds < 10) {seconds = "0"+seconds;}
 
             fDuration = hours + ':' + minutes + ':' + seconds;
+          } else {
+            fDuration = 'Processing Video...';
           }
 
           // load splash image
