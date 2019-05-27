@@ -930,7 +930,7 @@
   display: block;
 	height: 0
 }
-.flowplayer.is-splash .fp-preload, .fp-waiting .fp-preload {
+.flowplayer.is-splash .fp-preload, .flowplayer.is-poster .fp-preload, .fp-waiting .fp-preload {
 	position: absolute;
   display: block;
 	height: 2em;
@@ -1793,8 +1793,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fp-menu.fv-fp-playlist-menu { width: 4em; }
 .flowplayer .fp-menu.fv-fp-playlist-menu .fp-selected::before { content: '' }
 
-.flowplayer.is-ready.is-paused {
-    background-image: none !important;    
+.flowplayer.is-ready.is-paused:not(.is-poster) {
+  background-image: none !important;
 }
 .flowplayer .fv-fp-track-repeat svg,
 .flowplayer .fv-fp-no-picture svg {
