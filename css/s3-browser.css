@@ -272,16 +272,16 @@
     }
 }
 
-#__s3-view {
+#__assets_browser {
     top: 55px;
-    z-index: 1; /* or a file uploader link will be invisibly over the UL with thumbs */
+    z-index: 2; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
 .attachments-browser .s3-media-toolbar {
     height: 40px !important;
 }
 
-.attachment-preview.vimeo img {
+.attachment-preview.fullsize img {
     width: auto !important;
     height: 100% !important;
     padding: 0;
