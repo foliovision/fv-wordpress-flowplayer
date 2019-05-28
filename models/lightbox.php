@@ -36,20 +36,15 @@ class FV_Player_lightbox {
     
     add_action('wp_head', array( $this, 'remove_other_fancybox' ), 8 );
     add_action('wp_footer', array( $this, 'remove_other_fancybox' ), 19 );
-
-    //TODO is this hack needed?
-    $conf = get_option('fvwpflowplayer');
-    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
-      (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
-      add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
-    }
+    
+    add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
   }
   
   function css_enqueue( $force ) {
     global $fv_fp;
-    if( !$force && !$fv_fp->_get_option('lightbox_images') ) return;
+    if( !$force && !$fv_fp->_get_option('lightbox_images') && !$fv_fp->_get_option('lightbox_force') ) return;
     
     $bCSSLoaded = true;
     
@@ -84,7 +79,8 @@ class FV_Player_lightbox {
   }
 
   function improve_galleries( $args ) {
-    if( !$args['link'] ) {
+    global $fv_fp;
+    if( !$args['link'] && $fv_fp->_get_option('lightbox_images') && $fv_fp->_get_option('lightbox_improve_galleries') ) {
       $args['link'] = 'file';
     }
     return $args;
