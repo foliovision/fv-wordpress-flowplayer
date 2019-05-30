@@ -2,20 +2,13 @@
 
 class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
-  function __construct( $ajax_action_name ) {
-    add_action( 'edit_form_after_editor', array($this, 'init'), 1 );
-    add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg') );
-    add_action( 'admin_print_footer_scripts', array($this, 'init'), 1 );
-    parent::__construct( $ajax_action_name );
-  }
-
   function init() {
     global $fv_fp, $fv_wp_flowplayer_ver;
     if ($fv_fp->_get_option('s3_browser')) {
-      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array(), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array('flowplayer-browser-base'), $fv_wp_flowplayer_ver, true );
     }
   }
-  
+
   function init_for_gutenberg() {
     add_action( 'admin_footer', array($this, 'init'), 1 );
   }  
