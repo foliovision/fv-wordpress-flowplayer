@@ -360,6 +360,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 7.3.16.727 - 2019/05/31 =
 
 * Subtitles - avoiding video playback failure when just the subtitles are missing
+* MPEG-DASH - fixing video muting/unmuting
 * Quality Switching - changing the "M" label for mobile qualities to "SD" as it's more recognizable
 
 = 7.3.15.727 - 2019/05/16 =
