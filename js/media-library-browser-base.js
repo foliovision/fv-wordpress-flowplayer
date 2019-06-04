@@ -210,7 +210,7 @@ function fv_flowplayer_browser_browse(data, options) {
 };
 
 // adds new tab on top of the Media Library popup
-function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback) {
+function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
   if (!jQuery('#' + tabId).length) {
     var
       $router = jQuery('.media-router:visible'),
@@ -263,6 +263,12 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
         jQuery('.media-button-select').prop('disabled', 'disabled');
         $router.find('.media-menu-item.active').removeClass('active');
         jQuery(this).addClass('active');
+
+        // execute tab click function
+        if (typeof(tabClickEventCallback) == 'function' && !switchClicking) {
+          tabClickEventCallback();
+        }
+
         return tabOnClickCallback();
       });
 
@@ -271,7 +277,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
     // if we have a callback function to call once the tab has been added,
     // do it here
     if (typeof(tabAddedCallback) == 'function') {
-      tabAddedCallback();
+      tabAddedCallback($item);
     }
   }
 };
