@@ -282,6 +282,66 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
   }
 };
 
+function renderBrowserPlaceholderHTML(options) {
+  var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
+
+  if (options && options.dropdownItems) {
+    html += '<div class="media-toolbar-secondary">';
+
+    // prepare dropdown HTML
+    var
+      select_html = '<label for="browser-dropdown" class="screen-reader-text">S3 Bucket</label>'
+        + '<select name="browser-dropdown" id="browser-dropdown" class="attachment-filters">',
+      one_option_enabled = (options.dropdownTopDefault ? true : false);
+
+    // if we have a default option, add it here
+    if (options.dropdownDefaultOption) {
+      select_html += '<option value="' + options.dropdownDefaultOption.value + '"' + (!options.dropdownItemSelected || (options.dropdownItemSelected && options.dropdownItemSelected == options.dropdownDefaultOption.value) ? ' selected="selected"' : '') + '>' + options.dropdownDefaultOption.text + '</option>'
+    }
+
+    for (var i in options.dropdownItems) {
+      select_html += '<option value="' + options.dropdownItems[i].value + '"' + (options.dropdownItemSelected && options.dropdownItemSelected == options.dropdownItems[i].value ? ' selected="selected"' : '') + '>' + options.dropdownItems[i].text + '</option>'
+
+      if (options.dropdownItems[i].value > -1) {
+        one_option_enabled = true;
+      }
+    }
+
+    select_html += '</select><span class="spinner"></span>';
+
+    // check if we have at least a single option enabled
+    // and if not and we need one, replace the whole select HTML with a warning message
+    if (!one_option_enabled && options.dropDownNoOptionEnabledWarningMsg) {
+      select_html = options.dropDownNoOptionEnabledWarningMsg;
+    }
+
+    html += select_html + '</div>';
+  }
+
+  html += '<div class="media-toolbar-primary search-form">' +
+    '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
+    '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
+    '</div>' +
+    '</div>' +
+    '\t\t<div class="breadcrumbs"></div>\n' +
+    '\n';
+
+  if (options.errorMsg) {
+    html += '<div class="errors"><strong>' + options.errorMsg + '</strong></div><hr /><br />';
+  }
+
+  html += '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__assets_browser"></ul>\n' +
+    '<div class="media-sidebar"></div>' +
+    '\t\t<div class="nothingfound">\n' +
+    '\t\t\t<div class="nofiles"></div>\n' +
+    '\t\t\t<span>No files here.</span>\n' +
+    '\t\t</div>\n' +
+    '\n' +
+    '\t</div>';
+
+  return html;
+}
+
 jQuery( function($) {
   var $lastElementSelected = null;
 

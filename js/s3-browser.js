@@ -27,58 +27,27 @@ jQuery( function($) {
     }
 
     jQuery.post(ajaxurl, ajax_data, function(ret) {
-      var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
+      var
+        renderOptions = {
+          'dropdownItems' : [],
+          'dropDownNoOptionEnabledWarningMsg' : '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has complete settings (region, key ID and secret key).</strong>',
+          'dropdownItemSelected' : ret.active_bucket_id
+        };
 
-      if (ret.buckets) {
-        html += '<div class="media-toolbar-secondary">';
-
-        // prepare dropdown HTML
-        var
-          select_html = '<label for="browser-dropdown" class="screen-reader-text">S3 Bucket</label>'
-            + '<select name="browser-dropdown" id="browser-dropdown" class="attachment-filters">',
-          one_bucket_enabled = false;
-
-        for (var i in ret.buckets) {
-          select_html += '<option value="' + ret.buckets[i].id + '"' + (ret.active_bucket_id == ret.buckets[i].id ? ' selected="selected"' : '') + '>' + ret.buckets[i].name + '</option>'
-
-          if (ret.buckets[i].id > -1) {
-            one_bucket_enabled = true;
-          }
-        }
-
-        select_html += '</select><span class="spinner"></span>';
-
-        // check if we have at least a single enabled bucket
-        // and if not, replace the whole select HTML with a warning message
-        if (!one_bucket_enabled) {
-          select_html = '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has complete settings (region, key ID and secret key).</strong>';
-        }
-
-        html += select_html + '</div>';
+      // fill dropdown options
+      for (var i in ret.buckets) {
+        renderOptions.dropdownItems.push({
+          'value' : ret.buckets[i].id,
+          'text' : ret.buckets[i].name
+        });
       }
 
-      html += '<div class="media-toolbar-primary search-form">' +
-        '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
-        '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
-        '</div>' +
-        '</div>' +
-        '\t\t<div class="breadcrumbs"></div>\n' +
-        '\n';
-
+      // add errors, if any
       if (ret.err) {
-        html += '<div class="errors"><strong>' + ret.err + '</strong></div><hr /><br />';
+        renderOptions['errorMsg'] = ret.err;
       }
 
-      html += '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__assets_browser"></ul>\n' +
-        '<div class="media-sidebar"></div>' +
-        '\t\t<div class="nothingfound">\n' +
-        '\t\t\t<div class="nofiles"></div>\n' +
-        '\t\t\t<span>No files here.</span>\n' +
-        '\t\t</div>\n' +
-        '\n' +
-        '\t</div>';
-
-      $media_frame_content.html(html);
+      $media_frame_content.html( renderBrowserPlaceholderHTML(renderOptions) );
 
       // hide search, as it's not supported for AWS
       jQuery('#media-search-input').parent().hide();
