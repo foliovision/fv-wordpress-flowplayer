@@ -1465,6 +1465,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   public static function format_hms( $seconds ) {
+    if( !is_numeric($seconds) ) return $seconds;
+    
     if( $seconds < 3600 ) {
       return gmdate( "i:s", $seconds );
     } else {
