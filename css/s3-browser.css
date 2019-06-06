@@ -281,6 +281,11 @@
     height: 40px !important;
 }
 
+.attachments-browser .attachment .thumbnail img {
+    left: 50% !important;
+    margin-left: -100% !important;
+}
+
 .attachment-preview.fullsize img {
     width: auto !important;
     height: 100% !important;
