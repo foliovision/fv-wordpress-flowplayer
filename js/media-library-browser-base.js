@@ -218,6 +218,9 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       $item = jQuery($nativeTabs[$nativeTabs.length - 1]).clone(),
       switchClicking = false;
 
+    // remove active class
+    $item.removeClass('active');
+
     // save assets loading function
     fv_flowplayer_browser_assets_loaders[tabId] = tabOnClickCallback;
 
