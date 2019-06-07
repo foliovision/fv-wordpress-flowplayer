@@ -429,13 +429,8 @@
       margin: .9em .9em 0 0; }
       .flowplayer .fp-header .fp-icon.fp-active {
         color: #ec6c4c; }
-    .flowplayer .fp-header .fp-fullscreen, .flowplayer .fp-header .fp-unload {
+    .flowplayer .fp-header .fp-fullscreen, .flowplayer .fp-header .fp-unload, .flowplayer .fp-airplay {
       float: right; }
-    .flowplayer .fp-airplay {
-    	position: absolute;
-    	right: 40px;
-    	top: 0;
-    }
     .fp-chromecast {
       float: right;
     }
