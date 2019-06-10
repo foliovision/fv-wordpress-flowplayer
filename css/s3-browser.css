@@ -302,6 +302,7 @@
 
 .browser-progress-bar {
     width: 100%;
+    min-width: 500px;
     height: 30px;
     background: rgba(0, 86, 132, 0.9);
     text-align: center;
