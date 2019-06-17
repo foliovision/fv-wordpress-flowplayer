@@ -1964,6 +1964,7 @@ jQuery(document).ready(function(){
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
+
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   e.preventDefault();
   window.location.hash = e.target.hash;
@@ -1974,6 +1975,28 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('#' + anchor).show();
 });  
 
+jQuery('#normal-sortables .button-primary').on('click',function(e){
+  if ('fv-wp-flowplayer-submit' == this.name) {
+    // store windows scroll position, so we can return to the same spot after reload
+    if (localStorage) {
+      localStorage["fv_posStorage"] = $(window).scrollTop();
+    }
+  }
+
+  return true;
+});
+
+jQuery(window).on('load', function() {
+  setTimeout(function() {
+    if (localStorage) {
+      var posReader = localStorage["fv_posStorage"];
+      if (posReader) {
+        jQuery(window).scrollTop(posReader);
+        localStorage.removeItem("fv_posStorage");
+      }
+    }
+  }, 100);
+});
 
 jQuery('a.fv-settings-anchor').on('click',function(e){
   var id = jQuery(this).attr('href');
