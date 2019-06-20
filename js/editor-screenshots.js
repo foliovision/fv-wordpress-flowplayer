@@ -56,12 +56,16 @@ flowplayer( function(api,root) {
         if(response.src) {
           var splashInput = item.find('#fv_wp_flowplayer_field_splash');
           splashInput.val(response.src);
+          splashInput.css('background-color','#6ef442');
         }
         if(response.error) {
           message.html('<div class="error"><p>'+response.error+'</p></div>');
         }
         spinner.remove();
         button.prop("disabled",false);
+        setTimeout(function(){
+          splashInput.css('background-color','#ffffff');
+        }, 2000);
       });
     }else{
       message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
