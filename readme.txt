@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.0.2
+Tested up to: 5.2.1
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,34 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.3.16.727 - 2019/05/31 =
+
+* Subtitles - avoiding video playback failure when just the subtitles are missing
+* MPEG-DASH - fixing video muting/unmuting
+* Quality Switching - changing the "M" label for mobile qualities to "SD" as it's more recognizable
+
+= 7.3.15.727 - 2019/05/16 =
+
+* Security - fix for SQL injection vulnerability in email subscription
+* Security - fix for email subscription CSV export capability available to guest users 
+
+= 7.3.14.727 - 2019/05/14 =
+
+* Security - fix for XSS vulnerability in email subscription
+* Audio player - loading indiciator fix
+* CSS - removing old unused web fonts and graphics
+
+= 7.3.13.727 - 2019/04/30 =
+
+* Ad codes - sensing size of the Google AdSense ad unit, allowing the ad to expand from the player container for maximum ad revenue
+* Ad codes - vi Story ad support - stopping your video if there is an video ad in overlay
+* Embed codes - using database player IDs for the embed URL
+* HLS - added support for multiple audio tracks on desktop browsers
+* Iframe embedding - removed the settings as it's the only way of embedding, you can still use "Disable Embed Button"
+* Screen options - added to the wp-admin -> FV Player screen, allowing you to see count of subtitle, chapter and transcript files
+* Styling - new loading indicator which also appears before the player is initialized on slow connections
+* XML Video Sitemap - includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.
 
 = 7.3.12.727 - 2019/02/26 =
 

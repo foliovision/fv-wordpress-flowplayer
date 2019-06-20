@@ -36,20 +36,15 @@ class FV_Player_lightbox {
     
     add_action('wp_head', array( $this, 'remove_other_fancybox' ), 8 );
     add_action('wp_footer', array( $this, 'remove_other_fancybox' ), 19 );
-
-    //TODO is this hack needed?
-    $conf = get_option('fvwpflowplayer');
-    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
-      (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
-      add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
-    }
+    
+    add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
   }
   
   function css_enqueue( $force ) {
     global $fv_fp;
-    if( !$force && !$fv_fp->_get_option('lightbox_images') ) return;
+    if( !$force && !$fv_fp->_get_option('lightbox_images') && !$fv_fp->_get_option('lightbox_force') ) return;
     
     $bCSSLoaded = true;
     
@@ -84,7 +79,8 @@ class FV_Player_lightbox {
   }
 
   function improve_galleries( $args ) {
-    if( !$args['link'] ) {
+    global $fv_fp;
+    if( !$args['link'] && $fv_fp->_get_option('lightbox_images') && $fv_fp->_get_option('lightbox_improve_galleries') ) {
       $args['link'] = 'file';
     }
     return $args;
@@ -209,7 +205,7 @@ class FV_Player_lightbox {
 
         $html = "<div".$this->fancybox_opts($sSplash)." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
         
-        $html .= '<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>';
+        $html .= '<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>';
         
         if ($iWidth > 0) {
           $html .= '<div class="fp-ratio" style="padding-top: '.str_replace(',','.',round($iHeight / $iWidth, 4) * 100).'%"></div>';

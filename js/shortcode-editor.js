@@ -1049,7 +1049,7 @@ function fv_wp_flowplayer_edit() {
   // create empty shortcode for Add New button on the list page
     fv_wp_flowplayer_content = '';
     shortcode = '';
-  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
+  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
       fv_wp_flowplayer_oEditor.InsertHtml('<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>');
@@ -1796,7 +1796,7 @@ function fv_wp_flowplayer_set_html( html ) {
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
   }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
     jQuery('#content:not([aria-hidden=true])').val(html); 
-  }else if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
+  }else if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_oEditor.SetHTML( html );      
   }
   else {		
@@ -3109,23 +3109,25 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
   }
 };
 
-// extending DB player edit lock's timer
-jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
-  if (fv_flowplayer_conf.current_player_db_id) {
-    data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
-  }
+if( typeof(fv_flowplayer_conf) != "undefined" ) {
+  // extending DB player edit lock's timer
+  jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+    if (fv_flowplayer_conf.current_player_db_id) {
+      data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
+    }
+    
+    if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+      data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
+    }
+  });
   
-  if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-    data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
-  }
-});
-
-// remove edit locks in the config if it was removed on the server
-jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
-  if ( data.fv_flowplayer_edit_locks_removed ) {
-    fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
-  }
-});
+  // remove edit locks in the config if it was removed on the server
+  jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
+    if ( data.fv_flowplayer_edit_locks_removed ) {
+      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+    }
+  });
+}
 
 
 

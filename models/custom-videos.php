@@ -79,7 +79,16 @@ class FV_Player_Custom_Videos {
   
   public function get_html_part( $video, $edit = false ) {
     global $FV_Player_Custom_Videos_Master, $post;
-    $args = !empty($FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type]) ? $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta] : array( 'multiple' => true );
+    $args = array(
+      'multiple' => true,
+      'labels' => array(
+        'edit' => 'Edit Video',
+        'remove' => 'Remove Video'
+      ) );
+      
+    if( !empty($post) && !empty($post->post_type) && !empty($FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type]) ) {
+      $args = $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta];
+    }
     
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
     if( $edit ) {

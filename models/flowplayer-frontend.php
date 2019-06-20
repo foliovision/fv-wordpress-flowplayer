@@ -88,10 +88,16 @@ class flowplayer_frontend extends flowplayer
     // force horizontal playlist style for audio as that the only one styled properly
     if( $player = $this->current_player() ) {
       if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && $videos[0]->getMetaValue('audio',true) ) {
+        if( !empty($videos[0]) && (
+            $videos[0]->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
+          )
+        ) {
           $this->aCurArgs['liststyle'] = 'horizontal';
         }
       }
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
     
     $media = $this->aCurArgs['src'];
@@ -440,35 +446,11 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' fixed-controls';
         }
         
-        //  Play button
-        $bPlayButton = $this->_get_option('ui_play_button');
-        if( isset($this->aCurArgs['play_button']) ) {
-          if( strcmp($this->aCurArgs['play_button'],'yes') == 0 ) {
-            $bPlayButton = true;
-          } else if( strcmp($this->aCurArgs['play_button'],'no') == 0 ) {
-            $bPlayButton = false;
-          }
-        }
+        $attributes = $this->get_button_data( $attributes, 'no_picture', $this->aCurArgs );
         
-        if( $this->_get_option('ui_no_picture_button') ) {
-          $attributes['data-button-no-picture'] = true;
-        }
-        if( $this->_get_option('ui_repeat_button') ) {
-          $attributes['data-button-repeat'] = true;
-        }
+        $attributes = $this->get_button_data( $attributes, 'repeat', $this->aCurArgs );
         
-        //  Rewind button
-        $bRewindButton = $this->_get_option('ui_rewind_button');
-        if( isset($this->aCurArgs['rewind_button']) ) {
-          if( strcmp($this->aCurArgs['rewind_button'],'yes') == 0 ) {
-            $bRewindButton = true;
-          } else if( strcmp($this->aCurArgs['rewind_button'],'no') == 0 ) {
-            $bRewindButton = false;
-          }
-        }
-        if( $bRewindButton ) {
-          $attributes['data-button-rewind'] = true;
-        }
+        $attributes = $this->get_button_data( $attributes, 'rewind', $this->aCurArgs );
         
         //  Align
         $attributes['class'] .= $this->get_align();
@@ -477,16 +459,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-engine'] = 'flash';
         }
 
-        if( $this->_get_option( array( 'integrations', 'embed_iframe' ) ) ) {
-          if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+        if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
 
-          } else {
-            $attributes['data-fv-embed'] = $this->get_embed_url();
-          }
         } else {
-          if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
-            $attributes['data-embed'] = 'false';
-          } 
+          $attributes['data-fv-embed'] = $this->get_embed_url();
         }
 
         if( isset($this->aCurArgs['logo']) && $this->aCurArgs['logo'] ) {
@@ -622,7 +598,7 @@ class flowplayer_frontend extends flowplayer
 
         if( !$bIsAudio && isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>'."\n";
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
         }
         
         $this->ret['html'] .= $this->get_buttons();
@@ -747,26 +723,17 @@ class flowplayer_frontend extends flowplayer
         $ad_width = ( $this->_get_option('ad_width') ) ? $this->_get_option('ad_width').'px' : '100%';  
         $ad_height = ( $this->_get_option('ad_height') ) ? $this->_get_option('ad_height').'px' : '';
       }
-     
-      
-      if( $this->_get_option('ad_show_after') ){
-        $ad_display = 'none';
-      }else{
-        $ad_display = 'block' ;
-      }
-      
-      
       
       $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
       if( strlen(trim($ad)) > 0 ) {      
         $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height; display:$ad_display;'>\n\t\t<div class='fv_fp_close'><a href='#' onclick='jQuery(\"#wpfp_".$this->hash."_ad\").fadeOut(); return false'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height'>\n\t\t<div class='fv_fp_close'><a href='#'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
                              'width' => $ad_width,
                              'height' => $ad_height
                             );                 
       }
     }
-    //var_dump($ad_contents);die();
+    
     return $ad_contents;
   }
   
@@ -798,26 +765,55 @@ class flowplayer_frontend extends flowplayer
     if( $sHTML ) {
       $sHTML = "<div class='fv-player-buttons-wrap'>$sHTML</div>";
     }
-
-//var_dump($sHTML);die();
+    
     return $sHTML;
+  }
+  
+  
+  function get_button_data( $attributes, $type, $args ) {
+    $show = $this->_get_option('ui_'.$type.'_button');
+    if( isset($args[$type.'_button']) ) {
+      if( strcmp($args[$type.'_button'],'yes') == 0 ) {
+        $show = true;
+      } else if( strcmp($args[$type.'_button'],'no') == 0 ) {
+        $show = false;
+      }
+    }
+    if( $show ) {
+      $attributes['data-button-'.$type] = true;
+      
+      if( $type == 'rewind' ) {
+        add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
+      } else if( $type == 'repeat' || $type == 'no_picture' ) {
+        add_action( 'wp_footer', 'fv_player_footer_svg_playlist', 101 );
+      }
+      
+    }    
+    
+    return $attributes;
   }
   
   
   function get_embed_url() {
     if( empty($this->aPlayers[get_the_ID()]) ) {
-      $this->aPlayers[get_the_ID()] = 1;
-      $append = 'fvp';
-      $append_num = 1;
+      $num = $this->aPlayers[get_the_ID()] = 1;
     } else {
-      $this->aPlayers[get_the_ID()]++;
-      $append_num = $this->aPlayers[get_the_ID()];
-      $append = 'fvp'.$append_num;      
+      $num = ++$this->aPlayers[get_the_ID()];
+    }
+    
+    $append = 'fvp';
+    if( $num > 1 ) {
+      $append .= $num;
+    }
+    
+    if( $player = $this->current_player() ) {
+      $append = 'fvp-'.$player->getId();
+      $num = $append;
     }
     
     $rewrite = get_option('rewrite_rules');
     if( empty($rewrite) ) {
-      return add_query_arg( 'fv_player_embed', $append_num, get_permalink() );
+      return add_query_arg( 'fv_player_embed', $num, get_permalink() );
     } else {
       return user_trailingslashit( trailingslashit( get_permalink() ).$append );
     }
