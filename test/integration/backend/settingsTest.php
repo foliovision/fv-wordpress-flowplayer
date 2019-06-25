@@ -24,8 +24,8 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
     fv_player_admin_page();
     $output = ob_get_clean();
     
-    $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html'));    
-    $two = explode("\n",$this->fix_newlines($output));
+    $one = $this->remove_ids_and_urls($this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html')));
+    $two = explode("\n",$this->remove_ids_and_urls($this->fix_newlines($output)));
     foreach( explode("\n",$one) as $k => $v ) {
       
       /*if( $v != $two[$k]) {
@@ -39,7 +39,7 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
       $this->assertEquals( $v, $two[$k] );
     }
     
-    $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html')), $this->fix_newlines($output) );
+    $this->assertEquals( $this->remove_ids_and_urls($this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html'))), $this->remove_ids_and_urls($this->fix_newlines($output)) );
   }
 
 }

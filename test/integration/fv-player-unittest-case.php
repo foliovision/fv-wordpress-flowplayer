@@ -2,7 +2,9 @@
 
 abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   
-  protected $backupGlobals = false;
+  protected
+    $backupGlobals = false,
+    $restore = array();
   
   public function setUp() {
     parent::setUp();
@@ -50,22 +52,46 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     return $html;
   }
 
+  public function remove_ids_and_urls($input) {
+    $output = preg_replace(
+      array(
+        '/"id":\d{1,}/m',
+        '/wp-content\/plugins\/[^"<]+(["<])/m',
+        '/With the Verbose setting Vimeo API calls are logged into [^<]+</m',
+        '/convert_(vimeo|youtube)=[^\']+\'/m',
+        '/fv_player_embed=[^&]+&/m',
+        '/fv-player-vimeo-[^<]+</m'
+      ),
+      array(
+        '"id":-regex_replaced-',
+        'wp-content\\/plugins\\/-regex-replaced-$1',
+        'With the Verbose setting Vimeo API calls are logged into -regex-replaced-<',
+        'convert_$1=-regex-replaced-\'',
+        'fv_player_embed=-regex-replaced-&',
+        'fv-player-vimeo--regex-replaced-<'
+      ),
+      $input
+    );
+
+    return $output;
+  }
+
   // we need to set up PRO player with an appropriate key, or the PRO player won't work
   public static function wpSetUpBeforeClass() {
     global $fv_fp;
 
     // without this included, fv_wp_flowplayer_delete_extensions_transients() would not be found
-    //include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
+    include_once "../../controller/backend.php";
 
     // include the flowplayer loader
-    include "../../../fv-wordpress-flowplayer/flowplayer.php";
+    include "../../flowplayer.php";
 
     // include the PRO plugin class, so it can intercept data saving
     // and update the ads structure as needed for saving
-    //include_once "../../beta/fv-player-pro.class.php";
+    include_once "../../../fv-player-pro/beta/fv-player-pro.class.php";
 
     // save initial settings
-    //$fv_fp->_set_conf();
+    $fv_fp->_set_conf();
   }
   
   public function tearDown() {
@@ -73,6 +99,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     
     global $fv_fp;
     $fv_fp->conf = $this->restore;
+    $fv_fp->_set_conf($fv_fp->conf);
   }  
 
 }
