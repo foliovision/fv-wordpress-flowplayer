@@ -1972,7 +1972,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
-});  
+});
 
 
 jQuery('a.fv-settings-anchor').on('click',function(e){
