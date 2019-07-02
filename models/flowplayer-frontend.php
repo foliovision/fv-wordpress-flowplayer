@@ -146,7 +146,7 @@ class flowplayer_frontend extends flowplayer
     if( ( !empty($this->aCurArgs['rtmp']) || $this->_get_option('rtmp') ) && !empty($this->aCurArgs['rtmp_path']) ) {
       $rtmp = trim( $this->aCurArgs['rtmp_path'] );
     }
-  
+
     list( $media, $src1, $src2 ) = apply_filters( 'fv_flowplayer_media_pre', array( $media, $src1, $src2 ), $this );
     
     
@@ -209,6 +209,14 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
+
+    // return src to DB-based shortcode,
+    // so we don't generate HTML with 1st item
+    // pointing to the playlist URL itself
+    if ($player_type == 'youtube' && !empty($args['id'])) {
+      $this->aCurArgs['src'] = $args['src'];
+      $media = $this->aCurArgs['src'];
+    }
 
     list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );    
 
