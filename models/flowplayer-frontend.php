@@ -163,7 +163,7 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    if( preg_match( "~(youtu\.be/|youtube\.com/((watch|playlist)\?(.*&)?(v|list)=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
       if( isset($aYoutube[5]) ) {
         $youtube = $aYoutube[5];
         $player_type = 'youtube';
@@ -205,24 +205,21 @@ class flowplayer_frontend extends flowplayer
     if( get_query_var('fv_player_embed') && $this->aCurArgs['liststyle'] != 'tabs' ) { // force vertical playlist when using embed and not using tabs
       $this->aCurArgs['liststyle'] = 'slider';
     }
-    
-        
+
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-    
+
     list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );    
-    
+
     if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
       $playlist_items_external_html = false;
       $attributes['data-item'] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
     }
-    
+
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
-    
-    
+
     $player_type = apply_filters( 'fv_flowplayer_player_type', $player_type, $this->hash, $media, $aPlaylistItems, $this->aCurArgs );
-    
     
     /*
      *  Allow plugins to create custom playlist styles
@@ -230,7 +227,7 @@ class flowplayer_frontend extends flowplayer
     $res = apply_filters( 'fv_flowplayer_playlist_style', false, $this->aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions );
     if( $res ) {
       return $res;
-    }  
+    }
     
 
     /*
@@ -297,7 +294,7 @@ class flowplayer_frontend extends flowplayer
         $mobile = ( isset($this->aCurArgs['mobile']) && !empty($this->aCurArgs['mobile']) ) ? trim($this->aCurArgs['mobile']) : false;  
         if (!empty($mobile)) {
           $mobile = $this->get_video_url($mobile);
-        }      
+        }
       
         if( is_feed() ) {
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
