@@ -113,7 +113,8 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
       //  todo: there should be a better way than this
       add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
     }    
-  
+    
+    do_action('fv_player_extensions_admin_load_assets');
     add_action('admin_footer','flowplayer_prepare_scripts');    
   }
 }
