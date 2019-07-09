@@ -192,6 +192,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         
   } else if( $arguments['src'] != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
+    unset($arguments['id']);
     $new_player = $fv_fp->build_min_player($arguments['src'],$arguments);
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
