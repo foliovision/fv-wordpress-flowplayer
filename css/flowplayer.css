@@ -1067,6 +1067,7 @@
 .flowplayer .fp-controls .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-header .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-controls .fp-fullscreen {display:block}
+.flowplayer.is-audio.bottom-fs .fp-controls .fp-fullscreen {display: none}
 
 /* Mailchimp integration */
 .flowplayer .fv_player_popup p{margin:0 12px 6px;line-height:1.35}
