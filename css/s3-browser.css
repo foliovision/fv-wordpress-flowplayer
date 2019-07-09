@@ -253,18 +253,18 @@
 }
 
 @media screen and (max-width: 600px) {
-    .attachments-browser .icon {
+    #__assets_browser .attachments-browser .icon {
         font-size:1em!important;
         margin-top:2em!important;
     }
-    .attachments-browser .icon.file:after {
+    #__assets_browser .attachments-browser .icon.file:after {
         top: -27.5px!important;
     }
-    .filemanager .data li {
+    #__assets_browser .filemanager .data li {
 
         width:100%!important;
     }
-    .attachments-browser ul.data {
+    #__assets_browser .attachments-browser ul.data {
 
         margin-left:0px!important;
         margin-right:0px!important;
@@ -277,22 +277,22 @@
     z-index: 2; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
-.attachments-browser .s3-media-toolbar {
+#__assets_browser .attachments-browser .s3-media-toolbar {
     height: 40px !important;
 }
 
-.attachments-browser .attachment .thumbnail img {
+#__assets_browser .attachments-browser .attachment .thumbnail img {
     left: 50% !important;
     margin-left: -100% !important;
 }
 
-.attachment-preview.fullsize img {
+#__assets_browser .attachment-preview.fullsize img {
     width: auto !important;
     height: 100% !important;
     padding: 0;
 }
 
-.attachments-browser .errors {
+#__assets_browser .attachments-browser .errors {
     padding: 16px;
 }
 
@@ -300,7 +300,7 @@
     top: 0;
 }
 
-.browser-progress-bar {
+#__assets_browser .browser-progress-bar {
     width: 100%;
     min-width: 500px;
     height: 30px;
@@ -314,7 +314,7 @@
     z-index: 10;
 }
 
-.browser-progress-bar .bar {
+#__assets_browser .browser-progress-bar .bar {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -324,7 +324,7 @@
     z-index: 9;
 }
 
-.browser-progress-bar .txt {
+#__assets_browser .browser-progress-bar .txt {
     position: absolute;
     margin: 0;
     padding-top: 10px;
