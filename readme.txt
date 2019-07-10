@@ -357,13 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.3.18.727 - 2019/07/09 =
+= 7.3.18.727 - 2019/07/10 =
 
 * New Feature - Video Screenshots - FV Player Editor now lets you take the current video frame as the video splash screen
 * S3 Bucket browser - making it work more like WP Media Library, showing file details in the right sidebar
 * Settings screen - remembering the scroll position
 * Video Speed - remembering last video speed just like the audio volume
 * Performance - Video Position Saving - only storing position with Ajax before unloading the page
+* Bugfix - PHP 7.3 warning removed
 * Bugfix - Playlist - making it possible to pick another playlist item after playback error
 * Bugfix - Vimeo/MPEG-DASH muted autoplay fix
 
