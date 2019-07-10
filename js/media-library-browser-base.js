@@ -20,6 +20,15 @@ function fv_flowplayer_media_browser_setColumns() {
   }
 }
 
+function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
+  $fileListUl.append('<li tabindex="0" class="attachment" id="overlay-loader-li"></li>');
+  var $moreDiv = jQuery('<div class="attachment-preview"><div class="loadmore"></div></div>');
+  var $a = jQuery('<button type="button" class="button media-button button-primary button-large">Load More</button>');
+  $a.on('click', loadMoreButtonAction);
+  $moreDiv.find('.loadmore').append($a);
+  jQuery('#overlay-loader-li').append($moreDiv);
+}
+
 // retrieves options and data for media browser and refreshes its content
 function fv_flowplayer_browser_browse(data, options) {
 
@@ -168,6 +177,10 @@ function fv_flowplayer_browser_browse(data, options) {
 
         file.appendTo(fileList);
       });
+
+      if (options && options.loadMoreButtonAction) {
+        fv_flowplayer_browser_add_load_more_button(fileList, options.loadMoreButtonAction);
+      }
 
     }
 
@@ -406,7 +419,12 @@ jQuery( function($) {
     return false;
   }
 
-  $( document ).on( "click", ".folders, .breadcrumbs a", function(event) {
+  $( document ).on( "click", "#overlay-loader-li", function() {
+    // click the Load More button when the actual DIV is clicked, for accessibility
+    jQuery(this).find('button').click();
+  });
+
+  $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
     var
       activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
