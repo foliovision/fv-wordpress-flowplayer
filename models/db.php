@@ -205,7 +205,7 @@ class FV_Player_Db {
 
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
-    $order_by = (in_array($order_by, array('ID', 'player_name', 'date_created')) ? $order_by : 'player_name');
+    $order_by = (in_array($order_by, array('ID', 'player_name', 'date_created', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'player_name');
 
     // load single player, as requested by the user
     if ($single_id) {
