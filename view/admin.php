@@ -843,8 +843,6 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
-
-          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
 					<tr>
 						<td colspan="4">
