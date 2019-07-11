@@ -260,11 +260,17 @@ class flowplayer_frontend extends flowplayer
      *  Autoplay
      */
     $autoplay = false;  //  todo: should be changed into a property
-    if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
+    if( $this->_get_option('autoplay') == 'yes' && $this->aCurArgs['autoplay'] != 'no'  ) {
       $autoplay = true;
-    }  
-    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
+    } else if ( $this->_get_option('autoplay') == 'muted' && $this->aCurArgs['autoplay'] != 'no' ) {
+      $autoplay = 'muted';
+    }
+    
+    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'yes' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = true;
+    }
+    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'muted')) {
+      $autoplay = 'muted';
     }
 
     /*
@@ -412,10 +418,15 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' bottom-fs';
         }
       
-        if( $autoplay ) {
+        
+        if( $autoplay === 'muted' ) {
           $attributes['data-fvautoplay'] = 'muted';
         } 
-        
+
+        if( $autoplay === true ) {
+          $attributes['data-fvautoplay'] = 'true';
+        }
+
         if( $sticky ) {
           $attributes['data-fvsticky'] = 'true';
         }
