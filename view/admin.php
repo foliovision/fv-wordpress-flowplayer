@@ -843,8 +843,6 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
-
-          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
 					<tr>
 						<td colspan="4">
@@ -1964,6 +1962,7 @@ jQuery(document).ready(function(){
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
+
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   e.preventDefault();
   window.location.hash = e.target.hash;
@@ -1974,6 +1973,28 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('#' + anchor).show();
 });
 
+jQuery('#normal-sortables .button-primary').on('click',function(e){
+  if ('fv-wp-flowplayer-submit' == this.name) {
+    // store windows scroll position, so we can return to the same spot after reload
+    if (localStorage) {
+      localStorage["fv_posStorage"] = $(window).scrollTop();
+    }
+  }
+
+  return true;
+});
+
+jQuery(window).on('load', function() {
+  setTimeout(function() {
+    if (localStorage) {
+      var posReader = localStorage["fv_posStorage"];
+      if (posReader) {
+        jQuery(window).scrollTop(posReader);
+        localStorage.removeItem("fv_posStorage");
+      }
+    }
+  }, 100);
+});
 
 jQuery('a.fv-settings-anchor').on('click',function(e){
   var id = jQuery(this).attr('href');

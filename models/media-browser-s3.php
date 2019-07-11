@@ -2,20 +2,13 @@
 
 class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
-  function __construct( $ajax_action_name ) {
-    add_action( 'edit_form_after_editor', array($this, 'init'), 1 );
-    add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg') );
-    add_action( 'admin_print_footer_scripts', array($this, 'init'), 1 );
-    parent::__construct( $ajax_action_name );
-  }
-
   function init() {
     global $fv_fp, $fv_wp_flowplayer_ver;
     if ($fv_fp->_get_option('s3_browser')) {
-      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array(), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array('flowplayer-browser-base'), $fv_wp_flowplayer_ver, true );
     }
   }
-  
+
   function init_for_gutenberg() {
     add_action( 'admin_footer', array($this, 'init'), 1 );
   }  
@@ -165,7 +158,8 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         $paged = $s3Client->getPaginator('ListObjects',$args);
 
         $sum_up = array();
-        
+
+        $date_format = get_option( 'date_format' );
         foreach( $paged AS $res ) {
           
           $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
@@ -202,7 +196,8 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
             if( !empty($object['Size']) ) {
               $item['type'] = 'file';
               $item['size'] = $object['Size'];
-              
+              $item['modified'] = date($date_format, strtotime($object['LastModified']));
+
               $link = (string) $s3Client->getObjectUrl( $bucket, $path );
               $link = str_replace( '%20', '+', $link );
               
@@ -214,17 +209,20 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
                 // replace S3 URLs with bucket name as a subfolder
                 $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
               }
-              
+
               $item['link'] = $link;
-              
+
+              if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item['name'])) {
+                $item['splash'] = apply_filters('fv_flowplayer_splash', $link );
+              }
             } else {
               $item['type'] = 'folder';
               $item['items'] = array();
             }
-            
+
             $output['items'][] = $item;
   
-            if (strtolower(substr($name, strrpos($name, '.') + 1)) === 'ts') {
+            if (strtolower(substr($item['name'], strrpos($item['name'], '.') + 1)) === 'ts') {
               continue;
             }
   
