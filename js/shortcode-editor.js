@@ -253,7 +253,7 @@ jQuery(document).ready(function($){
     fv_player_preview_single = new_index;
     
     fv_flowplayer_editor_item_show(new_index);
-    
+
     $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
@@ -565,6 +565,7 @@ jQuery(document).ready(function($){
 
   $(document).on('fv_flowplayer_video_meta_load', function() {
     $('#fv-player-shortcode-editor .button-primary').hide();
+    $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
 
     // not a good solution!
     setTimeout( function() {
