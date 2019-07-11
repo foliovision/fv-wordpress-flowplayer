@@ -627,7 +627,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public function _get_option($key) {    
     $conf = $this->conf;
-
     $value = false;
     if( is_array($key) && count($key) === 2) {
       if( isset($conf[$key[0]]) && isset($conf[$key[0]][$key[1]]) ) {

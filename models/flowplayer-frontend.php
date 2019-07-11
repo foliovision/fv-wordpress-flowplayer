@@ -413,7 +413,7 @@ class flowplayer_frontend extends flowplayer
         }
       
         if( $autoplay ) {
-          $attributes['data-fvautoplay'] = 'true';
+          $attributes['data-fvautoplay'] = 'muted';
         } 
         
         if( $sticky ) {
