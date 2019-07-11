@@ -19,7 +19,6 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   
   wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
-  wp_register_script('fvwpflowplayer-shortcode-editor-old', flowplayer::get_plugin_url().'/js/shortcode-editor.old.js',array('jquery'), $fv_wp_flowplayer_ver );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
@@ -29,13 +28,8 @@ function fv_player_shortcode_editor_scripts_enqueue() {
     'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id())
   ) );
   
-  global $fv_fp;
-  if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
-    wp_enqueue_script('fvwpflowplayer-shortcode-editor-old');
-  } else {
-    wp_enqueue_script('fvwpflowplayer-shortcode-editor');
-    wp_enqueue_script('fvwpflowplayer-editor-screenshots');
-  }
+  wp_enqueue_script('fvwpflowplayer-shortcode-editor');
+  wp_enqueue_script('fvwpflowplayer-editor-screenshots');
   
   wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');
@@ -84,42 +78,37 @@ function fv_wp_flowplayer_gutenberg_editor_load() {
 add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
-  global $fv_fp;
-  if( isset($fv_fp->conf["interface"]['shortcode_editor_old']) && $fv_fp->conf["interface"]['shortcode_editor_old'] == 'true' ) {
-    include dirname( __FILE__ ) . '/../view/wizard.old.php';
-  } else {
-    include dirname( __FILE__ ) . '/../view/wizard.php';
-    
-    // todo: will some of this break page builders?
-    global $fv_fp_scripts, $fv_fp;
-    $fv_fp_scripts = array( 'fv_player_admin_load' => array( 'load' => true ) ); //  without this or option js-everywhere the JS won't load
-    $fv_fp->load_hlsjs= true;
-    $fv_fp->load_dash = true;
-    $fv_fp->load_tabs = true;
-    
-    global $FV_Player_Pro;
-    if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
-      $FV_Player_Pro->bYoutube = true;
-      //  todo: there should be a better way than this
-      add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
-      add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
-    }
-
-    global $FV_Player_VAST ;
-    if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
-      //  todo: there should be a better way than this      
-      add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
-    }
-    
-    global $FV_Player_Alternative_Sources ;
-    if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
-      //  todo: there should be a better way than this
-      add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
-    }    
-    
-    do_action('fv_player_extensions_admin_load_assets');
-    add_action('admin_footer','flowplayer_prepare_scripts');    
+  include dirname( __FILE__ ) . '/../view/wizard.php';
+  
+  // todo: will some of this break page builders?
+  global $fv_fp_scripts, $fv_fp;
+  $fv_fp_scripts = array( 'fv_player_admin_load' => array( 'load' => true ) ); //  without this or option js-everywhere the JS won't load
+  $fv_fp->load_hlsjs= true;
+  $fv_fp->load_dash = true;
+  $fv_fp->load_tabs = true;
+  
+  global $FV_Player_Pro;
+  if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+    $FV_Player_Pro->bYoutube = true;
+    //  todo: there should be a better way than this
+    add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
+    add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
   }
+
+  global $FV_Player_VAST ;
+  if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
+    //  todo: there should be a better way than this      
+    add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
+  }
+  
+  global $FV_Player_Alternative_Sources ;
+  if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
+    //  todo: there should be a better way than this
+    add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
+  }    
+  
+  do_action('fv_player_extensions_admin_load_assets');
+  add_action('admin_footer','flowplayer_prepare_scripts');
 }
 
 //  allow .vtt subtitle files
