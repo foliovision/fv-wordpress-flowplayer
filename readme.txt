@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.1.1
+Tested up to: 5.2.1
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,23 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.3.18.727 - 2019/07/10 =
+
+* New Feature - Video Screenshots - FV Player Editor now lets you take the current video frame as the video splash screen
+* S3 Bucket browser - making it work more like WP Media Library, showing file details in the right sidebar
+* Settings screen - remembering the scroll position
+* Video Speed - remembering last video speed just like the audio volume
+* Performance - Video Position Saving - only storing position with Ajax before unloading the page
+* Bugfix - PHP 7.3 warning removed
+* Bugfix - Playlist - making it possible to pick another playlist item after playback error
+* Bugfix - Vimeo/MPEG-DASH muted autoplay fix
+
+= 7.3.16.727 - 2019/05/31 =
+
+* Subtitles - avoiding video playback failure when just the subtitles are missing
+* MPEG-DASH - fixing video muting/unmuting
+* Quality Switching - changing the "M" label for mobile qualities to "SD" as it's more recognizable
 
 = 7.3.15.727 - 2019/05/16 =
 

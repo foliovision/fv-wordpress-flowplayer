@@ -1,7 +1,6 @@
 @charset "UTF-8";
 @font-face {
   font-family: flowplayer;
-  font-display: swap;
   src: url("icons/flowplayer.eot?#iefix") format("embedded-opentype"), url("icons/flowplayer.woff2") format("woff2"), url("icons/flowplayer.woff") format("woff"); }
 
 .fp-icon { display: inline-block; }
@@ -1085,6 +1084,7 @@
 .flowplayer .fp-controls .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-header .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-controls .fp-fullscreen {display:block}
+.flowplayer.is-audio.bottom-fs .fp-controls .fp-fullscreen {display: none}
 
 /* Mailchimp integration */
 .flowplayer .fv_player_popup p{margin:0 12px 6px;line-height:1.35}

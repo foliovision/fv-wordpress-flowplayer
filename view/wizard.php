@@ -498,6 +498,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
           </td>
         </tr>
       </table>
+      <div class="fv-messages"></div>
     </div>   
   </div>
 </div>
