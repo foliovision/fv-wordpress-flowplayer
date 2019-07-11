@@ -13,6 +13,8 @@ var fv_player_playlist_subtitles_box_template;
 var fv_wp_fp_shortcode;
 var fv_player_preview_single = -1;
 var fv_player_preview_window;
+var fv_player_draft = true;
+var fv_player_draft_changed = false;
 
 var fv_player_editor_button_clicked = 0;
 
@@ -35,8 +37,6 @@ jQuery(document).ready(function($){
     next = false,
     save_please = false,
     loading = true,
-    draft = true,
-    draft_changed = false,
     int_keyup = false,
     ua = window.navigator.userAgent;
 
@@ -45,7 +45,7 @@ jQuery(document).ready(function($){
   $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
   $.fn.fv_player_box.close = function() {
     // prevent closing of the overlay if we have unsaved data
-    if (draft && draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
+    if (fv_player_draft && fv_player_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
       return;
     }
 
@@ -53,12 +53,12 @@ jQuery(document).ready(function($){
     $.fn.fv_player_box.oldClose();
 
     // reset variables
-    draft = true;
-    draft_changed = false;
+    fv_player_draft = true;
+    fv_player_draft_changed = false;
   };
 
   $(window).on('beforeunload', function(e) {
-    if (draft && draft_changed) {
+    if (fv_player_draft && fv_player_draft_changed) {
       return e.originalEvent.returnValue = 'You have unsaved changes. Are you sure you want to close this dialog and loose them?';
     }
   });
@@ -569,15 +569,15 @@ jQuery(document).ready(function($){
     // not a good solution!
     setTimeout( function() {
       loading = false;
-      draft = false;
-      draft_changed = false;
+      fv_player_draft = false;
+      fv_player_draft_changed = false;
     },100);
   });
 
   $(document).on('fv_flowplayer_player_editor_reset', function() {
     loading = true;
-    draft = true;
-    draft_changed = false;
+    fv_player_draft = true;
+    fv_player_draft_changed = false;
   });
 
   $(document).on('fv_flowplayer_shortcode_item_sort', save );
@@ -585,8 +585,8 @@ jQuery(document).ready(function($){
 
   function save(e){
 
-    if (draft) {
-      draft_changed = true;
+    if (fv_player_draft) {
+      fv_player_draft_changed = true;
     }
 
     if( loading ) return;
@@ -2656,6 +2656,10 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
         data: JSON.stringify(ajax_data),
         nonce: fv_player_editor_conf.preview_nonce
       }, function(response) {
+        // player saved, reset draft status
+        fv_player_draft = false;
+        fv_player_draft_changed = false;
+
         var playerID = -1;
         var player = JSON.parse(response);
         playerID = parseInt(player.id);
