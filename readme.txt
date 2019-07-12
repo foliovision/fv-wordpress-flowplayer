@@ -359,7 +359,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 7.3.19.727 - 2019/07/11 =
 
-* Security - fix for SQL injection vulnerability on the wp-admin FV Player screen for users with access
+* Security - fix for SQL injection vulnerability on the wp-admin FV Player screen for users with access - thanks to Tin Duong
 * Removing setting - Enable old interface
 * Bugfix - Speed menu - enabling for Android
 * Bugfix - Video Position Saving - disabling for live streams
