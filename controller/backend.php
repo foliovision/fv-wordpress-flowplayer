@@ -107,7 +107,10 @@ function fv_wp_flowplayer_check_template() {
   $response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
   if( is_wp_error( $response ) ) {
     $error_message = $response->get_error_message();
-    $output = array( 'error' => $error_message );
+    $output = array( 'errors' => $error_message);
+  } else if ($response['response']['code'] == 401){
+    $errors[] = 'You are using http auth, we cannot check template.';
+    $output = array( 'errors' => $errors);
   } else {
     
     $active_plugins = get_option( 'active_plugins' );
