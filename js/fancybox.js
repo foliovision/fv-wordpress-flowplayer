@@ -73,7 +73,7 @@ function fv_fancybox_check_size() {
 
      $player
       .css('max-height', '')
-      .css('max-width', (height/$player.data('ratio')) +'px');
+      .css('max-width', (height/$player.data('ratio') + 44 ) +'px');
 
       $playlist.css('max-width', (height/$player.data('ratio')) +'px');
   

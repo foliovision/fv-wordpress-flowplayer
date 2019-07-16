@@ -18,7 +18,7 @@ class FV_Player_lightbox {
    // add_filter('fv_flowplayer_playlist_style', array($this, 'lightbox_playlist'), 10, 5);
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
-    
+    add_filter('fv_flowplayer_args_pre', array($this, 'lightbox_playlist_style'));
     add_filter('fv_flowplayer_args', array($this, 'parse_html_caption'), 0);
 
     add_filter('the_content', array($this, 'html_to_lightbox_videos'));
@@ -367,6 +367,13 @@ class FV_Player_lightbox {
   function disable_autoplay($aArgs) {
     if (isset($aArgs['lightbox'])) {
       $aArgs['autoplay'] = 'false';
+    }
+    return $aArgs;
+  }
+
+  function lightbox_playlist_style($aArgs) {
+    if (isset($aArgs['lightbox'])) {
+      $aArgs['liststyle'] = 'slider';
     }
     return $aArgs;
   }
