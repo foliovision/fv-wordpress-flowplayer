@@ -54,29 +54,28 @@ jQuery(document).ready(function() {
 
 function fv_fancybox_check_size() {
   var
-    $player = jQuery('.fancybox-slide--current .flowplayer:visible'),
+    $player = jQuery('.fancybox-slide--current .flowplayer'),
     player_height = $player.outerHeight(),
     $caption = jQuery('.fancybox-caption'),
     $infobar = jQuery('.fancybox-infobar'),
     $toolbar = jQuery('.fancybox-toolbar'),
+    $playlist = jQuery('.fancybox-slide--current .fp-playlist-external');
     $fs_button = $player.find('.fp-fullscreen');
 
   if ($player.length) {
-    
-    if( typeof($player.data('orig-max-height')) == 'undefined' ) {
-      $player.data('orig-max-height', parseInt($player.css('max-height')) ).data('orig-max-width', parseInt($player.css('max-width')) );      
-    }
-    
+
     var height = jQuery(window).height();    
     if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar    
-    
-    if( height > $player.data('orig-max-height') && jQuery(window).width() > $player.data('orig-max-width') ) { // if the player original dimensions fit, restore original height
-      height = $player.data('orig-max-height');
+
+    if($playlist.length) {
+      height -= $playlist.height()
     }
-        
-    $player
+
+     $player
       .css('max-height', '')
-      .css('max-width', (height/$player.data('ratio'))+'px');
+      .css('max-width', (height/$player.data('ratio')) +'px');
+
+      $playlist.css('max-width', (height/$player.data('ratio')) +'px');
   
 
     // hide caption and infobar if it would cover the player
@@ -202,7 +201,7 @@ function fv_player_lightbox_bind(){
 
 jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-link', function() {  
   var ref = jQuery(this).data('src') || jQuery(this).attr('href');
-  var api = jQuery(ref).data('flowplayer');
+  var api = jQuery(ref).find('.flowplayer').data('flowplayer');
   if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
     if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
   }
@@ -211,4 +210,5 @@ jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-
   } else {
     api.play();
   }
+  fv_fancybox_check_size()
 })

@@ -1875,3 +1875,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn, .flowplayer.is-tiny .fv-fp-rewind {
   display: none;
 } 
+
+.fancybox-slide .fv_player_lightbox_hidden {
+  background-color: transparent;
+  width: 100%;
+}
