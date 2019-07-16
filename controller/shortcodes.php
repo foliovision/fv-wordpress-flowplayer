@@ -318,7 +318,7 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     }
     
     $count = 0;
-    foreach( array('mp4','webm','ogv','mov','flv','wmv','m4v') AS $key => $value ) {      
+    foreach( array('mp4','webm','ogv','mov','flv','wmv','m4v','mp3') AS $key => $value ) {      
       if( !empty($atts[$value]) ) {
         $src = 'src'.(( $count > 0 ) ? $count : '');
         $bridge_atts[$src] = $atts[$value];
@@ -356,6 +356,7 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   }
   
   add_filter( 'wp_video_shortcode_override', 'fv_flowplayer_shortcode_video', 10, 4 );
+  add_filter( 'wp_audio_shortcode_override', 'fv_flowplayer_shortcode_video', 10, 4 );
   
   
   
