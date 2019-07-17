@@ -36,6 +36,8 @@
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
+#fv-player-shortcode-editor-editor td.field {position: relative;}
+#fv-player-shortcode-editor-editor .fv-player-shortcode-editor-small-spinner {position: absolute; left: 70%; top: 6px;}
 #fv-player-shortcode-editor td{ vertical-align: top; }
 .fv-player-tab table{ margin-bottom: 10px; }
 .fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
