@@ -994,17 +994,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $aPlayer = array( 'sources' => $aItem );      
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
           
-          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;                    
-          
-          if( !$sSplashImage && $this->_get_option('splash') ) {
-            $sSplashImage = $this->_get_option('splash');
-          }
+          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
           
           $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, $index, $aArgs );
           
           if ($this->current_video()) {
-            if( !$sSplashImage ) $sSplashImage = $this->current_video()->getSplash();            
-            if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
+            if( !$sSplashImage ) $sSplashImage = $this->current_video()->getSplash();
+            if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();
+          }
+          
+          if( !$sSplashImage && $this->_get_option('splash') ) {
+            $sSplashImage = $this->_get_option('splash');
           }
           
           $aPlaylistItems[] = $aPlayer;
@@ -1013,16 +1013,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {
-            $aSplashScreens[] = $sSplashImage;  
-          } 
+            $aSplashScreens[] = $sSplashImage;
+          }
           $aCaptions[] = $sItemCaption;
         }
-      }  
+      }
       
       if(isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] != 'tabs'){
         $aPlaylistItems = apply_filters('fv_flowplayer_playlist_items',$aPlaylistItems,$this);
-      } 
-      
+      }
       
       $sHTML = apply_filters( 'fv_flowplayer_playlist_item_html', $sHTML );
       

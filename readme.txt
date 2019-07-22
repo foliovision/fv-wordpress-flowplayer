@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.3.19.727 - 2019/07/11 =
+
+* Security - fix for SQL injection vulnerability on the wp-admin FV Player screen for users with access - thanks to Tin Duong
+* Removing setting - Enable old interface
+* Bugfix - Speed menu - enabling for Android
+* Bugfix - Video Position Saving - disabling for live streams
+* Bugfix - Video Speed - not restoring the last video speed for players without speed menu
+
 = 7.3.18.727 - 2019/07/10 =
 
 * New Feature - Video Screenshots - FV Player Editor now lets you take the current video frame as the video splash screen
