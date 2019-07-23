@@ -509,6 +509,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-live'] = 'true';
         }
         
+        if( isset($this->aCurArgs['dvr']) && $this->aCurArgs['dvr'] == 'true' ) {
+          $attributes['data-dvr'] = 'true';
+        }
+
         $playlist = '';
         $is_preroll = false;
         if( isset($playlist_items_external_html) ) {

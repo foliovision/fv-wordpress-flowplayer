@@ -293,6 +293,11 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </tr>
                     
                     <tr class="fv_player_interface_hide">
+                        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_dvr" class="alignright"><?php _e('DVR stream', 'fv_flowplayer'); ?></label></th>
+                        <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_dvr" name="fv_wp_flowplayer_field_dvr" /></td>
+                    </tr>
+                    
+                    <tr class="fv_player_interface_hide">
                         <th scope="row" class="label"><label for="fv_wp_flowplayer_field_audio" class="alignright"><?php _e('Audio stream', 'fv_flowplayer'); ?></label></th>
                         <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_audio" name="fv_wp_flowplayer_field_audio" /></td>
                     </tr>                    

@@ -128,6 +128,9 @@ class FV_Player_Db {
           if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
             $aItem['live'] = 'true';
           }
+          if ($meta->getMetaKey() == 'dvr' && $meta->getMetaValue() == 'true') {
+            $aItem['dvr'] = 'true';
+          }
         }
       }
       
