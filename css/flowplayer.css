@@ -1391,34 +1391,34 @@
 
 .fp-playlist-external.fp-playlist-polaroid a,
 .entry-content .fp-playlist-external.fp-playlist-polaroid a {
-	width: 47%;
-	display: inline-block;
-    vertical-align: top;
-    margin: 0 1% 2%;
-    padding: 0;
-    font-size: 16px;
-    line-height: 1.2;
-    position: relative;
-    background: ghostwhite;
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    border: 10px solid ghostwhite;
-    padding-bottom: 40px;
+  width: 47%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 1% 2%;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  position: relative;
+  background: ghostwhite;
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  border: 10px solid ghostwhite;
+  padding-bottom: 40px;
 }
 .fp-playlist-external.fp-playlist-polaroid a:hover, 
 .entry-content .fp-playlist-external.fp-playlist-polaroid a:hover {
-	background-color: #f4f4f4;
-    border: 10px solid #f4f4f4;
+  background-color: #f4f4f4;
+  border: 10px solid #f4f4f4;
 }
 .fp-playlist-external.fp-playlist-polaroid a:before {
-	content: '';
-	position: absolute;
-	top: 10px;
-	bottom: 8px;
-	left: 10px;
-	right: 0px;
-	display: block;
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 8px;
+  left: 10px;
+  right: 0px;
+  display: block;
   -webkit-box-shadow: 0 15px 10px #777;
   -moz-box-shadow: 0 15px 10px #777;
   box-shadow: 0 15px 10px #777;
@@ -1427,50 +1427,50 @@
   -o-transform: rotate(2deg);
   -ms-transform: rotate(2deg);
   transform: rotate(2deg);
-	z-index: -1;
+  z-index: -1;
 }
 .fp-playlist-external.fp-playlist-polaroid .fvp-playlist-thumb-img {
-    height: 0;
-    overflow: hidden;
-    padding-top: 90%;
-    position: relative;
-	z-index: 3;
+  height: 0;
+  overflow: hidden;
+  padding-top: 90%;
+  position: relative;
+  z-index: 3;
 }
 .fp-playlist-external.fp-playlist-polaroid a h4 {
-    position: absolute;
-    top: 0;
-    bottom: 2px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 400;
-    font-family: Courier, Courier New;
-    line-height: 1.2;
-    background-color: transparent;
-    color: #000;
-    opacity: 1;
-    z-index: 9;
+  position: absolute;
+  top: 0;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Courier, Courier New;
+  line-height: 1.2;
+  background-color: transparent;
+  color: #000;
+  opacity: 1;
+  z-index: 9;
 }
 .fp-playlist-external.fp-playlist-polaroid.visible-captions a h4 span {
-	background-color: transparent;
-	color: #000;
-	top: auto;
-	bottom: 0;
-	padding: 0;
-	-webkit-transform: none;
-	-moz-transform: none;
-	transform: none;
+  background-color: transparent;
+  color: #000;
+  top: auto;
+  bottom: 0;
+  padding: 0;
+  -webkit-transform: none;
+  -moz-transform: none;
+  transform: none;
 }
 .fp-playlist-external.fp-playlist-polaroid .dur {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-weight: 700;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
 }
 .fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
-	clear: both;
+  clear: both;
 }
 
 
@@ -1818,35 +1818,33 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 
 
 @media screen and (min-width: 800px) {
-	.fp-playlist-external.fp-playlist-polaroid a,
-	.entry-content .fp-playlist-external.fp-playlist-polaroid a {
-		width: 30.333333333333%;
-	
-	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
-		clear: none;
-	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
-		clear: both;
-	}
+  .fp-playlist-external.fp-playlist-polaroid a,
+  .entry-content .fp-playlist-external.fp-playlist-polaroid a {
+    width: 30.333333333333%;
+  }
+  .fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
+    clear: none;
+  }
+  .fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
+    clear: both;
+  }
 }
 
 
 @media screen and (min-width: 1020px) {
-	.fp-playlist-external.fp-playlist-polaroid a,
-	.entry-content .fp-playlist-external.fp-playlist-polaroid a {
-		width: 22%;
-	
-	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
-		clear: none;
-	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
-		clear: none;
-	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(4n+1) {
-		clear: both;
-	}
+  .fp-playlist-external.fp-playlist-polaroid a,
+  .entry-content .fp-playlist-external.fp-playlist-polaroid a {
+    width: 22%;
+  }
+  .fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
+    clear: none;
+  }
+  .fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
+    clear: none;
+  }
+  .fp-playlist-external.fp-playlist-polaroid a:nth-child(4n+1) {
+    clear: both;
+  }
   .fp-player a.fp-sticky {
       display: none;
   }
