@@ -357,6 +357,36 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.0.727 - 2019/07/25 =
+
+* New mobile setting - Force landscape orientation in fullscreen
+* New playlist style - Polaroid 
+* New playlist style - Vertical Season
+* New video field - synopsis - used for Vertical Season playlist
+* Styling - changed splash images from CSS background to actual IMG tags for easier lazyloading and future retina support
+* Styling - making sure any menu fits into the player height
+* Styling - moving Airplay button next to fullscreen button
+
+
+= 7.3.19.727 - 2019/07/11 =
+
+* Security - fix for SQL injection vulnerability on the wp-admin FV Player screen for users with access - thanks to Tin Duong
+* Removing setting - Enable old interface
+* Bugfix - Speed menu - enabling for Android
+* Bugfix - Video Position Saving - disabling for live streams
+* Bugfix - Video Speed - not restoring the last video speed for players without speed menu
+
+= 7.3.18.727 - 2019/07/10 =
+
+* New Feature - Video Screenshots - FV Player Editor now lets you take the current video frame as the video splash screen
+* S3 Bucket browser - making it work more like WP Media Library, showing file details in the right sidebar
+* Settings screen - remembering the scroll position
+* Video Speed - remembering last video speed just like the audio volume
+* Performance - Video Position Saving - only storing position with Ajax before unloading the page
+* Bugfix - PHP 7.3 warning removed
+* Bugfix - Playlist - making it possible to pick another playlist item after playback error
+* Bugfix - Vimeo/MPEG-DASH muted autoplay fix
+
 = 7.3.16.727 - 2019/05/31 =
 
 * Subtitles - avoiding video playback failure when just the subtitles are missing
