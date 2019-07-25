@@ -54,7 +54,7 @@ jQuery(document).ready(function() {
 
 function fv_fancybox_check_size() {
   var
-    $player = jQuery('.fancybox-slide--current .flowplayer'),
+    $player = jQuery('.fancybox-slide--current .flowplayer:visible'),
     player_height = $player.outerHeight(),
     $caption = jQuery('.fancybox-caption'),
     $infobar = jQuery('.fancybox-infobar'),
@@ -63,28 +63,26 @@ function fv_fancybox_check_size() {
     $fs_button = $player.find('.fp-fullscreen');
 
   if ($player.length) {
-
-    var height = jQuery(window).height();    
+    var height = jQuery(window).height();
     if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar    
 
-    if($playlist.length) {
-      height -= $playlist.height()
+    if($playlist.length && height > 480 ) {
+      height -= $playlist.height();
+      height -= 2 * parseFloat($player.css('margin-bottom')) + 2;
+      height -= parseInt(jQuery('.fancybox-slide--current .fv-playlist-slider-wrapper').css('margin-bottom'));
     }
-
+    
      $player
       .css('max-height', '')
-      .css('max-width', (height/$player.data('ratio') + 44 ) +'px');
-
-      $playlist.css('max-width', (height/$player.data('ratio')) +'px');
-  
+      .css('max-width', (height/$player.data('ratio'))+'px');
 
     // hide caption and infobar if it would cover the player
-    if ($caption.length) {      
+    if ($caption.length) {
       if ( $caption.position().top - 5 < $player.position().top + player_height ) $caption.hide();        
       else $caption.show();
     }
     
-    if ($infobar.length) {      
+    if ($infobar.length) {
       if ( $infobar.position().top+$infobar.height() > $player.position().top && $infobar.position().left+$infobar.width() > $player.position().left ) $infobar.hide();        
       else $infobar.show();
     }
