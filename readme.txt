@@ -357,6 +357,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.0.727 - 2019/07/25 =
+
+* New mobile setting - Force landscape orientation in fullscreen
+* New playlist style - Polaroid 
+* New playlist style - Vertical Season
+* New video field - synopsis - used for Vertical Season playlist
+* Styling - changed splash images from CSS background to actual IMG tags for easier lazyloading and future retina support
+* Styling - making sure any menu fits into the player height
+* Styling - moving Airplay button next to fullscreen button
+
+
 = 7.3.19.727 - 2019/07/11 =
 
 * Security - fix for SQL injection vulnerability on the wp-admin FV Player screen for users with access - thanks to Tin Duong
