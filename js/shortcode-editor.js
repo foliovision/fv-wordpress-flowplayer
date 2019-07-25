@@ -712,6 +712,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
     new_item.find('[name=fv_wp_flowplayer_field_end]').val(objVid.end);
     
     jQuery(objVid.meta).each( function(k,v) {
+      if( v.meta_key == 'synopsis' ) new_item.find('[name=fv_wp_flowplayer_field_synopsis]').val(v.meta_value).attr('data-id',v.id);
       if( v.meta_key == 'audio' ) new_item.find('[name=fv_wp_flowplayer_field_audio]').prop('checked',v.meta_value).attr('data-id',v.id);
     });    
     
@@ -2120,6 +2121,7 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
     'fv_wp_flowplayer_field_live',
     'fv_wp_flowplayer_field_auto_splash',
     'fv_wp_flowplayer_field_auto_caption',
+    'fv_wp_flowplayer_field_synopsis',
     'fv_wp_flowplayer_field_audio'
   ].indexOf(fieldName) > -1;
 }
