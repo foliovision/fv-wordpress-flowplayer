@@ -2029,6 +2029,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 
 .fancybox-slide .fv_player_lightbox_hidden {
   background-color: transparent;
+  width: 100%;
 }
 
 .fvp-progress-wrap {
