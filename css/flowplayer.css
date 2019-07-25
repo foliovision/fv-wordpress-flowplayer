@@ -1119,15 +1119,15 @@
 
 /* error icon */
 .is-error.flowplayer .fp-player:before {
-	background: url("img/no-play-white.svg") no-repeat center center;
-	background-size: 14%;
-	z-index: 2;
-	content: '';
-	display: block;
-	height: 100%;
-	position: relative;
-	-webkit-filter: drop-shadow( 0 0 4px #aaa );
-	filter: drop-shadow( 0 0 4px #aaa );
+  background: url("img/no-play-white.svg") no-repeat center center;
+  background-size: 14%;
+  z-index: 2;
+  content: '';
+  display: block;
+  height: 100%;
+  position: relative;
+  -webkit-filter: drop-shadow( 0 0 4px #aaa );
+  filter: drop-shadow( 0 0 4px #aaa );
   pointer-events: none;
 }
 
@@ -2081,79 +2081,79 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 /* Editing Movies and Shows */
 
 .fp-playlist-external.fp-playlist-season .fp-playlist-external a {
-    clear: both;
-    display: block;
-    margin: 0 0 2em;
-    max-width: 600px;
+  clear: both;
+  display: block;
+  margin: 0 0 2em;
+  max-width: 600px;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info {
-	float: right;
-	font-weight: 300;
-	font-family: inherit;
-	margin: 0 0 .5em;
-	width: 48%;
-}
+  float: right;
+  font-weight: 300;
+  font-family: inherit;
+  margin: 0 0 .5em;
+  width: 48%;
+  }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-thumb-img {
-	float: left;
-	width: 48%;
-	position: relative;
-	margin: 0 2% 0 0;
-	padding-top: 28%;
-	margin-bottom: 30px;
+  float: left;
+  width: 48%;
+  position: relative;
+  margin: 0 2% 0 0;
+  padding-top: 28%;
+  margin-bottom: 30px;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-thumb-img img {
-	display: block;
+  display: block;
 }
 .fp-playlist-external.fp-playlist-season .fp-playlist-external a h4 {
-	background: none;
-	text-align: left;
-	padding: 0;
-	font-size: 18px;
-	font-size: 1.125rem;
-	font-weight: 700;
-	margin-bottom: .5em;
+  background: none;
+  text-align: left;
+  padding: 0;
+  font-size: 18px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: .5em;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p:last-child {
-	margin-bottom: .5em;
+  margin-bottom: .5em;
 }
 .fp-playlist-external.fp-playlist-season .fp-playlist-season .dur {
-	color: #aaa;
-	font-weight: 300;
+  color: #aaa;
+  font-weight: 300;
 }
 .fp-playlist-external.fp-playlist-season .fp-playlist-external a h4 {
-	background-color: transparent;
-	color: #000;
-	width: auto;
-	text-align: left;
+  background-color: transparent;
+  color: #000;
+  width: auto;
+  text-align: left;
 }
 .fp-playlist-external.fp-playlist-season .fvp-progress-wrap {
-	background-color: #999;
-	background-color: rgba(255,255,255,0.5);
-	-webkit-box-shadow: 0 0 3px #000;
-	-moz-box-shadow: 	0 0 3px #000;
-	box-shadow: 		0 0 3px #000;
+  background-color: #999;
+  background-color: rgba(255,255,255,0.5);
+  -webkit-box-shadow: 0 0 3px #000;
+  -moz-box-shadow: 	0 0 3px #000;
+  box-shadow: 		0 0 3px #000;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info h4 {
-	text-align: left;
-	font-size: 0.8em;
+  text-align: left;
+  font-size: 0.8em;
   padding: 0;
   color: black;
   font-weight: bold;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p {
-	color: black;
-	font-size: 0.75em;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	line-height: 1.3;
-	margin-bottom: 0;
+  color: black;
+  font-size: 0.75em;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.3;
+  margin-bottom: 0;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info .dur {
-	color: black;
-	font-size: 0.65em;
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: black;
+  font-size: 0.65em;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .fp-playlist-external.fp-playlist-season a:hover h4 {
- 	color: #333 !important;
+  color: #333 !important;
 }
 .fp-playlist-external.fv-playlist-design-2017 a.is-active h4 {
   display: block;
@@ -2163,7 +2163,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .fp-playlist-external.fp-playlist-season a.fvp-video-thumb-no-splash h4,
 .fp-playlist-external.fp-playlist-season a.is-active:hover h4, 
 .fp-playlist-external.fp-playlist-season a:hover .dur {
-	color: #000;
+  color: #000;
 }
 
 .flowplayer.is-small .fv-fp-list {display: none}
