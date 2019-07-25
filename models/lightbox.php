@@ -149,6 +149,12 @@ class FV_Player_lightbox {
       
       global $fv_fp;
       
+      $iConfWidth = intval($fv_fp->_get_option('width'));
+      $iConfHeight = intval($fv_fp->_get_option('height'));
+
+      $iPlayerWidth = ( isset($aArgs[1]->aCurArgs['width']) && intval($aArgs[1]->aCurArgs['width']) > 0 ) ? intval($aArgs[1]->aCurArgs['width']) : $iConfWidth;
+      $iPlayerHeight = ( isset($aArgs[1]->aCurArgs['height']) && intval($aArgs[1]->aCurArgs['height']) > 0 ) ? intval($aArgs[1]->aCurArgs['height']) : $iConfHeight;
+      
       $aLightbox = preg_split('~[;]~', $aArgs[1]->aCurArgs['lightbox']);
       
       if ( $this->is_text_lightbox($aArgs[1]->aCurArgs) ) {
@@ -158,6 +164,9 @@ class FV_Player_lightbox {
         $html = "<a".$this->fancybox_opts()." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " class='fv-player-lightbox-link' href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
         
       } else {
+        $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
+        $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
+        
         $sSplash = apply_filters('fv_flowplayer_playlist_splash', $aArgs[1]->aCurArgs['splash'], $fv_fp);
 
         $sTitle = '';
@@ -169,14 +178,21 @@ class FV_Player_lightbox {
 
         $lightboxed_player = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
 
-        // re-use the existing player HTML and add data-fancybox, data-options, new id, href and add new classes
-        $html = str_replace( '<div id="wpfp_'.$aArgs[1]->hash.'" class="flowplayer ', '<div'.$this->fancybox_opts($sSplash).' id="fv_flowplayer_' . $aArgs[1]->hash . '_lightbox_starter" '.$sTitle.' href="#wpfp_' . $aArgs[1]->hash . '_container" class="flowplayer lightbox-starter is-splash no-svg is-paused ', $html );
+        // re-use the existing player HTML and add data-fancybox, data-options, new id and href
+        $html = str_replace( '<div id="wpfp_'.$aArgs[1]->hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="fv_flowplayer_' . $aArgs[1]->hash . '_lightbox_starter" '.$sTitle.' href="#wpfp_' . $aArgs[1]->hash . '_container" ', $html );
+        
+        // add all the new classes
+        $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter is-splash no-svg is-paused ', $html );
+        
+        // use new size
+        $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
 
         // this is how we link playlist items to the player
         $html = str_replace( ' rel="wpfp_'.$aArgs[1]->hash.'"', ' rel="fv_flowplayer_'.$aArgs[1]->hash.'_lightbox_starter"', $html );
 
         // we removed FV Player data to make sure it won't initialize here
         $html = preg_replace( "~ data-item='.*?'~", '', $html );
+        $html = preg_replace( '~ data-item=".*?"~', '', $html );
 
         $html .= "\n<div id ='wpfp_" . $aArgs[1]->hash . '_container' . "' class='fv_player_lightbox_hidden' style='display: none'>\n" . $lightboxed_player . "</div>";
       }
