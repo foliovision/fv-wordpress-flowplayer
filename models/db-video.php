@@ -84,15 +84,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getDuration() {
-    $sDuration = false;
-    if( $tDuration = intval($this->getMetaValue('duration',true)) ) {
-      if( $tDuration < 3600 ) {
-        $sDuration = gmdate( "i:s", $tDuration );
-      } else {
-        $sDuration = gmdate( "H:i:s", $tDuration );
-      }
-    }
-    return $sDuration;
+    return intval($this->getMetaValue('duration',true));
   }
 
   /**
@@ -319,7 +311,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       }
 
-      if (isset($video_data) && $video_data && count($video_data)) {
+      if (isset($video_data) && $video_data && (is_object($video_data) || count($video_data))) {
         // single ID, just populate our own data
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
