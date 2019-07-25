@@ -210,3 +210,24 @@ jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-
   }
   fv_fancybox_check_size()
 })
+
+jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', function() {
+  var playlist = jQuery(this).closest('.fp-playlist-external'),
+    player = jQuery('#'+playlist.attr('rel')),
+    ref = player.data('src') || player.attr('href'),
+    api = jQuery(ref).find('.flowplayer').data('flowplayer'),
+    index = playlist.find('a').index( this );
+    
+  jQuery.fancybox.open(player);
+  if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
+    if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
+  }
+  
+  if( index == 0 && api.splash ) {
+    api.load();
+  } else {
+    api.play(index);
+  }
+  fv_fancybox_check_size();
+  return false;
+});
