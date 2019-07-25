@@ -290,37 +290,18 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       tabAddedCallback($item);
     }
 
-    // if this tab was the last active, make it active again
-    try {
-      if (
-        typeof(window.localStorage) == 'object' &&
-        typeof(window.localStorage.fv_player_last_tab_selected) != 'undefined' &&
-        window.localStorage.fv_player_last_tab_selected == tabId
-      ) {
-        // do this async, so the browser has time to paint the UI
-        // and change class of this tab to active on click
-        setTimeout(function() {
-          $item.click();
-        }, 500);
-      }
-    } catch(e) {}
-  } else {
-    // if the tab exists but is not active (when closing and reopening the modal),
-    // make sure we make it active again
-    try {
-      if (
-        typeof(window.localStorage) == 'object' &&
-        typeof(window.localStorage.fv_player_last_tab_selected) != 'undefined' &&
-        window.localStorage.fv_player_last_tab_selected == tabId
-      ) {
-        // do this async, so the browser has time to paint the UI
-        // and change class of this tab to active on click
-        setTimeout(function() {
-          jQuery('#' + tabId).click();
-        }, 500);
-      }
-    } catch(e) {}
   }
+  
+  // if this tab was the last active, make it active again
+  try {
+    if ( typeof window.localStorage == "object" && window.localStorage.fv_player_last_tab_selected && window.localStorage.fv_player_last_tab_selected == tabId ) {
+      // do this async, so the browser has time to paint the UI
+      // and change class of this tab to active on click
+      setTimeout(function() {
+        jQuery('#' + tabId).click();
+      }, 500);
+    }
+  } catch(e) {}
 };
 
 function renderBrowserPlaceholderHTML(options) {
