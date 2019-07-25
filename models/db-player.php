@@ -447,7 +447,7 @@ CREATE TABLE " . self::$db_table_name . " (
       } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
         $this->$key = stripslashes($value);
         
-      } else if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
+      } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id'))) {
         // generate warning
         trigger_error('Unknown property for new DB player: ' . $key);
         

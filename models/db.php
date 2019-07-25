@@ -128,6 +128,9 @@ class FV_Player_Db {
           if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
             $aItem['live'] = 'true';
           }
+          if ($meta->getMetaKey() == 'dvr' && $meta->getMetaValue() == 'true') {
+            $aItem['dvr'] = 'true';
+          }
         }
       }
       
@@ -202,6 +205,10 @@ class FV_Player_Db {
    */
   public static function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
     global $player_ids_when_searching, $FV_Player_Db; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
+
+    // sanitize variables
+    $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
+    $order_by = (in_array($order_by, array('ID', 'player_name', 'date_created', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'player_name');
 
     // load single player, as requested by the user
     if ($single_id) {
