@@ -1342,9 +1342,9 @@
 .fp-playlist-horizontal.is-wide a:nth-child(3n+1) {clear:none}
 .fp-playlist-horizontal.is-wide a:nth-child(5n+1) {clear:both}
 
-.fv-playlist-slider-wrapper { overflow-x: scroll; margin-bottom: 24px;-webkit-overflow-scrolling: touch;display:block}
+.fv-playlist-slider-wrapper { overflow-x: auto; margin-bottom: 24px;-webkit-overflow-scrolling: touch;display:block}
 .fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px;text-align:left }
-.fv-playlist-slider-wrapper .fp-playlist-horizontal a { min-width: 200px }
+.fv-playlist-slider-wrapper .fp-playlist-horizontal a, .fv-playlist-slider-wrapper .fp-playlist-horizontal.is-wide a { width: 200px }
 
 .fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
 .fp-playlist-vertical-player {float:left!important;max-width:calc( 100% - 156px)!important}
@@ -2025,6 +2025,12 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn, .flowplayer.is-tiny .fv-fp-rewind {
   display: none;
 } 
+
+
+.fancybox-slide .fv_player_lightbox_hidden {
+  background-color: transparent;
+  width: 100%;
+}
 
 .fvp-progress-wrap {
   position: absolute;
