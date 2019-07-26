@@ -18,7 +18,7 @@ final class FV_Player_Video_SitemapTest extends FV_Player_UnitTestCase {
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data-youtube.json'), true) );
     
     // create a post with playlist shortcode
-    $this->post_id_testEndActions = $this->factory->post->create( array(
+    $this->post_id_testEndActions= $this->factory->post->create( array(
       'post_title' => 'Video Sitemap Test',
       'post_content' => <<< HTML
 Here is the intro paragraph

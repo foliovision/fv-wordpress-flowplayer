@@ -60,9 +60,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
         '/With the Verbose setting Vimeo API calls are logged into [^<]+</m',
         '/convert_(vimeo|youtube)=[^\']+\'/m',
         '/fv_player_embed=[^&]+&/m',
-        '/fv-player-vimeo-[^<]+</m',
-        '/Post excerpt \d{1,}( \d{1,})?/m',
-        '/(\?|&)p=\d{1,}/m'
+        '/fv-player-vimeo-[^<]+</m'
       ),
       array(
         '"id":-regex_replaced-',
@@ -70,9 +68,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
         'With the Verbose setting Vimeo API calls are logged into -regex-replaced-<',
         'convert_$1=-regex-replaced-\'',
         'fv_player_embed=-regex-replaced-&',
-        'fv-player-vimeo--regex-replaced-<',
-        'Post excerpt -regex-replaced-',
-        '$1p=-regex-replaced-'
+        'fv-player-vimeo--regex-replaced-<'
       ),
       $input
     );
