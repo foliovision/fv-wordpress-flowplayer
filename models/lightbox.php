@@ -173,10 +173,10 @@ class FV_Player_lightbox {
         }
         
         $lightbox = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
-        $lightbox = "\n<div id ='".$container."' class='fv_player_lightbox_hidden' style='display: none'>\n".$lightbox."</div>";
+        $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
         
         if ( $this->is_text_lightbox($args) ) {
-          $html = "<a".$this->fancybox_opts()." id='".$button."'".$sTitle." class='fv-player-lightbox-link' href=\"#\" data-src='#".$container."'>" . $args['caption'] . "</a>";
+          $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
 
           // in this case we put the lightboxed player into footer as putting it behind the anchor might break the parent block element
           $this->lightboxHtml .= $lightbox;
@@ -191,7 +191,7 @@ class FV_Player_lightbox {
           $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
 
           // add all the new classes
-          $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter is-splash no-svg is-paused ', $html );
+          $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter ', $html );
 
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
