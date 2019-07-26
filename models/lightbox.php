@@ -125,10 +125,6 @@ class FV_Player_lightbox {
       echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
     }
   }
-  
-  function get_title_attr( $args ) {    
-    return !empty($args['caption']) ? " title='" . esc_attr($args['caption']) . "'" : '';
-  }
 
   function is_text_lightbox($aArgs) {
     $aLightbox = preg_split('~[;]~', $aArgs['lightbox']);
@@ -161,8 +157,21 @@ class FV_Player_lightbox {
         
         $hash = $aArgs[1]->hash;
         
-        if ( $this->is_text_lightbox($args) ) {
-          $sTitle = empty($args['playlist']) ? $sTitle = $this->get_title_attr($args) : '';
+        
+        $sTitle = '';
+        if( !empty($aLightbox[3]) && $aLightbox[3] != 'text' ) {
+          $sTitle = $aLightbox[3];
+        } else if( !empty($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3]) && $aLightbox[1] != 'text'  ) {
+          $sTitle = $aLightbox[1];
+        } else if( empty($args['playlist']) && !empty($args['caption']) ) {
+          $sTitle = $args['caption'];
+        }
+        
+        if( !empty($sTitle) ) {
+          $sTitle = " title='".esc_attr($sTitle)."'";
+        }
+        
+        if ( $this->is_text_lightbox($args) ) {          
           $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
           $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
           $html = "<a".$this->fancybox_opts()." id='fv_flowplayer_".$hash."_lightbox_starter'" . $sTitle . " class='fv-player-lightbox-link' href=\"#\" data-src='#wpfp_".$hash."'>" . $args['caption'] . "</a>";
@@ -173,17 +182,10 @@ class FV_Player_lightbox {
           
           $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $fv_fp);
 
-          $sTitle = '';
-          if (isset($aLightbox[3])) {
-            $sTitle = "title='" . esc_attr($aLightbox[3]) . "'";
-          } else if (isset($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3])) {
-            $sTitle = "title='" . esc_attr($aLightbox[1]) . "'";
-          }
-
           $lightboxed_player = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
 
           // re-use the existing player HTML and add data-fancybox, data-options, new id and href
-          $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="fv_flowplayer_'.$hash.'_lightbox_starter" '.$sTitle.' href="#wpfp_'.$hash.'_container" ', $html );
+          $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="fv_flowplayer_'.$hash.'_lightbox_starter"'.$sTitle.' href="#wpfp_'.$hash.'_container" ', $html );
           
           // add all the new classes
           $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter is-splash no-svg is-paused ', $html );
@@ -197,9 +199,6 @@ class FV_Player_lightbox {
           // we removed FV Player data to make sure it won't initialize here
           $html = preg_replace( "~ data-item='.*?'~", '', $html );
           $html = preg_replace( '~ data-item=".*?"~', '', $html );
-          
-          // remove admin warnings about broken JavaScript
-          $html = preg_replace( '~<div id="wpfp_'.$hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content">.*?</div></div>~', '', $html );
 
           $html .= "\n<div id ='wpfp_".$hash.'_container' . "' class='fv_player_lightbox_hidden' style='display: none'>\n" . $lightboxed_player . "</div>";
         }
