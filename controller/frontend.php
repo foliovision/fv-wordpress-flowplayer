@@ -70,6 +70,7 @@ function fv_flowplayer_get_js_translations() {
   'no_support_IE9' =>__('Admin: Video checker doesn\'t support IE 9.','fv-wordpress-flowplayer'),
   'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
   'playlist_current' =>__('Now Playing','fv-wordpress-flowplayer'),
+  'playlist_item_no' =>__('Item %d.','fv-wordpress-flowplayer'),
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
@@ -350,6 +351,7 @@ function flowplayer_prepare_scripts() {
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_alternative_fullscreen') ) $aConf['mobile_alternative_fullscreen'] = $val;
+    if( $val = $fv_fp->_get_option('mobile_landscape_fullscreen') ) $aConf['mobile_landscape_fullscreen'] = $val;
 
     if ( $fv_fp->_get_option('video_position_save_enable') ) {
       $aConf['video_position_save_enable'] = $fv_fp->_get_option('video_position_save_enable');
@@ -396,6 +398,8 @@ function flowplayer_prepare_scripts() {
       );
     }
     
+    if( is_admin() ) $aConf['wpadmin'] = true;
+    
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
@@ -427,7 +431,7 @@ function flowplayer_prepare_scripts() {
   }
   
   global $FV_Player_lightbox;
-  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') ) ) {
+  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('lightbox_force') ) ) {
     $aConf = array();
     $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
     

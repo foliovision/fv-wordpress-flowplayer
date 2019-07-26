@@ -283,6 +283,8 @@ function fv_flowplayer_admin_default_options() {
                     <option value="prevnext"  <?php if( $value == 'prevnext' ) echo ' selected="selected"'; ?> ><?php _e('Prev/Next', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="vertical"  <?php if( $value == 'vertical' ) echo ' selected="selected"'; ?> ><?php _e('Vertical', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="slider"    <?php if( $value == 'slider' ) echo ' selected="selected"'; ?> ><?php _e('Slider', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="season"    <?php if( $value == 'season' ) echo ' selected="selected"'; ?> ><?php _e('Vertical Season', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="polaroid"  <?php if( $value == 'polaroid' ) echo ' selected="selected"'; ?> ><?php _e('Polaroid', 'fv-wordpress-flowplayer'); ?></option>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv-wordpress-flowplayer'); ?>
                 </p>
@@ -653,6 +655,7 @@ function fv_flowplayer_admin_mobile() {
           <?php $fv_fp->_get_checkbox(__('Use native fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_native_fullscreen', __('Stops popups, ads or subtitles from working, but provides faster interface. We set this for Android < 4.4 and iOS < 7 automatically.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Force fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_force_fullscreen', __('Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback.', 'fv-wordpress-flowplayer')  ); ?>
           <?php $fv_fp->_get_checkbox(__('Alternative iOS fullscreen mode', 'fv-wordpress-flowplayer'), 'mobile_alternative_fullscreen', __("Works for iOS < 12 which doesn't support HTML5 fullscreen. Only use if you see site elements such as header bar ovelaying the player in fullscreen on iOS.", 'fv-wordpress-flowplayer')  ); ?>
+          <?php $fv_fp->_get_checkbox(__('Force landscape orientation in fullscreen', 'fv-wordpress-flowplayer'), 'mobile_landscape_fullscreen', __("Works on the Android mobile, not supported on iOS unfortunately.", 'fv-wordpress-flowplayer')  ); ?>
 					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -840,11 +843,10 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
           <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sticky', 'fv-wordpress-flowplayer'), array('interface', 'sticky') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Synopsis', 'fv-wordpress-flowplayer'), array('interface', 'synopsis') ); ?>
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
-
-          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
 					<tr>
 						<td colspan="4">
@@ -1046,6 +1048,8 @@ function fv_flowplayer_admin_skin_get_table($options) {
 ?>
     <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
+      $options = apply_filters( 'fv_player_skin_settings', $options );
+      
       foreach ($options['items'] as $item) {
         $setup = wp_parse_args( $item, array( 'name' => false, 'data' => false, 'optoins' => false, 'attributes' => false, 'class' => false, 'default' => false ) );
 
@@ -1913,12 +1917,11 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       
       more.toggle();
       
-      if( jQuery(':visible', more ).length > 0 ) {
-        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
-        jQuery(this).html('(hide)');
-      } else {
-        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
-      }      
+    } );
+    
+    jQuery('.show-info').click( function(e) {
+      e.preventDefault();
+      jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
     
     /*
@@ -1964,6 +1967,7 @@ jQuery(document).ready(function(){
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
+
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   e.preventDefault();
   window.location.hash = e.target.hash;
@@ -1972,8 +1976,30 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
-});  
+});
 
+jQuery('#normal-sortables .button-primary').on('click',function(e){
+  if ('fv-wp-flowplayer-submit' == this.name) {
+    // store windows scroll position, so we can return to the same spot after reload
+    if (localStorage) {
+      localStorage["fv_posStorage"] = $(window).scrollTop();
+    }
+  }
+
+  return true;
+});
+
+jQuery(window).on('load', function() {
+  setTimeout(function() {
+    if (localStorage) {
+      var posReader = localStorage["fv_posStorage"];
+      if (posReader) {
+        jQuery(window).scrollTop(posReader);
+        localStorage.removeItem("fv_posStorage");
+      }
+    }
+  }, 100);
+});
 
 jQuery('a.fv-settings-anchor').on('click',function(e){
   var id = jQuery(this).attr('href');

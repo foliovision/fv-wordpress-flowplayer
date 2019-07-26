@@ -1,12 +1,31 @@
 <?php
 
-class FV_Player_Media_Browser {
+abstract class FV_Player_Media_Browser {
 
   public $ajax_action_name = 'wp_ajax_load_assets';
 
   public function __construct($ajax_action_name) {
+    // load base JS
+    add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 );
+    add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg_base') );
+    add_action( 'admin_print_footer_scripts', array($this, 'init_base'), 1 );
+
+    // register extending class WP AJAX action
     $this->ajax_action_name = $ajax_action_name;
     $this->register();
+  }
+
+  abstract function init();
+  abstract function init_for_gutenberg();
+
+  function init_base() {
+    global $fv_wp_flowplayer_ver;
+    wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), $fv_wp_flowplayer_ver, true );
+    $this->init();
+  }
+
+  function init_for_gutenberg_base() {
+    add_action( 'admin_footer', array($this, 'init_base'), 1 );
   }
 
   function register() {

@@ -185,7 +185,7 @@ class FV_Player_List_Table extends WP_List_Table {
   
   public function get_sortable_columns() {
     return array(
-      'id'               => array( 'ID', true ),
+      'id'               => array( 'id', true ),
       'player_name'      => array( 'player_name', true ),
       'date_created'     => array( 'date_created', true ),
       'subtitles_count'  => array( 'subtitles_count', true ),

@@ -87,7 +87,7 @@ Host:                     <?php echo $host . "\n"; ?>
 Browser:                  <?php echo isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none'; ?>
 
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-MySQL Version:            <?php $connection = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME); echo mysqli_get_server_info($connection) . "\n"; ?>
+MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 
 WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT."\n"; ?>
@@ -190,7 +190,6 @@ print_r( $conf );
 DATABASE
 
 <?php
-global $wpdb;
 foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos', 'fv_player_videometa' ) AS $table) {
   $found = false;
   $table_name = $wpdb->prefix.$table;
