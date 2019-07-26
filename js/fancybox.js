@@ -13,9 +13,11 @@ t.idleSecondsCounter=0,n.toggleClass("fancybox-show-toolbar",!(!e.toolbar||!e.bu
 var o=e.current,i=(new Date).getTime();e.group.length<2||o.opts.wheel===!1||"auto"===o.opts.wheel&&"image"!==o.type||(t.preventDefault(),t.stopPropagation(),o.$slide.hasClass("fancybox-animated")||(t=t.originalEvent||t,i-n<250||(n=i,e[(-t.deltaY||-t.deltaX||t.wheelDelta||-t.detail)<0?"next":"previous"]())))})}})}(document,jQuery);
 
 function fv_player_colorbox_title() {
-  var that = jQuery(this);
-  if( that.attr('title') && that.attr('title').length > 0 ) return that.attr('title');
-  if( that.find('img') && that.find('img').attr('alt') && that.find('img').attr('alt').length > 0 ) return that.find('img').attr('alt');
+  var that = jQuery(this), title = that.attr('title');
+  if( title && title.length > 0 ) return title;
+  
+  var img = that.find('img[alt]:not(.fp-splash)');
+  if( img.length && img.attr('alt').length > 0 ) return img.attr('alt');
   if( that.parent().is('h5') && that.clone().children().remove().end().text() ) {
     return that.clone().children().remove().end().text();
   }
