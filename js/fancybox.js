@@ -24,6 +24,11 @@ function fv_player_colorbox_title() {
   if( that.parent().is('h5') && that.parent().clone().children().remove().end().text() ) {
     return that.parent().clone().children().remove().end().text();
   }
+  
+  var figcaption = that.parent().siblings('figcaption');
+  if( figcaption.length  ) {
+    return figcaption.text();
+  }
   return '';
 }
 
