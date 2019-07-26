@@ -450,6 +450,7 @@ jQuery(document).ready(function($){
     var value = jQuery(this).val();
     jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
     switch(value){
+      case 'default':
       case 'redirect': 
         jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show(); 
         break; 
@@ -1199,10 +1200,10 @@ function fv_wp_flowplayer_edit() {
               jQuery('#fv_wp_flowplayer_field_end_actions').trigger('change');
 
               switch (end_of_playlist_action) {
+                case 'default':
                 case 'redirect':
                   jQuery('#fv_wp_flowplayer_field_redirect').val(value);
                   break;
-
                 case 'popup':
                   jQuery('#fv_wp_flowplayer_field_popup_id').val(value);
                   break;
@@ -1845,14 +1846,13 @@ function fv_wp_flowplayer_build_ajax_data() {
   // special processing for end video actions
   if (end_of_playlist_action && end_of_playlist_action != 'Nothing') {
     switch (end_of_playlist_action) {
+      case 'default':
       case 'redirect':
         data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_redirect').val();
         break;
-
       case 'popup':
         data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_popup_id').val();
         break;
-
       case 'email_list':
         data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_email_list').val();
         break;
@@ -2561,6 +2561,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
    * fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_splashend', 'splashend', false, true, ['show'] );
    */
   switch(jQuery('#fv_wp_flowplayer_field_end_actions').val()){
+    case 'default':
     case 'loop': fv_wp_fp_shortcode += ' loop="true"'; break;
     case 'splashend': fv_wp_fp_shortcode += ' splashend="show"'; break;
     case 'redirect': fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_redirect','redirect'); break;
