@@ -21,9 +21,17 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     $html = preg_replace( '~fv_ytplayer_[a-z0-9]+~', 'fv_ytplayer_XYZ', $html);
     $html = preg_replace( '~fv_vimeo_[a-z0-9]+~', 'fv_vimeo_XYZ', $html);
     $html = preg_replace( '~<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="[^"]*?" />~', '<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="XYZ" />', $html);
+    $html = preg_replace( "~fv-player-custom-videos-entity-id\[_fv_player_user_video\]' value='\d+'~", "fv-player-custom-videos-entity-id[_fv_player_user_video]' value='1234'", $html);
     
     $html = preg_replace( '~convert_jwplayer=[a-z0-9]+~', 'convert_jwplayer=XYZ', $html);
     $html = preg_replace( '~_wpnonce=[a-z0-9]+~', '_wpnonce=XYZ', $html);
+    
+    // XML Video Sitemap
+    $html = preg_replace( '~http://example.org/\?p=\d{1,}~', 'http://example.org/?p=1234', $html);
+    $html = preg_replace( '~Post excerpt \d{1,}~', 'Post excerpt -regex-replaced-', $html);
+    
+    // DB IDs in JSON
+    $html = preg_replace( '~"id":\d+~', '"id":1234', $html);
     
     $html = explode("\n",$html);
     foreach( $html AS $k => $v ) {
@@ -43,7 +51,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     // splash end
     $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
     
-    $html = preg_replace( '~\?ver=[0-9\.]+~', '?ver=1.2.3', $html);
+    $html = preg_replace( '~\?ver=[0-9-wpalphabeta\.]+~', '?ver=1.2.3', $html);
     
     $html = preg_replace( '~<video:publication_date>(.*?)</video:publication_date>~', '<video:publication_date>2019-04-23T09:44:33+00:00</video:publication_date>', $html);
     
