@@ -68,7 +68,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim  \" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
   <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">
@@ -125,7 +125,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim  \" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
+    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy\" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
 	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
   <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
 <div class='fvp-share-bar'><ul class=\"fvp-sharing\">

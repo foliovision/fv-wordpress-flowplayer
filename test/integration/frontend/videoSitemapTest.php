@@ -56,7 +56,7 @@ HTML
     $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );
     $output = ob_get_clean();
     
-    $this->assertEquals( $this->remove_ids_and_urls( $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') ) ), $this->remove_ids_and_urls( $this->fix_newlines($output) ) );
+    $this->assertEquals( $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') ), $this->fix_newlines($output) );      
   }
   
   public function tearDown() {
