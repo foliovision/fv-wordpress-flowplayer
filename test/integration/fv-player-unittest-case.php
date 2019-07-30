@@ -12,7 +12,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   }  
   
   public function fix_newlines( $html ) {
-    $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"some-test-hash"', $html);
+    $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"wpfp_some-test-hash"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
     $html = preg_replace( '~<input type="hidden" id="nonce_([^"]*?)" name="nonce_([^"]*?)" value="([^"]*?)" />~', '<input type="hidden" id="nonce_$1" name="nonce_$2" value="XYZ" />', $html);    
     $html = preg_replace( "~nonce: '([^']*?)'~", "nonce: 'XYZ'", $html);
@@ -42,7 +42,8 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     $html = preg_replace( '~\t~', '', $html );
     
     //  playlist in lightbox test
-    $html = preg_replace( "/(href|data-fv-lightbox|data-src)='#wpfp_[^']+'/", "$1='#some-test-hash'", $html);
+    $html = preg_replace( '/(href|data-fv-lightbox|data-src)="#wpfp_[^"]+"/', '$1="#wpfp_some-test-hash"', $html);
+    $html = preg_replace( '/(id|rel)="wpfp_[^"]+"/', '$1="wpfp_some-test-hash"', $html);
     $html = preg_replace( '~fv_flowplayer_[a-z0-9]+_lightbox_starter~', 'fv_flowplayer_XYZ_lightbox_starter', $html);
     
     //  tabbed playlist test
