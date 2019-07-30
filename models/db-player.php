@@ -720,14 +720,14 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     } else {
       // if we don't yet have instance of FV_Player_Db_Player created the DB for players
-      // has not yet been created at all... thus we return 0 records
+      // has not yet been created at all... try to init it first, then select totals
       if (!self::$DB_Instance) {
-      	$total = 0;
-      } else {
-	      $total = $wpdb->get_row( 'SELECT Count(*) AS Total FROM ' . self::$db_table_name );
-	      if ( $total ) {
-		      $total = $total->Total;
-	      }
+      	new FV_Player_Db_Player(-1);
+      }
+
+      $total = $wpdb->get_row( 'SELECT Count(*) AS Total FROM ' . self::$db_table_name );
+      if ( $total ) {
+        $total = $total->Total;
       }
     }
 
