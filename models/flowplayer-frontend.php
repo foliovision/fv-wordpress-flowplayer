@@ -162,8 +162,8 @@ class flowplayer_frontend extends flowplayer
         }
       }
     }
-    
-    if( preg_match( "~(youtu\.be/|youtube\.com/((watch|playlist)\?(.*&)?(v|list)=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+
+    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
       if( isset($aYoutube[5]) ) {
         $youtube = $aYoutube[5];
         $player_type = 'youtube';
@@ -209,14 +209,6 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-
-    // return src to DB-based shortcode,
-    // so we don't generate HTML with 1st item
-    // pointing to the playlist URL itself
-    if ($player_type == 'youtube' && !empty($args['id'])) {
-      $this->aCurArgs['src'] = $args['src'];
-      $media = $this->aCurArgs['src'];
-    }
 
     list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );    
 
