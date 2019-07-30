@@ -84,7 +84,13 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
-    
+
+    // restore list styling from the shortcode, if provided,
+    // as it needs to override the DB value
+    if (!empty($args['liststyle'])) {
+      $this->aCurArgs['liststyle'] = $args['liststyle'];
+    }
+
     // force horizontal playlist style for audio as that the only one styled properly
     if( $player = $this->current_player() ) {
       if( $videos = $player->getVideos() ) {
