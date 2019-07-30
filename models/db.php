@@ -1255,7 +1255,7 @@ class FV_Player_Db {
       if($_POST['action'] == 'fv_player_db_clone'){
         if (isset($data['meta'])) {
           foreach($data['meta'] as $h => $v){
-            if(in_array('post_id',$v)){
+            if($v['meta_key'] == 'post_id'){
               unset($data['meta'][$h]);
             }
           }
