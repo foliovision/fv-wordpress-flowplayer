@@ -292,6 +292,11 @@
     padding: 0;
 }
 
+#__assets_browser .attachment-preview .loadmore {
+    margin-top: -60%;
+    padding-bottom: 40%;
+}
+
 #__assets_browser .attachments-browser .errors {
     padding: 16px;
 }

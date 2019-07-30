@@ -454,7 +454,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
-    $sql .= implode(',', $data_keys);
+    $sql .= implode(', ', $data_keys);
 
     if ($is_update) {
       $sql .= ' WHERE id = ' . $this->id;
