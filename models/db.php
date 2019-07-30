@@ -1250,7 +1250,17 @@ class FV_Player_Db {
       ) {
         die('Security check failed');
       }      
-      
+
+      // remove post meta when cloning
+      if($_POST['action'] == 'fv_player_db_clone'){
+        if (isset($data['meta'])) {
+          foreach($data['meta'] as $h => $v){
+          if(in_array('post_id',$v)){
+            unset($data['meta'][$h]);
+          }
+        }
+      }
+    }
       try {
         // first, create the player
         $player_keys = $data;
@@ -1343,7 +1353,7 @@ class FV_Player_Db {
    *
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
-  public function remove_player() {
+   public function remove_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
       if( defined('DOING_AJAX') && DOING_AJAX && 
         ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) )
