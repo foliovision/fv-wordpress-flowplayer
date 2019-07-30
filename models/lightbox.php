@@ -176,8 +176,26 @@ class FV_Player_lightbox {
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
         
         if ( $this->is_text_lightbox($args) ) {
-          $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
-
+          if( !empty($args['playlist']) ) {
+            list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $fv_fp->build_playlist( $args, $args['src'], $args['src1'], $args['src2'], false, false );
+            if( is_array($aCaptions) ) {
+              $html = '<ul class="fv-player-lightbox-text-playlist" rel="'.$container.'">'; 
+              foreach( $aCaptions AS $key => $caption ) {
+                $html .= '<li><a';
+                // we only add the fancyBox attributes for the first link as having multiple links for one fancyBox view causes issues, we handle the clicks in JS
+                if( $key == 0 ) { 
+                  $html .= $this->fancybox_opts().' href="#'.$container.'"';
+                } else {
+                  $html .= ' href="#"';
+                }
+                $html .= ' class="fv-player-lightbox-link" title="'.esc_attr($caption).'">'.$caption.'</li>';
+              }
+              $html .= '</ul>';
+            }
+          } else {
+            $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
+          }
+          
           // in this case we put the lightboxed player into footer as putting it behind the anchor might break the parent block element
           $this->lightboxHtml .= $lightbox;
 

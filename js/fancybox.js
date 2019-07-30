@@ -205,17 +205,30 @@ function fv_player_lightbox_bind(){
 }
 
 jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-link', function() {  
-  var ref = jQuery(this).data('src') || jQuery(this).attr('href');
+  var ref = jQuery(this).data('src') || jQuery(this).attr('href'),
+    playlist = jQuery(this).closest('.fv-player-lightbox-text-playlist'),
+    index = 0;
+    
+  if( playlist.length ) {
+    ref = '#'+playlist.attr('rel');
+    index = playlist.find('a').index( this );
+  }
+  
   var api = jQuery(ref).find('.flowplayer').data('flowplayer');
   if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
     if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
   }
-  if( api.splash ) {
+  if( index == 0 && api.splash ) {
     api.load();
   } else {
-    api.play();
+    api.play(index);
   }
   fv_fancybox_check_size()
+  
+  if( playlist.length && !jQuery(this).data('fancybox') ) {
+    playlist.find('a[data-fancybox]').eq(0).click();
+    return false;
+  }  
 })
 
 jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', function() {

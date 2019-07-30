@@ -144,7 +144,7 @@ HTML;
   public function testPlaylistText() {
     $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true;text"]' );
     $sample = <<< HTML
-<ul><li><a data-fancybox='gallery' data-options='{"touch":false}' id='fv_flowplayer_b721d6e309a0b856f27cc5ffe3f64c19_lightbox_starter' title='Video 1' class='fv-player-lightbox-link' href="#" data-src='#wpfp_b721d6e309a0b856f27cc5ffe3f64c19'>Video 1</a></li><li><a data-fancybox='gallery' data-options='{"touch":false}' id='fv_flowplayer_lightbox_starter' title='Video 2' class='fv-player-lightbox-link' href='#' data-src='#wpfp_f7e1bf7ee8d12a2bf3bc4f148cdd718c'>Video 2</a></li><li><a data-fancybox='gallery' data-options='{"touch":false}' id='fv_flowplayer_lightbox_starter' title='Video 3' class='fv-player-lightbox-link' href='#' data-src='#wpfp_d0ecb746d43cfeca15296bd46c0dee3c'>Video 3</a></li></div></ul>
+<ul class="fv-player-lightbox-text-playlist" rel="wpfp_03551462692f72d815eca8e8aff1fcb5_container"><li><a data-fancybox='gallery' data-options='{"touch":false}' href="#wpfp_some-test-hash" class="fv-player-lightbox-link" title="Video 1">Video 1</li><li><a href="#" class="fv-player-lightbox-link" title="Video 2">Video 2</li><li><a href="#" class="fv-player-lightbox-link" title="Video 3">Video 3</li></ul>
 HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
     
@@ -152,29 +152,22 @@ HTML;
     ob_start();
     do_action('wp_footer');
     $footer = ob_get_clean();
-
+    
     $sample = <<< HTML
-<div style='display: none'>
-<div id="wpfp_41dd59eae18defa2521bb63946885f69" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video1.jpg);" data-ratio="0.5625">
+<div id="wpfp_f0f6ba67a6f7c994dd76b73bf4d7aa41_container" class="fv_player_lightbox_hidden" style="display: none">
+<div id="wpfp_f0f6ba67a6f7c994dd76b73bf4d7aa41" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-slider" style="max-width: 100%; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
+	<img class="fp-splash" alt="Video 1;Video 2;Video 3" src="https://cdn.site.com/video1.jpg" />
+	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
-<p class='fp-caption'>Video 1</p></div>
-<div style='display: none'>
-<div id="wpfp_c189727d02321b2388ebc844c1fdc0c7" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video2.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video2.jpg);" data-ratio="0.5625">
-	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
-
+<div class='fv-playlist-slider-wrapper'>	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_f0f6ba67a6f7c994dd76b73bf4d7aa41" style="width: 750px">
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video1.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video1.jpg' /></div><h4><span>Video 1</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video2.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video2.jpg' /></div><h4><span>Video 2</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video3.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video3.jpg' /></div><h4><span>Video 3</span></h4></a>
+	</div>
 </div>
-<p class='fp-caption'>Video 2</p></div>
-<div style='display: none'>
-<div id="wpfp_51771d567d4dd88882f65b4b89fc81d6" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video3.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-caption" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video3.jpg);" data-ratio="0.5625">
-	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-  <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
-
 </div>
-<p class='fp-caption'>Video 3</p></div>
 <!-- lightboxed players -->
 HTML;
     
