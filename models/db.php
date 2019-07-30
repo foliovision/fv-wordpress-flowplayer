@@ -1255,12 +1255,13 @@ class FV_Player_Db {
       if($_POST['action'] == 'fv_player_db_clone'){
         if (isset($data['meta'])) {
           foreach($data['meta'] as $h => $v){
-          if(in_array('post_id',$v)){
-            unset($data['meta'][$h]);
+            if(in_array('post_id',$v)){
+              unset($data['meta'][$h]);
+            }
           }
         }
       }
-    }
+      
       try {
         // first, create the player
         $player_keys = $data;
