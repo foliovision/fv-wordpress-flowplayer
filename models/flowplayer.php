@@ -42,6 +42,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
    * Store scripts to load in footer
    */
   public $scripts = array();    
+
+  var $ajax_count = 0;
   
   var $ret = array('html' => false, 'script' => false);
   
@@ -141,7 +143,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
-
+    add_filter('fv_player_item', array($this, 'data_item_media') );
   }
   
 
@@ -749,6 +751,39 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _salt() {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
+  }
+
+  public function data_item_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
+    $media = $mediaData['sources'][0]['src'];
+
+    if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
+      $this->ajax_count++;
+      
+      if( stripos($rtmp,'rtmp://') === false && $rtmp ) {
+        list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
+        $rtmp = trailingslashit($rtmp_server).$rtmp;
+      }
+    
+      $aTest_media = array();
+      foreach( array( $media, $src1, $src2, $rtmp ) AS $media_item ) {
+        if( $media_item ) {
+          $aTest_media[] = $this->get_video_src( $media_item, array( 'dynamic' => true ) );
+          //break;
+        } 
+      }
+      
+      if( !empty($this->aCurArgs['mobile']) ) {
+        $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'dynamic' => true ) );
+      }
+
+      if( isset($aTest_media) && count($aTest_media) > 0 ) {
+        // $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
+        $mediaData['video_checker'] = $aTest_media;
+        return $mediaData;
+      }
+    }            
+
+    return $mediaData;
   }
   
   
