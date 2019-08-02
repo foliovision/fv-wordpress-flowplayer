@@ -6,7 +6,7 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
     overflow: hidden;
 }
 
-.fancybox-content.flowplayer {
+.fancybox-content.flowplayer, .fancybox-content.fv_player_lightbox_hidden {
     padding: 0;
     background-size:contain;
     background-repeat:no-repeat;

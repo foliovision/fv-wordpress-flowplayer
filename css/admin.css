@@ -144,3 +144,15 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 .metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }
 
 #fv-player-system-info-textarea { font-family: monospace; width: 100%; }
+
+.fv-player-admin-tooltip {
+  display: none;
+}
+
+.show-info, .show-info:hover, .show-info:active, .show-info:focus { color: #444; box-shadow: none; }
+.fv-player-admin-tooltip {
+  position: absolute;
+  background: white;
+  padding: .5em;
+  border: 1px solid gray;
+}
