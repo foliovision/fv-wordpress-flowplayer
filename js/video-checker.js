@@ -31,6 +31,21 @@
 
           jQuery('#wpfp_notice_'+sID).find('.video-checker-result').attr('class','video-checker-result').html('Checking the video file...');
           fv_flowplayer_admin_test_media( sID, media );
+
+          if( typeof(fv_flowplayer_admin_input) != "undefined" && fv_flowplayer_admin_input ) {
+            jQuery(document).keyup(function(e) { 
+              if (e.keyCode == 27) { fv_wp_flowplayer_admin_show_notice(); 	}   // esc
+            });
+            
+            jQuery(document).click( function(event) {
+              if( jQuery(event.target).parents('.fv-wp-flowplayer-notice').length == 0 &&
+                jQuery(event.target).parents('.fv-wp-flowplayer-notice-small').length == 0 ) {
+                if( jQuery('.fv-wp-flowplayer-notice:visible').length ) {
+                  fv_wp_flowplayer_admin_show_notice()
+                };
+              }
+            }	);
+          }
         }
       }
     });
@@ -43,6 +58,7 @@
 
     jQuery.post( 'https://video-checker.foliovision.com/', { action: 'vid_check', media: media, hash: hash, site: flowplayer.conf.video_checker_site }, function( response ) {
       var obj;
+
       try {
         response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
         response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
@@ -99,6 +115,92 @@
         jQuery('#wpfp_notice_'+hash).html('<p>'+fv_flowplayer_translations.check_failed+'</p>');
       }
     });
-}
+  }
+
+  function fv_wp_flowplayer_admin_show_notice( id, link ) {
+    if( id == null && link == null ) {
+      var api = flowplayer(), currentPos;
+      if( typeof api != "undefined" ) {
+        api.disable(false);
+      }
+      jQuery('.fv-wp-flowplayer-notice .fv_wp_fp_notice_content').toggle();
+      jQuery('.fv-wp-flowplayer-notice').toggleClass("fv-wp-flowplayer-notice");					
+    } else {			
+      jQuery('#fv_wp_fp_notice_'+id).toggle();
+  
+      var api = flowplayer(), currentPos;
+      if( typeof(api) != "undefined" && jQuery('#fv_wp_fp_notice_'+id).parent().hasClass("fv-wp-flowplayer-notice") ) {
+        api.disable(false);
+      } else if( typeof(api) != "undefined" ) {
+        api.disable(true);
+      }
+      
+      jQuery('#fv_wp_fp_notice_'+id).parent().toggleClass("fv-wp-flowplayer-notice");
+    }
+    
+    jQuery('.fv-wp-flowplayer-notice').each( function() {
+      if( jQuery(this).is(':visible') )  {
+        jQuery(this).parents('.flowplayer').addClass('has-video-checker');
+      } else {
+        jQuery(this).parents('.flowplayer').removeClass('has-video-checker');
+      }
+    });
+  }
+  
+  function fv_wp_flowplayer_admin_support_mail( hash, button ) {
+    jQuery('.fv_flowplayer_submit_error').remove();
+    
+    var comment_text = jQuery('#wpfp_support_'+hash).val();
+    var comment_words = comment_text.split(/\s/);
+    if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
+      jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>'+fv_flowplayer_translations.what_is_wrong+'</strong></p>');
+      jQuery('.fv_flowplayer_submit_error').fadeIn();
+      return false;
+    }
+  
+    if( comment_words.length < 7 ) {
+      jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>'+fv_flowplayer_translations.full_sentence+'</strong>:</p>');
+      jQuery('.fv_flowplayer_submit_error').fadeIn();					
+      return false;
+    }
+    
+    jQuery('#wpfp_spin_'+hash).show();
+    jQuery(button).attr("disabled", "disabled");
+          
+    jQuery.post(
+      fv_fp_ajaxurl,
+      {
+        action: 'fv_wp_flowplayer_support_mail',
+        comment: comment_text,
+        notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
+        details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()						
+      },
+      function( response ) {
+        jQuery('#wpfp_spin_'+hash).hide();					
+        jQuery(button).removeAttr("disabled");
+        jQuery(button).after(' Message sent');
+        setTimeout( function() { fv_wp_flowplayer_admin_show_notice(hash) }, 1500 );
+      }	
+    );
+  }
+  
+  function fv_flowplayer_admin_message_parse_group(aInfo) {
+    var sOutput = '';
+    if( typeof(aInfo) != "undefined" && Object.keys(aInfo).length > 0 ) {
+      for( var j in aInfo ) {
+        if( j == parseInt(j) ){
+          sOutput += aInfo[j]+'<br />';
+        } else if( typeof(aInfo[j]) == "function" ) {
+          continue;
+        } else {
+          sOutput += j+': <tt>'+aInfo[j]+'</tt><br />';
+        }
+      }
+    }
+    if( sOutput.length > 0 ){
+      sOutput = '<p>'+sOutput+'</p>';
+    }
+    return sOutput;
+  }
 
 })(jQuery);
