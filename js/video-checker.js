@@ -29,10 +29,7 @@
           fv_flowplayer_scroll_video_checker_status[jQuery(root).attr('id')] = true;
           var sID = jQuery(root).attr('id').replace(/wpfp_/,'');
 
-          if(api.video.index > 0) {
-            jQuery('#wpfp_notice_'+sID).find('.video-checker-result').attr('class','video-checker-result').html('Checking the video file...');
-          }
-
+          jQuery('#wpfp_notice_'+sID).find('.video-checker-result').attr('class','video-checker-result').html('Checking the video file...');
           fv_flowplayer_admin_test_media( sID, media );
         }
       }
