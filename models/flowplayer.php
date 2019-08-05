@@ -143,7 +143,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
-    add_filter('fv_player_item', array($this, 'data_item_media') );
+    add_filter('fv_player_item', array($this, 'get_video_checker_media') );
   }
   
 
@@ -753,7 +753,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $salt;
   }
 
-  public function data_item_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
+  public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
     $media = $mediaData['sources'][0]['src'];
 
     if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
