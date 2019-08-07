@@ -935,6 +935,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
       $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
+      if( $sItemCaption ) {
+        $aPlayer['title'] = $sItemCaption;
+      }
+      
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
       $aCaptions[] = $sItemCaption;
@@ -1007,9 +1011,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
           }
           
-          $aPlaylistItems[] = $aPlayer;
           $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
+          
+          if( $sItemCaption ) {
+            $aPlayer['title'] = $sItemCaption;
+          }          
+          
+          $aPlaylistItems[] = $aPlayer;
           
           $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {
