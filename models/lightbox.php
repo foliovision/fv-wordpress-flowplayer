@@ -139,6 +139,10 @@ class FV_Player_lightbox {
 
   function lightbox_html($html) {
     $aArgs = func_get_args();
+    
+    if( isset($_GET['fvp_lightbox_debug']) ) {
+      var_dump('before lightbox', $html);
+    }
 
     if (isset($aArgs[1]) ) {
       $args = $aArgs[1]->aCurArgs;
@@ -226,6 +230,12 @@ class FV_Player_lightbox {
         }
       }
     }
+    
+    if( isset($_GET['fvp_lightbox_debug']) ) {
+      var_dump('after lightbox', $html);
+      die();
+    }
+    
     return $html;
   }
 
