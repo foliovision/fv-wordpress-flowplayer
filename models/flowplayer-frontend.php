@@ -604,10 +604,16 @@ class flowplayer_frontend extends flowplayer
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 
-        if( !$bIsAudio && isset($this->fRatio) ) {
-          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';
+        if( isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
-          if( !empty($splash_img) ) $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+        }
+        
+        if( !$bIsAudio && !empty($splash_img) ) {
+          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';          
+          $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+        }
+        
+        if( !$bIsAudio ) {
           $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
         }
         
