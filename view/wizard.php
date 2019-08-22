@@ -145,6 +145,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                 <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php _e('Playlist', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php _e('Video', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e('Subtitles', 'fv-wordpress-flowplayer'); ?></a>
+                <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-annotations"><?php _e('Annotations', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e('Options', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e('Actions', 'fv-wordpress-flowplayer'); ?></a>
                 <?php do_action('fv_player_shortcode_editor_tab'); ?>
@@ -368,6 +369,41 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   </tr>
                 </table>
               </div>
+
+                <div class="fv-player-tab fv-player-tab-annotations">
+                    <table width="100%" data-index="0" class="fv-player-annotation">
+                        <tr>
+                            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_annotations" class="alignright"><?php _e( 'Annotations', 'fv_flowplayer' ); ?></label></th>
+                            <td class="field fv-fp-annotations">
+                                <div class="fv-fp-annotation">
+                                    <select class="fv_wp_flowplayer_field_annotation" name="fv_wp_flowplayer_field_annotation">
+                                        <option></option>
+                                        <option value="txt">Text</option>
+                                        <option value="img">Image</option>
+                                        <option value="html">HTML Code</option>
+                                    </select>
+                                    <input type="text" class="text fv_wp_flowplayer_field_annotation_value" name="fv_wp_flowplayer_field_annotation_value" value=""/>
+                                    <a class="fv-fp-annotation-remove" href="#" style="display: none">X</a>
+                                    <div style="clear:both"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="submit-button-wrapper">
+                            <td colspan="2">
+                            </td>
+                            <td>
+                                <a class="fv_flowplayer_annotation_add" style="outline: 0" onclick="return fv_flowplayer_annotation_add()" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Annotation', 'fv_flowplayer'); ?></a>
+                            </td>
+                        </tr>
+                        <tr class="submit-button-wrapper">
+                            <td></td>
+                            <td colspan="2">
+                                <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
+                                <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
               <div class="fv-player-tab fv-player-tab-options" style="display: none">
                 <table width="100%">
