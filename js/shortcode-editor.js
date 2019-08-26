@@ -1307,7 +1307,7 @@ function fv_wp_flowplayer_edit() {
                 }
 
                 // general video meta
-                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
+                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['dvr', 'duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
                   video_meta.push(vids[x].meta[m]);
                 }
               }
@@ -2119,6 +2119,7 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
     'fv_wp_flowplayer_field_duration',
     'fv_wp_flowplayer_field_last_video_meta_check',
     'fv_wp_flowplayer_field_live',
+    'fv_wp_flowplayer_field_dvr',
     'fv_wp_flowplayer_field_auto_splash',
     'fv_wp_flowplayer_field_auto_caption',
     'fv_wp_flowplayer_field_synopsis',
@@ -3543,11 +3544,9 @@ function fv_player_editor_show_stream_fields(e,index) {
   // on fv_flowplayer_shortcode_new
   if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
   
-  var rtmp = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val(),
-    show_live = rtmp || src.match(/\.m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//),
-    show_audio = src.match(/\.m3u8/);
-  
-  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_live);
-  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_audio);
-  
+  var show_stream_checkboxes = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//);
+    
+  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_stream_checkboxes);
+  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_stream_checkboxes);
+  item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!show_stream_checkboxes);
 }

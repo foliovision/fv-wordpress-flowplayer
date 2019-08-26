@@ -484,7 +484,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
-        if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
+        if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext') ) ) {
           $attributes['style'] .= 'max-width: 100%; ';
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
@@ -523,6 +523,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-live'] = 'true';
         }
         
+        if( isset($this->aCurArgs['dvr']) && $this->aCurArgs['dvr'] == 'true' ) {
+          $attributes['data-dvr'] = 'true';
+        }
+
         $playlist = '';
         $is_preroll = false;
         if( isset($playlist_items_external_html) ) {
@@ -535,7 +539,7 @@ class flowplayer_frontend extends flowplayer
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
           
-          if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['listshow']) ) {
+          if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
             $attributes['class'] .= ' has-caption';
             $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           }
@@ -545,7 +549,7 @@ class flowplayer_frontend extends flowplayer
             $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
           }
           
-        } else if( !empty($this->aCurArgs['caption']) ) {
+        } else if( !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           
@@ -606,10 +610,16 @@ class flowplayer_frontend extends flowplayer
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 
-        if( !$bIsAudio && isset($this->fRatio) ) {
-          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';
+        if( isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
-          if( !empty($splash_img) ) $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+        }
+        
+        if( !$bIsAudio && !empty($splash_img) ) {
+          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';          
+          $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+        }
+        
+        if( !$bIsAudio ) {
           $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
         }
         
@@ -628,7 +638,7 @@ class flowplayer_frontend extends flowplayer
         
         if( flowplayer::is_special_editor() ) {
           $this->ret['html'] .= '<div class="fp-ui"></div>';       
-        } else if( current_user_can('manage_options') && empty($this->aCurArgs['lazy']) ) {
+        } else if( current_user_can('manage_options') && empty($this->aCurArgs['lazy']) && empty($this->aCurArgs['lightbox']) ) {
           $this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="https://foliovision.com/pro-support" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         

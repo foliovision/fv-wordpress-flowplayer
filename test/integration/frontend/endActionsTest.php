@@ -147,8 +147,9 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video.mp4" splash="https://cdn.site.com/video.jpg" share="no" embed="false" splashend="show"]' );    
     
     $sample = <<< HTML
-<div id="wpfp_2534ca47632437a90737cb5c0e27b461" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; background-image: url(https://cdn.site.com/video.jpg);" data-ratio="0.5625">
+<div id="wpfp_2534ca47632437a90737cb5c0e27b461" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; " data-ratio="0.5625">
   <div class="fp-ratio" style="padding-top: 56.25%"></div>
+  <img class="fp-splash" alt="video" src="https://cdn.site.com/video.jpg" />
   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
   <div id="wpfp_ebf1dd081f973cd9a2b19499445705f2_custom_background" class="wpfp_custom_background" style="position: absolute; background: url('https://cdn.site.com/video.jpg') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>
 </div>
