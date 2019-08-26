@@ -153,6 +153,11 @@ class FV_Player_List_Table extends WP_List_Table {
       'ajax'     => false,
     ) );
 
+    // initialize video and video meta objects, so if there are no video tables created in the DB,
+    // we'll create them now (and no SQL errors will be displayed on the listing page)
+    new FV_Player_Db_Video(-1);
+    new FV_Player_Db_Video_Meta(-1);
+
     $this->get_result_counts();
     $this->process_bulk_action();
     $this->base_url = admin_url( 'admin.php?page=fv_player' );
@@ -180,7 +185,7 @@ class FV_Player_List_Table extends WP_List_Table {
   
   public function get_sortable_columns() {
     return array(
-      'id'               => array( 'ID', true ),
+      'id'               => array( 'id', true ),
       'player_name'      => array( 'player_name', true ),
       'date_created'     => array( 'date_created', true ),
       'subtitles_count'  => array( 'subtitles_count', true ),
@@ -237,7 +242,7 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
         $value .= "</div>";
         break;
-      case 'embeds':        
+      case 'embeds':
         $player = new FV_Player_Db_Player($id);
         $value = '';
         if( $player->getIsValid() ) {
@@ -280,7 +285,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
   public function get_data() {
     $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
-    $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
+    $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'p.id';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? esc_sql($_GET['s']) : null;

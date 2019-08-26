@@ -444,8 +444,8 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
       
       $meta = wp_get_attachment_metadata( $attachment->ID );
       if( !empty($meta) ) {
-        if( !empty($meta['length_formatted']) ) {
-          $aPlaylistDurations[] = $meta['length_formatted'];
+        if( !empty($meta['length']) ) {
+          $aPlaylistDurations[] = $meta['length'];
         }
       }
 
@@ -493,6 +493,12 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
 
   function fv_player_handle_youtube_links( $html ) {
     $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]', $html );
+    return $html;
+  }
+
+  add_filter( 'the_content', 'fv_player_handle_video_tags' );
+  function fv_player_handle_video_tags( $html ) {
+    $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]</figure>' , $html);
     return $html;
   }
 }

@@ -283,6 +283,9 @@ function fv_flowplayer_admin_default_options() {
                     <option value="prevnext"  <?php if( $value == 'prevnext' ) echo ' selected="selected"'; ?> ><?php _e('Prev/Next', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="vertical"  <?php if( $value == 'vertical' ) echo ' selected="selected"'; ?> ><?php _e('Vertical', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="slider"    <?php if( $value == 'slider' ) echo ' selected="selected"'; ?> ><?php _e('Slider', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="season"    <?php if( $value == 'season' ) echo ' selected="selected"'; ?> ><?php _e('Vertical Season', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="polaroid"  <?php if( $value == 'polaroid' ) echo ' selected="selected"'; ?> ><?php _e('Polaroid', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="text"  <?php if( $value == 'text' ) echo ' selected="selected"'; ?> ><?php _e('Text', 'fv-wordpress-flowplayer'); ?></option>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv-wordpress-flowplayer'); ?>
                 </p>
@@ -587,7 +590,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
 
-          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '...and also <code><small>[playlist]</small></code> and the YouTube links', '' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Handle WordPress video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
@@ -653,6 +656,7 @@ function fv_flowplayer_admin_mobile() {
           <?php $fv_fp->_get_checkbox(__('Use native fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_native_fullscreen', __('Stops popups, ads or subtitles from working, but provides faster interface. We set this for Android < 4.4 and iOS < 7 automatically.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Force fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_force_fullscreen', __('Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback.', 'fv-wordpress-flowplayer')  ); ?>
           <?php $fv_fp->_get_checkbox(__('Alternative iOS fullscreen mode', 'fv-wordpress-flowplayer'), 'mobile_alternative_fullscreen', __("Works for iOS < 12 which doesn't support HTML5 fullscreen. Only use if you see site elements such as header bar ovelaying the player in fullscreen on iOS.", 'fv-wordpress-flowplayer')  ); ?>
+          <?php $fv_fp->_get_checkbox(__('Force landscape orientation in fullscreen', 'fv-wordpress-flowplayer'), 'mobile_landscape_fullscreen', __("Works on the Android mobile, not supported on iOS unfortunately.", 'fv-wordpress-flowplayer')  ); ?>
 					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -840,6 +844,7 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
           <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sticky', 'fv-wordpress-flowplayer'), array('interface', 'sticky') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Synopsis', 'fv-wordpress-flowplayer'), array('interface', 'synopsis') ); ?>
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
@@ -1044,6 +1049,8 @@ function fv_flowplayer_admin_skin_get_table($options) {
 ?>
     <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
+      $options = apply_filters( 'fv_player_skin_settings', $options );
+      
       foreach ($options['items'] as $item) {
         $setup = wp_parse_args( $item, array( 'name' => false, 'data' => false, 'optoins' => false, 'attributes' => false, 'class' => false, 'default' => false ) );
 
@@ -1610,6 +1617,8 @@ function fv_flowplayer_admin_rollback() {
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>  		
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
+    <p>You can go back to the previous minor release here:</p>
+    <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.3.19.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.3.19.727</a></p>    
     <p>You can go back to the last version without FV Player Database here:</p>
     <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.2.8.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.2.8.727</a></p>
     <p>You can reinstall the last FV Player 6 here:</p>
@@ -1911,12 +1920,11 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       
       more.toggle();
       
-      if( jQuery(':visible', more ).length > 0 ) {
-        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
-        jQuery(this).html('(hide)');
-      } else {
-        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
-      }      
+    } );
+    
+    jQuery('.show-info').click( function(e) {
+      e.preventDefault();
+      jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
     
     /*
