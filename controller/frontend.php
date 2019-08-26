@@ -80,9 +80,9 @@ function fv_flowplayer_get_js_translations() {
   'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer').$sWhy,
   'warning_samsungbrowser' => __('You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,
   'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
-  'warning_old_chrome' => __('You are using an old Chrome browser. If you experience issues with the video please use <a href="https://www.google.com/chrome/">Chrome</a> or other modern browser.','fv-wordpress-flowplayer'),
-  'warning_old_firefox' => __('You are using an old Firefox browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
-  'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.google.com/chrome/">Chrome</a> or other modern browser.','fv-wordpress-flowplayer'),
+  'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
+  'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
+  'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
 );
   
   return $aStrings;
