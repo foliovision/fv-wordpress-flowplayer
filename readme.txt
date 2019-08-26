@@ -357,6 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.1.727 - 2019/08/14 =
+
+* iOS 12 fullscreen fix
+* Playlist - adding recovery routine - missing video will no longer cause the whole playlist to stop playing
+* Playlist - fixing Season style font sizes
+
 = 7.4.0.727 - 2019/07/30 =
 
 * New mobile setting - Force landscape orientation in fullscreen
