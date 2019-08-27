@@ -3,7 +3,7 @@
   flowplayer( function(api,root) {
     root = jQuery(root);
 
-    api.bind("ready", function (e, api, video) {
+    api.on("ready", function (e, api, video) {
       var media;
 
       if(api.conf.playlist.length > 0){
