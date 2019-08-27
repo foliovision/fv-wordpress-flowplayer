@@ -936,7 +936,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
       if( $sItemCaption ) {
-        $aPlayer['title'] = $sItemCaption;
+        $aPlayer['fv_title'] = $sItemCaption;
       }
       
       $aPlaylistItems[] = $aPlayer;
@@ -1015,7 +1015,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
           if( $sItemCaption ) {
-            $aPlayer['title'] = $sItemCaption;
+            $aPlayer['fv_title'] = $sItemCaption;
           }          
           
           $aPlaylistItems[] = $aPlayer;
