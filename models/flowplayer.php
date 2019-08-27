@@ -777,7 +777,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       if( isset($aTest_media) && count($aTest_media) > 0 ) {
-        // $this->ret['script']['fv_flowplayer_admin_test_media'][$this->hash] = $aTest_media;
         $mediaData['video_checker'] = $aTest_media;
         return $mediaData;
       }
