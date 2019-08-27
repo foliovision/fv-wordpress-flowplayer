@@ -382,9 +382,11 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                                         <option value="img">Image</option>
                                         <option value="html">HTML Code</option>
                                     </select>
-                                    <input type="text" class="text fv_wp_flowplayer_field_annotation_value" name="fv_wp_flowplayer_field_annotation_value" value=""/>
-                                    <a class="fv-fp-annotation-remove" href="#" style="display: none">X</a>
+                                    <textarea class="text fv_wp_flowplayer_field_annotation_value" name="fv_wp_flowplayer_field_annotation_value"></textarea>
+                                    <a class="fv-fp-annotation-remove" href="#" style="visibility: hidden">X</a>
                                     <div style="clear:both"></div>
+                                    <input type="hidden" name="fv_wp_flowplayer_field_annotation_time" id="fv_wp_flowplayer_field_annotation_time" value="" />
+                                    <input type="hidden" name="fv_wp_flowplayer_field_annotation_duration" id="fv_wp_flowplayer_field_annotation_duration" value="" />
                                 </div>
                             </td>
                         </tr>

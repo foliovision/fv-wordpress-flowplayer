@@ -710,6 +710,8 @@ class FV_Player_Db {
     $ignored_player_fields = array(
       'fv_wp_flowplayer_field_subtitles_lang', // subtitles languages is a per-video value with global field name,
                                                // so the player should ignore it, as it will be added via video meta
+      'fv_wp_flowplayer_field_annotation_value', // annotation type is a per-video value with global field name,
+                                               // so the player should ignore it, as it will be added via video meta
       'fv_wp_flowplayer_field_popup', // never used, never shown in the UI, possibly a remnant of old code,
       'fv_wp_flowplayer_field_transcript', // transcript is a meta value, so it should not be stored globally per-player anymore
       'fv_wp_flowplayer_field_chapters', // chapters is a meta value, so it should not be stored globally per-player anymore
@@ -831,6 +833,23 @@ class FV_Player_Db {
               }
 
               $video_meta[] = $transcript;
+            }
+
+            // add annotations
+            foreach ( $post_data['video_meta']['annotations'][$video_index] as $annnotation_values ) {
+              if ($annnotation_values['value']) {
+                $annotation = array(
+                  'meta_key' => 'annotations_'.$annnotation_values['type'],
+                  'meta_value' => $annnotation_values['value']
+                );
+
+                // add ID, if present
+                if (!empty($annnotation_values['id'])) {
+                  $annotation['id'] = $annnotation_values['id'];
+                }
+
+                $video_meta[] = $annotation;
+              }
             }
 
             // call a filter which is server by plugins to augment
