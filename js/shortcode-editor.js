@@ -701,6 +701,145 @@ jQuery(document).ready(function($){
 
   }, 1500 );
 
+  flowplayer( function(api,root) {
+
+    var
+      hide_cue_on = [],
+      player = jQuery(root).find('.fp-player'),
+      timeline = jQuery(root).find('.fp-timeline'),
+      editor = jQuery('#fv-player-shortcode-editor .fv-fp-annotations');
+
+    api.on('cuepoint', function(e,api,cue) {
+      editor.find('div[data-cue='+cue.index+']').addClass('current');
+    });
+
+    api.on('progress', function(e,api,time) {
+      jQuery(hide_cue_on).each( function(k,v) {
+        editor.find('div[data-cue='+k+']').removeClass('current');
+      })
+    });
+
+    api.on('ready', cue_bind);
+
+    var dragging = false,
+      dragging_end = false,
+      dragging_offset = false,
+      dragging_id = false;
+
+    function cue_bind() {
+      player.find('.fp-cuepoint').each( function(k,v) {
+        var pointer = jQuery(v);
+        var cue = api.video.cuepoints[k];
+        pointer.css('width', cue.duration / api.video.duration * 100 + "%" )
+        pointer.append('<span class="fvp-cue-start"></span><span class="fvp-cue-end"></span>')
+
+        pointer.on('mousedown', function(e) {
+          //console.log('mousedown cue!');
+          dragging_id = k;
+          var mouse = e.pageX || e.clientX;
+          dragging_offset = mouse - jQuery(this).offset().left;
+          //console.log('dragging_offset',dragging_offset);
+          if( jQuery(e.target).hasClass('fvp-cue-start') ) return;
+          if( jQuery(e.target).hasClass('fvp-cue-end') ) dragging_end = jQuery(e.target);
+          else {
+            dragging = jQuery(e.target);
+            drag_time_show();
+          }
+        })
+      });
+    }
+
+    function drag_time() {
+      return api.video.duration * parseFloat(dragging.css('left')) / timeline.width() + 0.01;
+    }
+
+    function drag_time_show() {
+      var date = new Date(null);
+      date.setSeconds(drag_time());
+      player.find('.fp-timestamp').html( date.toISOString().substr( api.video.duration > 3600 ? 11 : 14, api.video.duration > 3600 ? 8 : 5) );
+    }
+
+    jQuery(document).on('mousemove', function(e) {
+      if( dragging || dragging_end ) {
+        var mouse = e.pageX || e.clientX
+          , offset = timeline.offset().left
+          , size = timeline.width();
+
+        if( dragging_end ) {
+          var parent = dragging_end.parent();
+          var position = mouse-offset;
+          if( position > size ) position = size;
+          var width = ( position - parseFloat(parent.css('left')) ) / size * 100;
+          if( width < 2 ) width = 2;
+          parent.css('width', width + "%");
+        } else if( dragging ) {
+          var position = (mouse-offset-dragging_offset)/size * 100;
+          if( position > 100 ) position = 100;
+          if( position < 0 ) position = 0;
+          dragging.css('left', position + "%");
+
+          var date = new Date(null);
+          date.setSeconds(drag_time());
+          player.find('.fp-timestamp').html( date.toISOString().substr( api.video.duration > 3600 ? 11 : 14, api.video.duration > 3600 ? 8 : 5) );
+
+          drag_time_show();
+        }
+      }
+    });
+
+    jQuery(document).on('mouseup', function(e) {
+      if( dragging || dragging_end ) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if( dragging ) {
+          var time = drag_time();
+          api.video.cuepoints[dragging_id].time = time;
+        }
+
+        if( dragging_end ) {
+          var duration = api.video.duration * parseFloat(dragging_end.parent().width()) / timeline.width();
+          var time = api.video.cuepoints[dragging_id].time + duration;
+          api.video.cuepoints[dragging_id].duration = duration;
+        }
+
+        player.find('.fp-cuepoint').remove();
+        api.setCuepoints(api.video.cuepoints);
+        cue_bind();
+        cue_editing();
+
+        api.seek(time+0.01);
+        //console.log('cue point edited!');
+      }
+      dragging = dragging_end = false;
+    });
+
+    jQuery(document).on('click', '#fv-player-shortcode-editor .fv-fp-annotations div', function() {
+      var row = jQuery(this);
+
+      editor.find('div[data-cue]').removeClass('current');
+      api.seek(api.video.cuepoints[row.data('cue')].time+0.01);
+    });
+
+    jQuery(document).on('keyup', '#fv-player-shortcode-editor .fv-fp-annotations div:visible select, #fv-player-shortcode-editor .fv-fp-annotations div:visible input, #fv-player-shortcode-editor .fv-fp-annotations div:visible textarea', function() {
+      var $input = jQuery(this);
+      var row = jQuery(this).parents('[data-cue]');
+      var id = row.data('cue');
+      //console.log( id, $input.val(), jQuery(this).val() );
+
+      // change input to the SELECT element sibling, if not SELECT already
+      if (!$input.hasClass('fv_wp_flowplayer_field_annotation')) {
+        $input = $input.siblings('.fv_wp_flowplayer_field_annotation:first');
+      }
+
+      api.video.cuepoints[id]['data'][$input.val()] = $input.siblings('.fv_wp_flowplayer_field_annotation_value').val();
+      player.find('.fvp-cue[data-cue='+id+']').remove();
+      api.trigger('cuepoint', [api, api.video.cuepoints[id]]);
+      //api.setCuepoints(api.video.cuepoints);
+      //cue_bind();
+    });
+  });
+
 });
 
 
@@ -959,12 +1098,14 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sAnnotations,
 
     if (typeof sAnnotations === 'object' && sAnnotations.length && sAnnotations[0].type) {
       // DB-based annotation value
-      var firstDone = false;
+      var
+        firstDone = false,
+        currentAnnoIndex = 1;
 
       for (var i in sAnnotations) {
         // add as many new annotations as we have
         if (firstDone) {
-          fv_flowplayer_annotation_add(sAnnotations[i].value, sAnnotations[i].type, sAnnotations[i].time, sAnnotations[i].duration, newIndex, sAnnotations[i].id);
+          fv_flowplayer_annotation_add(sAnnotations[i].value, sAnnotations[i].type, sAnnotations[i].time, sAnnotations[i].duration, sAnnotations[i].link, newIndex, sAnnotations[i].id, currentAnnoIndex++);
         } else {
           var
             annoElement = jQuery('[name=fv_wp_flowplayer_field_annotation]', new_item_annotation),
@@ -975,13 +1116,15 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sAnnotations,
           var annoIndex = annoElement.get(0).selectedIndex;
           jQuery(annoElement.get(0).options[annoIndex]).attr('selected', 'selected');
 
+          $parent.attr('data-cue', 0);
           $parent.attr('data-id_annotation', sAnnotations[i].id);
-          $parent.hover( function() { jQuery(this).find('.fv-fp-annotation-remove').css('visibility', 'visible'); }, function() { jQuery(this).find('.fv-fp-annotation-remove').css('visibility', 'hidden'); } );
+          $parent.hover( function() { jQuery(this).find('.fv-fp-annotation-remove').show(); }, function() { jQuery(this).find('.fv-fp-annotation-remove').hide(); } );
           $parent.find('.fv-fp-annotation-remove').click(fv_flowplayer_remove_annotation);
 
           jQuery('[name=fv_wp_flowplayer_field_annotation_value]', new_item_annotation).val(sAnnotations[i].value);
           jQuery('[name=fv_wp_flowplayer_field_annotation_time]', new_item_annotation).val(sAnnotations[i].time);
           jQuery('[name=fv_wp_flowplayer_field_annotation_duration]', new_item_annotation).val(sAnnotations[i].duration);
+          jQuery('[name=fv_wp_flowplayer_field_annotation_link]', new_item_annotation).val(sAnnotations[i].link);
           firstDone = true;
         }
       }
@@ -1218,7 +1361,7 @@ function fv_flowplayer_remove_subtitles() {
 /*
  * Adds new annotation to editor
  */
-function fv_flowplayer_annotation_add( sInput, sType, sTime, sDuration, iTabIndex, sId ) {
+function fv_flowplayer_annotation_add( sInput, sType, sTime, sDuration, sLink, iTabIndex, sId, annoIndex ) {
   if(!iTabIndex){
     var current = jQuery('.fv-player-tab-annotations table:visible');
     iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
@@ -1227,7 +1370,12 @@ function fv_flowplayer_annotation_add( sInput, sType, sTime, sDuration, iTabInde
   oTab.append( fv_player_playlist_annotation_row_template );
 
   var annElement = jQuery('.fv-fp-annotation:last' , oTab);
-  annElement.hover( function() { jQuery(this).find('.fv-fp-annotation-remove').css('visibility', 'visible'); }, function() { jQuery(this).find('.fv-fp-annotation-remove').css('visibility', 'hidden'); } );
+
+  if (annoIndex) {
+    annElement.attr('data-cue', annoIndex);
+  }
+
+  annElement.hover( function() { jQuery(this).find('.fv-fp-annotation-remove').show(); }, function() { jQuery(this).find('.fv-fp-annotation-remove').hide(); } );
 
   if (typeof(sId) !== 'undefined') {
     annElement.attr('data-id_annotation', sId);
@@ -1253,6 +1401,10 @@ function fv_flowplayer_annotation_add( sInput, sType, sTime, sDuration, iTabInde
 
   if( sDuration ) {
     jQuery('.fv-fp-annotation:last input.fv_wp_flowplayer_field_annotation_duration' , oTab ).val(sDuration);
+  }
+
+  if( sLink ) {
+    jQuery('.fv-fp-annotation:last input.fv_wp_flowplayer_field_annotation_link' , oTab ).val(sLink);
   }
 
   jQuery('.fv-fp-annotation:last .fv-fp-annotation-remove' , oTab).click(fv_flowplayer_remove_annotation);
@@ -1629,6 +1781,7 @@ function fv_wp_flowplayer_edit() {
                     value: vids[x].meta[m].meta_value.value,
                     time: vids[x].meta[m].meta_value.time,
                     duration: vids[x].meta[m].meta_value.duration,
+                    link: vids[x].meta[m].meta_value.link,
                     id: vids[x].meta[m].id
                   });
                 }
@@ -2380,7 +2533,8 @@ function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
               var serialized_annotation_val = JSON.stringify({
                 'value' : this.value,
                 'time' : $this.siblings('#fv_wp_flowplayer_field_annotation_time').val(),
-                'duration' : $this.siblings('#fv_wp_flowplayer_field_annotation_duration').val()
+                'duration' : $this.siblings('#fv_wp_flowplayer_field_annotation_duration').val(),
+                'link' : $this.siblings('#fv_wp_flowplayer_field_annotation_link').val()
               });
               data['video_meta']['annotations'][save_index].push({
                 type : $this.siblings('select:first').val(),
@@ -3937,4 +4091,3 @@ function fv_player_editor_show_stream_fields(e,index) {
   item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_audio);
   
 }
-

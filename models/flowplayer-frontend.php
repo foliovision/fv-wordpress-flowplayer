@@ -551,7 +551,7 @@ class flowplayer_frontend extends flowplayer
          if( !empty($this->aCurArgs['transcript']) ) {
           $attributes['class'] .= ' has-transcript';
         }
-        
+
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
@@ -1029,6 +1029,22 @@ class flowplayer_frontend extends flowplayer
     }
 
     return $aSubtitles;
+  }
+
+  function get_annotations() {
+    $aAnnotations = array();
+
+    if ($this->current_video()) {
+      if ($this->current_video()->getMetaData()) {
+        foreach ($this->current_video()->getMetaData() as $meta_object) {
+          if (strpos($meta_object->getMetaKey(), 'annotations') !== false) {
+            $aAnnotations[str_replace( 'annotations_', '', $meta_object->getMetaKey() )] = json_decode($meta_object->getMetaValue(), true);
+          }
+        }
+      }
+    }
+
+    return $aAnnotations;
   }
   
   

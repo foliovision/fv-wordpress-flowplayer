@@ -835,23 +835,6 @@ class FV_Player_Db {
               $video_meta[] = $transcript;
             }
 
-            // add annotations
-            foreach ( $post_data['video_meta']['annotations'][$video_index] as $annnotation_values ) {
-              if ($annnotation_values['value']) {
-                $annotation = array(
-                  'meta_key' => 'annotations_'.$annnotation_values['type'],
-                  'meta_value' => $annnotation_values['value']
-                );
-
-                // add ID, if present
-                if (!empty($annnotation_values['id'])) {
-                  $annotation['id'] = $annnotation_values['id'];
-                }
-
-                $video_meta[] = $annotation;
-              }
-            }
-
             // call a filter which is server by plugins to augment
             // the $video_meta data with all the plugin data for this
             // particular video

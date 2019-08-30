@@ -14,6 +14,10 @@
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
 #fv-player-shortcode-editor table textarea.fv_wp_flowplayer_field_annotation_value { width: 65%; }
+#fv-player-shortcode-editor table .fv-fp-annotation { margin-bottom: 10px; padding: 5px; position: relative; }
+#fv-player-shortcode-editor table .fv-fp-annotation label { float: left; padding: 5px; }
+#fv-player-shortcode-editor table .fv-fp-annotation .fv_wp_flowplayer_field_annotation_link { width: 87%; }
+#fv-player-shortcode-editor table .fv-fp-annotation-remove { position: absolute; bottom: 40%; right: 5px; }
 #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang, #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_annotation { width: 10%;float:left; margin: 1px 2px; height: 27px }
 #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_annotation { width: 30%; }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
@@ -35,6 +39,14 @@
 #fv-player-shortcode-editor .fv-player-tab-video-files table .button { width: 22% }
 #fv-player-shortcode-editor .fv-player-tab-subtitles table .button { width: 26% }
 #fv-player-shortcode-editor .fv-player-tabs .submit-button-wrapper .button { width: auto; }
+
+#fv-player-shortcode-editor .fv-fp-annotations div {
+  background-color: #eee;
+}
+
+#fv-player-shortcode-editor .fv-fp-annotations div.current {
+  background-color: #ddd;
+}
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
@@ -187,4 +199,62 @@ a #add-format, a #add-rtmp {
   margin: 5px 15px 2px;
   padding: 1px 12px;
   border-left-color: #46b450;
+}
+
+.fvp-cue-end {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #777;
+  cursor: col-resize;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  left: auto;
+  right: 0;
+}
+
+.fvp-cue {
+  background-color: #333;
+  background-color: rgba(0, 0 , 0, 0.75);
+  background-image: url(//releases.flowplayer.org/6.0.5/skin/img/playful_white.png);
+  background-position: 110% 19px;
+  background-repeat: no-repeat;
+  padding: 15px 30px 15px 15px; /* additional right padding for "play button" */
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  /*filter: alpha(opacity=0);
+  opacity: 0;*/
+  -webkit-transition: all .5s;
+  -moz-transition: all .5s;
+  transition: all .5s;
+  font-weight: bold;
+  font-size: 16px;
+}
+.fvp-cue a {
+  color: #eee;
+}
+.fvp-cue a:hover {
+  color: #ffa500;
+}
+
+.flowplayer .fp-cuepoint {
+  display: inline-block;
+  cursor: pointer;
+  position: absolute;
+  width: 4px;
+  padding-top: 4%;
+  background-color: #333;
+  margin-left: -2px;
+  top: 30px;
+  left: 0;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  filter: alpha(opacity=0.6);
+  opacity: 0.6;
 }
