@@ -145,7 +145,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                 <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php _e('Playlist', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php _e('Video', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e('Subtitles', 'fv-wordpress-flowplayer'); ?></a>
-                <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-annotations"><?php _e('Annotations', 'fv-wordpress-flowplayer'); ?></a>
+                <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-cues"><?php _e('Cues', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e('Options', 'fv-wordpress-flowplayer'); ?></a>
                 <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e('Actions', 'fv-wordpress-flowplayer'); ?></a>
                 <?php do_action('fv_player_shortcode_editor_tab'); ?>
@@ -370,26 +370,26 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                 </table>
               </div>
 
-                <div class="fv-player-tab fv-player-tab-annotations">
-                    <table width="100%" data-index="0" class="fv-player-annotation">
+                <div class="fv-player-tab fv-player-tab-cues">
+                    <table width="100%" data-index="0" class="fv-player-cue">
                         <tr>
-                            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_annotations" class="alignright"><?php _e( 'Annotations', 'fv_flowplayer' ); ?></label></th>
-                            <td class="field fv-fp-annotations">
-                                <div class="fv-fp-annotation">
-                                    <select class="fv_wp_flowplayer_field_annotation" name="fv_wp_flowplayer_field_annotation">
+                            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_cues" class="alignright"><?php _e( 'Cues', 'fv_flowplayer' ); ?></label></th>
+                            <td class="field fv-fp-cues">
+                                <div class="fv-fp-cue">
+                                    <select class="fv_wp_flowplayer_field_cue" name="fv_wp_flowplayer_field_cue">
                                         <option></option>
-                                        <option value="txt">Text</option>
+                                        <option value="ann">Annotation</option>
                                         <option value="img">Image</option>
                                         <option value="html">HTML Code</option>
                                     </select>
-                                    <textarea class="text fv_wp_flowplayer_field_annotation_value" name="fv_wp_flowplayer_field_annotation_value"></textarea>
+                                    <textarea class="text fv_wp_flowplayer_field_cue_value" name="fv_wp_flowplayer_field_cue_value"></textarea>
                                     <br />
-                                    <label for="fv_wp_flowplayer_field_annotation_link">Link</label>
-                                    <input name="fv_wp_flowplayer_field_annotation_link" id="fv_wp_flowplayer_field_annotation_link" type="text" value="" />
-                                    <a class="fv-fp-annotation-remove" href="#" style="display: none">X</a>
+                                    <label for="fv_wp_flowplayer_field_cue_link">Link</label>
+                                    <input name="fv_wp_flowplayer_field_cue_link" id="fv_wp_flowplayer_field_cue_link" type="text" value="" />
+                                    <a class="fv-fp-cue-remove" href="#" style="display: none">X</a>
                                     <div style="clear:both"></div>
-                                    <input type="hidden" name="fv_wp_flowplayer_field_annotation_time" id="fv_wp_flowplayer_field_annotation_time" value="0" />
-                                    <input type="hidden" name="fv_wp_flowplayer_field_annotation_duration" id="fv_wp_flowplayer_field_annotation_duration" value="2" />
+                                    <input type="hidden" name="fv_wp_flowplayer_field_cue_time" id="fv_wp_flowplayer_field_cue_time" value="0" />
+                                    <input type="hidden" name="fv_wp_flowplayer_field_cue_duration" id="fv_wp_flowplayer_field_cue_duration" value="2" />
                                 </div>
                             </td>
                         </tr>
@@ -397,7 +397,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                             <td colspan="2">
                             </td>
                             <td>
-                                <a class="fv_flowplayer_annotation_add" style="outline: 0" onclick="return fv_flowplayer_annotation_add()" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Annotation', 'fv_flowplayer'); ?></a>
+                                <a class="fv_flowplayer_cue_add" style="outline: 0" onclick="return fv_flowplayer_cue_add()" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Cue', 'fv_flowplayer'); ?></a>
                             </td>
                         </tr>
                         <tr class="submit-button-wrapper">

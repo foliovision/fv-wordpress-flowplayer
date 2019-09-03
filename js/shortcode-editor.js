@@ -10,8 +10,8 @@ var fv_player_playlist_item_template;
 var fv_player_playlist_video_template;
 var fv_player_playlist_subtitles_template;
 var fv_player_playlist_subtitles_box_template;
-var fv_player_playlist_annotations_template;
-var fv_player_playlist_annotation_row_template;
+var fv_player_playlist_cues_template;
+var fv_player_playlist_cue_row_template;
 var fv_wp_fp_shortcode;
 var fv_player_preview_single = -1;
 var fv_player_preview_window;
@@ -315,7 +315,7 @@ jQuery(document).ready(function($){
     $parent.remove();
     jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').remove();
     jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']').remove();
-    jQuery('.fv-player-tab-annotations table[data-index=' + index + ']').remove();
+    jQuery('.fv-player-tab-cues table[data-index=' + index + ']').remove();
     if(!jQuery('.fv-player-tab-subtitles table[data-index]').length){
       fv_flowplayer_playlist_add();
       jQuery('.fv-player-tab-playlist tr td').click();
@@ -340,24 +340,24 @@ jQuery(document).ready(function($){
           index = $(this).data('index'),
           $items = jQuery('.fv-player-tab-video-files table[data-index=' + index + ']'),
           $subs = jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']'),
-          $annotations = jQuery('.fv-player-tab-annotations table[data-index=' + index + ']');
+          $cues = jQuery('.fv-player-tab-cues table[data-index=' + index + ']');
 
         items.push({
           items : $items.clone(),
           subs : $subs.clone(),
-          annotations: $annotations.clone(),
+          cues: $cues.clone(),
         });
 
         $items.remove();
         $subs.remove();
-        $annotations.remove();
+        $cues.remove();
       });
 
       for(var  i in items){
         if(!items.hasOwnProperty(i))continue;
         jQuery('.fv-player-tab-video-files').append(items[i].items);
         jQuery('.fv-player-tab-subtitles').append(items[i].subs);
-        jQuery('.fv-player-tab-annotations').append(items[i].annotations);
+        jQuery('.fv-player-tab-cues').append(items[i].cues);
       }
      
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( FVFP_sStoreRTMP );
@@ -463,8 +463,8 @@ jQuery(document).ready(function($){
   fv_player_playlist_video_template = jQuery('.fv-player-tab-video-files table.fv-player-playlist-item').parent().html();
   fv_player_playlist_subtitles_template = jQuery('.fv-fp-subtitle').parent().html();
   fv_player_playlist_subtitles_box_template = jQuery('.fv-player-tab-subtitles').html();
-  fv_player_playlist_annotation_row_template = jQuery('.fv-fp-annotation').parent().html();
-  fv_player_playlist_annotations_template = jQuery('.fv-player-tab-annotations table.fv-player-annotation').parent().html();
+  fv_player_playlist_cue_row_template = jQuery('.fv-fp-cue').parent().html();
+  fv_player_playlist_cues_template = jQuery('.fv-player-tab-cues table.fv-player-cue').parent().html();
 
   var $document = jQuery(document);
 
@@ -707,7 +707,7 @@ jQuery(document).ready(function($){
       hide_cue_on = [],
       player = jQuery(root).find('.fp-player'),
       timeline = jQuery(root).find('.fp-timeline'),
-      editor = jQuery('#fv-player-shortcode-editor .fv-fp-annotations');
+      editor = jQuery('#fv-player-shortcode-editor .fv-fp-cues');
 
     api.on('cuepoint', function(e,api,cue) {
       editor.find('div[data-cue='+cue.index+']').addClass('current');
@@ -814,25 +814,25 @@ jQuery(document).ready(function($){
       dragging = dragging_end = false;
     });
 
-    jQuery(document).on('click', '#fv-player-shortcode-editor .fv-fp-annotations div', function() {
+    jQuery(document).on('click', '#fv-player-shortcode-editor .fv-fp-cues div', function() {
       var row = jQuery(this);
 
       editor.find('div[data-cue]').removeClass('current');
       api.seek(api.video.cuepoints[row.data('cue')].time+0.01);
     });
 
-    jQuery(document).on('keyup', '#fv-player-shortcode-editor .fv-fp-annotations div:visible select, #fv-player-shortcode-editor .fv-fp-annotations div:visible input, #fv-player-shortcode-editor .fv-fp-annotations div:visible textarea', function() {
+    jQuery(document).on('keyup', '#fv-player-shortcode-editor .fv-fp-cues div:visible select, #fv-player-shortcode-editor .fv-fp-cues div:visible input, #fv-player-shortcode-editor .fv-fp-cues div:visible textarea', function() {
       var $input = jQuery(this);
       var row = jQuery(this).parents('[data-cue]');
       var id = row.data('cue');
       //console.log( id, $input.val(), jQuery(this).val() );
 
       // change input to the SELECT element sibling, if not SELECT already
-      if (!$input.hasClass('fv_wp_flowplayer_field_annotation')) {
-        $input = $input.siblings('.fv_wp_flowplayer_field_annotation:first');
+      if (!$input.hasClass('fv_wp_flowplayer_field_cue')) {
+        $input = $input.siblings('.fv_wp_flowplayer_field_cue:first');
       }
 
-      api.video.cuepoints[id]['data'][$input.val()] = $input.siblings('.fv_wp_flowplayer_field_annotation_value').val();
+      api.video.cuepoints[id]['data'][$input.val()] = $input.siblings('.fv_wp_flowplayer_field_cue_value').val();
       player.find('.fvp-cue[data-cue='+id+']').remove();
       api.trigger('cuepoint', [api, api.video.cuepoints[id]]);
       //api.setCuepoints(api.video.cuepoints);
@@ -929,8 +929,8 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv-player-tab-subtitles').html(fv_player_playlist_subtitles_box_template);
   jQuery('.fv_wp_flowplayer_field_subtitles_lang').val(0);
 
-  jQuery('.fv-player-tab-annotations').html(fv_player_playlist_annotations_template);
-  jQuery('.fv_wp_flowplayer_field_annotation').val(0);
+  jQuery('.fv-player-tab-cues').html(fv_player_playlist_cues_template);
+  jQuery('.fv_wp_flowplayer_field_cue').val(0);
 
   /**
    * TABS 
@@ -1008,7 +1008,7 @@ function fv_wp_flowplayer_playlist_remove(link) {
  * Adds playlist item
  * keywords: add playlist item
  */
-function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sAnnotations, sSplashText ) {
+function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplashText ) {
   jQuery('.fv-player-tab-playlist table tbody').append(fv_player_playlist_item_template);
   var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
     return parseInt(jQuery(this).attr('data-index'), 10);
@@ -1022,9 +1022,9 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sAnnotations,
   var new_item = jQuery('.fv-player-tab-video-files table:last');
   new_item.hide().attr('data-index', newIndex);
 
-  jQuery('.fv-player-tab-annotations').append(fv_player_playlist_annotations_template);
-  var new_item_annotation = jQuery('.fv-player-tab-annotations table:last');
-  new_item_annotation.hide().attr('data-index', newIndex);
+  jQuery('.fv-player-tab-cues').append(fv_player_playlist_cues_template);
+  var new_item_cue = jQuery('.fv-player-tab-cues table:last');
+  new_item_cue.hide().attr('data-index', newIndex);
 
   jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template);
   var new_item_subtitles = jQuery('.fv-player-tab-subtitles table:last');
@@ -1096,35 +1096,35 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sAnnotations,
       }
     }
 
-    if (typeof sAnnotations === 'object' && sAnnotations.length && sAnnotations[0].type) {
-      // DB-based annotation value
+    if (typeof sCues === 'object' && sCues.length && sCues[0].type) {
+      // DB-based cue value
       var
         firstDone = false,
         currentAnnoIndex = 1;
 
-      for (var i in sAnnotations) {
-        // add as many new annotations as we have
+      for (var i in sCues) {
+        // add as many new cues as we have
         if (firstDone) {
-          fv_flowplayer_annotation_add(sAnnotations[i].value, sAnnotations[i].type, sAnnotations[i].time, sAnnotations[i].duration, sAnnotations[i].link, newIndex, sAnnotations[i].id, currentAnnoIndex++);
+          fv_flowplayer_cue_add(sCues[i].value, sCues[i].type, sCues[i].time, sCues[i].duration, sCues[i].link, newIndex, sCues[i].id, currentAnnoIndex++);
         } else {
           var
-            annoElement = jQuery('[name=fv_wp_flowplayer_field_annotation]', new_item_annotation),
+            annoElement = jQuery('[name=fv_wp_flowplayer_field_cue]', new_item_cue),
             $parent = annoElement.parent();
 
-          annoElement.val(sAnnotations[i].type);
+          annoElement.val(sCues[i].type);
 
           var annoIndex = annoElement.get(0).selectedIndex;
           jQuery(annoElement.get(0).options[annoIndex]).attr('selected', 'selected');
 
           $parent.attr('data-cue', 0);
-          $parent.attr('data-id_annotation', sAnnotations[i].id);
-          $parent.hover( function() { jQuery(this).find('.fv-fp-annotation-remove').show(); }, function() { jQuery(this).find('.fv-fp-annotation-remove').hide(); } );
-          $parent.find('.fv-fp-annotation-remove').click(fv_flowplayer_remove_annotation);
+          $parent.attr('data-id_cue', sCues[i].id);
+          $parent.hover( function() { jQuery(this).find('.fv-fp-cue-remove').show(); }, function() { jQuery(this).find('.fv-fp-cue-remove').hide(); } );
+          $parent.find('.fv-fp-cue-remove').click(fv_flowplayer_remove_cue);
 
-          jQuery('[name=fv_wp_flowplayer_field_annotation_value]', new_item_annotation).val(sAnnotations[i].value);
-          jQuery('[name=fv_wp_flowplayer_field_annotation_time]', new_item_annotation).val(sAnnotations[i].time);
-          jQuery('[name=fv_wp_flowplayer_field_annotation_duration]', new_item_annotation).val(sAnnotations[i].duration);
-          jQuery('[name=fv_wp_flowplayer_field_annotation_link]', new_item_annotation).val(sAnnotations[i].link);
+          jQuery('[name=fv_wp_flowplayer_field_cue_value]', new_item_cue).val(sCues[i].value);
+          jQuery('[name=fv_wp_flowplayer_field_cue_time]', new_item_cue).val(sCues[i].time);
+          jQuery('[name=fv_wp_flowplayer_field_cue_duration]', new_item_cue).val(sCues[i].duration);
+          jQuery('[name=fv_wp_flowplayer_field_cue_link]', new_item_cue).val(sCues[i].link);
           firstDone = true;
         }
       }
@@ -1153,8 +1153,8 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sAnnotations,
     if( sSubtitles ) {
       jQuery('[name=fv_wp_flowplayer_field_subtitles]', new_item_subtitles).val(sSubtitles);
     }
-    if( sAnnotations ) {
-      jQuery('[name=fv_wp_flowplayer_field_annotation]', new_item_annotation).val(sAnnotations);
+    if( sCues ) {
+      jQuery('[name=fv_wp_flowplayer_field_cue]', new_item_cue).val(sCues);
     }
     if( sSplashText ) {
       jQuery('[name=fv_wp_flowplayer_field_splash_text]', new_item).val(sSplashText);
@@ -1210,7 +1210,7 @@ function fv_flowplayer_playlist_show() {
     jQuery(this).attr('data-index', jQuery(this).index() );
   });
 
-  jQuery('.fv-player-tab.fv-player-tab-annotations table').each(function(){
+  jQuery('.fv-player-tab.fv-player-tab-cues table').each(function(){
     jQuery(this).attr('data-index', jQuery(this).index() );
   })
   
@@ -1247,8 +1247,8 @@ function fv_flowplayer_editor_item_show( new_index ) {
   $('.fv-player-tab-subtitles table').hide();
   $('.fv-player-tab-subtitles table').eq(new_index).show();
 
-  $('.fv-player-tab-annotations table').hide();
-  $('.fv-player-tab-annotations table').eq(new_index).show();
+  $('.fv-player-tab-cues table').hide();
+  $('.fv-player-tab-cues table').eq(new_index).show();
   
 
   if($('.fv-player-tab-playlist [data-index]').length > 1){
@@ -1272,7 +1272,7 @@ function fv_flowplayer_editor_item_show( new_index ) {
     $('.fv_wp_flowplayer_field_rtmp',video_tab).attr('readonly',true);
   }
   
-  $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link, .fv_wp_flowplayer_field_annotation, .fv_flowplayer_annotation_add').attr('style',false);
+  $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link, .fv_wp_flowplayer_field_cue, .fv_flowplayer_cue_add').attr('style',false);
 
   fv_player_refresh_tabs();
 
@@ -1359,36 +1359,36 @@ function fv_flowplayer_remove_subtitles() {
 }
 
 /*
- * Adds new annotation to editor
+ * Adds new cue to editor
  */
-function fv_flowplayer_annotation_add( sInput, sType, sTime, sDuration, sLink, iTabIndex, sId, annoIndex ) {
+function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabIndex, sId, annoIndex ) {
   if(!iTabIndex){
-    var current = jQuery('.fv-player-tab-annotations table:visible');
+    var current = jQuery('.fv-player-tab-cues table:visible');
     iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
   }
-  var oTab = jQuery('.fv-fp-annotations').eq(iTabIndex);
-  oTab.append( fv_player_playlist_annotation_row_template );
+  var oTab = jQuery('.fv-fp-cues').eq(iTabIndex);
+  oTab.append( fv_player_playlist_cue_row_template );
 
-  var annElement = jQuery('.fv-fp-annotation:last' , oTab);
+  var annElement = jQuery('.fv-fp-cue:last' , oTab);
 
   if (annoIndex) {
     annElement.attr('data-cue', annoIndex);
   }
 
-  annElement.hover( function() { jQuery(this).find('.fv-fp-annotation-remove').show(); }, function() { jQuery(this).find('.fv-fp-annotation-remove').hide(); } );
+  annElement.hover( function() { jQuery(this).find('.fv-fp-cue-remove').show(); }, function() { jQuery(this).find('.fv-fp-cue-remove').hide(); } );
 
   if (typeof(sId) !== 'undefined') {
-    annElement.attr('data-id_annotation', sId);
+    annElement.attr('data-id_cue', sId);
   }
 
   if( sInput ) {
-    jQuery('.fv-fp-annotation:last textarea.fv_wp_flowplayer_field_annotation_value' , oTab ).val(sInput);
+    jQuery('.fv-fp-cue:last textarea.fv_wp_flowplayer_field_cue_value' , oTab ).val(sInput);
   }
 
   if ( sType ) {
-    jQuery('.fv-fp-annotation:last select.fv_wp_flowplayer_field_annotation', oTab).val(sType);
+    jQuery('.fv-fp-cue:last select.fv_wp_flowplayer_field_cue', oTab).val(sType);
     var
-      sel = jQuery('.fv-fp-annotation:last select.fv_wp_flowplayer_field_annotation', oTab).get(0),
+      sel = jQuery('.fv-fp-cue:last select.fv_wp_flowplayer_field_cue', oTab).get(0),
       index = sel.selectedIndex,
       $selectedOption = jQuery(sel.options[index]);
 
@@ -1396,28 +1396,28 @@ function fv_flowplayer_annotation_add( sInput, sType, sTime, sDuration, sLink, i
   }
 
   if( sTime ) {
-    jQuery('.fv-fp-annotation:last input.fv_wp_flowplayer_field_annotation_time' , oTab ).val(sTime);
+    jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_time' , oTab ).val(sTime);
   }
 
   if( sDuration ) {
-    jQuery('.fv-fp-annotation:last input.fv_wp_flowplayer_field_annotation_duration' , oTab ).val(sDuration);
+    jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_duration' , oTab ).val(sDuration);
   }
 
   if( sLink ) {
-    jQuery('.fv-fp-annotation:last input.fv_wp_flowplayer_field_annotation_link' , oTab ).val(sLink);
+    jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_link' , oTab ).val(sLink);
   }
 
-  jQuery('.fv-fp-annotation:last .fv-fp-annotation-remove' , oTab).click(fv_flowplayer_remove_annotation);
+  jQuery('.fv-fp-cue:last .fv-fp-cue-remove' , oTab).click(fv_flowplayer_remove_cue);
 
   fv_wp_flowplayer_dialog_resize();
   return false;
 }
 
-function fv_flowplayer_remove_annotation() {
-  if(jQuery(this).parents('.fv-fp-annotations').find('.fv-fp-annotation').length > 1){
+function fv_flowplayer_remove_cue() {
+  if(jQuery(this).parents('.fv-fp-cues').find('.fv-fp-cue').length > 1){
     var
-      $parent = jQuery(this).parents('.fv-fp-annotation'),
-      id = $parent.attr('data-id_annotation')
+      $parent = jQuery(this).parents('.fv-fp-cue'),
+      id = $parent.attr('data-id_cue')
 
     if (id) {
       fv_wp_delete_video_meta_record(id);
@@ -1426,15 +1426,15 @@ function fv_flowplayer_remove_annotation() {
     $parent.remove();
   }else{
     var
-      $parent = jQuery(this).parents('.fv-fp-annotation'),
-      id = $parent.attr('data-id_annotation')
+      $parent = jQuery(this).parents('.fv-fp-cue'),
+      id = $parent.attr('data-id_cue')
 
     if (id) {
       fv_wp_delete_video_meta_record(id);
     }
 
     $parent.find('[name]').val('');
-    $parent.removeAttr('data-id_annotation');
+    $parent.removeAttr('data-id_cue');
   }
   fv_wp_flowplayer_dialog_resize();
 
@@ -1476,7 +1476,7 @@ function fv_wp_flowplayer_edit() {
   jQuery('#fv-player-shortcode-editor [data-id]').removeData('id').removeAttr('data-id');
   jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
   jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
-  jQuery('#fv-player-shortcode-editor [data-id_annnotation]').removeData('id_annotation').removeAttr('data-annotation');
+  jQuery('#fv-player-shortcode-editor [data-id_annnotation]').removeData('id_cue').removeAttr('data-cue');
 
   // fire up editor reset event, so plugins can clear up their data IDs as well
   var $doc = jQuery(document);
@@ -1755,7 +1755,7 @@ function fv_wp_flowplayer_edit() {
           for (var x in vids) {
             var
               subs = [],
-              annotations = [],
+              cues = [],
               transcript = null,
               chapters = null,
               video_meta = [];
@@ -1772,12 +1772,12 @@ function fv_wp_flowplayer_edit() {
                   });
                 }
 
-                // annotations
-                if (vids[x].meta[m].meta_key.indexOf('annotations') > -1) {
+                // cues
+                if (vids[x].meta[m].meta_key.indexOf('cues') > -1) {
                   // value, time and duration are stored serialized as meta value
                   vids[x].meta[m].meta_value = JSON.parse(vids[x].meta[m].meta_value);
-                  annotations.push({
-                    type: vids[x].meta[m].meta_key.replace('annotations_', ''),
+                  cues.push({
+                    type: vids[x].meta[m].meta_key.replace('cues_', ''),
                     value: vids[x].meta[m].meta_value.value,
                     time: vids[x].meta[m].meta_value.time,
                     duration: vids[x].meta[m].meta_value.duration,
@@ -1809,7 +1809,7 @@ function fv_wp_flowplayer_edit() {
               }
             }
 
-            $video_data_tab = fv_flowplayer_playlist_add(vids[x], false, subs, annotations);
+            $video_data_tab = fv_flowplayer_playlist_add(vids[x], false, subs, cues);
             $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
 
             // add chapters and transcript
@@ -2138,8 +2138,8 @@ function fv_wp_flowplayer_edit() {
         }
       }
 
-      // hide the Annotations tab by removing its tab content, since it't not supported for non-db shortcodes
-      jQuery('.fv-player-annotation').remove();
+      // hide the Cues tab by removing its tab content, since it't not supported for non-db shortcodes
+      jQuery('.fv-player-cue').remove();
 
       if( jQuery('.fv-fp-subtitles .fv-fp-subtitle:first input.fv_wp_flowplayer_field_subtitles').val() == '' ) {
         jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
@@ -2377,26 +2377,26 @@ function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
       $tab = jQuery(this),
       is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
       is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-      is_annotations_tab = $tab.hasClass('fv-player-tab-annotations'),
-      $tables = ((is_videos_tab || is_subtitles_tab || is_annotations_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
+      is_cues_tab = $tab.hasClass('fv-player-tab-cues'),
+      $tables = ((is_videos_tab || is_subtitles_tab || is_cues_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
       save_index = -1;
 
-    // prepare video, subtitles and annotations data, which are duplicated through their input names
+    // prepare video, subtitles and cues data, which are duplicated through their input names
     if (is_videos_tab) {
       data['videos'] = {};
     } else if (is_subtitles_tab) {
       data['video_meta']['subtitles'] = {};
       data['video_meta']['transcript'] = {};
       data['video_meta']['chapters'] = {};
-    } else if (is_annotations_tab) {
-      data['video_meta']['annotations'] = {};
+    } else if (is_cues_tab) {
+      data['video_meta']['cues'] = {};
     }
 
     // iterate over all tables in tabs
     $tables.each(function() {
-      // only videos, subtitles and annotations tabs have tables, so we only need to search for their inputs when working with those
+      // only videos, subtitles and cues tabs have tables, so we only need to search for their inputs when working with those
       var
-        $inputs = ((is_videos_tab || is_subtitles_tab || is_annotations_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
+        $inputs = ((is_videos_tab || is_subtitles_tab || is_cues_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
         table_index = jQuery(this).data('index');
 
       save_index++;
@@ -2521,25 +2521,25 @@ function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
             });
           }
 
-          // annotations tab
-          else if (is_annotations_tab) {
-            if ($this.hasClass('fv_wp_flowplayer_field_annotation_value')) {
-              if (!data['video_meta']['annotations'][save_index]) {
-                data['video_meta']['annotations'][save_index] = [];
+          // cues tab
+          else if (is_cues_tab) {
+            if ($this.hasClass('fv_wp_flowplayer_field_cue_value')) {
+              if (!data['video_meta']['cues'][save_index]) {
+                data['video_meta']['cues'][save_index] = [];
               }
 
               // jQuery-select the SELECT element when we get an TEXTAREA, since we need to pair them
               // ... also, retrieve time and duration values her
-              var serialized_annotation_val = JSON.stringify({
+              var serialized_cue_val = JSON.stringify({
                 'value' : this.value,
-                'time' : $this.siblings('#fv_wp_flowplayer_field_annotation_time').val(),
-                'duration' : $this.siblings('#fv_wp_flowplayer_field_annotation_duration').val(),
-                'link' : $this.siblings('#fv_wp_flowplayer_field_annotation_link').val()
+                'time' : $this.siblings('#fv_wp_flowplayer_field_cue_time').val(),
+                'duration' : $this.siblings('#fv_wp_flowplayer_field_cue_duration').val(),
+                'link' : $this.siblings('#fv_wp_flowplayer_field_cue_link').val()
               });
-              data['video_meta']['annotations'][save_index].push({
+              data['video_meta']['cues'][save_index].push({
                 type : $this.siblings('select:first').val(),
-                value : serialized_annotation_val,
-                id: $this.parent().data('id_annotations')
+                value : serialized_cue_val,
+                id: $this.parent().data('id_cues')
               });
             }
           }
