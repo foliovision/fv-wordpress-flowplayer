@@ -1249,19 +1249,8 @@ class FV_Player_Db {
         ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-import-".get_current_user_id() ) )
       ) {
         die('Security check failed');
-      }      
-
-      // remove post meta when cloning
-      if($_POST['action'] == 'fv_player_db_clone'){
-        if (isset($data['meta'])) {
-          foreach($data['meta'] as $h => $v){
-            if($v['meta_key'] == 'post_id'){
-              unset($data['meta'][$h]);
-            }
-          }
-        }
       }
-      
+
       try {
         // first, create the player
         $player_keys = $data;
@@ -1390,6 +1379,16 @@ class FV_Player_Db {
   public function clone_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
       $export_data = $this->export_player_data(null, false);
+
+       // remove post id
+        if (isset($export_data['meta'])) {
+          foreach($export_data['meta'] as $h => $v){
+            if($v['meta_key'] == 'post_id'){
+              unset($export_data['meta'][$h]);
+            }
+          }
+        }
+
       echo $this->import_player_data(null, false, $export_data);
       exit;
     } else {
