@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.2.1
+Tested up to: 5.2.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -357,15 +357,31 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.4.0.727 - 2019/07/25 =
+= 7.4.2.727 - 2019/08/28 =
+
+* Google Analytics - using video titles rather than file names
+* iOS 12 fullscreen fix
+* Playlist - adding recovery routine - missing video will no longer cause the whole playlist to stop playing
+* Playlist - fixing Season style font sizes
+* Handle WordPress shortcodes - fixed to also handle the [audio] shortcodes
+* Video linking - using the video ID if available
+* Bugfix - splash image not appearing when using 100% for global width or height
+
+= 7.4.0.727 - 2019/07/30 =
 
 * New mobile setting - Force landscape orientation in fullscreen
 * New playlist style - Polaroid 
 * New playlist style - Vertical Season
+* New video field - DVR stream - available for m3u8 and mpd streams
 * New video field - synopsis - used for Vertical Season playlist
 * Styling - changed splash images from CSS background to actual IMG tags for easier lazyloading and future retina support
 * Styling - making sure any menu fits into the player height
 * Styling - moving Airplay button next to fullscreen button
+* Styling - showing full-width timeline if there are too many buttons on a narrow screen
+* Ads - showing overlay ad for each playlist item
+* Lightbox - showing playlist (player and playlist items) as a single item
+* Handle WordPress shortcodes - fixed to also cover Gutenberg video block in front-end
+* Bugfix - bad default sort on the wp-admin -> FV Player screen
 
 
 = 7.3.19.727 - 2019/07/11 =

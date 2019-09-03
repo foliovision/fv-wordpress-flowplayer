@@ -968,9 +968,6 @@
   top: 0;
   left: 0;
 }
-.flowplayer.is-ready.is-paused .fp-splash, .flowplayer.is-playing .fp-splash {
-  display: none;
-}
 
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
     background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, .25)), color-stop(15%, transparent));
@@ -2141,16 +2138,13 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info h4 {
   text-align: left;
-  font-size: 0.8em;
+  font-size: 1em;
   padding: 0;
   color: black;
   font-weight: bold;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p {
   color: black;
-  font-size: 0.75em;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  line-height: 1.3;
   margin-bottom: 0;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info .dur {
