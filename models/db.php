@@ -1379,6 +1379,16 @@ class FV_Player_Db {
   public function clone_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
       $export_data = $this->export_player_data(null, false);
+
+      // do not clone information about where the player is embeded
+      if (isset($export_data['meta'])) {
+        foreach($export_data['meta'] as $h => $v){
+          if($v['meta_key'] == 'post_id'){
+            unset($export_data['meta'][$h]);
+          }
+        }
+      }
+
       echo $this->import_player_data(null, false, $export_data);
       exit;
     } else {
