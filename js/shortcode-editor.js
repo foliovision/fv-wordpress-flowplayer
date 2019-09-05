@@ -712,6 +712,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText )
     new_item.find('[name=fv_wp_flowplayer_field_end]').val(objVid.end);
     
     jQuery(objVid.meta).each( function(k,v) {
+      if( v.meta_key == 'synopsis' ) new_item.find('[name=fv_wp_flowplayer_field_synopsis]').val(v.meta_value).attr('data-id',v.id);
       if( v.meta_key == 'audio' ) new_item.find('[name=fv_wp_flowplayer_field_audio]').prop('checked',v.meta_value).attr('data-id',v.id);
     });    
     
@@ -1049,7 +1050,7 @@ function fv_wp_flowplayer_edit() {
   // create empty shortcode for Add New button on the list page
     fv_wp_flowplayer_content = '';
     shortcode = '';
-  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
+  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
     if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
       fv_wp_flowplayer_oEditor.InsertHtml('<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>');
@@ -1306,7 +1307,7 @@ function fv_wp_flowplayer_edit() {
                 }
 
                 // general video meta
-                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
+                if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['dvr', 'duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
                   video_meta.push(vids[x].meta[m]);
                 }
               }
@@ -1796,7 +1797,7 @@ function fv_wp_flowplayer_set_html( html ) {
     jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
   }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
     jQuery('#content:not([aria-hidden=true])').val(html); 
-  }else if( fv_wp_flowplayer_hTinyMCE == undefined || tinyMCE.activeEditor.isHidden() ) {
+  }else if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
     fv_wp_flowplayer_oEditor.SetHTML( html );      
   }
   else {		
@@ -2115,8 +2116,10 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
     'fv_wp_flowplayer_field_duration',
     'fv_wp_flowplayer_field_last_video_meta_check',
     'fv_wp_flowplayer_field_live',
+    'fv_wp_flowplayer_field_dvr',
     'fv_wp_flowplayer_field_auto_splash',
     'fv_wp_flowplayer_field_auto_caption',
+    'fv_wp_flowplayer_field_synopsis',
     'fv_wp_flowplayer_field_audio'
   ].indexOf(fieldName) > -1;
 }
@@ -3105,23 +3108,25 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
   }
 };
 
-// extending DB player edit lock's timer
-jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
-  if (fv_flowplayer_conf.current_player_db_id) {
-    data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
-  }
+if( typeof(fv_flowplayer_conf) != "undefined" ) {
+  // extending DB player edit lock's timer
+  jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+    if (fv_flowplayer_conf.current_player_db_id) {
+      data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
+    }
+    
+    if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+      data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
+    }
+  });
   
-  if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-    data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
-  }
-});
-
-// remove edit locks in the config if it was removed on the server
-jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
-  if ( data.fv_flowplayer_edit_locks_removed ) {
-    fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
-  }
-});
+  // remove edit locks in the config if it was removed on the server
+  jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
+    if ( data.fv_flowplayer_edit_locks_removed ) {
+      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+    }
+  });
+}
 
 
 
@@ -3535,11 +3540,9 @@ function fv_player_editor_show_stream_fields(e,index) {
   // on fv_flowplayer_shortcode_new
   if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
   
-  var rtmp = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val(),
-    show_live = rtmp || src.match(/\.m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//),
-    show_audio = src.match(/\.m3u8/);
-  
-  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_live);
-  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_audio);
-  
+  var show_stream_checkboxes = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//);
+    
+  item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_stream_checkboxes);
+  item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_stream_checkboxes);
+  item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!show_stream_checkboxes);
 }

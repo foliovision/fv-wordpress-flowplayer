@@ -23,7 +23,7 @@
   
   In the plugin constructor:
     $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/{plugin-slug}/trunk/readme.txt?format=txt';    
-	  add_action( 'in_plugin_update_message-{plugin-dir}/{plugin-file}.php', array( &$this, 'plugin_update_message' ) );
+    add_action( 'in_plugin_update_message-{plugin-dir}/{plugin-file}.php', array( &$this, 'plugin_update_message' ) );
  */
 
 /**
@@ -302,23 +302,17 @@ class FV_Wordpress_Flowplayer_Plugin_Private
  
 
   function checkLicenseTransient(){
-    $strTransient = $this->strPluginSlug . '_license';
-    
-    $aCheck = get_transient( $strTransient );
-      if( isset($aCheck->valid) && $aCheck->valid) 
-	    return TRUE;
-      else
-        return FALSE;
+    $aCheck = get_transient( $this->strPluginSlug . '_license' );
+    return isset($aCheck->valid) && $aCheck->valid;
   }
 
   function getUpgradeUrl(){
-    $strTransient = $this->strPluginSlug . '_license';
- 
-    $aCheck = get_transient( $strTransient );
-    if( isset($aCheck->upgrade) && !empty($aCheck->upgrade) ) 
-	  return $aCheck->upgrade;
-    else
-	  return FALSE;
+    $aCheck = get_transient( $this->strPluginSlug . '_license' );
+    if( isset($aCheck->upgrade) && !empty($aCheck->upgrade) ) {
+      return $aCheck->upgrade;
+    } else {
+      return false;
+    }
   }
   
   
@@ -480,22 +474,13 @@ $this->strPrivateAPI - also
       return;
     }
 
-    /*$options = get_option( 'wpseo' );
-    if ( ! isset( $options['yoast_tracking'] ) || ( ! isset( $options['ignore_tour'] ) || ! $options['ignore_tour'] ) ) {*/
-      wp_enqueue_style( 'wp-pointer' );
-      wp_enqueue_script( 'jquery-ui' );
-      wp_enqueue_script( 'wp-pointer' );
-      wp_enqueue_script( 'utils' );
-    /*}
-    if ( ! isset( $options['tracking_popup'] ) && ! isset( $_GET['allow_tracking'] ) ) {*/
-      
-    /*}
-    else if ( ! isset( $options['ignore_tour'] ) || ! $options['ignore_tour'] ) {
-      add_action( 'admin_print_footer_scripts', array( $this, 'intro_tour' ) );
-      add_action( 'admin_head', array( $this, 'admin_head' ) );
-    }  */
+    wp_enqueue_style( 'wp-pointer' );
+    wp_enqueue_script( 'jquery-ui' );
+    wp_enqueue_script( 'wp-pointer' );
+    wp_enqueue_script( 'utils' );
+
     add_action( 'admin_print_footer_scripts', array( $this, 'pointers_init_scripts' ) );    
-  }  
+  }
   
   
   private function get_readme_url_remote( $url = false ) { // todo: caching
@@ -646,53 +631,53 @@ $this->strPrivateAPI - also
 </script>
     <?php    
     
-    foreach( $this->pointer_boxes AS $sKey => $aPopup ) {
-      $sNonce = wp_create_nonce( $sKey );
-  
-      $content = '<h3>'.$aPopup['heading'].'</h3>';
-      if( stripos( $aPopup['content'], '</p>' ) !== false ) {
-        $content .= $aPopup['content'];
+    foreach( $this->pointer_boxes AS $key => $args ) {
+      $nonce = wp_create_nonce( $key );
+      
+      $args = wp_parse_args( $args, array(
+        'button1' => false, // req
+        'button2' => false,
+        'function1' => $this->class_name.'_store_answer("'.$key.'", "true","' . $nonce . '")',
+        'function2' => $this->class_name.'_store_answer("'.$key.'", "false","' . $nonce . '")',
+        'heading' => false, // req
+        'id' => false,  // req
+        'content' => false, // req
+        'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      ) );
+      
+      extract($args);
+      
+      $html = '<h3>'.$heading.'</h3>';
+      if( stripos( $content, '</p>' ) !== false ) {
+        $html .= $content;
       } else {
-        $content .= '<p>'.$aPopup['content'].'</p>';
+        $html .= '<p>'.$content.'</p>';
       }
       
-      $position = ( isset($aPopup['position']) ) ? $aPopup['position'] : array( 'edge' => 'top', 'align' => 'center' );
-      
-      $opt_arr = array( 'pointerClass' => $sKey, 'content'  => $content, 'position' => $position );
-        
-      $function2 = $this->class_name.'_store_answer("'.$sKey.'", "false","' . $sNonce . '")';
-      $function1 = $this->class_name.'_store_answer("'.$sKey.'", "true","' . $sNonce . '")';
-  
-      $this->pointers_print_scripts( $sKey, $aPopup['id'], $opt_arr, $aPopup['button2'], $aPopup['button1'], $function2, $function1 );
+      ?>
+      <script type="text/javascript">
+        //<![CDATA[
+        (function ($) {
+          var pointer_options = <?php echo json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
+          setup = function () {
+            $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
+            var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');       
+            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function1; ?>; t.element.pointer('close'); }) );        
+            <?php if ( $button2 ) { ?>
+              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function2; ?> }) );                          
+            <?php } ?>             
+          };
+
+          if(pointer_options.position && pointer_options.position.defer_loading)
+            $(window).bind('load.wp-pointers', setup);
+          else
+            $(document).ready(setup);
+        })(jQuery);
+        //]]>
+      </script>
+      <?php
     }
   }
-  
-  
-  
-    function pointers_print_scripts( $id, $selector, $options, $button1, $button2 = false, $button2_function = '', $button1_function = '' ) {
-    ?>
-    <script type="text/javascript">
-      //<![CDATA[
-      (function ($) {
-        var pointer_options = <?php echo json_encode( $options ); ?>,
-        setup = function () {
-          $('<?php echo $selector; ?>').pointer(pointer_options).pointer('open');
-          var buttons = $('.<?php echo $id; ?> .wp-pointer-buttons').html('');       
-          buttons.append( $('<a style="margin-left:5px" class="button-secondary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $button2_function; ?>; t.element.pointer('close'); }) );        
-          <?php if ( $button2 ) { ?>
-            buttons.append( $('<a class="button-primary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $button1_function; ?> }) );                          
-          <?php } ?>             
-        };
-
-        if(pointer_options.position && pointer_options.position.defer_loading)
-          $(window).bind('load.wp-pointers', setup);
-        else
-          $(document).ready(setup);
-      })(jQuery);
-      //]]>
-    </script>
-    <?php
-    }
   
 
   function check_domain_license() {
@@ -817,7 +802,7 @@ $this->strPrivateAPI - also
       echo self::install_form_text($form, $name);
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
-    }	
+    }
 
     if ( ! WP_Filesystem( $creds ) ) {
       ob_start();

@@ -15,10 +15,9 @@ class FV_Player_lightbox {
 
     add_filter('fv_flowplayer_player_type', array($this, 'lightbox_enable'));
 
-    add_filter('fv_flowplayer_playlist_style', array($this, 'lightbox_playlist'), 10, 5);
+    add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos
+    add_filter('fv_flowplayer_args_pre', array($this, 'lightbox_playlist_style')); // force slider style for lightboxed playlist
 
-    add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos, todo: it should work instead!
-    
     add_filter('fv_flowplayer_args', array($this, 'parse_html_caption'), 0);
 
     add_filter('the_content', array($this, 'html_to_lightbox_videos'));
@@ -36,20 +35,15 @@ class FV_Player_lightbox {
     
     add_action('wp_head', array( $this, 'remove_other_fancybox' ), 8 );
     add_action('wp_footer', array( $this, 'remove_other_fancybox' ), 19 );
-
-    //TODO is this hack needed?
-    $conf = get_option('fvwpflowplayer');
-    if(isset($conf['lightbox_images']) && $conf['lightbox_images'] == 'true' && 
-      (!isset($conf['lightbox_improve_galleries']) || isset($conf['lightbox_improve_galleries']) && $conf['lightbox_improve_galleries'] == 'true')) {
-      add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
-    }
+    
+    add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
     
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
   }
   
   function css_enqueue( $force ) {
     global $fv_fp;
-    if( !$force && !$fv_fp->_get_option('lightbox_images') ) return;
+    if( !$force && !$fv_fp->_get_option('lightbox_images') && !$fv_fp->_get_option('lightbox_force') ) return;
     
     $bCSSLoaded = true;
     
@@ -84,7 +78,8 @@ class FV_Player_lightbox {
   }
 
   function improve_galleries( $args ) {
-    if( !$args['link'] ) {
+    global $fv_fp;
+    if( !$args['link'] && $fv_fp->_get_option('lightbox_images') && $fv_fp->_get_option('lightbox_improve_galleries') ) {
       $args['link'] = 'file';
     }
     return $args;
@@ -130,10 +125,6 @@ class FV_Player_lightbox {
       echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
     }
   }
-  
-  function get_title_attr( $args ) {    
-    return !empty($args['caption']) ? " title='" . esc_attr($args['caption']) . "'" : '';
-  }
 
   function is_text_lightbox($aArgs) {
     $aLightbox = preg_split('~[;]~', $aArgs['lightbox']);
@@ -149,151 +140,93 @@ class FV_Player_lightbox {
   function lightbox_html($html) {
     $aArgs = func_get_args();
 
-    if (isset($aArgs[1]) && isset($aArgs[1]->aCurArgs['lightbox'])) {
-      $this->bLoad = true;
-      
-      global $fv_fp;
-
-      $iConfWidth = intval($fv_fp->_get_option('width'));
-      $iConfHeight = intval($fv_fp->_get_option('height'));
-
-      $iPlayerWidth = ( isset($aArgs[1]->aCurArgs['width']) && intval($aArgs[1]->aCurArgs['width']) > 0 ) ? intval($aArgs[1]->aCurArgs['width']) : $iConfWidth;
-      $iPlayerHeight = ( isset($aArgs[1]->aCurArgs['height']) && intval($aArgs[1]->aCurArgs['height']) > 0 ) ? intval($aArgs[1]->aCurArgs['height']) : $iConfHeight;
-      
-      $aLightbox = preg_split('~[;]~', $aArgs[1]->aCurArgs['lightbox']);
-      
-      if ( $this->is_text_lightbox($aArgs[1]->aCurArgs) ) {
-        $sTitle = empty($aArgs[1]->aCurArgs['playlist']) ? $sTitle = $this->get_title_attr($aArgs[1]->aCurArgs) : '';
-        $html = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
-        $this->lightboxHtml .= "<div style='display: none'>\n" . $html . "</div>\n";
-        $html = "<a".$this->fancybox_opts()." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter'" . $sTitle . " class='fv-player-lightbox-link' href=\"#\" data-src='#wpfp_" . $aArgs[1]->hash . "'>" . $aArgs[1]->aCurArgs['caption'] . "</a>";
+    if (isset($aArgs[1]) ) {
+      $args = $aArgs[1]->aCurArgs;
+      if( isset($args['lightbox'])) {
+        $this->bLoad = true;
         
-      } else {
-        $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
-        $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
-
-        $sSplash = apply_filters('fv_flowplayer_playlist_splash', $aArgs[1]->aCurArgs['splash'], $fv_fp);
-        $sStyle = 'style="max-width: ' . $iWidth . 'px; max-height: ' . $iHeight . 'px; ';
-        if (isset($aArgs[1]->aCurArgs['splash']) && $sSplash ) {
-          $sStyle .= 'background-image: url(\'' . $sSplash . '\')';
-        }
-        $sStyle .= '"';
-
-        if ($iWidth > 0) {
-          $sStyle .= ' data-ratio="' . round($iHeight / $iWidth, 4) . '"';
-        }
-
-        $sClass = "";
-        if (is_object($aArgs[1]) && method_exists($aArgs[1], 'get_align')) {
-          $sClass = $aArgs[1]->get_align();
-        }
+        global $fv_fp;
         
-        if( !empty($fv_fp->aCurArgs['skin']) ) {
-          $skin = 'skin-'.$fv_fp->aCurArgs['skin'];
-        } else {
-          $skin = 'skin-'.$fv_fp->_get_option('skin');
-        }
-        $sClass .= ' no-svg is-paused '.$skin;
-        $sClass .= ' '.$fv_fp->_get_option(array($skin, 'design-timeline')).' '.$fv_fp->_get_option(array($skin, 'design-icons'));
+        $iConfWidth = intval($fv_fp->_get_option('width'));
+        $iConfHeight = intval($fv_fp->_get_option('height'));
 
+        $iPlayerWidth = ( isset($args['width']) && intval($args['width']) > 0 ) ? intval($args['width']) : $iConfWidth;
+        $iPlayerHeight = ( isset($args['height']) && intval($args['height']) > 0 ) ? intval($args['height']) : $iConfHeight;
+        
+        $aLightbox = preg_split('~[;]~', $args['lightbox']);
+        
+        $hash = $aArgs[1]->hash;
+        $container = "wpfp_".$hash."_container";
+        $button = "fv_flowplayer_".$hash."_lightbox_starter";
+        
         $sTitle = '';
-        if (isset($aLightbox[3])) {
-          $sTitle = "title='" . esc_attr($aLightbox[3]) . "'";
-        } else if (isset($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3])) {
-          $sTitle = "title='" . esc_attr($aLightbox[1]) . "'";
+        if( !empty($aLightbox[3]) && $aLightbox[3] != 'text' ) {
+          $sTitle = $aLightbox[3];
+        } else if( !empty($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3]) && $aLightbox[1] != 'text'  ) {
+          $sTitle = $aLightbox[1];
+        } else if( empty($args['playlist']) && !empty($args['caption']) ) {
+          $sTitle = $args['caption'];
         }
-
-        $lightboxed_player = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
-        /* $html = preg_replace( '~max-width: \d+px;~', 'max-width: '.$iWidth.'px;', $html );
-          $html = preg_replace( '~max-height: \d+px;~', 'max-height: '.$iHeight.'px;', $html ); */
-
-        $html = "<div".$this->fancybox_opts($sSplash)." id='fv_flowplayer_" . $aArgs[1]->hash . "_lightbox_starter' $sTitle href='#wpfp_" . $aArgs[1]->hash . "' class='flowplayer lightbox-starter is-splash$sClass' $sStyle>";
         
-        $html .= '<div class="fp-ui"><div class="fp-play fp-visible"><a class="fp-icon fp-playbtn"></a></div></div>';
-        
-        if ($iWidth > 0) {
-          $html .= '<div class="fp-ratio" style="padding-top: '.str_replace(',','.',round($iHeight / $iWidth, 4) * 100).'%"></div>';
+        if( !empty($sTitle) ) {
+          $sTitle = " title='".esc_attr($sTitle)."'";
         }
-        $html .= "</div>\n<div class='fv_player_lightbox_hidden' style='display: none'>\n" . $lightboxed_player . "</div>";
+        
+        $lightbox = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
+        $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
+        
+        if ( $this->is_text_lightbox($args) ) {
+          if( !empty($args['playlist']) ) {
+            list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $fv_fp->build_playlist( $args, $args['src'], $args['src1'], $args['src2'], false, false );
+            if( is_array($aCaptions) ) {
+              $html = '<ul class="fv-player-lightbox-text-playlist" rel="'.$container.'">'; 
+              foreach( $aCaptions AS $key => $caption ) {
+                $html .= '<li><a';
+                // we only add the fancyBox attributes for the first link as having multiple links for one fancyBox view causes issues, we handle the clicks in JS
+                if( $key == 0 ) { 
+                  $html .= $this->fancybox_opts().' href="#'.$container.'"';
+                } else {
+                  $html .= ' href="#"';
+                }
+                $html .= ' class="fv-player-lightbox-link" title="'.esc_attr($caption).'">'.$caption.'</li>';
+              }
+              $html .= '</ul>';
+            }
+          } else {
+            $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
+          }
+          
+          // in this case we put the lightboxed player into footer as putting it behind the anchor might break the parent block element
+          $this->lightboxHtml .= $lightbox;
+
+        } else {
+          $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
+          $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
+
+          $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $fv_fp);
+
+          // re-use the existing player HTML and add data-fancybox, data-options, new id and href
+          $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
+
+          // add all the new classes
+          $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter ', $html );
+
+          // use new size
+          $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
+
+          // this is how we link playlist items to the player
+          $html = str_replace( ' rel="wpfp_'.$hash.'"', ' rel="'.$button.'"', $html );
+
+          // we removed FV Player data to make sure it won't initialize here
+          $html = preg_replace( "~ data-item='.*?'~", '', $html );
+          $html = preg_replace( '~ data-item=".*?"~', '', $html );
+
+          // put the hidden player after our lightbox button
+          $html .= $lightbox;
+        }
       }
     }
     return $html;
-  }
-
-  function lightbox_playlist($output, $aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions) {    
-
-    if ($output || empty($aCurArgs['lightbox']) || !count($aPlaylistItems) || count($aPlaylistItems) == 1 ) {
-      return $output;
-    }
-   
-    global $FV_Player_Pro;
-    if( !empty($FV_Player_Pro) && count($FV_Player_Pro->bVideoAdsStatus) ) return $output;
-
-    global $fv_fp;
-    $output = array();
-    $output['html'] = '';
-    $output['script'] = array();
-
-    $i = 0;
-    $after = '';
-    foreach ($aPlaylistItems AS $key => $aSrc) {
-      $i++;
-      unset($aCurArgs['playlist'], $aCurArgs['id']);
-      $aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      $aCurArgs['splash'] = isset($aSplashScreens[$key]) ? $aSplashScreens[$key] : false;
-      $aCurArgs['caption'] = isset($aCaptions[$key]) ? $aCaptions[$key] : false;
-      
-      $aCurArgs['liststyle'] = 'horizontal';  //  it's the only safe choice!
-
-      $aPlayer = $fv_fp->build_min_player($aCurArgs['src'], $aCurArgs);
-
-      if ( $this->is_text_lightbox($aCurArgs) ) {
-        if ($i == 1) {
-          $output['html'] .= "<li>".$aPlayer['html']."</li>";          
-        }
-        
-        if( $i > 1 ) {
-          $sTitle = $this->get_title_attr($fv_fp->aCurArgs);
-          $output['html'] .= "<li><a".$this->fancybox_opts()." id='fv_flowplayer_lightbox_starter'$sTitle class='fv-player-lightbox-link' href='#' data-src='#wpfp_" . $fv_fp->hash . "'>" . $fv_fp->aCurArgs['caption'] . "</a></li>";
-        }
-        
-      } else {
-        if ($i == 1) {
-          $output['html'] .= $aPlayer['html'];
-          $output['html'] .= "<div class='fp-playlist-external ".$fv_fp->get_playlist_class($aCaptions)."'>";
-        }
-        
-        $aPlayerParts = explode("<div class='fv_player_lightbox_hidden'", $aPlayer['html']);
-        if( $i == 1 ) {
-          $output['html'] .= "<a id='fv_flowplayer_lightbox_placeholder' href='#' onclick='document.getElementById(\"fv_flowplayer_" . $fv_fp->hash . "_lightbox_starter\").click(); return false'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
-          
-        } else {
-          $output['html'] .= "<a".$this->fancybox_opts($fv_fp->aCurArgs['splash'])."  id='fv_flowplayer_lightbox_starter' class='fv-player-lightbox-link' href='#' data-src='#wpfp_" . $fv_fp->hash . "'><div style=\"background-image: url('" . $fv_fp->aCurArgs['splash'] . "')\"></div><h4><span>" . $fv_fp->aCurArgs['caption'] . "</span></h4></a>";
-          
-        }
-        
-        if ($i > 1) {
-          $after .= "<div class='fv_player_lightbox_hidden'" . $aPlayerParts[1];
-        }
-        
-      }
-
-      if ($i == count($aPlaylistItems)) {
-        $output['html'] .= "</div>";
-      }
-
-      foreach ($aPlayer['script'] AS $key2 => $value) {
-        $output['script'][$key2] = array_merge(isset($output['script'][$key2]) ? $output['script'][$key2] : array(), $aPlayer['script'][$key2]);
-      }
-    }
-    
-    if ( $this->is_text_lightbox($aCurArgs) ) {
-      $output['html'] = "<ul>".$output['html']."</ul>";
-    }
-
-    $output['html'] .= $after;
-    
-    return $output;
   }
 
   function html_to_lightbox_videos($content) {
@@ -366,6 +299,13 @@ class FV_Player_lightbox {
   function disable_autoplay($aArgs) {
     if (isset($aArgs['lightbox'])) {
       $aArgs['autoplay'] = 'false';
+    }
+    return $aArgs;
+  }
+
+  function lightbox_playlist_style($aArgs) {
+    if (isset($aArgs['lightbox'])) { // we force the slider playlist style as that' the only one where the lightbox works properly with the sizing right now
+      $aArgs['liststyle'] = 'slider';
     }
     return $aArgs;
   }
