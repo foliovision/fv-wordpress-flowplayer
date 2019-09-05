@@ -99,7 +99,7 @@ class FV_Player_Db {
       $vid_obj = $aPlayer['video_objects'][$index];
       $fv_fp->currentVideoObject = $vid_obj;
       
-      if( is_numeric($aItem['sources'][0]['src']) ) {
+      if( !empty($aItem['sources'][0]['src']) && is_numeric($aItem['sources'][0]['src']) ) {
         $new = array( 'sources' => array() );
         if( $src = $vid_obj->getSrc() ) {
           $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src,array()), 'type' => $fv_fp->get_mime_type($src) );
@@ -1379,6 +1379,16 @@ class FV_Player_Db {
   public function clone_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
       $export_data = $this->export_player_data(null, false);
+
+      // do not clone information about where the player is embeded
+      if (isset($export_data['meta'])) {
+        foreach($export_data['meta'] as $h => $v){
+          if($v['meta_key'] == 'post_id'){
+            unset($export_data['meta'][$h]);
+          }
+        }
+      }
+
       echo $this->import_player_data(null, false, $export_data);
       exit;
     } else {

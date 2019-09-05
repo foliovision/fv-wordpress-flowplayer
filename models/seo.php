@@ -112,9 +112,9 @@ class FV_Player_SEO {
   
   function single_video_seo( $html, $fv_fp ) {
     if( $this->can_seo ) {
-      if( !$fv_fp->aCurArgs['playlist'] ) {        
+      if( empty($fv_fp->aCurArgs['playlist']) ) {
         //  todo: use iframe or video link URL
-        $html .= "\n".$this->get_markup($fv_fp->aCurArgs['caption'],false,$fv_fp->get_splash(),false)."\n";    
+        $html .= "\n".$this->get_markup(!empty($fv_fp->aCurArgs['caption']) ? $fv_fp->aCurArgs['caption'] : '',false,$fv_fp->get_splash(),false)."\n";
       }
     }
     return $html;

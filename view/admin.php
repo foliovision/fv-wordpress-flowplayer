@@ -285,6 +285,7 @@ function fv_flowplayer_admin_default_options() {
                     <option value="slider"    <?php if( $value == 'slider' ) echo ' selected="selected"'; ?> ><?php _e('Slider', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="season"    <?php if( $value == 'season' ) echo ' selected="selected"'; ?> ><?php _e('Vertical Season', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="polaroid"  <?php if( $value == 'polaroid' ) echo ' selected="selected"'; ?> ><?php _e('Polaroid', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="text"  <?php if( $value == 'text' ) echo ' selected="selected"'; ?> ><?php _e('Text', 'fv-wordpress-flowplayer'); ?></option>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv-wordpress-flowplayer'); ?>
                 </p>
@@ -589,7 +590,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
 
-          <?php $fv_fp->_get_checkbox(__('Handle WordPress video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Handle WordPress audio/video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code>, <code><small>[audio]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>

@@ -435,6 +435,9 @@ jQuery( function($) {
 
     $popup_close_btn.click();
 
+    // refresh preview
+    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click();
+
     return false;
   }
 
@@ -484,29 +487,35 @@ jQuery( function($) {
           var
             $filenameDiv = $e.find('.filename div'),
             fSize = parseInt($filenameDiv.data('size')),
+            fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
             sizeSuffix = 'bytes';
 
-          // if filesize is too small, show it in KBytes
-          if (fSize > -1) {
-            if (fSize > 10000) {
-              if (fSize <= 999999) {
-                fSize /= 100000;
-                sizeSuffix = 'KB';
-              } else if (fSize <= 999999999) {
-                fSize /= 1000000;
-                sizeSuffix = 'MB';
-              } else {
-                fSize /= 1000000000;
-                sizeSuffix = 'GB';
+          if (!fSizeTextual) {
+            // if filesize is too small, show it in KBytes
+            if (fSize > -1) {
+              if (fSize > 10000) {
+                if (fSize <= 999999) {
+                  fSize /= 100000;
+                  sizeSuffix = 'KB';
+                } else if (fSize <= 999999999) {
+                  fSize /= 1000000;
+                  sizeSuffix = 'MB';
+                } else {
+                  fSize /= 1000000000;
+                  sizeSuffix = 'GB';
+                }
+              }
+
+              // "round" to 2 decimals
+              if (parseFloat(fSize) != parseInt(fSize)) {
+                fSize += '';
+                fSize = fSize.substring(0, fSize.indexOf('.') + 3);
               }
             }
-
-            // "round" to 2 decimals
-            if (parseFloat(fSize) != parseInt(fSize)) {
-              fSize += '';
-              fSize = fSize.substring(0, fSize.indexOf('.') + 3);
-            }
+          } else {
+            // if there's a non-numeric filesize, just display that
+            fSize = $filenameDiv.data('size');
           }
 
           if (fDuration && fDuration > 0) {
@@ -553,9 +562,9 @@ jQuery( function($) {
             '\t\t\t</div>\n' +
             '\t\t\t<div class="details">\n' +
             '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
-            '\t\t\t\t<div class="uploaded">' + $filenameDiv.data('modified') + '</div>\n' +
+            '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
             '\n' +
-            '\t\t\t\t<div class="file-size">' + (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) + '</div>\n' +
+            '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
             '\t\t\t</div>\n' +
             (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
