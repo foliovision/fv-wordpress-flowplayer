@@ -10,7 +10,7 @@
     jQuery(document).ready( function() { fv_flowplayer_scroll_video_checker = true; } );
     jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } );
 
-    setInterval( function() {
+    api.bind('load', function(e,api,video) { 
       if( !fv_flowplayer_scroll_video_checker ) return;
 
       var iMin = jQuery(window).scrollTop();
@@ -33,7 +33,7 @@
         }
       }
       fv_flowplayer_scroll_video_checker = false;
-    }, 500 );
+    });
   });
 
   function video_checker(sID,media) {
