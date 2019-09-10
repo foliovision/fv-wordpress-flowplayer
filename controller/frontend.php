@@ -388,7 +388,7 @@ function flowplayer_prepare_scripts() {
     }
 
     if( $fv_fp->_get_option('chromecast') ) {
-      $aConf['chromecast'] = _get_option('chromecast');
+      $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
     }
 
     $aConf['hlsjs'] = array(
