@@ -386,7 +386,11 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
     }
-    
+
+    if( $fv_fp->_get_option('chromecast') ) {
+      $aConf['chromecast'] = _get_option('chromecast');
+    }
+
     $aConf['hlsjs'] = array(
       'startLevel' => -1,
       'fragLoadingMaxRetry' => 3,
