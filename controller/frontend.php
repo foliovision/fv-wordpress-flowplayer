@@ -401,6 +401,10 @@ function flowplayer_prepare_scripts() {
     if( is_admin() ) $aConf['wpadmin'] = true;
     
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
+
+    if (is_admin()) {
+      $aConf['generate_cuepoints'] = true;
+    }
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {

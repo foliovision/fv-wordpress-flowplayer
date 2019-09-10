@@ -710,16 +710,45 @@ jQuery(document).ready(function($){
       editor = jQuery('#fv-player-shortcode-editor .fv-fp-cues');
 
     api.on('cuepoint', function(e,api,cue) {
+      hide_cue_on[+cue.index] = +cue.time + +cue.duration;
       editor.find('div[data-cue='+cue.index+']').addClass('current');
     });
 
     api.on('progress', function(e,api,time) {
       jQuery(hide_cue_on).each( function(k,v) {
-        editor.find('div[data-cue='+k+']').removeClass('current');
+        if( time > +v ) {
+          editor.find('div[data-cue=' + k + ']').removeClass('current');
+          delete (hide_cue_on[k]);
+        }
       })
     });
 
+    api.on('seek', function(e,api,time) {
+      jQuery(api.video.cuepoints).each( function(k,v) {
+        if ( time <= +v.time || ( +v.duration + +v.time ) < time ) {
+          editor.find('div[data-cue=' + v.index + ']').removeClass('current');
+        }
+      });
+    });
+
     api.on('ready', cue_bind);
+
+    jQuery('document').on('fv-cuepoint-add', function(annoIndex) {
+      if (api.video.cuepoints) {
+        api.video.cuepoints.push({
+          data: {
+            link: '',
+            text: ''
+          },
+          duration: 0,
+          index: annoIndex,
+          time: 5,
+          type: 'ann'
+        });
+
+        api.trigger('cuepoint', [api, api.video.cuepoints[annoIndex]]);
+      }
+    });
 
     var dragging = false,
       dragging_end = false,
@@ -730,7 +759,7 @@ jQuery(document).ready(function($){
       player.find('.fp-cuepoint').each( function(k,v) {
         var pointer = jQuery(v);
         var cue = api.video.cuepoints[k];
-        pointer.css('width', cue.duration / api.video.duration * 100 + "%" )
+        pointer.css('width', +cue.duration / +api.video.duration * 100 + "%" )
         pointer.append('<span class="fvp-cue-start"></span><span class="fvp-cue-end"></span>')
 
         pointer.on('mousedown', function(e) {
@@ -750,13 +779,13 @@ jQuery(document).ready(function($){
     }
 
     function drag_time() {
-      return api.video.duration * parseFloat(dragging.css('left')) / timeline.width() + 0.01;
+      return +api.video.duration * parseFloat(dragging.css('left')) / timeline.width() + 0.01;
     }
 
     function drag_time_show() {
       var date = new Date(null);
       date.setSeconds(drag_time());
-      player.find('.fp-timestamp').html( date.toISOString().substr( api.video.duration > 3600 ? 11 : 14, api.video.duration > 3600 ? 8 : 5) );
+      player.find('.fp-timestamp').html( date.toISOString().substr( +api.video.duration > 3600 ? 11 : 14, +api.video.duration > 3600 ? 8 : 5) );
     }
 
     jQuery(document).on('mousemove', function(e) {
@@ -780,7 +809,7 @@ jQuery(document).ready(function($){
 
           var date = new Date(null);
           date.setSeconds(drag_time());
-          player.find('.fp-timestamp').html( date.toISOString().substr( api.video.duration > 3600 ? 11 : 14, api.video.duration > 3600 ? 8 : 5) );
+          player.find('.fp-timestamp').html( date.toISOString().substr( +api.video.duration > 3600 ? 11 : 14, +api.video.duration > 3600 ? 8 : 5) );
 
           drag_time_show();
         }
@@ -792,51 +821,77 @@ jQuery(document).ready(function($){
         e.preventDefault();
         e.stopPropagation();
 
+        var $editor_row = editor.find('[data-cue=' + dragging_id + ']');
+
         if( dragging ) {
           var time = drag_time();
           api.video.cuepoints[dragging_id].time = time;
+          $editor_row.find('#fv_wp_flowplayer_field_cue_time').val(api.video.cuepoints[dragging_id].time);
         }
 
         if( dragging_end ) {
-          var duration = api.video.duration * parseFloat(dragging_end.parent().width()) / timeline.width();
-          var time = api.video.cuepoints[dragging_id].time + duration;
+          var duration = +api.video.duration * parseFloat(dragging_end.parent().width()) / timeline.width();
+          var time = +api.video.cuepoints[dragging_id].time + duration;
           api.video.cuepoints[dragging_id].duration = duration;
+          $editor_row.find('#fv_wp_flowplayer_field_cue_time').val(api.video.cuepoints[dragging_id].time);
+          $editor_row.find('#fv_wp_flowplayer_field_cue_duration').val(api.video.cuepoints[dragging_id].duration)
         }
 
         player.find('.fp-cuepoint').remove();
         api.setCuepoints(api.video.cuepoints);
         cue_bind();
-        cue_editing();
 
         api.seek(time+0.01);
         //console.log('cue point edited!');
+        $editor_row.find('#fv_wp_flowplayer_field_cue_time').trigger('change'); // save
       }
       dragging = dragging_end = false;
     });
 
     jQuery(document).on('click', '#fv-player-shortcode-editor .fv-fp-cues div', function() {
-      var row = jQuery(this);
-
-      editor.find('div[data-cue]').removeClass('current');
-      api.seek(api.video.cuepoints[row.data('cue')].time+0.01);
+      if (api.video.cuepoints) {
+        api.seek(+api.video.cuepoints[jQuery(this).data('cue')].time + 0.01);
+      }
     });
 
     jQuery(document).on('keyup', '#fv-player-shortcode-editor .fv-fp-cues div:visible select, #fv-player-shortcode-editor .fv-fp-cues div:visible input, #fv-player-shortcode-editor .fv-fp-cues div:visible textarea', function() {
-      var $input = jQuery(this);
-      var row = jQuery(this).parents('[data-cue]');
-      var id = row.data('cue');
-      //console.log( id, $input.val(), jQuery(this).val() );
+      if (api.video.cuepoints) {
+        var $input = jQuery(this);
+        var row = jQuery(this).parents('[data-cue]');
+        var id = row.data('cue');
+        //console.log( id, $input.val(), jQuery(this).val() );
 
-      // change input to the SELECT element sibling, if not SELECT already
-      if (!$input.hasClass('fv_wp_flowplayer_field_cue')) {
-        $input = $input.siblings('.fv_wp_flowplayer_field_cue:first');
+        // change input to the SELECT element sibling, if not SELECT already
+        if (!$input.hasClass('fv_wp_flowplayer_field_cue')) {
+          $input = $input.siblings('.fv_wp_flowplayer_field_cue:first');
+        }
+
+        switch ($input.val()) {
+          case 'ann': api.video.cuepoints[id]['data'] = {
+                        link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
+                        text : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
+                      };
+                      break;
+
+          case 'img': api.video.cuepoints[id]['data'] = {
+                        link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
+                        image : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
+                      };
+                      break;
+
+          case 'html': api.video.cuepoints[id]['data'] = {
+                         link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
+                         html : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
+                       };
+                       break;
+        }
+
+        api.video.cuepoints[id]['type'] = $input.val();
+        player.find('.fvp-cue[data-cue='+id+']').remove();
+        api.trigger('cuepoint', [api, api.video.cuepoints[id]]);
+        //api.setCuepoints(api.video.cuepoints);
+        //cue_bind();
       }
-
-      api.video.cuepoints[id]['data'][$input.val()] = $input.siblings('.fv_wp_flowplayer_field_cue_value').val();
-      player.find('.fvp-cue[data-cue='+id+']').remove();
-      api.trigger('cuepoint', [api, api.video.cuepoints[id]]);
-      //api.setCuepoints(api.video.cuepoints);
-      //cue_bind();
     });
   });
 
@@ -1373,6 +1428,10 @@ function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabInde
 
   if (annoIndex) {
     annElement.attr('data-cue', annoIndex);
+  } else {
+    var $allAnnoElements = jQuery('.fv-fp-cue' , oTab);
+    annoIndex = ($allAnnoElements.length ? +$allAnnoElements.eq($allAnnoElements.length - 2).attr('data-cue') + 1 : 0);
+    annElement.attr('data-cue', annoIndex);
   }
 
   annElement.hover( function() { jQuery(this).find('.fv-fp-cue-remove').show(); }, function() { jQuery(this).find('.fv-fp-cue-remove').hide(); } );
@@ -1408,6 +1467,12 @@ function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabInde
   }
 
   jQuery('.fv-fp-cue:last .fv-fp-cue-remove' , oTab).click(fv_flowplayer_remove_cue);
+
+  // only trigger this when we're adding a new cuepoint via a link on the Editor's page,
+  // so we can dynamically add it to the already existing cuepoints
+  if (!sInput) {
+    jQuery('document').trigger('fv-cuepoint-add', [annoIndex]);
+  }
 
   fv_wp_flowplayer_dialog_resize();
   return false;
@@ -2539,7 +2604,7 @@ function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
               data['video_meta']['cues'][save_index].push({
                 type : $this.siblings('select:first').val(),
                 value : serialized_cue_val,
-                id: $this.parent().data('id_cues')
+                id: $this.parent().data('id_cue')
               });
             }
           }

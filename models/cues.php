@@ -58,8 +58,8 @@ class FV_Player_Cues {
     foreach( $aCues AS $key => $cue ) {
       $objCue = new stdClass;
       $objCue->type = $key;
-      $objCue->time = $cue['time'];
-      $objCue->duration = $cue['duration'];
+      $objCue->time = (int) $cue['time'];
+      $objCue->duration = (int) $cue['duration'];
       $objCue->data = array(
         'link' => $cue['link']
       );

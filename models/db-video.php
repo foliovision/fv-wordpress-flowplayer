@@ -681,7 +681,7 @@ CREATE TABLE " . self::$db_table_name . " (
         // we check which meta values are no longer set and remove these
         $existing_meta = $is_update ? $this->getMetaData() : array();
         $existing_meta_ids = array();
-        foreach( $existing_meta AS $existing ) {
+        foreach( $existing_meta as $existing ) {
           $found = false;
           foreach ($meta_data as $meta_record) {
             if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {

@@ -377,7 +377,6 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                             <td class="field fv-fp-cues">
                                 <div class="fv-fp-cue">
                                     <select class="fv_wp_flowplayer_field_cue" name="fv_wp_flowplayer_field_cue">
-                                        <option></option>
                                         <option value="ann">Annotation</option>
                                         <option value="img">Image</option>
                                         <option value="html">HTML Code</option>
