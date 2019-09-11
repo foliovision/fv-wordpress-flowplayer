@@ -705,6 +705,8 @@ jQuery(document).ready(function($){
 
     var
       hide_cue_on = [],
+      extra_cues = [], // holds newly added cues while player was not in "ready" state yet (i.e. paused on splash screen) - they'll get added on the "ready" event
+      deleted_cues = [], // same as above but holds removed cues, so we can get rid of those once the player gets to the "ready" state
       player = jQuery(root).find('.fp-player'),
       timeline = jQuery(root).find('.fp-timeline'),
       editor = jQuery('#fv-player-shortcode-editor .fv-fp-cues');
@@ -731,23 +733,69 @@ jQuery(document).ready(function($){
       });
     });
 
-    api.on('ready', cue_bind);
-
-    jQuery('document').on('fv-cuepoint-add', function(annoIndex) {
-      if (api.video.cuepoints) {
-        api.video.cuepoints.push({
-          data: {
-            link: '',
-            text: ''
-          },
-          duration: 0,
-          index: annoIndex,
-          time: 5,
-          type: 'ann'
-        });
-
-        api.trigger('cuepoint', [api, api.video.cuepoints[annoIndex]]);
+    api.on('ready', function() {
+      // delete any existing cues that were removed via the Editor UI while player was not yet ready
+      if (deleted_cues.length) {
+        var new_cues = [];
+        for (var i in api.video.cuepoints) {
+          if (deleted_cues.indexOf(i) == -1) {
+            new_cues.push(api.video.cuepoints[i]);
+          }
+        }
+        api.video.cuepoints = new_cues;
       }
+
+      // add any new cues that were created via the Editor UI while player was not yet ready
+      if (extra_cues.length) {
+        for (var i in extra_cues) {
+          api.video.cuepoints[i] = extra_cues[i];
+        }
+      }
+
+      player.find('.fp-cuepoint').remove();
+      api.setCuepoints(api.video.cuepoints);
+      cue_bind();
+    });
+
+    jQuery(document).on('fv-cuepoint-add', function(e, annoIndex) {
+      var cue = {
+        data: {
+          link: '',
+          text: ''
+        },
+        duration: 5,
+        index: annoIndex,
+        time: (api.video.cuepoints ? api.video.time : 0),
+        type: 'ann_' + annoIndex
+      };
+
+      if (api.video.cuepoints) {
+        api.video.cuepoints.push(cue);
+        player.find('.fp-cuepoint').remove();
+        api.setCuepoints(api.video.cuepoints);
+        cue_bind();
+        editor.find('#fv_wp_flowplayer_field_cue_link:first').trigger('change'); // save
+      } else {
+        // just add this into the extra cues array, since player is not yet ready (probably still on splash screen)
+        // and we'll need to add these into the player itself as it becomes ready later
+        extra_cues[annoIndex] = cue;
+      }
+    });
+
+    jQuery(document).on('fp-cue-removed', function(e, annoIndex) {
+      if (api.video.cuepoints && api.video.cuepoints[annoIndex]) {
+        api.video.cuepoints = api.video.cuepoints.filter(function(value, index, arr){
+          return index != annoIndex;
+        });
+        api.setCuepoints(api.video.cuepoints);
+        player.find('.fp-cuepoint' + annoIndex + ', .fvp-cue[data-cue=' + annoIndex + ']').remove();
+      }
+
+      if (!api.video.cuepoints) {
+        deleted_cues.push(annoIndex);
+      }
+
+      editor.find('#fv_wp_flowplayer_field_cue_link:first').trigger('change'); // save
     });
 
     var dragging = false,
@@ -843,7 +891,7 @@ jQuery(document).ready(function($){
 
         api.seek(time+0.01);
         //console.log('cue point edited!');
-        $editor_row.find('#fv_wp_flowplayer_field_cue_time').trigger('change'); // save
+        $editor_row.find('#fv_wp_flowplayer_field_cue_link:first').trigger('change'); // save
       }
       dragging = dragging_end = false;
     });
@@ -855,11 +903,13 @@ jQuery(document).ready(function($){
     });
 
     jQuery(document).on('keyup', '#fv-player-shortcode-editor .fv-fp-cues div:visible select, #fv-player-shortcode-editor .fv-fp-cues div:visible input, #fv-player-shortcode-editor .fv-fp-cues div:visible textarea', function() {
-      if (api.video.cuepoints) {
+      if (api.video.cuepoints || extra_cues.length) {
         var $input = jQuery(this);
         var row = jQuery(this).parents('[data-cue]');
         var id = row.data('cue');
         //console.log( id, $input.val(), jQuery(this).val() );
+
+        var cuepoint_item = (api.video.cuepoints && api.video.cuepoints[id] ? api.video.cuepoints[id] : extra_cues[id]);
 
         // change input to the SELECT element sibling, if not SELECT already
         if (!$input.hasClass('fv_wp_flowplayer_field_cue')) {
@@ -867,28 +917,31 @@ jQuery(document).ready(function($){
         }
 
         switch ($input.val()) {
-          case 'ann': api.video.cuepoints[id]['data'] = {
+          case 'ann': cuepoint_item['data'] = {
                         link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
                         text : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
                       };
                       break;
 
-          case 'img': api.video.cuepoints[id]['data'] = {
+          case 'img': cuepoint_item['data'] = {
                         link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
                         image : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
                       };
                       break;
 
-          case 'html': api.video.cuepoints[id]['data'] = {
+          case 'html': cuepoint_item['data'] = {
                          link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
                          html : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
                        };
                        break;
         }
 
-        api.video.cuepoints[id]['type'] = $input.val();
-        player.find('.fvp-cue[data-cue='+id+']').remove();
-        api.trigger('cuepoint', [api, api.video.cuepoints[id]]);
+        cuepoint_item['type'] = $input.val();
+
+        if (api.video.cuepoints) {
+          player.find('.fvp-cue[data-cue=' + id + ']').remove();
+          api.trigger('cuepoint', [api, cuepoint_item]);
+        }
         //api.setCuepoints(api.video.cuepoints);
         //cue_bind();
       }
@@ -1158,6 +1211,9 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplas
         currentAnnoIndex = 1;
 
       for (var i in sCues) {
+        // remove index from cue type
+        sCues[i].type = sCues[i].type.split('_')[0];
+
         // add as many new cues as we have
         if (firstDone) {
           fv_flowplayer_cue_add(sCues[i].value, sCues[i].type, sCues[i].time, sCues[i].duration, sCues[i].link, newIndex, sCues[i].id, currentAnnoIndex++);
@@ -1471,7 +1527,7 @@ function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabInde
   // only trigger this when we're adding a new cuepoint via a link on the Editor's page,
   // so we can dynamically add it to the already existing cuepoints
   if (!sInput) {
-    jQuery('document').trigger('fv-cuepoint-add', [annoIndex]);
+    jQuery(document).trigger('fv-cuepoint-add', [annoIndex]);
   }
 
   fv_wp_flowplayer_dialog_resize();
@@ -1479,21 +1535,18 @@ function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabInde
 }
 
 function fv_flowplayer_remove_cue() {
-  if(jQuery(this).parents('.fv-fp-cues').find('.fv-fp-cue').length > 1){
-    var
-      $parent = jQuery(this).parents('.fv-fp-cue'),
-      id = $parent.attr('data-id_cue')
+  var
+    $parent = jQuery(this).parents('.fv-fp-cue'),
+    id = $parent.attr('data-id_cue'),
+    index = $parent.attr('data-cue');
 
+  if(jQuery(this).parents('.fv-fp-cues').find('.fv-fp-cue').length > 1){
     if (id) {
       fv_wp_delete_video_meta_record(id);
     }
 
     $parent.remove();
   }else{
-    var
-      $parent = jQuery(this).parents('.fv-fp-cue'),
-      id = $parent.attr('data-id_cue')
-
     if (id) {
       fv_wp_delete_video_meta_record(id);
     }
@@ -1501,6 +1554,9 @@ function fv_flowplayer_remove_cue() {
     $parent.find('[name]').val('');
     $parent.removeAttr('data-id_cue');
   }
+
+  jQuery(document).trigger('fp-cue-removed', [index]);
+
   fv_wp_flowplayer_dialog_resize();
 
   return false;

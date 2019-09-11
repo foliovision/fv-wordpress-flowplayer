@@ -31,10 +31,11 @@ class FV_Player_Cues {
     }
 
     // prepare all options for this video
+    $i = 0;
     foreach ( $meta_post_data['cues'][$video_index] as $cue_values ) {
       if ($cue_values['value']) {
         $m = array(
-          'meta_key' => 'cues_'.$cue_values['type'],
+          'meta_key' => 'cues_'.$cue_values['type'].'_'.$i++,
           'meta_value' => $cue_values['value']
         );
 
@@ -57,6 +58,9 @@ class FV_Player_Cues {
 
     foreach( $aCues AS $key => $cue ) {
       $objCue = new stdClass;
+      // remove index from the cue type
+      $key = explode('_', $key);
+      $key = $key[0];
       $objCue->type = $key;
       $objCue->time = (int) $cue['time'];
       $objCue->duration = (int) $cue['duration'];
