@@ -357,6 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.2.727 - 2019/08/28 =
+
+* Google Analytics - using video titles rather than file names
+* iOS 12 fullscreen fix
+* Playlist - adding recovery routine - missing video will no longer cause the whole playlist to stop playing
+* Playlist - fixing Season style font sizes
+* Handle WordPress shortcodes - fixed to also handle the [audio] shortcodes
+* Video linking - using the video ID if available
+* Bugfix - splash image not appearing when using 100% for global width or height
+
 = 7.4.0.727 - 2019/07/30 =
 
 * New mobile setting - Force landscape orientation in fullscreen
