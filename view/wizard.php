@@ -371,9 +371,8 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
               </div>
 
                 <div class="fv-player-tab fv-player-tab-cues">
-                    <table width="100%" data-index="0" class="fv-player-cue">
+                    <table width="95%" data-index="0" class="fv-player-cue" align="center">
                         <tr>
-                            <th scope="row" class="label"><label for="fv_wp_flowplayer_field_cues" class="alignright"><?php _e( 'Cues', 'fv_flowplayer' ); ?></label></th>
                             <td class="field fv-fp-cues">
                                 <div class="fv-fp-cue">
                                     <select class="fv_wp_flowplayer_field_cue" name="fv_wp_flowplayer_field_cue">
@@ -386,6 +385,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                                     <label for="fv_wp_flowplayer_field_cue_link">Link</label>
                                     <input name="fv_wp_flowplayer_field_cue_link" id="fv_wp_flowplayer_field_cue_link" type="text" value="" />
                                     <a class="fv-fp-cue-remove" href="#" style="display: none">X</a>
+                                    <label for="fv_wp_flowplayer_field_cue_time" class="fv-cue-time-label">Start: 0 &nbsp; Duration: 5s</label>
                                     <div style="clear:both"></div>
                                     <input type="hidden" name="fv_wp_flowplayer_field_cue_time" id="fv_wp_flowplayer_field_cue_time" value="0" />
                                     <input type="hidden" name="fv_wp_flowplayer_field_cue_duration" id="fv_wp_flowplayer_field_cue_duration" value="2" />
@@ -393,15 +393,12 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                             </td>
                         </tr>
                         <tr class="submit-button-wrapper">
-                            <td colspan="2">
-                            </td>
                             <td>
                                 <a class="fv_flowplayer_cue_add" style="outline: 0" onclick="return fv_flowplayer_cue_add()" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Cue', 'fv_flowplayer'); ?></a>
                             </td>
                         </tr>
                         <tr class="submit-button-wrapper">
-                            <td></td>
-                            <td colspan="2">
+                            <td>
                                 <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
                                 <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
                             </td>

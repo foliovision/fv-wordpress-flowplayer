@@ -14,6 +14,7 @@
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
 #fv-player-shortcode-editor table textarea.fv_wp_flowplayer_field_cue_value { width: 65%; }
+#fv-player-shortcode-editor table label.fv-cue-time-label { width: 90%; text-align: center; }
 #fv-player-shortcode-editor table .fv-fp-cue { margin-bottom: 10px; padding: 5px; position: relative; }
 #fv-player-shortcode-editor table .fv-fp-cue label { float: left; padding: 5px; }
 #fv-player-shortcode-editor table .fv-fp-cue .fv_wp_flowplayer_field_cue_link { width: 87%; }

@@ -780,6 +780,9 @@ jQuery(document).ready(function($){
         // and we'll need to add these into the player itself as it becomes ready later
         extra_cues[annoIndex] = cue;
       }
+
+      // update time and duration
+      editor.find('label.fv-cue-time-label:last').html('Start: ' + (api.video.cuepoints ? Math.round(api.video.time) : 0) + 's &nbsp; Duration: 5s');
     });
 
     jQuery(document).on('fp-cue-removed', function(e, annoIndex) {
@@ -885,6 +888,7 @@ jQuery(document).ready(function($){
           $editor_row.find('#fv_wp_flowplayer_field_cue_duration').val(api.video.cuepoints[dragging_id].duration)
         }
 
+        $editor_row.find('label.fv-cue-time-label').html('Start: ' + Math.round(api.video.cuepoints[dragging_id].time) + 's &nbsp; Duration: ' + Math.round(api.video.cuepoints[dragging_id].duration) + 's');
         player.find('.fp-cuepoint').remove();
         api.setCuepoints(api.video.cuepoints);
         cue_bind();
@@ -1236,6 +1240,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplas
           jQuery('[name=fv_wp_flowplayer_field_cue_time]', new_item_cue).val(sCues[i].time);
           jQuery('[name=fv_wp_flowplayer_field_cue_duration]', new_item_cue).val(sCues[i].duration);
           jQuery('[name=fv_wp_flowplayer_field_cue_link]', new_item_cue).val(sCues[i].link);
+          jQuery('label.fv-cue-time-label:last', new_item_cue).html('Start: ' + Math.round(sCues[i].time) + 's &nbsp; Duration: ' + Math.round(sCues[i].duration) + 's');
           firstDone = true;
         }
       }
@@ -1517,6 +1522,8 @@ function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabInde
   if( sDuration ) {
     jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_duration' , oTab ).val(sDuration);
   }
+
+  jQuery('.fv-fp-cue:last label.fv-cue-time-label:last' , oTab ).html('Start: ' + (sTime ? Math.round(sTime) : 0) + 's &nbsp; Duration: ' + (sDuration ? Math.round(sDuration) : 0) + 's');
 
   if( sLink ) {
     jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_link' , oTab ).val(sLink);
