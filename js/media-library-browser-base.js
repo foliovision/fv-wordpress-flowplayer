@@ -20,6 +20,15 @@ function fv_flowplayer_media_browser_setColumns() {
   }
 }
 
+function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
+  $fileListUl.append('<li tabindex="0" class="attachment" id="overlay-loader-li"></li>');
+  var $moreDiv = jQuery('<div class="attachment-preview"><div class="loadmore"></div></div>');
+  var $a = jQuery('<button type="button" class="button media-button button-primary button-large">Load More</button>');
+  $a.on('click', loadMoreButtonAction);
+  $moreDiv.find('.loadmore').append($a);
+  jQuery('#overlay-loader-li').append($moreDiv);
+}
+
 // retrieves options and data for media browser and refreshes its content
 function fv_flowplayer_browser_browse(data, options) {
 
@@ -169,6 +178,10 @@ function fv_flowplayer_browser_browse(data, options) {
         file.appendTo(fileList);
       });
 
+      if (options && options.loadMoreButtonAction) {
+        fv_flowplayer_browser_add_load_more_button(fileList, options.loadMoreButtonAction);
+      }
+
     }
 
     // Generate the breadcrumbs
@@ -272,6 +285,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
           tabClickEventCallback();
         }
 
+        // store last clicked tab ID
+        try {
+          if (typeof(window.localStorage) == 'object') {
+            localStorage.setItem('fv_player_last_tab_selected', tabId);
+          }
+        } catch(e) {}
+
         return tabOnClickCallback();
       });
 
@@ -282,7 +302,19 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
     if (typeof(tabAddedCallback) == 'function') {
       tabAddedCallback($item);
     }
+
   }
+  
+  // if this tab was the last active, make it active again
+  try {
+    if ( typeof window.localStorage == "object" && window.localStorage.fv_player_last_tab_selected && window.localStorage.fv_player_last_tab_selected == tabId ) {
+      // do this async, so the browser has time to paint the UI
+      // and change class of this tab to active on click
+      setTimeout(function() {
+        jQuery('#' + tabId).click();
+      }, 500);
+    }
+  } catch(e) {}
 };
 
 function renderBrowserPlaceholderHTML(options) {
@@ -403,10 +435,18 @@ jQuery( function($) {
 
     $popup_close_btn.click();
 
+    // refresh preview
+    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click();
+
     return false;
   }
 
-  $( document ).on( "click", ".folders, .breadcrumbs a", function(event) {
+  $( document ).on( "click", "#overlay-loader-li", function() {
+    // click the Load More button when the actual DIV is clicked, for accessibility
+    jQuery(this).find('button').click();
+  });
+
+  $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
     var
       activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
@@ -447,29 +487,35 @@ jQuery( function($) {
           var
             $filenameDiv = $e.find('.filename div'),
             fSize = parseInt($filenameDiv.data('size')),
+            fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
             sizeSuffix = 'bytes';
 
-          // if filesize is too small, show it in KBytes
-          if (fSize > -1) {
-            if (fSize > 10000) {
-              if (fSize <= 999999) {
-                fSize /= 100000;
-                sizeSuffix = 'KB';
-              } else if (fSize <= 999999999) {
-                fSize /= 1000000;
-                sizeSuffix = 'MB';
-              } else {
-                fSize /= 1000000000;
-                sizeSuffix = 'GB';
+          if (!fSizeTextual) {
+            // if filesize is too small, show it in KBytes
+            if (fSize > -1) {
+              if (fSize > 10000) {
+                if (fSize <= 999999) {
+                  fSize /= 100000;
+                  sizeSuffix = 'KB';
+                } else if (fSize <= 999999999) {
+                  fSize /= 1000000;
+                  sizeSuffix = 'MB';
+                } else {
+                  fSize /= 1000000000;
+                  sizeSuffix = 'GB';
+                }
+              }
+
+              // "round" to 2 decimals
+              if (parseFloat(fSize) != parseInt(fSize)) {
+                fSize += '';
+                fSize = fSize.substring(0, fSize.indexOf('.') + 3);
               }
             }
-
-            // "round" to 2 decimals
-            if (parseFloat(fSize) != parseInt(fSize)) {
-              fSize += '';
-              fSize = fSize.substring(0, fSize.indexOf('.') + 3);
-            }
+          } else {
+            // if there's a non-numeric filesize, just display that
+            fSize = $filenameDiv.data('size');
           }
 
           if (fDuration && fDuration > 0) {
@@ -516,9 +562,9 @@ jQuery( function($) {
             '\t\t\t</div>\n' +
             '\t\t\t<div class="details">\n' +
             '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
-            '\t\t\t\t<div class="uploaded">' + $filenameDiv.data('modified') + '</div>\n' +
+            '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
             '\n' +
-            '\t\t\t\t<div class="file-size">' + (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) + '</div>\n' +
+            '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
             '\t\t\t</div>\n' +
             (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
