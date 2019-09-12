@@ -186,9 +186,24 @@ function fv_flowplayer_admin_default_options() {
           <style>
             p.description { font-style: normal; }
           </style>
-					<table class="form-table2">
+          <table class="form-table2">
+            <td><label for="autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td colspan="3">
+                <p class="description">
+                  <?php
+                  // in the older FV Player versions this setting was just true/false and that creates a ton of issues
+                  $value = $fv_fp->_get_option('autoplay');
+                  ?>
+                  <select id="autoplay" name="autoplay">
+                    <option value="true"   <?php if( $value === 'true' || $value ) echo ' selected="selected"'; ?> >Yes</option>
+                    <option value="false"  <?php if( $value === 'false' || !$value ) echo ' selected="selected"'; ?> >No</option>
+                    <option value="muted"   <?php if ( $value === 'muted' )  echo ' selected="selected"'; ?> >Muted</option>
+                  </select>
+                  <?php _e('We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.', 'fv-wordpress-flowplayer'); ?>
+                </p>
+              </td>
+            </tr>
             
-            <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), 'autoplay', __('We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' , 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Controlbar Always Visible', 'fv-wordpress-flowplayer'), 'show_controlbar' ); ?>
 						<tr>

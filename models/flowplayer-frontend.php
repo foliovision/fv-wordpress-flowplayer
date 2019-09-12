@@ -263,14 +263,20 @@ class flowplayer_frontend extends flowplayer
     
     
     /*
-     *  Autoplay
+     *  Autoplay, in the older FV Player versions this setting was just true/false and that creates a ton of issues
      */
-    $autoplay = false;  //  todo: should be changed into a property
-    if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
+    $autoplay = false;
+    if( $this->_get_option('autoplay') == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
       $autoplay = true;
-    }  
+    } else if ( $this->_get_option('autoplay') == 'muted' && $this->aCurArgs['autoplay'] != 'false' ) {
+      $autoplay = 'muted';
+    }
+    
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = true;
+    }
+    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'muted')) {
+      $autoplay = 'muted';
     }
 
     /*
@@ -341,7 +347,7 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
           } 
           
-          if( $autoplay == true ) {
+          if( $autoplay ) {
             $this->ret['html'] .= ' autoplay';  
           }
           
@@ -422,10 +428,11 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-playlist has-playlist-'.$this->aCurArgs['liststyle'];
         }
       
-        if( $autoplay ) {
-          $attributes['data-fvautoplay'] = 'true';
-        } 
         
+        if( $autoplay ) {
+          $attributes['data-fvautoplay'] = $autoplay;
+        } 
+
         if( $sticky ) {
           $attributes['data-fvsticky'] = 'true';
         }
