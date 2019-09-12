@@ -187,18 +187,19 @@ function fv_flowplayer_admin_default_options() {
             p.description { font-style: normal; }
           </style>
           <table class="form-table2">
-          <td><label for="ui_autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
-							<td colspan="3">
+            <td><label for="autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td colspan="3">
                 <p class="description">
                   <?php
+                  // in the older FV Player versions this setting was just true/false and that creates a ton of issues
                   $value = $fv_fp->_get_option('autoplay');
                   ?>
-                  <select id="ui_autoplay" name="autoplay">
-                    <option value="yes"   <?php if( $value == 'yes' || $value ) echo ' selected="selected"'; ?> >Yes</option>
-                    <option value="no"  <?php if( $value == 'no' || !$value ) echo ' selected="selected"'; ?> >No</option>
-                    <option value="muted"   <?php if ( $value == 'muted' )  echo ' selected="selected"'; ?> >Muted</option>
+                  <select id="autoplay" name="autoplay">
+                    <option value="true"   <?php if( $value === 'true' || $value ) echo ' selected="selected"'; ?> >Yes</option>
+                    <option value="false"  <?php if( $value === 'false' || !$value ) echo ' selected="selected"'; ?> >No</option>
+                    <option value="muted"   <?php if ( $value === 'muted' )  echo ' selected="selected"'; ?> >Muted</option>
                   </select>
-                  <?php _e('We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.', 'fv-wordpress-flowplayer'); ?>
+                  <?php _e('We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.', 'fv-wordpress-flowplayer'); ?>
                 </p>
               </td>
             </tr>
