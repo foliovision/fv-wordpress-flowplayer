@@ -1030,23 +1030,6 @@ class flowplayer_frontend extends flowplayer
 
     return $aSubtitles;
   }
-
-  function get_cues() {
-    $aCues = array();
-
-    if ($this->current_video()) {
-      if ($this->current_video()->getMetaData()) {
-        foreach ($this->current_video()->getMetaData() as $meta_object) {
-          if (strpos($meta_object->getMetaKey(), 'cues') !== false) {
-            $aCues[str_replace( 'cues_', '', $meta_object->getMetaKey() )] = json_decode($meta_object->getMetaValue(), true);
-          }
-        }
-      }
-    }
-
-    return $aCues;
-  }
-  
   
   function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
     global $post;

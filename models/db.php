@@ -710,8 +710,6 @@ class FV_Player_Db {
     $ignored_player_fields = array(
       'fv_wp_flowplayer_field_subtitles_lang', // subtitles languages is a per-video value with global field name,
                                                // so the player should ignore it, as it will be added via video meta
-      'fv_wp_flowplayer_field_annotation_value', // annotation type is a per-video value with global field name,
-                                               // so the player should ignore it, as it will be added via video meta
       'fv_wp_flowplayer_field_popup', // never used, never shown in the UI, possibly a remnant of old code,
       'fv_wp_flowplayer_field_transcript', // transcript is a meta value, so it should not be stored globally per-player anymore
       'fv_wp_flowplayer_field_chapters', // chapters is a meta value, so it should not be stored globally per-player anymore

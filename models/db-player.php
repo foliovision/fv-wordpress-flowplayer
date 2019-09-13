@@ -197,7 +197,7 @@ class FV_Player_Db_Player {
   
   public function getCount($video_meta) {
     if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
-    if( $video_meta == 'annotations' && isset($this->annotations_count) ) return $this->annotations_count;
+    if( $video_meta == 'cues' && isset($this->cues_count) ) return $this->cues_count;
     if( $video_meta == 'chapters' && isset($this->chapters_count) ) return $this->chapters_count;
     if( $video_meta == 'transcript' && isset($this->transcript_count) ) return $this->transcript_count;
     return 0;
@@ -445,7 +445,7 @@ CREATE TABLE " . self::$db_table_name . " (
       if (property_exists($this, $key)) {
         $this->$key = stripslashes($value);
         
-      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'annotations_count'))) {
+      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
         $this->$key = stripslashes($value);
         
       } else if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
@@ -585,11 +585,11 @@ CREATE TABLE " . self::$db_table_name . " (
           if( is_admin() ) {
             $meta_counts_select = ',
   count(subtitles.id) as subtitles_count,
-  count(annotations.id) as annotations_count,
+  count(cues.id) as cues_count,
   count(chapters.id) as chapters_count,
   count(transcript.id) as transcript_count';
             $meta_counts_join = 'LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS annotations ON v.id = annotations.id_video AND annotations.meta_key like "annotations%"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS cues ON v.id = cues.id_video AND cues.meta_key like "cues%"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
   ';

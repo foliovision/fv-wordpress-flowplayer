@@ -2051,31 +2051,3 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-tiny .fv-fp-list {display: none}
 .flowplayer .fv-fp-list-menu {width: auto;}
 .flowplayer .fv-fp-list-menu a {text-align:left}
-
-.flowplayer .fvp-cue {
-  background-color: #333;
-  background-color: rgba(0, 0 , 0, 0.75);
-  background-image: url(//releases.flowplayer.org/6.0.5/skin/img/playful_white.png);
-  background-position: 110% 19px;
-  background-repeat: no-repeat;
-  padding: 15px 30px 15px 15px; /* additional right padding for "play button" */
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  /*filter: alpha(opacity=0);
-  opacity: 0;*/
-  -webkit-transition: all .5s;
-  -moz-transition: all .5s;
-  transition: all .5s;
-  font-weight: bold;
-  font-size: 16px;
-}
-.flowplayer .fvp-cue a {
-  color: #eee;
-}
-.flowplayer .fvp-cue a:hover {
-  color: #ffa500;
-}

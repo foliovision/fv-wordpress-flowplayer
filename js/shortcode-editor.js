@@ -10,8 +10,6 @@ var fv_player_playlist_item_template;
 var fv_player_playlist_video_template;
 var fv_player_playlist_subtitles_template;
 var fv_player_playlist_subtitles_box_template;
-var fv_player_playlist_cues_template;
-var fv_player_playlist_cue_row_template;
 var fv_wp_fp_shortcode;
 var fv_player_preview_single = -1;
 var fv_player_preview_window;
@@ -31,7 +29,9 @@ var fv_player_editor_matcher = {
   }
 };
 
-jQuery(document).ready(function($){
+var $doc = jQuery(document);
+
+$doc.ready(function($){
 
   var
     previous = false,
@@ -65,8 +65,8 @@ jQuery(document).ready(function($){
     }
   });
 
-  if( jQuery().fv_player_box ) {     
-    $(document).on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
+  if( jQuery().fv_player_box ) {
+    $doc.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
       fv_player_editor_button_clicked = this;
       e.preventDefault();
       $.fv_player_box( {
@@ -88,7 +88,7 @@ jQuery(document).ready(function($){
       FVFP_sWidgetId = $(this).data().number;
     });
 
-    $(document).on( 'click', '.fv-player-export', function(e) {
+    $doc.on( 'click', '.fv-player-export', function(e) {
       var $element = jQuery(this);
 
       e.preventDefault();
@@ -112,7 +112,7 @@ jQuery(document).ready(function($){
       return false;
     });
 
-    $(document).on( 'click', '.fv-player-import', function(e) {
+    $doc.on( 'click', '.fv-player-import', function(e) {
       var $element = jQuery(this);
 
       e.preventDefault();
@@ -136,7 +136,7 @@ jQuery(document).ready(function($){
       return false;
     });
 
-    $(document).on( 'click', '.fv-player-remove', function(e) {
+    $doc.on( 'click', '.fv-player-remove', function(e) {
       jQuery(this)
         .addClass('fv-player-remove-confirm')
         .removeClass('fv-player-remove')
@@ -151,7 +151,7 @@ jQuery(document).ready(function($){
       return false;
     });
 
-    $(document).on( 'click', '.fv-player-remove-confirm', function(e) {
+    $doc.on( 'click', '.fv-player-remove-confirm', function(e) {
       var
         $element = jQuery(this),
         $element_td = $element.parent();
@@ -191,7 +191,7 @@ jQuery(document).ready(function($){
       return false;
     });
 
-    $(document).on( 'click', '.fv-player-clone', function(e) {
+    $doc.on( 'click', '.fv-player-clone', function(e) {
       var $element = jQuery(this);
 
       $element
@@ -249,7 +249,7 @@ jQuery(document).ready(function($){
    * Select playlist item 
    * keywords: select item
    */
-  $(document).on('click','.fv-player-tab-playlist tr td', function(e) {
+  $doc.on('click','.fv-player-tab-playlist tr td', function(e) {
     var new_index = $(this).parents('tr').index();
     
     fv_player_preview_single = new_index;
@@ -259,10 +259,10 @@ jQuery(document).ready(function($){
     $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
-  $(document).on('input','.fv_wp_flowplayer_field_width', function(e) {
+  $doc.on('input','.fv_wp_flowplayer_field_width', function(e) {
     $('.fv_wp_flowplayer_field_width').val(e.target.value);
   })
-  $(document).on('input','.fv_wp_flowplayer_field_height', function(e) {
+  $doc.on('input','.fv_wp_flowplayer_field_height', function(e) {
     $('.fv_wp_flowplayer_field_height').val(e.target.value);
   })
   /*
@@ -279,13 +279,13 @@ jQuery(document).ready(function($){
       $('.fv-player-tab-playlist').removeClass('hide-thumbnails');
     }
     button.addClass('active')
-  })
-  
+  });
+
   /* 
    * Remove playlist item 
    * keywords: delete playlist items remove playlist items
    */
-  $(document).on('click','.fv-player-tab-playlist tr .fvp_item_remove', function(e) {
+  $doc.on('click','.fv-player-tab-playlist tr .fvp_item_remove', function(e) {
       jQuery(this)
         .addClass('fvp_item_remove-confirm')
         .html('Are you sure?')
@@ -297,8 +297,8 @@ jQuery(document).ready(function($){
 
       return false;
   });
-  
-  $(document).on('click','.fv-player-tab-playlist tr .fvp_item_remove-confirm', function(e) {
+
+  $doc.on('click','.fv-player-tab-playlist tr .fvp_item_remove-confirm', function(e) {
     e.stopPropagation();
     var
       $parent = $(e.target).parents('[data-index]'),
@@ -315,15 +315,14 @@ jQuery(document).ready(function($){
     $parent.remove();
     jQuery('.fv-player-tab-video-files table[data-index=' + index + ']').remove();
     jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']').remove();
-    jQuery('.fv-player-tab-cues table[data-index=' + index + ']').remove();
     if(!jQuery('.fv-player-tab-subtitles table[data-index]').length){
       fv_flowplayer_playlist_add();
       jQuery('.fv-player-tab-playlist tr td').click();
     }
     
     fv_wp_flowplayer_submit('refresh-button');
-    
-    $(document).trigger('fv_flowplayer_shortcode_item_delete');
+
+    $doc.trigger('fv_flowplayer_shortcode_item_delete');
   });
   
   /*
@@ -334,37 +333,34 @@ jQuery(document).ready(function($){
       FVFP_sStoreRTMP = jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val();
     },
     update: function( event, ui ) {
+      $doc.trigger('fv-sortable-update');
       var items = []; 
       $('.fv-player-tab-playlist table tbody tr').each(function(){
         var
           index = $(this).data('index'),
           $items = jQuery('.fv-player-tab-video-files table[data-index=' + index + ']'),
-          $subs = jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']'),
-          $cues = jQuery('.fv-player-tab-cues table[data-index=' + index + ']');
+          $subs = jQuery('.fv-player-tab-subtitles table[data-index=' + index + ']');
 
         items.push({
           items : $items.clone(),
-          subs : $subs.clone(),
-          cues: $cues.clone(),
+          subs : $subs.clone()
         });
 
         $items.remove();
         $subs.remove();
-        $cues.remove();
       });
 
       for(var  i in items){
         if(!items.hasOwnProperty(i))continue;
         jQuery('.fv-player-tab-video-files').append(items[i].items);
         jQuery('.fv-player-tab-subtitles').append(items[i].subs);
-        jQuery('.fv-player-tab-cues').append(items[i].cues);
       }
      
       jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( FVFP_sStoreRTMP );
       
       fv_wp_flowplayer_submit('refresh-button');
-      
-      $(document).trigger('fv_flowplayer_shortcode_item_sort');
+
+      $doc.trigger('fv_flowplayer_shortcode_item_sort');
       
     },
     axis: 'y',
@@ -378,7 +374,7 @@ jQuery(document).ready(function($){
   var fv_flowplayer_uploader;
   var fv_flowplayer_uploader_button;
 
-  $(document).on( 'click', '#fv-player-shortcode-editor .button.add_media', function(e) {
+  $doc.on( 'click', '#fv-player-shortcode-editor .button.add_media', function(e) {
       e.preventDefault();
       
       fv_flowplayer_uploader_button = jQuery(this);
@@ -463,30 +459,25 @@ jQuery(document).ready(function($){
   fv_player_playlist_video_template = jQuery('.fv-player-tab-video-files table.fv-player-playlist-item').parent().html();
   fv_player_playlist_subtitles_template = jQuery('.fv-fp-subtitle').parent().html();
   fv_player_playlist_subtitles_box_template = jQuery('.fv-player-tab-subtitles').html();
-  fv_player_playlist_cue_row_template = jQuery('.fv-fp-cue').parent().html();
-  fv_player_playlist_cues_template = jQuery('.fv-player-tab-cues table.fv-player-cue').parent().html();
-
-  var $document = jQuery(document);
-
   /*
    * Preview
    */
-  $document.on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
+  $doc.on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
     if( !fv_player_shortcode_preview_unsupported && jQuery('.fv-player-tab-playlist tr').length < 10 ){
       jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').show();
     }
   });
   
   var fv_player_shortcode_click_element = null;
-  $document.mousedown(function(e) {
+  $doc.mousedown(function(e) {
       fv_player_shortcode_click_element = jQuery(e.target);
   });
 
-  $document.mouseup(function(e) {
+  $doc.mouseup(function(e) {
       fv_player_shortcode_click_element = null;
   });
 
-  $document.on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
+  $doc.on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
     if( fv_player_shortcode_click_element && fv_player_shortcode_click_element.hasClass('button-primary') ) {
       return;
     }
@@ -494,7 +485,7 @@ jQuery(document).ready(function($){
     fv_wp_flowplayer_submit('refresh-button');
   });
 
-  $document.on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
+  $doc.on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
     if(e.key === 'Enter') {
       fv_wp_flowplayer_submit(true);
     }
@@ -533,7 +524,7 @@ jQuery(document).ready(function($){
   /*
    * Preview iframe dialog resize
    */
-  $document.on('fvp-preview-complete',function(e,width,height){
+  $doc.on('fvp-preview-complete',function(e,width,height){
     fv_player_shortcode_preview = false;
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
     setTimeout(function(){
@@ -558,21 +549,21 @@ jQuery(document).ready(function($){
     }
   });
 
-  $(document).on("change", "#fv-player-shortcode-editor input, #fv-player-shortcode-editor select", save );
+  $doc.on("change", "#fv-player-shortcode-editor input, #fv-player-shortcode-editor select", save );
 
-  $(document).on("keyup", "#fv-player-shortcode-editor input[type=text], #fv-player-shortcode-editor textarea", function() {
+  $doc.on("keyup", "#fv-player-shortcode-editor input[type=text], #fv-player-shortcode-editor textarea", function() {
     clearTimeout(int_keyup);
     int_keyup = setTimeout( function() {
       save();
     }, 500 );
   });
 
-  $(document).on('fv_flowplayer_shortcode_new', function() {
+  $doc.on('fv_flowplayer_shortcode_new', function() {
     $('#fv-player-shortcode-editor .button-primary').show();
     $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
-  $(document).on('fv_flowplayer_video_meta_load', function() {
+  $doc.on('fv_flowplayer_video_meta_load', function() {
     $('#fv-player-shortcode-editor .button-primary').hide();
     $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
 
@@ -584,14 +575,14 @@ jQuery(document).ready(function($){
     },100);
   });
 
-  $(document).on('fv_flowplayer_player_editor_reset', function() {
+  $doc.on('fv_flowplayer_player_editor_reset', function() {
     loading = true;
     fv_player_draft = true;
     fv_player_draft_changed = false;
   });
 
-  $(document).on('fv_flowplayer_shortcode_item_sort', save );
-  $(document).on('fv_flowplayer_shortcode_item_delete', save );
+  $doc.on('fv_flowplayer_shortcode_item_sort', save );
+  $doc.on('fv_flowplayer_shortcode_item_delete', save );
 
   function save(e){
 
@@ -701,257 +692,6 @@ jQuery(document).ready(function($){
 
   }, 1500 );
 
-  flowplayer( function(api,root) {
-
-    var
-      hide_cue_on = [],
-      extra_cues = [], // holds newly added cues while player was not in "ready" state yet (i.e. paused on splash screen) - they'll get added on the "ready" event
-      deleted_cues = [], // same as above but holds removed cues, so we can get rid of those once the player gets to the "ready" state
-      player = jQuery(root).find('.fp-player'),
-      timeline = jQuery(root).find('.fp-timeline'),
-      editor = jQuery('#fv-player-shortcode-editor .fv-fp-cues');
-
-    api.on('cuepoint', function(e,api,cue) {
-      hide_cue_on[+cue.index] = +cue.time + +cue.duration;
-      editor.find('div[data-cue='+cue.index+']').addClass('current');
-    });
-
-    api.on('progress', function(e,api,time) {
-      jQuery(hide_cue_on).each( function(k,v) {
-        if( time > +v ) {
-          editor.find('div[data-cue=' + k + ']').removeClass('current');
-          delete (hide_cue_on[k]);
-        }
-      })
-    });
-
-    api.on('seek', function(e,api,time) {
-      jQuery(api.video.cuepoints).each( function(k,v) {
-        if ( time <= +v.time || ( +v.duration + +v.time ) < time ) {
-          editor.find('div[data-cue=' + v.index + ']').removeClass('current');
-        }
-      });
-    });
-
-    api.on('ready', function() {
-      // delete any existing cues that were removed via the Editor UI while player was not yet ready
-      if (deleted_cues.length) {
-        var new_cues = [];
-        for (var i in api.video.cuepoints) {
-          if (deleted_cues.indexOf(i) == -1) {
-            new_cues.push(api.video.cuepoints[i]);
-          }
-        }
-        api.video.cuepoints = new_cues;
-      }
-
-      // add any new cues that were created via the Editor UI while player was not yet ready
-      if (extra_cues.length) {
-        for (var i in extra_cues) {
-          api.video.cuepoints[i] = extra_cues[i];
-        }
-      }
-
-      player.find('.fp-cuepoint').remove();
-      api.setCuepoints(api.video.cuepoints);
-      cue_bind();
-    });
-
-    jQuery(document).on('fv-cuepoint-add', function(e, annoIndex) {
-      var cue = {
-        data: {
-          link: '',
-          text: ''
-        },
-        duration: 5,
-        index: annoIndex,
-        time: (api.video.cuepoints ? api.video.time : 0),
-        type: 'ann_' + annoIndex
-      };
-
-      if (api.video.cuepoints) {
-        api.video.cuepoints.push(cue);
-        player.find('.fp-cuepoint').remove();
-        api.setCuepoints(api.video.cuepoints);
-        cue_bind();
-        editor.find('#fv_wp_flowplayer_field_cue_link:first').trigger('change'); // save
-      } else {
-        // just add this into the extra cues array, since player is not yet ready (probably still on splash screen)
-        // and we'll need to add these into the player itself as it becomes ready later
-        extra_cues[annoIndex] = cue;
-      }
-
-      // update time and duration
-      editor.find('label.fv-cue-time-label:last').html('Start: ' + (api.video.cuepoints ? Math.round(api.video.time) : 0) + 's &nbsp; Duration: 5s');
-    });
-
-    jQuery(document).on('fp-cue-removed', function(e, annoIndex) {
-      if (api.video.cuepoints && api.video.cuepoints[annoIndex]) {
-        api.video.cuepoints = api.video.cuepoints.filter(function(value, index, arr){
-          return index != annoIndex;
-        });
-        api.setCuepoints(api.video.cuepoints);
-        player.find('.fp-cuepoint' + annoIndex + ', .fvp-cue[data-cue=' + annoIndex + ']').remove();
-      }
-
-      if (!api.video.cuepoints) {
-        deleted_cues.push(annoIndex);
-      }
-
-      editor.find('#fv_wp_flowplayer_field_cue_link:first').trigger('change'); // save
-    });
-
-    var dragging = false,
-      dragging_end = false,
-      dragging_offset = false,
-      dragging_id = false;
-
-    function cue_bind() {
-      player.find('.fp-cuepoint').each( function(k,v) {
-        var pointer = jQuery(v);
-        var cue = api.video.cuepoints[k];
-        pointer.css('width', +cue.duration / +api.video.duration * 100 + "%" )
-        pointer.append('<span class="fvp-cue-start"></span><span class="fvp-cue-end"></span>')
-
-        pointer.on('mousedown', function(e) {
-          //console.log('mousedown cue!');
-          dragging_id = k;
-          var mouse = e.pageX || e.clientX;
-          dragging_offset = mouse - jQuery(this).offset().left;
-          //console.log('dragging_offset',dragging_offset);
-          if( jQuery(e.target).hasClass('fvp-cue-start') ) return;
-          if( jQuery(e.target).hasClass('fvp-cue-end') ) dragging_end = jQuery(e.target);
-          else {
-            dragging = jQuery(e.target);
-            drag_time_show();
-          }
-        })
-      });
-    }
-
-    function drag_time() {
-      return +api.video.duration * parseFloat(dragging.css('left')) / timeline.width() + 0.01;
-    }
-
-    function drag_time_show() {
-      var date = new Date(null);
-      date.setSeconds(drag_time());
-      player.find('.fp-timestamp').html( date.toISOString().substr( +api.video.duration > 3600 ? 11 : 14, +api.video.duration > 3600 ? 8 : 5) );
-    }
-
-    jQuery(document).on('mousemove', function(e) {
-      if( dragging || dragging_end ) {
-        var mouse = e.pageX || e.clientX
-          , offset = timeline.offset().left
-          , size = timeline.width();
-
-        if( dragging_end ) {
-          var parent = dragging_end.parent();
-          var position = mouse-offset;
-          if( position > size ) position = size;
-          var width = ( position - parseFloat(parent.css('left')) ) / size * 100;
-          if( width < 2 ) width = 2;
-          parent.css('width', width + "%");
-        } else if( dragging ) {
-          var position = (mouse-offset-dragging_offset)/size * 100;
-          if( position > 100 ) position = 100;
-          if( position < 0 ) position = 0;
-          dragging.css('left', position + "%");
-
-          var date = new Date(null);
-          date.setSeconds(drag_time());
-          player.find('.fp-timestamp').html( date.toISOString().substr( +api.video.duration > 3600 ? 11 : 14, +api.video.duration > 3600 ? 8 : 5) );
-
-          drag_time_show();
-        }
-      }
-    });
-
-    jQuery(document).on('mouseup', function(e) {
-      if( dragging || dragging_end ) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        var $editor_row = editor.find('[data-cue=' + dragging_id + ']');
-
-        if( dragging ) {
-          var time = drag_time();
-          api.video.cuepoints[dragging_id].time = time;
-          $editor_row.find('#fv_wp_flowplayer_field_cue_time').val(api.video.cuepoints[dragging_id].time);
-        }
-
-        if( dragging_end ) {
-          var duration = +api.video.duration * parseFloat(dragging_end.parent().width()) / timeline.width();
-          var time = +api.video.cuepoints[dragging_id].time + duration;
-          api.video.cuepoints[dragging_id].duration = duration;
-          $editor_row.find('#fv_wp_flowplayer_field_cue_time').val(api.video.cuepoints[dragging_id].time);
-          $editor_row.find('#fv_wp_flowplayer_field_cue_duration').val(api.video.cuepoints[dragging_id].duration)
-        }
-
-        $editor_row.find('label.fv-cue-time-label').html('Start: ' + Math.round(api.video.cuepoints[dragging_id].time) + 's &nbsp; Duration: ' + Math.round(api.video.cuepoints[dragging_id].duration) + 's');
-        player.find('.fp-cuepoint').remove();
-        api.setCuepoints(api.video.cuepoints);
-        cue_bind();
-
-        api.seek(time+0.01);
-        //console.log('cue point edited!');
-        $editor_row.find('#fv_wp_flowplayer_field_cue_link:first').trigger('change'); // save
-      }
-      dragging = dragging_end = false;
-    });
-
-    jQuery(document).on('click', '#fv-player-shortcode-editor .fv-fp-cues div', function() {
-      if (api.video.cuepoints) {
-        api.seek(+api.video.cuepoints[jQuery(this).data('cue')].time + 0.01);
-      }
-    });
-
-    jQuery(document).on('keyup', '#fv-player-shortcode-editor .fv-fp-cues div:visible select, #fv-player-shortcode-editor .fv-fp-cues div:visible input, #fv-player-shortcode-editor .fv-fp-cues div:visible textarea', function() {
-      if (api.video.cuepoints || extra_cues.length) {
-        var $input = jQuery(this);
-        var row = jQuery(this).parents('[data-cue]');
-        var id = row.data('cue');
-        //console.log( id, $input.val(), jQuery(this).val() );
-
-        var cuepoint_item = (api.video.cuepoints && api.video.cuepoints[id] ? api.video.cuepoints[id] : extra_cues[id]);
-
-        // change input to the SELECT element sibling, if not SELECT already
-        if (!$input.hasClass('fv_wp_flowplayer_field_cue')) {
-          $input = $input.siblings('.fv_wp_flowplayer_field_cue:first');
-        }
-
-        switch ($input.val()) {
-          case 'ann': cuepoint_item['data'] = {
-                        link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
-                        text : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
-                      };
-                      break;
-
-          case 'img': cuepoint_item['data'] = {
-                        link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
-                        image : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
-                      };
-                      break;
-
-          case 'html': cuepoint_item['data'] = {
-                         link : $input.siblings('#fv_wp_flowplayer_field_cue_link').val(),
-                         html : $input.siblings('.fv_wp_flowplayer_field_cue_value').val()
-                       };
-                       break;
-        }
-
-        cuepoint_item['type'] = $input.val();
-
-        if (api.video.cuepoints) {
-          player.find('.fvp-cue[data-cue=' + id + ']').remove();
-          api.trigger('cuepoint', [api, cuepoint_item]);
-        }
-        //api.setCuepoints(api.video.cuepoints);
-        //cue_bind();
-      }
-    });
-  });
-
 });
 
 
@@ -1041,9 +781,6 @@ function fv_wp_flowplayer_init() {
   jQuery('.fv-player-tab-subtitles').html(fv_player_playlist_subtitles_box_template);
   jQuery('.fv_wp_flowplayer_field_subtitles_lang').val(0);
 
-  jQuery('.fv-player-tab-cues').html(fv_player_playlist_cues_template);
-  jQuery('.fv_wp_flowplayer_field_cue').val(0);
-
   /**
    * TABS 
    */ 
@@ -1066,6 +803,8 @@ function fv_wp_flowplayer_init() {
   if( typeof(fv_player_shortcode_editor_ajax) != "undefined" ) {
     fv_player_shortcode_editor_ajax.abort();
   }
+
+  $doc.trigger('fv-init');
 }
 
 /*
@@ -1120,35 +859,30 @@ function fv_wp_flowplayer_playlist_remove(link) {
  * Adds playlist item
  * keywords: add playlist item
  */
-function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplashText ) {
+function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sSplashText ) {
   jQuery('.fv-player-tab-playlist table tbody').append(fv_player_playlist_item_template);
   var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
     return parseInt(jQuery(this).attr('data-index'), 10);
-  }).get();  
+  }).get();
   var newIndex = Math.max(Math.max.apply(Math, ids) + 1,0);
   var current = jQuery('.fv-player-tab-playlist table tbody tr').last();
   current.attr('data-index', newIndex);
   current.find('.fvp_item_video-filename').html( 'Video ' + (newIndex + 1) );
-  
+
   jQuery('.fv-player-tab-video-files').append(fv_player_playlist_video_template);
   var new_item = jQuery('.fv-player-tab-video-files table:last');
   new_item.hide().attr('data-index', newIndex);
-
-  jQuery('.fv-player-tab-cues').append(fv_player_playlist_cues_template);
-  var new_item_cue = jQuery('.fv-player-tab-cues table:last');
-  new_item_cue.hide().attr('data-index', newIndex);
-
   jQuery('.fv-player-tab-subtitles').append(fv_player_playlist_subtitles_box_template);
   var new_item_subtitles = jQuery('.fv-player-tab-subtitles table:last');
   new_item_subtitles.hide().attr('data-index', newIndex);
-  
+
   //jQuery('.fv-player-tab-video-files table').hover( function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } );
 
   if( typeof(sInput) == 'object' ) {
     var objVid = sInput;
-    
-    new_item.attr('data-id_video', objVid.id);    
-    
+
+    new_item.attr('data-id_video', objVid.id);
+
     new_item.find('[name=fv_wp_flowplayer_field_src]').val(objVid.src);
     if( objVid.src1 ) {
       new_item.find('[name=fv_wp_flowplayer_field_src1]').val(objVid.src1);
@@ -1160,26 +894,26 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplas
       new_item.find('#fv_wp_flowplayer_add_format_wrapper').show();
     }
     new_item.find('[name=fv_wp_flowplayer_field_mobile]').val(objVid.mobile);
-    
+
     if( objVid.rtmp || objVid.rtmp_path ) {
       new_item.find('[name=fv_wp_flowplayer_field_rtmp]').val(objVid.rtmp);
       new_item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val(objVid.rtmp_path);
       new_item.find(".fv_wp_flowplayer_field_rtmp_wrapper").show();
       new_item.find(".add_rtmp_wrapper").hide();
-    }  
-    
+    }
+
     new_item.find('[name=fv_wp_flowplayer_field_caption]').val(objVid.caption);
     new_item.find('[name=fv_wp_flowplayer_field_splash]').val(objVid.splash);
     new_item.find('[name=fv_wp_flowplayer_field_splash_text]').val(objVid.splash_text);
-    
+
     new_item.find('[name=fv_wp_flowplayer_field_start]').val(objVid.start);
     new_item.find('[name=fv_wp_flowplayer_field_end]').val(objVid.end);
-    
+
     jQuery(objVid.meta).each( function(k,v) {
       if( v.meta_key == 'synopsis' ) new_item.find('[name=fv_wp_flowplayer_field_synopsis]').val(v.meta_value).attr('data-id',v.id);
       if( v.meta_key == 'audio' ) new_item.find('[name=fv_wp_flowplayer_field_audio]').prop('checked',v.meta_value).attr('data-id',v.id);
-    });    
-    
+    });
+
     if (typeof sSubtitles === 'object' && sSubtitles.length && sSubtitles[0].lang) {
       // DB-based subtitles value
       var firstDone = false;
@@ -1208,44 +942,6 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplas
       }
     }
 
-    if (typeof sCues === 'object' && sCues.length && sCues[0].type) {
-      // DB-based cue value
-      var
-        firstDone = false,
-        currentAnnoIndex = 1;
-
-      for (var i in sCues) {
-        // remove index from cue type
-        sCues[i].type = sCues[i].type.split('_')[0];
-
-        // add as many new cues as we have
-        if (firstDone) {
-          fv_flowplayer_cue_add(sCues[i].value, sCues[i].type, sCues[i].time, sCues[i].duration, sCues[i].link, newIndex, sCues[i].id, currentAnnoIndex++);
-        } else {
-          var
-            annoElement = jQuery('[name=fv_wp_flowplayer_field_cue]', new_item_cue),
-            $parent = annoElement.parent();
-
-          annoElement.val(sCues[i].type);
-
-          var annoIndex = annoElement.get(0).selectedIndex;
-          jQuery(annoElement.get(0).options[annoIndex]).attr('selected', 'selected');
-
-          $parent.attr('data-cue', 0);
-          $parent.attr('data-id_cue', sCues[i].id);
-          $parent.hover( function() { jQuery(this).find('.fv-fp-cue-remove').show(); }, function() { jQuery(this).find('.fv-fp-cue-remove').hide(); } );
-          $parent.find('.fv-fp-cue-remove').click(fv_flowplayer_remove_cue);
-
-          jQuery('[name=fv_wp_flowplayer_field_cue_value]', new_item_cue).val(sCues[i].value);
-          jQuery('[name=fv_wp_flowplayer_field_cue_time]', new_item_cue).val(sCues[i].time);
-          jQuery('[name=fv_wp_flowplayer_field_cue_duration]', new_item_cue).val(sCues[i].duration);
-          jQuery('[name=fv_wp_flowplayer_field_cue_link]', new_item_cue).val(sCues[i].link);
-          jQuery('label.fv-cue-time-label:last', new_item_cue).html('Start: ' + Math.round(sCues[i].time) + 's &nbsp; Duration: ' + Math.round(sCues[i].duration) + 's');
-          firstDone = true;
-        }
-      }
-    }
-
   } else if( sInput ) {
     var aInput = sInput.split(',');
     var count = 0;
@@ -1253,7 +949,7 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplas
       if( aInput[i].match(/^rtmp:/) ) {
         new_item.find('.fv_wp_flowplayer_field_rtmp_path').val(aInput[i].replace(/^rtmp:/,''));
       } else if( aInput[i].match(/\.(jpg|png|gif|jpe|jpeg)(?:\?.*?)?$/) ) {
-        new_item.find('.fv_wp_flowplayer_field_splash').val(aInput[i]);      
+        new_item.find('.fv_wp_flowplayer_field_splash').val(aInput[i]);
       } else {
         if( count == 0 ) {
           new_item.find('#fv_wp_flowplayer_field_src').val(aInput[i]);
@@ -1269,15 +965,12 @@ function fv_flowplayer_playlist_add( sInput, sCaption, sSubtitles, sCues, sSplas
     if( sSubtitles ) {
       jQuery('[name=fv_wp_flowplayer_field_subtitles]', new_item_subtitles).val(sSubtitles);
     }
-    if( sCues ) {
-      jQuery('[name=fv_wp_flowplayer_field_cue]', new_item_cue).val(sCues);
-    }
     if( sSplashText ) {
       jQuery('[name=fv_wp_flowplayer_field_splash_text]', new_item).val(sSplashText);
     }
   }
-  
-  fv_wp_flowplayer_dialog_resize(); 
+
+  fv_wp_flowplayer_dialog_resize();
   return new_item;
 }
 
@@ -1326,9 +1019,7 @@ function fv_flowplayer_playlist_show() {
     jQuery(this).attr('data-index', jQuery(this).index() );
   });
 
-  jQuery('.fv-player-tab.fv-player-tab-cues table').each(function(){
-    jQuery(this).attr('data-index', jQuery(this).index() );
-  })
+  $doc.trigger('fv-initial-indexing', [jQuery(this).index()]);
   
   if(!jQuery('.fvp_item_video-thumbnail>img').length){
     jQuery('#fv-player-list-list-view').click();
@@ -1352,8 +1043,8 @@ function fv_flowplayer_editor_item_show( new_index ) {
   jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);    
  
   var $ = jQuery;
-  
-  $(document).trigger('fv_flowplayer_shortcode_item_switch', [ new_index ] );
+
+  $doc.trigger('fv_flowplayer_shortcode_item_switch', [ new_index ] );
  
   $('a[data-tab=fv-player-tab-video-files]').click();    
   
@@ -1362,10 +1053,6 @@ function fv_flowplayer_editor_item_show( new_index ) {
   
   $('.fv-player-tab-subtitles table').hide();
   $('.fv-player-tab-subtitles table').eq(new_index).show();
-
-  $('.fv-player-tab-cues table').hide();
-  $('.fv-player-tab-cues table').eq(new_index).show();
-  
 
   if($('.fv-player-tab-playlist [data-index]').length > 1){
     $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
@@ -1388,7 +1075,7 @@ function fv_flowplayer_editor_item_show( new_index ) {
     $('.fv_wp_flowplayer_field_rtmp',video_tab).attr('readonly',true);
   }
   
-  $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link, .fv_wp_flowplayer_field_cue, .fv_flowplayer_cue_add').attr('style',false);
+  $('.fv_wp_flowplayer_field_subtitles_lang, .fv_flowplayer_language_add_link').attr('style',false);
 
   fv_player_refresh_tabs();
 
@@ -1474,101 +1161,6 @@ function fv_flowplayer_remove_subtitles() {
   return false;
 }
 
-/*
- * Adds new cue to editor
- */
-function fv_flowplayer_cue_add( sInput, sType, sTime, sDuration, sLink, iTabIndex, sId, annoIndex ) {
-  if(!iTabIndex){
-    var current = jQuery('.fv-player-tab-cues table:visible');
-    iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
-  }
-  var oTab = jQuery('.fv-fp-cues').eq(iTabIndex);
-  oTab.append( fv_player_playlist_cue_row_template );
-
-  var annElement = jQuery('.fv-fp-cue:last' , oTab);
-
-  if (annoIndex) {
-    annElement.attr('data-cue', annoIndex);
-  } else {
-    var $allAnnoElements = jQuery('.fv-fp-cue' , oTab);
-    annoIndex = ($allAnnoElements.length ? +$allAnnoElements.eq($allAnnoElements.length - 2).attr('data-cue') + 1 : 0);
-    annElement.attr('data-cue', annoIndex);
-  }
-
-  annElement.hover( function() { jQuery(this).find('.fv-fp-cue-remove').show(); }, function() { jQuery(this).find('.fv-fp-cue-remove').hide(); } );
-
-  if (typeof(sId) !== 'undefined') {
-    annElement.attr('data-id_cue', sId);
-  }
-
-  if( sInput ) {
-    jQuery('.fv-fp-cue:last textarea.fv_wp_flowplayer_field_cue_value' , oTab ).val(sInput);
-  }
-
-  if ( sType ) {
-    jQuery('.fv-fp-cue:last select.fv_wp_flowplayer_field_cue', oTab).val(sType);
-    var
-      sel = jQuery('.fv-fp-cue:last select.fv_wp_flowplayer_field_cue', oTab).get(0),
-      index = sel.selectedIndex,
-      $selectedOption = jQuery(sel.options[index]);
-
-    $selectedOption.attr('selected', 'selected');
-  }
-
-  if( sTime ) {
-    jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_time' , oTab ).val(sTime);
-  }
-
-  if( sDuration ) {
-    jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_duration' , oTab ).val(sDuration);
-  }
-
-  jQuery('.fv-fp-cue:last label.fv-cue-time-label:last' , oTab ).html('Start: ' + (sTime ? Math.round(sTime) : 0) + 's &nbsp; Duration: ' + (sDuration ? Math.round(sDuration) : 0) + 's');
-
-  if( sLink ) {
-    jQuery('.fv-fp-cue:last #fv_wp_flowplayer_field_cue_link' , oTab ).val(sLink);
-  }
-
-  jQuery('.fv-fp-cue:last .fv-fp-cue-remove' , oTab).click(fv_flowplayer_remove_cue);
-
-  // only trigger this when we're adding a new cuepoint via a link on the Editor's page,
-  // so we can dynamically add it to the already existing cuepoints
-  if (!sInput) {
-    jQuery(document).trigger('fv-cuepoint-add', [annoIndex]);
-  }
-
-  fv_wp_flowplayer_dialog_resize();
-  return false;
-}
-
-function fv_flowplayer_remove_cue() {
-  var
-    $parent = jQuery(this).parents('.fv-fp-cue'),
-    id = $parent.attr('data-id_cue'),
-    index = $parent.attr('data-cue');
-
-  if(jQuery(this).parents('.fv-fp-cues').find('.fv-fp-cue').length > 1){
-    if (id) {
-      fv_wp_delete_video_meta_record(id);
-    }
-
-    $parent.remove();
-  }else{
-    if (id) {
-      fv_wp_delete_video_meta_record(id);
-    }
-
-    $parent.find('[name]').val('');
-    $parent.removeAttr('data-id_cue');
-  }
-
-  jQuery(document).trigger('fp-cue-removed', [index]);
-
-  fv_wp_flowplayer_dialog_resize();
-
-  return false;
-}
-
 function fv_wp_flowplayer_map_names_to_editor_fields(name) {
   var fieldMap = {
     'liststyle': 'playlist',
@@ -1604,7 +1196,6 @@ function fv_wp_flowplayer_edit() {
   jQuery('#fv-player-shortcode-editor [data-id]').removeData('id').removeAttr('data-id');
   jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
   jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
-  jQuery('#fv-player-shortcode-editor [data-id_annnotation]').removeData('id_cue').removeAttr('data-cue');
 
   // fire up editor reset event, so plugins can clear up their data IDs as well
   var $doc = jQuery(document);
@@ -1883,7 +1474,6 @@ function fv_wp_flowplayer_edit() {
           for (var x in vids) {
             var
               subs = [],
-              cues = [],
               transcript = null,
               chapters = null,
               video_meta = [];
@@ -1896,20 +1486,6 @@ function fv_wp_flowplayer_edit() {
                   subs.push({
                     lang: vids[x].meta[m].meta_key.replace('subtitles_', ''),
                     file: vids[x].meta[m].meta_value,
-                    id: vids[x].meta[m].id
-                  });
-                }
-
-                // cues
-                if (vids[x].meta[m].meta_key.indexOf('cues') > -1) {
-                  // value, time and duration are stored serialized as meta value
-                  vids[x].meta[m].meta_value = JSON.parse(vids[x].meta[m].meta_value);
-                  cues.push({
-                    type: vids[x].meta[m].meta_key.replace('cues_', ''),
-                    value: vids[x].meta[m].meta_value.value,
-                    time: vids[x].meta[m].meta_value.time,
-                    duration: vids[x].meta[m].meta_value.duration,
-                    link: vids[x].meta[m].meta_value.link,
                     id: vids[x].meta[m].id
                   });
                 }
@@ -1937,7 +1513,7 @@ function fv_wp_flowplayer_edit() {
               }
             }
 
-            $video_data_tab = fv_flowplayer_playlist_add(vids[x], false, subs, cues);
+            $video_data_tab = fv_flowplayer_playlist_add(vids[x], false, subs);
             $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
 
             // add chapters and transcript
@@ -2019,6 +1595,7 @@ function fv_wp_flowplayer_edit() {
       });
     } else {
       fv_flowplayer_conf.new_shortcode_active = false;
+      $doc.trigger('fv-non-db-shortcode');
 
       // ordinary text shortcode in the editor
       var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
@@ -2262,12 +1839,9 @@ function fv_wp_flowplayer_edit() {
         // which outlines video IDs from a database
         aPlaylist = sPlaylist[1].split(';');
         for (var i in aPlaylist) {
-          fv_flowplayer_playlist_add(aPlaylist[i], aCaptions[i], aSubtitles[i], false, aSplashText[i]);
+          fv_flowplayer_playlist_add(aPlaylist[i], aCaptions[i], aSubtitles[i], aSplashText[i]);
         }
       }
-
-      // hide the Cues tab by removing its tab content, since it't not supported for non-db shortcodes
-      jQuery('.fv-player-cue').remove();
 
       if( jQuery('.fv-fp-subtitles .fv-fp-subtitle:first input.fv_wp_flowplayer_field_subtitles').val() == '' ) {
         jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
@@ -2498,33 +2072,30 @@ function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
 
   // trigger meta data save events, so we get meta data from different
   // plugins included as we post
-  jQuery(document).trigger('fv_flowplayer_player_meta_save', [data]);
+  jQuery(document).trigger('fv_flowplayer_player_meta_save', [data, $tabs]);
 
   $tabs.each(function() {
     var
       $tab = jQuery(this),
       is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
       is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-      is_cues_tab = $tab.hasClass('fv-player-tab-cues'),
-      $tables = ((is_videos_tab || is_subtitles_tab || is_cues_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
+      $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
       save_index = -1;
 
-    // prepare video, subtitles and cues data, which are duplicated through their input names
+    // prepare video and subtitles data, which are duplicated through their input names
     if (is_videos_tab) {
       data['videos'] = {};
     } else if (is_subtitles_tab) {
       data['video_meta']['subtitles'] = {};
       data['video_meta']['transcript'] = {};
       data['video_meta']['chapters'] = {};
-    } else if (is_cues_tab) {
-      data['video_meta']['cues'] = {};
     }
 
     // iterate over all tables in tabs
     $tables.each(function() {
-      // only videos, subtitles and cues tabs have tables, so we only need to search for their inputs when working with those
+      // only videos, subtitles tabs have tables, so we only need to search for their inputs when working with those
       var
-        $inputs = ((is_videos_tab || is_subtitles_tab || is_cues_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
+        $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
         table_index = jQuery(this).data('index');
 
       save_index++;
@@ -2647,29 +2218,6 @@ function fv_wp_flowplayer_build_ajax_data( give_it_all ) {
               meta_index: save_index,
               element: $this
             });
-          }
-
-          // cues tab
-          else if (is_cues_tab) {
-            if ($this.hasClass('fv_wp_flowplayer_field_cue_value')) {
-              if (!data['video_meta']['cues'][save_index]) {
-                data['video_meta']['cues'][save_index] = [];
-              }
-
-              // jQuery-select the SELECT element when we get an TEXTAREA, since we need to pair them
-              // ... also, retrieve time and duration values her
-              var serialized_cue_val = JSON.stringify({
-                'value' : this.value,
-                'time' : $this.siblings('#fv_wp_flowplayer_field_cue_time').val(),
-                'duration' : $this.siblings('#fv_wp_flowplayer_field_cue_duration').val(),
-                'link' : $this.siblings('#fv_wp_flowplayer_field_cue_link').val()
-              });
-              data['video_meta']['cues'][save_index].push({
-                type : $this.siblings('select:first').val(),
-                value : serialized_cue_val,
-                id: $this.parent().data('id_cue')
-              });
-            }
           }
 
           // all other tabs
@@ -3801,7 +3349,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
 
 
 jQuery( function($) {
-  $(document).ready( 'fv_wp_flowplayer_init' );
+  $doc.ready( 'fv_wp_flowplayer_init' );
 
   var $body = jQuery('body');
   $body.on('focus', '#fv_player_copy_to_clipboard', function() {
@@ -4053,7 +3601,7 @@ jQuery( function($) {
   
   jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only     
 
-  $(document).on( 'fv_flowplayer_shortcode_insert', '.fv-player-editor-field', function() {
+  $doc.on( 'fv_flowplayer_shortcode_insert', '.fv-player-editor-field', function() {
     fv_load_video_preview( jQuery(this).parents('.fv-player-editor-wrapper'));
   } );
 
@@ -4091,14 +3639,14 @@ jQuery( function($) {
     var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
     $.get(url, function(response) {
       wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
-      $(document).trigger('fvp-preview-complete');
+      $doc.trigger('fvp-preview-complete');
       indicator.remove();
     } );
 
     fv_show_video(wrapper);
   }
 
-  $(document).on('click','.fv-player-editor-remove', function(e) {console.log('.fv-player-editor-remove');
+  $doc.on('click','.fv-player-editor-remove', function(e) {console.log('.fv-player-editor-remove');
     var wrapper = $(this).parents('.fv-player-editor-wrapper');
     if( $('[data-key='+wrapper.data('key')+']').length == 1 ) { //  if there is only single video
       wrapper.find('.fv-player-editor-field').val('');
@@ -4110,7 +3658,7 @@ jQuery( function($) {
     return false;
   });
 
-  $(document).on('click','.fv-player-editor-more', function(e) {
+  $doc.on('click','.fv-player-editor-more', function(e) {
     var wrapper = $(this).parents('.fv-player-editor-wrapper');
     var new_wrapper = wrapper.clone();
     new_wrapper.find('.fv-player-editor-field').val('');
@@ -4120,8 +3668,8 @@ jQuery( function($) {
 
     return false;
   });
-  
-  $(document).on( 'click', '.fv-player-shortcode-copy', function(e) {
+
+  $doc.on( 'click', '.fv-player-shortcode-copy', function(e) {
     var button = $(this);
     fv_player_clipboard( $(this).parents('tr').find('.fv-player-shortcode-input').val(), function() {
       button.html('Ok!');

@@ -13,14 +13,7 @@
 #fv-player-shortcode-editor .fv-player-tab-subtitles table input.with-button { width: 70%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
-#fv-player-shortcode-editor table textarea.fv_wp_flowplayer_field_cue_value { width: 65%; }
-#fv-player-shortcode-editor table label.fv-cue-time-label { width: 90%; text-align: center; }
-#fv-player-shortcode-editor table .fv-fp-cue { margin-bottom: 10px; padding: 5px; position: relative; }
-#fv-player-shortcode-editor table .fv-fp-cue label { float: left; padding: 5px; }
-#fv-player-shortcode-editor table .fv-fp-cue .fv_wp_flowplayer_field_cue_link { width: 87%; }
-#fv-player-shortcode-editor table .fv-fp-cue-remove { position: absolute; bottom: 40%; right: 5px; }
-#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang, #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_cue { width: 10%;float:left; margin: 1px 2px; height: 27px }
-#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_cue { width: 30%; }
+#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; margin: 1px 2px; height: 27px }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
@@ -40,14 +33,6 @@
 #fv-player-shortcode-editor .fv-player-tab-video-files table .button { width: 22% }
 #fv-player-shortcode-editor .fv-player-tab-subtitles table .button { width: 26% }
 #fv-player-shortcode-editor .fv-player-tabs .submit-button-wrapper .button { width: auto; }
-
-#fv-player-shortcode-editor .fv-fp-cues div {
-  background-color: #eee;
-}
-
-#fv-player-shortcode-editor .fv-fp-cues div.current {
-  background-color: #ddd;
-}
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
@@ -200,34 +185,4 @@ a #add-format, a #add-rtmp {
   margin: 5px 15px 2px;
   padding: 1px 12px;
   border-left-color: #46b450;
-}
-
-.fvp-cue-end {
-  position: absolute;
-  top: 0;
-  width: 5px;
-  height: 100%;
-  background-color: #777;
-  cursor: col-resize;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  left: auto;
-  right: 0;
-}
-
-.flowplayer .fp-cuepoint {
-  display: inline-block;
-  cursor: pointer;
-  position: absolute;
-  width: 4px;
-  padding-top: 4%;
-  background-color: #333;
-  margin-left: -2px;
-  top: 30px;
-  left: 0;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  filter: alpha(opacity=0.6);
-  opacity: 0.6;
 }
