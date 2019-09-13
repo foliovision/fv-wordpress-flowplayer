@@ -65,7 +65,8 @@ class FV_Player_Db_Player {
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $DB_Instance = null,
-    $meta_data = null;
+    $meta_data = null,
+    $ignored_input_fields = array();
 
   /**
    * @param mixed $videos
@@ -442,16 +443,18 @@ CREATE TABLE " . self::$db_table_name . " (
   private function fill_properties( $options, $DB_Cache = false ) {
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
-      if (property_exists($this, $key)) {
-        $this->$key = stripslashes($value);
-        
-      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
-        $this->$key = stripslashes($value);
-        
-      } else if (!in_array($key, array('drm_text', 'email_list', 'live', 'popup_id'))) {
-        // generate warning
-        trigger_error('Unknown property for new DB player: ' . $key);
-        
+      if (!isset($this->ignored_input_fields[$key])) {
+        if ( property_exists( $this, $key ) ) {
+          $this->$key = stripslashes( $value );
+
+        } else if ( in_array( $key, array( 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ) ) ) {
+          $this->$key = stripslashes( $value );
+
+        } else if ( ! in_array( $key, array( 'drm_text', 'email_list', 'live', 'popup_id' ) ) ) {
+          // generate warning
+          trigger_error( 'Unknown property for new DB player: ' . $key );
+
+        }
       }
     }    
     
@@ -486,6 +489,25 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Adds input field name into ignored input fields array,
+   * so we can safely ignore these non-ORM fields when received
+   * from the front-end as POST data.
+   *
+   * Plugins will handle these fields on their own as meta data.
+   *
+   * @param $fields array Array with names of fields to ignore when found in POST data.
+   */
+  function add_ignored_fields($fields) {
+    if (!is_array($fields)) {
+      return;
+    }
+
+    foreach ($fields as $field_name) {
+      $this->ignored_input_fields[ $field_name ] = true;
+    }
+  }
+
+  /**
    * FV_Player_Db_Player constructor.
    *
    * @param int $id                              ID of player to load data from the DB for.
@@ -497,6 +519,10 @@ CREATE TABLE " . self::$db_table_name . " (
    */
   function __construct($id, $options = array(), $DB_Cache = null) {
     global $wpdb;
+
+    // create filter for external input fields from plugins whose names should be ignored
+    // when checking for valid DB object properties
+    add_action( 'fv_flowplayer_db_dynamic_input_fields', array($this, 'add_ignored_fields'), 1, 1 );
 
     if ($DB_Cache) {
       $this->DB_Instance = $DB_Cache;
@@ -794,7 +820,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data'))) {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -977,7 +1003,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields'))) {
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
@@ -1082,7 +1108,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified'))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields'))) {
         $export_data[$property] = $value;
       }
     }
