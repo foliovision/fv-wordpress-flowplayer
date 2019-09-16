@@ -443,7 +443,7 @@ CREATE TABLE " . self::$db_table_name . " (
   private function fill_properties( $options, $DB_Cache = false ) {
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
-      if (!isset($this->ignored_input_fields[$key])) {
+      if (!in_array($key, $this->ignored_input_fields)) {
         if ( property_exists( $this, $key ) ) {
           $this->$key = stripslashes( $value );
 
@@ -489,25 +489,6 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
-   * Adds input field name into ignored input fields array,
-   * so we can safely ignore these non-ORM fields when received
-   * from the front-end as POST data.
-   *
-   * Plugins will handle these fields on their own as meta data.
-   *
-   * @param $fields array Array with names of fields to ignore when found in POST data.
-   */
-  function add_ignored_fields($fields) {
-    if (!is_array($fields)) {
-      return;
-    }
-
-    foreach ($fields as $field_name) {
-      $this->ignored_input_fields[ $field_name ] = true;
-    }
-  }
-
-  /**
    * FV_Player_Db_Player constructor.
    *
    * @param int $id                              ID of player to load data from the DB for.
@@ -520,9 +501,8 @@ CREATE TABLE " . self::$db_table_name . " (
   function __construct($id, $options = array(), $DB_Cache = null) {
     global $wpdb;
 
-    // create filter for external input fields from plugins whose names should be ignored
-    // when checking for valid DB object properties
-    add_action( 'fv_flowplayer_db_dynamic_input_fields', array($this, 'add_ignored_fields'), 1, 1 );
+    // add any extra fields from extending plugins that should be ORM-ignored
+    $this->ignored_input_fields = apply_filters('fv_flowplayer_add_ignored_input_names', $this->ignored_input_fields);
 
     if ($DB_Cache) {
       $this->DB_Instance = $DB_Cache;
