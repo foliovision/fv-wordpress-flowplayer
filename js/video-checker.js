@@ -17,25 +17,16 @@
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
-    checked_media[0] = {
-      text : root.find('small'),
-      head : root.find('.fv_wp_flowplayer_notice_head'),
-      body : root.find('.fv_wp_fp_notice_content')
-    };
+    checked_media[0] = true;
 
     api.bind('ready', function(e,api,video){
-      if(typeof api.video.index !== "undefined" ) {
-        if(typeof checked_media[api.video.index] == "undefined" ) {
-          check_media(api,root);
-          checked_media[api.video.index] = {
-            text : root.find('small'),
-            head : root.find('.fv_wp_flowplayer_notice_head'),
-            body : root.find('.fv_wp_fp_notice_content')
-          };
-        } else {
-          root.find('small').replaceWith(checked_media[api.video.index].text);
-          root.find('.fv_wp_flowplayer_notice_head').replaceWith(checked_media[api.video.index].head);
-          root.find('.fv_wp_fp_notice_content').replaceWith(checked_media[api.video.index].body);
+      if( api.conf.playlist.length > 0 ) {
+        if( typeof api.video.index !== "undefined" ) {
+          if(typeof checked_media[0] !== "undefined" ) {
+            checked_media.splice(0, 1);
+          } else {
+            checked_media( api, root );
+          } 
         }
       }
     });
