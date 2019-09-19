@@ -1178,7 +1178,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function css_enqueue( $force = false ) {
     
-    if( is_admin() && !did_action('admin_footer') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+    if( is_admin() && !did_action('admin_footer') && !did_action('elementor/editor/wp_head') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
       return;
     }
     
