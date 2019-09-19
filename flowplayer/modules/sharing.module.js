@@ -9,12 +9,8 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
         if( !api.video.sources || !api.video.sources[0] ) {
           return;
         }
-        
-        var hash = fv_parse_sharelink( typeof(api.video.sources_original) != "undefined" && typeof(api.video.sources_original[0]) != "undefined" ? api.video.sources_original[0].src : api.video.sources[0].src);
 
-        if( typeof(api.video.id) != "undefined" ) {
-          hash = fv_parse_sharelink(api.video.id.toString());
-        }
+        var hash = fv_player_get_video_link_hash(api);
 
         var sTime = ',' + fv_player_time_hms(api.video.time);
         //console.log(sTime);
@@ -34,7 +30,7 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
       })
     }
   })
-  
+
   jQuery(document).on('click','a[href*="fvp_"]', function() {
     var link = jQuery(this)
     setTimeout( function() {

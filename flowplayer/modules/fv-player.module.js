@@ -775,3 +775,13 @@ function fv_player_notice(root, message, timeout) {
   }
   return notice;
 }
+
+function fv_player_get_video_link_hash(api) {
+  var hash = fv_parse_sharelink( typeof(api.video.sources_original) != "undefined" && typeof(api.video.sources_original[0]) != "undefined" ? api.video.sources_original[0].src : api.video.sources[0].src);
+
+  if( typeof(api.video.id) != "undefined" ) {
+    hash = fv_parse_sharelink(api.video.id.toString());
+  }
+
+  return hash;
+}

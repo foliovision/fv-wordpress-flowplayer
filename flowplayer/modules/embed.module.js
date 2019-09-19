@@ -10,19 +10,24 @@ flowplayer(function(player, root) {
     var width = root.width();
     var height = root.height();
     height += 2;
-    
+
     // adjust height to show at least some of chapters and transcripts
     if (root.hasClass('has-chapters') || root.hasClass('has-transcript') ) {
       height += 300;
     }
-    
+
     if( jQuery('.fp-playlist-external[rel='+root.attr('id')+']').length > 0 ) {
       height += 150 + 20; // estimate of playlist height + scrollbar height
     }
 
-    return '<iframe src="' + root.data('fv-embed') + '" allowfullscreen  width="' + width + '" height="' + height + '" frameborder="0" style="max-width:100%"></iframe>';
+    var data = root.data('fv-embed');
+    var embed = data.match(/(?:fvp-[0-9]*)|(?:(?:fvp[0-9]*))/); // fvp-{id} or fvp{id} (shortcode)
+
+    embed ='/' + embed + '#' + fv_player_get_video_link_hash(player);
+    data = data.replace(/(?:\/fvp-[0-9]*\/)|(?:(?:\/fvp[0-9]*\/))/, embed);
+    return '<iframe src="' + data + '" allowfullscreen  width="' + width + '" height="' + height + '" frameborder="0" style="max-width:100%"></iframe>';
   };
-  
+
 });
 
 jQuery(document).on('click', '.flowplayer .embed-code-toggle', function() {
