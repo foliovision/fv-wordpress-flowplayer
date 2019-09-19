@@ -314,7 +314,7 @@ function flowplayer_prepare_scripts() {
     
     wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
 
-    if( current_user_can('manage_options') && $fv_fp->ajax_count < 100 && !$fv_fp->_get_option('disable_videochecker') && ( $fv_fp->_get_option('video_checker_agreement') || $fv_fp->_get_option('key_automatic') ) ) {
+    if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') && ( $fv_fp->_get_option('video_checker_agreement') || $fv_fp->_get_option('key_automatic') ) ) {
       wp_enqueue_script( 'fv-player-video-checker', flowplayer::get_plugin_url().'/js/video-checker.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
 
