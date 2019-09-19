@@ -60,3 +60,43 @@ jQuery('.flowplayer').on('ready', function(e,api) { //  v6
 //     });  
 //   });
 // }
+
+var fv_flowplayer_safety_resize_arr = Array();
+
+function fv_flowplayer_safety_resize() {
+	var fv_flowplayer_safety_resize_init = false;
+
+	jQuery('.flowplayer').each( function() {
+    if( !jQuery(this).is(":visible") || jQuery(this).hasClass('lightboxed') || jQuery(this).hasClass('lightbox-starter') || jQuery(this).hasClass('is-audio') ) return;
+    
+		if( jQuery(this).width() < 30 || jQuery(this).height() < 20 ) {
+			fv_flowplayer_safety_resize_init = true
+			var el = jQuery(this);
+			while( jQuery(el).width() < 30 || jQuery(el).width() == jQuery(this).width() ) {
+        if( jQuery(el).parent().length == 0 ) break; 
+				el = jQuery(el).parent();
+			}
+			
+			jQuery(this).width( jQuery(el).width() );
+			jQuery(this).height( parseInt(jQuery(this).width() * jQuery(this).attr('data-ratio')) );					
+			fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] = el;                  
+		}
+	} );
+	
+	if( fv_flowplayer_safety_resize_init ) {
+		jQuery(window).resize(function() {
+			jQuery('.flowplayer').each( function() {
+        if( jQuery(this).hasClass('lightboxed') || jQuery(this).hasClass('lightbox-starter') ) return;
+        
+				if( fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] ) {
+					jQuery(this).width( fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')].width() );
+					jQuery(this).height( parseInt(jQuery(this).width() * jQuery(this).attr('data-ratio')) );	
+				}
+			} );  
+		} );    
+	}
+}
+
+if( typeof(flowplayer.conf.safety_resize) != "undefined" && flowplayer.conf.safety_resize ) {
+  jQuery(document).ready(function() { setTimeout( function() { fv_flowplayer_safety_resize(); }, 10 ); } );	
+}

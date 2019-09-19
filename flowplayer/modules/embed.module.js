@@ -24,3 +24,21 @@ flowplayer(function(player, root) {
   };
   
 });
+
+jQuery(document).on('click', '.flowplayer .embed-code-toggle', function() {
+  var button = jQuery(this);
+  var player = button.parents('.flowplayer');
+  var api = player.data('flowplayer');
+  if( typeof(api.embedCode) == 'function' && player.find('.embed-code textarea').val() == '' ) {
+    player.find('.embed-code textarea').val(api.embedCode());  
+  }
+  
+  fv_player_clipboard( player.find('.embed-code textarea').val(), function() {
+      fv_player_notice(player,fv_flowplayer_translations.embed_copied,2000);          
+    }, function() {
+      button.parents('.fvp-share-bar').find('.embed-code').toggle();
+      button.parents('.fvp-share-bar').toggleClass('visible');
+    });
+  
+  return false;
+} );
