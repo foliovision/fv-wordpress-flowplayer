@@ -79,6 +79,7 @@
   }
 
   function admin_test_media( hash, media ) {
+    console.trace('Trace');
     var hVideoChecker = jQuery('#wpfp_notice_'+hash);
     jQuery('#wpfp_notice_'+hash).parent().append(jQuery('#wpfp_notice_'+hash));
     jQuery('#wpfp_notice_'+hash).show();

@@ -754,11 +754,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
+    global $FV_Player_Pro;
     $media = $mediaData['sources'][0]['src'];
 
     if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
       $this->ajax_count++;
-      
+
       if( stripos($rtmp,'rtmp://') === false && $rtmp ) {
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
         $rtmp = trailingslashit($rtmp_server).$rtmp;
@@ -767,9 +768,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $aTest_media = array();
       foreach( array( $media, $src1, $src2, $rtmp ) AS $media_item ) {
         if( $media_item ) {
-          $aTest_media[] = $this->get_video_src( $media_item, array( 'dynamic' => true ) );
-          //break;
-        } 
+          $temp_media = $this->get_video_src( $media_item, array( 'dynamic' => true ) );
+          if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+            if($FV_Player_Pro->is_vimeo($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
+              continue;
+            }
+          } 
+          $aTest_media[] = $temp_media;
+        }
       }
       
       if( !empty($this->aCurArgs['mobile']) ) {
