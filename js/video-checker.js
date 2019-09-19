@@ -25,7 +25,7 @@
           if(typeof checked_media[0] !== "undefined" ) {
             checked_media.splice(0, 1);
           } else {
-            checked_media( api, root );
+            check_media( api, root );
           } 
         }
       }
