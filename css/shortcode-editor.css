@@ -36,7 +36,7 @@
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
-#fv-player-shortcode-editor td{ vertical-align: top; }
+#fv-player-shortcode-editor td{ vertical-align: top; position: relative }
 .fv-player-tab table{ margin-bottom: 10px; }
 .fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
 .fv_player_actions_end-toggle,.fv_player_interface_hide,.fv-player-playlist-item-title{ display:none; }
@@ -95,9 +95,10 @@
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-target,
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-target{display:none}
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-iframe-refresh{display:none!important}
-#fv-player-shortcode-editor-preview-spinner, .fv-player-shortcode-editor-small-spinner {background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center}
+#fv-player-shortcode-editor-preview-spinner, .fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center}
 #fv-player-shortcode-editor-preview-spinner{position:absolute; z-index: 2; height: 200px; width: 100%;}
-.fv-player-shortcode-editor-small-spinner {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
+.fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
+.fv-player-shortcode-editor-small-spinner {position: absolute; top: 4px; right: 123px;}
 .fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
 #fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}

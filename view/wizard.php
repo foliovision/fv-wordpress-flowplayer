@@ -120,7 +120,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
 </script>
 
 <div style="display: none">
-  <div id="fv-player-shortcode-editor">
+  <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?>>
     <div id="fv-player-shortcode-editor-editor">
       <table>
         <tr>
@@ -387,7 +387,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </td>
                   </tr>
                   
-                  <?php fv_player_shortcode_row( array( 'label' => 'Autoplay', 'name' => 'autoplay' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Autoplay', 'name' => 'autoplay', 'dropdown' => array( 'Default', array('true','Yes'), array('false','No'), array('muted','Muted') ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>

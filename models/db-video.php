@@ -68,7 +68,8 @@ class FV_Player_Db_Video {
 
     // update YouTube and other video names
     $vid_replacements = array(
-      'watch?v=' => 'YouTube: '
+      'watch?v=' => 'YouTube: ',
+      'playlist?list=' => 'YouTube Playlist: ',
     );  
 
     $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);

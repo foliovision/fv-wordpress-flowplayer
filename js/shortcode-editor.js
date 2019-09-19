@@ -1338,7 +1338,7 @@ function fv_wp_flowplayer_edit() {
             }
 
             // fire up meta load event for this video, so plugins can process it and react
-            $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab]);
+            $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab , $subtitles_tab]);
           }
 
           // show playlist instead of the "add new video" form
@@ -1488,6 +1488,8 @@ function fv_wp_flowplayer_edit() {
           document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex = 1;
         if (sautoplay[1] == 'false')
           document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex = 2;
+        if (sautoplay[1] == 'muted')
+          document.getElementById("fv_wp_flowplayer_field_autoplay").selectedIndex = 3;
       }
       if( sliststyle != null && sliststyle[1] != null ) {
         var objPlaylistStyle = document.getElementById("fv_wp_flowplayer_field_playlist");
@@ -1889,7 +1891,6 @@ function fv_wp_flowplayer_build_ajax_data() {
       var
         $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
         table_index = jQuery(this).data('index');
-
       save_index++;
 
       $inputs.each(function() {
@@ -1918,7 +1919,8 @@ function fv_wp_flowplayer_build_ajax_data() {
           if (m.index === regex.lastIndex) {
             regex.lastIndex++;
           }
-
+          // let plugins update video meta, if applicable
+          jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, save_index, this]);
           // videos tab
           if (is_videos_tab) {
             if (!data['videos'][save_index]) {
@@ -1926,9 +1928,6 @@ function fv_wp_flowplayer_build_ajax_data() {
                 id: jQuery('.fv-player-playlist-item[data-index=' + table_index + ']').data('id_video')
               };
             }
-
-            // let plugins update video meta, if applicable
-            jQuery(document).trigger('fv_flowplayer_video_meta_save', [data, save_index, this]);
 
             // check for a meta field
             if (fv_wp_flowplayer_check_for_video_meta_field(m[1])) {
@@ -2543,7 +2542,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
   }
   
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_align', 'align', false, false, ['left', 'right'] );
-  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false'] );
+  fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false', 'muted'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_playlist', 'liststyle', false, false, ['tabs', 'prevnext', 'vertical','horizontal','text','slider'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_controlbar', 'controlbar', false, false, ['yes', 'no'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_embed', 'embed', false, false, ['true', 'false'] );
@@ -3034,7 +3033,6 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
     $valueLessOptions = null,
     isDropdown = $element.get(0).nodeName == 'SELECT',
     value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
-
   // don't do anything if we've not found the actual element
   if (!$element.length) {
     return;

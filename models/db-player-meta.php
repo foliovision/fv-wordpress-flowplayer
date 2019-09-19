@@ -161,6 +161,28 @@ CREATE TABLE " . self::$db_table_name . " (
     $load_for_player = false;
     $force_cache_update = false;
 
+    // first, check if we're not trying to search for a meta item from the database
+    if (is_array($options) && count($options) && !empty($options['meta_find_player'])) {
+      $db_data = $wpdb->get_row('
+          SELECT
+            id_player
+          FROM
+            '.self::$db_table_name.'
+          WHERE
+            meta_key = "'.esc_sql($options['meta_find_player']['key']).'"
+            AND
+            meta_value = "'.esc_sql($options['meta_find_player']['value']).'"',
+        ARRAY_A
+      );
+
+      unset($options['meta_find_player']);
+
+      // DB data found, load meta data for the player
+      if (isset($db_data) && $db_data !== -1 && is_array($db_data) && count($db_data)) {
+        $options['id_player'] = array($db_data['id_player']);
+      }
+    }
+
     if (is_array($options) && count($options) && isset($options['id_player']) && is_array($options['id_player'])) {
       $load_for_player = true;
       $multiID = true;

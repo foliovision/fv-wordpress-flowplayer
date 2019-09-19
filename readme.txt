@@ -357,11 +357,28 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.4.1.727 - 2019/08/14 =
+= 7.4.6.727 - 2019/09/17 =
 
+* Chromecast - disabled by default for new installs, use the "Enable google chromecast" setting
+* HLS - updated the HLS.js library
+* Muted autoplay - adding the global and per-player setting
+* Subtitles - remembering the last subtitle language selected and using that
+* Bugfix - Database - cloning a player should omit the "Embedded on" information
+* Bugfix - Editor - bad position of the video meta data loading indicator
+* Bugfix - Polaroid and Season playlist styles - fix when you exit fullscreen too early
+* Bugfix - Splash screen - covering the video during playback due to theme CSS with !important rules
+* Bugfix - Video Links - issues when clicking different links pointing to a single video
+* Bugfix - Volume bar - fixing what happens on mobile when you tap video to pause after changing volume
+
+= 7.4.2.727 - 2019/08/28 =
+
+* Google Analytics - using video titles rather than file names
 * iOS 12 fullscreen fix
 * Playlist - adding recovery routine - missing video will no longer cause the whole playlist to stop playing
 * Playlist - fixing Season style font sizes
+* Handle WordPress shortcodes - fixed to also handle the [audio] shortcodes
+* Video linking - using the video ID if available
+* Bugfix - splash image not appearing when using 100% for global width or height
 
 = 7.4.0.727 - 2019/07/30 =
 

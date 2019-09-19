@@ -79,9 +79,12 @@ function fv_flowplayer_get_js_translations() {
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
   'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer').$sWhy,
-  'warning_samsungbrowser' => __('You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
-  'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,  
-  );
+  'warning_samsungbrowser' => __('You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,
+  'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
+  'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
+  'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
+  'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
+);
   
   return $aStrings;
 } 
@@ -374,9 +377,9 @@ function flowplayer_prepare_scripts() {
     }
     
     if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '0.12.4', true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver='.$fv_wp_flowplayer_ver;
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.12.4';
         
     if( $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
@@ -387,7 +390,11 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
     }
-    
+
+    if( $fv_fp->_get_option('chromecast') ) {
+      $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
+    }
+
     $aConf['hlsjs'] = array(
       'startLevel' => -1,
       'fragLoadingMaxRetry' => 3,
