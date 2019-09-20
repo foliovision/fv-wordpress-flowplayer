@@ -7,26 +7,29 @@
     var checked_media = [];
     
     jQuery(document).ready( function() { fv_flowplayer_scroll_video_checker = true; } );
-    // jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } ); // Problems
+    jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } );
 
     setInterval( function() {
       if( !fv_flowplayer_scroll_video_checker ) return;
 
-      check_media( api, root);
+      if(typeof checked_media[api.conf.clip.id] == "undefined" ) {
+        check_media( api, root);
+        checked_media[api.conf.clip.id] = true;
+      }
+
+      console.log(checked_media)
 
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
-    checked_media[0] = true;
-
     api.bind('ready', function(e,api,video){
       if( api.conf.playlist.length > 0 ) {
         if( typeof api.video.index !== "undefined" ) {
-          if(typeof checked_media[0] !== "undefined" ) {
-            checked_media.splice(0, 1);
+          if(typeof checked_media[api.conf.clip.id] !== "undefined" ) {
+            checked_media.splice(api.conf.clip.id, 1);
           } else {
-            checked_media( api, root );
-          } 
+            check_media( api, root );
+          }
         }
       }
     });
