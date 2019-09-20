@@ -41,7 +41,7 @@
           className: 'fv-player-gutenberg'
         }, el(
             'a',{
-              'class': 'button fv-wordpress-flowplayer-button'
+              'className': 'button fv-wordpress-flowplayer-button'
             },
             el(
               'span'  
@@ -51,14 +51,14 @@
           el(
             wp.components.TextareaControl,
             {
-              'class': 'components-textarea-control__input fv-player-editor-field',
+              'className': 'components-textarea-control__input fv-player-editor-field',
               onChange: onChangeContent,
               value: content,
             }
           ),
           el(
             'div', {
-              'class': 'fv-player-gutenberg-preview'
+              'className': 'fv-player-gutenberg-preview'
             }
           )
         );
