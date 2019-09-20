@@ -174,8 +174,12 @@ class FV_Player_Checker {
   
             if( $bValidFile ) {
               $ThisFileInfo = $getID3->analyze( $localtempfilename );
-            }      
-          }                 
+            }                        
+          } 
+          
+          foreach( glob( trailingslashit($upload_dir['basedir']).'fv_flowlayer_tmp_*' ) AS $file ) {
+            @unlink($file);
+          }
         }
   
         
@@ -256,50 +260,52 @@ class FV_Player_Checker {
   
   
   function checker_cron() {
-
-    // get all video IDs for which there is no duration meta_key    
-    global $wpdb, $fv_fp;
-    $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL ORDER BY id DESC" );
-    
-    if( $aVideos ) {
-      foreach( $aVideos AS $objVideo ) {
-        $id = $objVideo->id;
-        $url = $objVideo->src;
-        
-        global $FV_Player_Db;
-        $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
-        $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
-        
-        if( $last_check && intval($last_check) + 3600 > time() ) {
-          continue;
-        }
-        
-        $meta_data = apply_filters('fv_player_meta_data', $url, false);
-        if( $meta_data == false) {
-          if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
-            $url = $secured_url;
+    global $fv_fp;
+    if( $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
+      // get all video IDs for which there is no duration meta_key    
+      global $wpdb;
+      $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL ORDER BY id DESC" );
+      
+      if( $aVideos ) {
+        foreach( $aVideos AS $objVideo ) {
+          $id = $objVideo->id;
+          $url = $objVideo->src;
+          
+          global $FV_Player_Db;
+          $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
+          $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
+          
+          if( $last_check && intval($last_check) + 86400 > time() ) {
+            continue;
           }
           
-          $meta_data['duration'] = $this->check_mimetype(array($url), false, true);
-          $meta_data['duration'] = $meta_data['duration']['duration'];
+          $meta_data = apply_filters('fv_player_meta_data', $url, false);
+          if( $meta_data == false) {
+            if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
+              $url = $secured_url;
+            }
+            
+            $meta_data['duration'] = $this->check_mimetype(array($url), false, true);
+            $meta_data['duration'] = $meta_data['duration']['duration'];
+            
+          }
+  
+          if( !empty($meta_data['thumbnail']) ) {
+            if( !$objVideo->getSplash() || $objVideo->getMetaValue('auto_splash',true) ) {
+              $video_object = new FV_Player_Db_Video( $objVideo->getId(), array(), $FV_Player_Db );
+              $video_object->link2db( $objVideo->getId() );
+              $video_object->set( 'splash', $meta_data['thumbnail'] );
+              $video_object->save();
+            }
+          }
+          
+          $objVideo->updateMetaValue('last_video_meta_check', time());
+          
+          if( $meta_data['duration'] ) {
+            $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );         
+          }
           
         }
-
-        if( !empty($meta_data['thumbnail']) ) {
-          if( !$objVideo->getSplash() || $objVideo->getMetaValue('auto_splash',true) ) {
-            $video_object = new FV_Player_Db_Video( $objVideo->getId(), array(), $FV_Player_Db );
-            $video_object->link2db( $objVideo->getId() );
-            $video_object->set( 'splash', $meta_data['thumbnail'] );
-            $video_object->save();
-          }
-        }
-        
-        $objVideo->updateMetaValue('last_video_meta_check', time());
-        
-        if( $meta_data['duration'] ) {
-          $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );         
-        }
-        
       }
     }
     

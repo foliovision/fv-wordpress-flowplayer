@@ -99,16 +99,16 @@ class FV_Player_Db {
       $vid_obj = $aPlayer['video_objects'][$index];
       $fv_fp->currentVideoObject = $vid_obj;
       
-      if( is_numeric($aItem['sources'][0]['src']) ) {
+      if( !empty($aItem['sources'][0]['src']) && is_numeric($aItem['sources'][0]['src']) ) {
         $new = array( 'sources' => array() );
         if( $src = $vid_obj->getSrc() ) {
-          $new['sources'][] = array( 'src' => $src, 'type' => $fv_fp->get_mime_type($src) );
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src,array()), 'type' => $fv_fp->get_mime_type($src) );
         }
         if( $src1 = $vid_obj->getSrc1() ) {
-          $new['sources'][] = array( 'src' => $src1, 'type' => $fv_fp->get_mime_type($src1) );
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src1,array()), 'type' => $fv_fp->get_mime_type($src1) );
         }
         if( $src2 = $vid_obj->getSrc2() ) {
-          $new['sources'][] = array( 'src' => $src2, 'type' => $fv_fp->get_mime_type($src2));
+          $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src2,array()), 'type' => $fv_fp->get_mime_type($src2));
         }
         if( $rtmp = $vid_obj->getRtmp() ) {
           $new['rtmp'] = $rtmp;
@@ -127,6 +127,9 @@ class FV_Player_Db {
         foreach ($vid_obj->getMetaData() as $meta) {
           if ($meta->getMetaKey() == 'live' && $meta->getMetaValue() == 'true') {
             $aItem['live'] = 'true';
+          }
+          if ($meta->getMetaKey() == 'dvr' && $meta->getMetaValue() == 'true') {
+            $aItem['dvr'] = 'true';
           }
         }
       }
@@ -203,6 +206,10 @@ class FV_Player_Db {
   public static function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
     global $player_ids_when_searching, $FV_Player_Db; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
 
+    // sanitize variables
+    $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
+    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
+    
     // load single player, as requested by the user
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
@@ -224,7 +231,7 @@ class FV_Player_Db {
 
         new FV_Player_Db_Player( null, array(
           'db_options' => array(
-            'select_fields'       => 'id, player_name, date_created, videos',
+            'select_fields'       => 'player_name, date_created, videos',
             'order_by'            => $order_by,
             'order'               => $order,
             'offset'              => $offset,
@@ -237,7 +244,7 @@ class FV_Player_Db {
       // load all players, which will put them into the cache automatically
       new FV_Player_Db_Player( null, array(
         'db_options' => array(
-          'select_fields' => 'id, player_name, date_created, videos',
+          'select_fields' => 'player_name, date_created, videos',
           'order_by'      => $order_by,
           'order'         => $order,
           'offset'        => $offset,
@@ -287,6 +294,9 @@ class FV_Player_Db {
           $result_row->player_name = $player->getPlayerName();
           $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
+          $result_row->subtitles_count = $player->getCount('subtitles');
+          $result_row->chapters_count = $player->getCount('chapters');
+          $result_row->transcript_count = $player->getCount('transcript');
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
@@ -920,6 +930,9 @@ class FV_Player_Db {
           }
 
           echo $id;
+          
+          do_action('fv_player_db_save', $id);
+          
         } else {
           echo -1;
         }
@@ -1366,6 +1379,16 @@ class FV_Player_Db {
   public function clone_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
       $export_data = $this->export_player_data(null, false);
+
+      // do not clone information about where the player is embeded
+      if (isset($export_data['meta'])) {
+        foreach($export_data['meta'] as $h => $v){
+          if($v['meta_key'] == 'post_id'){
+            unset($export_data['meta'][$h]);
+          }
+        }
+      }
+
       echo $this->import_player_data(null, false, $export_data);
       exit;
     } else {

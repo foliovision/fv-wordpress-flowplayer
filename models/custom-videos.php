@@ -2,8 +2,6 @@
 
 class FV_Player_Custom_Videos {
   
-  var $did_form = false;
-  
   var $id;
   
   var $instance_id;
@@ -28,17 +26,6 @@ class FV_Player_Custom_Videos {
   }
   
   public function get_form( $args = array() ) {
-    
-    global $FV_Player_Custom_Videos_form_instances;
-    if( isset($FV_Player_Custom_Videos_form_instances[$this->meta]) ) {
-      $number = rand();
-      echo "<span id='fv-player-custom-videos-form-".$number."'></span>";
-      echo "<script>jQuery('span#fv-player-custom-videos-form-".$number."').parents('.postbox').remove();</script>";
-      return false;
-    }
-    $FV_Player_Custom_Videos_form_instances[$this->meta] = true;
-    
-    $this->did_form = true;
     
     $args = wp_parse_args( $args, array( 'wrapper' => 'div', 'edit' => true, 'limit' => 1000, 'no_form' => false ) );
     
@@ -91,17 +78,32 @@ class FV_Player_Custom_Videos {
   }
   
   public function get_html_part( $video, $edit = false ) {
+    global $FV_Player_Custom_Videos_Master, $post;
+    $args = !empty($FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type]) ? $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta] : array( 'multiple' => true );
     
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
     if( $edit ) {
+      $add_another = $args['multiple'] ? "<button class='button fv-player-editor-more' style='display:none'>Add Another Video</button>" : false;
+      
+      $preview = false;
+      $before = 0;
+      if( $video ) {
+        $preview = do_shortcode($video);
+        global $fv_fp;
+        if( $fv_fp->current_player() ) {
+          $before = count($fv_fp->current_player()->getVideos());
+        }
+      }
+      
       $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
           <div class='inside inside-child'>    
-            <div class='fv-player-editor-preview'>".($video ? do_shortcode($video) : '')."</div>
+            <div class='fv-player-editor-preview'>".$preview."</div>
             <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
+            <input name='fv_player_videos_before[".$this->meta."][]' type='hidden' value='".$before."' />
             <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
-              <button class='button fv-player-editor-button'>Edit Video</button>
-              <button class='button fv-player-editor-remove'>Remove Video</button>
-              <button class='button fv-player-editor-more' style='display:none'>Add Another Video</button>
+              <button class='button fv-player-editor-button'>".$args['labels']['edit']."</button>
+              <button class='button fv-player-editor-remove'>".$args['labels']['remove']."</button>
+              $add_another
             </div>
 
             <div class='add-video' ".($video ? 'style="display:none"' : '').">
@@ -212,15 +214,17 @@ class FV_Player_Custom_Videos_Master {
   function add_meta_boxes() {
     global $post;
     if( !empty($this->aMetaBoxes[$post->post_type]) ) {
-      foreach( $this->aMetaBoxes[$post->post_type] AS $meta_key => $name ) {
-        $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $meta_key, 'type' => 'post' ) );
-        add_meta_box( 'fv_player_custom_videos-field_'.$meta_key,
-                    $name,
+      foreach( $this->aMetaBoxes[$post->post_type] AS $meta_key => $args ) {
+        global $FV_Player_Custom_Videos_form_instances;
+        $id = 'fv_player_custom_videos-field_'.$meta_key;
+        $FV_Player_Custom_Videos_form_instances[$id] = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $args['meta_key'], 'type' => 'post' ) );
+        add_meta_box( $id,
+                    $args['name'],
                     array( $this, 'meta_box' ),
                     null,
                     'normal',
-                    'high',
-                    $objVideos );
+                    'high'
+                    );
       }
     }
     
@@ -233,13 +237,15 @@ class FV_Player_Custom_Videos_Master {
         foreach( $aMeta AS $key => $aMetas ) {
           $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
           if( $objVideos->have_videos() ) {
-            add_meta_box( 'fv_player_custom_videos-field_'.$key,
+            global $FV_Player_Custom_Videos_form_instances;
+            $id = 'fv_player_custom_videos-field_'.$key;
+            $FV_Player_Custom_Videos_form_instances[$id] = $objVideos;
+            add_meta_box( $id,
                         ucfirst(str_replace( array('_','-'),' ',$key)),
                         array( $this, 'meta_box' ),
                         null,
                         'normal',
-                        'high',
-                        $objVideos );
+                        'high' );
           }
                       
         }
@@ -293,17 +299,14 @@ class FV_Player_Custom_Videos_Master {
   
   function meta_box( $aPosts, $args ) {
     global $FV_Player_Custom_Videos_form_instances;
-    $objVideos = $args['args'];
-    unset($FV_Player_Custom_Videos_form_instances[$objVideos->meta]);
+    $objVideos = $FV_Player_Custom_Videos_form_instances[$args['id']];
     echo $objVideos->get_form();
   }
   
-  function register_metabox( $name, $meta_key, $post_type, $display ) {
-    if( !isset($this->aMetaBoxes[$post_type]) ) $this->aMetaBoxes[$post_type] = array();
-    if( !isset($this->aMetaBoxesDisplay[$post_type]) ) $this->aMetaBoxesDisplay[$post_type] = array();
+  function register_metabox( $args ) {
+    if( !isset($this->aMetaBoxes[$args['post_type']]) ) $this->aMetaBoxes[$args['post_type']] = array();
     
-    $this->aMetaBoxes[$post_type][$meta_key] = $name;
-    $this->aMetaBoxesDisplay[$post_type][$meta_key] = $display;
+    $this->aMetaBoxes[$args['post_type']][$args['meta_key']] = $args;    
   }
   
   
@@ -339,7 +342,7 @@ class FV_Player_Custom_Videos_Master {
     //  todo: permission check!
     
     foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
-      if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' ) {
+      if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' && $_POST['fv-player-custom-videos-entity-id'][$meta] == $post_id ) {
         delete_post_meta( $post_id, $meta );
 
         if( is_array($value) && count($value) > 0 ) {
@@ -361,7 +364,7 @@ class FV_Player_Custom_Videos_Master {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
         foreach( $aMeta AS $key => $aMetas ) {
-          if( !empty($this->aMetaBoxesDisplay[$post->post_type][$key]) && $this->aMetaBoxesDisplay[$post->post_type][$key] ) {
+          if( !empty($this->aMetaBoxes[$post->post_type][$key]) && $this->aMetaBoxes[$post->post_type][$key]['display'] ) {
             $objVideos = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $key, 'type' => 'post' ) );
             if( $objVideos->have_videos() ) {
               $content .= $objVideos->get_html();
@@ -442,9 +445,26 @@ $FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
 
 class FV_Player_MetaBox {
   
-  function __construct( $name, $meta_key, $post_type, $display = false ) {
+  function __construct( $args, $meta_key = false, $post_type = false, $display = false ) {
+    if( is_string($args) ) {
+      $args = array(
+                    'name' => $args,
+                    'meta_key' => $meta_key,
+                    'post_type' => $post_type,
+                    'display' => $display
+                   );
+    }
+    
+    $args = wp_parse_args( $args, array(
+      'display' => false,
+      'multiple' => true,
+      'labels' => array(
+        'edit' => 'Edit Video',
+        'remove' => 'Remove Video'
+      ) ) );
+    
     global $FV_Player_Custom_Videos_Master;
-    $FV_Player_Custom_Videos_Master->register_metabox( $name, $meta_key, $post_type, $display );
+    $FV_Player_Custom_Videos_Master->register_metabox($args);
   }
   
 }
