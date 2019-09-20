@@ -3533,7 +3533,8 @@ function fv_player_gutenberg_preview( parent, shortcode ) {
   var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
   jQuery.get(url, function(response) {
     jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
-  } );        
+  } );
+}
 
 
 jQuery(document).on('keyup', '[name=fv_wp_flowplayer_field_src], [name=fv_wp_flowplayer_field_rtmp_path]', fv_player_editor_show_stream_fields );
