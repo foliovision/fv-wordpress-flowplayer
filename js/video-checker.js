@@ -7,7 +7,7 @@
     var checked_media = [];
     
     jQuery(document).ready( function() { fv_flowplayer_scroll_video_checker = true; } );
-    jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } );
+    // jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } ); // Problems
 
     setInterval( function() {
       if( !fv_flowplayer_scroll_video_checker ) return;
@@ -46,16 +46,32 @@
 
         if(api.conf.playlist.length > 0){
           if(typeof api.video.index == "undefined") {
-            media = [api.conf.playlist[0].video_checker[0]];
+            media = get_media(api.conf.playlist[0].video_checker); // Playlist first
           } else {
-            media = [api.conf.playlist[api.video.index].video_checker[0]];
+            media = get_media(api.conf.playlist[api.video.index].video_checker); // Playlist another
           }
         } else {
-          media = [api.conf.clip.video_checker[0]];
+          media = get_media(api.conf.clip.video_checker); // Single video
         }
-        video_checker(sID,media);
+        if(media.length) {
+          video_checker(sID,media);
+        }
       }
     }
+  }
+
+  function get_media( video_checker ) {
+    var temp_media = [];
+
+    if(typeof video_checker == 'undefined') {
+      return temp_media;
+    }
+
+    video_checker.forEach(function(item, index){
+      temp_media.push(item);
+    });
+
+    return temp_media;
   }
 
   function video_checker( sID, media ) {
@@ -79,7 +95,6 @@
   }
 
   function admin_test_media( hash, media ) {
-    console.trace('Trace');
     var hVideoChecker = jQuery('#wpfp_notice_'+hash);
     jQuery('#wpfp_notice_'+hash).parent().append(jQuery('#wpfp_notice_'+hash));
     jQuery('#wpfp_notice_'+hash).show();
