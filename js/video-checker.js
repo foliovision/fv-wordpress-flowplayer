@@ -12,13 +12,14 @@
     setInterval( function() {
       if( !fv_flowplayer_scroll_video_checker ) return;
 
-      if(typeof checked_media[api.conf.clip.id] == "undefined" ) {
-        check_media( api, root);
-        checked_media[api.conf.clip.id] = true;
+      if(typeof api.conf.clip.id !== "undefined" ) {
+        if(typeof checked_media[api.conf.clip.id] == "undefined" ) {
+          check_media( api, root);
+          checked_media[api.conf.clip.id] = true;
+          console.log('checked_media:',api.conf.clip.id)
+        }
+        console.log(checked_media)
       }
-
-      console.log(checked_media)
-
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
