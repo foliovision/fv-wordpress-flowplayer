@@ -12,13 +12,19 @@
     var id = api.video.index ? api.video.index : 0;
 
     setInterval( function() {
+      var iMin = jQuery(window).scrollTop();
+      var iMax = iMin + jQuery(window).height();
+      var iPlayer = jQuery(root).offset().top;
+
       if( !fv_flowplayer_scroll_video_checker ) return;
+      // console.log('iPlayer',iPlayer,'iMin',iMin,'iMax',iMax);
+      if( iPlayer > iMin && iPlayer < iMax ) {
         if(typeof checked_media[id] == "undefined" ) {
           check_media( api, root);
           checked_media[id] = true;
-          console.log(id);
         }
-        console.log(checked_media);
+      }
+
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
