@@ -166,3 +166,7 @@ a #add-format, a #add-rtmp {
   opacity:.5;
 }
 
+/* reset elementor overrides */
+input, select, textarea { width: initial; border-radius:initial; color:initial;}
+.partial-underline, .fv_flowplayer_language_add_link { text-decoration: underline; color: #0073aa; } 
+.fvp_item_video-filename, .wp-list-table a { color: #0073aa; } 
