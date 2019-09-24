@@ -28,7 +28,7 @@
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
-    api.bind('ready', function(e,api,video){
+    api.bind('load', function(e,api,video){
       if( api.conf.playlist.length > 0 ) {
         if(typeof checked_media[index] !== "undefined" ) {
           checked_media.splice(index, 1);
