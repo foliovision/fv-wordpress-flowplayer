@@ -9,7 +9,7 @@
     jQuery(document).ready( function() { fv_flowplayer_scroll_video_checker = true; } );
     jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } );
 
-    var id = api.video.index ? api.video.index : 0;
+    var index = api.video.index ? api.video.index : 0;
 
     setInterval( function() {
       var iMin = jQuery(window).scrollTop();
@@ -19,9 +19,9 @@
       if( !fv_flowplayer_scroll_video_checker ) return;
       // console.log('iPlayer',iPlayer,'iMin',iMin,'iMax',iMax);
       if( iPlayer > iMin && iPlayer < iMax ) {
-        if(typeof checked_media[id] == "undefined" ) {
+        if(typeof checked_media[index] == "undefined" ) {
           check_media( api, root);
-          checked_media[id] = true;
+          checked_media[index] = true;
         }
       }
 
@@ -30,41 +30,37 @@
 
     api.bind('ready', function(e,api,video){
       if( api.conf.playlist.length > 0 ) {
-        if(typeof checked_media[id] !== "undefined" ) {
-          checked_media.splice(id, 1);
+        if(typeof checked_media[index] !== "undefined" ) {
+          checked_media.splice(index, 1);
         } else {
           check_media( api, root );
         }
       }
     });
+
+    api.bind('error', function(e,api,video){
+      check_media( api, root );
+    });
+
   });
 
   function check_media( api, root) {
-    var iMin = jQuery(window).scrollTop();
-    var iMax = iMin + jQuery(window).height();
-    var fv_flowplayer_scroll_video_checker_status = [];
     var media;
+    var sID = jQuery(root).attr('id').replace(/wpfp_/,'');
 
-    var iPlayer = jQuery(root).offset().top;
-    if( iPlayer > iMin && iPlayer < iMax ) {
-      if( typeof(fv_flowplayer_scroll_video_checker_status[jQuery(root).attr('id')]) == "undefined" ) {
-        fv_flowplayer_scroll_video_checker_status[jQuery(root).attr('id')] = true;
-        var sID = jQuery(root).attr('id').replace(/wpfp_/,'');
-
-        if(api.conf.playlist.length > 0){
-          if(typeof api.video.index == "undefined") {
-            media = get_media(api.conf.playlist[0].video_checker); // Playlist first
-          } else {
-            media = get_media(api.conf.playlist[api.video.index].video_checker); // Playlist another
-          }
-        } else {
-          media = get_media(api.conf.clip.video_checker); // Single video
-        }
-        if(media.length) {
-          video_checker(sID,media);
-        }
+    if(api.conf.playlist.length > 0){
+      if(typeof api.video.index == "undefined") {
+        media = get_media(api.conf.playlist[0].video_checker); // Playlist first
+      } else {
+        media = get_media(api.conf.playlist[api.video.index].video_checker); // Playlist another
       }
+    } else {
+      media = get_media(api.conf.clip.video_checker); // Single video
     }
+    if(media.length) {
+      video_checker(sID,media);
+    }
+    
   }
 
   function get_media( video_checker ) {
