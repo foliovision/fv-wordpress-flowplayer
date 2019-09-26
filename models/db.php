@@ -449,6 +449,11 @@ class FV_Player_Db {
         $atts['playlist'] = implode(';', $new_playlist_tag);
       }
     }
+
+    // merge player attributes if preview data are available
+    if ($preview_data) {
+      $atts = array_merge($atts, $preview_data['player']->getAllDataValues());
+    }
     
     return $atts;
   }
