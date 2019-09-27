@@ -30,10 +30,17 @@
 
     api.bind('load', function(e,api,video){
       if( api.conf.playlist.length > 0 ) {
-        if(typeof checked_media[index] !== "undefined" ) {
-          checked_media.splice(index, 1);
-        } else {
+        if(typeof checked_media[index] == "undefined" ) {
           check_media( api, root );
+          checked_media[index] = true;
+        }
+      }
+    });
+
+    api.bind('finish prev next', function(e,api){
+      if( api.conf.playlist.length > 0 ) {
+        if(typeof checked_media[index] !== "undefined" ) {
+          checked_media.splice( index, 1);
         }
       }
     });
@@ -59,8 +66,9 @@
     }
     if(media.length) {
       video_checker(sID,media);
+    } else {
+      root.find('.fv-wp-flowplayer-notice-small').hide();
     }
-    
   }
 
   function get_media( video_checker ) {
