@@ -178,19 +178,30 @@ function fv_wp_flowplayer_featured_image($post_id) {
   }
   
   $post = get_post($post_id);
-  if( !$post || empty($post->post_content) ){
-    return;
-  }
   
   $url = false;
   
-  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) {
-    $url = $splash[1];
-  } else if( preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) {
+  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
+     $url = $splash[1];
+    
+  } else if( preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
     global $FV_Player_Db;    
     $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
     if( !empty($atts['splash']) ) {
       $url = $atts['splash'];
+    }
+    
+  } else if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
+    foreach( $aMetas AS $key => $aMeta ) {
+      foreach( $aMeta AS $shortcode ) {
+        if( preg_match('/\[fvplayer.*?id="(\d+)/', $shortcode, $id) ) {
+          global $FV_Player_Db;
+          $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
+          if( !empty($atts['splash']) ) {
+            $url = $atts['splash'];
+          }
+        }
+      }
     }
   }
   
@@ -269,6 +280,12 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
       );
       // Insert the attachment
       $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
+      
+      // Define attachment metadata
+      $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+      
+      // Assign metadata to attachment
+      wp_update_attachment_metadata( $attach_id,  $attach_data );
 
     }
 
