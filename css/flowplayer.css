@@ -967,6 +967,8 @@
   position: absolute;
   top: 0;
   left: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
