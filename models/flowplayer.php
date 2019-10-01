@@ -498,6 +498,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
+    if( !isset( $conf['chromecast'] ) ) $conf['chromecast'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
@@ -627,7 +628,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public function _get_option($key) {    
     $conf = $this->conf;
-
     $value = false;
     if( is_array($key) && count($key) === 2) {
       if( isset($conf[$key[0]]) && isset($conf[$key[0]][$key[1]]) ) {
@@ -806,7 +806,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
-        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $aItem['position'] / $tDuration ).'%"></span></span>';
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
@@ -935,6 +935,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
       $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
+      if( $sItemCaption ) {
+        $aPlayer['fv_title'] = $sItemCaption;
+      }
+      
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
       $aCaptions[] = $sItemCaption;
@@ -1007,9 +1011,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $sSplashImage = $this->_get_option('splash');
           }
           
-          $aPlaylistItems[] = $aPlayer;
           $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
+          
+          if( $sItemCaption ) {
+            $aPlayer['fv_title'] = $sItemCaption;
+          }          
+          
+          $aPlaylistItems[] = $aPlayer;
           
           $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {
@@ -1169,7 +1178,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function css_enqueue( $force = false ) {
     
-    if( is_admin() && !did_action('admin_footer') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+    if( is_admin() && !did_action('admin_footer') && !did_action('elementor/editor/wp_head') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
       return;
     }
     

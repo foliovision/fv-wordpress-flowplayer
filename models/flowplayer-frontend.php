@@ -84,7 +84,13 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
-    
+
+    // restore list styling from the shortcode, if provided,
+    // as it needs to override the DB value
+    if (!empty($args['liststyle'])) {
+      $this->aCurArgs['liststyle'] = $args['liststyle'];
+    }
+
     // force horizontal playlist style for audio as that the only one styled properly
     if( $player = $this->current_player() ) {
       if( $videos = $player->getVideos() ) {
@@ -257,14 +263,20 @@ class flowplayer_frontend extends flowplayer
     
     
     /*
-     *  Autoplay
+     *  Autoplay, in the older FV Player versions this setting was just true/false and that creates a ton of issues
      */
-    $autoplay = false;  //  todo: should be changed into a property
-    if( $this->_get_option('autoplay') && $this->aCurArgs['autoplay'] != 'false'  ) {
+    $autoplay = false;
+    if( $this->_get_option('autoplay') == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
       $autoplay = true;
-    }  
+    } else if ( $this->_get_option('autoplay') == 'muted' && $this->aCurArgs['autoplay'] != 'false' ) {
+      $autoplay = 'muted';
+    }
+    
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = true;
+    }
+    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'muted')) {
+      $autoplay = 'muted';
     }
 
     /*
@@ -335,7 +347,7 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
           } 
           
-          if( $autoplay == true ) {
+          if( $autoplay ) {
             $this->ret['html'] .= ' autoplay';  
           }
           
@@ -416,10 +428,11 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-playlist has-playlist-'.$this->aCurArgs['liststyle'];
         }
       
-        if( $autoplay ) {
-          $attributes['data-fvautoplay'] = 'true';
-        } 
         
+        if( $autoplay ) {
+          $attributes['data-fvautoplay'] = $autoplay;
+        } 
+
         if( $sticky ) {
           $attributes['data-fvsticky'] = 'true';
         }
@@ -478,7 +491,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
-        if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider') ) ) {
+        if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext') ) ) {
           $attributes['style'] .= 'max-width: 100%; ';
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
@@ -604,10 +617,16 @@ class flowplayer_frontend extends flowplayer
         
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 
-        if( !$bIsAudio && isset($this->fRatio) ) {
-          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';
+        if( isset($this->fRatio) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
-          if( !empty($splash_img) ) $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+        }
+        
+        if( !$bIsAudio && !empty($splash_img) ) {
+          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';          
+          $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+        }
+        
+        if( !$bIsAudio ) {
           $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
         }
         
