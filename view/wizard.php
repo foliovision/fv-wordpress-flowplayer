@@ -423,7 +423,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                                                        'playlist_label' => 'End of playlist',
                                                        'name' => 'end_actions',
                                                        'dropdown' => array(
-                                                            array('default', 'Default'),
+                                                            array('', 'Default'),
                                                             array('no', 'Nothing'),
                                                             array('redirect', 'Redirect'),
                                                             array('loop', 'Loop'),
