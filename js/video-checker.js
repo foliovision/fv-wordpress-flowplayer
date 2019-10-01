@@ -33,13 +33,8 @@
     api.bind('load', function(e,api,video){ 
       index = api.video.index ? api.video.index : 0;
       if( api.conf.playlist.length > 0 ) {
-        if(typeof checked_media[index] == "undefined" || checked_media[index] == 2 ) {
+        if(typeof checked_media[index] == "undefined") {
           check_media( api, root );
-          checked_media[index] = 2;
-        }
-        // First video was checked on pageload
-        if(checked_media[index] == 1) {
-          checked_media[index] = 2; 
         }
       }
     });
