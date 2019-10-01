@@ -21,7 +21,7 @@
       if( iPlayer > iMin && iPlayer < iMax ) {
         if(typeof checked_media[index] == "undefined" ) {
           check_media( api, root);
-          checked_media[index] = true;
+          checked_media[index] = 1;
         }
       }
 
@@ -29,18 +29,15 @@
     }, 500 );
 
     api.bind('load', function(e,api,video){
+      index = api.video.index ? api.video.index : 0;
+      console.log('Media', checked_media, 'index', index);
       if( api.conf.playlist.length > 0 ) {
-        if(typeof checked_media[index] == "undefined" ) {
+        if(typeof checked_media[index] == "undefined" || checked_media[index] == 2 ) {
           check_media( api, root );
-          checked_media[index] = true;
+          checked_media[index] = 2;
         }
-      }
-    });
-
-    api.bind('finish prev next', function(e,api){
-      if( api.conf.playlist.length > 0 ) {
-        if(typeof checked_media[index] !== "undefined" ) {
-          checked_media.splice( index, 1);
+        if(checked_media[index] == 1) {
+          checked_media[index] = 2; // First video 
         }
       }
     });
