@@ -11,7 +11,8 @@
 
     var index = api.video.index ? api.video.index : 0;
 
-    setInterval( function() {
+    // Initial video check on pageload
+    setInterval( function() { 
       var iMin = jQuery(window).scrollTop();
       var iMax = iMin + jQuery(window).height();
       var iPlayer = jQuery(root).offset().top;
@@ -28,16 +29,17 @@
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
-    api.bind('load', function(e,api,video){
+    // Another checks for playlist
+    api.bind('load', function(e,api,video){ 
       index = api.video.index ? api.video.index : 0;
-      console.log('Media', checked_media, 'index', index);
       if( api.conf.playlist.length > 0 ) {
         if(typeof checked_media[index] == "undefined" || checked_media[index] == 2 ) {
           check_media( api, root );
           checked_media[index] = 2;
         }
+        // First video was checked on pageload
         if(checked_media[index] == 1) {
-          checked_media[index] = 2; // First video 
+          checked_media[index] = 2; 
         }
       }
     });
