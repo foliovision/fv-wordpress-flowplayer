@@ -460,7 +460,7 @@ jQuery(document).ready(function($){
       case 'email_list':
         jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
         break;
-      default:        
+      default:
         fv_wp_flowplayer_submit('refresh-button');
         break;
     }
@@ -1200,7 +1200,6 @@ function fv_wp_flowplayer_edit() {
                 case 'redirect':
                   jQuery('#fv_wp_flowplayer_field_redirect').val(value);
                   break;
-
                 case 'popup':
                   jQuery('#fv_wp_flowplayer_field_popup_id').val(value);
                   break;
@@ -1848,11 +1847,9 @@ function fv_wp_flowplayer_build_ajax_data() {
       case 'redirect':
         data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_redirect').val();
         break;
-
       case 'popup':
         data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_popup_id').val();
         break;
-
       case 'email_list':
         data['fv_wp_flowplayer_field_end_action_value'] = jQuery('#fv_wp_flowplayer_field_email_list').val();
         break;
