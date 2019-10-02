@@ -21,7 +21,7 @@
 .fp-volumebtn:before { content: "\e00b"; }
 .fp-volume-off:before { content: "\e00d"; }
 .fp-unload:before { content: "\e00f"; }
-.fp-prevbtn:after, .fv-fp-prevbtn:after, .fp-nextbtn:before, .fv-fp-nextbtn:before { content: "\e007"; }
+.fp-prevbtn:after, .fv-fp-prevbtn:after, .fp-nextbtn:before, .fv-fp-nextbtn:before { content: "\e007"; line-height: 1; vertical-align:middle; }
 
 .flowplayer.is-mouseover .fp-captions, .flowplayer.is-paused .fp-captions { bottom: 3em; }
 .flowplayer.is-loading .fp-engine { top: -9999em; }
@@ -2001,7 +2001,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	border-left: 1px solid #fff;
 }
 .fv-fp-prevbtn:after {
-	content: "\e007";
+	content: "\e107";
 	font-size: 1.2em;
 	display: inline-block;
 	line-height: 1;
