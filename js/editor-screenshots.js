@@ -26,7 +26,7 @@
 
     button.click(function(){
       try {
-        spinner.insertAfter(button)
+        spinner.insertAfter('#fv_wp_flowplayer_field_splash')
         button.prop("disabled",true);
         
         var screenshot = takeScreenshot();
