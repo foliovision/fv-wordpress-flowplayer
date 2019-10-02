@@ -29,19 +29,20 @@
       fv_flowplayer_scroll_video_checker = false;
     }, 500 );
 
+    // TODO: implement robust solution for another items
     // Another checks for playlist
-    api.bind('load', function(e,api,video){ 
-      index = api.video.index ? api.video.index : 0;
-      if( api.conf.playlist.length > 0 ) {
-        if(typeof checked_media[index] == "undefined") {
-          check_media( api, root );
-        }
-      }
-    });
+    // api.bind('load', function(e,api,video){ 
+    //   index = api.video.index ? api.video.index : 0;
+    //   if( api.conf.playlist.length > 0 ) {
+    //     if(typeof checked_media[index] == "undefined") {
+    //       check_media( api, root );
+    //     }
+    //   }
+    // });
 
-    api.bind('error', function(e,api,video){
-      check_media( api, root );
-    });
+    // api.bind('error', function(e,api,video){
+    //   check_media( api, root );
+    // });
 
   });
 
