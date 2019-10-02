@@ -1,6 +1,7 @@
-/*
-FV Flowplayer additions!
-*/
+
+/**
+ * FV Flowplayer additions!
+ */
 if( typeof(fv_flowplayer_conf) != "undefined" ) {
   try {
     if(typeof(window.localStorage) == 'object' && typeof(window.localStorage.volume) != 'undefined'){
