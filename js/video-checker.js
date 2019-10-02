@@ -149,11 +149,6 @@
           jQuery('#wpfp_notice_'+hash).find('.video-checker-result').wrap('<a class="fv_wp_flowplayer_dialog_link"></a>');
         }
 
-        jQuery('#wpfp_notice_'+hash).find('.fv_wp_flowplayer_dialog_link').click( function() { 
-          if(jQuery('#wpfp_notice_'+hash + ' .fv-wp-flowplayer-notice:visible').length == 0 ){
-            fv_wp_flowplayer_admin_show_notice( hash, this);
-          }
-        });
         jQuery('#wpfp_notice_'+hash).find('.mail-content-notice').html('<p>'+sCheckerInfo+'</p>');
         jQuery('#wpfp_notice_'+hash).find('.mail-content-details .fv-wp-flowplayer-notice-parsed').html(sCheckerDetails)
 
@@ -189,6 +184,11 @@
     }
     return sOutput;
   }
+
+  jQuery(document).on('click','.fv_wp_flowplayer_dialog_link', function() {
+    var hash = jQuery(this).closest('.fv-wp-flowplayer-notice-small').attr('id').replace(/wpfp_notice_/,'');
+    fv_wp_flowplayer_admin_show_notice( hash, this);
+  });
 
 })(jQuery);
 
