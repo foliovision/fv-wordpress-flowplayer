@@ -1263,7 +1263,8 @@
 .flowplayer .fp-next {
   right: 5px;
 }
-.is-mouseout.flowplayer .fp-prev, .is-mouseout.flowplayer .fp-next {
+.is-mouseout.flowplayer .fp-prev, .is-mouseout.flowplayer .fp-next,
+.is-cva.flowplayer .fp-prev, .is-cva.flowplayer .fp-next {
   opacity: 0;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   /* same transition as other ui elements like fullscreen */ 
