@@ -104,8 +104,6 @@
   
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/shortcode-editor.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
-<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/s3-browser.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
   
 <script>
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
