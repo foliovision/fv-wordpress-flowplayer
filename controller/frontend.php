@@ -320,17 +320,20 @@ function flowplayer_prepare_scripts() {
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       $aDependencies[] = 'flowplayer';
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/modules/fv-player.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      $aDependencies[] = 'fv-player';
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
-        $handle = 'flowplayer'.basename($filename);
-        if( basename($filename) !== 'fv-flowplayer.min.js' ) {
-          wp_enqueue_script( $handle, flowplayer::get_plugin_url().'/flowplayer/modules/'.basename($filename), $aDependencies, $fv_wp_flowplayer_ver, true);
-        }
+        if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
+        if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
+        
+        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().'/flowplayer/modules/'.basename($filename), $aDependencies, $fv_wp_flowplayer_ver, true);
       }
+      
     } else {
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      
     }
 
     if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') && ( $fv_fp->_get_option('video_checker_agreement') || $fv_fp->_get_option('key_automatic') ) ) {
