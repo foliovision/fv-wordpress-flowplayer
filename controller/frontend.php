@@ -321,6 +321,7 @@ function flowplayer_prepare_scripts() {
     
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       $aDependencies[] = 'flowplayer';
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
         $handle = 'flowplayer'.basename($filename);
