@@ -139,37 +139,15 @@ flowplayer(function(api, root) {
 })(jQuery);
 
 /*
- *  IE11 - hiding animations
+ *  Tabbed playlist
  */
-var isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
-if( isIE11 ) {
-  jQuery(document).ready( function() {
-    jQuery('.fp-waiting').hide();
-  } );
+jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(event, ui){
+  var oldPlayer = jQuery('.flowplayer.is-playing').data('flowplayer');
+  if( typeof(oldPlayer) != "undefined" ) {
+    oldPlayer.pause();
+  }
   
-  flowplayer( function(api,root) {
-    api.bind("load", function (e) {
-      jQuery(e.currentTarget).find('.fp-waiting').show();
-    } ).bind("beforeseek", function (e) {
-      jQuery(e.currentTarget).find('.fp-waiting').show();
-    } ).bind("progress", function (e) {
-      jQuery(e.currentTarget).find('.fp-waiting').hide();
-    } ).bind("seek", function (e) {
-      jQuery(e.currentTarget).find('.fp-waiting').hide();
-    } ).bind("fullscreen", function (e) {
-      jQuery('#wpadminbar').hide();
-    } ).bind("fullscreen-exit", function (e) {
-      jQuery('#wpadminbar').show();
-    } );       
-  } );
-}
-
-/*
- *  IE < 9 - disabling responsiveness
- */
-if( jQuery.browser && jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9 ) {
-  jQuery('.flowplayer').each( function() {
-    jQuery(this).css('width', jQuery(this).css('max-width'));
-    jQuery(this).css('height', jQuery(this).css('max-height'));
-  } );
-}
+  var objPlayer = jQuery('.flowplayer',ui.newPanel);
+  var api = objPlayer.data('flowplayer');
+  api.load();  
+});

@@ -1,4 +1,4 @@
-// Playlist in controlbar for the "Season" playlist style
+// Playlist menu in controlbar
 flowplayer( function(api,root) {
   root = jQuery(root);
   

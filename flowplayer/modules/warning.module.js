@@ -1,8 +1,8 @@
 /* *
  * WARNINGS
  */
-if( typeof(flowplayer) != "undefined" ) { //  stop lightbox from playing if it's closed
-  flowplayer(function (api,root) {    
+if( typeof(flowplayer) != "undefined" ) {
+  flowplayer(function (api,root) {
     root = jQuery(root);
     
     //  Subtitles which iPhone can't show

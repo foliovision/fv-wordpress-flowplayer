@@ -64,113 +64,8 @@ if( typeof(fv_flowplayer_translations) != "undefined" ) {
   flowplayer.defaults.errors = fv_flowplayer_translations;
 }
 
-function fv_flowplayer_amazon_s3( hash, time ) {  //  v6
-	jQuery('#wpfp_'+hash).bind('error', function (e,api, error) {
-			var fv_fp_date = new Date();
-			if( error.code == 4 && fv_fp_date.getTime() > (fv_fp_utime + parseInt(time)) ) {
-				jQuery(e.target).find('.fp-message').delay(500).queue( function(n) {			
-					jQuery(this).html(fv_flowplayer_translations.video_expired); n();
-				} );
-			}
-	} );
-}
-
-function fv_flowplayer_browser_chrome_fail( hash, sAttributes, sVideo, bAutobuffer ) {
-	jQuery('#wpfp_'+hash).bind('error', function (e,api, error) {
-		if( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && error != null && ( error.code == 3 || error.code == 4 || error.code == 5 ) ) {							
-			api.unload();
-			
-			jQuery('#wpfp_'+hash).attr('id','bad_wpfp_'+hash);					
-			jQuery('#bad_wpfp_'+hash).after( '<div id="wpfp_'+hash+'" '+sAttributes+' data-engine="flash"></div>' );
-			jQuery('#wpfp_'+hash).flowplayer({ playlist: [ [ {mp4: sVideo} ] ] });
-      //  what about scripts?
-			if( bAutobuffer ) {
-				jQuery('#wpfp_'+hash).bind('ready', function(e, api) { api.play(); } );
-			} else {
-				jQuery('#wpfp_'+hash).flowplayer().play(0);
-			}
-			jQuery('#bad_wpfp_'+hash).remove();						
-		}
-	});				
-}
-
-function fv_flowplayer_browser_chrome_mp4( hash ) {
-	var match = window.navigator.appVersion.match(/Chrome\/(\d+)\./);
-	if( match != null ) {
-		var chrome_ver = parseInt(match[1], 10);
-		if(
-			( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 28 && navigator.appVersion.indexOf("Win")!=-1 ) || 
-			( /chrom(e|ium)/.test(navigator.userAgent.toLowerCase()) && chrome_ver < 27 && navigator.appVersion.indexOf("Linux")!=-1 && navigator.userAgent.toLowerCase().indexOf("android")==-1 )							
-		) {
-			jQuery('#wpfp_'+hash).attr('data-engine','flash');
-		}
-	}
-}
-
-function fv_flowplayer_browser_ff_m4v( hash ) {
-	if( jQuery.browser && jQuery.browser.mozilla && navigator.appVersion.indexOf("Win")!=-1 ) {
-		jQuery('#wpfp_'+hash).attr('data-engine','flash');
-	}
-}
-
-function fv_flowplayer_browser_ie( hash ) {
-	if( ( jQuery.browser && jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9) /*|| !!navigator.userAgent.match(/Trident.*rv[ :]*11\./)*/ ) {
-		jQuery('#wpfp_'+hash).attr('data-engine','flash');
-	}
-}
-
-if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) || (navigator.userAgent.toLowerCase().indexOf("android") != -1) ) {  	
-  flowplayer(function (api, root) { 
-    api.bind("error", function (e,api, error) {
-      if( error.code == 10 ) {
-        jQuery(e.target).find('.fp-message').html(fv_flowplayer_translations.unsupported_format);
-      }
-    });
-  });
-}  	
-
-jQuery(document).ready( function() {
-  if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) ) {
-    jQuery(window).trigger('load');
-  }
-  jQuery('.flowplayer').mouseleave( function() {
-    jQuery(this).find('.fvp-share-bar').removeClass('visible');
-    jQuery(this).find('.embed-code').hide();
-  } ); 
-} );
-
-
-
-
-function fv_flowplayer_mobile_switch(id) {
-	var regex = new RegExp("[\\?&]fv_flowplayer_mobile=([^&#]*)");
-	var results = regex.exec(location.search);	
-	if(
-		(
-			(results != null && results[1] == 'yes') ||
-			(jQuery(window).width() <= 480 || jQuery(window).height() <= 480) //  todo: improve for Android with 1.5 pixel ratio 
-		)
-		&&
-		(results == null || results[1] != 'no')
-	) {
-		var fv_fp_mobile = false;
-		jQuery('#wpfp_'+id+' video source').each( function() {
-			if( jQuery(this).attr('id') != 'wpfp_'+id+'_mobile' ) {
-				fv_fp_mobile = true
-				jQuery(this).remove();
-			}
-		} );
-		if( fv_fp_mobile ) {
-			jQuery('#wpfp_'+id).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a> '+fv_flowplayer_translations.mobile_browser_detected_3+'</p>');
-		}
-	}
-}
-
 //  did autoplay?
 var fv_player_did_autoplay = false;
-
-
-
 
 function fv_player_videos_parse(args, root) {
   try {
@@ -522,12 +417,6 @@ jQuery( function() {
 
 var fv_fp_date = new Date();
 var fv_fp_utime = fv_fp_date.getTime();
-
-if( typeof(fv_flowplayer_mobile_switch_array) != "undefined" ) {
-  for( var i in fv_flowplayer_mobile_switch_array ) {
-    fv_flowplayer_mobile_switch( i );
-  }
-}
 
 
 
