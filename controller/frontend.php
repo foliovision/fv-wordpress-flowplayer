@@ -312,8 +312,6 @@ function flowplayer_prepare_scripts() {
     
     if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
     
-    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
-
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
   
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
@@ -321,6 +319,28 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
+    if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
+      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      $aDependencies[] = 'flowplayer';
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/modules/fv-player.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      $aDependencies[] = 'fv-player';
+      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
+        if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
+        if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
+        
+        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().'/flowplayer/modules/'.basename($filename), $aDependencies, $fv_wp_flowplayer_ver, true);
+      }
+      
+    } else {
+      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      
+    }
+
+    if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') && ( $fv_fp->_get_option('video_checker_agreement') || $fv_fp->_get_option('key_automatic') ) ) {
+      wp_enqueue_script( 'fv-player-video-checker', flowplayer::get_plugin_url().'/js/video-checker.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      $aConf['video_checker'] = true;
+    }
+
     if( $fv_fp->_get_option('rtmp-live-buffer') ) {
       $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
     }

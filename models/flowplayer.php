@@ -42,6 +42,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
    * Store scripts to load in footer
    */
   public $scripts = array();    
+
+  var $ajax_count = 0;
   
   var $ret = array('html' => false, 'script' => false);
   
@@ -141,7 +143,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
-
+    add_filter('fv_player_item', array($this, 'get_video_checker_media') );
   }
   
 
@@ -749,6 +751,44 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _salt() {
     $salt = substr(md5(uniqid(rand(), true)), 0, 10);    
     return $salt;
+  }
+
+  public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
+    global $FV_Player_Pro;
+    $media = $mediaData['sources'];
+
+    if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
+      $this->ajax_count++;
+
+      if( stripos($rtmp,'rtmp://') === false && $rtmp ) {
+        list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
+        $rtmp = trailingslashit($rtmp_server).$rtmp;
+      }
+    
+      $aTest_media = array();
+      foreach( $media as $h => $v ) {
+        if( $v ) {
+          $temp_media = $this->get_video_src( $v['src'], array( 'dynamic' => true ) );
+          if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+            if($FV_Player_Pro->is_vimeo($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
+              continue;
+            }
+          } 
+          $aTest_media[] = $temp_media;
+        }
+      }
+      
+      if( !empty($this->aCurArgs['mobile']) ) {
+        $aTest_media[] = $this->get_video_src($this->aCurArgs['mobile'], array( 'dynamic' => true ) );
+      }
+
+      if( isset($aTest_media) && count($aTest_media) > 0 ) {
+        $mediaData['video_checker'] = $aTest_media;
+        return $mediaData;
+      }
+    }            
+
+    return $mediaData;
   }
   
   
