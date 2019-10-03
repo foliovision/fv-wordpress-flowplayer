@@ -850,8 +850,8 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_popup_code() {
-    if ( isset($this->aCurArgs['id']) && !isset($this->aCurArgs['end_actions'])) {
-      return;
+    if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'no') {
+      return false;
     }
 
     // static and e-mail popups share the same parameter in old non-DB shortcode
