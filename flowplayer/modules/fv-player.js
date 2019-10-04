@@ -16,6 +16,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   flowplayer.conf = fv_flowplayer_conf;
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
+  flowplayer.conf.analytics = false;
 
   if( !flowplayer.support.android && flowplayer.conf.dacast_hlsjs ) {
     function FVAbrController(hls) {      
