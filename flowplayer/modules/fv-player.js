@@ -167,6 +167,13 @@ function fv_player_preload() {
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
         index = jQuery('a',playlist).index(this);
         $prev = $this.prev('a');
+      
+      // TODO: There should be a better way of sending a signal to the editor!
+      if( location.href.match(/wp-admin/) && $this.parents('.fv-player-editor-preview').length > 0 ) {
+        fv_flowplayer_conf.current_video_to_edit = index;
+        $this.parents('.fv-player-custom-video').find('.edit-video .fv-player-editor-button').click();
+        return false;
+      }
 
       if ($prev.length && $this.is(':visible') && !$prev.is(':visible')) {
         $prev.click();
