@@ -85,22 +85,29 @@ flowplayer( function(api,root) {
   // replacing loading SVG with CSS animation
   root.find('.fp-waiting').html('<div class="fp-preload"><b></b><b></b><b></b><b></b></div>');    
   
+  var id = root.attr('id'),
+    alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen,
+    events_enter = 'fakefullscreen',
+    events_exit = 'fakefullscreen-exit';  
+  
   if( !flowplayer.support.fullscreen ) {
-    var id = root.attr('id'),
-      alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen;
-    
-  	api.bind('fullscreen', function(e,api) {
-      jQuery('#wpadminbar, .nc_wrapper').hide();
-	  if( alternative ) {
-        if( api.video.type == 'video/youtube' ) return;		
-        root.before('<span data-fv-placeholder="'+id+'"></span>');
-  	    root.appendTo('body');
-      }
-  	});
-    api.bind('fullscreen-exit', function(e,api,video) {
-      jQuery('#wpadminbar, .nc_wrapper').show();
-      if( alternative ) jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);		
-  	});
+    events_enter += ' fullscreen';
+    events_exit += ' fullscreen-exit';
   }
-    
+
+  api.bind( events_enter, function(e,api) {
+    jQuery('#wpadminbar, .nc_wrapper').hide();
+    if( alternative || e.type == 'fakefullscreen' ) {
+      if( api.video.type == 'video/youtube' ) return;		
+      root.before('<span data-fv-placeholder="'+id+'"></span>');
+      root.appendTo('body');
+    }
+  });
+  api.bind( events_exit, function(e,api,video) {
+    jQuery('#wpadminbar, .nc_wrapper').show();
+    if( alternative || e.type == 'fakefullscreen-exit' ) {
+      jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);
+    }
+  });
+  
 });
