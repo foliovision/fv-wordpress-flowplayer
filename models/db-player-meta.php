@@ -24,10 +24,11 @@ class FV_Player_Db_Player_Meta {
     $is_valid = true, // used when loading meta data from DB to determine whether we've found it
     $id_player, // DB ID of the video to which this meta data belongs
     $meta_key, // arbitrary meta key
-    $meta_value, // arbitrary meta value
-    $DB_Instance = null;
+    $meta_value; // arbitrary meta value
 
-  private static $db_table_name;
+  private static
+    $db_table_name,
+    $DB_Instance = null;
 
   /**
    * @param mixed $meta_value
@@ -94,7 +95,7 @@ class FV_Player_Db_Player_Meta {
 
     self::init_db_name();
 
-    if( !$fv_fp->_get_option('player_meta_model_db_checked') || $fv_fp->_get_option('player_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_meta_model_db_checked') || $fv_fp->_get_option('player_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -140,19 +141,47 @@ CREATE TABLE " . self::$db_table_name . " (
     global $wpdb;
 
     if ($DB_Cache) {
-      $this->DB_Instance = $DB_Cache;
+      self::$DB_Instance = $DB_Cache;
     } else {
       global $FV_Player_Db;
-      $this->DB_Instance = $DB_Cache = $FV_Player_Db;
+      self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);
     $multiID = is_array($id);
 
+    // don't load anything, if we've only created this instance
+    // to initialize the database (this comes from list-table.php and unit tests)
+    if ($id === -1) {
+      return;
+    }
+
     // check whether we're not trying to load data for a single player
     // rather than meta data by its own ID
     $load_for_player = false;
     $force_cache_update = false;
+
+    // first, check if we're not trying to search for a meta item from the database
+    if (is_array($options) && count($options) && !empty($options['meta_find_player'])) {
+      $db_data = $wpdb->get_row('
+          SELECT
+            id_player
+          FROM
+            '.self::$db_table_name.'
+          WHERE
+            meta_key = "'.esc_sql($options['meta_find_player']['key']).'"
+            AND
+            meta_value = "'.esc_sql($options['meta_find_player']['value']).'"',
+        ARRAY_A
+      );
+
+      unset($options['meta_find_player']);
+
+      // DB data found, load meta data for the player
+      if (isset($db_data) && $db_data !== -1 && is_array($db_data) && count($db_data)) {
+        $options['id_player'] = array($db_data['id_player']);
+      }
+    }
 
     if (is_array($options) && count($options) && isset($options['id_player']) && is_array($options['id_player'])) {
       $load_for_player = true;
@@ -386,7 +415,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // update cache, if changed
     if (isset($cache) && ($force_cache_update || !isset($all_cached) || !$all_cached)) {
-      $this->DB_Instance->setPlayerMetaCache($cache);
+      self::$DB_Instance->setPlayerMetaCache($cache);
     }
   }
 
@@ -446,9 +475,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // add this meta into cache
-      $cache = $this->DB_Instance->getPlayerMetaCache();
+      $cache = self::$DB_Instance->getPlayerMetaCache();
       $cache[$this->id_player][$this->id] = $this;
-      $this->DB_Instance->setPlayerMetaCache($cache);
+      self::$DB_Instance->setPlayerMetaCache($cache);
 
       return $this->id;
     } else {
@@ -493,10 +522,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // remove this meta from cache
-      $cache = $this->DB_Instance->getPlayerMetaCache();
+      $cache = self::$DB_Instance->getPlayerMetaCache();
       if (isset($cache[$this->id_player][$this->id])) {
         unset($cache[$this->id_player][$this->id]);
-        $this->DB_Instance->setPlayerMetaCache($cache);
+        self::$DB_Instance->setPlayerMetaCache($cache);
       }
 
       return true;

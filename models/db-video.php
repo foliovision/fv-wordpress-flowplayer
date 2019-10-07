@@ -33,10 +33,11 @@ class FV_Player_Db_Video {
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $DB_Instance = null,
     $meta_data = null; // object of this video's meta data
 
-  private static $db_table_name;
+  private static
+    $db_table_name,
+    $DB_Instance = null;
   
   /**
    * @return int
@@ -67,7 +68,8 @@ class FV_Player_Db_Video {
 
     // update YouTube and other video names
     $vid_replacements = array(
-      'watch?v=' => 'YouTube: '
+      'watch?v=' => 'YouTube: ',
+      'playlist?list=' => 'YouTube Playlist: ',
     );  
 
     $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
@@ -186,7 +188,7 @@ class FV_Player_Db_Video {
 
     self::init_db_name();
 
-    if( !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -225,11 +227,17 @@ CREATE TABLE " . self::$db_table_name . " (
     global $wpdb;
 
     if ($DB_Cache) {
-      $this->DB_Instance = $DB_Cache;
+      self::$DB_Instance = $DB_Cache;
     }
 
     $this->initDB($wpdb);
     $multiID = is_array($id);
+
+    // don't load anything, if we've only created this instance
+    // to initialize the database (this comes from list-table.php and unit tests)
+    if ($id === -1) {
+      return;
+    }
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video into the DB in such case
@@ -310,7 +318,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       }
 
-      if (isset($video_data) && $video_data && count($video_data)) {
+      if (isset($video_data) && $video_data && (is_object($video_data) || count($video_data))) {
         // single ID, just populate our own data
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
@@ -346,7 +354,7 @@ CREATE TABLE " . self::$db_table_name . " (
               unset($db_record->id);
 
               if ($DB_Cache && !$DB_Cache->isVideoCached($record_id)) {
-                $video_object = new FV_Player_Db_Video( null, get_object_vars( $db_record ), $this->DB_Instance );
+                $video_object = new FV_Player_Db_Video( null, get_object_vars( $db_record ), self::$DB_Instance );
                 $video_object->link2db( $record_id );
 
                 // cache this video in DB object
@@ -382,7 +390,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // update cache, if changed
     if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
-      $this->DB_Instance->setVideosCache($cache);
+      self::$DB_Instance->setVideosCache($cache);
     }
   }
 
@@ -402,7 +410,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $this->id = (int) $id;
 
     if ($load_meta) {
-      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($id)), $this->DB_Instance);
+      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($id)), self::$DB_Instance);
     }
   }
 
@@ -421,7 +429,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $first_done = false;
       foreach ($meta_data as $meta_record) {
         // create new record in DB
-        $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, $this->DB_Instance);
+        $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, self::$DB_Instance);
 
         // link to DB, if the meta record has an ID
         if (!empty($meta_record['id'])) {
@@ -529,8 +537,8 @@ CREATE TABLE " . self::$db_table_name . " (
       // from database at the time when player is initially created
       if (is_array($this->meta_data)) {
         return $this->meta_data;
-      } else if ( $this->DB_Instance->isVideoMetaCached($this->id) ) {
-        $cache = $this->DB_Instance->getVideoMetaCache();
+      } else if ( self::$DB_Instance->isVideoMetaCached($this->id) ) {
+        $cache = self::$DB_Instance->getVideoMetaCache();
         return $cache[$this->id];
       } else {
         if ($this->meta_data && $this->meta_data->getIsValid()) {
@@ -541,7 +549,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     } else if ($this->meta_data === null) {
       // meta data not loaded yet - load them now
-      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($this->id)), $this->DB_Instance);
+      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($this->id)), self::$DB_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$this->meta_data->getIsValid()) {
@@ -553,8 +561,8 @@ CREATE TABLE " . self::$db_table_name . " (
           // from database at the time when player is initially created
           if (is_array($this->meta_data)) {
             return $this->meta_data;
-          } else if ( $this->DB_Instance->isVideoMetaCached($this->id) ) {
-            $cache = $this->DB_Instance->getVideoMetaCache();
+          } else if ( self::$DB_Instance->isVideoMetaCached($this->id) ) {
+            $cache = self::$DB_Instance->getVideoMetaCache();
             return $cache[$this->id];
           } else {
             if ($this->meta_data && $this->meta_data->getIsValid()) {
@@ -619,7 +627,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // if matching row has been found or if it was not found and no row id is provided (insert)
     if( $to_update || !$to_update && !$id ) {
-      $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), $this->DB_Instance );
+      $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), self::$DB_Instance );
       if( $to_update ) $meta->link2db($to_update);
       return $meta->save();        
     }
@@ -717,7 +725,7 @@ CREATE TABLE " . self::$db_table_name . " (
           $meta_record['id_video'] = $this->id;
 
           // create new record in DB
-          $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, $this->DB_Instance);
+          $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, self::$DB_Instance);
 
           // add meta data ID
           if( !empty($meta_record['id']) ) {
@@ -732,9 +740,9 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       // add this meta into cache
-      $cache = $this->DB_Instance->getVideosCache();
+      $cache = self::$DB_Instance->getVideosCache();
       $cache[$this->id] = $this;
-      $this->DB_Instance->setVideosCache($cache);
+      self::$DB_Instance->setVideosCache($cache);
 
       return $this->id;
     } else {
@@ -778,10 +786,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$wpdb->last_error) {
       // remove this meta from cache
-      $cache = $this->DB_Instance->getVideosCache();
+      $cache = self::$DB_Instance->getVideosCache();
       if (isset($cache[$this->id])) {
         unset($cache[$this->id]);
-        $this->DB_Instance->setVideosCache($cache);
+        self::$DB_Instance->setVideosCache($cache);
       }
 
       return true;

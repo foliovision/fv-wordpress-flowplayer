@@ -186,12 +186,26 @@ function fv_flowplayer_admin_default_options() {
           <style>
             p.description { font-style: normal; }
           </style>
-					<table class="form-table2">
+          <table class="form-table2">
+            <td><label for="autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
+              <td colspan="3">
+                <p class="description">
+                  <?php
+                  // in the older FV Player versions this setting was just true/false and that creates a ton of issues
+                  $value = $fv_fp->_get_option('autoplay');
+                  ?>
+                  <select id="autoplay" name="autoplay">
+                    <option value="true"   <?php if( $value === 'true' || $value ) echo ' selected="selected"'; ?> >Yes</option>
+                    <option value="false"  <?php if( $value === 'false' || !$value ) echo ' selected="selected"'; ?> >No</option>
+                    <option value="muted"   <?php if ( $value === 'muted' )  echo ' selected="selected"'; ?> >Muted</option>
+                  </select>
+                  <?php _e('We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.', 'fv-wordpress-flowplayer'); ?>
+                </p>
+              </td>
+            </tr>
             
-            <?php $fv_fp->_get_checkbox(__('Autoplay', 'fv-wordpress-flowplayer'), 'autoplay', __('We make sure only one video per page autoplays. Note that mobile devices don\'t support autoplay.' , 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Controlbar Always Visible', 'fv-wordpress-flowplayer'), 'show_controlbar' ); ?>
-
 						<tr>
 							<td><label for="width"><?php _e('Default Video Size', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
@@ -216,7 +230,7 @@ function fv_flowplayer_admin_default_options() {
             <?php $fv_fp->_get_checkbox(__('Disable Playlist Autoadvance', 'fv-wordpress-flowplayer'), 'playlist_advance', __('Playlist won\'t play the next video automatically.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', __('Removes sharing buttons from top bar.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Disable Video Links', 'fv-wordpress-flowplayer'), 'disable_video_hash_links', __('Removes the "Link" item to the top bar.', 'fv-wordpress-flowplayer'), __("Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-wordpress-flowplayer') ); ?>
-
+            <?php $fv_fp->_get_checkbox(__('Enable Chromecast', 'fv-wordpress-flowplayer'), 'chromecast', __('Adds support for Google Chromecast.', 'fv-wordpress-flowplayer') ); ?>
 						<tr>
 							<td><label for="rtmp"><?php _e('Flash Streaming Server', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td>
@@ -284,6 +298,8 @@ function fv_flowplayer_admin_default_options() {
                     <option value="vertical"  <?php if( $value == 'vertical' ) echo ' selected="selected"'; ?> ><?php _e('Vertical', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="slider"    <?php if( $value == 'slider' ) echo ' selected="selected"'; ?> ><?php _e('Slider', 'fv-wordpress-flowplayer'); ?></option>
                     <option value="season"    <?php if( $value == 'season' ) echo ' selected="selected"'; ?> ><?php _e('Vertical Season', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="polaroid"  <?php if( $value == 'polaroid' ) echo ' selected="selected"'; ?> ><?php _e('Polaroid', 'fv-wordpress-flowplayer'); ?></option>
+                    <option value="text"  <?php if( $value == 'text' ) echo ' selected="selected"'; ?> ><?php _e('Text', 'fv-wordpress-flowplayer'); ?></option>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv-wordpress-flowplayer'); ?>
                 </p>
@@ -588,7 +604,7 @@ function fv_flowplayer_admin_integrations() {
 						</td>
 					</tr>
 
-          <?php $fv_fp->_get_checkbox(__('Handle WordPress <code><small>[video]</small></code> shortcodes', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), '...and also <code><small>[playlist]</small></code> and the YouTube links', '' ); ?>
+          <?php $fv_fp->_get_checkbox(__('Handle WordPress audio/video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code>, <code><small>[audio]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
@@ -845,8 +861,6 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
-
-          <?php $fv_fp->_get_checkbox(__('Enable old interface', 'fv-wordpress-flowplayer'), array('interface', 'shortcode_editor_old'), __('Not recommended', 'fv-wordpress-flowplayer') ); ?>
           
 					<tr>
 						<td colspan="4">
@@ -1616,6 +1630,8 @@ function fv_flowplayer_admin_rollback() {
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>  		
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
+    <p>You can go back to the previous minor release here:</p>
+    <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.3.19.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.3.19.727</a></p>    
     <p>You can go back to the last version without FV Player Database here:</p>
     <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.2.8.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.2.8.727</a></p>
     <p>You can reinstall the last FV Player 6 here:</p>
@@ -1967,6 +1983,7 @@ jQuery(document).ready(function(){
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
+
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   e.preventDefault();
   window.location.hash = e.target.hash;
@@ -1975,8 +1992,30 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
-});  
+});
 
+jQuery('#normal-sortables .button-primary').on('click',function(e){
+  if ('fv-wp-flowplayer-submit' == this.name) {
+    // store windows scroll position, so we can return to the same spot after reload
+    if (localStorage) {
+      localStorage["fv_posStorage"] = $(window).scrollTop();
+    }
+  }
+
+  return true;
+});
+
+jQuery(window).on('load', function() {
+  setTimeout(function() {
+    if (localStorage) {
+      var posReader = localStorage["fv_posStorage"];
+      if (posReader) {
+        jQuery(window).scrollTop(posReader);
+        localStorage.removeItem("fv_posStorage");
+      }
+    }
+  }, 100);
+});
 
 jQuery('a.fv-settings-anchor').on('click',function(e){
   var id = jQuery(this).attr('href');

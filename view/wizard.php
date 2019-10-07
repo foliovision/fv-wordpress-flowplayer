@@ -104,8 +104,6 @@
   
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/shortcode-editor.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
-<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/s3-browser.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
   
 <script>
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
@@ -120,7 +118,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
 </script>
 
 <div style="display: none">
-  <div id="fv-player-shortcode-editor">
+  <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?>>
     <div id="fv-player-shortcode-editor-editor">
       <table>
         <tr>
@@ -138,7 +136,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
             </div>
           </td>
           <td class="fv-player-shortcode-editor-right">
-            <input type="text" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
+            <input type="text" class="hide-if-playlist hide-if-singular" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
             <div class="fv-player-tabs-header">
               <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
@@ -298,6 +296,11 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </tr>
                     
                     <tr class="fv_player_interface_hide">
+                        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_dvr" class="alignright"><?php _e('DVR stream', 'fv_flowplayer'); ?></label></th>
+                        <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_dvr" name="fv_wp_flowplayer_field_dvr" /></td>
+                    </tr>
+                    
+                    <tr class="fv_player_interface_hide">
                         <th scope="row" class="label"><label for="fv_wp_flowplayer_field_audio" class="alignright"><?php _e('Audio stream', 'fv_flowplayer'); ?></label></th>
                         <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_audio" name="fv_wp_flowplayer_field_audio" /></td>
                     </tr>                    
@@ -382,12 +385,12 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </td>
                   </tr>
                   
-                  <?php fv_player_shortcode_row( array( 'label' => 'Autoplay', 'name' => 'autoplay' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Autoplay', 'name' => 'autoplay', 'dropdown' => array( 'Default', array('true','Yes'), array('false','No'), array('muted','Muted') ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
                    <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
-                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal', 'Text', 'Slider' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal', 'Text', 'Slider', 'Season', 'Polaroid' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'dropdown' => array( 'Default', 'Yes', 'No', 'Custom' ) ) ); ?>
                   
                   <tr id="fv_wp_flowplayer_field_share_custom" style="display: none">
@@ -420,7 +423,8 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                                                        'playlist_label' => 'End of playlist',
                                                        'name' => 'end_actions',
                                                        'dropdown' => array(
-                                                            array('', 'Nothing'),
+                                                            array('', 'Default'),
+                                                            array('no', 'Nothing'),
                                                             array('redirect', 'Redirect'),
                                                             array('loop', 'Loop'),
                                                             array('popup', 'Show popup'),
@@ -500,6 +504,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
       </table>
       <span class="fv-player-save-waiting waiting spinner"></span>
       <div class="fv-player-save-completed" style="display: none"><p>Saved!</p></div>
+      <div class="fv-messages"></div>
     </div>   
   </div>
 </div>

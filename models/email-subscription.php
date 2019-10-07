@@ -506,9 +506,8 @@ class FV_Player_Email_Subscription {
       $result['text'] = __('Malformed Email Address.', 'fv-wordpress-flowplayer');
       die(json_encode($result));
     };
-
-    $count = $wpdb->get_var('SELECT COUNT(*) FROM ' . $wpdb->prefix . 'fv_player_emails WHERE email="' . addslashes($data['email']) . '" AND id_list = "'. addslashes($list_id) .'"' );
-
+    
+    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", strip_tags($data['email']), intval($list_id) ) );
 
     if(intval($count) === 0){
       $wpdb->insert($table_name, array(
@@ -550,6 +549,8 @@ class FV_Player_Email_Subscription {
   }
 
   function csv_export(){
+    if( !current_user_can('manage_options') ) return;
+    
     $list_id = $_GET['fv-email-export'];
     $aLists = get_option('fv_player_email_lists');
     $list = $aLists[$list_id];
