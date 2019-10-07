@@ -64,7 +64,6 @@ class FV_Player_Db_Player {
     $videos, // comma-delimited IDs of videos for this player
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
-    $DB_Instance = null,
     $meta_data = null,
     $ignored_input_fields = array();
 
