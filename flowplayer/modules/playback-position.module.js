@@ -157,8 +157,8 @@ flowplayer( function(api,root) {
       for (var video_name in flowplayer['playPositions']) {
         postData.push({
           name: video_name,
-          position: flowplayer['playPositions'][video_name]
-          saw: typeof(flowplayer['sawVideo'][video_name]) != "undefined" ? flowplayer['sawVideo'][video_name] : false,
+          position: flowplayer['playPositions'][video_name],
+          saw: typeof(flowplayer['sawVideo'][video_name]) != "undefined" ? flowplayer['sawVideo'][video_name] : false
         });
       }
 
