@@ -27,12 +27,18 @@ flowplayer(function (api,root) {
   function show_ad() {
     var ad_data = root.attr('data-ad');
     if( typeof(ad_data) !='undefined' && ad_data.length ) {
+      try {
+        ad_data = JSON.parse(ad_data);
+      } catch (e) {
+        return false
+      }
+
       if( !ad && !root.hasClass('is-cva') && root.width() >= parseInt(ad_data.width) ) {
         var html = ad_data.html;
         html = html.replace( '%random%', Math.random() );
         ad = jQuery('<div id="'+player_id+'_ad" class="wpfp_custom_ad">'+html+'</div>');
         root.find('.fp-player').append(ad);
-        
+
         ad_height_check();
         // check if the ad contains any video and pause the player if the video is found
         setTimeout( function() {
@@ -43,11 +49,16 @@ flowplayer(function (api,root) {
       }
     }
   }
-  
+
   function show_popup( event ) {
     var popup_data = root.attr('data-popup');
     if( typeof(popup_data) !='undefined' && popup_data.length ) {
-      popup_data = JSON.parse(popup_data);
+      try {
+        popup_data = JSON.parse(popup_data);
+      } catch (e) {
+        return false;
+      }
+
       if( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) ) {
         root.addClass('is-popup-showing');
         root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+popup_data.html+'</div>' );
