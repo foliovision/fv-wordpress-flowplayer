@@ -4,16 +4,27 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
   var bean = flowplayer.bean;
-
-  root.on('click','.fp-volume', function() {
+  var restore = 0.5 , first_mouseover = true, mute_check = true;
+  
+  root.on('click','.fp-volume', function() { // Restore volume
     if(api.volumeLevel == 0) {
-      api.volume(0.5);
+      api.volume(restore);
     }
   })
 
   api.on('volume', function(e,api){
-    if( api.volumeLevel == 0 && root.hasClass('is-mouseover') && !root.hasClass('is-muted') ) {
-      api.mute();
+    // console.log('Volume', api.volumeLevel,'Restore',restore);
+    if( root.hasClass('is-mouseover') && !root.hasClass('is-muted') ) {
+      if( api.volumeLevel == 0 && mute_check ) { // Mute when volume is set to 0 by mouse
+        api.mute();
+      } else if (api.volumeLevel > 0) {
+        mute_check = true;
+      }
+
+      if ( api.volumeLevel != 0  && first_mouseover ) { // Remember first volume change
+        restore = api.volumeLevel;
+        first_mouseover = false;
+      }
     }
   });
   
