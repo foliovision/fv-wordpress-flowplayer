@@ -4,6 +4,18 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
   var bean = flowplayer.bean;
+
+  root.on('click','.fp-volume', function() {
+    if(api.volumeLevel == 0) {
+      api.volume(0.5);
+    }
+  })
+
+  api.on('volume', function(e,api){
+    if( api.volumeLevel == 0 && root.hasClass('is-mouseover') && !root.hasClass('is-muted') ) {
+      api.mute();
+    }
+  });
   
   if( root.hasClass('is-audio') ) {
     bean.off(root[0], "mouseenter");
