@@ -70,6 +70,11 @@ function fv_fancybox_check_size() {
     $fs_button = $player.find('.fp-fullscreen');
 
   if ($player.length) {
+    
+    if( typeof($player.data('orig-max-height')) == 'undefined' ) {
+      $player.data('orig-max-height', parseInt($player.css('max-height')) ).data('orig-max-width', parseInt($player.css('max-width')) );
+    }
+    
     var height = jQuery(window).height();
     if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar    
 
@@ -77,6 +82,9 @@ function fv_fancybox_check_size() {
       height -= $playlist.height();
       height -= 2 * parseFloat($player.css('margin-bottom')) + 2;
       height -= parseInt(jQuery('.fancybox-slide--current .fv-playlist-slider-wrapper').css('margin-bottom'));
+      
+    } else if( height > $player.data('orig-max-height') && jQuery(window).width() > $player.data('orig-max-width') ) { // if the player original dimensions fit, restore original height
+      height = $player.data('orig-max-height');
     }
     
      $player
