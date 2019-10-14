@@ -79,7 +79,7 @@ function fv_fancybox_check_size() {
     var height = jQuery(window).height();
     if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar    
 s
-    if($playlist.length && $playlist_items.length > 2 && height > 480 ) {
+    if($playlist.length && $playlist_items.length > 1 && height > 480 ) {
       height -= $playlist.height();
       height -= 2 * parseFloat($player.css('margin-bottom')) + 2;
       height -= parseInt(jQuery('.fancybox-slide--current .fv-playlist-slider-wrapper').css('margin-bottom'));
