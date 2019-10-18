@@ -588,6 +588,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
           $player_data = $wpdb->get_results('SELECT
   '.$select.',
+  author.id as author,
   count(subtitles.id) as subtitles_count,
   count(chapters.id) as chapters_count,
   count(transcript.id) as transcript_count
@@ -596,6 +597,7 @@ CREATE TABLE " . self::$db_table_name . " (
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS author ON v.id = author.id_video AND author.meta_key = "author"
   '.$where.'
   GROUP BY p.id
   '.$order.$limit);

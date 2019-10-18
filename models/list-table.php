@@ -42,7 +42,7 @@ class FV_Player_List_Table_View {
       'id'               => __( 'Playlist', 'fv-wordpress-flowplayer' ),
       'player_name'      => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
       'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
-      //'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
+      'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
       'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
       'subtitles_count'  => __( 'Subtitles', 'fv-wordpress-flowplayer' ),
       'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
@@ -186,6 +186,7 @@ class FV_Player_List_Table extends WP_List_Table {
   public function get_sortable_columns() {
     return array(
       'id'               => array( 'id', true ),
+      'author'           => array( 'author', true ),
       'player_name'      => array( 'player_name', true ),
       'date_created'     => array( 'date_created', true ),
       'subtitles_count'  => array( 'subtitles_count', true ),
@@ -255,7 +256,10 @@ class FV_Player_List_Table extends WP_List_Table {
         
         if( $value ) $value = '<ul>'.$value.'</ul>';
         
-        break;        
+      break;
+      case 'author':
+        $value = '<a href="'.get_author_posts_url( $player->author ).'" target="_blank">'.get_the_author_meta( 'user_nicename' , $player->author ).'</a>';
+      break;
       case 'shortcode':        
         $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
         break;

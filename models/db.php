@@ -208,7 +208,7 @@ class FV_Player_Db {
 
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
-    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
+    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
     
     // load single player, as requested by the user
     if ($single_id) {
@@ -294,6 +294,7 @@ class FV_Player_Db {
           $result_row->player_name = $player->getPlayerName();
           $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
+          $result_row->author = $player->getAuthor();
           $result_row->subtitles_count = $player->getCount('subtitles');
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
