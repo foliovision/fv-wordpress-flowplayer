@@ -255,10 +255,10 @@ class FV_Player_List_Table extends WP_List_Table {
         }
         
         if( $value ) $value = '<ul>'.$value.'</ul>';
-        
+
       break;
       case 'author':
-        $value = '<a href="'.get_author_posts_url( $player->author ).'" target="_blank">'.get_the_author_meta( 'user_nicename' , $player->author ).'</a>';
+        $value = '<a href="#" target="_blank">'.get_the_author_meta( 'user_nicename' , $player->author ).'</a>';
       break;
       case 'shortcode':        
         $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
