@@ -496,6 +496,7 @@ CREATE TABLE " . self::$db_table_name . " (
    * @throws Exception When no valid ID nor options are provided.
    */
   function __construct($id, $options = array(), $DB_Cache = null) {
+
     global $wpdb;
 
     if ($DB_Cache) {
@@ -573,8 +574,10 @@ CREATE TABLE " . self::$db_table_name . " (
             }
 
             $where = ' WHERE '.implode(' OR ', $where_like_part);
+          } else if(!current_user_can('edit_others_posts')) {
+            $where = ' WHERE author ='.$options['db_options']['author_id'];
           }
-          
+
           $order = '';
           if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
             $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
@@ -588,7 +591,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
           $player_data = $wpdb->get_results('SELECT
   '.$select.',
-  author.id as author,
   count(subtitles.id) as subtitles_count,
   count(chapters.id) as chapters_count,
   count(transcript.id) as transcript_count
@@ -597,7 +599,6 @@ CREATE TABLE " . self::$db_table_name . " (
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS author ON v.id = author.id_video AND author.meta_key = "author"
   '.$where.'
   GROUP BY p.id
   '.$order.$limit);
@@ -629,6 +630,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
+
         // single ID, just populate our own data
         if (!$multiID) {
           $this->fill_properties($player_data,$DB_Cache);

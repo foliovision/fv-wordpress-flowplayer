@@ -209,7 +209,8 @@ class FV_Player_Db {
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
     $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
-    
+    $author_id = get_current_user_id();
+
     // load single player, as requested by the user
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
@@ -231,12 +232,13 @@ class FV_Player_Db {
 
         new FV_Player_Db_Player( null, array(
           'db_options' => array(
-            'select_fields'       => 'player_name, date_created, videos',
+            'select_fields'       => 'player_name, date_created, videos, author',
             'order_by'            => $order_by,
             'order'               => $order,
             'offset'              => $offset,
             'per_page'            => $per_page,
-            'search_by_video_ids' => $player_video_ids
+            'search_by_video_ids' => $player_video_ids,
+            'author_id'           => $author_id
           )
         ), $FV_Player_Db );
       }
@@ -244,11 +246,12 @@ class FV_Player_Db {
       // load all players, which will put them into the cache automatically
       new FV_Player_Db_Player( null, array(
         'db_options' => array(
-          'select_fields' => 'player_name, date_created, videos',
+          'select_fields' => 'player_name, date_created, videos, author',
           'order_by'      => $order_by,
           'order'         => $order,
           'offset'        => $offset,
-          'per_page'      => $per_page
+          'per_page'      => $per_page,
+          'author_id'     => $author_id
         )
       ), $FV_Player_Db );
     }
