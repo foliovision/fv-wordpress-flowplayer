@@ -574,7 +574,7 @@ CREATE TABLE " . self::$db_table_name . " (
             }
 
             $where = ' WHERE '.implode(' OR ', $where_like_part);
-          } else if(!current_user_can('edit_others_posts')) {
+          } else if( array_key_exists( 'author_id', $options['db_options'] ) ) {
             $where = ' WHERE author ='.$options['db_options']['author_id'];
           }
 

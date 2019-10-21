@@ -55,7 +55,7 @@ class FV_Player_List_Table_View {
   
   function screen_columns_hidden( $hidden, $screen, $use_defaults ) {
     if( $use_defaults && $screen->id == $this->list_page) {
-      $hidden = array( 'subtitles_count', 'chapters_count', 'transcript_count' );
+      $hidden = array( 'subtitles_count', 'chapters_count', 'transcript_count', 'author' );
     }
     return $hidden;
   }
