@@ -365,8 +365,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * HLS - going back to HLS.js 0.11.0 library due to encrypted HLSv4 issues
 * Maintenance - split the master JS file into modules for development, kept a single fv-flowplayer.min.js for normal use
 * MPEG-DASH - upgrading Dash.js to 3.0.0
+* Translations - adding hooks for the playlist repeat button
 * Video Speed - removing bad 0.25x speed when 0.5x speed step is set
-* Video checker - reworked to make the code cleaner
+* Video Checker - code refactoring, making it work in FV Player Editor
 
 = 7.4.6.727 - 2019/09/17 =
 
