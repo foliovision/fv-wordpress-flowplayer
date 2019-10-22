@@ -357,6 +357,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.7.727 - 2019/10/22 =
+
+* Compatibility - Elementor fixes
+* Editor - removing playlist name field for single videos
+* Lightbox - sizing fix for single video - respect desired size
+* HLS - going back to HLS.js 0.11.0 library due to encrypted HLSv4 issues
+* Maintenance - split the master JS file into modules for development, kept a single fv-flowplayer.min.js for normal use
+* MPEG-DASH - upgrading Dash.js to 3.0.0
+* Video Speed - removing bad 0.25x speed when 0.5x speed step is set
+* Video checker - reworked to make the code cleaner
+
 = 7.4.6.727 - 2019/09/17 =
 
 * Chromecast - disabled by default for new installs, use the "Enable google chromecast" setting
