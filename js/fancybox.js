@@ -57,6 +57,24 @@ jQuery(document).ready(function() {
   jQuery(".colorbox, .lightbox").filter(function () {
     return this.href && this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
   }).attr('data-fancybox','gallery').fancybox();
+  
+  if( parseInt(jQuery.fancybox.version) < 3 ) {
+    console.log('FV Player: Falling back to fancyBox '+jQuery.fancybox.version+' load by some other plugin');
+    
+    jQuery('[id^=fv_flowplayer_][id$=_lightbox_starter]').each( function() {
+      var player = jQuery(jQuery(this).attr('href')).find('.flowplayer');
+      jQuery(this).fancybox({
+        width: parseInt(player.css('max-width')),
+        height: parseInt(player.css('max-height')),
+        autoSize: false,
+        scrolling: false,
+        afterClose: function(e) {
+          fv_lightbox_flowplayer_shutdown(e);
+        }
+      });
+    });
+  }
+    
 });
 
 function fv_fancybox_check_size() {

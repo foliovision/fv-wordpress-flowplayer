@@ -48,7 +48,8 @@ class FV_Player_lightbox {
     $bCSSLoaded = true;
     
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
+    // TODO: this needs an option
+    //wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
   }
 
   function conf_defaults($conf){
