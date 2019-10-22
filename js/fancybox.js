@@ -61,12 +61,12 @@ jQuery(document).ready(function() {
 
 function fv_fancybox_check_size() {
   var
+    $player_wrap = jQuery('.fancybox-slide--current .fv_player_lightbox_hidden'),
     $player = jQuery('.fancybox-slide--current .flowplayer:visible'),
-    player_height = $player.outerHeight(),
     $caption = jQuery('.fancybox-caption'),
     $infobar = jQuery('.fancybox-infobar'),
     $toolbar = jQuery('.fancybox-toolbar'),
-    $playlist = jQuery('.fancybox-slide--current .fp-playlist-external'),
+    $playlist = jQuery('.fancybox-slide--current .fv-playlist-slider-wrapper'),
     $playlist_items = jQuery('.fancybox-slide--current .fp-playlist-external').find('a:visible'),
     $fs_button = $player.find('.fp-fullscreen');
 
@@ -76,36 +76,40 @@ function fv_fancybox_check_size() {
       $player.data('orig-max-height', parseInt($player.css('max-height')) ).data('orig-max-width', parseInt($player.css('max-width')) );
     }
     
-    var height = jQuery(window).height();
-    if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar    
-s
-    if($playlist.length && $playlist_items.length > 1 && height > 480 ) {
-      height -= $playlist.height();
-      height -= 2 * parseFloat($player.css('margin-bottom')) + 2;
-      height -= parseInt(jQuery('.fancybox-slide--current .fv-playlist-slider-wrapper').css('margin-bottom'));
+    var window_height = jQuery(window).height(),
+      height = window_height;
+    
+    if( $player.hasClass('fixed-controls') ) height -= $player.find('.fp-controls').height(); // reserve a bit of space for controlbar
+
+    if($playlist.length && $playlist_items.length > 1 ) { // reserve space for playlist
+      if( height > 480 ) { // if the vie is tall enough, otherwise it gets scrollbar to reveal the items below player
+        height -= $playlist.outerHeight(true);
+        height -= 2 * parseFloat($player.css('margin-bottom')) + 2;
+        height -= parseInt(jQuery('.fancybox-slide--current .fv-playlist-slider-wrapper').css('margin-bottom'));
+      }
       
     } else if( height > $player.data('orig-max-height') && jQuery(window).width() > $player.data('orig-max-width') ) { // if the player original dimensions fit, restore original height
       height = $player.data('orig-max-height');
     }
     
-     $player
+    $player
       .css('max-height', '')
-      .css('max-width', (height/$player.data('ratio'))+'px');
+      .css('max-width', ( (height-12)/$player.data('ratio'))+'px');
 
     // hide caption and infobar if it would cover the player
     if ($caption.length) {
-      if ( $caption.position().top - 5 < $player.position().top + player_height ) $caption.hide();        
+      if ( jQuery('.fancybox-caption').outerHeight(true) > window_height - $player_wrap.position().top - $player.height() ) $caption.hide();
       else $caption.show();
     }
     
     if ($infobar.length) {
-      if ( $infobar.position().top+$infobar.height() > $player.position().top && $infobar.position().left+$infobar.width() > $player.position().left ) $infobar.hide();        
+      if ( $infobar.position().top+$infobar.height() > $player_wrap.position().top && $infobar.position().left+$infobar.width() > $player_wrap.position().left ) $infobar.hide();        
       else $infobar.show();
     }
     
     // hide FV Player fullscreen button if it would be covered.
     if ($toolbar.length) {
-      if ( $player.position().top < $toolbar.position().top + $toolbar.height() ) $fs_button.hide();
+      if ( $player_wrap.position().top < $toolbar.position().top + $toolbar.height() ) $fs_button.hide();
       else $fs_button.show();
     }
     
