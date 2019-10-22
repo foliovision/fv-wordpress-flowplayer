@@ -208,8 +208,10 @@ class FV_Player_Db {
 
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
-    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
-    
+    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
+    $author_id = get_current_user_id();
+    $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+
     // load single player, as requested by the user
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
@@ -229,27 +231,40 @@ class FV_Player_Db {
         // cache this, so we can use this in the FV_Player_Db_Player::getTotalPlayersCount() method
         $player_ids_when_searching = $player_video_ids;
 
+        $db_options = array(
+          'select_fields'       => 'player_name, date_created, videos, author',
+          'order_by'            => $order_by,
+          'order'               => $order,
+          'offset'              => $offset,
+          'per_page'            => $per_page,
+          'search_by_video_ids' => $player_video_ids
+        );
+
+        if( $cannot_edit_other_posts ) {
+          $db_options['author_id'] = $author_id;
+        }
+
         new FV_Player_Db_Player( null, array(
-          'db_options' => array(
-            'select_fields'       => 'player_name, date_created, videos',
-            'order_by'            => $order_by,
-            'order'               => $order,
-            'offset'              => $offset,
-            'per_page'            => $per_page,
-            'search_by_video_ids' => $player_video_ids
-          )
+          'db_options' => $db_options
         ), $FV_Player_Db );
       }
     } else {
       // load all players, which will put them into the cache automatically
+
+      $db_options = array(
+        'select_fields' => 'player_name, date_created, videos, author',
+        'order_by'      => $order_by,
+        'order'         => $order,
+        'offset'        => $offset,
+        'per_page'      => $per_page,
+      );
+
+      if( $cannot_edit_other_posts ) {
+        $db_options['author_id'] = $author_id;
+      }
+
       new FV_Player_Db_Player( null, array(
-        'db_options' => array(
-          'select_fields' => 'player_name, date_created, videos',
-          'order_by'      => $order_by,
-          'order'         => $order,
-          'offset'        => $offset,
-          'per_page'      => $per_page
-        )
+        'db_options' => $db_options
       ), $FV_Player_Db );
     }
 
@@ -294,6 +309,7 @@ class FV_Player_Db {
           $result_row->player_name = $player->getPlayerName();
           $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
+          $result_row->author = $player->getAuthor();
           $result_row->subtitles_count = $player->getCount('subtitles');
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
