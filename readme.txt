@@ -361,6 +361,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Compatibility - Elementor fixes
 * Editor - removing playlist name field for single videos
+* FV Player wp-admin Screen - Screen Option to show player author
+* FV Player wp-admin Screen - only showing players for which the user has edit permissions
 * Lightbox - compatibility if your website already loads Fancybox 2
 * Lightbox - sizing fix for single video - respect desired size
 * HLS - going back to HLS.js 0.11.0 library due to encrypted HLSv4 issues
