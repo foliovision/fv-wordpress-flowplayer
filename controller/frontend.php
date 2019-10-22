@@ -350,7 +350,7 @@ function flowplayer_prepare_scripts() {
     }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.1){
       $aConf['speeds'] = array( 0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2 );
     }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.5){
-      $aConf['speeds'] = array( 0.25,0.5,1,1.5,2 );
+      $aConf['speeds'] = array( 0.5,1,1.5,2 );
     }
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
