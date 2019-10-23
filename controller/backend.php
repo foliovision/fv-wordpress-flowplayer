@@ -497,7 +497,6 @@ function fv_wp_flowplayer_admin_key_update() {
 	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
-            $fv_fp->conf['key7'] = $data->key7;
 			update_option( 'fvwpflowplayer', $fv_fp->conf );
 			update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
       
