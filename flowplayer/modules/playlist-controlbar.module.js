@@ -35,7 +35,11 @@ flowplayer( function(api,root) {
   });
   
   jQuery('a',playlist_menu).click( function() {
-    api.play(jQuery(this).data('index'));
+    if(typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined') {
+      api.play(jQuery(this).data('index') - 1);
+    } else {
+      api.play(jQuery(this).data('index'));
+    }
   });
   
   api.on('ready', function(e,api,video) {
