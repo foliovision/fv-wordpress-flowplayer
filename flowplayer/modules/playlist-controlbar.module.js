@@ -10,8 +10,12 @@ flowplayer( function(api,root) {
   var playlist_button = jQuery('<strong class="fv-fp-list">Item 1.</strong>'),
     playlist_menu = jQuery('<div class="fp-menu fv-fp-list-menu"></div>').insertAfter( root.find('.fp-controls') );
   
+  var i =0;
   jQuery(api.conf.playlist).each( function(k,v) {
-    playlist_menu.append('<a data-index="'+k+'">'+(k+1)+'. '+parse_title(playlist.find('h4').eq(k))+'</a>');    
+    if(typeof(v.click) == 'undefined' ) {
+      playlist_menu.append('<a data-index="'+k+'">'+(i+1)+'. '+parse_title(playlist.find('h4').eq(i))+'</a>');
+      i++;
+    }
   });
   
   playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
@@ -38,7 +42,7 @@ flowplayer( function(api,root) {
     var thumb = playlist_menu.find('a[data-index='+video.index+']');
     thumb.addClass('fp-selected');
     var label = fv_flowplayer_translations.playlist_item_no
-    label = label.replace( /%d/, video.index+1 );
+    label = label.replace( /%d/, root.find('.fv-fp-list-menu .fp-selected').data('index') );
     label = label.replace( /%s/, parse_title( thumb.find('h4') ) );
     playlist_button.html(label);
   });
