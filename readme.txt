@@ -357,6 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.8.727 - 2019/10/23 =
+
+* Playlist menu - fixing to not include the FV Player Pro Video Ads
+
 = 7.4.7.727 - 2019/10/22 =
 
 * Compatibility - Elementor fixes
