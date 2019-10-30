@@ -51,10 +51,10 @@ jQuery.fancybox.defaults.hash = false;
 jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
 
 jQuery(document).ready(function() {
-  jQuery(".colorbox[href^='#'], .lightbox[href^='#']").filter(function () {
+  jQuery(".colorbox[href^='#']:not([data-cbox-inline]), .lightbox[href^='#']").filter(function () {
     return this.href && !this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
   }).fancybox();
-  jQuery(".colorbox, .lightbox").filter(function () {
+  jQuery(".colorbox:not([data-cbox-inline]), .lightbox").filter(function () {
     return this.href && this.href.match(/\.(png|jpg|jpeg|gif|webp)/i)
   }).attr('data-fancybox','gallery').fancybox();
   
