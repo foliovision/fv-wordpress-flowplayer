@@ -21,6 +21,8 @@ flowplayer( function(api,root) {
   
   if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
     flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
+  } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
+    flowplayer.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
   }
   
   api.bind('quality', function(e,api,quality) {
@@ -43,26 +45,38 @@ flowplayer( function(api,root) {
   var last_quality = -1;
   api.bind('ready', function(e,api) {
     if(api.engine.engineName == 'dash' ) {      
-      bitrates = api.engine.dash.getBitrateInfoListFor('video');      
-      if( localStorage.FVPlayerDashQuality && api.conf.dash.initialVideoQuality ) { // Dash.js gives us initialVideoQuality 
+      bitrates = api.engine.dash.getBitrateInfoListFor('video');
+      if( localStorage.FVPlayerDashQuality && api.conf.dash.initialVideoQuality ) { // Dash.js gives us initialVideoQuality
         api.quality(api.conf.dash.initialVideoQuality);
-        root.one('progress', function() { // we need to make sure Flowplayer Dash.js setInitialVideoQuality won't enable the ABR again
-          setTimeout( function() {
-            api.quality(api.conf.dash.initialVideoQuality);
-          });
-        });
       }
       quality_sort();
     } else if(api.engine.engineName == 'hlsjs-lite' ) {
-      if( localStorage.FVPlayerHLSQuality && api.video.qualities > 2 ) {
-        api.quality(localStorage.FVPlayerHLSQuality);
-        root.one('progress', function() {
-          setTimeout( function() {
-            api.quality(localStorage.FVPlayerHLSQuality);
+      if( api.video.qualities && api.video.qualities.length > 2 ) {
+        var qswitch = -1;
+        if( localStorage.FVPlayerHLSQuality ) {
+          qswitch = localStorage.FVPlayerHLSQuality;
+          
+        } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
+          jQuery(api.video.qualities).each( function(k,v) {
+            var height = parseInt(v.label);
+            if( height > 0 && hd_quality == -1 && height >= 720 && height <= 720 ) {
+              qswitch = k;
+            }
           });
-        });
+          
+        }
+        
+        if( qswitch > -1 ) {
+          api.quality(qswitch);
+          root.one('progress', function() {
+            setTimeout( function() {
+              api.quality(qswitch);
+            });
+          });
+        }
+        
+        quality_sort();
       }
-      quality_sort();
     } else if( api.video.sources_fvqs && api.video.sources_fvqs.length > 0 && api.video.src.match(/vimeo.*?\.mp4/) ) {
       setTimeout( quality_sort, 0 );      
     }    

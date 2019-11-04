@@ -415,6 +415,10 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
     }
+    
+    if( $fv_fp->_get_option('hd_streaming') ) {
+      $aConf['hd_streaming'] = true;
+    }
 
     $aConf['hlsjs'] = array(
       'startLevel' => -1,
