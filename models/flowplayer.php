@@ -653,7 +653,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _set_conf( $aNewOptions = false ) {
     if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
-    $sKey7 = !empty($aNewOptions['key7']) ? trim($aNewOptions['key7']) : false;
     
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
@@ -698,7 +697,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     
     if( $sKey ) $aNewOptions['key'] = trim($sKey);
-    if( $sKey7 ) $aNewOptions['key7'] = $sKey7;
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -1142,7 +1140,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
         $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
-        $css .= $sel." .fv-fp-prevbtn:before, ".$sel." .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {

@@ -154,7 +154,6 @@ foreach( $conf AS $k => $v ) {
 unset($conf['_wp_http_referer']);
 
 if( !empty($conf['key']) ) $conf['key'] = '(redacted)';
-if( !empty($conf['key7']) ) $conf['key7'] = '(redacted)';
 
 if( !empty($conf['googleanalytics']) ) $conf['googleanalytics'] = '(redacted)';
 
