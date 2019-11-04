@@ -52,7 +52,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     // splash end
     $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
     
-    $html = preg_replace( '~\?ver=[0-9-wpalphabeta\.]+~', '?ver=1.2.3', $html);
+    $html = preg_replace( '~\?ver=[0-9-wpalphabetaRC\.]+~', '?ver=1.2.3', $html);
     
     $html = preg_replace( '~<video:publication_date>(.*?)</video:publication_date>~', '<video:publication_date>2019-04-23T09:44:33+00:00</video:publication_date>', $html);
     

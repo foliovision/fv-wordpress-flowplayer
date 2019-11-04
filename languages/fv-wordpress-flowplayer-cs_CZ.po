@@ -2410,3 +2410,21 @@ msgstr ""
 #~ "strong>. videos into your posts or pages. With MP4 videos, FV WordPress "
 #~ "Flowplayer offers 98% coverage even on mobile devices."
 #~ msgstr "sadsa"
+
+msgid "All"
+msgstr "Vše"
+
+msgid "Play All"
+msgstr "Přehrát vše"
+
+msgid "Replay Playlist"
+msgstr "Opakuj playlist"
+
+msgid "Repeat Track"
+msgstr "Opakuj video"
+
+msgid "Shuffle Playlist"
+msgstr "Náhodný výběr"
+
+msgid "Item %d."
+msgstr "Video %d."

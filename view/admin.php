@@ -240,6 +240,8 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 
+            <?php $fv_fp->_get_checkbox(__('Force HD Streaming', 'fv-wordpress-flowplayer'), 'hd_streaming', __('Use HD quality even on slow connections.', 'fv-wordpress-flowplayer'), __( 'User can still switch to lower quality by hand. Works with HLS and MPEG-DASH streams on desktop and laptop computers.', 'fv-wordpress-flowplayer') ); ?>
+
             <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player top bar.', 'fv-wordpress-flowplayer') ); ?>
             
 						<tr>
@@ -1164,7 +1166,7 @@ function fv_flowplayer_admin_skin() {
     'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
                   .fv-wp-flowplayer-notice-small { color: #%val% !important; }',
     'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
-                  .flowplayer .fv-fp-prevbtn:before, .flowplayer .fv-fp-nextbtn:before { border-color:#%val% !important; }',
+                  .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }',
     'design-timeline' => '',
     'design-icons' => '',
   );

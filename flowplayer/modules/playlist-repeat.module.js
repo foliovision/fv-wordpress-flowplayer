@@ -18,9 +18,22 @@ flowplayer( function(api,root) {
     
     if( root.data('button-repeat') ) {
       if( api.conf.playlist.length > 0 && root.find('.fv-fp-playlist').length == 0 ) {
-        var playlist_button = jQuery('<strong class="fv-fp-playlist mode-normal"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>Replay Playlist</title><use xlink:href="#fvp-replay-list"></use></svg><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><use xlink:href="#fvp-shuffle"></use></svg><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>Replay Track</title><use xlink:href="#fvp-replay-track"></use></svg><span id="fvp-playlist-play" title="Play All">All</span></strong>'),
-            playlist_menu = jQuery('<div class="fp-menu fv-fp-playlist-menu"><a data-action="repeat_playlist"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>Replay Playlist</title><use xlink:href="#fvp-replay-list"></use></svg> <span class="screen-reader-text">Repeat Playlist</span></a><a data-action="shuffle_playlist"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>Shuffle Playlist</title><use xlink:href="#fvp-shuffle"></use></svg> <span class="screen-reader-text">Shuffle Playlist</span></a><a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>Repeat Track</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">Repeat Track</span></a><a class="fp-selected" data-action="normal"><span id="fvp-playlist-play" title="Play All">All</span></a></div>').insertAfter( root.find('.fp-controls') );
-            
+        var t = fv_flowplayer_translations,
+          playlist_button = jQuery(
+          '<strong class="fv-fp-playlist mode-normal">\
+            <svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg>\
+            <svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg>\
+            <svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg>\
+            <span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span>\
+            </strong>'),
+          playlist_menu = jQuery(
+            '<div class="fp-menu fv-fp-playlist-menu">\
+              <a data-action="repeat_playlist"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_all+'</span></a>\
+              <a data-action="shuffle_playlist"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg> <span class="screen-reader-text">'+t.playlist_shuffle+'</span></a>\
+              <a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_video+'</span></a>\
+              <a class="fp-selected" data-action="normal"><span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span></a>\
+              </div>').insertAfter( root.find('.fp-controls') );
+          
         api.conf.playlist_shuffle = api.conf.track_repeat = false;
           
         var random_seed = randomize();
