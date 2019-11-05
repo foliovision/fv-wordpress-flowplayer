@@ -34,18 +34,24 @@ flowplayer( function(api,root) {
   if( api.conf.playlist.length ) {
     // Check if playlist is only single video with video ads
     var show = true;
-    // video ad, single video
-    if( typeof(api.conf.playlist[0].click) != 'undefined' && typeof(api.conf.playlist[1].click) == 'undefined' && typeof(api.conf.playlist[2]) == 'undefined' ) {
-      show = false;
+    var playlist = api.conf.playlist;
+
+    if( playlist.length == 2 ){
+      // video ad, single video
+      if( typeof(playlist[0].click) != 'undefined' && typeof(playlist[1].click) == 'undefined' ) {
+        show = false;
+      }
+      // single video, video ad
+      if( typeof(playlist[0].click) == 'undefined' && typeof(playlist[1].click) != 'undefined' ) {
+        show = false;
+      }
+    } else if( playlist.length == 3 ) {
+      // video ad, single video, video ad
+      if( typeof(playlist[0].click) != 'undefined' && typeof(playlist[1].click) == 'undefined' && typeof(playlist[2].click) != 'undefined') {
+        show = false;
+      }
     }
-    // single video, video ad
-    if( typeof(api.conf.playlist[0].click) == 'undefined' && typeof(api.conf.playlist[1].click) != 'undefined' && typeof(api.conf.playlist[2]) == 'undefined' ) {
-      show = false;
-    }
-    // video ad, single video, video ad
-    if( typeof(api.conf.playlist[0].click) != 'undefined' && typeof(api.conf.playlist[1].click) == 'undefined' && typeof(api.conf.playlist[2]) !='undefined' && typeof(api.conf.playlist[2].click) != 'undefined' && typeof(api.conf.playlist[3]) == 'undefined' ) {
-      show = false;
-    }
+
     // Add prev and next buttons
     if (show) {
       var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
