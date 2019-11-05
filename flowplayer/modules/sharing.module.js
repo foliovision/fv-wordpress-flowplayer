@@ -32,17 +32,34 @@ flowplayer( function(api,root) {
   jQuery('.fp-header',root).prepend( jQuery('.fvp-share-bar',root) );
   
   if( api.conf.playlist.length ) {
-    var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
-    var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
-    root.find('.fp-controls .fp-playbtn').before(prev).after(next);
-    prev.click( function() {
-      api.trigger('prev',[api]);
-      api.prev();
-    });
-    next.click( function() {
-      api.trigger('next',[api]);
-      api.next();
-    });
+    // Check if playlist is only single video with video ads
+    var show = true;
+    // video ad, single video
+    if( typeof(api.conf.playlist[0].click) != 'undefined' && typeof(api.conf.playlist[1].click) == 'undefined' && typeof(api.conf.playlist[2]) == 'undefined' ) {
+      show = false;
+    }
+    // single video, video ad
+    if( typeof(api.conf.playlist[0].click) == 'undefined' && typeof(api.conf.playlist[1].click) != 'undefined' && typeof(api.conf.playlist[2]) == 'undefined' ) {
+      show = false;
+    }
+    // video ad, single video, video ad
+    if( typeof(api.conf.playlist[0].click) != 'undefined' && typeof(api.conf.playlist[1].click) == 'undefined' && typeof(api.conf.playlist[2]) !='undefined' && typeof(api.conf.playlist[2].click) != 'undefined' && typeof(api.conf.playlist[3]) == 'undefined' ) {
+      show = false;
+    }
+    // Add prev and next buttons
+    if (show) {
+      var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
+      var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
+      root.find('.fp-controls .fp-playbtn').before(prev).after(next);
+      prev.click( function() {
+        api.trigger('prev',[api]);
+        api.prev();
+      });
+      next.click( function() {
+        api.trigger('next',[api]);
+        api.next();
+      });
+    }
   }
   
   api.bind("pause resume finish unload ready", function(e,api) {
