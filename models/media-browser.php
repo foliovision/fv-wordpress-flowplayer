@@ -8,7 +8,7 @@ abstract class FV_Player_Media_Browser {
     // load base JS
     add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 );
     add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg_base') );
-    add_action( 'admin_print_footer_scripts', array($this, 'init_base'), 1 );
+    add_action( 'admin_footer', array($this, 'init_base'), 1 );
 
     // register extending class WP AJAX action
     $this->ajax_action_name = $ajax_action_name;
