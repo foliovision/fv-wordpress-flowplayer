@@ -2109,6 +2109,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     $dataInPost = ($_GET['fv_player_preview'] === 'POST');
     $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
+    $shortcode = apply_filters('fv_filter_preview_data', $shortcode);
+
     $matches = null;
     $width ='';
     $height ='';
