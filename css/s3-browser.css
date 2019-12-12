@@ -121,8 +121,8 @@
     text-align: center;
     border-radius: 0.25em;
     color: #FFF;
-    display: inline-block;
-    margin: 0.9em 1.2em 0.8em 1.3em !important;
+    display: block;
+    margin-top: 0.9em;
     position: relative;
     overflow: hidden;
     box-shadow: 1.74em -2.1em 0 0 #A4A7AC inset;
