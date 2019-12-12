@@ -357,6 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.9.727 - 2019/12/12 =
+
+* AWS - adding new regions
+* New setting - Force HD Streaming for websites who prefer video quality over buffering speed
+* Playlist - add sort="reverse" to shortcode to shows the playlist in reverse item order
+* Bugfix - invisible menus trapping click events below the player on mobile
+* Bugfix - Playlist menu - not adding when there is a single video with ads
+* Bugfix - S3 Bucket browser - fix for missing styling
+* Bugfix - Vimeo/MPEG-DASH mute button fix
+
 = 7.4.8.727 - 2019/10/23 =
 
 * Playlist menu - fixing to not include the FV Player Pro Video Ads
