@@ -114,7 +114,7 @@
     width: auto;
     height: auto;
 }
-.attachments-browser .icon.file {
+.wp-core-ui .attachments-browser .icon.file {
     width: 2.5em;
     height: 3em;
     line-height: 3em;
