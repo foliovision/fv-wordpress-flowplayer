@@ -959,13 +959,15 @@
 
 .flowplayer.is-splash .fp-ui noscript{display:block;z-index: 1000;position: absolute;left:0;right:0;padding:2em;background:black;margin-top:20%}
 
-.flowplayer .fp-splash {
+.flowplayer .fp-splash,
+.entry-content .flowplayer .fp-splash {
   object-fit: contain;
   height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
+  border: 0;
 }
 
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
