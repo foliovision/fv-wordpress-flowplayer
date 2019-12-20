@@ -26,9 +26,9 @@
 .flowplayer.is-mouseover .fp-captions, .flowplayer.is-paused .fp-captions { bottom: 3em; }
 .flowplayer.is-loading .fp-engine { top: -9999em; }
 .flowplayer.is-poster .fp-engine,.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
-.flowplayer.forced-fullscreen .fp-ui .fp-header {filter: alpha(opacity=1); opacity: 1; }
+.flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header {filter: alpha(opacity=1); opacity: 1; }
 .flowplayer.is-splash .fp-ui > *,.flowplayer.is-poster .fp-ui > * { display: none; }
-.flowplayer.forced-fullscreen .fp-ui, .flowplayer.forced-fullscreen .fp-ui .fp-header { display: block; }
+.flowplayer.forced-fullscreen.is-loading .fp-ui, .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header { display: block; }
 .flowplayer.is-splash .fp-ui > .fp-play, 
 .flowplayer.is-poster .fp-ui > .fp-play,
 .flowplayer.is-splash.is-loading .fp-ui > .fp-waiting, 
@@ -450,10 +450,10 @@
   .flowplayer .fp-message.fp-shown + .fp-header {
     filter: alpha(opacity=0);
     opacity: 0; }
-  .flowplayer.forced-fullscreen .fp-message.fp-shown + .fp-header {
+  .flowplayer.forced-fullscreen.is-loading .fp-message.fp-shown + .fp-header {
     filter: alpha(opacity=1);
     opacity: 1; }
-  .flowplayer.forced-fullscreen .fp-message.fp-shown + .fp-header .fvp-share-bar, .flowplayer.forced-fullscreen .fp-message.fp-shown + .fp-header .fp-fullscreen {
+  .flowplayer.forced-fullscreen.is-loading .fp-message.fp-shown + .fp-header .fvp-share-bar, .flowplayer.forced-fullscreen.is-loading .fp-message.fp-shown + .fp-header .fp-fullscreen {
     filter: alpha(opacity=0);
     opacity: 0; }    
   .flowplayer .fp-textarea {
