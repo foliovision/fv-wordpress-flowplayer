@@ -432,11 +432,11 @@ jQuery( function($) {
         splash_input.val(splash);
       }
     }
-    
-    if( extra && extra.hlskey ) {
-      $url_input.parents('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
-    } else {
-      $url_input.parents('table').find('#fv_wp_flowplayer_hlskey').val('');
+
+    if( extra ) {
+      for (var i in extra) {
+        $('#fv_wp_flowplayer_' + i + ':visible').val(extra[i]);
+      }
     }
 
     $popup_close_btn.click();
