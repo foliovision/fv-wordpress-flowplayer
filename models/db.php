@@ -584,7 +584,7 @@ class FV_Player_Db {
           
           // check if we should change order of videos
           $ordered_videos = explode(',', $data['videos']);
-          if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'title'))) {
+          if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'reverse', 'title'))) {
 
             switch ($atts['sort']) {
               case 'oldest':
@@ -607,6 +607,10 @@ class FV_Player_Db {
                 }
 
                 $ordered_videos = array_values($ordered_videos_tmp);
+                break;
+
+              case 'reverse':
+                $ordered_videos = array_reverse($ordered_videos);
                 break;
 
               case 'title':

@@ -1,9 +1,17 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
-  
+  var original_prev, original_next, random_seed;
+
   if( !root.data('button-no-picture') && !root.data('button-repeat') && !root.data('button-rewind') ) return;
   
   api.bind('ready', function(e,api) {
+    
+    // Backup original api.next() and api.prev()
+    if( typeof original_next == 'undefined' && typeof original_prev == 'undefined' ) {
+      original_next = api.next;
+      original_prev = api.prev;
+    }
+
     if( !api.video.type.match(/^audio/) && root.data('button-no-picture') && root.find('.fv-fp-no-picture').length == 0 ) {
       var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="20px" height="20px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
       
@@ -35,9 +43,9 @@ flowplayer( function(api,root) {
               </div>').insertAfter( root.find('.fp-controls') );
           
         api.conf.playlist_shuffle = api.conf.track_repeat = false;
-          
-        var random_seed = randomize();
         
+        random_seed = randomize();
+
         var should_advance = api.conf.advance;
 
         playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
@@ -95,6 +103,22 @@ flowplayer( function(api,root) {
           
           }
           
+          if(api.conf.playlist_shuffle) {
+            api.next = function() {
+              api.play( random_seed.pop() );
+              if( random_seed.length == 0 ) random_seed = randomize();
+            };
+            
+            api.prev = function() {
+              api.play( random_seed.shift() );
+              if( random_seed.length == 0 ) random_seed = randomize();
+            };
+
+          } else {
+            api.next = original_next;
+            api.prev = original_prev;
+          }
+
         });
         
         if( api.conf.loop ) {
@@ -151,7 +175,7 @@ flowplayer( function(api,root) {
     root.find('.fv-fp-playlist').remove();
     root.find('.fv-fp-track-repeat').remove();
   });
-  
+
   function array_shuffle(a) {
     var j, x, i;
     for (i = a.length; i; i--) {
@@ -172,5 +196,6 @@ flowplayer( function(api,root) {
     random_seed = array_shuffle(random_seed);
     console.log('FV Player Randomizer random seed:',random_seed);
     return random_seed;
-  }  
+  }
+
 });

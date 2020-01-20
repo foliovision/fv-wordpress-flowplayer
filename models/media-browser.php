@@ -8,7 +8,7 @@ abstract class FV_Player_Media_Browser {
     // load base JS
     add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 );
     add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg_base') );
-    add_action( 'admin_print_footer_scripts', array($this, 'init_base'), 1 );
+    add_action( 'admin_footer', array($this, 'init_base'), 1 );
 
     // register extending class WP AJAX action
     $this->ajax_action_name = $ajax_action_name;
@@ -21,6 +21,7 @@ abstract class FV_Player_Media_Browser {
   function init_base() {
     global $fv_wp_flowplayer_ver;
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), $fv_wp_flowplayer_ver, true );
+    wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','','1.0','screen');
     $this->init();
   }
 
