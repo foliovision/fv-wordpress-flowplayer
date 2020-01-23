@@ -58,6 +58,8 @@
           var splashInput = item.find('#fv_wp_flowplayer_field_splash');
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
+          
+          splashInput.trigger('keyup');
         }
         if(response.error) {
           message.html('<div class="error"><p>'+response.error+'</p></div>');
