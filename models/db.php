@@ -495,11 +495,15 @@ class FV_Player_Db {
    *
    * @return mixed Returns the correct attribute value for shortcode use.
    */
-  private function mapDbAttributeValue2Shortcode($att_name, $att_value) {
+  private function mapDbAttributeValue2Shortcode($att_name, $att_value, $data) {
     switch ($att_name) {
       case 'playlist_advance':
         if($att_value == 'on' ) return 'true';
         if($att_value == 'off' ) return 'false';
+      case 'share':
+        if( $att_value == 'custom' && !empty($data['share_title']) && !empty($data['share_url']) ) {
+          return $data['share_title'].';'.$data['share_url'];
+        }
     }
 
     return $att_value;
@@ -554,7 +558,7 @@ class FV_Player_Db {
         if ( $data ) {
           foreach ( $data AS $k => $v ) {
             $k = $this->mapDbAttributes2Shortcode( $k );
-            $v = $this->mapDbAttributeValue2Shortcode( $k, $v );
+            $v = $this->mapDbAttributeValue2Shortcode( $k, $v, $data );
             if ( $v ) {
               // we omit empty values and they will get set to defaults if necessary
               $atts[ $k ] = $v;
