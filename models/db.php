@@ -805,7 +805,8 @@ class FV_Player_Db {
             unset($video_data['fv_wp_flowplayer_field_width'], $video_data['fv_wp_flowplayer_field_height']);
 
             // remove global player HLS key option, as it's handled as meta data item
-            unset($video_data['fv_wp_flowplayer_hlskey'], $video_data['fv_wp_flowplayer_hlskey_cryptic']);
+            // TODO: create proper API!
+            unset($video_data['fv_wp_flowplayer_hlskey'], $video_data['fv_wp_flowplayer_hlskey_cryptic'], $video_data['fv_wp_flowplayer_field_encoding_job_id']);
 
             // strip video data of the prefix
             $new_video_data = array();
