@@ -524,7 +524,7 @@ $doc.ready(function($){
   /*
    * Preview iframe dialog resize
    */
-  $doc.on('fvp-preview-complete',function(e){
+  $doc.on('fvp-preview-complete',function(e,width,height){
     fv_player_shortcode_preview = false;
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
     setTimeout(function(){
@@ -823,8 +823,7 @@ function fv_wp_flowplayer_insert( shortcode ) {
       
     } else if (field.length) {
       field.val(shortcode);
-      // Prevents double event triggering in FV Player Custom Video box
-      //field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
+      field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
 
     } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
       fv_wp_flowplayer_content = fv_wp_flowplayer_content.replace(/#fvp_placeholder#/, shortcode);
@@ -3634,7 +3633,7 @@ jQuery( function($) {
     var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
     $.get(url, function(response) {
       wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
-      $doc.trigger('fvp-preview-complete', [ shortcode, wrapper.data('key'), wrapper ] );
+      $doc.trigger('fvp-preview-complete');
       indicator.remove();
     } );
 

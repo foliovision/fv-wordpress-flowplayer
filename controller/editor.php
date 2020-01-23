@@ -332,7 +332,7 @@ function fv_player_splashcreen_action() {
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
-    $filename = $title .'.jpg';
+    $filename = $title .'.jpeg';
     
     // $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
 
