@@ -58,6 +58,9 @@
           var splashInput = item.find('#fv_wp_flowplayer_field_splash');
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
+          
+          // trigger autosave
+          splashInput.trigger('keyup');
         }
         if(response.error) {
           message.html('<div class="error"><p>'+response.error+'</p></div>');
@@ -66,6 +69,7 @@
         spinner.remove();
         button.prop("disabled",false);
 
+        // trigger preview
         fv_wp_flowplayer_submit('refresh-button');
         setTimeout(function(){
           splashInput.css('background-color','#ffffff');
