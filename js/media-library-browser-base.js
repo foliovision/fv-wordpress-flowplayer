@@ -166,7 +166,7 @@ function fv_flowplayer_browser_browse(data, options) {
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
-          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + '>' + name + '</div>'
+          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
           + '</div>'
           + '</div>'
           + '</div>' +
@@ -414,7 +414,7 @@ jQuery( function($) {
     return splash;
   }
 
-  function fileUrlIntoShortcodeEditor(href) {
+  function fileUrlIntoShortcodeEditor(href, extra) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
@@ -432,6 +432,21 @@ jQuery( function($) {
         splash_input.val(splash);
       }
     }
+    
+    if( extra && extra.hlskey ) {
+      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
+    } else {
+      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
+    }
+    
+    // TODO: Proper API!
+    if( extra && extra.encoding_job_id ) {
+      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val(extra.encoding_job_id);
+    } else {
+      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val('');
+    }
+    
+    
 
     $popup_close_btn.click();
 
@@ -610,7 +625,7 @@ jQuery( function($) {
       filenameDiv = $e.find('.filename div');
 
     if (filenameDiv.length && filenameDiv.data('link')) {
-      fileUrlIntoShortcodeEditor(filenameDiv.data('link'));
+      fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'));
     }
 
     return false;

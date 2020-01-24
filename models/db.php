@@ -208,8 +208,10 @@ class FV_Player_Db {
 
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
-    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
-    
+    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
+    $author_id = get_current_user_id();
+    $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+
     // load single player, as requested by the user
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
@@ -229,27 +231,40 @@ class FV_Player_Db {
         // cache this, so we can use this in the FV_Player_Db_Player::getTotalPlayersCount() method
         $player_ids_when_searching = $player_video_ids;
 
+        $db_options = array(
+          'select_fields'       => 'player_name, date_created, videos, author',
+          'order_by'            => $order_by,
+          'order'               => $order,
+          'offset'              => $offset,
+          'per_page'            => $per_page,
+          'search_by_video_ids' => $player_video_ids
+        );
+
+        if( $cannot_edit_other_posts ) {
+          $db_options['author_id'] = $author_id;
+        }
+
         new FV_Player_Db_Player( null, array(
-          'db_options' => array(
-            'select_fields'       => 'player_name, date_created, videos',
-            'order_by'            => $order_by,
-            'order'               => $order,
-            'offset'              => $offset,
-            'per_page'            => $per_page,
-            'search_by_video_ids' => $player_video_ids
-          )
+          'db_options' => $db_options
         ), $FV_Player_Db );
       }
     } else {
       // load all players, which will put them into the cache automatically
+
+      $db_options = array(
+        'select_fields' => 'player_name, date_created, videos, author',
+        'order_by'      => $order_by,
+        'order'         => $order,
+        'offset'        => $offset,
+        'per_page'      => $per_page,
+      );
+
+      if( $cannot_edit_other_posts ) {
+        $db_options['author_id'] = $author_id;
+      }
+
       new FV_Player_Db_Player( null, array(
-        'db_options' => array(
-          'select_fields' => 'player_name, date_created, videos',
-          'order_by'      => $order_by,
-          'order'         => $order,
-          'offset'        => $offset,
-          'per_page'      => $per_page
-        )
+        'db_options' => $db_options
       ), $FV_Player_Db );
     }
 
@@ -294,6 +309,7 @@ class FV_Player_Db {
           $result_row->player_name = $player->getPlayerName();
           $result_row->date_created = $player->getDateCreated();
           $result_row->thumbs = array();
+          $result_row->author = $player->getAuthor();
           $result_row->subtitles_count = $player->getCount('subtitles');
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
@@ -480,11 +496,15 @@ class FV_Player_Db {
    *
    * @return mixed Returns the correct attribute value for shortcode use.
    */
-  private function mapDbAttributeValue2Shortcode($att_name, $att_value) {
+  private function mapDbAttributeValue2Shortcode($att_name, $att_value, $data) {
     switch ($att_name) {
       case 'playlist_advance':
         if($att_value == 'on' ) return 'true';
         if($att_value == 'off' ) return 'false';
+      case 'share':
+        if( $att_value == 'custom' && !empty($data['share_title']) && !empty($data['share_url']) ) {
+          return $data['share_title'].';'.$data['share_url'];
+        }
     }
 
     return $att_value;
@@ -539,7 +559,7 @@ class FV_Player_Db {
         if ( $data ) {
           foreach ( $data AS $k => $v ) {
             $k = $this->mapDbAttributes2Shortcode( $k );
-            $v = $this->mapDbAttributeValue2Shortcode( $k, $v );
+            $v = $this->mapDbAttributeValue2Shortcode( $k, $v, $data );
             if ( $v ) {
               // we omit empty values and they will get set to defaults if necessary
               $atts[ $k ] = $v;
@@ -569,7 +589,7 @@ class FV_Player_Db {
           
           // check if we should change order of videos
           $ordered_videos = explode(',', $data['videos']);
-          if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'title'))) {
+          if (!empty($atts['sort']) && in_array($atts['sort'], array('oldest', 'newest', 'reverse', 'title'))) {
 
             switch ($atts['sort']) {
               case 'oldest':
@@ -592,6 +612,10 @@ class FV_Player_Db {
                 }
 
                 $ordered_videos = array_values($ordered_videos_tmp);
+                break;
+
+              case 'reverse':
+                $ordered_videos = array_reverse($ordered_videos);
                 break;
 
               case 'title':
@@ -781,7 +805,8 @@ class FV_Player_Db {
             unset($video_data['fv_wp_flowplayer_field_width'], $video_data['fv_wp_flowplayer_field_height']);
 
             // remove global player HLS key option, as it's handled as meta data item
-            unset($video_data['fv_wp_flowplayer_hlskey'], $video_data['fv_wp_flowplayer_hlskey_cryptic']);
+            // TODO: create proper API!
+            unset($video_data['fv_wp_flowplayer_hlskey'], $video_data['fv_wp_flowplayer_hlskey_cryptic'], $video_data['fv_wp_flowplayer_field_encoding_job_id']);
 
             // strip video data of the prefix
             $new_video_data = array();

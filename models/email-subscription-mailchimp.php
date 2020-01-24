@@ -2,18 +2,28 @@
 
 global $fv_fp, $fv_player_MailChimp;
 
-$fv_player_MailChimp = new \DrewM\MailChimp\MailChimp($fv_fp->conf['mailchimp_api']);
-$fv_player_MailChimp->verify_ssl = false;
+$fv_player_MailChimp = false;
+try {
+  $fv_player_MailChimp = new \DrewM\MailChimp\MailChimp($fv_fp->conf['mailchimp_api']);
+  $fv_player_MailChimp->verify_ssl = false;
+} catch( Exception $e ) {}
 
 function fv_player_mailchimp_result() {
   global $fv_player_MailChimp;
-  var_dump($fv_player_MailChimp);
-  return $fv_player_MailChimp->get('lists');
+  if( $fv_player_MailChimp ) {
+    return $fv_player_MailChimp->get('lists');
+  } else {
+    return false;
+  }
 }
 
 function fv_player_mailchimp_last_error() {
   global $fv_player_MailChimp;
-  return $fv_player_MailChimp->getLastError();
+  if( $fv_player_MailChimp ) {
+    return $fv_player_MailChimp->getLastError();
+  } else {
+    return false;
+  }
 }
 
 function fv_player_mailchimp_post($list_id, $email, $merge_fields ) {
