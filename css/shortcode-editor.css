@@ -41,6 +41,8 @@
 
 #fv-player-shortcode-editor-editor{ top:0; }
 #fv-player-shortcode-editor-editor > table{ width:100%; }
+#fv-player-shortcode-editor-editor td.field {position: relative;}
+#fv-player-shortcode-editor-editor .fv-player-shortcode-editor-small-spinner {position: absolute; left: 70%; top: 6px;}
 #fv-player-shortcode-editor td{ vertical-align: top; position: relative }
 .fv-player-tab table{ margin-bottom: 10px; }
 .fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
@@ -69,7 +71,7 @@
 .is-singular .hide-if-singular{display:none!important;}
 .is-playlist-active .hide-if-playlist-active{display:none!important;}
 
-.playlist_edit{ display:block; }
+.submit-button-wrapper .playlist_edit{ display:none; }
 .fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{visibility: hidden;}
 .fv-player-tab-playlist tr:hover .fvp_item_remove{visibility: visible;color: #a00;}
 .fv-player-tab-playlist a{cursor:pointer;}
@@ -124,7 +126,9 @@
 
 .fv-player-tabs th { width: 21%; text-align: right; }
 .fv-player-tabs .fv-player-tab-playlist th { text-align: left; }
-
+.fv-player-tabs th[valign=top] label {
+    margin-top: 4px;
+}
 
 
 /*  moved in from main plugin css */
@@ -171,4 +175,22 @@ a #add-format, a #add-rtmp {
 
 #fv-player-shortcode-editor-editor ::placeholder {
   opacity:.5;
+}
+
+.fv-player-save-waiting {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+}
+.fv-player-save-completed {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-left: 4px solid #fff;
+  box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+  margin: 5px 15px 2px;
+  padding: 1px 12px;
+  border-left-color: #46b450;
 }

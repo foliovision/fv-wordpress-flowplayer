@@ -441,9 +441,19 @@ jQuery( function($) {
         var data_index = $url_input.parents('table').data('index');
         jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview').val(extra.timeline_previews);
       }
+
     } else {
-      $url_input.parents('table').find('#fv_wp_flowplayer_hlskey').val('');
+      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
     }
+    
+    // TODO: Proper API!
+    if( extra && extra.encoding_job_id ) {
+      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val(extra.encoding_job_id);
+    } else {
+      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val('');
+    }
+    
+    
 
     $popup_close_btn.click();
 

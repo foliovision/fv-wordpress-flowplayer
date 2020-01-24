@@ -175,6 +175,13 @@ function fv_player_preload() {
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
         index = jQuery('a',playlist).index(this);
         $prev = $this.prev('a');
+      
+      // TODO: There should be a better way of sending a signal to the editor!
+      if( location.href.match(/wp-admin/) && $this.parents('.fv-player-editor-preview').length > 0 ) {
+        fv_flowplayer_conf.current_video_to_edit = index;
+        $this.parents('.fv-player-custom-video').find('.edit-video .fv-player-editor-button').click();
+        return false;
+      }
 
       if ($prev.length && $this.is(':visible') && !$prev.is(':visible')) {
         $prev.click();
@@ -311,16 +318,44 @@ function fv_player_preload() {
   jQuery(window).on('hashchange',fv_autoplay_exec);
 }
 
+/*
+Calling this without any argument will check all .flowplayer elements and load FV Player where not loaded yet. You can also call it for a single element, then it loads that one and gives you the Flowplayer API for that one. If it's already loaded it gives you that API too - great for lazy load use.
+*/
+function fv_player_load( forced_el ) {
+  if( forced_el && forced_el.lenght > 1 ) {
+    console.log('FV Player: Can\'t use fv_player_load with more than a single forced element!');
+  }
+  var load_players = forced_el,
+    forced_api = false;
 
-function fv_player_load() {
-  
-  jQuery('.flowplayer' ).each( function(i,el) {
+  if( !load_players ) load_players = jQuery('.flowplayer' );
+
+  load_players.each( function(i,el) {
     var root = jQuery(el);
     var api = root.data('flowplayer');
-    if( api ) return;
-    
+    if( api ) {
+      if( forced_el ) forced_api = api;
+      return;
+    }
+
+    if( forced_el ) { // if the element load is forced we process the lazy load data too
+      root.find('.fp-preload, .fvfp_admin_error').remove();
+      if( root.attr('data-item-lazy') ) {
+        root.attr('data-item', root.attr('data-item-lazy') );
+        root.removeAttr('item-lazy')
+      } else if( playlist = jQuery( '[rel='+root.attr('id')+']' ) ) {
+        playlist.find('a[data-item-lazy]').each( function(k,v) {
+          v = jQuery(v);
+          v.attr('data-item', v.attr('data-item-lazy') );
+          v.removeAttr('data-item-lazy');
+        });
+      }
+    }
+
     if( root.attr('data-item') ) {
-      root.flowplayer( { clip: fv_player_videos_parse(root.attr('data-item'), root) });
+      forced_api = flowplayer( root[0], { clip: fv_player_videos_parse(root.attr('data-item'), root) } );
+      root.data('flowplayer',forced_api);
+      
     } else if( playlist = jQuery( '[rel='+root.attr('id')+']' ) ) {
       if ( playlist.find('a[data-item]').length == 0 ) return;  //  respect old playlist script setup
       
@@ -333,7 +368,8 @@ function fv_player_load() {
         }
       });
 
-      root.flowplayer( { playlist: items } );
+      forced_api = flowplayer( root[0], { playlist: items } );
+      root.data('flowplayer',forced_api);
     }
   } );
   
@@ -346,6 +382,10 @@ function fv_player_load() {
     jQuery('body').removeClass('fv_flowplayer_tabs_hide');
     jQuery('.fv_flowplayer_tabs_content').tabs();
   }
+
+  if( forced_el && forced_api ) {
+    return forced_api;
+  }  
 
 }
 

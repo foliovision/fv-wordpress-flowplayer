@@ -64,7 +64,8 @@ class FV_Player_Db_Player {
     $videos, // comma-delimited IDs of videos for this player
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
-    $meta_data = null;
+    $meta_data = null,
+    $ignored_input_fields = array();
 
   private static
     $db_table_name,
@@ -198,6 +199,7 @@ class FV_Player_Db_Player {
   
   public function getCount($video_meta) {
     if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
+    if( $video_meta == 'cues' && isset($this->cues_count) ) return $this->cues_count;
     if( $video_meta == 'chapters' && isset($this->chapters_count) ) return $this->chapters_count;
     if( $video_meta == 'transcript' && isset($this->transcript_count) ) return $this->transcript_count;
     return 0;
@@ -442,16 +444,18 @@ CREATE TABLE " . self::$db_table_name . " (
   private function fill_properties( $options, $DB_Cache = false ) {
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
-      if (property_exists($this, $key)) {
-        $this->$key = stripslashes($value);
-        
-      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
-        $this->$key = stripslashes($value);
-        
-      } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id'))) {
-        // generate warning
-        trigger_error('Unknown property for new DB player: ' . $key);
-        
+      if (!in_array($key, $this->ignored_input_fields)) {
+        if ( property_exists( $this, $key ) ) {
+          $this->$key = stripslashes( $value );
+
+        } else if ( in_array( $key, array( 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ) ) ) {
+          $this->$key = stripslashes( $value );
+
+        } else if ( ! in_array( $key, array( 'drm_text', 'email_list', 'live', 'popup_id' ) ) ) {
+          // generate warning
+          trigger_error( 'Unknown property for new DB player: ' . $key );
+
+        }
       }
     }    
     
@@ -498,6 +502,9 @@ CREATE TABLE " . self::$db_table_name . " (
   function __construct($id, $options = array(), $DB_Cache = null) {
 
     global $wpdb;
+
+    // add any extra fields from extending plugins that should be ORM-ignored
+    $this->ignored_input_fields = apply_filters('fv_flowplayer_add_ignored_input_names', $this->ignored_input_fields);
 
     if ($DB_Cache) {
       self::$DB_Instance = $DB_Cache;
@@ -588,18 +595,27 @@ CREATE TABLE " . self::$db_table_name . " (
           if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
-
-          $player_data = $wpdb->get_results('SELECT
-  '.$select.',
+          
+          $meta_counts_select = '';
+          $meta_counts_join = '';
+          if( is_admin() ) {
+            $meta_counts_select = ',
   count(subtitles.id) as subtitles_count,
+  count(cues.id) as cues_count,
   count(chapters.id) as chapters_count,
-  count(transcript.id) as transcript_count
-  FROM `'.self::$db_table_name.'` AS p
-  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  count(transcript.id) as transcript_count';
+            $meta_counts_join = 'LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS cues ON v.id = cues.id_video AND cues.meta_key like "cues%"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
-  '.$where.'
+  ';
+          }
+          
+          $player_data = $wpdb->get_results('SELECT
+  '.$select.$meta_counts_select.'
+  FROM `'.self::$db_table_name.'` AS p
+  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+  '.$meta_counts_join.$where.'
   GROUP BY p.id
   '.$order.$limit);
           
@@ -801,7 +817,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data'))) {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -984,7 +1000,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields'))) {
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
@@ -1014,8 +1030,41 @@ CREATE TABLE " . self::$db_table_name . " (
     if (!$wpdb->last_error) {
       // check for any meta data
       if (is_array($meta_data) && count($meta_data)) {
+        // we check which meta values are no longer set and remove these
+        $existing_meta = $is_update ? $this->getMetaData() : array();
+        $existing_meta_ids = array();
+        foreach( $existing_meta AS $existing ) {
+          $found = false;
+          foreach ($meta_data as $meta_record) {
+            if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
+              $found = true;
+              break;
+            }
+          }
+          if( !$found ) {
+            $existing->delete();
+          } else {
+            $existing_meta_ids[$existing->getId()] = true;
+          }
+        }        
+        
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
+          // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
+          if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
+            unset($meta_record['id']);          
+          }
+          
+          // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
+          if( empty($meta_record['id']) ) {
+            foreach( $existing_meta AS $existing ) {
+              if( $meta_record['meta_key'] == $existing->getMetaKey() ) {
+                $meta_record['id'] = $existing->getId();
+                break;
+              }
+            }
+          }          
+          
           // add our player ID
           $meta_record['id_player'] = $this->id;
 
@@ -1023,8 +1072,10 @@ CREATE TABLE " . self::$db_table_name . " (
           $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, self::$DB_Instance);
 
           // add meta data ID
-          if ($is_update) {
+          if( !empty($meta_record['id']) ) {
             $meta_object->link2db($meta_record['id']);
+          } else if( empty($meta_record['meta_value']) ) {
+            continue;
           }
 
           $meta_object->save();
@@ -1054,7 +1105,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified'))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields'))) {
         $export_data[$property] = $value;
       }
     }

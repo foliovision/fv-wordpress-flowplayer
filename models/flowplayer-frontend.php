@@ -472,7 +472,7 @@ class flowplayer_frontend extends flowplayer
         if( !empty($this->aCurArgs['fsforce']) ) {
           $attributes['data-fsforce'] = $this->aCurArgs['fsforce'];
         }
-
+        
         //  Align
         $attributes['class'] .= $this->get_align();
         
@@ -504,7 +504,7 @@ class flowplayer_frontend extends flowplayer
             $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
           }
         }
-                
+        
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
           $attributes['data-rtmp'] = $rtmp_server;
@@ -563,7 +563,7 @@ class flowplayer_frontend extends flowplayer
          if( !empty($this->aCurArgs['transcript']) ) {
           $attributes['class'] .= ' has-transcript';
         }
-        
+
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
@@ -1049,7 +1049,6 @@ class flowplayer_frontend extends flowplayer
     return $aSubtitles;
   }
   
-  
   function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
     global $post;
     
@@ -1128,7 +1127,7 @@ class flowplayer_frontend extends flowplayer
           
     $sHTMLSharing = '<ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank"></a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=' . $sTitle .'&url='. $sPermalink . '" target="_blank"></a></li>
     <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank"></a></li></ul>';
     
     if( isset($post) && isset($post->ID) ) {

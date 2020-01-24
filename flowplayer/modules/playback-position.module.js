@@ -4,7 +4,6 @@
 flowplayer( function(api,root) {
   var
     $root = jQuery(root),
-    enabled = flowplayer.conf.video_position_save_enable || $root.data('save-position'),
     progressEventsCount = 0,
     // number of events to pass before we auto-send current video positions
     sendPositionsEvery = 60,
@@ -48,12 +47,15 @@ flowplayer( function(api,root) {
         if (typeof(flowplayer['playPositions']) == 'undefined') {
           flowplayer['playPositions'] = [];
         }
+        if (typeof(flowplayer['sawVideo']) == 'undefined') {
+          flowplayer['sawVideo'] = [];
+        }
 
         var
           originalVideoApiPath = getOriginalSource(api.video),
           position = Math.round(api.video.time);
 
-        flowplayer['playPositions'][originalVideoApiPath.src] = position;
+        flowplayer['playPositions'][api.video.id || originalVideoApiPath.src] = position;
 
         // store the new position in the instance itself as well
         if (originalVideoApiPath.position) {
@@ -99,9 +101,13 @@ flowplayer( function(api,root) {
         if (typeof(flowplayer['playPositions']) == 'undefined') {
           flowplayer['playPositions'] = [];
         }
+        if (typeof(flowplayer['sawVideo']) == 'undefined') {
+          flowplayer['sawVideo'] = [];
+        }
 
         var originalVideoApiPath = getOriginalSource(api.video);
-        flowplayer['playPositions'][originalVideoApiPath.src] = 0;
+        flowplayer['playPositions'][api.video.id || originalVideoApiPath.src] = 0;
+        flowplayer['sawVideo'][api.video.id || originalVideoApiPath.src] = 1;
       }
     },
 
@@ -124,8 +130,8 @@ flowplayer( function(api,root) {
           if (data && typeof(data) !== 'undefined') {
             try {
               data = JSON.parse(data);
-              if (data[originalVideoApiPath.src]) {
-                seek(data[originalVideoApiPath.src]);
+              if (data[api.video.id || originalVideoApiPath.src]) {
+                seek(data[api.video.id || originalVideoApiPath.src]);
               }
             } catch (e) {
               // something went wrong...
@@ -151,7 +157,8 @@ flowplayer( function(api,root) {
       for (var video_name in flowplayer['playPositions']) {
         postData.push({
           name: video_name,
-          position: flowplayer['playPositions'][video_name]
+          position: flowplayer['playPositions'][video_name],
+          saw: typeof(flowplayer['sawVideo'][video_name]) != "undefined" ? flowplayer['sawVideo'][video_name] : false
         });
       }
 
@@ -227,7 +234,9 @@ flowplayer( function(api,root) {
       clearInterval(do_seek);
     }, 10 );
   };
-    
+  
+  var enabled = flowplayer.conf.video_position_save_enable || $root.data('save-position');
+  if( $root.data('save-position') == false ) enabled = false;
   if( !enabled ) return;
 
   // stop events  
