@@ -433,8 +433,15 @@ jQuery( function($) {
       }
     }
     
-    if( extra && extra.hlskey ) {
-      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
+    if( extra ) {
+      if( extra.hlskey) {
+        $url_input.parents('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
+      }
+      if( extra.timeline_previews ) {
+        var data_index = $url_input.parents('table').data('index');
+        jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview').val(extra.timeline_previews);
+      }
+
     } else {
       $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
     }
