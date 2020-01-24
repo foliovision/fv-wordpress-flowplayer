@@ -355,6 +355,9 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                       </div>
                     </td>
                   </tr>
+
+                  <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append'); ?>
+
                   <tr class="submit-button-wrapper">
                     <td colspan="2">
                     </td>              
