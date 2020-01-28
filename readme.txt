@@ -357,7 +357,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.4.10.727 - 2020/01/28 =
+= 7.4.14.727 - 2020/01/28 =
 
 * HLS.js - enabling on iOS 13 and Safari above version 8
 * Bugfix - CSS - avoiding borders on splash images
