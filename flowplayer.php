@@ -56,6 +56,7 @@ include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
+include_once(dirname( __FILE__ ) . '/models/bitchute.php');
 include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
