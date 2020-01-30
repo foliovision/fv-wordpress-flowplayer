@@ -779,7 +779,7 @@ jQuery( function($) {
   $( document ).on( "click", ".media-button-select", function(event) {
     var
       $e = jQuery('#__assets_browser .selected'),
-      filenameDiv = $e.find('.filename div');
+      filenameDiv = ($e.get(0).tagName == 'TR' ? $e.find('td:first') : $e.find('.filename div'));
 
     if (filenameDiv.length && filenameDiv.data('link')) {
       fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'));
