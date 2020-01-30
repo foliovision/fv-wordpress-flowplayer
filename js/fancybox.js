@@ -180,7 +180,14 @@ if( document.addEventListener ) {
 jQuery(document).on('ready', function() {
   if( typeof(flowplayer) != "undefined" ) {
     flowplayer( function(api,root) {
-      if( jQuery(root).parents('.fv_player_lightbox_hidden').length ) {
+      var lightbox_wrap = jQuery(root).closest('.fv_player_lightbox_hidden');
+      if( lightbox_wrap.length ) {
+        lightbox_wrap.click( function(e) {
+          if( e.target == e.currentTarget) {
+            jQuery.fancybox.close();
+          }
+        });
+        
         if( flowplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
           api.fullscreen = function() {
             jQuery.fancybox.getInstance().FullScreen.toggle();
