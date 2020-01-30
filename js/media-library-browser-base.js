@@ -4,10 +4,59 @@ var
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
-  fv_flowplayer_browser_assets_loaders = {};
+  fv_flowplayer_browser_assets_loaders = {},
+  $overlay_div;
+
+function fv_flowplayer_browser_get_loader_div() {
+  return $overlay_div;
+}
+
+// file size formatter
+function fv_flowplayer_browser_format_filesize(fSizeOriginal) {
+  var
+    fSize = parseInt(fSizeOriginal),
+    fSizeTextual = fSize != fSizeOriginal,
+    sizeSuffix = 'bytes';
+
+  if (!fSizeTextual) {
+    // if filesize is too small, show it in KBytes
+    if (fSize > -1) {
+      if (fSize > 10000) {
+        if (fSize <= 999999) {
+          fSize /= 100000;
+          sizeSuffix = 'KB';
+        } else if (fSize <= 999999999) {
+          fSize /= 1000000;
+          sizeSuffix = 'MB';
+        } else {
+          fSize /= 1000000000;
+          sizeSuffix = 'GB';
+        }
+      }
+
+      // "round" to 2 decimals
+      if (parseFloat(fSize) != parseInt(fSize)) {
+        fSize += '';
+        fSize = fSize.substring(0, fSize.indexOf('.') + 3);
+      }
+
+      fSize += ' ' + sizeSuffix;
+    }
+  } else {
+    // if there's a non-numeric filesize, just display that
+    fSize = fSizeOriginal;
+  }
+
+  return fSize;
+}
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
+  // bail out if we're showing table view - the browser will be an encompassing DIV in such case
+  if (jQuery('#__assets_browser').get(0).tagName == 'DIV') {
+    return;
+  }
+
   const
     width = jQuery('#__assets_browser').width(),
     idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
@@ -20,13 +69,49 @@ function fv_flowplayer_media_browser_setColumns() {
   }
 }
 
-function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
-  $fileListUl.append('<li tabindex="0" class="attachment" id="overlay-loader-li"></li>');
-  var $moreDiv = jQuery('<div class="attachment-preview"><div class="loadmore"></div></div>');
-  var $a = jQuery('<button type="button" class="button media-button button-primary button-large">Load More</button>');
+// removes all previously loaded items from the listing
+function fv_flowplayer_browser_clear_items() {
+  var $browser = jQuery('#__assets_browser');
+
+  if ($browser.get(0).tagName == 'UL') {
+    // grid view - remove all LIs
+    $browser.find('li').remove();
+  } else {
+    // table view - remove all rows (the $browser object is actually a table TBODY section)
+    $browser.find('tr').remove();
+  }
+}
+
+// adds the actual loader GIF to the loader element on page
+function fv_flowplayer_browser_add_animated_loader() {
+  var $browser = jQuery('#__assets_browser');
+  jQuery('#overlay-loader-item ' + ($browser.get(0).tagName == 'UL' ? 'div' : 'td')).html($overlay_div);
+}
+
+// removes the actual loader from the page
+function fv_flowplayer_browser_delete_animated_loader() {
+  jQuery('#overlay-loader-item').remove();
+}
+
+// adds a Load More button to the end of listing
+function fv_flowplayer_browser_add_load_more_button(loadMoreButtonAction) {
+  var
+    $fileListUl = $('#__assets_browser'),
+    $a = jQuery('<button type="button" class="button media-button button-primary button-large">Load More</button>');
+
   $a.on('click', loadMoreButtonAction);
-  $moreDiv.find('.loadmore').append($a);
-  jQuery('#overlay-loader-li').append($moreDiv);
+
+  if ($fileListUl.get(0).tagName == 'UL') {
+    // grid view
+    $fileListUl.append('<li tabindex="0" class="attachment" id="overlay-loader-item"></li>');
+    var $moreDiv = jQuery('<div class="attachment-preview"><div class="loadmore"></div></div>');
+    $moreDiv.find('.loadmore').append($a);
+    jQuery('#overlay-loader-item').append($moreDiv);
+  } else {
+    // table view
+    $fileListUl.find('tfoot').append('<tr id="overlay-loader-item"><td colspan="4"></td></tr>');
+    jQuery('#overlay-loader-item td').append($a);
+  }
 }
 
 // retrieves options and data for media browser and refreshes its content
@@ -35,7 +120,11 @@ function fv_flowplayer_browser_browse(data, options) {
   const
     filemanager = jQuery('.attachments-browser'),
     breadcrumbs = jQuery('.breadcrumbs'),
-    fileList = filemanager.find('.data'),
+    // TODO:
+    //fileList = filemanager.find('.data' + (options && options.layoutType && options.layoutType == 'table' ? ' tbody' : '')),
+    //fileListContainer = (options && options.layoutType && options.layoutType == 'table' ? jQuery('#__assets_browser:visible') : filemanager.find('.data')),
+    fileListContainer = jQuery('#__assets_browser:visible'),
+    fileList = filemanager.find('.data tbody'),
     showBreadcrumbs = (options && options.breadcrumbs ? options.breadcrumbs : false);
 
   var
@@ -57,6 +146,9 @@ function fv_flowplayer_browser_browse(data, options) {
   } else if (options.append) {
     // we're appending, just render new items
     render(data.items, options);
+
+    // TODO: if (options && options.layoutType && options.layoutType == 'table')
+    jQuery("#__assets_browser table").trigger('update', [true, function() {}]);
   }
 
 
@@ -77,12 +169,18 @@ function fv_flowplayer_browser_browse(data, options) {
       timedSearchTask = setTimeout(function() {
         options.ajaxSearchCallback();
         timedSearchTask = -1;
+        jQuery("#__assets_browser table").trigger('update', [true, function() {}]);
       }, 1000);
     });
   }
 
   // Render the HTML for the file manager
   function render(data, options) {
+
+    var //TODO: layoutType = (options && options.layoutType ? options.layoutType : 'grid');
+      layoutType = 'table',
+      hasDurations = false,
+      hasSizes = false;
 
     fv_flowplayer_scannedFolders = [];
     fv_flowplayer_scannedFiles = [];
@@ -109,7 +207,8 @@ function fv_flowplayer_browser_browse(data, options) {
     // Empty the old result and make the new one
     // ... don't do this if we're appending data
     if (!options || !options.append) {
-      fileList.empty().hide();
+      fileList.empty();
+      fileListContainer.hide();
     }
 
     if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
@@ -123,20 +222,32 @@ function fv_flowplayer_browser_browse(data, options) {
 
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
-        fileList.append( jQuery(
-          '<li class="folders attachment save-ready">'
-          + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
-          + '<div class="thumbnail">'
-          + '<a href="' + f.path + '" title="' + name + '" class="folders">'
-          + '<span class="icon folder"></span>'
-          + '<div class="filename">'
-          + '<div>' + name + '</div>'
-          + '</div>'
-          + '</a>'
-          + '</div>'
-          + '</div>'
-          + '</li>')
-        );
+
+        if (layoutType == 'grid') {
+          fileList.append(jQuery(
+            '<li class="folders attachment save-ready">'
+            + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
+            + '<div class="thumbnail">'
+            + '<a href="' + f.path + '" title="' + name + '" class="folders">'
+            + '<span class="icon folder"></span>'
+            + '<div class="filename">'
+            + '<div>' + name + '</div>'
+            + '</div>'
+            + '</a>'
+            + '</div>'
+            + '</div>'
+            + '</li>')
+          );
+        } else {
+          fileList.append(jQuery(
+            '<tr>' +
+            '<td><a href="' + f.path + '" title="' + name + '" class="folders"><span class="icon folder"></span>' + name + '</a></td>' +
+            '<td>-</td>' +
+            '<td>-</td>' +
+            '<td>-</td>' +
+            '</tr>')
+          );
+        }
       });
     }
 
@@ -146,7 +257,10 @@ function fv_flowplayer_browser_browse(data, options) {
 
         var
           name = escapeHTML(f.name),
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
+          file = jQuery(
+            layoutType == 'grid'
+              ? '<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'
+              : '<tr></tr>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/),
           icon = '';
 
@@ -156,30 +270,52 @@ function fv_flowplayer_browser_browse(data, options) {
           var fileType = name.split('.');
           if( fileType.length > 1 ) {
             fileType = fileType[fileType.length-1];
-            icon = '<span class="icon file f-'+fileType+'" >.'+fileType+'</span>';
+            if (layoutType == 'grid') {
+              icon = '<span class="icon file f-' + fileType + '" >.' + fileType + '</span>';
+            } else {
+              // no text for the icon in table view, as it would be very tiny
+              icon = '<span class="icon file f-' + fileType + '" ></span>';
+            }
           } else {
             icon = '<span class="icon file"></span>';
           }
         }
 
-        file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
-          + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
-          + icon
-          + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
-          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
-          + '</div>'
-          + '</div>'
-          + '</div>' +
-          '<button type="button" class="check" tabindex="0">' +
-          '<span class="media-modal-icon"></span>' +
-          '<span class="screen-reader-text">Deselect</span>' +
-          '</button>');
+        if (layoutType == 'grid') {
+          file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
+            + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
+            + icon
+            + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
+            + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\'' + JSON.stringify(f.extra) + '\'>' + name + '</div>'
+            + '</div>'
+            + '</div>'
+            + '</div>' +
+            '<button type="button" class="check" tabindex="0">' +
+            '<span class="media-modal-icon"></span>' +
+            '<span class="screen-reader-text">Deselect</span>' +
+            '</button>');
+        } else {
+          var toAppend = '<td data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra="' + JSON.stringify(f.extra) + '">' + icon + ' ' + name + '</td>'
+            + '<td>' + f.modified + '</td>';
+
+          if (f.size > -1) {
+            hasSizes = true;
+            toAppend += '<td>' + fv_flowplayer_browser_format_filesize(f.size) + '</td>';
+          }
+
+          if (f.duration) {
+            hasDurations = true;
+            toAppend += '<td>' + (f.duration ? f.duration : '-') + '</td>';
+          }
+
+          file.append(toAppend);
+        }
 
         file.appendTo(fileList);
       });
 
       if (options && options.loadMoreButtonAction) {
-        fv_flowplayer_browser_add_load_more_button(fileList, options.loadMoreButtonAction);
+        fv_flowplayer_browser_add_load_more_button(options.loadMoreButtonAction);
       }
 
     }
@@ -188,9 +324,9 @@ function fv_flowplayer_browser_browse(data, options) {
     var url = '';
     if (filemanager.hasClass('searching')){
       url = '<span>Search results: </span>';
-      fileList.removeClass('animated');
+      fileListContainer.removeClass('animated');
     } else {
-      fileList.addClass('animated');
+      fileListContainer.addClass('animated');
 
       var right_arrow =  '<span class="arrow_sign">→</span> ';
       breadcrumbsUrls.forEach(function (u, i) {
@@ -210,9 +346,29 @@ function fv_flowplayer_browser_browse(data, options) {
     }
 
     breadcrumbs.text('').append(url);
-    fileList.show();
+
+    // apply table sorting if a table view was requested
+    if (layoutType == 'table') {
+      // if there are no durations to be shown, remove that table column completely
+      if (!hasDurations) {
+        jQuery("#__assets_browser table thead th.duration").remove();
+        $td = jQuery("#__assets_browser table tfoot td");
+        $td.attr('colspan', parseInt($td.attr('colspan')) - 1);
+      }
+
+      // if all sizes are -1, it means we should remove the size colum as well
+      if (!hasSizes) {
+        jQuery("#__assets_browser table thead th.filesize").remove();
+        $td = jQuery("#__assets_browser table tfoot td");
+        $td.attr('colspan', parseInt($td.attr('colspan')) - 1);
+      }
+
+      jQuery("#__assets_browser table").tablesorter();
+    }
+
+    fileListContainer.show();
     fv_flowplayer_media_browser_setColumns();
-    fileList.hide().fadeIn();
+    fileListContainer.hide().fadeIn();
   }
 
   // This function escapes special html characters in names
@@ -365,20 +521,52 @@ function renderBrowserPlaceholderHTML(options) {
     html += '<div class="errors"><strong>' + options.errorMsg + '</strong></div><hr /><br />';
   }
 
-  html += '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__assets_browser"></ul>\n' +
-    '<div class="media-sidebar"></div>' +
-    '\t\t<div class="nothingfound">\n' +
-    '\t\t\t<div class="nofiles"></div>\n' +
-    '\t\t\t<span>No files here.</span>\n' +
-    '\t\t</div>\n' +
-    '\n' +
-    '\t</div>';
+  // TODO:
+  //if (!options || !options.layoutType || options.layoutType == 'grid') {
+  if (false) {
+    html += '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__assets_browser"></ul>\n' +
+      '<div class="media-sidebar"></div>' +
+      '\t\t<div class="nothingfound">\n' +
+      '\t\t\t<div class="nofiles"></div>\n' +
+      '\t\t\t<span>No files here.</span>\n' +
+      '\t\t</div>\n' +
+      '\n' +
+      '\t</div>';
+  } else {
+    html += '\t\t<div tabindex="-1" id="__assets_browser" class="attachments"><table class="data"><thead><tr><th class="filename">File Name</th><th class="sorter-browserdate datemodified">Date Modified</th><th class="sorter-filesize filesize">Size</th><th class="duration">Duration</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div>\n' +
+      '<div class="media-sidebar"></div>' +
+      '\t\t<div class="nothingfound">\n' +
+      '\t\t\t<div class="nofiles"></div>\n' +
+      '\t\t\t<span>No files here.</span>\n' +
+      '\t\t</div>\n' +
+      '\n' +
+      '\t</div>';
+  }
 
   return html;
 }
 
 jQuery( function($) {
   var $lastElementSelected = null;
+    $overlay_div = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
+      'height' : '100%'
+    });
+
+  // fallback when we've not opened the browser from editor but from another page directly
+  if (!$overlay_div.length) {
+    $overlay_div = jQuery('<div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>');
+    $overlay_div.css({
+      'background-image' : 'url(../../../../wp-includes/images/wpspin-2x.gif)',
+      'background-color' : 'white',
+      'background-repeat' : 'no-repeat',
+      'background-position' : 'center',
+      'position' : 'absolute',
+      'z-index' : '2',
+      'height' : '200px',
+      'width' : '100%',
+      'cursor' : 'auto',
+    });
+  }
 
   // calculate number of columns on each window resize
   jQuery(window).on('resize', function() {
@@ -447,12 +635,12 @@ jQuery( function($) {
     return false;
   }
 
-  $( document ).on( "click", "#overlay-loader-li", function() {
+  $( document ).on( "click", "#overlay-loader-item", function() {
     // click the Load More button when the actual DIV is clicked, for accessibility
     jQuery(this).find('button').click();
   });
 
-  $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
+  $( document ).on( "click", ".folders:not(#overlay-loader-item), .breadcrumbs a", function(event) {
     var
       activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
@@ -492,37 +680,10 @@ jQuery( function($) {
 
           var
             $filenameDiv = $e.find('.filename div'),
-            fSize = parseInt($filenameDiv.data('size')),
-            fSizeTextual = fSize != $filenameDiv.data('size'),
-            fDuration = parseInt($filenameDiv.data('duration')),
-            sizeSuffix = 'bytes';
-
-          if (!fSizeTextual) {
-            // if filesize is too small, show it in KBytes
-            if (fSize > -1) {
-              if (fSize > 10000) {
-                if (fSize <= 999999) {
-                  fSize /= 100000;
-                  sizeSuffix = 'KB';
-                } else if (fSize <= 999999999) {
-                  fSize /= 1000000;
-                  sizeSuffix = 'MB';
-                } else {
-                  fSize /= 1000000000;
-                  sizeSuffix = 'GB';
-                }
-              }
-
-              // "round" to 2 decimals
-              if (parseFloat(fSize) != parseInt(fSize)) {
-                fSize += '';
-                fSize = fSize.substring(0, fSize.indexOf('.') + 3);
-              }
-            }
-          } else {
-            // if there's a non-numeric filesize, just display that
-            fSize = $filenameDiv.data('size');
-          }
+            fSize = fv_flowplayer_browser_format_filesize($filenameDiv.data('size')),
+            fSizeParsedNumeric = parseInt($filenameDiv.data('size')),
+            fSizeTextual = fSizeParsedNumeric != $filenameDiv.data('size'),
+            fDuration = parseInt($filenameDiv.data('duration'));
 
           if (fDuration && fDuration > 0) {
             var sec_num = parseInt(fDuration, 10); // don't forget the second param
@@ -570,7 +731,7 @@ jQuery( function($) {
             '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
             '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
             '\n' +
-            '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
+            '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSizeParsedNumeric > -1 ? fSize : fDuration) : '') + '</div>\n' +
             '\t\t\t</div>\n' +
             (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
@@ -612,7 +773,7 @@ jQuery( function($) {
 
   $( document ).on( "click", ".media-button-select", function(event) {
     var
-      $e = jQuery('#__assets_browser li.selected'),
+      $e = jQuery('#__assets_browser .selected'),
       filenameDiv = $e.find('.filename div');
 
     if (filenameDiv.length && filenameDiv.data('link')) {
