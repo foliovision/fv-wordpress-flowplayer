@@ -5,10 +5,10 @@ var
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
   fv_flowplayer_browser_assets_loaders = {},
-  $overlay_div;
+  $fv_player_overlay_div;
 
 function fv_flowplayer_browser_get_loader_div() {
-  return $overlay_div;
+  return $fv_player_overlay_div;
 }
 
 // file size formatter
@@ -85,7 +85,7 @@ function fv_flowplayer_browser_clear_items() {
 // adds the actual loader GIF to the loader element on page
 function fv_flowplayer_browser_add_animated_loader() {
   var $browser = jQuery('#__assets_browser');
-  jQuery('#overlay-loader-item ' + ($browser.get(0).tagName == 'UL' ? 'div' : 'td')).html($overlay_div);
+  jQuery('#overlay-loader-item ' + ($browser.get(0).tagName == 'UL' ? 'div' : 'td')).html($fv_player_overlay_div);
 }
 
 // removes the actual loader from the page
@@ -240,7 +240,7 @@ function fv_flowplayer_browser_browse(data, options) {
           );
         } else {
           fileList.append(jQuery(
-            '<tr>' +
+            '<tr class="is_folder">' +
             '<td><a href="' + f.path + '" title="' + name + '" class="folders"><span class="icon folder"></span>' + name + '</a></td>' +
             '<td>-</td>' +
             '<td>-</td>' +
@@ -260,7 +260,7 @@ function fv_flowplayer_browser_browse(data, options) {
           file = jQuery(
             layoutType == 'grid'
               ? '<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'
-              : '<tr></tr>'),
+              : '<tr class="folders"></tr>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/),
           icon = '';
 
@@ -352,6 +352,8 @@ function fv_flowplayer_browser_browse(data, options) {
       // if there are no durations to be shown, remove that table column completely
       if (!hasDurations) {
         jQuery("#__assets_browser table thead th.duration").remove();
+        // remove excessive TDs from folder items
+        jQuery("#__assets_browser table tbody tr.is_folder td:nth-child(3)").remove();
         $td = jQuery("#__assets_browser table tfoot td");
         $td.attr('colspan', parseInt($td.attr('colspan')) - 1);
       }
@@ -359,6 +361,8 @@ function fv_flowplayer_browser_browse(data, options) {
       // if all sizes are -1, it means we should remove the size colum as well
       if (!hasSizes) {
         jQuery("#__assets_browser table thead th.filesize").remove();
+        // remove excessive TDs from folder items
+        jQuery("#__assets_browser table tbody tr.is_folder td:nth-child(2)").remove();
         $td = jQuery("#__assets_browser table tfoot td");
         $td.attr('colspan', parseInt($td.attr('colspan')) - 1);
       }
@@ -547,15 +551,16 @@ function renderBrowserPlaceholderHTML(options) {
 }
 
 jQuery( function($) {
+
   var $lastElementSelected = null;
-    $overlay_div = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
+    $fv_player_overlay_div = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
       'height' : '100%'
     });
 
   // fallback when we've not opened the browser from editor but from another page directly
-  if (!$overlay_div.length) {
-    $overlay_div = jQuery('<div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>');
-    $overlay_div.css({
+  if (!$fv_player_overlay_div.length) {
+    $fv_player_overlay_div = jQuery('<div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>');
+    $fv_player_overlay_div.css({
       'background-image' : 'url(../../../../wp-includes/images/wpspin-2x.gif)',
       'background-color' : 'white',
       'background-repeat' : 'no-repeat',
@@ -679,7 +684,7 @@ jQuery( function($) {
             .addClass('selected details');
 
           var
-            $filenameDiv = $e.find('.filename div'),
+            $filenameDiv = ($e.get(0).tagName == 'TR' ? $e.find('td:first') : $e.find('.filename div')),
             fSize = fv_flowplayer_browser_format_filesize($filenameDiv.data('size')),
             fSizeParsedNumeric = parseInt($filenameDiv.data('size')),
             fSizeTextual = fSizeParsedNumeric != $filenameDiv.data('size'),
