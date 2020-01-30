@@ -513,7 +513,11 @@ function renderBrowserPlaceholderHTML(options) {
     html += select_html + '</div>';
   }
 
-  html += '<div class="media-toolbar-primary search-form">' +
+  html += '<div class="media-toolbar-primary display-mode">' +
+    '<span class="dashicons dashicons-list-view" title="table view"></span>' +
+    '<span class="dashicons dashicons-grid-view" title="grid view"></span>' +
+    '</div>' +
+    '<div class="media-toolbar-primary search-form">' +
     '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
     '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
     '</div>' +

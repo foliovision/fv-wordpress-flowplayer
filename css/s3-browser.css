@@ -375,3 +375,11 @@
 #__assets_browser tbody tr.selected td {
   background-color: #EBF2FA;
 }
+
+.media-toolbar-primary.display-mode {
+    margin: 14px;
+}
+
+.media-toolbar-primary.display-mode span {
+    cursor: pointer;
+}
