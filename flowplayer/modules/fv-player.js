@@ -276,6 +276,18 @@ function fv_player_preload() {
       if( height == 0 ) height = root.css('max-height');
       return height;
     }
+
+    // if multiple playback is allowed, we discard the splash configuration for this instance
+    // that way it won't get unloaded if another player starts playing
+    if( api.conf.multiple_playback ) {
+      // we need to do this once it actually starts loading, as otherwise Flowplayer would only start buffering the video
+      api.one('load', function() {
+        // we need to add a bit of wait as otherwise it would require another click to start playing
+        setTimeout( function() {
+          api.conf.splash = false;
+        }, 0 );
+      });
+    }
   });
   
   //sets height for embedded players 
