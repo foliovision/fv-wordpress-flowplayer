@@ -19,9 +19,10 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
     margin: 0;
     padding-bottom: 6px;
 }
-.fancybox-slide .flowplayer, .fancybox-slide .fv-playlist-slider-wrapper {
+/**/
+/* .fancybox-slide .flowplayer, .fancybox-slide .fv-playlist-slider-wrapper {
     margin-bottom: 0 !important;
-}
+} */
 .fancybox-slide .fv-playlist-slider-wrapper {
     margin-top: 1em;
 }
