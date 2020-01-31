@@ -44,7 +44,7 @@ flowplayer.bean.on(document, "keydown.fp", function(e) {
     key = e.which,
     conf = el && el.conf;
     
-  
+  if( common.hasClass(focusedRoot, "no-controlbar") ) return;
   
   if (!el || !conf.keyboard || el.disabled) return;
   
