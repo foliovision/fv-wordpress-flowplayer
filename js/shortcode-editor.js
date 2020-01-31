@@ -1305,7 +1305,7 @@ function fv_wp_flowplayer_edit() {
       fv_wp_fp_shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
 
       fv_flowplayer_conf.db_extra_shortcode_params = {};
-      var preserve = [ 'playlist_start', 'autoplay', 'sort', 'logo', 'width', 'height', 'controlbar', 'embed', 'ab', 'share', 'liststyle', 'playlist_hide', 'playlist_advance', 'ad', 'ad_height', 'ad_width', 'vast', 'midroll' ];
+      var preserve = [ 'playlist_start', 'autoplay', 'sort', 'logo', 'width', 'height', 'controlbar', 'embed', 'ab', 'share', 'liststyle', 'playlist_hide', 'playlist_advance', 'ad', 'ad_height', 'ad_width', 'vast', 'midroll', 'volume', 'fullscreen' ];
       for( var i in preserve ) {
         var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, preserve[i] );
         if (value && value[1]) {

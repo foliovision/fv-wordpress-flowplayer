@@ -149,6 +149,14 @@ function fv_player_preload() {
       root.find('.fp-volume').hide();
     }
     
+    if( root.data('fullscreen') == false ) {
+      root.find('.fp-fullscreen').remove();
+    }
+
+    if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
+      root.find('.fp-volume').remove();
+    }
+    
     // failsafe is Flowplayer is loaded outside of fv_player_load()
     var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
     if( ( !api.conf.playlist || api.conf.playlist.length == 0 ) && playlist.length && playlist.find('a[data-item]').length > 0 ) {  // api.conf.playlist.length necessary for iOS 9 in some setups
