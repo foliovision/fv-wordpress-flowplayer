@@ -11,7 +11,11 @@ flowplayer( function(api,root) {
   api.on('ready', function() {
     if ( window.localStorage.fv_player_speed && jQuery(root).find('strong.fp-speed').is(":visible") ) {
       api.speed(parseFloat(window.localStorage.fv_player_speed));
-    } 
+    }
+
+    if( jQuery(root).data('volume') == 0 ) {
+      api.volume(0,true);
+    }
   });
 
 });
