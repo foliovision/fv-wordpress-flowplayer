@@ -217,19 +217,7 @@ function fv_player_preload() {
 
     var splash_img, splash_text;
 
-    api.bind('load', function(e,api,video) {
-      if( root.hasClass('is-splash') && flowplayer.conf.multiple_playback ) {
-        console.log('no splash state!');
-        api.conf.splash = false;
-        // TODO: This might not work on mobile at all
-        api.one('ready', function() {
-          api.resume();
-        })
-      }
-    });
-
     api.bind('ready', function(e,api,video) {
-
       //console.log('playlist mark',video.index);
       setTimeout( function() {
         if( video.index > -1 ) {          

@@ -407,12 +407,6 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
-
-        /*if( $this->_get_option('multiple_playback') ) {
-          $attributes['class'] .= ' is-poster';
-        } else {
-          $attributes['class'] .= ' is-splash';
-        }*/
         
         if( !empty($this->aCurArgs['skin']) ) {
           $skin = 'skin-'.$this->aCurArgs['skin'];
