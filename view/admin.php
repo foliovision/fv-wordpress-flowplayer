@@ -281,6 +281,8 @@ function fv_flowplayer_admin_default_options() {
                 </select>
               </td>
 						</tr>
+
+            <?php $fv_fp->_get_checkbox(__('Multiple video playback', 'fv-wordpress-flowplayer'), 'multiple_playback', __('Allows multiple players to play at once.', 'fv-wordpress-flowplayer') ); ?>
             
             <?php $fv_fp->_get_checkbox(__('No Picture Button', 'fv-wordpress-flowplayer'), 'ui_no_picture_button', __('Adds a button to turn the video picture on and off.', 'fv-wordpress-flowplayer') ); ?>
 
