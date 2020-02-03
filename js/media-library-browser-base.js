@@ -5,7 +5,10 @@ var
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
   fv_flowplayer_browser_assets_loaders = {},
-  $fv_player_overlay_div;
+  $fv_player_overlay_div,
+  fv_flowplayer_browser_get_function = function() {
+     // set to empty function, as we're without a data adapter yet
+  };
 
 function fv_flowplayer_browser_get_loader_div() {
   return $fv_player_overlay_div;
@@ -53,7 +56,7 @@ function fv_flowplayer_browser_format_filesize(fSizeOriginal) {
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
   // bail out if we're showing table view - the browser will be an encompassing DIV in such case
-  if (jQuery('#__assets_browser').get(0).tagName == 'DIV') {
+  if (!jQuery('#__assets_browser').length || jQuery('#__assets_browser').get(0).tagName == 'DIV') {
     return;
   }
 
@@ -120,16 +123,29 @@ function fv_flowplayer_browser_browse(data, options) {
   const
     filemanager = jQuery('.attachments-browser'),
     breadcrumbs = jQuery('.breadcrumbs'),
-    // TODO:
-    //fileList = filemanager.find('.data' + (options && options.layoutType && options.layoutType == 'table' ? ' tbody' : '')),
-    //fileListContainer = (options && options.layoutType && options.layoutType == 'table' ? jQuery('#__assets_browser:visible') : filemanager.find('.data')),
-    fileListContainer = jQuery('#__assets_browser:visible'),
-    fileList = filemanager.find('.data tbody'),
     showBreadcrumbs = (options && options.breadcrumbs ? options.breadcrumbs : false);
 
   var
     currentPath = '',
-    breadcrumbsUrls = [];
+    breadcrumbsUrls = [],
+    fileListContainer = null,
+    fileList = null;
+
+  // load brower display option
+  if ( typeof window.localStorage == "object" && window.localStorage.fv_player_browser_display_mode ) {
+    options.layoutType = window.localStorage.fv_player_browser_display_mode;
+    if (options.layoutType == 'table') {
+      fileListContainer = jQuery('#__assets_browser:visible');
+      fileList = filemanager.find('.data tbody');
+    } else {
+      fileListContainer = filemanager.find('.data');
+      fileList = filemanager.find('.data');
+    }
+  } else {
+    options.layoutType = 'grid';
+    fileListContainer = filemanager.find('.data');
+    fileList = filemanager.find('.data');
+  }
 
   // if we're appending data, don't do all this
   if (!options || !options.append) {
@@ -147,8 +163,9 @@ function fv_flowplayer_browser_browse(data, options) {
     // we're appending, just render new items
     render(data.items, options);
 
-    // TODO: if (options && options.layoutType && options.layoutType == 'table')
-    jQuery("#__assets_browser table").trigger('update', [true, function() {}]);
+    if (options && options.layoutType && options.layoutType == 'table') {
+      jQuery("#__assets_browser table").trigger('update', [true, function () {}]);
+    }
   }
 
 
@@ -177,8 +194,8 @@ function fv_flowplayer_browser_browse(data, options) {
   // Render the HTML for the file manager
   function render(data, options) {
 
-    var //TODO: layoutType = (options && options.layoutType ? options.layoutType : 'grid');
-      layoutType = 'table',
+    var
+      layoutType = (options && options.layoutType ? options.layoutType : 'grid'),
       hasDurations = false,
       hasSizes = false;
 
@@ -478,6 +495,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
 };
 
 function renderBrowserPlaceholderHTML(options) {
+  // load brower display option
+  if ( typeof window.localStorage == "object" && window.localStorage.fv_player_browser_display_mode ) {
+    options.layoutType = window.localStorage.fv_player_browser_display_mode;
+  } else {
+    options.layoutType = 'grid';
+  }
+
   var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
 
   if (options && options.dropdownItems) {
@@ -529,9 +553,7 @@ function renderBrowserPlaceholderHTML(options) {
     html += '<div class="errors"><strong>' + options.errorMsg + '</strong></div><hr /><br />';
   }
 
-  // TODO:
-  //if (!options || !options.layoutType || options.layoutType == 'grid') {
-  if (false) {
+  if (!options || !options.layoutType || options.layoutType == 'grid') {
     html += '\t\t<ul tabindex="-1" class="data attachments ui-sortable ui-sortable-disabled" id="__assets_browser"></ul>\n' +
       '<div class="media-sidebar"></div>' +
       '\t\t<div class="nothingfound">\n' +
@@ -555,6 +577,20 @@ function renderBrowserPlaceholderHTML(options) {
 }
 
 jQuery( function($) {
+
+  $( document ).on( "click", ".dashicons-list-view, .dashicons-grid-view", function() {
+    // store last clicked tab ID
+    try {
+      if (typeof(window.localStorage) == 'object') {
+        localStorage.setItem('fv_player_browser_display_mode', $(this).hasClass('dashicons-list-view') ? 'table' : 'grid');
+      }
+    } catch(e) {
+      console.log('Could not save browser display mode - local storage disabled.');
+    } finally {
+      // re-render using the selected mode
+      fv_flowplayer_browser_get_function();
+    }
+  });
 
   var $lastElementSelected = null;
     $fv_player_overlay_div = jQuery('#fv-player-shortcode-editor-preview-spinner').clone().css({
