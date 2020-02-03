@@ -142,6 +142,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
     add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     
+    add_action( 'do_rocket_lazyload', array( $this, 'preview_no_lazy_load' ) );
+    
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
     add_filter('fv_player_item', array($this, 'get_video_checker_media') );
   }
@@ -970,7 +972,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
       }
       
-      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
       $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
       if( $sItemCaption ) {
@@ -1049,7 +1051,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $sSplashImage = $this->_get_option('splash');
           }
           
-          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
           if( $sItemCaption ) {
@@ -2240,6 +2242,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
   }
   
+  function preview_no_lazy_load( $value ) {
+    if( isset($_REQUEST['fv_player_preview']) ) {
+      return false;
+    }
+    return $value;
+  }
 
 }
 

@@ -203,7 +203,7 @@ class FV_Player_lightbox {
           $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
           $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
 
-          $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $fv_fp);
+          $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $args['src']);
 
           // re-use the existing player HTML and add data-fancybox, data-options, new id and href
           $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
