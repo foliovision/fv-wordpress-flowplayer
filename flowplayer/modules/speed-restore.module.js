@@ -14,7 +14,7 @@ flowplayer( function(api,root) {
     }
 
     if( jQuery(root).data('volume') == 0 ) {
-      api.volume(0,true);
+      api.mute(true,true);
     }
   });
 

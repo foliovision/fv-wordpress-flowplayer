@@ -19,20 +19,22 @@ flowplayer( function(api,root) {
 
   // on iOS only one audible video can play at a time, so we must mute the other players
   api.on('load', function() {
-    var i = 0;
+    var i = 0,
+      is_muted = root.data('volume') == 0;
 
-    // we go through all the players
-    jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
-      var player = jQuery(this).data('flowplayer');
+    if( !is_muted ) {
+      // we go through all the players to mute them all
+      jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
+        var player = jQuery(this).data('flowplayer');
 
-      // mute the other players
-      if( player && player.playing ) {
-        player.mute(true,true);
-      }
-    });
+        if( player && player.playing ) {
+          player.mute(true,true);
+        }
+      });
 
-    // mark the current player as the one who is making the noise
-    flowplayer.audible_instance = instance_id;
+      // mark the current player as the one who is making the noise
+      flowplayer.audible_instance = instance_id;
+    }
 
   }).on('mute', function(e,api,muted) {
     // if the player was unmuted, mute the player which was audible previously
