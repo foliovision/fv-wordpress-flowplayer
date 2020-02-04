@@ -19,6 +19,8 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
     margin: 0;
     padding-bottom: 6px;
 }
+
+/* Proper sizing for mobile landscape view */
 .fancybox-slide .flowplayer, .fancybox-slide .fv-playlist-slider-wrapper {
     margin-bottom: 0 !important;
 }
@@ -31,6 +33,7 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
 .fancybox-slide .flowplayer.fixed-controls.has-abloop {
     margin-bottom: 5.2em !important;
 }
+
 .fancybox-slide .fv-playlist-slider-wrapper {
     margin-top: 1em;
 }
