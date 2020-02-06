@@ -58,7 +58,7 @@ class FV_Player_Db_Video {
    */
   public function getCaptionFromSrc() {
     $src = $this->getSrc();
-    $arr = explode('/', $src);
+    $arr = array_filter( explode('/', $src));
     $caption = end($arr);
     
     if( $caption == 'index.m3u8' ) {
@@ -78,6 +78,10 @@ class FV_Player_Db_Video {
       $caption = "Vimeo: ".$caption;
     }
     
+    if( in_array('www.bitchute.com', $arr) ) {
+      $caption = "Bitchute: ".$caption;
+    }
+
     return urldecode($caption);
   }
   
