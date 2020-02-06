@@ -1716,7 +1716,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 <div class="wrap">
 	<div style="position: absolute; margin-top: 10px; right: 10px;">
-		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="<?php _e('Documentation', 'fv-wordpress-flowplayer'); ?>"><img alt="visit foliovision" src="//foliovision.com/shared/fv-logo.png" /></a>
+		<a href="https://foliovision.com/player" target="_blank" title="<?php _e('Documentation', 'fv-wordpress-flowplayer'); ?>"><img alt="visit foliovision" src="<?php echo flowplayer::get_plugin_url().'/images/fv-logo.png' ?>" /></a>
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>
