@@ -518,7 +518,7 @@ function fv_autoplay_init(root, index ,time){
 
   // todo: refactor!
   if(index){
-    if( fv_autoplay_can(api,parseInt(index)) ) {
+    if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
         if( fTime > -1 ) api.seek(fTime);
         fv_autoplay_exec_in_progress = false;
@@ -553,7 +553,7 @@ function fv_autoplay_init(root, index ,time){
       fv_autoplay_exec_in_progress = false;
       
     } else {
-      if( fv_autoplay_can(api) ) {
+      if( fv_player_video_link_autoplay_can(api) ) {
         api.load();
       } else if ( !fv_player_in_iframe() ) {
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
@@ -636,7 +636,7 @@ function fv_autoplay_exec(){
   }
 }
 
-function fv_autoplay_can( api, item ) {  
+function fv_player_video_link_autoplay_can( api, item ) {  
   var video = item ? api.conf.playlist[item] : api.conf.clip;
   
   if( video.sources[0].type == 'video/youtube' && ( flowplayer.support.iOS || flowplayer.support.android ) || fv_player_in_iframe() ) return false;
