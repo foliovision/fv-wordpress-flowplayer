@@ -55,15 +55,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       flowplayer.conf.native_fullscreen = true;
     }
     
-    function inIframe() {
-      try {
-          return window.self !== window.top;
-      } catch (e) {
-          return true;
-      }
-    }
-    
-    if( fls.iOS && ( inIframe() || fls.iOS.version < 7 ) ) {
+    if( fls.iOS && ( fv_player_in_iframe() || fls.iOS.version < 7 ) ) {
       flowplayer.conf.native_fullscreen = true;
     }
   }
@@ -107,6 +99,13 @@ function fv_player_videos_parse(args, root) {
   return videos;
 }
 
+function fv_player_in_iframe() {
+  try {
+      return window.self !== window.top;
+  } catch (e) {
+      return true;
+  }
+}
 
 
 
@@ -533,7 +532,7 @@ function fv_autoplay_init(root, index ,time){
       }
     } else if( flowplayer.support.inlineVideo ) {
       api.one( api.playing ? 'progress' : 'ready', function (e,api) {
-        api.play(parseInt(item));
+        api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
           if( fTime > -1 ) api.seek(fTime)
@@ -544,7 +543,9 @@ function fv_autoplay_init(root, index ,time){
       
       root.css('background-image', jQuery('[rel='+root.attr('id')+'] a').eq(index).find('span').css('background-image') );
       
-      fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
+      if( !fv_player_in_iframe() ) {
+        fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
+      }
     }
   }else{
     if( api.ready ) {
@@ -554,7 +555,7 @@ function fv_autoplay_init(root, index ,time){
     } else {
       if( fv_autoplay_can(api) ) {
         api.load();
-      } else {
+      } else if ( !fv_player_in_iframe() ) {
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
       }
       api.one('ready', function() {
@@ -638,7 +639,7 @@ function fv_autoplay_exec(){
 function fv_autoplay_can( api, item ) {  
   var video = item ? api.conf.playlist[item] : api.conf.clip;
   
-  if( video.sources[0].type == 'video/youtube' && ( flowplayer.support.iOS || flowplayer.support.android ) ) return false;
+  if( video.sources[0].type == 'video/youtube' && ( flowplayer.support.iOS || flowplayer.support.android ) || fv_player_in_iframe() ) return false;
   
   return flowplayer.support.firstframe;
 }
