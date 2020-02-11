@@ -19,6 +19,7 @@ console.log('api.conf.hd_streaming ',api.conf.hd_streaming );
         api.trigger('error', [api, { code: 3 }]);
         setTimeout(function() {
           root.removeClass('is-seeking');
+          root.addClass('is-paused');
         },0)
       }
     });
