@@ -539,10 +539,8 @@ function fv_autoplay_init(root, index ,time){
         } );
       });
       
-      fv_player_playlist_active( false, jQuery('[rel='+root.attr('id')+'] a').eq(index) );
-      
-      root.css('background-image', jQuery('[rel='+root.attr('id')+'] a').eq(index).find('span').css('background-image') );
-      
+      root.find('.fp-splash').attr('src', jQuery('[rel='+root.attr('id')+'] div').eq(index).find('img').attr('src')); // select splachscreen from playlist items by id
+
       if( !fv_player_in_iframe() ) {
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
       }
