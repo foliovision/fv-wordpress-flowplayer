@@ -12,6 +12,16 @@ console.log('api.conf.hd_streaming ',api.conf.hd_streaming );
   flowplayer.engine('hlsjs-lite').plugin(function(params) {
     hlsjs = params.hls;
 
+    // if hls decryption key is invalid show error
+    hlsjs.on(Hls.Events.ERROR, function (event, data) {
+      if( data.type == 'mediaError' && data.details == 'fragParsingError' && data.fatal == true ) {
+        hlsjs.destroy();
+        api.trigger('error', [api, { code: 3 }]);
+        setTimeout(function() {
+          root.removeClass('is-seeking');
+        },0)
+      }
+    });
     // do we force HD playback?
     var pick_quality = flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ? 720 : false;
     // or did we disable it for this player?
