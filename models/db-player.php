@@ -988,7 +988,7 @@ CREATE TABLE " . self::$db_table_name . " (
     // fill date(s)
     $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
-    if (!$is_update) {
+    if (!$is_update && empty($this->date_created) ) {
       $this->date_created = $this->date_modified;
     }
 
