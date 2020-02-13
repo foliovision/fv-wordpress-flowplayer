@@ -1021,6 +1021,17 @@
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
+.flowplayer.is-fullscreen.is-splash.is-error .fp-header {
+  display: block;
+  opacity: 1;
+}
+.flowplayer.is-fullscreen.is-splash.is-error .fp-header > * {
+  opacity: 0;
+}
+.flowplayer.is-fullscreen.is-splash.is-error .fp-header .fp-unload {
+  opacity: 1;
+}
+
 .flowplayer .fp-elapsed {min-width: 5.1ch}
 .flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
 
