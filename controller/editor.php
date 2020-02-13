@@ -178,15 +178,17 @@ function fv_wp_flowplayer_featured_image($post_id) {
   
   if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
      $url = $splash[1];
-    
-  } else if( preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
+  }
+  
+  if( !$url && preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
     global $FV_Player_Db;    
     $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
     if( !empty($atts['splash']) ) {
       $url = $atts['splash'];
     }
+  }
     
-  } else if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
+  if( !$url && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $key => $aMeta ) {
       foreach( $aMeta AS $shortcode ) {
         if( preg_match('/\[fvplayer.*?id="(\d+)/', $shortcode, $id) ) {
