@@ -122,3 +122,57 @@ if( jQuery.browser && jQuery.browser.msie && parseInt(jQuery.browser.version, 10
     jQuery(this).css('height', jQuery(this).css('max-height'));
   } );
 }
+
+/*
+MQQBrowser is Tencent's Cross Platform WebView Framework for WeChat
+It seems it doesn't support HTML5 fullscreen when on Android
+*/
+if( navigator.userAgent.match(/MQQBrowser/) ) {
+  flowplayer(function(player, root) {
+
+    /*
+    this is a copy of the original Flowplayer function with some changes
+    - it doesn't rely on flowplayer.support.fullscreen as Flowplayer only
+    checks that as the code gets loaded, not giving us a chance to change
+    it later
+    */
+    var win = window,
+      scrollY,
+      scrollX;
+
+    player.isFullscreen = false;
+
+    player.fullscreen = function(flag) {
+
+      if (player.disabled) return;
+
+      if (flag === undefined) flag = !player.isFullscreen;
+
+      if (flag) {
+        scrollY = win.scrollY;
+        scrollX = win.scrollX;
+      }
+
+      player.trigger(flag ? "fullscreen" : "fullscreen-exit", [player]);
+
+      return player;
+    };
+
+    // here we do everything that Flowplayer would do for a device without fullscreen support
+    player.on("fullscreen", function() {
+      flowplayer.common.css(root, 'position', 'fixed');
+
+    }).on("fullscreen-exit", function() {
+        var oldOpacity;
+        if (player.engine === "html5") {
+          oldOpacity = root.css('opacity') || '';
+          flowplayer.common.css(root, 'opacity', 0);
+        }
+        flowplayer.common.css(root, 'position', '');
+
+        if ( player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
+
+        win.scrollTo(scrollX, scrollY);
+    })
+  });
+}
