@@ -420,6 +420,10 @@ function flowplayer_prepare_scripts() {
       $aConf['hd_streaming'] = true;
     }
 
+    if( $fv_fp->_get_option('multiple_playback') ) {
+      $aConf['multiple_playback'] = true;
+    }
+
     $aConf['hlsjs'] = array(
       'startLevel' => -1,
       'fragLoadingMaxRetry' => 3,
