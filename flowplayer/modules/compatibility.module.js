@@ -176,3 +176,66 @@ if( navigator.userAgent.match(/MQQBrowser/) ) {
     })
   });
 }
+
+/*
+WPMobile app uses a weak user agent string - "WPMobile.App - Android" or "WPMobile.App - iOS"
+So here we detect the capabilities "properly"
+*/
+if( navigator.userAgent.match(/WPMobile.App/) ) {
+  flowplayer.support = {
+    "browser": false,
+    "iOS": false,
+    "android": false,
+    "subtitles": true,
+    "fullscreen": false, // let's be careful
+    "inlineBlock": true,
+    "touch": true,
+    "dataload": false,
+    "flex": true,
+    "svg": true,
+    "zeropreload": true,
+    "volume": true,
+    "cachedVideoTag": false,
+    "firstframe": true,
+    "inlineVideo": true,
+    "hlsDuration": true,
+    "seekable": true,
+    "preloadMetadata": false,
+    "autoplay": true,
+    "video": true,
+    "animation": true,
+    "fvmobile": true
+  }
+
+  if( navigator.userAgent.match(/iOS/) ) {
+    flowplayer.support.browser = {
+      "safari": true,
+      "version": "12.0"
+    }
+    flowplayer.support.iOS = {
+      "iPhone": true,
+      "iPad": false,
+      "version": 12,
+      "chrome": false
+    }
+    flowplayer.support.volume = false;
+
+  } else if( navigator.userAgent.match(/Android/) ) {
+    flowplayer.support.browser = {
+      "chrome": true,
+      "version": "80.0.3987.100"
+    }
+    flowplayer.support.android = {
+      "firefox": false,
+      "opera": false,
+      "samsung": false,
+      "version": 8
+    }
+    flowplayer.support.cachedVideoTag = true;
+    flowplayer.support.dataload = true;
+    flowplayer.support.hlsDuration = false;
+    flowplayer.support.preloadMetadata = true;
+    flowplayer.support.zeropreload = false;
+  }
+
+}
