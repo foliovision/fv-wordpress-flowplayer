@@ -164,7 +164,8 @@
     }
 
     // color inputs + checkbox changes
-    $previewElements.on('input change', skinPreviewInputChanged).trigger('input');
+    $previewElements.on('input change', skinPreviewInputChanged);
+    $previewElements.eq(0).trigger('input');
 
     $('[data-fv-preview]').on('select change', skinPreviewDropdownChanged);
   });
