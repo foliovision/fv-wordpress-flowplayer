@@ -36,7 +36,7 @@ class flowplayer_frontend extends flowplayer
   
   var $aPopups = array();
   
-  var $aCurArgs = false;
+  var $aCurArgs = array();
   
   var $sHTMLAfter = false;
   
@@ -80,7 +80,7 @@ class flowplayer_frontend extends flowplayer
 
     $this->hash = md5($media.$this->_salt()); //  unique player id
     // todo: harmonize this, the media arg was a bad idea in the first place
-    if( !empty($media) && $media != $this->aCurArgs['src'] ) {
+    if( !empty($media) ) {
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );

@@ -187,7 +187,8 @@ function fv_flowplayer_admin_default_options() {
             p.description { font-style: normal; }
           </style>
           <table class="form-table2">
-            <td><label for="autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
+            <tr>
+              <td class="first"><label for="autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
               <td colspan="3">
                 <p class="description">
                   <?php
@@ -574,7 +575,7 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Add featured image automatically', 'fv-wordpress-flowplayer'), array('integrations','featured_img'), __('If the featured image is not set, splash image of the first player will be used.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Always use fixed size player', 'fv-wordpress-flowplayer'), 'fixed_size', __('Enable to force video size at cost of loosing the video responsiveness.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Disable saving skin CSS to a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
-          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required <a href="https://foliovision.com/player/video-hosting/hls#hls-js" target="_blank">CORS headers</a>.','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Enable HLS.js', 'fv-wordpress-flowplayer'), 'hlsjs', __('Allows HLS playback in all modern browsers.', 'fv-wordpress-flowplayer'), __('HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required <a href="https://foliovision.com/player/video-hosting/how-to-enable-cors-headers" target="_blank">CORS headers</a>.','fv-wordpress-flowplayer' )); ?>
 
           <tr>
 						<td><label for="css_disable"><?php _e('Enable profile videos', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
@@ -627,9 +628,10 @@ function fv_flowplayer_admin_integrations() {
                 <?php
                 global $wpdb;
                 $iCount = $wpdb->get_var( "SELECT count(meta_id) FROM $wpdb->postmeta WHERE meta_key LIKE '_fv_flowplayer_%'" );
-                $iQueue = count(FV_Player_Checker::queue_get());
+                $aQueue = FV_Player_Checker::queue_get();
+                $iQueue = count($aQueue);
                 $htmlQueue = 0;
-                if( $iQueue && $aQueue = FV_Player_Checker::queue_get() ) {
+                if( $iQueue > 0 ) {
                   $htmlQueue = "<a href='#' onclick='jQuery(this).siblings(\"span\").toggle(); return false'>$iQueue</a> <span style='display: none'>(";
                   foreach( $aQueue as $k => $i ) {
                     $htmlQueue .= "<a href='".get_edit_post_link($k)."'>$k</a> ";
@@ -1112,7 +1114,7 @@ function fv_flowplayer_admin_skin() {
       'autoplay' => 'false',
       'preroll' => 'no',
       'postroll' => 'no',
-      'subtitles' =>  plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
+      'subtitles' => plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
       'caption' => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
       'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843_295x166.jpg;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053_295x166.jpg',
 			'liststyle' => 'horizontal'
