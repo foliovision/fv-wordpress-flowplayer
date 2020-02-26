@@ -35,6 +35,14 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
     }
   }
   
+  // iOS 13 and desktop Safari above version 8 support MSE, so let's use HLS.js there
+  if(
+    flowplayer.support.iOS && parseInt(flowplayer.support.iOS.version) >= 13 ||
+    !flowplayer.support.iOS && flowplayer.support.browser.safari && parseInt(flowplayer.support.browser.version) >= 8
+  ) {
+    flowplayer.conf.hlsjs.safari = true;
+  }
+  
   flowplayer.support.fvmobile = !!( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android );
   
   var fls = flowplayer.support;
@@ -47,15 +55,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       flowplayer.conf.native_fullscreen = true;
     }
     
-    function inIframe() {
-      try {
-          return window.self !== window.top;
-      } catch (e) {
-          return true;
-      }
-    }
-    
-    if( fls.iOS && ( inIframe() || fls.iOS.version < 7 ) ) {
+    if( fls.iOS && ( fv_player_in_iframe() || fls.iOS.version < 7 ) ) {
       flowplayer.conf.native_fullscreen = true;
     }
   }
@@ -99,6 +99,13 @@ function fv_player_videos_parse(args, root) {
   return videos;
 }
 
+function fv_player_in_iframe() {
+  try {
+      return window.self !== window.top;
+  } catch (e) {
+      return true;
+  }
+}
 
 
 
@@ -139,6 +146,14 @@ function fv_player_preload() {
     
     if( !flowplayer.support.volume && !flowplayer.support.autoplay ) { // iPhone iOS 11 doesn't support setting of volume, but the button it important to allow unmuting of autoplay videos
       root.find('.fp-volume').hide();
+    }
+    
+    if( root.data('fullscreen') == false ) {
+      root.find('.fp-fullscreen').remove();
+    }
+
+    if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
+      root.find('.fp-volume').remove();
     }
     
     // failsafe is Flowplayer is loaded outside of fv_player_load()
@@ -442,6 +457,16 @@ function fv_parse_sharelink(src){
   return prefix + src;
 }
 
+function fv_player_get_video_link_hash(api) {
+  var hash = fv_parse_sharelink( typeof(api.video.sources_original) != "undefined" && typeof(api.video.sources_original[0]) != "undefined" ? api.video.sources_original[0].src : api.video.sources[0].src);
+
+  if( typeof(api.video.id) != "undefined" ) {
+    hash = fv_parse_sharelink(api.video.id.toString());
+  }
+
+  return hash;
+}
+
 function fv_player_time_hms(seconds) {
 
   if(isNaN(seconds)){
@@ -501,7 +526,7 @@ function fv_autoplay_init(root, index ,time){
 
   // todo: refactor!
   if(index){
-    if( fv_autoplay_can(api,parseInt(index)) ) {
+    if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
         if( fTime > -1 ) api.seek(fTime);
         fv_autoplay_exec_in_progress = false;
@@ -515,18 +540,18 @@ function fv_autoplay_init(root, index ,time){
       }
     } else if( flowplayer.support.inlineVideo ) {
       api.one( api.playing ? 'progress' : 'ready', function (e,api) {
-        api.play(parseInt(item));
+        api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
           if( fTime > -1 ) api.seek(fTime)
         } );
       });
       
-      fv_player_playlist_active( false, jQuery('[rel='+root.attr('id')+'] a').eq(index) );
-      
-      root.css('background-image', jQuery('[rel='+root.attr('id')+'] a').eq(index).find('span').css('background-image') );
-      
-      fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
+      root.find('.fp-splash').attr('src', jQuery('[rel='+root.attr('id')+'] div').eq(index).find('img').attr('src')); // select splachscreen from playlist items by id
+
+      if( !fv_player_in_iframe() ) {
+        fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
+      }
     }
   }else{
     if( api.ready ) {
@@ -534,9 +559,9 @@ function fv_autoplay_init(root, index ,time){
       fv_autoplay_exec_in_progress = false;
       
     } else {
-      if( fv_autoplay_can(api) ) {
+      if( fv_player_video_link_autoplay_can(api) ) {
         api.load();
-      } else {
+      } else if ( !fv_player_in_iframe() ) {
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
       }
       api.one('ready', function() {
@@ -617,10 +642,10 @@ function fv_autoplay_exec(){
   }
 }
 
-function fv_autoplay_can( api, item ) {  
+function fv_player_video_link_autoplay_can( api, item ) {  
   var video = item ? api.conf.playlist[item] : api.conf.clip;
   
-  if( video.sources[0].type == 'video/youtube' && ( flowplayer.support.iOS || flowplayer.support.android ) ) return false;
+  if( video.sources[0].type == 'video/youtube' && ( flowplayer.support.iOS || flowplayer.support.android ) || fv_player_in_iframe() ) return false;
   
   return flowplayer.support.firstframe;
 }

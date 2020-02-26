@@ -52,9 +52,22 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     // splash end
     $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
     
-    $html = preg_replace( '~\?ver=[0-9-wpalphabeta\.]+~', '?ver=1.2.3', $html);
+    $html = preg_replace( '~\?ver=[0-9-wpalphabetaRC\.]+~', '?ver=1.2.3', $html);
     
     $html = preg_replace( '~<video:publication_date>(.*?)</video:publication_date>~', '<video:publication_date>2019-04-23T09:44:33+00:00</video:publication_date>', $html);
+
+    // plugin_url() giving bad paths as FV Player folder is above the WordPress folder (test/testSuite), more: https://core.trac.wordpress.org/ticket/34358
+    // so you end up with paths like http://example.org/wp-content/plugins/Users/martinv/github/fv-wordpress-flowplayer/images/test-subtitles.vtt
+    $html = preg_replace( '~\\\/Users\\\/.*?\\\/github\\\/~', '\/', $html);
+
+    // Settings page preview link
+    $html = preg_replace( '~http://example.org\?fv_player_embed=.*?&fv_player_preview=~', 'http://example.org?fv_player_embed=SOME_NONCE?&fv_player_preview=', $html);
+    
+    // System Info - gone for now
+    $html = preg_replace( '~### Begin System Info ###[\s\S]*?### End System Info ###~', '$1: some value', $html);
+
+    $html = preg_replace( '~Are you having issues with version [0-9.]+~', 'Are you having issues with version XYZ', $html);
+
     
     return $html;
   }

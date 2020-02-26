@@ -36,7 +36,7 @@ class flowplayer_frontend extends flowplayer
   
   var $aPopups = array();
   
-  var $aCurArgs = false;
+  var $aCurArgs = array();
   
   var $sHTMLAfter = false;
   
@@ -80,7 +80,7 @@ class flowplayer_frontend extends flowplayer
 
     $this->hash = md5($media.$this->_salt()); //  unique player id
     // todo: harmonize this, the media arg was a bad idea in the first place
-    if( !empty($media) && $media != $this->aCurArgs['src'] ) {
+    if( !empty($media) ) {
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
@@ -142,7 +142,7 @@ class flowplayer_frontend extends flowplayer
     $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;
 
     $splash_img = $this->get_splash();
-
+    
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
       if( stripos( $media_item, 'rtmp://' ) === 0 ) {
         $rtmp = $media_item;
@@ -510,7 +510,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-rtmp'] = $rtmp_server;
         }
 
-        if( !$this->_get_option('allowfullscreen') ) {
+        if( !$this->_get_option('allowfullscreen') || isset($this->aCurArgs['fullscreen']) && $this->aCurArgs['fullscreen'] == 'false' ) {
           $attributes['data-fullscreen'] = 'false';
         }
         
@@ -527,6 +527,15 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($this->aCurArgs['dvr']) && $this->aCurArgs['dvr'] == 'true' ) {
           $attributes['data-dvr'] = 'true';
+        }
+
+        if( isset($this->aCurArgs['hd_streaming']) ) {
+          $attributes['data-hd_streaming'] = $this->aCurArgs['hd_streaming'];
+        }
+
+        if( isset($this->aCurArgs['volume']) ) {
+          $attributes['data-volume'] = floatval($this->aCurArgs['volume']);
+          $attributes['class'] .= ' no-volume';
         }
 
         $playlist = '';
@@ -979,8 +988,8 @@ class flowplayer_frontend extends flowplayer
     } else if( $this->_get_option('splash') ) {
       $splash_img = $this->_get_option('splash');
     }    
-    
-    $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, $this );
+
+    $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, !empty($this->aCurArgs['src']) ? $this->aCurArgs['src'] : false );
 
     return $splash_img;
   }
@@ -1128,7 +1137,7 @@ class flowplayer_frontend extends flowplayer
           
     $sHTMLSharing = '<ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank"></a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status=' . $sTitle . $sPermalink . '" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=' . $sTitle .'&url='. $sPermalink . '" target="_blank"></a></li>
     <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank"></a></li></ul>';
     
     if( isset($post) && isset($post->ID) ) {

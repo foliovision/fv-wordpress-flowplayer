@@ -2195,3 +2195,21 @@ msgstr ""
 #~ msgstr ""
 #~ "Poznámka pre admina: Upload videa je dočasne zakázaný, zaškrtnite "
 #~ "'Povoliť upload uživateľovi' v "
+
+msgid "All"
+msgstr "Všetko"
+
+msgid "Play All"
+msgstr "Prehrať všetko"
+
+msgid "Replay Playlist"
+msgstr "Opakuj playlist"
+
+msgid "Repeat Track"
+msgstr "Opakuj video"
+
+msgid "Shuffle Playlist"
+msgstr "Náhodný výber"
+
+msgid "Item %d."
+msgstr "Video %d."

@@ -2392,3 +2392,21 @@ msgstr ""
 
 #~ msgid "HTML Popup"
 #~ msgstr "HTML popup-meldung"
+
+msgid "All"
+msgstr "Alles"
+
+msgid "Play All"
+msgstr ""
+
+msgid "Replay Playlist"
+msgstr ""
+
+msgid "Repeat Track"
+msgstr ""
+
+msgid "Shuffle Playlist"
+msgstr ""
+
+msgid "Item %d."
+msgstr "Liste %d."

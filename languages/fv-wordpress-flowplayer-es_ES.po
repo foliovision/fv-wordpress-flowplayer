@@ -2325,3 +2325,21 @@ msgstr ""
 
 #~ msgid "Thank you for purchasing FV Player license!"
 #~ msgstr "Gracias por la compra FV Player de licencia!"
+
+msgid "All"
+msgstr "Todos"
+
+msgid "Play All"
+msgstr ""
+
+msgid "Replay Playlist"
+msgstr ""
+
+msgid "Repeat Track"
+msgstr ""
+
+msgid "Shuffle Playlist"
+msgstr ""
+
+msgid "Item %d."
+msgstr ""

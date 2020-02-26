@@ -123,6 +123,10 @@ function current_user_can( $capability ) {
   return false;
 }
 
+function did_action( $action ) {
+  return false;
+}
+
 function get_option() {
   return checkAndReturnRequestedValue();
 }
