@@ -38,6 +38,7 @@ $doc.ready(function($){
     saving = false,
     next = false,
     save_please = false,
+    overlay_close_waiting_for_save = false,
     loading = true,
     int_keyup = false,
     ua = window.navigator.userAgent;
@@ -48,6 +49,14 @@ $doc.ready(function($){
   $.fn.fv_player_box.close = function() {
     // prevent closing of the overlay if we have unsaved data
     if (fv_player_draft && fv_player_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
+      return;
+    }
+
+    // prevent closing if we're still saving the data
+    if (save_please || saving) {
+      overlay_close_waiting_for_save = true;
+      $('.fv-wp-flowplayer-notice-small, .fv-player-shortcode-editor-small-spinner').hide();
+      fv_wp_flowplayer_big_loader_show('Saving your data, please wait...');
       return;
     }
 
@@ -682,6 +691,12 @@ $doc.ready(function($){
           saving = false;
           $('.fv-player-save-waiting').removeClass('is-active');
           $('.fv-player-save-completed').show().delay( 2500 ).fadeOut(400);
+
+          // close the overlay, if we're waiting for the save
+          if (overlay_close_waiting_for_save) {
+            overlay_close_waiting_for_save = false;
+            $.fn.fv_player_box.close();
+          }
         }
       } catch(e) {
         error(e);
