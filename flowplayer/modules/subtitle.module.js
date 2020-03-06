@@ -12,9 +12,11 @@ flowplayer( function(api,root) {
     }
   });
 
-  root.on('click', '.fp-subtitle-menu', function(e) { // Start checking on subtitle menu click
-    check = true;
-    api.on('progress', time_check);
+  root.on('click', '.fp-subtitle-menu a[data-subtitle-index]', function(e) { // Start checking on subtitle menu click
+    if( jQuery(this).data('subtitle-index') > -1 ) {
+      check = true;
+      api.on('progress', time_check);
+    }
   });
 
   // Trigger cuepoint if user enables subtitles during play 
