@@ -44,7 +44,7 @@ flowplayer( function(api,root) {
   });
   
   jQuery('a',playlist_menu).click( function() {
-    if(typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined') {
+    if(typeof(api.conf.playlist[jQuery(this).data('index') - 1]) != 'undefined' && typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined' ) {
       api.play(jQuery(this).data('index') - 1);
     } else {
       api.play(jQuery(this).data('index'));
