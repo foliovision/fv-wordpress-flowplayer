@@ -1,5 +1,7 @@
 /*
  *  Audio player support
+ *
+ *  Makes sure the controls are visible at all times as there is no video showing up.
  */
 flowplayer(function(api, root) {
   root = jQuery(root);
