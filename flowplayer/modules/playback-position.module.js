@@ -170,7 +170,7 @@ flowplayer( function(api,root) {
         // logged-in user, store position in their metadata on server
         return jQuery.ajax({
           type: 'POST',
-          async: async,
+          //async: async,
           url: fv_fp_ajaxurl,
           complete: callback,
           data: {
