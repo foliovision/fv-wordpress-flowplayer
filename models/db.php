@@ -41,6 +41,7 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
     add_action( 'wp_ajax_fv_player_db_remove', array($this, 'remove_player') );
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce
+    add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
     add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') ); // todo: error message on failure
   }
 
@@ -1461,7 +1462,39 @@ class FV_Player_Db {
     header('Content-Type: application/json');
     die(json_encode($json_data));
   }
-  
+
+  /**
+   * AJAX method to retrieve IDs and names of all players to be populated
+   * into a dropdown in the front-end.
+   */
+  public function retrieve_all_players_for_dropdown() {
+    global $FV_Player_Db;
+
+    $db_options = array(
+      'select_fields' => 'player_name, p.id, date_created',
+      'order_by'      => 'player_name, p.id',
+      'order'         => 'ASC'
+    );
+
+    new FV_Player_Db_Player( null, array(
+      'db_options' => $db_options
+    ), $FV_Player_Db );
+
+
+    $json_data = array();
+    $players = $FV_Player_Db->getPlayersCache();
+
+    foreach ($players as $player) {
+      $json_data[] = array(
+        'id' => $player->getId(),
+        'name' => $player->getPlayerName()
+      );
+    }
+
+    header('Content-Type: application/json');
+    die(json_encode($json_data));
+  }
+
   /**
    * Runs on save_post hook and it stored the post ID in player meta. It also checks any player meta which is pointing to this post and if it's no longer found in it the meta is removed.
    *

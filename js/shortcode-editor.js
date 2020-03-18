@@ -568,12 +568,12 @@ $doc.ready(function($){
   });
 
   $doc.on('fv_flowplayer_shortcode_new', function() {
-    $('#fv-player-shortcode-editor .button-primary').show();
+    $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
     $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
   $doc.on('fv_flowplayer_video_meta_load', function() {
-    $('#fv-player-shortcode-editor .button-primary').hide();
+    $('#fv-player-shortcode-editor .button-primary, .copy_player').hide();
     $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
 
     // not a good solution!
@@ -1051,6 +1051,42 @@ function fv_flowplayer_playlist_show() {
   fv_wp_flowplayer_dialog_resize();
   fv_player_refresh_tabs();
   fv_wp_flowplayer_submit(true);
+
+  return false;
+}
+
+/**
+ * Loads and displays a list of all players in a dropdown.
+ *
+ * @returns {boolean} Returns false as to prevent the ANCHOR element to move us to the page top.
+ */
+function fv_flowplayer_load_players_dropdown() {
+  var $copy_player_buttons = jQuery(".copy_player");
+  $copy_player_buttons.hide().after('<div class="fv-player-shortcode-editor-small-spinner copy_player_spinner">&nbsp;</div>');
+
+  jQuery.post(ajaxurl, {
+    action: 'fv_player_db_retrieve_all_players_for_dropdown',
+    cookie: encodeURIComponent(document.cookie),
+  }, function (json_data) {
+    // build the dropdown
+    var dropdown = [];
+    dropdown.push('<select name="players_selector" id="players_selector" onchange="if (fv_wp_flowplayer_content != \'\') { fv_wp_flowplayer_set_html(\'[fvplayer id=\' + this.value + \']\'); } else { send_to_editor(\'[fvplayer id=\' + this.value + \']\'); } jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close();"><option hidden disabled selected value>Choose a Player...</option>');
+
+    for (var i in json_data) {
+      dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
+    }
+
+    dropdown.push('</select>');
+
+    // add dropdown after each of the copy buttons
+    $copy_player_buttons.after(dropdown.join(''));
+  }).error(function () {
+    // put back the load button, so the user can try again
+    $copy_player_buttons.show();
+  }).complete(function() {
+    // remove spinners
+    jQuery('.fv-player-shortcode-editor-small-spinner').remove();
+  });
 
   return false;
 }
