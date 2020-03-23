@@ -1896,7 +1896,7 @@ function fv_wp_flowplayer_edit() {
                 }
 
                 // transcript
-                if (vids[x].meta[m].meta_key.indexOf('transcript') > -1) {
+                if (vids[x].meta[m].meta_key === 'transcript') {
                   transcript = {
                     id: vids[x].meta[m].id,
                     value: vids[x].meta[m].meta_value
