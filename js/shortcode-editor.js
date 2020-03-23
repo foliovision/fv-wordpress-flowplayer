@@ -883,7 +883,6 @@ function fv_flowplayer_editor_item_show( new_index ) {
   // hide chapters and transcript when not the first video in playlist
   $('.fv-player-tab-subtitles table:gt(0)').each(function() {
     var $e = $(this);
-    $e.find('.fv_wp_flowplayer_field_transcript').parents('tr:first').hide();
     $e.find('#fv_wp_flowplayer_field_chapters').parents('tr:first').hide();
   });
 
