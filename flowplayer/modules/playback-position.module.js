@@ -138,6 +138,7 @@ flowplayer( function(api,root) {
     },
 
     sendVideoPositions = function(async, callback) {
+      var beaconSupported = ("sendBeacon" in navigator);
       if (async !== true) {
         async = false;
       }
@@ -158,19 +159,29 @@ flowplayer( function(api,root) {
       if (!postData.length) {
         return;
       }
-      
+
       if ( flowplayer.conf.is_logged_in == '1') {
-        // logged-in user, store position in their metadata on server
-        return jQuery.ajax({
-          type: 'POST',
-          async: async,
-          url: fv_fp_ajaxurl,
-          complete: callback,
-          data: {
-            action: 'fv_wp_flowplayer_video_position_save',
-            videoTimes: postData
-          }
-        });
+        if (beaconSupported) {
+          var fd = new FormData();
+          fd.append('action', 'fv_wp_flowplayer_video_position_save');
+          fd.append('videoTimes', encodeURIComponent(JSON.stringify(postData)));
+          navigator.sendBeacon(fv_fp_ajaxurl, fd);
+
+          // return false, so no ajax.abort() will be tried if multiple players try to call this same script part
+          return false;
+        } else {
+          // logged-in user, store position in their metadata on server
+          return jQuery.ajax({
+            type: 'POST',
+            async: async,
+            url: fv_fp_ajaxurl,
+            complete: callback,
+            data: {
+              action: 'fv_wp_flowplayer_video_position_save',
+              videoTimes: postData
+            }
+          });
+        }
       } else {
         // guest visitor, store position in a cookie / localStorage
         try {
