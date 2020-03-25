@@ -49,6 +49,13 @@ class FV_Player_Position_Save {
 
   public function video_position_save() {
     // TODO: XSS filter for POST values?
+    // check if videoTimes is not a JSON-encoded value, which will happen
+    // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
+    $decoded = json_decode(urldecode($_POST['videoTimes']), true);
+    if ($decoded !== false) {
+      $_POST['videoTimes'] = $decoded;
+    }
+
     if (is_user_logged_in() && isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
       $uid = get_current_user_id();
       foreach ($times as $record) {
