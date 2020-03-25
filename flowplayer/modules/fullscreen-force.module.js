@@ -52,9 +52,11 @@ flowplayer(function(api, root) {
         api.fullscreen(false);
       } else if( api.loading ) {
         is_closing = true;
-        api.one('ready', function(e) {
-          api.unload();
-        })
+        
+        // triggering unload on ready didn't work with HLS.js
+        api.one('resume', function(e) {
+          api.pause();
+        });
       }
       api.fakeFullscreen(false);
       
