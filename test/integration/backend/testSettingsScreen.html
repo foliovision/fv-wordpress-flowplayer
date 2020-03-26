@@ -1,6 +1,6 @@
 <div class="wrap">
 	<div style="position: absolute; margin-top: 10px; right: 10px;">
-		<a href="https://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer" target="_blank" title="Documentation"><img alt="visit foliovision" src="//foliovision.com/shared/fv-logo.png" /></a>
+		<a href="https://foliovision.com/player" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/fv-logo.png" /></a>
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>
@@ -47,9 +47,19 @@
                 <a href="#postbox-container-tab_skin" class="nav-tab" style="outline: 0px;">Skin</a>
                 <a href="#postbox-container-tab_hosting" class="nav-tab" style="outline: 0px;">Hosting</a>
                 <a href="#postbox-container-tab_actions" class="nav-tab" style="outline: 0px;">Actions</a>
-                <a href="#postbox-container-tab_video_intelligence" class="nav-tab" style="outline: 0px;">vi Ads</a>
+                <a href="#postbox-container-tab_tools" class="nav-tab" style="outline: 0px;">Tools</a>
                 <a href="#postbox-container-tab_help" class="nav-tab" style="outline: 0px;">Help</a>
+                <a href="#postbox-container-tab_video_intelligence" class="nav-tab" style="outline: 0px;">vi Ads</a>
                 <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
+                <style>
+                  #fv_player_js_warning {
+                    animation: cssAnimation 0s 5s forwards;
+                    visibility: hidden;
+                  }
+                  @keyframes cssAnimation {
+                    to { visibility: visible; }
+                  }
+                </style>                
       </h2>
     </div>    
   
@@ -130,15 +140,6 @@
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="interface[live]">Live Stream:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="interface[live]" value="false"/>
-                  <input type="checkbox" name="interface[live]" id="interface[live]" value="true" />
-                                                  </p>
-          </td>
-      </tr>
-                      <tr>
           <td class="first"><label for="interface[mobile]">Mobile Video:</label></td>
           <td>
               <p class="description">
@@ -166,7 +167,7 @@
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="interface[playlist_captions]">Playlist Captions:</label></td>
+          <td class="first"><label for="interface[playlist_captions]">Playlist Item Titles:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="interface[playlist_captions]" value="false"/>
@@ -220,6 +221,15 @@
           </td>
       </tr>
                       <tr>
+          <td class="first"><label for="interface[synopsis]">Synopsis:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="interface[synopsis]" value="false"/>
+                  <input type="checkbox" name="interface[synopsis]" id="interface[synopsis]" value="true" />
+              </p>
+          </td>
+      </tr>
+                      <tr>
           <td class="first"><label for="interface[end_actions]">Video Actions:</label></td>
           <td>
               <p class="description">
@@ -239,15 +249,6 @@
           </td>
       </tr>
       
-                <tr>
-          <td class="first"><label for="interface[shortcode_editor_old]">Enable old interface:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="interface[shortcode_editor_old]" value="false"/>
-                  <input type="checkbox" name="interface[shortcode_editor_old]" id="interface[shortcode_editor_old]" value="true" />
-                  Not recommended                                </p>
-          </td>
-      </tr>
                 
 					<tr>
 						<td colspan="4">
@@ -267,11 +268,14 @@
             
                   <tr>
           <td class="first"><label for="autoplay">Autoplay:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="autoplay" value="false"/>
-                  <input type="checkbox" name="autoplay" id="autoplay" value="true" />
-                  We make sure only one video per page autoplays. Note that mobile devices don't support autoplay.                                </p>
+          <td colspan="3">
+            <p class="description">
+              <select id="autoplay" name="autoplay">
+                <option value="true"    >Yes</option>
+                <option value="false"   selected="selected" >No</option>
+                <option value="muted"    >Muted</option>
+              </select>
+              We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.                </p>
           </td>
       </tr>
                         <tr>
@@ -283,7 +287,15 @@
                   Works for first 2 videos on the page only, to preserve your bandwidth.                                </p>
           </td>
       </tr>
-      
+                        <tr>
+          <td class="first"><label for="show_controlbar">Controlbar Always Visible:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="show_controlbar" value="false"/>
+                  <input type="checkbox" name="show_controlbar" id="show_controlbar" value="true" />
+                                                  </p>
+          </td>
+      </tr>
 						<tr>
 							<td><label for="width">Default Video Size:</label></td>
 							<td>
@@ -348,7 +360,15 @@
                                 </p>
           </td>
       </tr>
-      
+                        <tr>
+          <td class="first"><label for="chromecast">Enable Chromecast:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="chromecast" value="false"/>
+                  <input type="checkbox" name="chromecast" id="chromecast" value="true" />
+                  Adds support for Google Chromecast.                                </p>
+          </td>
+      </tr>
 						<tr>
 							<td><label for="rtmp">Flash Streaming Server:</label></td>
 							<td>
@@ -356,7 +376,18 @@
                   <input type="text" name="rtmp" id="rtmp" value="" placeholder="Enter your default RTMP streaming server (Amazon CloudFront domain)." />
                 </p>
 							</td>
-						</tr>
+            </tr>
+            
+            <tr>
+          <td class="first"><label for="hd_streaming">Force HD Streaming:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="hd_streaming" value="false"/>
+                  <input type="checkbox" name="hd_streaming" id="hd_streaming" value="true" />
+                  Use HD quality even on slow connections.                                        <span class="more">User can still switch to lower quality by hand. Works with MPEG-DASH streams on desktop and laptop computers.</span> <a href="#" class="show-more">(&hellip;)</a>
+                                </p>
+          </td>
+      </tr>            
 
                   <tr>
           <td class="first"><label for="allowfullscreen">Fullscreen Button:</label></td>
@@ -391,8 +422,26 @@
                   <option  value="top-right">Top-right</option>
                 </select>
               </td>
-						</tr>
-
+            </tr>
+            
+                  <tr>
+          <td class="first"><label for="multiple_playback">Multiple video playback (beta):</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="multiple_playback" value="false"/>
+                  <input type="checkbox" name="multiple_playback" id="multiple_playback" value="true" />
+                  Allows multiple players to play at once. Only one player remains audible.                                </p>
+          </td>
+      </tr>
+                  <tr>
+          <td class="first"><label for="ui_no_picture_button">No Picture Button:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="ui_no_picture_button" value="false"/>
+                  <input type="checkbox" name="ui_no_picture_button" id="ui_no_picture_button" value="true" />
+                  Adds a button to turn the video picture on and off.                                </p>
+          </td>
+      </tr>
                   <tr>
           <td class="first"><label for="ui_play_button">Play Button:</label></td>
           <td>
@@ -412,7 +461,10 @@
                     <option value="tabs"       >Tabs</option>
                     <option value="prevnext"   >Prev/Next</option>
                     <option value="vertical"   >Vertical</option>
-                    <option value="slider"   >Slider</option>
+                    <option value="slider"     >Slider</option>
+                    <option value="season"     >Vertical Season</option>
+                    <option value="polaroid"   >Polaroid</option>
+                    <option value="text"   >Text</option>
                   </select>
                   Enter your default playlist style here                </p>
               </td>
@@ -425,6 +477,26 @@
                   <input type="hidden" name="popupbox" value="false"/>
                   <input type="checkbox" name="popupbox" id="popupbox" value="true" />
                   Shows a generic "Would you like to replay the video?" message at the end of each video.                                </p>
+          </td>
+      </tr>
+
+                  <tr>
+          <td class="first"><label for="ui_repeat_button">Repeat Button:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="ui_repeat_button" value="false"/>
+                  <input type="checkbox" name="ui_repeat_button" id="ui_repeat_button" value="true" />
+                  Adds a button to set playlist/track repeat and shuffle.                                </p>
+          </td>
+      </tr>
+                  
+                  <tr>
+          <td class="first"><label for="ui_rewind_button">Rewind Button:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="ui_rewind_button" value="false"/>
+                  <input type="checkbox" name="ui_rewind_button" id="ui_rewind_button" value="true" />
+                  Adds a button to go 10 seconds back.                                </p>
           </td>
       </tr>
       
@@ -497,8 +569,6 @@
     </tr>
     <script>
       jQuery(document).ready(function(){
-        jQuery('[name="pro[interface][lightbox]"]').parents('td').replaceWith('<td><p>Setting <a href="#interface[live]">moved</a></p></td>');
-        jQuery('[name="pro[lightbox_images]"]').parents('td').replaceWith('<td><p>Setting <a href="#subtitleOn">moved</a></p></td>');
         var lightbox_images = jQuery('#lightbox_images');
         if(lightbox_images.attr('checked')){
             jQuery('#lightbox-wp-galleries').show();
@@ -627,7 +697,15 @@ jQuery(document).ready(function($) {
 <div class="inside">
         <p>Following options are suitable for web developers and programmers.</p>
 				<table class="form-table2">
-
+                <tr>
+          <td class="first"><label for="integrations[featured_img]">Add featured image automatically:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="integrations[featured_img]" value="false"/>
+                  <input type="checkbox" name="integrations[featured_img]" id="integrations[featured_img]" value="true" />
+                  If the featured image is not set, splash image of the first player will be used.                                </p>
+          </td>
+      </tr>
                 <tr>
           <td class="first"><label for="fixed_size">Always use fixed size player:</label></td>
           <td>
@@ -653,7 +731,7 @@ jQuery(document).ready(function($) {
               <p class="description">
                   <input type="hidden" name="hlsjs" value="false"/>
                   <input type="checkbox" name="hlsjs" id="hlsjs" value="true" checked="checked" />
-                  Allows HLS playback in all modern browsers.                                        <span class="more">HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required CORS headers.</span> <a href="#" class="show-more">(&hellip;)</a>
+                  Allows HLS playback in all modern browsers.                                        <span class="more">HLS normally plays only on iOS, Mac Safari and new Android versions. FV Player increases the compatibility by using Flash engine for HLS. With this option you can go even further and modern browsers supporting MediaSource will play HLS even without Flash. Make sure you setup the required <a href="https://foliovision.com/player/video-hosting/how-to-enable-cors-headers" target="_blank">CORS headers</a>.</span> <a href="#" class="show-more">(&hellip;)</a>
                                 </p>
           </td>
       </tr>
@@ -691,12 +769,12 @@ jQuery(document).ready(function($) {
 					</tr>
 
                       <tr>
-          <td class="first"><label for="integrations[wp_core_video]">Handle WordPress <code><small>[video]</small></code> shortcodes:</label></td>
+          <td class="first"><label for="integrations[wp_core_video]">Handle WordPress audio/video:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="integrations[wp_core_video]" value="false"/>
                   <input type="checkbox" name="integrations[wp_core_video]" id="integrations[wp_core_video]" value="true" />
-                  ...and also the YouTube links                                </p>
+                  Make sure shortcodes <code><small>[video]</small></code>, <code><small>[audio]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.                                </p>
           </td>
       </tr>
                       <tr>
@@ -719,15 +797,7 @@ jQuery(document).ready(function($) {
                                 </p>
           </td>
       </tr>
-                      <tr>
-          <td class="first"><label for="postthumbnail">Post Thumbnail:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="postthumbnail" value="false"/>
-                  <input type="checkbox" name="postthumbnail" id="postthumbnail" value="true" />
-                  Setting a video splash screen from the media library will automatically make it the splash image if there is none.                                </p>
-          </td>
-      </tr>
+
                       <tr>
           <td class="first"><label for="rtmp-live-buffer">RTMP bufferTime tweak:</label></td>
           <td>
@@ -745,7 +815,7 @@ jQuery(document).ready(function($) {
               <p class="description">
                 <input type="hidden" name="db_duration" value="false" />
                 <input type="checkbox" name="db_duration" id="db_duration" value="true"  />
-                Turn off if you experience issues when saving posts!                <span class="more">Turn on to enable video duration scanning.                Currently  posts in queue.                </span> <a href="#" class="show-more">(&hellip;)</a>
+                Turn off if you experience issues when saving posts!                <span class="more">Turn on to enable video duration scanning.                                </span> <a href="#" class="show-more">(&hellip;)</a>
               </p>
 						</td>
 					</tr>
@@ -757,24 +827,6 @@ jQuery(document).ready(function($) {
 						</td>
 					</tr>-->
 
-                <tr>
-          <td class="first"><label for="integrations[embed_iframe]">Use iframe embedding:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="integrations[embed_iframe]" value="false"/>
-                  <input type="checkbox" name="integrations[embed_iframe]" id="integrations[embed_iframe]" value="true" />
-                  Beta version! New kind of embedding which supports all the features in embedded player.                                </p>
-          </td>
-      </tr>
-                      <tr>
-          <td class="first"><label for="integrations[featured_img]">Add featured image automatically:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="integrations[featured_img]" value="false"/>
-                  <input type="checkbox" name="integrations[featured_img]" id="integrations[featured_img]" value="true" />
-                  If the featured image is not set, splash image of the first player will be used.                                </p>
-          </td>
-      </tr>
       
               <tr>
       <td><label for="facebook_sharing">Facebook Video Sharing:</label></td>
@@ -785,6 +837,15 @@ jQuery(document).ready(function($) {
           When sharing your post to Facebook the first MP4 video will be shared directly rather than the post excerpt.          <span class="more"><strong>Requirements</strong>: video has to be on https:// and splash screen has to be present. Videos with download protection are automatically excluded.</span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
+    </tr>
+              <tr>
+        <td class="first"><label for="lightbox_force">Remove fancyBox:</label></td>
+        <td>
+            <p class="description">
+                <input type="hidden" name="lightbox_force" value="false"/>
+                <input type="checkbox" name="lightbox_force" id="lightbox_force" value="true" />
+                Use if FV Player lightbox is not working and you see a "fancyBox already initialized" message on JavaScript console.                                </p>
+        </td>
     </tr>
     					<tr>
 						<td colspan="4">
@@ -809,7 +870,7 @@ jQuery(document).ready(function($) {
           </td>
       </tr>
                       <tr>
-          <td class="first"><label for="mobile_force_fullscreen">Force fullscreen on mobile (beta):</label></td>
+          <td class="first"><label for="mobile_force_fullscreen">Force fullscreen on mobile:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="mobile_force_fullscreen" value="false"/>
@@ -817,6 +878,24 @@ jQuery(document).ready(function($) {
                   Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback.                                </p>
           </td>
       </tr>
+                      <tr>
+          <td class="first"><label for="mobile_alternative_fullscreen">Alternative iOS fullscreen mode:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="mobile_alternative_fullscreen" value="false"/>
+                  <input type="checkbox" name="mobile_alternative_fullscreen" id="mobile_alternative_fullscreen" value="true" />
+                  Works for iOS < 12 which doesn't support HTML5 fullscreen. Only use if you see site elements such as header bar ovelaying the player in fullscreen on iOS.                                </p>
+          </td>
+      </tr>
+                      <tr>
+          <td class="first"><label for="mobile_landscape_fullscreen">Force landscape orientation in fullscreen:</label></td>
+          <td>
+              <p class="description">
+                  <input type="hidden" name="mobile_landscape_fullscreen" value="false"/>
+                  <input type="checkbox" name="mobile_landscape_fullscreen" id="mobile_landscape_fullscreen" value="true" />
+                  Works on the Android mobile, not supported on iOS unfortunately.                                </p>
+          </td>
+      </tr>      
       					<tr>
 						<td colspan="4">
 							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
@@ -849,10 +928,10 @@ jQuery(document).ready(function($) {
         </td>
       </tr>
       <tr>
-        <td><label for="video_sitemap_meta">Sitemap Post Meta <a href="#" class="show-more">(?)</a>:</label></td>
+        <td><label for="video_sitemap_meta">Sitemap Post Meta <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>:</label></td>
         <td>
           <input  id="video_sitemap_meta" name="video_sitemap_meta" type="text"  value="" />
-          <p class="description"><span class="more">You can enter post meta keys here, use <code>,</code> to separate multiple values.</span></p>
+          <p class="description fv-player-admin-tooltip"><span class="info">You can enter post meta keys here, use <code>,</code> to separate multiple values.</span></p>
         </td>
       </tr>
       <tr>
@@ -960,8 +1039,7 @@ jQuery(document).ready(function($) {
   </table>  
   </div>
 </div>
-</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" />      
-      </div>
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" /></div>
             <div id='postbox-container-tab_skin' class='postbox-container' style="">    
 				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_description" class="postbox " >
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel:  </span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span> </span></h2>
@@ -977,100 +1055,290 @@ jQuery(document).ready(function($) {
 </div>
 </div>
 <div id="flowplayer-wrapper" class="postbox " >
-<button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Player Skin</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Player Skin</span></h2>
-<div class="inside">
-<style id="fv-style-preview"></style>
-  <div class="flowplayer-wrapper">
-    <div id="wpfp_1b7da827d9fee9aa6d5bb9c5dca973bf" class="flowplayer no-brand is-splash fvp-play-button" style="max-width: 100%; background-image: url(https://i.vimeocdn.com/video/609485450_1280.jpg);" data-ratio="0.5625">
-	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-<div class='fvp-share-bar'><ul class="fvp-sharing">
-    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank">Facebook</a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/home?status=Test+Blog+" target="_blank">Twitter</a></li>
-    <li><a class="sharing-google" href="https://plus.google.com/share?url=" target="_blank">Google+</a></li>
-    <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank">Email</a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
-</div>
-	    Hint: play the video to see live preview of the color settings  </div>
-  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-    <tr>
-      <td><label for="hasBorder">Border</label></td>
-      <td><input type="hidden" name="hasBorder" value="false" />
-          <input type="checkbox" name="hasBorder" id="hasBorder" value="true"  
-                 data-fv-preview=".flowplayer{border:%val%px solid!important;}"/>
-      </td>
-      
-    </tr>       
-    <tr>
-      <td><label for="borderColor">Border color</label></td>
-      <td><input class="color" id="borderColor" name="borderColor" type="text"  value="#666666" 
-                 data-fv-preview=".flowplayer{border-color:#%val%!important;}"/></td>
-    </tr>
-    <tr>
-      <td><label for="marginBottom">Bottom Margin</label></td>
-      <td><input id="marginBottom" name="marginBottom" title="Enter value in pixels" type="text" value="28" 
-                 data-fv-preview=".flowplayer { margin: 0 auto %val%px auto!important; display: block!important; }
-    .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto!important; display: block!important; }
-    .flowplayer.has-abloop { margin-bottom: %val%px!important; }
-    .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px)!important; }"/></td>      
-    </tr>
-    <tr>
-      <td><label for="bufferColor">Buffer</label></td>
-      <td><input class="color" id="bufferColor" name="bufferColor" type="text" value="#eeeeee" 
-                 data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
-                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" /></td>
-    </tr>
-    <tr>
-      <td><label for="canvas">Canvas</label></td>
-      <td><input class="color" id="canvas" name="canvas" type="text" value="#000000" 
-                 data-fv-preview=".flowplayer { background-color: #%val%!important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="backgroundColor">Controlbar</label></td>
-      <td><input class="color" id="backgroundColor" name="backgroundColor" type="text" value="#333333" 
-                 data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val%!important; }
-                 .fv_player_popup {  background: #%val%!important;}
-                 .fvfp_admin_error_content {  background: #%val%!important; }
-                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="font-face">Font Face</label></td>
-      <td>
-                <select id="font-face" name="font-face" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }">
-          <option value="inherit">(inherit from template)</option>
-          <option value="&quot;Courier New&quot;, Courier, monospace">Courier New</option>										  
-          <option value="Tahoma, Geneva, sans-serif" selected="selected">Tahoma, Geneva</option>          
-        </select>
-      </td>      
-    </tr>
-    <tr>
-      <td class="second-column"><label for="player-position">Player position</label></td>
-      <td>
-        <select id="player-position" name="player-position" data-fv-preview=".flowplayer { margin-left: 0; }">
-          <option value="" selected="selected">Centered</option>
-          <option value="left">Left (no text-wrap)</option>
-        </select>
-      </td>      
-    </tr>
-    <tr>
-      <td><label for="progressColor">Progress</label></td>
-      <td><input class="color" id="progressColor" name="progressColor" type="text" value="#bb0000" 
-           data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val%!important; }  
-          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
-          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }"/></td>
-    </tr>
-    <tr>
-      <td><label for="timeColor">Time</label></td>
-      <td><input class="color" id="timeColor" name="timeColor" type="text" value="#eeeeee" 
-                 data-fv-preview=".flowplayer .fp-elapsed { color: #%val% !important; } 
-                 .fv-wp-flowplayer-notice-small { color: #%val% !important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="durationColor">Total time</label></td>
-      <td><input class="color" id="durationColor" name="durationColor" type="text" value="#eeeeee" 
-                 data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }"/></td>
-    </tr>
-    <tr>    		
-      <td colspan="2">        
-        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
+  <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Player Skin</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Player Skin</span></h2>
+  <div class="inside">
+  <style id="fv-style-preview"></style>
+    <div class="flowplayer-wrapper">
+      <div id="wpfp_66bde71f2bb69da4b61dd085baf925ff" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" data-fv-embed="?fv_player_embed=1" style="max-width: 100%; " data-ratio="0.5625">
+    <div class="fp-ratio" style="padding-top: 56.25%"></div>
+    <img class="fp-splash" alt="Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee" src="https://i.vimeocdn.com/video/609485450_1280.jpg" />
+    <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
+    <div class='fvp-share-bar'><ul class="fvp-sharing">
+      <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank"></a></li>
+      <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=Test+Blog+&url=" target="_blank"></a></li>
+      <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank"></a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
+  </div>
+        Hint: play the video to see live preview of the color settings  </div>
+  
+    <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+                <tr>
+                <td style="white-space: nowrap">
+                    <fieldset>
+                        <p>
+                          &nbsp;<input type="radio" name="skin"
+                                       id="skin-Slim"
+                                       value="slim" checked="checked" data-fv-skin="" /> <label for="skin-Slim">Slim</label><br/>
+                        </p>
+                    </fieldset>
+                                                </td>
+                        <td style="white-space: nowrap">
+                    <fieldset>
+                        <p>
+                          &nbsp;<input type="radio" name="skin"
+                                       id="skin-YouTuby"
+                                       value="youtuby" data-fv-skin="" /> <label for="skin-YouTuby">YouTuby</label><br/>
+                        </p>
+                    </fieldset>
+                                                </td>
+                        <td style="white-space: nowrap">
+                    <fieldset>
+                        <p>
+                          &nbsp;<input type="radio" name="skin"
+                                       id="skin-Custom"
+                                       value="custom" data-fv-skin="" /> <label for="skin-Custom">Custom</label><br/>
+                        </p>
+                    </fieldset>
+                                                </td>
+                    </tr>
+  
+    </table>
+  
+        <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-Slim-settings">
+              <tr>
+          <td><label for="skin-slim[progressColor]">Color :</label></td>
+          <td>
+            <input  class="color" id="skin-slim[progressColor]" name="skin-slim[progressColor]" type="text"  value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
+            .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+            .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
+            .flowplayer .fp-color { background-color: #%val% !important }" />          
+                    </td>
+        </tr>
+  
+            <input id="skin-slim[hasBorder]" name="skin-slim[hasBorder]" type="hidden"  value="" data-fv-preview=".flowplayer{border:%val%px solid !important;}" />
+  
+            <input id="skin-slim[bottom-fs]" name="skin-slim[bottom-fs]" type="hidden"  value="" data-fv-preview="" />
+  
+            <input id="skin-slim[borderColor]" name="skin-slim[borderColor]" type="hidden"  value="" data-fv-preview=".flowplayer{border-color:#%val% !important;}" />
+  
+            <input id="skin-slim[bufferColor]" name="skin-slim[bufferColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                   .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" />
+  
+            <input id="skin-slim[canvas]" name="skin-slim[canvas]" type="hidden"  value="#000000" data-fv-preview=".flowplayer { background-color: #%val% !important; }" />
+  
+            <input id="skin-slim[backgroundColor]" name="skin-slim[backgroundColor]" type="hidden"  value="transparent" data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                   .fv_player_popup {  background: #%val% !important;}
+                   .fvfp_admin_error_content {  background: #%val% !important; }
+                   .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }" />
+  
+            <input id="skin-slim[font-face]" name="skin-slim[font-face]" type="hidden"  value="Tahoma, Geneva, sans-serif" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }" />
+  
+            <input id="skin-slim[player-position]" name="skin-slim[player-position]" type="hidden"  value="" data-fv-preview=".flowplayer { margin-left: 0 !important; }" />
+  
+            <input id="skin-slim[timeColor]" name="skin-slim[timeColor]" type="hidden"  value="#ffffff" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
+                    .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />
+  
+            <input id="skin-slim[durationColor]" name="skin-slim[durationColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
+                    .flowplayer .fp-controls &gt; .fv-fp-prevbtn:before, .flowplayer .fp-controls &gt; .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
+  
+            <input id="skin-slim[design-timeline]" name="skin-slim[design-timeline]" type="hidden"  value="fp-slim" data-fv-preview="" />
+  
+            <input id="skin-slim[design-icons]" name="skin-slim[design-icons]" type="hidden"  value="fp-edgy" data-fv-preview="" />
+  
+              <tr>
+              <td colspan="2">
+                  <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
+              </td>
+          </tr>
+      </table>
+      <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-YouTuby-settings" style="display: none">
+              <tr>
+          <td><label for="skin-youtuby[progressColor]">Color :</label></td>
+          <td>
+            <input  class="color" id="skin-youtuby[progressColor]" name="skin-youtuby[progressColor]" type="text"  value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
+            .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+            .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
+            .flowplayer .fp-color { background-color: #%val% !important }" />          
+                    </td>
+        </tr>
+  
+            <input id="skin-youtuby[hasBorder]" name="skin-youtuby[hasBorder]" type="hidden"  value="" data-fv-preview=".flowplayer{border:%val%px solid !important;}" />
+  
+            <input id="skin-youtuby[bottom-fs]" name="skin-youtuby[bottom-fs]" type="hidden"  value="1" data-fv-preview="" />
+  
+            <input id="skin-youtuby[borderColor]" name="skin-youtuby[borderColor]" type="hidden"  value="" data-fv-preview=".flowplayer{border-color:#%val% !important;}" />
+  
+            <input id="skin-youtuby[bufferColor]" name="skin-youtuby[bufferColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                   .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" />
+  
+            <input id="skin-youtuby[canvas]" name="skin-youtuby[canvas]" type="hidden"  value="#000000" data-fv-preview=".flowplayer { background-color: #%val% !important; }" />
+  
+            <input id="skin-youtuby[backgroundColor]" name="skin-youtuby[backgroundColor]" type="hidden"  value="rgba(0, 0, 0, 0.5)" data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                   .fv_player_popup {  background: #%val% !important;}
+                   .fvfp_admin_error_content {  background: #%val% !important; }
+                   .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }" />
+  
+            <input id="skin-youtuby[font-face]" name="skin-youtuby[font-face]" type="hidden"  value="Tahoma, Geneva, sans-serif" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }" />
+  
+            <input id="skin-youtuby[player-position]" name="skin-youtuby[player-position]" type="hidden"  value="" data-fv-preview=".flowplayer { margin-left: 0 !important; }" />
+  
+            <input id="skin-youtuby[timeColor]" name="skin-youtuby[timeColor]" type="hidden"  value="#ffffff" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
+                    .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />
+  
+            <input id="skin-youtuby[durationColor]" name="skin-youtuby[durationColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
+                    .flowplayer .fp-controls &gt; .fv-fp-prevbtn:before, .flowplayer .fp-controls &gt; .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
+  
+            <input id="skin-youtuby[design-timeline]" name="skin-youtuby[design-timeline]" type="hidden"  value="fp-full" data-fv-preview="" />
+  
+            <input id="skin-youtuby[design-icons]" name="skin-youtuby[design-icons]" type="hidden"  value=" " data-fv-preview="" />
+  
+  
+              <tr>
+              <td colspan="2">
+                  <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
+              </td>
+          </tr>
+      </table>
+      <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-Custom-settings" style="display: none">
+              <tr>
+            <td><label for="skin-custom[hasBorder]">Border:</label></td>
+            <td>
+                <p class="description">
+                    <input type="hidden" name="skin-custom[hasBorder]" value="false"/>
+                    <input type="checkbox" name="skin-custom[hasBorder]" id="skin-custom[hasBorder]" value="true" data-fv-preview=".flowplayer{border:%val%px solid !important;}" />
+                                                    </p>
+            </td>
+        </tr>
+              <tr>
+            <td><label for="skin-custom[bottom-fs]">Controlbar Fullscreen:</label></td>
+            <td>
+                <p class="description">
+                    <input type="hidden" name="skin-custom[bottom-fs]" value="false"/>
+                    <input type="checkbox" name="skin-custom[bottom-fs]" id="skin-custom[bottom-fs]" value="true" data-fv-preview="" />
+                                                    </p>
+            </td>
+        </tr>
+              <tr>
+          <td><label for="skin-custom[borderColor]">Border color :</label></td>
+          <td>
+            <input  class="color" id="skin-custom[borderColor]" name="skin-custom[borderColor]" type="text"  value="#666666" data-fv-preview=".flowplayer{border-color:#%val% !important;}" />          
+                    </td>
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[marginBottom]">Bottom Margin :</label></td>
+          <td>
+            <input  id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text"  value="2.8" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+                  .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
+                  .flowplayer.has-abloop { margin-bottom: %val%px !important; }
+                  .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }" />          
+                    </td>
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[bufferColor]">Buffer :</label></td>
+          <td>
+            <input  class="color" id="skin-custom[bufferColor]" name="skin-custom[bufferColor]" type="text"  value="#eeeeee" data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                   .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" />          
+                    </td>
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[canvas]">Canvas :</label></td>
+          <td>
+            <input  class="color" id="skin-custom[canvas]" name="skin-custom[canvas]" type="text"  value="#000000" data-fv-preview=".flowplayer { background-color: #%val% !important; }" />          
+                    </td>
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[backgroundColor]">Controlbar :</label></td>
+          <td>
+            <input  class="color-opacity" id="skin-custom[backgroundColor]" name="skin-custom[backgroundColor]" type="text"  value="#333333" data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                   .fv_player_popup {  background: #%val% !important;}
+                   .fvfp_admin_error_content {  background: #%val% !important; }
+                   .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }" />          
+                    </td>
+        </tr>
+  
+            <tr>  
+          <td><label for="skin-custom[font-face]">Font Face</label></td>
+          <td>
+            <select id="skin-custom[font-face]" name="skin-custom[font-face]" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }">
+                            <option value="inherit">(inherit from template)</option>
+                            <option value="&quot;Courier New&quot;, Courier, monospace">Courier New</option>
+                            <option value="Tahoma, Geneva, sans-serif" selected="selected">Tahoma, Geneva</option>
+                    
+            </select>
+          </td>   
+        </tr>
+  
+            <tr>  
+          <td class="second-column"><label for="skin-custom[player-position]">Player position</label></td>
+          <td>
+            <select id="skin-custom[player-position]" name="skin-custom[player-position]" data-fv-preview=".flowplayer { margin-left: 0 !important; }">
+                            <option value="" selected="selected">Centered</option>
+                            <option value="left">Left (no text-wrap)</option>
+                    
+            </select>
+          </td>   
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[progressColor]">Progress :</label></td>
+          <td>
+            <input  class="color" id="skin-custom[progressColor]" name="skin-custom[progressColor]" type="text"  value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
+            .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+            .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
+            .flowplayer .fp-color { background-color: #%val% !important }" />          
+                    </td>
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[timeColor]">Time :</label></td>
+          <td>
+            <input  class="color" id="skin-custom[timeColor]" name="skin-custom[timeColor]" type="text"  value="#eeeeee" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
+                    .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />          
+                    </td>
+        </tr>
+  
+            <tr>
+          <td><label for="skin-custom[durationColor]">Buttons :</label></td>
+          <td>
+            <input  class="color" id="skin-custom[durationColor]" name="skin-custom[durationColor]" type="text"  value="#eeeeee" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
+                    .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }" />          
+                    </td>
+        </tr>
+  
+            <tr>  
+          <td class="second-column"><label for="skin-custom[design-timeline]">Timeline</label></td>
+          <td>
+            <select id="skin-custom[design-timeline]" name="skin-custom[design-timeline]" data-fv-preview="">
+                            <option value=" " selected="selected">Default</option>
+                            <option value="fp-slim">Slim</option>
+                            <option value="fp-full">Full</option>
+                            <option value="fp-fat">Fat</option>
+                            <option value="fp-minimal">Minimal</option>
+                    
+            </select>
+          </td>   
+        </tr>
+  
+            <tr>  
+          <td class="second-column"><label for="skin-custom[design-icons]">Icons</label></td>
+          <td>
+            <select id="skin-custom[design-icons]" name="skin-custom[design-icons]" data-fv-preview="">
+                            <option value=" " selected="selected">Default</option>
+                            <option value="fp-edgy">Edgy</option>
+                            <option value="fp-outlined">Outlined</option>
+                            <option value="fp-playful">Playful</option>
+                    
+            </select>
+          </td>   
+        </tr>
+  
+  
+              <tr>
+              <td colspan="2">
+                  <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
       </td>
     </tr>
   </table>
@@ -1081,10 +1349,10 @@ jQuery(document).ready(function($) {
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Playlist</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Playlist</span></h2>
 <div class="inside">
   <div class="flowplayer-wrapper">
-    <div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions" rel="wpfp_1b7da827d9fee9aa6d5bb9c5dca973bf">
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005","type":"video\/mp4"}],"subtitles":[{"srclang":"en","label":"English","src":"http:\/\/example.org\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"}]}'><div style='background-image: url("https://i.vimeocdn.com/video/608654918_295x166.jpg")'></div><h4><span>Foliovision Video</span></h4></a>
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005","type":"video\/mp4"}]}'><div style='background-image: url("https://i.vimeocdn.com/video/643908843_295x166.jpg")'></div><h4><span>Lapinthrope Extras - Roy Thompson Hall Dance</span></h4></a>
-		<a href='#' onclick='return false' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005","type":"video\/mp4"}]}'><div style='background-image: url("https://i.vimeocdn.com/video/319116053_295x166.jpg")'></div><h4><span>Romeo and Juliet Ballet Schloss Kittsee</span></h4></a>
+    <div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_1b7da827d9fee9aa6d5bb9c5dca973bf">
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Foliovision Video","subtitles":[{"srclang":"en","label":"English","src":"http:\/\/example.org\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"}]}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/608654918_295x166.jpg' /></div><h4><span>Foliovision Video</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Lapinthrope Extras - Roy Thompson Hall Dance"}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/643908843_295x166.jpg' /></div><h4><span>Lapinthrope Extras - Roy Thompson Hall Dance</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Romeo and Juliet Ballet Schloss Kittsee"}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/319116053_295x166.jpg' /></div><h4><span>Romeo and Juliet Ballet Schloss Kittsee</span></h4></a>
 	</div>
 Hint: you can click the thumbnails to switch videos in the above player. This preview uses the horizontal playlist style.    
   </div>
@@ -1107,14 +1375,13 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     <tr>
       <td><label for="playlistSelectedColor">Active Item</label></td>
       <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="#bb0000" 
-                 data-fv-preview=".fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fp-playlist-only-captions a.is-active h4  { color:#%val%; }"/></td>
+        data-fv-preview=".fp-playlist-external.fv-playlist-design-2014 a.is-active, .fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fv-playlist-design-2014 a.is-active h4 span, .fp-playlist-external.fp-playlist-only-captions a.is-active, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 span { color:#%val% !important; }"/></td>
     </tr>
     <tr>              
       <td><label for="playlistFontColor-proxy">Font Color</label></td>
               <td>
-        <input class="color" id="playlistFontColor-proxy" data-previous="" style="display:none;" type="text" value="" />
-        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="" 
-               data-fv-preview=".fp-playlist-external > a { color:#%val%; } #dashboard-widgets .flowplayer-wrapper .fp-playlist-external h4{color: #%val% !important;}"/> 
+        <input class="color" id="playlistFontColor-proxy" name="playlistFontColor-proxy" data-previous="" style="display:none;" type="text" value="" data-fv-preview=".fp-playlist-external a h4 span { color:#%val% !important; }, .fp-playlist-external > a { color:#%val% !important; }, #dashboard-widgets .flowplayer-wrapper .fp-playlist-external h4{color: #%val% !important;}" />
+        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="" />
         <a class="playlistFontColor-show" >Use custom color</a>
         <a class="playlistFontColor-hide" style="display:none;">Inherit from theme</a>
       </td>      
@@ -1135,7 +1402,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     <tr>  
       <td><label for="subtitle-font-face">Font Face</label></td>
       <td>
-        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-family: %val%!important; }">
+        <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-captions { font-family: %val% !important; }">
           <option value="inherit">(inherit)</option>          
           <option value="&quot;Courier New&quot;, Courier, monospace">Courier New</option>										  
           <option value="Tahoma, Geneva, sans-serif">Tahoma, Geneva</option>          
@@ -1145,18 +1412,13 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     <tr>
       <td><label for="subtitleSize">Font Size</label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="16"
-                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { font-size: %val%px!important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor">Background Color</label></td>
-      <td><input class="color" id="subtitleBgColor" name="subtitleBgColor" type="text" value="#000000"
-                 data-fv-preview=".flowplayer .fp-subtitle .fp-subtitle-line { background-color: rgba(%val%)!important; }"/></td>
+      <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="rgba(0,0,0,0.5)"
+            data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
-    <tr>
-      <td><label for="subtitleBgAlpha">Background Opacity</label></td>
-      <td><input id="subtitleBgAlpha" name="subtitleBgAlpha" type="range" min="0" max="1" step="0.01"  value="0.5"
-                 data-fv-preview=""/></td>
-    </tr>
     <tr>    		
       <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes" />
@@ -1164,10 +1426,10 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     </tr>
   </table>
   <div id="fp-preview-wrapper">
-    <div class="flowplayer"id="preview"> 
-      <div class="fp-subtitle fp-active">
-        <span class="fp-subtitle-line">
-          The quick brown fox jumps over the lazy dog.        </span>
+    <div class="flowplayer skin-slim" id="preview"> 
+      <div class="fp-captions fp-shown">
+        <p>The quick brown fox jumps over the lazy dog.</p>
+        <p>Second line.</p>
       </div>
     </div>
   </div>
@@ -1214,8 +1476,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
   <div style="clear: both"></div>
 </div>
 </div>
-</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" />      
-      </div>
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" /></div>
             <div id='postbox-container-tab_hosting' class='postbox-container' style="">    
 				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_description" class="postbox " >
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel:  </span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span> </span></h2>
@@ -1256,7 +1517,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
           </td>
       </tr>
       <tr>
-        <td><label for="s3_browser">Amazon S3 Browser (beta):</label></td>
+        <td class="first"><label for="s3_browser">Amazon S3 Browser (beta):</label></td>
         <td>
             <p class="description">
                 <input type="hidden" name="s3_browser" value="false"/>
@@ -1273,34 +1534,27 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             <td><label for="amazon_region[]">Region</td>
             <td>
               <select id="amazon_region[]" name="amazon_region[]">
-                <option value="">Select the region</option>
-                  <option value="us-east-1">US East (N. Virginia)</option>
-                  
-                  <option value="us-east-2">US East (Ohio)</option>
-                  
-                  <option value="us-west-1">US West (N. California)</option>
-                  
-                  <option value="us-west-2">US West (Oregon)</option>
-                  
-                  <option value="ca-central-1">Canada (Central)</option>
-                  
-                  <option value="ap-south-1">Asia Pacific (Mumbai)</option>
-                  
-                  <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
-                  
-                  <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
-                  
-                  <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
-                  
-                  <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
-                  
-                  <option value="eu-central-1">EU (Frankfurt)</option>
-                  
-                  <option value="eu-west-1">EU (Ireland)</option>
-                  
-                  <option value="eu-west-2">EU (London)</option>
-                  
-                  <option value="sa-east-1">South America (S&atilde;o Paulo)</option>
+                <option value="">Select the region</option>                  <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
+                                    <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                                    <option value="ap-northeast-3">Asia Pacific (Osaka-Local)</option>
+                                    <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
+                                    <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                                    <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+                                    <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                                    <option value="ca-central-1">Canada (Central)</option>
+                                    <option value="cn-north-1">China (Beijing)</option>
+                                    <option value="cn-northwest-1">China (Ningxia)</option>
+                                    <option value="eu-central-1">Europe (Frankfurt)</option>
+                                    <option value="eu-west-1">Europe (Ireland)</option>
+                                    <option value="eu-west-2">Europe (London)</option>
+                                    <option value="eu-west-3">Europe (Paris)</option>
+                                    <option value="eu-north-1">Europe (Stockholm)</option>
+                                    <option value="me-south-1">Middle East (Bahrain)</option>
+                                    <option value="sa-east-1">South America (S&atilde;o Paulo)</option>
+                                    <option value="us-west-1">US West (N. California)</option>
+                                    <option value="us-east-1">US East (N. Virginia)</option>
+                                    <option value="us-east-2">US East (Ohio)</option>
+                                    <option value="us-west-2">US West (Oregon)</option>
                                 </select>
             </td>
         </tr>
@@ -1332,8 +1586,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 				</table>
 </div>
 </div>
-</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" />      
-      </div>
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" /></div>
             <div id='postbox-container-tab_actions' class='postbox-container' style="">    
 				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_description" class="postbox " >
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel:  </span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span> </span></h2>
@@ -1407,6 +1660,8 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                     </td>
                     <td>
                       <input type='hidden' name='popups[1][disabled]' value='0' />
+                      <input id='PopupAdPause-1' type='checkbox' name='popups[1][pause]' value='1'  />
+                      <label for='PopupAdPause-1'>Show on pause</label><br />
                       <input id='PopupAdDisabled-1' type='checkbox' name='popups[1][disabled]' value='1'  />
                       <label for='PopupAdDisabled-1'>Disable</label><br />
                       <a class='fv-player-popup-remove' href=''>Remove</a></td>
@@ -1585,7 +1840,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
         var aInputs = row.find('input, select');
         var key = row.attr('id').replace(/fv-player-list-item-/,'');
         
-        fv_player_open_preview_window(null,640,360+100);
+        fv_player_open_preview_window(null,720,480);
         
         button.prop('disabled',true);
         jQuery.ajax( {
@@ -1601,7 +1856,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             var shortcode = '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="This is how the popup will appear at the end of a video"]';
             shortcode = shortcode.replace(/#key#/,key);
             
-            var url = 'http://example.org?fv_player_embed=1&fv_player_preview=' + b64EncodeUnicode(shortcode);
+            var url = 'http://example.org?fv_player_embed=3a9da036dc&fv_player_preview=' + b64EncodeUnicode(shortcode);
             fv_player_open_preview_window(url);
           },
           error: function() {
@@ -1641,7 +1896,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 						<tr>
 							<td colspan="2">
 								<label for="ad">Default Ad Code:</label><br />
-								<textarea id="ad" name="ad" class="large-text code"></textarea>			
+								<textarea id="ad" name="ad" class="large-text code" rows="2"></textarea>			
 							</td>
 						</tr>
 						<tr>
@@ -1691,190 +1946,534 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 					</table>
 </div>
 </div>
-</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" />      
-      </div>
-            <div id='postbox-container-tab_video_intelligence' class='postbox-container' style="">    
-				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_video_intelligence" class="postbox " >
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" /></div>
+<div id='postbox-container-tab_tools' class='postbox-container' style="">    
+				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_description" class="postbox " >
+<button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel:  </span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span> </span></h2>
+<div class="inside">
+  <table class="form-table">
+    <tr>
+      <td colspan="4">
+        <p>
+          Maintenance tools and debug info.        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+<div id="fv_flowplayer_system_information" class="postbox " >
+<button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: System Info</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>System Info</span></h2>
+<div class="inside">
+<textarea readonly="readonly" rows="10" id="fv-player-system-info-textarea">
+### Begin System Info ###
+
+## Please include this information when posting support requests ##
+
+Multisite:                No
+
+SITE_URL:                 http://example.org
+HOME_URL:                 http://example.org
+Plugin URL:               http://example.org/wp-content/plugins/fv-wordpress-flowplayer
+
+FV Player version:        7.4.14.727.3
+FV Player core version:
+FV Player license:         
+WordPress Version:        5.4
+Permalink Structure:
+Active Theme:             WordPress Default 1.6
+
+Browser:                  none
+PHP Version:              7.3.9
+MySQL Version:            5.7.26
+Web Server Info:
+
+WordPress Memory Limit:   40M
+PHP Memory Limit:         256M
+PHP Upload Max Size:      32M
+PHP Post Max Size:        8M
+PHP Upload Max Filesize:  32M
+PHP Time Limit:           30
+PHP Max Input Vars:       1000
+PHP Arg Separator:        &
+PHP Allow URL File Open:  Yes
+WP_DEBUG:                 Enabled
+
+DISPLAY ERRORS:           On (1)
+cURL:                     Your server supports cURL.
+
+ACTIVE PLUGINS:
+
+FV Player: 7.4.14.727
+FV Player Coconut: 7.4.8.727
+FV Player DRM: 7.4.10.727
+FV Player Pro: 7.4.15.727
+FV Player Simple History: 0.3.4
+FV Player Skin Tests: 0.1
+FV Player Vimeo Live Streaming: 7.4.2.727
+FV Player Vimeo Security: 7.4.7.727
+FV Thoughtful Comments: 0.3.5.16.16
+Lazy Load by WP Rocket: 2.3.2
+Log HTTP Requests: 1.0.3
+WP Crontrol: 1.6.2
+
+SETTINGS
+
+Array
+(
+    [nag_fv_player_7] => 1
+    [notice_new_lightbox] => 1
+    [notice_db] => 1
+    [notice_xml_sitemap_iframes] => 1
+    [autoplay] => false
+    [googleanalytics] => (redacted)
+    [chromecast] => false
+    [key] => (redacted)
+    [logo] => false
+    [rtmp] => false
+    [auto_buffering] => false
+    [disableembedding] => false
+    [disablesharing] => false
+    [disable_video_hash_links] => 
+    [popupbox] => false
+    [allowfullscreen] => true
+    [allowuploads] => true
+    [postthumbnail] => false
+    [tgt] => backgroundcolor
+    [backgroundColor] => #333333
+    [canvas] => #000000
+    [sliderColor] => #ffffff
+    [durationColor] => #eeeeee
+    [timeColor] => #eeeeee
+    [progressColor] => #bb0000
+    [bufferColor] => #eeeeee
+    [timelineColor] => #666666
+    [borderColor] => #666666
+    [hasBorder] => false
+    [adTextColor] => #888
+    [adLinksColor] => #ff3333
+    [subtitleBgColor] => rgba(0,0,0,0.5)
+    [subtitleSize] => 16
+    [playlistBgColor] => #808080
+    [playlistFontColor] => 
+    [playlistSelectedColor] => #bb0000
+    [logoPosition] => bottom-left
+    [parse_commas] => false
+    [width] => 640
+    [height] => 360
+    [engine] => false
+    [font-face] => Tahoma, Geneva, sans-serif
+    [ad] => 
+    [ad_width] => 
+    [ad_height] => 
+    [ad_css] => .wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }
+.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }
+    [ad_show_after] => 0
+    [disable_videochecker] => false
+    [interface] => Array
+        (
+            [playlist] => 
+            [redirect] => 
+            [autoplay] => 
+            [loop] => 
+            [splashend] => 
+            [embed] => 
+            [subtitles] => 
+            [ads] => 
+            [mobile] => 
+            [align] => 
+            [popup] => true
+        )
+
+    [amazon_bucket] => Array
+        (
+            [0] => 
+        )
+
+    [amazon_key] => (redacted, 1)
+    [amazon_secret] => (redacted, 1)
+    [amazon_region] => Array
+        (
+            [0] => 
+        )
+
+    [amazon_expire] => 5
+    [amazon_expire_force] => false
+    [fixed_size] => false
+    [js-everywhere] => false
+    [marginBottom] => 28
+    [ui_play_button] => true
+    [volume] => 0.7
+    [player-position] => 
+    [playlist_advance] => 
+    [sharing_email_text] => Check out the amazing video here
+    [liststyle] => horizontal
+    [ui_speed_increment] => 0.25
+    [popups_default] => no
+    [email_lists] => Array
+        (
+        )
+
+    [sticky_video] => false
+    [sticky_place] => right-bottom
+    [sticky_width] => 380
+    [playlist-design] => 2017
+    [skin-slim] => Array
+        (
+            [progressColor] => #bb0000
+        )
+
+    [skin-youtuby] => Array
+        (
+            [progressColor] => #bb0000
+        )
+
+    [skin-custom] => Array
+        (
+            [hasBorder] => false
+            [borderColor] => #666666
+            [bufferColor] => #eeeeee
+            [canvas] => #000000
+            [backgroundColor] => #333333
+            [font-face] => Tahoma, Geneva, sans-serif
+            [player-position] => 
+            [progressColor] => #bb0000
+            [timeColor] => #eeeeee
+            [durationColor] => #eeeeee
+        )
+
+    [skin] => slim
+    [hlsjs] => true
+    [lightbox_images] => 
+    [lightbox_improve_galleries] => 
+    [mailchimp_api] => 
+    [mailchimp_list] => 
+    [mailchimp_label] => Subscribe for updates
+    [pro] => Array
+        (
+            [quality] => ,
+            [transcript_theme] => light
+            [video_ads_default] => no
+            [video_ads_postroll_default] => no
+            [video_ads_skip] => 5
+            [video_ads_skip_minimum] => 10
+            [watching_prompt_msg] => Are you still watching?
+        )
+
+    [version] => 7.4.14.727.3
+    [css_writeout-http-localhost8080-wordpress] => 1581680206
+)
+
+DATABASE
+
+CREATE TABLE `wp_fv_player_players` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `player_name` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `player_slug` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `videos` mediumtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ab` varchar(3) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ad` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ad_height` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ad_width` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `ad_skip` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `align` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `author` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `autoplay` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `controlbar` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `copy_text` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `changed_by` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `embed` varchar(12) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `end_actions` varchar(10) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `end_action_value` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `height` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `hflip` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `lightbox` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `lightbox_caption` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `lightbox_height` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `lightbox_width` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `playlist` varchar(10) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `playlist_advance` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `qsel` varchar(25) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `share` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `share_title` varchar(120) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `share_url` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `speed` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `sticky` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `video_ads` varchar(10) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `video_ads_post` varchar(10) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `width` varchar(7) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci
+
+CREATE TABLE `wp_fv_player_playermeta` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_player` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `meta_key` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `meta_value` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_player` (`id_player`),
+  KEY `meta_key` (`meta_key`(191))
+) ENGINE=InnoDB AUTO_INCREMENT=396 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci
+
+CREATE TABLE `wp_fv_player_videos` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `src` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `src1` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `src2` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `splash` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `splash_text` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `caption` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `end` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `mobile` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `rtmp` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `rtmp_path` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `start` varchar(1024) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `src` (`src`(191)),
+  KEY `caption` (`caption`(191))
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci
+
+CREATE TABLE `wp_fv_player_videometa` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_video` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `meta_key` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `meta_value` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_video` (`id_video`),
+  KEY `meta_key` (`meta_key`(191))
+) ENGINE=InnoDB AUTO_INCREMENT=703 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci
+
+
+### End System Info ###
+</textarea>
+<a class="button" href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-system-info&amp;_wpnonce=XYZ">Export</a>
+    </div>
+</div>
+<div id="fv_flowplayer_rollback" class="postbox " >
+<button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Rollback</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Rollback</span></h2>
+<div class="inside">
+  		
+    <p>Are you having issues with version 7.4.999.727.1?</p>
+    <p>You can go back to the previous minor release here:</p>
+    <p><a href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-rollback&amp;version=7.3.19.727&amp;_wpnonce=bf36ca371a" class="button">Reinstall version 7.3.19.727</a></p>    
+    <p>You can go back to the last version without FV Player Database here:</p>
+    <p><a href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-rollback&amp;version=7.2.8.727&amp;_wpnonce=bf36ca371a" class="button">Reinstall version 7.2.8.727</a></p>
+    <p>You can reinstall the last FV Player 6 here:</p>
+    <p><a href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-rollback&amp;version=6.6.6&amp;_wpnonce=bf36ca371a" class="button">Reinstall version 6.6.6</a></p>
+  </div>
+</div>
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="6593ac0de6" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="83aacb7de3" />			</div>
+<div id='postbox-container-tab_help' class='postbox-container' style="">    
+				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_usage" class="postbox " >
+<button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Usage</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Usage</span></h2>
+<div class="inside">
+  <table class="form-table">
+    <tr>
+      <td colspan="4">  
+        <div class="column">					
+          <p>Basic Setup:</p>
+          <div class="clear"></div>
+          <ul>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/installation">Installation</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide">Start up guide</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/post-interface-options">Post Interface Options</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/alignment-settings">Alignment Settings</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/autoplay">Autoplay</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/customizing-fv-player-skin">Customizing FV Player Skin</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/managing-sharing-buttons">Sharing Videos on Social Media</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/customing-email-sharing">Email Sharing</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-iframe-embedding">Using the Iframe Embedding</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-lightbox">Using the Video Lightbox Effect</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding">Video Encoding for HTML 5</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists">How to Create Playlists</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/vtt-chapters">VTT Chapters</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/adding-captions-and-splash-text">Adding Titles and Splash Text</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/quality-switching">Setting Up Video Quality Switching</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/how-to-use-video-checker">How to Use the Built-in Video Checker</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-video-links">Creating Video Links in FV Player</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/switching-fv-player-pro-to-beta">Switching FV Player Pro to Beta</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/faq">FAQ</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/comparison-table">WordPress Video Plugins Comparison</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/basic-setup/shortcode-parameters">List of Shortcode Parameters</a></li>
+          </ul>
+          <p>Video Hosting:</p>
+          <div class="clear"></div>
+          <ul>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player">Using YouTube with FV Player</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo">How to Use Vimeo with WordPress</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide">Serving Private Videos with Amazon S3</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/serving-private-cloudfront">Serving Private Videos via CloudFront</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/using-bunnycdn-with-fvplayer-pro">Using BunnyCDN with FV Player Pro</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/using-keycdn-with-fvplayer">Using KeyCDN With FV Player</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/video-hosting/hls">Using HLS With FV Player</a></li>
+          </ul>         
+          <p>Ads:</p>
+          <div class="clear"></div>                       
+          <ul>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/advertising-with-fv-flowplayer">Advertising Options with FV Player</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/using-preroll-postroll-ads">Custom Video Ads in FV Player (pre-roll and post-roll)</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/adding-popup-ads">Overlay Ads in FV Player</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/google-advertising-options">Google Video Advertising Options</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/incorporating-google-adsense">Incorporating Google Ads (AdSense)</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/setting-up-html-popups">Video Actions: HTML Pop-ups</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/ads/using-exoclick-ads">Using ExoClick Ads With FV Player</a></li>
+          </ul>                
+        </div>
+        <div class="column">					
+          <p>Advanced:</p>
+          <div class="clear"></div>
+          <ul>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/how-player-widget">How to use FV Player Widget</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/video-custom-fields">Setting up Video Custom Fields</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/google-analytics-fv-player">Using Google Analytics with FV Player</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/ab-loop-function">AB Loop Function</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/subtitles">How to Create Subtitles</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/interactive-video-transcript">Interactive Video Transcript</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/custom-start-end-time">How to Use Custom Start/End Time</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/sticky-video">Sticky Video</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/css-tips-and-fixes">CSS Tips and Fixes</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/player-minify-plugins">Using FV Player with Minify Plugins</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/speed-buttons">How to Use the Speed Buttons</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/sub-domains-and-multi-domains">Using FV Player with Sub-domains and Multi-Domains</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/profile-videos">FV Player Profile Videos</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/video-downloading-with-simple-history">Video Downloading With Simple History Support</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/email-subscription-form-popups">Email Subscription Form Pop-ups</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/using-fv-player-with-amp">Using FV Player With AMP</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/api-programming">Programmer&#8217;s Guide</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/downgrading">FV WordPress Flowplayer Downgrading</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/changelog">Changelog</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/advanced/compatibility">Incompatible Plugins and Scripts</a></li>
+          </ul>
+          <p>Securing Your Video:</p>
+          <div class="clear"></div>
+          <ul class='children'>
+            <li><a target="_blank" href="https://foliovision.com/player/securing-your-video/protecting-video-from-downloading">How to Protect Your Videos from Being Downloaded</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/securing-your-video/rtmp-streams">How to use RTMP streams with Flash</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/securing-your-video/hls-stream">How to setup encrypted HLS stream with Amazon Elastic Transcoder</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/securing-your-video/protecting-videos-with-drm-text">Protecting Videos With DRM Text</a></li>
+          </ul>
+          <p>VAST/VPAID Ads:</p>
+          <div class="clear"></div>
+          <ul>
+            <li><a target="_blank" href="https://foliovision.com/player/vast/how-to-use-vast">How to Use FV Player VAST</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/vast/url-tags">Using URL Tags</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/vast/tester">VAST Tester</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/vast/tracking-vast-with-analytics">Tracking VAST and VPAID Ads With Google Analytics</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/vast/using-fv-vast-outside-wordpress">Using FV Player VAST Outside WordPress</a></li>
+            <li><a target="_blank" href="https://foliovision.com/player/vast/sample-vast-tags">List of Sample VAST/VPAID Ad Tags</a></li>
+          </ul>              
+        </div>
+        <div class="clear"></div>
+      </td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+</div>
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" /></div>
+<div id='postbox-container-tab_video_intelligence' class='postbox-container' style="">    
+  <div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_video_intelligence" class="postbox " >
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: video intelligence</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>video intelligence</span></h2>
 <div class="inside">
-      <style>
-      #fv_flowplayer_video_intelligence_revival { display: none }
-      </style>
-    <input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="d9672c9ed6" /><input type="hidden" name="_wp_http_referer" value="" />        
-        <table class="form-table2" style="margin: 5px; ">
-          <tbody>
-            <tr>
-              <td class="first">
-                <img src="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/vi-logo.svg" alt="video intelligence logo" />
-            	<a href="https://vi.ai/publisher-video-monetization/?aid=foliovision&email=&url=http://example.org&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More</a>
-              </td>
-              <td>
-                <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
-                <p>Advertisers pay more for video advertising when it's matched with video content. This new video player will insert both on your page. It increases time on site, and commands a higher CPM than display advertising.</p>
-                <p>You'll see video content that is matched to your sites keywords straight away. A few days after activation you'll begin to receive revenue from advertising served before this video content.</p>
-                <ul>
-                  <li>The set up takes only a few minutes</li>
-                  <li>Up to 10x higher CPM than traditional display advertising</li>
-                  <li>Users spend longer on your site thanks to professional video content</li>
-                </ul>                
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                  <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>                  
-                  <a href="https://vi.ai/publisher-video-monetization/?aid=foliovision&email=&url=http://example.org&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More or Create an Account</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+<style>
+#fv_flowplayer_video_intelligence_revival { display: none }
+</style>
+<input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="d9672c9ed6" /><input type="hidden" name="_wp_http_referer" value="" />        
+  <table class="form-table2" style="margin: 5px; ">
+    <tbody>
+      <tr>
+        <td class="first">
+          <img src="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/vi-logo.svg" alt="video intelligence logo" />
+        <a href="https://vi.ai/publisher-video-monetization/?aid=foliovision&email=&url=http://example.org&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More</a>
+        </td>
+        <td>
+          <p>Video content and video advertising – powered by <strong>video intelligence</strong></p>
+          <p>Advertisers pay more for video advertising when it's matched with video content. This new video player will insert both on your page. It increases time on site, and commands a higher CPM than display advertising.</p>
+          <p>You'll see video content that is matched to your sites keywords straight away. A few days after activation you'll begin to receive revenue from advertising served before this video content.</p>
+          <ul>
+            <li>The set up takes only a few minutes</li>
+            <li>Up to 10x higher CPM than traditional display advertising</li>
+            <li>Users spend longer on your site thanks to professional video content</li>
+          </ul>                
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+            <p>By clicking sign up you agree to send your current domain, email and affiliate ID to video intelligence.</p>                  
+            <a href="https://vi.ai/publisher-video-monetization/?aid=foliovision&email=&url=http://example.org&invtype=3#publisher_signup" target="_blank" class="button vi-register">Learn More or Create an Account</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-      </div>
+</div>
 </div>
 <div id="fv_flowplayer_video_intelligence_account" class="postbox " >
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Account</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Account</span></h2>
 <div class="inside">
 <input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="d9672c9ed6" /><input type="hidden" name="_wp_http_referer" value="" />        
-        <table class="form-table2" style="margin: 5px; ">
-          <tbody>
-                                      <tr>
-                <td class="first"><label for="vi_login">Login:</label></td>
-                <td>
-                  <p class="description">
-                    <input type="text" name="vi_login" id="vi_login" class="medium" />
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td><label for="vi_pass">Password:</label></td>
-                <td>
-                  <p class="description">
-                    <input type="password" name="vi_pass" id="vi_pass" class="medium" />
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                </td>
-                <td>
-                  <input type="submit" name="fv_player_vi_install" value="Sign in" class="button-primary">
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <p><a href="mailto:support@vi.ai?Subject=Issues%20with%20account%20activation%20for%20http%3A%2F%2Fexample.org">I'm having issues with the account activation</a></p>
-                </td>
-              </tr>              
-                      </tbody>
-        </table>                
-        
+  <table class="form-table2" style="margin: 5px; ">
+    <tbody>
+                                <tr>
+          <td class="first"><label for="vi_login">Login:</label></td>
+          <td>
+            <p class="description">
+              <input type="text" name="vi_login" id="vi_login" class="medium" />
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><label for="vi_pass">Password:</label></td>
+          <td>
+            <p class="description">
+              <input type="password" name="vi_pass" id="vi_pass" class="medium" />
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <input type="submit" name="fv_player_vi_install" value="Sign in" class="button-primary">
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <p><a href="mailto:support@vi.ai?Subject=Issues%20with%20account%20activation%20for%20http%3A%2F%2Fexample.org">I'm having issues with the account activation</a></p>
+          </td>
+        </tr>              
+                </tbody>
+  </table>                
+  
 
 
-      </div>
+</div>
 </div>
 <div id="fv_flowplayer_video_intelligence_hide" class="postbox " >
 <button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Hide vi Ads</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Hide vi Ads</span></h2>
 <div class="inside">
-    <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove">Hide the vi Ads tab</label>
-    <script>
-    jQuery( function($) {
-      $('#fv-player-vi-remove').click( function() {
-        $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
-          $('#fv-player-vi-give-back').prop('checked',false);
-          $('[href=#postbox-container-tab_video_intelligence]').hide();
-          $('#fv_flowplayer_video_intelligence').hide();
-          $('[href=#postbox-container-tab_video_ads]').click();
-          $('#fv_flowplayer_video_intelligence_revival').show();
-        });
-        
-      });
-    });
-    </script>
-    </div>
-</div>
-</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" />      
-      </div>
-            <div id='postbox-container-tab_help' class='postbox-container' style="">    
-				<div id="normal-sortables" class="meta-box-sortables"><div id="fv_flowplayer_usage" class="postbox " >
-<button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Usage</span><span class="toggle-indicator" aria-hidden="true"></span></button><h2 class="hndle"><span>Usage</span></h2>
-<div class="inside">
-				<table class="form-table">
-					<tr>
-						<td colspan="4">  
-							<div class="column">
-								<div class="icon32" id="icon-users"><br></div>							
-								<p>Illustrated user guides:</p>
-								<div class="clear"></div>
-								<ul>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide#insert-videos">Inserting videos</a>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/start-up-guide">License key and custom logo</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/creating-playlists">How to create a playlist</a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/ads">Using ads</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/ads/incorporating-google-adsense">Using Google Ads</a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/rtmp-streams">RTMP streams</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/advanced/subtitles">Subtitles</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide">Amazon S3 secure content guide</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/securing-your-video/hls-stream">How to setup a HLS stream</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/advanced/google-analytics-flowplayer">Google Analytics support</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/using-lightbox">Video lightbox</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player">YouTube integration</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/basic-setup/setting-quality-switching">Quality Switching</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo">Vimeo integration</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/ads/using-preroll-postroll-ads">Custom video ads</a></li>
-                  <li><a target="_blank" href="https://foliovision.com/player/video-hosting/serving-private-cloudfront">CloudFront CDN - protected video downloads</a></li>
-								</ul>
-							</div>
-							<div class="column">
-								<div class="icon32" id="icon-tools"><br></div>							
-								<p>Troubleshooting:</p>
-								<div class="clear"></div>
-								<ul>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/installation">Automated checks</a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding">Video encoding tips</a></li>
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/encoding#flash-only">Video formats to avoid</a></li>		
-									<li><a target="_blank" href="https://foliovision.com/player/video-hosting/secure-amazon-s3-guide/fix-amazon-mime-type">Fixing mime type on Amazon S3</a></li>		
-									<li><a target="_blank" href="https://foliovision.com/player/basic-setup/faq">Plugin FAQ</a></li>									
-									<li><a target="_blank" href="http://foliovision.com/support/fv-wordpress-flowplayer/">Support forums</a></li>										
-								</ul>
-							</div>
-							<div class="clear"></div>
-							<!--<p>
-							To embed video "example.mp4", simply include the following code inside any post or page: 
-							<code>[fvplayer src=example.mp4]</code>
-							</p>
-							<p>
-							<code>src</code> is the only compulsory parameter, specifying the video file. Its value can be either a full URL of the file, 
-							or just a filename (if it is located in the /videos/ directory in the root of the web).
-							</p>
-							<p>When user uploads are allowed, uploading or selecting video from WP Media Library is available. To insert selected video, simply use the 'Insert into Post' button.</p>
-							<h4>Optional parameters:</h4>
-							<ul style="text-align: left;">
-								<li><code><strong>width</strong></code> and <code><strong>height</strong></code> specify the dimensions of played video in pixels. If they are not set, the default size is 320x240.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' width=640 height=480]</code></li>
-								<li><code><strong>splash</strong></code> parameter can be used to display a custom splash image before the video starts. Just like in case of <code>src</code> 
-								parameter, its value can be either complete URL, or filename of an image located in /videos/ folder.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' splash=image.jpg]</code></li>
-								<li><code><strong>splashend</strong></code> parameter can be used to display a custom splash image after the video ends.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' splashend=show]</code></li>
-								<li><code><strong>autoplay</strong></code> parameter specify wheter the video should start to play automaticaly after the page is loaded. This parameter overrides the default autoplay setting above. Its value can be either true or false.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' autoplay=true]</code></li>
-								<li><code><strong>loop</strong></code> parameter specify wheter the video starts again from the beginning when the video ends. Its value can be either true or false.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' loop=true]</code></li>
-								<li><code><strong>popup</strong></code> parameter can be used to display any HTML code after the video finishes (ideal for advertisment or links to similar videos). 
-								Content you want to display must be between simple quotes (<code>''</code>).<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' popup='&lt;p&gt;some HTML content&lt;/p&gt;']</code></li>      			
-								<li><code><strong>redirect</strong></code> parameter can be used to redirect to another page (in a new tab) after the video ends.<br />
-								<i>Example</i>: <code>[fvplayer src='example.mp4' redirect='http://www.site.com']</code></li>
-							</ul>-->
-						</td>
-						<td></td>
-					</tr>
-				</table>
+<input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove">Hide the vi Ads tab</label>
+<script>
+jQuery( function($) {
+$('#fv-player-vi-remove').click( function() {
+  $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
+    $('#fv-player-vi-give-back').prop('checked',false);
+    $('[href=#postbox-container-tab_video_intelligence]').hide();
+    $('#fv_flowplayer_video_intelligence').hide();
+    $('[href=#postbox-container-tab_video_ads]').click();
+    $('#fv_flowplayer_video_intelligence_revival').show();
+  });
+  
+});
+});
+</script>
 </div>
 </div>
-</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" />      
-      </div>
+</div><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="d28516cc79" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="3edef551d9" /></div>
+
             <div style="clear: both"></div>
 		</div>
     <input type="hidden" id="fv_flowplayer_settings_nonce" name="fv_flowplayer_settings_nonce" value="6efb8df58f" /><input type="hidden" name="_wp_http_referer" value="" />  </form>
@@ -1993,24 +2592,23 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
       var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
       
       more.toggle();
-      
-      if( jQuery(':visible', more ).length > 0 ) {
-        jQuery(this).attr('data-original-help-text', jQuery(this).html() );
-        jQuery(this).html('(hide)');
-      } else {
-        jQuery(this).html( jQuery(this).attr('data-original-help-text') );
-      }      
+   
+    } );  
+
+    jQuery('.show-info').click( function(e) {
+      e.preventDefault();
+      jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
     
     /*
-     * Coor Picker Default  
+     * Color Picker Default  
      */	
     jQuery('.playlistFontColor-show').click(function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-hide').show();
 
-      jQuery('#playlistFontColor-proxy').show().val(jQuery('#playlistFontColor-proxy').data('previous'));
+      jQuery('#playlistFontColor-proxy').show().val(jQuery('#playlistFontColor-proxy').data('previous')).trigger('change');
       jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
     });
 
@@ -2019,7 +2617,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-show').show();
 
-      jQuery('#playlistFontColor-proxy').data('previous',jQuery('#playlistFontColor-proxy').hide().val()).val('');
+      jQuery('#playlistFontColor-proxy').data('previous',jQuery('#playlistFontColor-proxy').hide().val()).val('').trigger('change');
       jQuery('#playlistFontColor').val('');
     }); 
 
@@ -2055,6 +2653,28 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   jQuery('#' + anchor).show();
 });  
 
+jQuery('#normal-sortables .button-primary').on('click',function(e){
+  if ('fv-wp-flowplayer-submit' == this.name) {
+    // store windows scroll position, so we can return to the same spot after reload
+    if (localStorage) {
+      localStorage["fv_posStorage"] = $(window).scrollTop();
+    }
+  }
+
+  return true;
+});
+
+jQuery(window).on('load', function() {
+  setTimeout(function() {
+    if (localStorage) {
+      var posReader = localStorage["fv_posStorage"];
+      if (posReader) {
+        jQuery(window).scrollTop(posReader);
+        localStorage.removeItem("fv_posStorage");
+      }
+    }
+  }, 100);
+});
 
 jQuery('a.fv-settings-anchor').on('click',function(e){
   var id = jQuery(this).attr('href');

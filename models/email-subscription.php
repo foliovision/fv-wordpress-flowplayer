@@ -367,7 +367,9 @@ class FV_Player_Email_Subscription {
     
     if( get_option('fv_player_mailchimp_time', 0 ) + $sTimeout > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
 
-    require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
+    if( !class_exists('\DrewM\MailChimp\MailChimp') ) {
+      require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
+    }
     require_once dirname(__FILE__) . '/email-subscription-mailchimp.php';
     
     $result = fv_player_mailchimp_result();
@@ -409,7 +411,9 @@ class FV_Player_Email_Subscription {
 
   private function  mailchimp_signup($list_id, $data){
     global $fv_fp;
-    require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
+    if( !class_exists('\DrewM\MailChimp\MailChimp') ) {
+      require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
+    }
     require_once dirname(__FILE__) . '/email-subscription-mailchimp.php';
     
     $merge_fields = array();
