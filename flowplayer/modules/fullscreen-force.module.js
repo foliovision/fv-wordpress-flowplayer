@@ -55,11 +55,15 @@ flowplayer(function(api, root) {
         
         // triggering unload on ready didn't work with HLS.js
         api.one('resume', function(e) {
+          // it's already closed!
+          is_closing = false;
           api.pause();
         });
       }
       api.fakeFullscreen(false);
-      
+
+      // do not run Flowplayer unload() as that would reset the video time
+      return false;
     });
     
     jQuery('[rel='+root.attr('id')+'] a').on('click', function(e) {
