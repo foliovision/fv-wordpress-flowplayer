@@ -56,6 +56,11 @@ $doc.ready(function($){
 
     // prevent closing if we're still saving the data
     if (save_please || saving || loading_meta) {
+      // if we already have the overlay changed, bail out
+      if (overlay_close_waiting_for_save) {
+        return;
+      }
+
       overlay_close_waiting_for_save = true;
       $('.fv-wp-flowplayer-notice-small, .fv-player-shortcode-editor-small-spinner').hide();
       fv_wp_flowplayer_big_loader_show('Saving your data, please wait...');
@@ -68,7 +73,7 @@ $doc.ready(function($){
           if (loading_meta <= 0) {
             clearInterval(waitForMeta);
             loading_meta = 0;
-            // initiate an extra save, as we now have all meta fields populated
+            // initiate AJAX save, as we now have all meta fields populated
             // which will also auto-close this overlay once done
             fv_wp_flowplayer_submit();
           }
@@ -682,7 +687,7 @@ $doc.ready(function($){
   }
 
   setInterval( function() {
-    if( !save_please ) return;
+    if( !save_please || loading_meta ) return;
 
     saving = true;
 
