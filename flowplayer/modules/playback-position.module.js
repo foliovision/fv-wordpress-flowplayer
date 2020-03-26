@@ -1,6 +1,12 @@
 /*
  *  Video Position Store functionality
  */
+
+// MSIE8- shim
+if (!Date.now) {
+  Date.now = function() { return new Date().getTime(); }
+}
+
 flowplayer( function(api,root) {
   var
     $root = jQuery(root),
@@ -14,6 +20,7 @@ flowplayer( function(api,root) {
     maxCookieSize = 2500,    
     localStorageEnabled = null,    
     cookieKeyName = 'video_positions',
+    tempCookieKeyName = 'video_positions_tmp',
 
     // retrieves the original source of a video
     getOriginalSource = function(video) {
@@ -36,6 +43,14 @@ flowplayer( function(api,root) {
 
     setCookieKey = function(key, value) {
       return (localStorageEnabled ? localStorage.setItem(key, value) : Cookies.set(key, value));
+    },
+
+    removeCookieKey = function(key) {
+      if (localStorageEnabled) {
+        localStorage.removeItem(key);
+      } {
+        Cookies.remove(key);
+      };
     },
 
     // stores currently played/paused/stopped video position
@@ -114,7 +129,31 @@ flowplayer( function(api,root) {
         position = originalVideoApiPath.position;
 
       api.bind('progress', storeVideoPosition);
-      
+
+      // logged-in user, try to seek into a position stored during the last page reload if found,
+      // since sendBeacon() call might not have arrived into our DB yet
+      if (flowplayer.conf.is_logged_in == '1') {
+        var data = getCookieKey(tempCookieKeyName);
+        if (data && typeof(data) !== 'undefined') {
+          try {
+            data = JSON.parse(data);
+            if (data[originalVideoApiPath.src]) {
+              seek(data[originalVideoApiPath.src]);
+            }
+
+            // remove the temporary cookie/localStorage data
+            removeCookieKey(tempCookieKeyName);
+
+            // we seeked into the correct position now, let's bail out,
+            // so the DB value doesn't override this
+            return;
+          } catch (e) {
+            // something went wrong, so the next block will continue
+          }
+        }
+      }
+
+      // no temporary positions found, let's work with DB / cookies
       if (position) {
         seek(position);
       } else {
@@ -162,6 +201,45 @@ flowplayer( function(api,root) {
 
       if ( flowplayer.conf.is_logged_in == '1') {
         if (beaconSupported) {
+          // because the beacon call can arrive at the server after the page loads again
+          // in case of a page reload, we'll store our last positions into a temporary cookie/localStorage
+          // which will get removed on next page load
+          try {
+            data = {};
+
+            // add our video positions
+            for (var i in postData) {
+              data[postData[i].name] = postData[i].position;
+            }
+
+            var
+              serialized = JSON.stringify(data),
+              dataSize = getTextByteSize(serialized);
+
+            // check if we're not going over maximum cache size
+            if (dataSize > maxCookieSize) {
+              // we're over max cache size, let's delete some older videos
+              while (dataSize > maxCookieSize) {
+                // remove the first entry only
+                for (var i in data) {
+                  delete data[i];
+
+                  // re-serialize with the value removed
+                  serialized = JSON.stringify(data);
+                  // calculate new data size, so we can exit the while loop
+                  dataSize = getTextByteSize(serialized);
+
+                  break;
+                }
+              }
+            }
+
+            setCookieKey(tempCookieKeyName, serialized);
+          } catch (e) {
+            // JSON JS support missing
+            return;
+          }
+
           var fd = new FormData();
           fd.append('action', 'fv_wp_flowplayer_video_position_save');
           fd.append('videoTimes', encodeURIComponent(JSON.stringify(postData)));
