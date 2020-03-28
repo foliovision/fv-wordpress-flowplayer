@@ -142,7 +142,20 @@ flowplayer( function(api,root) {
             }
 
             // remove the temporary cookie/localStorage data
-            removeCookieKey(tempCookieKeyName);
+            delete data[originalVideoApiPath.src];
+
+            // check if we have any data left
+            var stillHasData = false;
+            for (var i in data) {
+              stillHasData = true;
+              break;
+            }
+
+            if (stillHasData) {
+              setCookieKey(tempCookieKeyName, JSON.stringify(data));
+            } else {
+              removeCookieKey(tempCookieKeyName);
+            }
 
             // we seeked into the correct position now, let's bail out,
             // so the DB value doesn't override this
