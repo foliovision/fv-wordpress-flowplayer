@@ -209,6 +209,8 @@ flowplayer( function(api,root) {
       }
 
       if (!postData.length) {
+        // no video positions? remove the temporary position cookie/localStorage data as well
+        removeCookieKey(tempCookieKeyName);
         return;
       }
 
@@ -344,7 +346,10 @@ flowplayer( function(api,root) {
 
   // TODO: find out what event can be used to force saving of playlist video positions on video change
   //api.bind('finish', forceSavePosition);
-  api.one('progress', function() {
+
+  // refactor: we need to bind this implicitly not only after a video is played, as sendVideoPositions() will now also
+  // remove temporary video positions from localStorage/cookie if no positions were found, which clears up any old temporary data
+  //api.one('progress', function() {
     jQuery(window).on('beforeunload', function () {
       // only fire a single AJAX call if we're closing / reloading the browser
       if (!flowplayer.conf.closingPage) {
@@ -352,7 +357,7 @@ flowplayer( function(api,root) {
         sendVideoPositions();
       }
     });
-  });
+  //});
 
   // check whether local storage is enabled
   if (localStorageEnabled !== null) {
