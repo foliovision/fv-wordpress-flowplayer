@@ -13,6 +13,7 @@ var fv_player_playlist_subtitles_box_template;
 var fv_wp_fp_shortcode;
 var fv_player_preview_single = -1;
 var fv_player_preview_window;
+var fv_wp_flowplayer_save_ignore_errors = false;
 
 var fv_player_editor_button_clicked = 0;
 
@@ -502,6 +503,8 @@ jQuery(document).ready(function($){
  * Initializes shortcode, removes playlist items, hides elements
  */
 function fv_wp_flowplayer_init() {
+  fv_wp_flowplayer_save_ignore_errors = false;
+
   // if error / message overlay is visible, hide it
   fv_wp_flowplayer_big_loader_close();
 
@@ -2491,7 +2494,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
         fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
           <br />\
           <br />\
-          <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>');
+          <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /> <input type="button" name="close_error_overlay_ignore_btn" id="close_error_overlay_ignore_btn" value="Ignore and Continue" class="button button-secondary button-large" onClick="fv_wp_flowplayer_big_loader_close(); fv_wp_flowplayer_save_ignore_errors = true; $(\'.fv_player_field_insert-button:visible, .fv_player_field_update-button:visible\').click();" /></p>');
       });
 
       return;
