@@ -120,6 +120,16 @@ flowplayer( function(api,root) {
       }
     },
 
+    removeAWSSignatures = function(videoURL) {
+      return videoURL
+                   .replace(/(X-Amz-Algorithm=[^&]+&?)/gm, '')
+                   .replace(/(X-Amz-Credential=[^&]+&?)/gm, '')
+                   .replace(/(X-Amz-Date=[^&]+&?)/gm, '')
+                   .replace(/(X-Amz-Expires=[^&]+&?)/gm, '')
+                   .replace(/(X-Amz-SignedHeaders=[^&]+&?)/gm, '')
+                   .replace(/(X-Amz-Signature=[^&]+&?)/gm, '');
+    },
+
     // used to seek into the desired last stored position when he video has started
     seekIntoPosition = function (e, api) {      
       if( api.video && api.video.live ) return;
@@ -137,6 +147,20 @@ flowplayer( function(api,root) {
         if (data && typeof(data) !== 'undefined') {
           try {
             data = JSON.parse(data);
+
+            // remove all AWS signatures from stored video positions
+            for (var i in data) {
+              var newKey = removeAWSSignatures(i);
+              // replace key with old video URL with the new one
+              if (newKey != i) {
+                data[newKey] = data[i];
+                delete data[i];
+              }
+            }
+
+            // remove all AWS signatures from this video
+            originalVideoApiPath.src = removeAWSSignatures(originalVideoApiPath.src);
+
             if (data[originalVideoApiPath.src]) {
               seek(data[originalVideoApiPath.src]);
             }
@@ -176,6 +200,20 @@ flowplayer( function(api,root) {
           if (data && typeof(data) !== 'undefined') {
             try {
               data = JSON.parse(data);
+
+              // remove all AWS signatures from stored video positions
+              for (var i in data) {
+                var newKey = removeAWSSignatures(i);
+                // replace key with old video URL with the new one
+                if (newKey != i) {
+                  data[newKey] = data[i];
+                  delete data[i];
+                }
+              }
+
+              // remove all AWS signatures from this video
+              originalVideoApiPath.src = removeAWSSignatures(originalVideoApiPath.src);
+
               if (data[originalVideoApiPath.src]) {
                 seek(data[originalVideoApiPath.src]);
               }
@@ -202,6 +240,8 @@ flowplayer( function(api,root) {
       postData = [];
 
       for (var video_name in flowplayer['playPositions']) {
+        // remove all AWS signatures from this video
+        video_name = removeAWSSignatures(video_name);
         postData.push({
           name: video_name,
           position: flowplayer['playPositions'][video_name]
