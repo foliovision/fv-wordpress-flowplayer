@@ -384,9 +384,6 @@ if (!Date.now) {
     //api.bind('finish', forceSavePosition);
   });
 
-  // refactor: we need to bind this implicitly not only after a video is played, as sendVideoPositions() will now also
-  // remove temporary video positions from localStorage/cookie if no positions were found, which clears up any old temporary data
-  //api.one('progress', function() {
   jQuery(window).on('beforeunload', function () {
     // only fire a single AJAX call if we're closing / reloading the browser
     if (!flowplayer.conf.closingPage) {
@@ -394,7 +391,6 @@ if (!Date.now) {
       sendVideoPositions();
     }
   });
-  //});
 
   // check whether local storage is enabled
   if (localStorageEnabled !== null) {
