@@ -18,6 +18,7 @@ if (!Date.now) {
     localStorageEnabled = null,
     cookieKeyName = 'video_positions',
     tempCookieKeyName = 'video_positions_tmp',
+    playPositions = [],
 
     // retrieves the original source of a video
     getOriginalSource = function(video) {
@@ -53,12 +54,12 @@ if (!Date.now) {
     // called when the video finishes playing - removes that video position from cache, as it's no longer needed
     removeVideoPosition = function (e, api) {
       if (api.video.sources) {
-        if (typeof(flowplayer['playPositions']) == 'undefined') {
-          flowplayer['playPositions'] = [];
+        if (typeof(playPositions) == 'undefined') {
+          playPositions = [];
         }
 
         var originalVideoApiPath = getOriginalSource(api.video);
-        flowplayer['playPositions'][originalVideoApiPath.src] = 0;
+        playPositions[originalVideoApiPath.src] = 0;
       }
     },
 
@@ -84,11 +85,11 @@ if (!Date.now) {
 
       postData = [];
 
-      for (var video_name in flowplayer['playPositions']) {
+      for (var video_name in playPositions) {
         // remove all AWS signatures from this video
         postData.push({
           name: video_name,
-          position: flowplayer['playPositions'][video_name]
+          position: playPositions[video_name]
         });
       }
 
@@ -310,15 +311,15 @@ if (!Date.now) {
         }
 
         if (api.video.sources) {
-          if (typeof(flowplayer['playPositions']) == 'undefined') {
-            flowplayer['playPositions'] = [];
+          if (typeof(playPositions) == 'undefined') {
+            playPositions = [];
           }
 
           var
             originalVideoApiPath = getOriginalSource(api.video),
             position = Math.round(api.video.time);
 
-          flowplayer['playPositions'][originalVideoApiPath.src] = position;
+          playPositions[originalVideoApiPath.src] = position;
 
           // store the new position in the instance itself as well
           if (originalVideoApiPath.position) {
