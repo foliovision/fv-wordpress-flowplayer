@@ -16,6 +16,11 @@ var fv_player_preview_window;
 var fv_player_draft = true;
 var fv_player_draft_changed = false;
 
+var fv_player_saving = false;
+var fv_player_loading_meta = 0; // will be > 0 when any meta data are loading that needs saving along with the form (example: S3 video duration)
+                                // ... this prevents overlay closing until all meta required data are loaded and stored
+var fv_player_save_please = false;
+
 var fv_player_editor_button_clicked = 0;
 
 var fv_player_shortcode_preview_unsupported = false;
@@ -35,11 +40,7 @@ $doc.ready(function($){
 
   var
     previous = false,
-    saving = false,
-    loading_meta = 0, // will be > 0 when any meta data are loading that needs saving along with the form (example: S3 video duration)
-                      // ... this prevents overlay closing until all meta required data are loaded and stored
     next = false,
-    save_please = false,
     overlay_close_waiting_for_save = false,
     loading = true,
     int_keyup = false,
@@ -55,7 +56,7 @@ $doc.ready(function($){
     }
 
     // prevent closing if we're still saving the data
-    if (save_please || saving || loading_meta) {
+    if (fv_player_save_please || fv_player_saving || fv_player_loading_meta) {
       // if we already have the overlay changed, bail out
       if (overlay_close_waiting_for_save) {
         return;
@@ -67,12 +68,12 @@ $doc.ready(function($){
 
       // create a repeating task which will check for all meta data being loaded,
       // so we can auto-close this overlay once that's done
-      if (loading_meta) {
+      if (fv_player_loading_meta) {
         var waitForMeta = setInterval(function() {
           // ... just in case we have a hiccup somewhere and loading_meta goes below 0
-          if (loading_meta <= 0) {
+          if (fv_player_loading_meta <= 0) {
             clearInterval(waitForMeta);
-            loading_meta = 0;
+            fv_player_loading_meta = 0;
             // initiate AJAX save, as we now have all meta fields populated
             // which will also auto-close this overlay once done
             fv_wp_flowplayer_submit();
@@ -632,7 +633,7 @@ $doc.ready(function($){
       return;
     }
 
-    if( saving ) {
+    if( fv_player_saving ) {
       console.log('Still saving!');
       next = ajax_data;
       return;
@@ -646,7 +647,7 @@ $doc.ready(function($){
 
   function ajax( data ) {
     // version with interval
-    save_please = data;
+    fv_player_save_please = data;
 
     // straight version, first save is as fast as possible
     /*console.log('Saving!',data);
@@ -678,7 +679,7 @@ $doc.ready(function($){
   }
 
   function error(msg) {
-    saving = false;
+    fv_player_saving = false;
 
     fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
       '+msg+'<br />\
@@ -687,15 +688,15 @@ $doc.ready(function($){
   }
 
   setInterval( function() {
-    if( !save_please || loading_meta ) return;
+    if( !fv_player_save_please || fv_player_loading_meta ) return;
 
-    saving = true;
+    fv_player_saving = true;
 
     $('.fv-player-save-waiting').addClass('is-active');
 
     $.post(ajaxurl+'?fv_player_db_save=1', {
       action: 'fv_player_db_save',
-      data: JSON.stringify(save_please),
+      data: JSON.stringify(fv_player_save_please),
       nonce: fv_player_editor_conf.preview_nonce,
     }, function(player) {
       try {
@@ -711,7 +712,7 @@ $doc.ready(function($){
           next = false;
         } else {
           console.log('Done!');
-          saving = false;
+          fv_player_saving = false;
           $('.fv-player-save-waiting').removeClass('is-active');
           $('.fv-player-save-completed').show().delay( 2500 ).fadeOut(400);
 
@@ -726,7 +727,7 @@ $doc.ready(function($){
       }
     }, 'json' ).error(error);
 
-    save_please = false;
+    fv_player_save_please = false;
 
   }, 1500 );
 
@@ -811,14 +812,14 @@ $doc.ready(function($){
           .parent()
           .append('<div class="fv-player-shortcode-editor-small-spinner"></div>');
 
-        loading_meta++;
+        fv_player_loading_meta++;
         var ajax_call = function () {
           $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
               action: 'fv_wp_flowplayer_retrieve_video_data',
               video_url: $element.val(),
               cookie: encodeURIComponent(document.cookie),
             }, function (json_data) {
-              loading_meta--;
+              fv_player_loading_meta--;
               // check if we still have this element on page
               if ($element.closest("body").length > 0 && update_fields.length) {
 
@@ -946,7 +947,7 @@ $doc.ready(function($){
               // remove spinners
               jQuery('.fv-player-shortcode-editor-small-spinner').remove();
             }).error(function () {
-              loading_meta--;
+              fv_player_loading_meta--;
               // remove element AJAX data
               $element.removeData('fv_player_video_data_ajax');
 
@@ -2989,23 +2990,58 @@ function fv_wp_flowplayer_import_routine() {
 
 
 function fv_wp_flowplayer_submit( preview, insert_as_new ) {
+  // bail out if we're already saving or we're loading meta data still
+  if (!preview && (fv_player_save_please || fv_player_saving || fv_player_loading_meta)) {
+    // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
+    if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined') {
+      if (fv_player_loading_meta) {
+        jQuery('#fv-player-shortcode-editor-editor .button-primary').prop('disabled', 'disabled');
+        var checker = setInterval(function() {
+          if (fv_player_loading_meta <= 0) {
+            clearInterval(checker);
+            fv_wp_flowplayer_submit(); // call this function again, so we can really save this time
+          }
+        }, 500);
+
+        return;
+      } else {
+        // this state is unexpected, as double-saving of new player should not be possible with disabled Save buttons
+        console.log('ERROR: double save detected when saving a new player!');
+      }
+    } else {
+      // if we're updating a player, just return here if we're loading meta data,
+      // as that would result in duplicate save - once with and once without meta data
+      if (fv_player_loading_meta) {
+        return;
+      }
+    }
+
+    // do nothing and warn in console if we're updating a saved player
+    // ... this situation is very improbable, as the actual saving code has prevention from double-saving
+    //     in place - however, if a double save is requested, it could mean that we're storing more data with this new AJAX
+    //     than with the previous one, which would leave us with incomplete data if we prevent it here
+    if ((fv_player_save_please || fv_player_saving) && !fv_player_loading_meta) {
+      console.log('WARNING: double save detected for edited player!');
+    }
+  }
+
   if( preview && typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
     //console.log('fv_wp_flowplayer_submit skip...',fv_player_shortcode_preview);
     return;
   }
-  
+
   if( preview == 'refresh-button' ) {
     jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').show();
     return;
-  }  
-  
+  }
+
   fv_player_shortcode_preview = true;
   //console.log('fv_player_shortcode_preview = true');
-  
+
   fv_wp_fp_shortcode = '';
   var shorttag = 'fvplayer';
   var divPreview = jQuery('#fv-player-shortcode-editor-preview');
-	
+
 	if(
     !preview &&
     jQuery(".fv_wp_flowplayer_field_rtmp").attr('placeholder') == '' &&
@@ -3017,10 +3053,10 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
 	) {
 		alert('Please enter both server and path for your RTMP video.');
 		return false;
-	} else if( 
+	} else if(
           !preview &&
-          document.getElementById("fv_wp_flowplayer_field_src").value == '' 
-          && jQuery(".fv_wp_flowplayer_field_rtmp").val() == '' 
+          document.getElementById("fv_wp_flowplayer_field_src").value == ''
+          && jQuery(".fv_wp_flowplayer_field_rtmp").val() == ''
           && jQuery(".fv_wp_flowplayer_field_rtmp_path").val() == '') {
 		alert('Please enter the file name of your video file.');
 		return false;
@@ -3131,23 +3167,23 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_src2','src2');
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_rtmp','rtmp');
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_rtmp_path','rtmp_path');
-    fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_live', 'live', false, true );	        
-    fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_mobile','mobile');  
+    fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_live', 'live', false, true );
+    fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_mobile','mobile');
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_splash','splash');
   } else {
-    var item = jQuery('.fv-player-tab-video-files table').eq(fv_player_preview_single);    
+    var item = jQuery('.fv-player-tab-video-files table').eq(fv_player_preview_single);
     fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_src')[0],'src');
     fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_src1')[0],'src1');
     fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_src2')[0],'src2');
     fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_rtmp')[0],'rtmp');
     fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_rtmp_path')[0],'rtmp_path');
-    fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_live')[0], 'live', false, true );	        
-    fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_mobile')[0],'mobile');  
+    fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_live')[0], 'live', false, true );
+    fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_mobile')[0],'mobile');
     fv_wp_flowplayer_shortcode_write_arg(item.find('#fv_wp_flowplayer_field_splash')[0],'splash');
-    
+
     //  todo: how to handle RTMP server here?
   }
-  
+
   var width , height;
   if(!preview){
     fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_width','width','int');
@@ -3158,10 +3194,10 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
       width = previewDimensions.width;
       height = previewDimensions.height;
     }
-    fv_wp_fp_shortcode += ' width="' + width + '" '    
+    fv_wp_fp_shortcode += ' width="' + width + '" '
     fv_wp_fp_shortcode += ' height="' + height + '" '
   }
-  
+
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_align', 'align', false, false, ['left', 'right'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_autoplay', 'autoplay', false, false, ['true', 'false', 'muted'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_playlist', 'liststyle', false, false, ['tabs', 'prevnext', 'vertical','horizontal','text','slider'] );
@@ -3172,7 +3208,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_sticky', 'sticky', false, false, ['true', 'false'] );
   fv_wp_flowplayer_shortcode_write_arg( 'fv_wp_flowplayer_field_share', 'share', false, false, ['yes', 'no', jQuery('#fv_wp_flowplayer_field_share_title').val().replace(/;/,'').replace(/(\S)$/,'$1;')+jQuery('#fv_wp_flowplayer_field_share_url').val().replace(/;/,'')] );
 
-  
+
   /*
    * End of playlist dropdown
    * legacy:
@@ -3184,7 +3220,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     case 'loop': fv_wp_fp_shortcode += ' loop="true"'; break;
     case 'splashend': fv_wp_fp_shortcode += ' splashend="show"'; break;
     case 'redirect': fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_redirect','redirect'); break;
-    case 'popup': 
+    case 'popup':
       if( jQuery('[name=fv_wp_flowplayer_field_popup]').val() !== ''){
         fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_popup','popup','html');
       }else{
@@ -3198,16 +3234,16 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     break;
 
   }
-  
-  
+
+
   jQuery('.fv_wp_flowplayer_field_subtitles').each( function() {
     var lang = jQuery(this).siblings('.fv_wp_flowplayer_field_subtitles_lang').val();
     if( lang ) fv_wp_flowplayer_shortcode_write_arg( jQuery(this)[0], 'subtitles_' + lang );  //  non language specific subtitles are handled on playlist level. what?
-  });   
-  
+  });
+
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad','ad','html');
-  //  
-  
+  //
+
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_height','ad_height','int');
   fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_skip','ad_skip', false, true, ['yes']);
 	fv_wp_flowplayer_shortcode_write_arg('fv_wp_flowplayer_field_ad_width','ad_width','int');
@@ -3216,13 +3252,13 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
 		var aPlaylistItems = new Array();
     var aPlaylistCaptions = new Array();
     var aSplashText = new Array();
-    
+
     var aPlaylistSubtitles = new Array();
 		jQuery('.fv-player-tab-video-files table').each(function(i,e) {
       aPlaylistCaptions.push(jQuery('[name=fv_wp_flowplayer_field_caption]',this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
-      
+
       aSplashText.push(jQuery('[name=fv_wp_flowplayer_field_splash_text]', this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
-      
+
       var video_subtitles = jQuery('.fv-player-tab-subtitles table').eq(i);
       video_subtitles.find('[name=fv_wp_flowplayer_field_subtitles]').each( function() {
         if( jQuery(this).prev('.fv_wp_flowplayer_field_subtitles_lang').val() ) {
@@ -3231,21 +3267,21 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
         }
         aPlaylistSubtitles.push( jQuery(this).attr('value').trim().replace(/\;/gi,'\\;').replace(/"/gi,'&amp;quot;') );
       });
-      
-		  if( i == 0 ) return;  
-      var aPlaylistItem = new Array();      
+
+		  if( i == 0 ) return;
+      var aPlaylistItem = new Array();
 
       jQuery(this).find('input').each( function() {
         if( jQuery(this).attr('name').match(/fv_wp_flowplayer_field_caption/) ) return;
         if( jQuery(this).attr('name').match(/fv_wp_flowplayer_field_splash_text/) ) return;
         if( jQuery(this).hasClass('fv_wp_flowplayer_field_rtmp') || jQuery(this).hasClass('fv_wp_flowplayer_field_width') || jQuery(this).hasClass('fv_wp_flowplayer_field_height') ) return;
         if( jQuery(this).hasClass('extra-field') ) return;
-        if( jQuery(this).attr('value').trim().length > 0 ) { 
+        if( jQuery(this).attr('value').trim().length > 0 ) {
           var value = jQuery(this).attr('value').trim()
           if( jQuery(this).hasClass('fv_wp_flowplayer_field_rtmp_path') ) value = "rtmp:"+value;
           aPlaylistItem.push(value);
         }
-      } );			
+      } );
       if( aPlaylistItem.length > 0 ) {
         aPlaylistItems.push(aPlaylistItem.join(','));
       }
@@ -3268,11 +3304,11 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
 		if( bPlaylistCaptionExists && sPlaylistCaptions.length > 0 ) {
 			fv_wp_fp_shortcode += ' caption="'+sPlaylistCaptions+'"';
 		}
-    
+
     if( sPlaylistSubtitles.replace(/[; ]/g,'').length > 0 && sPlaylistSubtitles.length > 0 ) {
 			fv_wp_fp_shortcode += ' subtitles="'+sPlaylistSubtitles+'"';
 		}
-    
+
     var bPlaylistSplashTextExists = false;
     for( var i in aSplashText ){
       if( typeof(aSplashText[i]) == "string" && aSplashText[i].trim().length > 0 ) {
@@ -3281,17 +3317,17 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     }
 		if( bPlaylistSplashTextExists && aSplashText.length > 0 ) {
 			fv_wp_fp_shortcode += ' splash_text="'+sSplashText+'"';
-		}    
+		}
 	}
 
   jQuery(document).trigger('fv_flowplayer_shortcode_create');
-	
+
 	if( fv_wp_fp_shortcode_remains && fv_wp_fp_shortcode_remains.trim().length > 0 ) {
   	fv_wp_fp_shortcode += ' ' + fv_wp_fp_shortcode_remains.trim();
   }
-  
+
 	fv_wp_fp_shortcode += ']';
-	
+
   //Preview
   if(preview){
     fv_wp_flowplayer_show_preview(fv_wp_fp_shortcode.match(/src=/), fv_wp_fp_shortcode);
