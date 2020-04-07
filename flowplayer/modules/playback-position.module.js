@@ -385,7 +385,8 @@ if (!Date.now) {
     //api.bind('finish', forceSavePosition);
   });
 
-  jQuery(window).on('beforeunload', function () {
+  // pagehide is required for iOS
+  jQuery(window).on('beforeunload pagehide', function () {
     // only fire a single AJAX call if we're closing / reloading the browser
     if (!flowplayer.conf.closingPage) {
       flowplayer.conf.closingPage = true;
