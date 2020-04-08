@@ -357,6 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.17.727 - 2020/04/07 =
+
+* New setting - Multiple video playback - enable to allow multiple videos to play at the same time, only the last played video remains audible, the others are muted
+* Iframe embedding - when you embed a playlist, it remembers which video did you play when obtaining the iframe embed code
+* iOS - better way of detecting 403 HTTP errors during playback
+* Subtitles - improving to show the first matching subtitle line when subtitles are first enabled, until now it would wait before playback time reaches another subtitle line
+* Volume control - dragging it down to zero mutes the video and shows the un-mute icon, which restores the last volume when clicked
+* Bugfix - Lightbox - Proper sizing for mobile landscape view
+* Bugfix - Video Position Saving - not working in Chrome since the last release, fixing now
+
 = 7.4.14.727 - 2020/01/28 =
 
 * HLS.js - enabling on iOS 13 and Safari above version 8
