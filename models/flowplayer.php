@@ -2154,6 +2154,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   function template_preview() {
     // Generate preview html
+    show_admin_bar(false);
     ?>
     <html>
       <head>
