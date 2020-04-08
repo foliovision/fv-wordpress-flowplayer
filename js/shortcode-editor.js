@@ -1056,6 +1056,11 @@ $doc.ready(function($){
     return false;
   });
 
+  $doc.on( 'click', '#fv_player_insert_1, #fv_player_insert_2, #fv_player_insert_3, #fv_player_insert_4, #fv_player_insert_5', function(e) {
+    fv_wp_flowplayer_submit();
+    return false;
+  });
+
 });
 
 
