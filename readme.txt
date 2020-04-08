@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.2.2
+Tested up to: 5.4
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -357,9 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.4.17.727 - 2020/04/07 =
+= 7.4.17.727 - 2020/04/08 =
 
 * New setting - Multiple video playback - enable to allow multiple videos to play at the same time, only the last played video remains audible, the others are muted
+* Editor - Preview is now using a simpler and faster code
 * Iframe embedding - when you embed a playlist, it remembers which video did you play when obtaining the iframe embed code
 * iOS - better way of detecting 403 HTTP errors during playback
 * Subtitles - improving to show the first matching subtitle line when subtitles are first enabled, until now it would wait before playback time reaches another subtitle line
