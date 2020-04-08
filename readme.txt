@@ -366,8 +366,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Subtitles - improving to show the first matching subtitle line when subtitles are first enabled, until now it would wait before playback time reaches another subtitle line
 * Volume control - dragging it down to zero mutes the video and shows the un-mute icon, which restores the last volume when clicked
 * Bugfix - Lightbox - Proper sizing for mobile landscape view
-* Bugfix - Video duration scanning when posting new files using editor
-* Bugfix - Video Position Saving - not working in Chrome since the last release, fixing now
+* Bugfix - Video duration scanning when posting new files using editor and not using FV Player Pro 
+* Bugfix - Video Position Saving - not working for logged in users in Chrome version >= 80
 
 = 7.4.14.727 - 2020/01/28 =
 
