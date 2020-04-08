@@ -1056,6 +1056,12 @@ $doc.ready(function($){
     } );
     return false;
   });
+  
+  $document.on('click', '#close_error_overlay_ignore_btn', function() {
+    fv_wp_flowplayer_big_loader_close();
+    fv_wp_flowplayer_save_ignore_errors = true;
+    $('.fv_player_field_insert-button:visible, .fv_player_field_update-button:visible').click();
+  });
 
 });
 
@@ -3146,7 +3152,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
         fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
           <br />\
           <br />\
-          <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>');
+          <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /> <input type="button" name="close_error_overlay_ignore_btn" id="close_error_overlay_ignore_btn" value="Ignore and Continue" class="button button-secondary button-large" /></p>');
       });
 
       return;
