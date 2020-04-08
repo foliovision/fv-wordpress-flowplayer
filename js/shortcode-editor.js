@@ -66,20 +66,10 @@ $doc.ready(function($){
       $('.fv-wp-flowplayer-notice-small, .fv-player-shortcode-editor-small-spinner').hide();
       fv_wp_flowplayer_big_loader_show('Saving your data, please wait...');
 
-      // create a repeating task which will check for all meta data being loaded,
+      // call fv_wp_flowplayer_submit() which will create a repeating task
+      // that will check for all meta data being loaded,
       // so we can auto-close this overlay once that's done
-      if (fv_player_loading_meta) {
-        var waitForMeta = setInterval(function() {
-          // ... just in case we have a hiccup somewhere and loading_meta goes below 0
-          if (fv_player_loading_meta <= 0) {
-            clearInterval(waitForMeta);
-            fv_player_loading_meta = 0;
-            // initiate AJAX save, as we now have all meta fields populated
-            // which will also auto-close this overlay once done
-            fv_wp_flowplayer_submit();
-          }
-        }, 500);
-      }
+      fv_wp_flowplayer_submit();
 
       return;
     }
