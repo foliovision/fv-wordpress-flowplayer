@@ -29,8 +29,10 @@ if (!Date.now) {
           video.sources[0]
       );
 
-      // remove all AWS signatures from the original path
-      out.src = removeAWSSignatures(out.src);
+      // remove all AWS signatures from the path, if an original video URL is not found / present
+      if (typeof(video.sources_original) == "undefined" || typeof(video.sources_original[0]) == "undefined") {
+        out.src = removeAWSSignatures(out.src);
+      }
 
       return out;
     },
