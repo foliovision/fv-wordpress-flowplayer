@@ -5,6 +5,10 @@ flowplayer(function(api, root) {
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
     fsforce = root.data('fsforce') == true || playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid');
   
+  if( root.data('fullscreen') == false ) {
+    return;
+  }
+    
   // Force fullscreen on mobile setting
   if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce ) {
     if( !flowplayer.support.fullscreen ) {
