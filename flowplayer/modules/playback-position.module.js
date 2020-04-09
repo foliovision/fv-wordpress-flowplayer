@@ -23,6 +23,10 @@ if (!Date.now) {
 
     // retrieves the original source of a video
     getVideoId = function(video) {
+      if( video.id ) {
+        return video.id;
+      }
+      
       // logged-in users will have position stored within that video
       var out = (
         (typeof(video.sources_original) != "undefined" && typeof(video.sources_original[0]) != "undefined") ?
@@ -32,7 +36,7 @@ if (!Date.now) {
 
       // remove all AWS signatures from the path, if an original video URL is not found / present
       if (typeof(video.sources_original) == "undefined" || typeof(video.sources_original[0]) == "undefined") {
-        out = removeAWSSignatures(out.src);
+        out = removeAWSSignatures(out);
       }
 
       return out;
@@ -216,7 +220,7 @@ if (!Date.now) {
   flowplayer( function(api,root) {
     var
       $root = jQuery(root),
-      enabled = flowplayer.conf.video_position_save_enable || $root.data('save-position'),
+      enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position'),
       progressEventsCount = 0,
 
       // used to seek into the desired last stored position when he video has started
