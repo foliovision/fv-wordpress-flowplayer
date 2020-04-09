@@ -23,11 +23,18 @@ if (!Date.now) {
     // retrieves the original source of a video
     getOriginalSource = function(video) {
       // logged-in users will have position stored within that video
-      return (
+      var out = (
         (typeof(video.sources_original) != "undefined" && typeof(video.sources_original[0]) != "undefined") ?
           video.sources_original[0] :
           video.sources[0]
       );
+
+      // remove all AWS signatures from the path, if an original video URL is not found / present
+      if (typeof(video.sources_original) == "undefined" || typeof(video.sources_original[0]) == "undefined") {
+        out.src = removeAWSSignatures(out.src);
+      }
+
+      return out;
     },
 
     // calculates a cookie byte size
@@ -231,34 +238,24 @@ if (!Date.now) {
             try {
               data = JSON.parse(data);
 
-              // remove all AWS signatures from stored video positions
-              for (var i in data) {
-                var newKey = removeAWSSignatures(i);
-                // replace key with old video URL with the new one
-                if (newKey != i) {
-                  data[newKey] = data[i];
-                  delete data[i];
+              if (data[originalVideoApiPath.src]) {
+                seek(data[originalVideoApiPath.src]);
+
+                // remove the temporary cookie/localStorage data
+                delete data[originalVideoApiPath.src];
+
+                // check if we have any data left
+                var stillHasData = false;
+                for (var i in data) {
+                  stillHasData = true;
+                  break;
                 }
-              }
 
-              if (data[removeAWSSignatures(originalVideoApiPath.src)]) {
-                seek(data[removeAWSSignatures(originalVideoApiPath.src)]);
-              }
-
-              // remove the temporary cookie/localStorage data
-              delete data[originalVideoApiPath.src];
-
-              // check if we have any data left
-              var stillHasData = false;
-              for (var i in data) {
-                stillHasData = true;
-                break;
-              }
-
-              if (stillHasData) {
-                setCookieKey(tempCookieKeyName, JSON.stringify(data));
-              } else {
-                removeCookieKey(tempCookieKeyName);
+                if (stillHasData) {
+                  setCookieKey(tempCookieKeyName, JSON.stringify(data));
+                } else {
+                  removeCookieKey(tempCookieKeyName);
+                }
               }
 
               // we seeked into the correct position now, let's bail out,
@@ -281,18 +278,8 @@ if (!Date.now) {
               try {
                 data = JSON.parse(data);
 
-                // remove all AWS signatures from stored video positions
-                for (var i in data) {
-                  var newKey = removeAWSSignatures(i);
-                  // replace key with old video URL with the new one
-                  if (newKey != i) {
-                    data[newKey] = data[i];
-                    delete data[i];
-                  }
-                }
-
-                if (data[removeAWSSignatures(originalVideoApiPath.src)]) {
-                  seek(data[removeAWSSignatures(originalVideoApiPath.src)]);
+                if (data[originalVideoApiPath.src]) {
+                  seek(data[originalVideoApiPath.src]);
                 }
               } catch (e) {
                 // something went wrong...
