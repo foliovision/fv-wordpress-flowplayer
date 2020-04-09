@@ -1057,7 +1057,7 @@ $doc.ready(function($){
     return false;
   });
   
-  $document.on('click', '#close_error_overlay_ignore_btn', function() {
+  $doc.on('click', '#close_error_overlay_ignore_btn', function() {
     fv_wp_flowplayer_big_loader_close();
     fv_wp_flowplayer_save_ignore_errors = true;
     $('.fv_player_field_insert-button:visible, .fv_player_field_update-button:visible').click();
