@@ -1468,26 +1468,13 @@ class FV_Player_Db {
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    global $FV_Player_Db;
-
-    $db_options = array(
-      'select_fields' => 'player_name, p.id, date_created',
-      'order_by'      => 'player_name, p.id',
-      'order'         => 'ASC'
-    );
-
-    new FV_Player_Db_Player( null, array(
-      'db_options' => $db_options
-    ), $FV_Player_Db );
-
-
+    $players = $this->getListPageData('id, name', null, null, null);
     $json_data = array();
-    $players = $FV_Player_Db->getPlayersCache();
 
     foreach ($players as $player) {
       $json_data[] = array(
-        'id' => $player->getId(),
-        'name' => $player->getPlayerName()
+        'id' => $player->id,
+        'name' => $player->player_name . ' (id = ' . $player->id . ')'
       );
     }
 
