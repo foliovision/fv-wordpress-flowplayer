@@ -1439,7 +1439,7 @@ class FV_Player_Db {
     $url = $_POST['video_url'];
 
     $json_data = apply_filters('fv_player_meta_data', $url, false);
-    if ($json_data !== false) {
+    if ($json_data !== false && is_array($json_data) ) {
       header('Content-Type: application/json');
       $json_data['ts'] = time();
       die(json_encode($json_data));

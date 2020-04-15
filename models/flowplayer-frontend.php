@@ -626,8 +626,16 @@ class flowplayer_frontend extends flowplayer
         }
         
         if( !$bIsAudio && !empty($splash_img) ) {
-          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';          
-          $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';
+          
+           // load the image from WP Media Library if you got a number
+          if( is_numeric($splash_img) ) {
+            $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
+          } else {
+            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
+          }
+          
+          $this->ret['html'] .= "\t".$image."\n"; 
         }
         
         if( !$bIsAudio ) {
@@ -964,7 +972,7 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
       $splash_img = $this->aCurArgs['splash'];
       
-      if( strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
+      if( !is_numeric($splash_img) && strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
         $http = is_ssl() ? 'https://' : 'http://';
         
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
