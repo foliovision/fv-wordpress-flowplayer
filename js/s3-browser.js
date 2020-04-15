@@ -62,8 +62,7 @@ jQuery( function($) {
 
           if (!$err_div.length) {
             $err_div = jQuery('<div class="errors"></div>');
-            $err_div.insertBefore(jQuery('.filemanager .search'));
-            $err_div.after('<hr /><br />');
+            $err_div.insertAfter(jQuery('.attachments-browser .media-toolbar-secondary .spinner'));
           }
 
           $err_div.html('<strong>Bucket is missing settings. Please make sure you assigned region, key ID and secret key to this bucket.</strong>');
