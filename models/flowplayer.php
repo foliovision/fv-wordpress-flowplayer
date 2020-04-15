@@ -139,8 +139,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
 
-    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
-    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    if( !empty($_GET['fv_player_preview']) ) {
+      add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
+    } else {
+      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
+      add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    }
     
     add_action( 'do_rocket_lazyload', array( $this, 'preview_no_lazy_load' ) );
     
@@ -2084,7 +2088,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   function template_embed() {
-    
+    // Generate embed html
     if( $embed_id = get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
@@ -2102,90 +2106,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   </style>
 </head>
 <body class="fv-player-preview">
-  <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
-    
-    if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
-      ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
-      <div style="background:white;">
-        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
-          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
-        </div>
-      </div>
-      <?php
-      die();
-    }
-    $dataInPost = ($_GET['fv_player_preview'] === 'POST');
-    $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
-    $shortcode = apply_filters('fv_player_preview_data', $shortcode);
-
-    $matches = null;
-    $width ='';
-    $height ='';
-
-    // width from regular shortcdode data
-    if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
-      $width = 'width:'.$matches[1].'px;';
-    }
-
-    // width from DB shortcdode data
-    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])){
-      $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
-    }
-
-    // height from regular shortcdode data
-    if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
-      $height = 'min-height:'.$matches[1].'px;';
-    }
-
-    // height from DB shortcdode data
-    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])){
-      $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
-    }
-
-    ?> 
-    <div style="background:white;">
-      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
-        <?php
-        // regular shortcode data with source
-        global $fv_fp;
-        if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
-          $aAtts = shortcode_parse_atts($shortcode);
-          if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
-            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
-          }
-          echo do_shortcode($shortcode);          
-        } else if ($dataInPost) {
-          // DB-based shortcode data
-          if (
-            !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
-            $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
-            $fv_fp->_get_option('liststyle') == 'vertical'
-          ) {
-            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
-          }
-
-          // note: we need to put "src" into the code or it won't get parsed at all
-          //       and at the same time, it displays the correct SRC in the preview
-          if( count($shortcode['videos']) > 0 ) {
-            $tmp = array_reverse($shortcode['videos']);
-            $item = array_pop($tmp);
-            $src = $item['fv_wp_flowplayer_field_src'];            
-          } else {
-            $src = 'none';
-          }
-          echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
-        } else { ?>
-          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
-          <?php
-        }
-        ?>
-      </div>
-    </div>
-    
-  <?php else :
-    
+  <?php
     if( stripos($content,'<!--fv player end-->') !== false ) {
-      
+
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
@@ -2194,7 +2117,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sPostfix = $embed_id == 1 ? 'fvp' : 'fvp'.$embed_id;
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
-      
+
       $aPlayers = explode( '<!--fv player end-->', $content );
       if( $aPlayers ) {
         foreach( $aPlayers AS $k => $v ) {
@@ -2205,45 +2128,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
         }
       }
-      
+
       if( !$bFound && is_numeric($embed_id) && !empty($aPlayers[$embed_id-1]) ) {
         echo substr($aPlayers[$embed_id-1], stripos($aPlayers[$embed_id-1],'<div id="wpfp_') );
         $bFound = true;
       }
-      
+
       if( !$bFound ) {
         echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
-      }    
-      
-    }
-  endif;
-  
-  wp_footer();
-  
-  if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
-    <script>
-    jQuery(document).ready( function(){
-      var parent = window.parent.jQuery(window.parent.document);
-      if( typeof(flowplayer) != "undefined" ) {      
-        parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
-      
-      } else {
-        parent.trigger('fvp-preview-error');
       }
-    
-    });
-    
-    if (window.top===window.self) {
-      jQuery('#wrapper').css('margin','25px 50px 0 50px');
-    } 
-    </script>
-  <?php endif; ?>
 
-</body>
+    }
 
-</html>       
-      <?php
-      exit();  
+    wp_footer();
+  
+    ?>
+    </body>
+    </html>
+    <?php
+    exit();
     }
   }
   
@@ -2254,6 +2157,137 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $value;
   }
 
+  function template_preview() {
+    // Generate preview html
+    show_admin_bar(false);
+    ?>
+    <html>
+      <head>
+        <?php wp_head(); ?>
+        <style>
+          body { margin: 0; padding: 0; overflow:hidden; background:white;}
+          body:before { height: 0px!important;}
+          html {margin-top: 0px !important; overflow:hidden; }
+        </style>
+      </head>
+      <body class="fv-player-preview">
+    <?php
+
+    $embed_id = get_query_var('fv_player_embed');
+
+    if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : 
+      if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
+        ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
+        <div style="background:white;">
+          <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+            <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
+          </div>
+        </div>
+        <?php
+        die();
+      }
+
+      $dataInPost = ($_GET['fv_player_preview'] === 'POST');
+      $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
+      $shortcode = apply_filters('fv_player_preview_data', $shortcode);
+  
+      $matches = null;
+      $width ='';
+      $height ='';
+  
+      // width from regular shortcdode data
+      if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)) {
+        $width = 'width:'.$matches[1].'px;';
+      }
+  
+      // width from DB shortcdode data
+      if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])) {
+        $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
+      }
+  
+      // height from regular shortcdode data
+      if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)) {
+        $height = 'min-height:'.$matches[1].'px;';
+      }
+  
+      // height from DB shortcdode data
+      if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])) {
+        $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
+      }
+
+      ?>
+      <div style="background:white;">
+        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+      <?php
+      // regular shortcode data with source
+      global $fv_fp;
+      if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
+        $aAtts = shortcode_parse_atts($shortcode);
+        if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
+          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+        }
+        echo do_shortcode($shortcode);          
+      } else if ($dataInPost) {
+        // DB-based shortcode data
+        if (
+          !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
+          $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
+          $fv_fp->_get_option('liststyle') == 'vertical'
+        ) {
+          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+        }
+
+        // note: we need to put "src" into the code or it won't get parsed at all
+        //       and at the same time, it displays the correct SRC in the preview
+        if( count($shortcode['videos']) > 0 ) {
+          $tmp = array_reverse($shortcode['videos']);
+          $item = array_pop($tmp);
+          $src = $item['fv_wp_flowplayer_field_src'];
+        } else {
+          $src = 'none';
+        }
+        echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
+      } else { ?>
+        <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
+        <?php
+      }
+      ?>
+      </div>
+    </div>
+  
+    <?php
+  
+    endif;
+      
+    ?>
+      <?php 
+      wp_footer(); 
+      if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+      ?>
+      <script>
+        jQuery(document).ready( function(){
+          var parent = window.parent.jQuery(window.parent.document);
+          if( typeof(flowplayer) != "undefined" ) {      
+            parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+          
+          } else {
+            parent.trigger('fvp-preview-error');
+          }
+        
+        });
+        
+        if (window.top===window.self) {
+          jQuery('#wrapper').css('margin','25px 50px 0 50px');
+        } 
+      </script>
+      <?php endif; ?>
+      </body>
+    </html>
+    <?php
+      
+    exit;
+  }
+  
 }
 
 function fv_wp_flowplayer_save_post( $post_id ) {

@@ -1362,8 +1362,8 @@
 .fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
 
 /* Playlist 2014 - classic */ 
-.fv-playlist-design-2014.fp-playlist-external a h4 {opacity:1;position:relative;margin-bottom:7px;padding:0 10px 4px;color:#000;background-color:transparent}
-.fv-playlist-design-2014.fp-playlist-external a h4 span {position:relative;transform:none;top:auto;padding:0}
+.fv-playlist-design-2014.fp-playlist-external a h4 {opacity:1;position:relative;margin-bottom:7px;padding:0 10px 4px;color:#000;background-color:transparent;text-shadow:none}
+.fv-playlist-design-2014.fp-playlist-external a h4 span {background-color:transparent;position:relative;transform:none;top:auto;padding:0}
 .fv-playlist-design-2014.fp-playlist-external a:hover h4,.fv-playlist-design-2014.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper .fv-playlist-design-2014 a:hover h4 {color:inherit}
 
 /* Playlist 2017 - text only */ 
