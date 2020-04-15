@@ -1056,6 +1056,11 @@ $doc.ready(function($){
     return false;
   });
 
+  $doc.on('change', '#players_selector', function() {
+    fv_wp_flowplayer_insert('[fvplayer id="' + this.value + '"]');
+    fv_wp_flowplayer_edit(this.value);
+  });
+
 });
 
 
@@ -1419,7 +1424,7 @@ function fv_flowplayer_load_players_dropdown() {
   }, function (json_data) {
     // build the dropdown
     var dropdown = [];
-    dropdown.push('<select name="players_selector" id="players_selector" onchange="if (fv_wp_flowplayer_content != \'\') { fv_wp_flowplayer_set_html(\'[fvplayer id=\' + this.value + \']\'); } else { send_to_editor(\'[fvplayer id=\' + this.value + \']\'); } jQuery(\'.fv-wordpress-flowplayer-button\').fv_player_box.close();"><option hidden disabled selected value>Choose a Player...</option>');
+    dropdown.push('<select name="players_selector" id="players_selector"><option hidden disabled selected value>Choose a Player...</option>');
 
     for (var i in json_data) {
       dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
@@ -1586,7 +1591,7 @@ function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
  * removes previous values from editor
  * fills new values from shortcode
  */
-function fv_wp_flowplayer_edit() {
+function fv_wp_flowplayer_edit(db_id) {
 
   var dialog = jQuery('#fv_player_box.fv-flowplayer-shortcode-editor');
   dialog.removeAttr('tabindex');
@@ -1609,80 +1614,89 @@ function fv_wp_flowplayer_edit() {
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
   jQuery("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
   jQuery(".fv_player_field_insert-button").attr( 'value', 'Insert' );
-  
-  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
-  if( field.length || jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length){
-    //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
-    if(fv_wp_flowplayer_content.match(/\[/) ) {
-      fv_wp_flowplayer_content = '[<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content.replace('[','')+'';
-    } else {
-      fv_wp_flowplayer_content =   '<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>'+fv_wp_flowplayer_content+'';
-    }
-    
-  }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){    
-    var bFound = false;
-    var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
-    for(var start = position; start--; start >= 0){
-      if( fv_wp_flowplayer_content[start] == '['){
-        bFound = true; break;
-      }else if(fv_wp_flowplayer_content[start] == ']'){
-        break
+
+  // if we've got a DB ID passed to this function, use it directly
+  if (!db_id) {
+    var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
+    if (field.length || jQuery('#widget-widget_fvplayer-' + FVFP_sWidgetId + '-text').length) {
+      //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
+      if (fv_wp_flowplayer_content.match(/\[/)) {
+        fv_wp_flowplayer_content = '[<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>' + fv_wp_flowplayer_content.replace('[', '') + '';
+      } else {
+        fv_wp_flowplayer_content = '<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>' + fv_wp_flowplayer_content + '';
       }
-    }
-    var shortcode = [];
-   
-    if(bFound){    
-      var temp = fv_wp_flowplayer_content.slice(start);
-      temp = temp.match(/^\[fvplayer[^\[\]]*]?/);
-      if(temp){
-        shortcode = temp;
-        fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, start) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(start).replace(/^\[[^\[\]]*]?/, '');
-      }else{
+
+    } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+      var bFound = false;
+      var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
+      for (var start = position; start--; start >= 0) {
+        if (fv_wp_flowplayer_content[start] == '[') {
+          bFound = true;
+          break;
+        } else if (fv_wp_flowplayer_content[start] == ']') {
+          break
+        }
+      }
+      var shortcode = [];
+
+      if (bFound) {
+        var temp = fv_wp_flowplayer_content.slice(start);
+        temp = temp.match(/^\[fvplayer[^\[\]]*]?/);
+        if (temp) {
+          shortcode = temp;
+          fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, start) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(start).replace(/^\[[^\[\]]*]?/, '');
+        } else {
+          fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, position) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(position);
+        }
+      } else {
         fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, position) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(position);
       }
-    }else{
-      fv_wp_flowplayer_content = fv_wp_flowplayer_content.slice(0, position) + '#fvp_placeholder#' + fv_wp_flowplayer_content.slice(position);
-    }   
-  } else if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) != 'undefined') {
-    // create an artificial shortcode from which we can extract the actual player ID later below
-    fv_wp_flowplayer_content = '[fvplayer id="' + jQuery(fv_player_editor_button_clicked).data('player_id') + '"]';
-    shortcode = [fv_wp_flowplayer_content];
-  } else if (typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
-  // create empty shortcode for Add New button on the list page
-    fv_wp_flowplayer_content = '';
-    shortcode = '';
-  } else	if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
-    fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
-    if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {
-      fv_wp_flowplayer_oEditor.InsertHtml('<'+fvwpflowplayer_helper_tag+' rel="FCKFVWPFlowplayerPlaceholder">&shy;</'+fvwpflowplayer_helper_tag+'>');
-      fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();    
-    }           
-	}
-	else {
-    fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();
-    fv_wp_flowplayer_hTinyMCE.settings.validate = false;
-    if (fv_wp_flowplayer_content.match( fv_wp_flowplayer_re_insert ) == null) {   
-      var tags = ['b','span','div'];
-      for( var i in tags ){
-        fv_wp_flowplayer_hTinyMCE.execCommand('mceInsertContent', false,'<'+tags[i]+' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></'+tags[i]+'>');
-        fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();
-        
-        fv_wp_flowplayer_re_edit = new RegExp( '\\[f[^\\]]*?<'+tags[i]+'[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</'+tags[i]+'>.*?[^\]\\]', "mi" );
-        fv_wp_flowplayer_re_insert = new RegExp( '<'+tags[i]+'[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</'+tags[i]+'>', "gi" );
-        
-        if( fv_wp_flowplayer_content.match(fv_wp_flowplayer_re_insert) ){
-          break;
-        }
-        
+    } else if (typeof (jQuery(fv_player_editor_button_clicked).data('player_id')) != 'undefined') {
+      // create an artificial shortcode from which we can extract the actual player ID later below
+      fv_wp_flowplayer_content = '[fvplayer id="' + jQuery(fv_player_editor_button_clicked).data('player_id') + '"]';
+      shortcode = [fv_wp_flowplayer_content];
+    } else if (typeof (jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
+      // create empty shortcode for Add New button on the list page
+      fv_wp_flowplayer_content = '';
+      shortcode = '';
+    } else if (fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden()) {
+      fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();
+      if (fv_wp_flowplayer_content.match(fv_wp_flowplayer_re_insert) == null) {
+        fv_wp_flowplayer_oEditor.InsertHtml('<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>');
+        fv_wp_flowplayer_content = fv_wp_flowplayer_oEditor.GetHTML();
       }
-      
+    } else {
+      fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();
+      fv_wp_flowplayer_hTinyMCE.settings.validate = false;
+      if (fv_wp_flowplayer_content.match(fv_wp_flowplayer_re_insert) == null) {
+        var tags = ['b', 'span', 'div'];
+        for (var i in tags) {
+          fv_wp_flowplayer_hTinyMCE.execCommand('mceInsertContent', false, '<' + tags[i] + ' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></' + tags[i] + '>');
+          fv_wp_flowplayer_content = fv_wp_flowplayer_hTinyMCE.getContent();
+
+          fv_wp_flowplayer_re_edit = new RegExp('\\[f[^\\]]*?<' + tags[i] + '[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</' + tags[i] + '>.*?[^\]\\]', "mi");
+          fv_wp_flowplayer_re_insert = new RegExp('<' + tags[i] + '[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</' + tags[i] + '>', "gi");
+
+          if (fv_wp_flowplayer_content.match(fv_wp_flowplayer_re_insert)) {
+            break;
+          }
+
+        }
+
+      }
+      fv_wp_flowplayer_hTinyMCE.settings.validate = true;
     }
-    fv_wp_flowplayer_hTinyMCE.settings.validate = true;		
-	}
+  } else {
+    fv_wp_flowplayer_content = db_id;
+  }
 
   var content = fv_wp_flowplayer_content.replace(/\n/g, '\uffff');          
   if(typeof(shortcode) == 'undefined'){
-    var shortcode = content.match( fv_wp_flowplayer_re_edit );  
+    if (!db_id) {
+      var shortcode = content.match( fv_wp_flowplayer_re_edit );
+    } else {
+      var shortcode = ['fvplayer id="' + db_id + '"'];
+    }
   }
 
   // remove visual editor placeholders etc.
