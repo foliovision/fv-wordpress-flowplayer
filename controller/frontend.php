@@ -325,15 +325,20 @@ function flowplayer_prepare_scripts() {
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      $path = '/flowplayer/modules/flowplayer.min.js';
+      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'flowplayer';
-      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/modules/fv-player.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      
+      $path = '/flowplayer/modules/fv-player.js';
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
+      
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
         if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
         if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
         
-        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().'/flowplayer/modules/'.basename($filename), $aDependencies, $fv_wp_flowplayer_ver, true);
+        $path = '/flowplayer/modules/'.basename($filename);
+        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
       
     } else {
@@ -418,6 +423,10 @@ function flowplayer_prepare_scripts() {
     
     if( $fv_fp->_get_option('hd_streaming') ) {
       $aConf['hd_streaming'] = true;
+    }
+
+    if( $fv_fp->_get_option('multiple_playback') ) {
+      $aConf['multiple_playback'] = true;
     }
 
     $aConf['hlsjs'] = array(

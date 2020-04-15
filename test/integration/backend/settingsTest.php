@@ -15,6 +15,11 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
     parent::wpSetUpBeforeClass();
     
     remove_action( 'admin_init', 'wp_admin_headers' );
+    
+    remove_action( 'admin_init', '_maybe_update_core' );
+    remove_action( 'admin_init', '_maybe_update_plugins' );
+    remove_action( 'admin_init', '_maybe_update_themes' );
+
     do_action( 'admin_init' );
   }  
   

@@ -20,7 +20,9 @@ flowplayer(function(player, root) {
       height += 150 + 20; // estimate of playlist height + scrollbar height
     }
 
-    return '<iframe src="' + root.data('fv-embed') + '" allowfullscreen  width="' + width + '" height="' + height + '" frameborder="0" style="max-width:100%"></iframe>';
+    // take the embed link and append #video_hash after fvp, fvp-1234 or fvp1234
+    var link = root.data('fv-embed') + '#' +fv_player_get_video_link_hash(player);
+    return '<iframe src="' + link + '" allowfullscreen  width="' + width + '" height="' + height + '" frameborder="0" style="max-width:100%"></iframe>';
   };
   
 });
@@ -29,7 +31,7 @@ jQuery(document).on('click', '.flowplayer .embed-code-toggle', function() {
   var button = jQuery(this);
   var player = button.parents('.flowplayer');
   var api = player.data('flowplayer');
-  if( typeof(api.embedCode) == 'function' && player.find('.embed-code textarea').val() == '' ) {
+  if( typeof(api.embedCode) == 'function') {
     player.find('.embed-code textarea').val(api.embedCode());  
   }
   

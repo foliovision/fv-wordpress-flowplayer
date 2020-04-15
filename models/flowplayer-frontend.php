@@ -36,7 +36,7 @@ class flowplayer_frontend extends flowplayer
   
   var $aPopups = array();
   
-  var $aCurArgs = false;
+  var $aCurArgs = array();
   
   var $sHTMLAfter = false;
   
@@ -80,7 +80,7 @@ class flowplayer_frontend extends flowplayer
 
     $this->hash = md5($media.$this->_salt()); //  unique player id
     // todo: harmonize this, the media arg was a bad idea in the first place
-    if( !empty($media) && $media != $this->aCurArgs['src'] ) {
+    if( !empty($media) ) {
       $this->aCurArgs['src'] = $media;
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
@@ -510,7 +510,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-rtmp'] = $rtmp_server;
         }
 
-        if( !$this->_get_option('allowfullscreen') ) {
+        if( !$this->_get_option('allowfullscreen') || isset($this->aCurArgs['fullscreen']) && $this->aCurArgs['fullscreen'] == 'false' ) {
           $attributes['data-fullscreen'] = 'false';
         }
         
@@ -527,6 +527,15 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($this->aCurArgs['dvr']) && $this->aCurArgs['dvr'] == 'true' ) {
           $attributes['data-dvr'] = 'true';
+        }
+
+        if( isset($this->aCurArgs['hd_streaming']) ) {
+          $attributes['data-hd_streaming'] = $this->aCurArgs['hd_streaming'];
+        }
+
+        if( isset($this->aCurArgs['volume']) ) {
+          $attributes['data-volume'] = floatval($this->aCurArgs['volume']);
+          $attributes['class'] .= ' no-volume';
         }
 
         $playlist = '';
