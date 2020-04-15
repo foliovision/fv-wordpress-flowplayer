@@ -375,7 +375,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.esc_attr($data_value).'"';
+                echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
           ?> />          
@@ -410,7 +410,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.esc_attr($data_value).'"';
+                echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
             ?> />
