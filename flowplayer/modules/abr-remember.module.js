@@ -142,8 +142,8 @@ flowplayer( function(api,root) {
     var menu = root.find('.fp-qsel-menu');
     menu.children().each(function(i,li){menu.prepend(li)});
     menu.children().each(function(i,li){
-      if( /^NaNp/.test(jQuery(li).html())) { // could not parse quality so use bitrate
-        jQuery(li).html(jQuery(li).html().match(/\d+k/)[0]);
+      if( /^NaNp/.test(jQuery(li).html())) { // could not parse quality so use bitrate, example : 1300k or 1.3M
+        jQuery(li).html(jQuery(li).html().match(/\(.*?\)/)[0].replace(/[\(\)]/g,'')); // set html as value inside bracket
       } else { // quality parsed, remove bitrate
         jQuery(li).html(jQuery(li).html().replace(/\(.*?\)/,''));
       }
