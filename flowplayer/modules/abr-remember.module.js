@@ -140,8 +140,14 @@ flowplayer( function(api,root) {
   
   function quality_sort() {
     var menu = root.find('.fp-qsel-menu');
-    menu.children().each(function(i,li){menu.prepend(li)})
-    menu.children().each(function(i,li){ jQuery(li).html(jQuery(li).html().replace(/\(.*?\)/,'')) })
+    menu.children().each(function(i,li){menu.prepend(li)});
+    menu.children().each(function(i,li){
+      if( /^NaNp/.test(jQuery(li).html())) { // could not parse quality so use bitrate
+        jQuery(li).html(jQuery(li).html().match(/\d+k/)[0]);
+      } else { // quality parsed, remove bitrate
+        jQuery(li).html(jQuery(li).html().replace(/\(.*?\)/,''));
+      }
+    });
     menu.prepend(menu.find('a[data-quality=-1]'));
     menu.prepend(menu.find('strong'));
   }
