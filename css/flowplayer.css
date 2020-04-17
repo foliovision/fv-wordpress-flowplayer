@@ -1090,6 +1090,7 @@
 .flowplayer .fv_player_popup p{margin:0 12px 6px;line-height:1.35}
 .flowplayer .wpfp_custom_popup{width:100%;top:0;bottom:0;margin-bottom:2.4em;-webkit-transition:all .2s;-moz-transition:all .2s;transition:all .2s;overflow:hidden}
 .flowplayer.fp-full .wpfp_custom_popup{margin-bottom:2.8em}
+.flowplayer.fp-slim.fp-full .wpfp_custom_popup{margin-bottom:2.4em}
 .flowplayer .fv_player_popup {background-color:#222;position:relative;top:0;width:100%;height:100%;padding:2em 0 1%}
 .flowplayer .fv_player_popup h1,.flowplayer .fv_player_popup h2,.flowplayer .fv_player_popup h3,.flowplayer .fv_player_popup h4,.flowplayer .fv_player_popup h5,.flowplayer .fv_player_popup h6{margin:0 0 6px !important}
 .mailchimp-form input{width:31.33333333%;max-width:31.33333333%;margin:0 1%}
@@ -1804,7 +1805,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
     .fp-playlist-vertical a:nth-child(2n+1) {clear:both;margin-left:0}
 }
 @media only screen and (max-width: 29.9375em) {
-	.flowplayer .fv_player_popup {width:99%;font-size:12px;top:0;}
+	.flowplayer .fv_player_popup {width:100%;font-size:12px;top:0;}
 	.flowplayer.is-fv-narrow .fv_player_popup{font-size:.8em}
 	.flowplayer.is-audio .fp-time em {font-size:12px}
 	.fp-playlist-external a h4 {font-size:10px}  
