@@ -314,21 +314,6 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                         </td>
                       </tr>            
                     <?php endif; ?>
-                    <tr class="submit-button-wrapper">
-                      <td></td>
-                      <td colspan="2">
-                        <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
-                          <a onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a><?php
-                            $screen = get_current_screen();
-                            if ( $screen->parent_base == 'edit' ) {
-                            ?>
-                              <a onclick="return fv_flowplayer_load_players_dropdown()" class="copy_player button"
-                                 href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-                            <?php
-                          }
-                        ?>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -373,21 +358,6 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                       <a class="fv_flowplayer_language_add_link" style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
                     </td>
                   </tr>
-                  <tr class="submit-button-wrapper">
-                    <td></td>
-                    <td colspan="2">
-                      <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
-                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a><?php
-                      $screen = get_current_screen();
-                      if ( $screen->parent_base == 'edit' ) {
-                        ?>
-                          <a onclick="return fv_flowplayer_load_players_dropdown()" class="copy_player button"
-                             href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-                        <?php
-                      }
-                      ?>
-                    </td>
-                  </tr>
                 </table>
               </div>
 
@@ -425,22 +395,6 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance' ) ); ?>
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>
-                  
-                  <tr class="submit-button-wrapper">
-                    <td></td>
-                    <td>
-                      <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
-                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a><?php
-                      $screen = get_current_screen();
-                      if ( $screen->parent_base == 'edit' ) {
-                        ?>
-                          <a onclick="return fv_flowplayer_load_players_dropdown()" class="copy_player button"
-                             href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-                        <?php
-                      }
-                      ?>
-                    </td>
-                  </tr>
                 </table>
               </div>
 
@@ -512,26 +466,21 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   
                   <?php do_action('fv_flowplayer_shortcode_editor_tab_actions'); ?>
                   
-                  <tr class="submit-button-wrapper">
-                    <td></td>
-                    <td>
-                      <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
-                      <a style="outline: 0" onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a><?php
-                      $screen = get_current_screen();
-                      if ( $screen->parent_base == 'edit' ) {
-                        ?>
-                          <a onclick="return fv_flowplayer_load_players_dropdown()" class="copy_player button"
-                             href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-                        <?php
-                      }
-                      ?>
-                    </td>
-                  </tr>
-                  
                 </table>
               </div>
               
               <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
+
+              <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
+              <a onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a><?php
+                $screen = get_current_screen();
+                if ( $screen->parent_base == 'edit' ) {
+                  ?>
+                <a onclick="return fv_flowplayer_load_players_dropdown()" class="copy_player button"
+                   href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
+                <?php
+                }
+                ?>
             </div>
             <!--<div id="fv-player-tabs-debug"></div>-->
           </td>
