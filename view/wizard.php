@@ -187,10 +187,8 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                     </tr> 
                   </tbody>        
                 </table>
+                <span  class="button"  onclick="fv_flowplayer_playlist_add();"><?php _e(' + Add playlist item', 'fv_flowplayer');?></span>
 
-                <input type="button" value="<?php _e('Insert', 'fv_flowplayer'); ?>" name="insert" class="button-primary extra-field fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();" />
-                &nbsp;&nbsp;&nbsp;&nbsp;<span  class="button"  onclick="fv_flowplayer_playlist_add();"><?php _e(' + Add playlist item', 'fv_flowplayer');?></span>                              
-                  
               </div>
               
               <div class="fv-player-tab fv-player-tab-video-files">
