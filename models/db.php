@@ -1474,7 +1474,7 @@ class FV_Player_Db {
     foreach ($players as $player) {
       $json_data[] = array(
         'id' => $player->id,
-        'name' => $player->player_name . ' (id = ' . $player->id . ')'
+        'name' => '#' . $player->id . ' ' . $player->player_name
       );
     }
 
