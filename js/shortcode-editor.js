@@ -1064,7 +1064,6 @@ $doc.ready(function($){
   });
 
   $doc.on('change', '#players_selector', function() {
-    fv_wp_flowplayer_insert('[fvplayer id="' + this.value + '"]');
     fv_wp_flowplayer_edit(this.value);
   });
 
@@ -1425,7 +1424,10 @@ function fv_flowplayer_playlist_show() {
  */
 function fv_flowplayer_load_players_dropdown() {
   var $copy_player_buttons = jQuery(".copy_player");
-  $copy_player_buttons.hide().after('<div class="fv-player-shortcode-editor-small-spinner copy_player_spinner">&nbsp;</div>');
+  $copy_player_buttons.hide();
+
+  // show loader
+  fv_wp_flowplayer_big_loader_show();
 
   jQuery.post(ajaxurl, {
     action: 'fv_player_db_retrieve_all_players_for_dropdown',
@@ -1441,14 +1443,16 @@ function fv_flowplayer_load_players_dropdown() {
 
     dropdown.push('</select>');
 
-    // add dropdown after each of the copy buttons
-    $copy_player_buttons.after(dropdown.join(''));
+    // display the dropdown in overlay
+    fv_wp_flowplayer_big_loader_show(dropdown.join('') + '<br><br><input type="button" name="close_error_overlay" id="close_error_overlay" value="Cancel" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close(); jQuery(\'.copy_player\').show()" /></p>');
   }).error(function () {
+    // display error message
+    fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
+      <br />\
+      <input type="button" name="close_error_overlay" id="close_error_overlay" value="Close" class="button button-primary button-large" onClick="fv_wp_flowplayer_big_loader_close()" /></p>');
+
     // put back the load button, so the user can try again
     $copy_player_buttons.show();
-  }).complete(function() {
-    // remove spinners
-    jQuery('.fv-player-shortcode-editor-small-spinner').remove();
   });
 
   return false;
