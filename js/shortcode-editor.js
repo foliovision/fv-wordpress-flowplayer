@@ -279,8 +279,6 @@ $doc.ready(function($){
     fv_player_preview_single = new_index;
     
     fv_flowplayer_editor_item_show(new_index);
-
-    $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
   $doc.on('input','.fv_wp_flowplayer_field_width', function(e) {
@@ -584,12 +582,10 @@ $doc.ready(function($){
 
   $doc.on('fv_flowplayer_shortcode_new', function() {
     $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
-    $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
   });
 
   $doc.on('fv_flowplayer_video_meta_load', function() {
     $('#fv-player-shortcode-editor .button-primary, .copy_player').hide();
-    $('#fv-player-shortcode-editor .button.playlist_edit').css('display', 'inline-block');
 
     // not a good solution!
     setTimeout( function() {
@@ -1166,7 +1162,7 @@ function fv_wp_flowplayer_init() {
   jQuery('.nav-tab').show;
   
   //hide empy tabs hide tabs
-  jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular');
+  jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular is-singular-active');
   jQuery('.fv-player-tab-playlist').hide();
   jQuery('.fv-player-playlist-item-title').html('');
   jQuery('.fv-player-tab-video-files table').show();
@@ -1476,10 +1472,10 @@ function fv_flowplayer_editor_item_show( new_index ) {
   if($('.fv-player-tab-playlist [data-index]').length > 1){
     $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
     $('.playlist_edit').html($('.playlist_edit').data('edit'));
-    jQuery('#fv-player-shortcode-editor-editor').attr('class','is-playlist');
+    jQuery('#fv-player-shortcode-editor-editor').attr('class','is-playlist is-singular-active');
   }else{
     $('.playlist_edit').html($('.playlist_edit').data('create'));
-    jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular');
+    jQuery('#fv-player-shortcode-editor-editor').attr('class','is-singular is-singular-active');
   }
   
   if($('.fv_wp_flowplayer_field_rtmp_path',video_tab).val().length === 0 && $('.fv_wp_flowplayer_field_rtmp',video_tab).val().length === 0){

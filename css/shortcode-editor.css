@@ -65,13 +65,12 @@
 /*Playlist view*/
 .is-playlist .fv-player-playlist-item-title{ display:block; }
 .is-playlist .fv_player_field_insert-button{ display:none; }
-.is-playlist-active .playlist_edit{ display:none; }
 
 .is-playlist .hide-if-playlist{display:none!important;}
 .is-singular .hide-if-singular{display:none!important;}
 .is-playlist-active .hide-if-playlist-active{display:none!important;}
+.is-singular-active .hide-if-singular-active{display:none!important;}
 
-.submit-button-wrapper .playlist_edit{ display:none; }
 .fv-player-tab-playlist tr:not(:hover) .fvp_item_remove{visibility: hidden;}
 .fv-player-tab-playlist tr:hover .fvp_item_remove{visibility: visible;color: #a00;}
 .fv-player-tab-playlist a{cursor:pointer;}
