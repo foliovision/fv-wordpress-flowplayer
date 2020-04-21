@@ -667,6 +667,7 @@ $doc.ready(function($){
 
   function error(msg) {
     fv_player_saving = false;
+    jQuery('#fv-player-shortcode-editor-editor .button-primary').removeAttr('disabled');
 
     fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.\
       '+msg+'<br />\
@@ -678,6 +679,7 @@ $doc.ready(function($){
     if( !fv_player_save_please || fv_player_loading_meta ) return;
 
     fv_player_saving = true;
+    jQuery('#fv-player-shortcode-editor-editor .button-primary').attr('disabled', 'disabled');
 
     $('.fv-player-save-waiting').addClass('is-active');
 
@@ -700,6 +702,7 @@ $doc.ready(function($){
         } else {
           console.log('Done!');
           fv_player_saving = false;
+          jQuery('#fv-player-shortcode-editor-editor .button-primary').removeAttr('disabled');
           $('.fv-player-save-waiting').removeClass('is-active');
           $('.fv-player-save-completed').show().delay( 2500 ).fadeOut(400);
 
@@ -1060,7 +1063,31 @@ $doc.ready(function($){
   });
 
   $doc.on('change', '#players_selector', function() {
+    jQuery('#fv-player-shortcode-editor-editor .button-primary').text('Insert').removeAttr('disabled');
     fv_wp_flowplayer_edit(this.value);
+  });
+
+  $doc.on('click', '.fv_player_field_insert-button', function() {
+    if (fv_player_saving || fv_player_save_please) {
+      // for some reason, clicking on already-disabled primary button re-enables it,
+      // so we'll just need to disable it again here
+      $(this).attr('disabled', 'disabled');
+    } else {
+      fv_wp_flowplayer_submit();
+    }
+
+  });
+
+  $doc.on('click', '.playlist_add', function() {
+    fv_flowplayer_playlist_add();
+  });
+
+  $doc.on('click', '.playlist_edit', function() {
+    return fv_flowplayer_playlist_show();
+  });
+
+  $doc.on('click', '.copy_player', function() {
+    return fv_flowplayer_load_players_dropdown();
   });
 
 });
@@ -1621,7 +1648,7 @@ function fv_wp_flowplayer_edit(db_id) {
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
   jQuery("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
   jQuery("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
-  jQuery(".fv_player_field_insert-button").attr( 'value', 'Insert' );
+  jQuery(".fv_player_field_insert-button").text( 'Insert' );
 
   var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
 
@@ -1969,47 +1996,32 @@ function fv_wp_flowplayer_edit(db_id) {
           } else {
             fv_flowplayer_editor_item_show(0);
           }
-
-          // copy the Insert button, place it after the first original one
-          // and rename it to Insert as New
-          /*var
-            $insert_button = jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').filter(function() {
-              return jQuery(this).parents('.fv-player-playlist-item').length === 0;
-            }),
-            $insert_as_new_button = jQuery('.fv_player_insert_as_new');
-
-          if (!$insert_as_new_button.length) {
-            jQuery($insert_button[0].outerHTML)
-              .addClass('fv_player_insert_as_new')
-              .val('Insert as New')
-              .off('click')
-              .on('click', function () {
-                // remove update and deleted hidden fields + DB IDs so we insert a new record
-                // with our data instead of updating them
-                jQuery('#id_player, #deleted_videos, #deleted_video_meta, #deleted_player_meta').remove();
-                jQuery('#fv-player-shortcode-editor [data-id]').removeData('id').removeAttr('data-id');
-                jQuery('#fv-player-shortcode-editor [data-id_video]').removeData('id_video').removeAttr('data-id_video');
-                jQuery('#fv-player-shortcode-editor [data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
-
-                fv_wp_flowplayer_submit(null, true);
-                return true;
-              })
-              .css('margin-left', '5px')
-              .insertAfter($insert_button);
-          } else {
-            $insert_as_new_button.val('Insert as New');
-          }*/
-
-          // rename insert to update if we're actually editing
-          jQuery('.fv_player_field_insert-button').val('Update');
         }
 
         fv_wp_flowplayer_big_loader_close();
+
+        // show the Insert button, as this is only used when adding a new player into a post
+        // and using the Pick existing player button, where we need to be able to actually
+        // insert the player code into the editor
+        // ... also, keep the Pick existing player button showing, if we decided to choose
+        //     a different player
+        if (db_id) {
+          $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
+        }
       }).error(function(xhr) {
         if (xhr.status == 404) {
           fv_wp_flowplayer_big_loader_show('The requested player could not be found. Please try again.');
         } else {
           fv_wp_flowplayer_big_loader_show('An unexpected error has occurred. Please try again.');
+        }
+
+        // show the Insert button, as this is only used when adding a new player into a post
+        // and using the Pick existing player button, where we need to be able to actually
+        // insert the player code into the editor
+        // ... also, keep the Pick existing player button showing, if we decided to choose
+        //     a different player
+        if (db_id) {
+          $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
         }
       });
     } else {
@@ -2270,8 +2282,6 @@ function fv_wp_flowplayer_edit(db_id) {
 
       jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, fv_wp_fp_shortcode_remains ] );
 
-      jQuery(".fv_player_field_insert-button").attr( 'value', 'Update' );
-
       jQuery('.fv_wp_flowplayer_playlist_head').hover(
         function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } );
 
@@ -2302,7 +2312,7 @@ function fv_wp_flowplayer_edit(db_id) {
 
     // rename insert to save for new playlists if we come from list view
     if (typeof(jQuery(fv_player_editor_button_clicked).data('add_new')) != 'undefined') {
-      jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').val('Save');
+      jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').text('Save');
     }
   }
 }
@@ -3006,7 +3016,7 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
     // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
     if (typeof(jQuery(fv_player_editor_button_clicked).data('player_id')) == 'undefined') {
       if (fv_player_loading_meta) {
-        jQuery('#fv-player-shortcode-editor-editor .button-primary').prop('disabled', 'disabled');
+        jQuery('#fv-player-shortcode-editor-editor .button-primary').attr('disabled', 'disabled').text('Saving...');
         var checker = setInterval(function() {
           if (fv_player_loading_meta <= 0) {
             clearInterval(checker);
@@ -3015,9 +3025,6 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
         }, 500);
 
         return;
-      } else {
-        // this state is unexpected, as double-saving of new player should not be possible with disabled Save buttons
-        console.log('ERROR: double save detected when saving a new player!');
       }
     } else {
       // if we're updating a player, just return here if we're loading meta data,
@@ -3025,14 +3032,6 @@ function fv_wp_flowplayer_submit( preview, insert_as_new ) {
       if (fv_player_loading_meta) {
         return;
       }
-    }
-
-    // do nothing and warn in console if we're updating a saved player
-    // ... this situation is very improbable, as the actual saving code has prevention from double-saving
-    //     in place - however, if a double save is requested, it could mean that we're storing more data with this new AJAX
-    //     than with the previous one, which would leave us with incomplete data if we prevent it here
-    if ((fv_player_save_please || fv_player_saving) && !fv_player_loading_meta) {
-      console.log('WARNING: double save detected for edited player!');
     }
   }
 

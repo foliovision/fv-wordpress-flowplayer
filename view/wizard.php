@@ -468,17 +468,14 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
               
               <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
 
-              <a class="button-primary fv_player_field_insert-button" onclick="fv_wp_flowplayer_submit();"><?php _e('Insert', 'fv_flowplayer'); ?></a>
-              
-              <a class="playlist_add button hide-if-singular-active" onclick="fv_flowplayer_playlist_add();"><?php _e(' + Add playlist item', 'fv_flowplayer');?></a>
-              
-              <a onclick="return fv_flowplayer_playlist_show()" class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+              <a class="button-primary fv_player_field_insert-button"><?php _e('Insert', 'fv_flowplayer'); ?></a>
+              <a class="playlist_add button hide-if-singular-active"><?php _e(' + Add playlist item', 'fv_flowplayer');?></a>
+              <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
               
               <?php
-              // this button should not appear on wp-admin -> FV Player screen
               $screen = get_current_screen();
               if ( $screen->parent_base != 'fv_player' ) : ?>
-                <a onclick="return fv_flowplayer_load_players_dropdown()" class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
+                <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
               <?php endif; ?>
             </div>
             <!--<div id="fv-player-tabs-debug"></div>-->
