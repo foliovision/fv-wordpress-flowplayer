@@ -1,4 +1,5 @@
-#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { position: absolute; top: 0; left: 0; z-index: 20; }
+.fv-wp-flowplayer-notice-small { position: absolute; top: 0; left: 0; z-index: 20; }
+.flowplayer.is-error .fv-wp-flowplayer-notice-small { top: 2em }
 #content .flowplayer .fv-wp-flowplayer-notice-small small, .flowplayer .fv-wp-flowplayer-notice-small small { position:relative;left:15px;top:10px;-webkit-transition:all .15s 0s;-moz-transition:all .15s 0s;transition:all .15s 0s }
 #content .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small small, .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small small, #content .flowplayer.is-ready.is-paused .fv-wp-flowplayer-notice-small small, .flowplayer.is-ready.is-paused .fv-wp-flowplayer-notice-small small  { top: 3em }
 /*#content .flowplayer.is-ready.is-paused.has-video-checker .fv-wp-flowplayer-notice-small small, .flowplayer.is-ready.is-paused.has-video-checker .fv-wp-flowplayer-notice-small small { top: 0; }*/
