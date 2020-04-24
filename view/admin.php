@@ -405,10 +405,10 @@ jQuery(document).ready(function($) {
 
           /*if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
-              $('#fv_wp_flowplayer_field_width').val(attachment.width);
+              $('.fv_wp_flowplayer_field_width').val(attachment.width);
             }
             if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
-              $('#fv_wp_flowplayer_field_height').val(attachment.height);
+              $('.fv_wp_flowplayer_field_height').val(attachment.height);
             }
             if( typeof(attachment.fileLength) != "undefined" ) {
               $('#fv_wp_flowplayer_file_info').show();
