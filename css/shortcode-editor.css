@@ -92,15 +92,41 @@
 .fv-player-editor-overlay {
   display: none;
   background-color: white;
+  padding: 1em;
   position:absolute;
   z-index: 21;
-  height: 100%;
+  text-align: center;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+#fv_player_box .fv-player-editor-overlay textarea {
+  font-family: Consolas, Monaco, monospace;
   width: 100%;
 }
 #fv-player-editor-loading-overlay {
   background-image: url(../../../../wp-includes/images/wpspin-2x.gif); 
   background-repeat: no-repeat;
   background-position: center;
+}
+.fv-player-editor-overlay-notice {
+  background: #fff;
+  border-left: 4px solid #fff;
+  box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+  margin: 5px 15px 2px;
+  padding: 1px 12px;
+  text-align: left;
+  visibility: hidden;
+}
+.fv-player-editor-overlay-notice.notice-success {
+	border-left-color: #46b450;
+}
+.fv-player-editor-overlay-notice.notice-warning {
+	border-left-color: #ffb900;
+}
+.fv-player-editor-overlay-notice.notice-error {
+	border-left-color: #dc3232;
 }
 
 /*Preview iframe*/
@@ -177,9 +203,6 @@ a #add-format, a #add-rtmp {
 #fv-wordpress-flowplayer-popup table td {
 	padding: 4px 2px;
 }
-
-[name=fv_player_copy_to_clipboard], #fv_player_import_data {width: 80%}
-#fv_player_copied_to_clipboard_message, #fv_player_imported_message {margin: 22px auto 0 auto; visibility: hidden; width: 20%; text-align: center}
 
 #fv-player-shortcode-editor-editor ::placeholder {
   opacity:.5;

@@ -138,31 +138,31 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
     </div>
     
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
-      <textarea name="fv_player_import_data" id="fv_player_import_data" cols="150" rows="15" placeholder="Paste your FV Player Export JSON data here"></textarea>
+      <textarea name="fv_player_import_data" id="fv_player_import_data" rows="15" placeholder="Paste your FV Player Export JSON data here"></textarea>
       <br />
       <br />
       <a id="fv-player-editor-import-overlay-import" href="#" class="button button-primary">Import player</a>
       <a id="fv-player-editor-overlay-close" href="#" class="button">Close</a>
-      <div id="fv_player_imported_message"></div>
+      <div class="fv-player-editor-overlay-notice"></div>
     </div>
     
     <div id="fv-player-editor-export-overlay" class="fv-player-editor-overlay">
-      <textarea name="fv_player_copy_to_clipboard" cols="150" rows="15"></textarea>
+      <textarea name="fv_player_copy_to_clipboard" rows="15"></textarea>
       <br />
       <br />
       <a id="fv-player-editor-export-overlay-copy" href="#" class="button button-primary">Copy To Clipboard</a>
       <a id="fv-player-editor-overlay-close" href="#" class="button">Close</a>
-      <div id="fv_player_copied_to_clipboard_message"></div>
+      <div class="fv-player-editor-overlay-notice"></div>
     </div>
     
     <div id="fv-player-editor-error_saving-overlay" class="fv-player-editor-overlay">
       <p>An unexpected error has occurred. Please copy the player raw data below and <a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">submit a support ticket to Foliovision</a></p>
-      <textarea name="fv_player_copy_to_clipboard" cols="150" rows="15"></textarea>
+      <textarea name="fv_player_copy_to_clipboard" rows="15"></textarea>
       <br />
       <br />
       <a id="fv-player-editor-export-overlay-copy" href="#" class="button button-primary">Copy To Clipboard</a>
       <a id="fv-player-editor-overlay-close" href="#" class="button button-primary">Close</a>
-      <div id="fv_player_copied_to_clipboard_message"></div>
+      <div class="fv-player-editor-overlay-notice"></div>
     </div>
   
     <div class="fv-player-shortcode-editor-left">

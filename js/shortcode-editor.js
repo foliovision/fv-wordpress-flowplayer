@@ -31,7 +31,7 @@ var fv_player_editor = (function($) {
   var editor_content;
   
   // used to size the lightbox in editor_resize()
-  var editor_resize_height_record;
+  var editor_resize_height_record = 0;
   
   // TinyMCE instance, if any
   var instance_tinymce;
@@ -2919,7 +2919,7 @@ var fv_player_editor = (function($) {
     return false;
   }
   
-  function overlay_show( type, message ) {console.log('overlay_show',type);
+  function overlay_show( type, message ) {
     overlay_hide();
     var overlayDiv = $('#fv-player-editor-'+type+'-overlay');
     console.log(overlayDiv);
@@ -3092,36 +3092,34 @@ var fv_player_editor = (function($) {
   Click on Import player
   */
   $doc.on('click', '#fv-player-editor-import-overlay-import', function() {
-    var data = jQuery('#fv_player_import_data').val();
+    var button = this,
+      data = jQuery('#fv_player_import_data').val();
   
     if (!data) {
-      jQuery('#fv_player_imported_message')
-        .html('No data to import!')
-        .removeClass('notice-success')
-        .addClass('notice-error')
-        .css({
-          'visibility': 'visible',
-          'width': '80%'
-        });
-  
-      setTimeout(function() {
-        jQuery('#fv_player_imported_message').css('visibility', 'hidden');
-      }, 5000);
-  
+      fv_player_editor.overlay_notice( button, 'No data to import!', 'warning', 5000 );  
       return false;
-    } else {
-      jQuery('#fv_player_imported_message').css('visibility', 'hidden');
     }
     
-    loading_overlay_show();
+    try {
+      JSON.parse(data);
+    } catch(e) {
+      fv_player_editor.overlay_notice( button, 'Bad JSON format!', 'error', 5000 );
+      return false;
+    }
+    
+    fv_player_editor.overlay_notice_close_all();
+    
+    overlay_show('loading');
   
     jQuery.post(ajaxurl, {
       action: 'fv_player_db_import',
       nonce: fv_player_editor_conf.db_import_nonce,
       data: data,
       cookie: encodeURIComponent(document.cookie),
-    }, function(playerID) {
-      if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
+    }, function(response) {
+      if (response != '0' && !isNaN(parseFloat(response)) && isFinite(response)) {
+        var playerID = response;
+        
         // add the inserted player's row
         jQuery.get(
           document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
@@ -3131,23 +3129,14 @@ var fv_player_editor = (function($) {
         }).error(function() {
           jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
         });
+        
       } else {
-        jQuery('#fv_player_imported_message')
-          .removeClass('notice-success')
-          .addClass('notice-error')
-          .css({
-            'visibility': 'visible',
-            'width': '80%'
-          }).html(playerID);
+        fv_player_editor.overlay_notice( button, response, 'error' );
+
       }
     }).error(function() {
-      jQuery('#fv_player_imported_message')
-          .removeClass('notice-success')
-          .addClass('notice-error')
-          .css({
-            'visibility': 'visible',
-            'width': '80%'
-          }).html('Unknown error!');
+      fv_player_editor.overlay_notice( button, 'Unknown error!', 'error' );
+
     });
     
     return false;
@@ -3251,6 +3240,39 @@ var fv_player_editor = (function($) {
     },
     set_shortcode_remains: function(value) {
       shortcode_remains = value;
+    },
+    
+    /*
+     * Show a notice in the overlay above the editor
+     *
+     * @param {Object}  button      The button in the overlay that was clicked
+     *                              Used to find the overlay and the notice in it
+     * @param {string}  html        Content of the notice
+     * @param {string}  type        success|error
+     * @param {int}     close_after Optional number of miliseconds to close the
+     *                              notice after
+     * 
+     */
+    overlay_notice: function(button, html, type, close_after ) {
+      var overlay = jQuery(button).closest('.fv-player-editor-overlay'),
+        notice = overlay.find('.fv-player-editor-overlay-notice');
+        
+      notice
+        .html(html)
+        .removeClass('notice-error')
+        .removeClass('notice-success')
+        .addClass('notice-'+type)
+        .css('visibility', 'visible');
+        
+      if( close_after ) {
+        setTimeout(function() {
+          notice.css('visibility', 'hidden');
+        }, close_after);
+      }
+    },
+    
+    overlay_notice_close_all: function() {
+      $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
     }
   };
   
@@ -3343,25 +3365,11 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
 
 
 jQuery(document).on('click', '#fv-player-editor-export-overlay-copy', function() {
+  var button = this;
   fv_player_clipboard(jQuery('[name=fv_player_copy_to_clipboard]').val(), function() {
-    jQuery('#fv_player_copied_to_clipboard_message')
-      .html('Text Copied To Clipboard!')
-      .removeClass('notice-error')
-      .addClass('notice-success')
-      .css('visibility', 'visible');
-
-    setTimeout(function() {
-      jQuery('#fv_player_copied_to_clipboard_message').css('visibility', 'hidden');
-    }, 3000);
+    fv_player_editor.overlay_notice( button, 'Text Copied To Clipboard!', 'success', 3000 );
   }, function() {
-    jQuery('#fv_player_copied_to_clipboard_message')
-      .html('<strong>Error copying text into clipboard!</strong><br />Please copy the content of the above text area manually by using CTRL+C (or CMD+C on MAC).')
-      .removeClass('notice-success')
-      .addClass('notice-error')
-      .css({
-        'visibility': 'visible',
-        'width': '80%'
-      });
+    fv_player_editor.overlay_notice( button, '<strong>Error copying text into clipboard!</strong><br />Please copy the content of the above text area manually by using CTRL+C (or CMD+C on MAC).', 'error' );
   });
   
   return false;
