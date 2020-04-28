@@ -46,6 +46,11 @@ var fv_player_editor = (function($) {
   var is_loading_video_data = 0; // will be > 0 when any meta data are loading that needs saving along with the form (example: S3 video duration)
   // ... this prevents overlay closing until all meta required data are loaded and stored
   
+  var is_playlist_active = false;
+  var is_singular_active = false;
+  
+  var item_index = -1;
+  
   // is it currently saving data?
   var is_saving = false;
   
@@ -1288,8 +1293,13 @@ var fv_player_editor = (function($) {
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-video-files]').trigger('click');
     jQuery('.nav-tab').show;
     
-    //hide empy tabs hide tabs
+    item_index = 0;
+    
+    is_playlist_active = false;
+    is_singular_active = true;
     el_editor.attr('class','is-singular is-singular-active');
+    
+    //hide empy tabs hide tabs
     jQuery('.fv-player-tab-playlist').hide();
     jQuery('.fv-player-playlist-item-title').html('');
     jQuery('.fv-player-tab-video-files table').show();
@@ -1313,8 +1323,7 @@ var fv_player_editor = (function($) {
         regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
         data                   = {'video_meta' : {}, 'player_meta' : {}},
         end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val(),
-        single_video_showing   = !give_it_all && jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').length,
-        single_video_id        = (single_video_showing ? jQuery('input[name="fv_wp_flowplayer_field_src"]:visible').closest('table').data('index') : -1);
+        single_video_showing   = !give_it_all && is_singular_active;
   
     // special processing for end video actions
     if (end_of_playlist_action && end_of_playlist_action != 'Nothing') {
@@ -1555,7 +1564,7 @@ var fv_player_editor = (function($) {
         if (data['videos'][i]['src'] || data['videos'][i]['src1'] || !data['videos'][i]['src2']) {
           // if we should show preview of a single video only, add that video here,
           // otherwise add all videos here
-          if (!single_video_showing || x == single_video_id) {
+          if (!single_video_showing || x == item_index) {
             data_videos_new[x++] =  data['videos'][i];
           } else {
             x++;
@@ -2723,6 +2732,12 @@ var fv_player_editor = (function($) {
   }
   
   function playlist_item_show( new_index ) {
+    item_index = new_index;
+    
+    is_playlist_active = false;
+    is_singular_active = true;
+    el_editor.attr('class','is-playlist is-singular-active');
+    
     jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);    
     
     $doc.trigger('fv_flowplayer_shortcode_item_switch', [ new_index ] );
@@ -2738,9 +2753,10 @@ var fv_player_editor = (function($) {
     if($('.fv-player-tab-playlist [data-index]').length > 1){
       $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
       $('.playlist_edit').html($('.playlist_edit').data('edit'));
-      el_editor.attr('class','is-playlist is-singular-active');
+      
     }else{
       $('.playlist_edit').html($('.playlist_edit').data('create'));
+      
       el_editor.attr('class','is-singular is-singular-active');
     }
     
@@ -2766,7 +2782,11 @@ var fv_player_editor = (function($) {
   * keywords: show playlist 
   */
   function playlist_show() {
+    item_index = -1;
+    
+    is_playlist_active = true;
     el_editor.attr('class','is-playlist-active');
+    
     jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
     jQuery('a[data-tab=fv-player-tab-playlist]').click();
     
