@@ -1165,6 +1165,43 @@ var fv_player_editor = (function($) {
       return playlist_show();
     });
     
+    // prevent closing of the overlay if we have unsaved data
+    // unfortunately there is no event for this which we could use
+    $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
+    $.fn.fv_player_box.close = function() {
+          
+      if (is_draft && is_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
+        return false;
+      }
+      
+      // prevent closing if we're still saving the data
+      if (ajax_save_this_please || is_saving || is_loading_video_data) {
+        // if we already have the overlay changed, bail out
+        if (overlay_close_waiting_for_save) {
+          return;
+        }
+    
+        overlay_close_waiting_for_save = true;
+        $('.fv-wp-flowplayer-notice-small, .fv-player-shortcode-editor-small-spinner').hide();
+        overlay_show('loading');
+    
+        // call fv_wp_flowplayer_submit() which will create a repeating task
+        // that will check for all meta data being loaded,
+        // so we can auto-close this overlay once that's done
+        editor_submit();
+    
+        return;
+      }
+      
+      // close the dialog if confirmed
+      $.fn.fv_player_box.oldClose();
+      
+      // reset variables
+      is_draft = true;
+      is_draft_changed = false;
+      
+    }
+    
     /*
     Loads and displays a list of all players in a dropdown.
     */
@@ -1594,34 +1631,6 @@ var fv_player_editor = (function($) {
     editor_content = editor_content.replace(fv_wp_flowplayer_re_edit,'');
     editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
     */
-  
-    // prevent closing of the overlay if we have unsaved data
-    if (is_draft && is_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
-      return;
-    }
-    
-    // prevent closing if we're still saving the data
-    if (ajax_save_this_please || is_saving || is_loading_video_data) {
-      // if we already have the overlay changed, bail out
-      if (overlay_close_waiting_for_save) {
-        return;
-      }
-  
-      overlay_close_waiting_for_save = true;
-      $('.fv-wp-flowplayer-notice-small, .fv-player-shortcode-editor-small-spinner').hide();
-      overlay_show('loading');
-  
-      // call fv_wp_flowplayer_submit() which will create a repeating task
-      // that will check for all meta data being loaded,
-      // so we can auto-close this overlay once that's done
-      editor_submit();
-  
-      return;
-    }
-    
-    // reset variables
-    is_draft = true;
-    is_draft_changed = false;
     
     delete(fv_flowplayer_conf.current_video_to_edit);
   
