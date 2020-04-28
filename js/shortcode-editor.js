@@ -3053,7 +3053,7 @@ var fv_player_editor = (function($) {
   /*
   Click on Add another format
   */
-  $doc.on('click', '.add_format_wrapper a', function() {
+  $doc.on('click', '#add_format_wrapper a', function() {
     if ( get_field("src").val() != '' ) {
       if ( get_field("src1_wrapper").is(":visible") ) {      
         if ( get_field("src1").val() != '' ) {
@@ -3066,7 +3066,7 @@ var fv_player_editor = (function($) {
         }
       }
       else {
-        get_field("_src1_wrapper").show();
+        get_field("src1_wrapper").show();
         get_field("src1_uploader").show();
       }
       editor_resize();
