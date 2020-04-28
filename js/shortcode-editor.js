@@ -311,7 +311,7 @@ var fv_player_editor = (function($) {
           if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
           // add the inserted player's row
           jQuery.get(
-            document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
+            fv_player_editor_conf.admin_url + '&id=' + playerID,
             function (response) {
               jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
               $element.next('div.fv-player-shortcode-editor-small-spinner').remove();
@@ -3160,7 +3160,7 @@ var fv_player_editor = (function($) {
         
         // add the inserted player's row
         jQuery.get(
-          document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=' + playerID,
+          fv_player_editor_conf.admin_url + '&id=' + playerID,
           function (response) {
             jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
             jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
