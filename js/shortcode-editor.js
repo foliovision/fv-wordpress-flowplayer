@@ -715,36 +715,7 @@ var fv_player_editor = (function($) {
     }
 
     function ajax( data ) {
-      // version with interval
       ajax_save_this_please = data;
-
-      // straight version, first save is as fast as possible
-      /*console.log('Saving!',data);
-      saving = true;
-
-      jQuery('#fv-player-shortcode-editor .spinner').addClass('is-active');
-
-      var start = performance.now();
-
-      jQuery.post(ajaxurl+'?fv_player_db_save=1', {
-        action: 'fv_player_db_save',
-        data: JSON.stringify(data),
-        nonce: fv_player_editor_conf.preview_nonce
-      }, function() {
-
-        var time = performance.now() - start;
-        console.log('delaying next ajax by '+(2000 - time)+'ms');
-        setTimeout( function() {
-          if( next ) {console.log('There is more to do...');
-            ajax(next);
-            next = false;
-          } else {
-            console.log('Done!');
-            saving = false;
-            jQuery('#fv-player-shortcode-editor .spinner').removeClass('is-active');
-          }
-        }, 2000 - time)
-      });*/
     }
 
     function error(msg) {
