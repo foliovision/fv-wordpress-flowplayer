@@ -258,11 +258,12 @@ var fv_player_editor = (function($) {
 
       $doc.on( 'click', '.fv-player-remove-confirm', function(e) {
         var
-          $element = jQuery(this),
-          $element_td = $element.parent();
+          $element = $(this),
+          $element_td = $element.parent(),
+          $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>');
 
         $element_td.find('a, span').hide();
-        $element.after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+        $element.after($spinner);
 
         jQuery.post(ajaxurl, {
           action: "fv_player_db_remove",
@@ -275,20 +276,16 @@ var fv_player_editor = (function($) {
               jQuery(this).remove();
             });
           } else {
-            $element.next('div.fv-player-shortcode-editor-small-spinner').css({
-              'background': 'none',
-              'width': 'auto'
-            }).html('Error');
+            $spinner.remove();
             
             alert(rows_affected);
 
             $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
           }
         }).error(function() {
-          $element.next('div.fv-player-shortcode-editor-small-spinner').css({
-            'background': 'none',
-            'width': 'auto'
-          }).html('Error');
+          $spinner.remove();
+          
+          $element.html('Error');
 
           $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
         });
@@ -297,40 +294,37 @@ var fv_player_editor = (function($) {
       });
 
       $doc.on( 'click', '.fv-player-clone', function(e) {
-        var $element = jQuery(this);
+        var $element = jQuery(this),
+          $spinner = $('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
         $element
           .hide()
-          .after('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+          .after($spinner);
 
-        jQuery.post(ajaxurl, {
+        $.post(ajaxurl, {
           action: "fv_player_db_clone",
           nonce: $element.data('nonce'),
           playerID: $element.data('player_id')
         }, function(playerID){
           if (playerID != '0' && !isNaN(parseFloat(playerID)) && isFinite(playerID)) {
           // add the inserted player's row
-          jQuery.get(
+          $.get(
             fv_player_editor_conf.admin_url + '&id=' + playerID,
             function (response) {
-              jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
-              $element.next('div.fv-player-shortcode-editor-small-spinner').remove();
+              $('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
+              $spinner.remove();
               $element.show();
             }).error(function() {
-              $element.next('div.fv-player-shortcode-editor-small-spinner').remove();
+              $spinner.remove();
               $element.show();
             });
           } else {
-            $element.next('div.fv-player-shortcode-editor-small-spinner').css({
-              'background': 'none',
-              'width': 'auto'
-            }).html('Error');
+            $spinner.remove();
+            $element.html('Error');
           }
         }).error(function() {
-          $element.next('div.fv-player-shortcode-editor-small-spinner').css({
-            'background': 'none',
-            'width': 'auto'
-          }).html('Error');
+          $spinner
+          $element.html('Error');
         });
 
         return false;
@@ -843,7 +837,7 @@ var fv_player_editor = (function($) {
               if (this.id == 'fv_wp_flowplayer_field_caption' && !updated_manually) {
                 // add spinners (loading indicators) to the playlist table
                 if ($playlist_row.length) {
-                  $playlist_row.html('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+                  $playlist_row.html('<div class="fv-player-shortcode-editor-small-spinner"></div>');
                 }
               }
 
@@ -985,7 +979,7 @@ var fv_player_editor = (function($) {
                 $element.removeData('fv_player_video_data_ajax_retry_count');
 
                 // remove spinners
-                jQuery('.fv-player-shortcode-editor-small-spinner').remove();
+                $('.fv-player-shortcode-editor-small-spinner').remove();
               }).error(function () {
                 is_loading_video_data--;
                 // remove element AJAX data
@@ -1012,7 +1006,7 @@ var fv_player_editor = (function($) {
                 }
 
                 // remove spinners
-                jQuery('.fv-player-shortcode-editor-small-spinner').remove();
+                $('.fv-player-shortcode-editor-small-spinner').remove();
               })
             );
           };
