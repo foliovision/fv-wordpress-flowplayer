@@ -2868,7 +2868,16 @@ var fv_player_editor = (function($) {
    */
   function preview_show(data) {
     el_preview_refresh.hide();
-    if( !data.videos[0].fv_wp_flowplayer_field_src ) {
+    
+    $found_src = false;
+    $.each( data.videos, function(k,v) {
+      if( v.fv_wp_flowplayer_field_src ) {
+        $found_src = true;
+        return false;
+      }
+    });
+    
+    if( !$found_src ) {
       el_preview.attr('class', 'preview-no');
       editor_resize();
       return;
