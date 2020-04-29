@@ -942,18 +942,6 @@ class FV_Player_Db {
         $id = $player->save($player_meta);
 
         if ($id) {
-          // delete edit lock meta key, if found
-          $meta = $player->getMetaData();
-
-          if (count($meta)) {
-            foreach ($meta as $meta_object) {
-              if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
-                $meta_object->delete();
-                break;
-              }
-            }
-          }
-
           $output = array( 'id' => $id );
           $videos = array();
           foreach( $player->getVideos() AS $video ) {
@@ -1142,6 +1130,7 @@ class FV_Player_Db {
       // load meta for all players to remove locks for (and to auto-cache them as well)
       new FV_Player_Db_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])), $this);
       $meta = $this->getPlayerMetaCache();
+      $locks_removed = [];
 
       if (count($meta)) {
         foreach ( $meta as $player ) {
@@ -1149,13 +1138,14 @@ class FV_Player_Db {
             if ( strstr( $meta_object->getMetaKey(), 'edit_lock_' ) !== false ) {
               if ( str_replace( 'edit_lock_', '', $meta_object->getMetaKey() ) == $userID ) {
                 // correct user, delete the lock
+                $locks_removed[$meta_object->getIdPlayer()] = 1;
                 $meta_object->delete();
               }
             }
           }
         }
 
-        $response['fv_flowplayer_edit_locks_removed'] = 1;
+        $response['fv_flowplayer_edit_locks_removed'] = $locks_removed;
       }
     }
 

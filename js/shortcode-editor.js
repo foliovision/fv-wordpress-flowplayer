@@ -759,6 +759,10 @@ var fv_player_editor = (function($) {
 
             // close the overlay, if we're waiting for the save
             if (overlay_close_waiting_for_save) {
+              // add this player's ID into players that no longer need an edit lock
+              if (current_player_db_id > 0) {
+                edit_lock_removal[current_player_db_id] = 1;
+              }
               overlay_close_waiting_for_save = false;
               $.fn.fv_player_box.close();
             }
@@ -1297,9 +1301,7 @@ var fv_player_editor = (function($) {
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-playlist]').hide();
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-video-files]').trigger('click');
     jQuery('.nav-tab').show;
-    
-    edit_lock_removal = {};
-    
+
     current_player_db_id = -1;
     item_index = 0;
     
@@ -1811,7 +1813,7 @@ var fv_player_editor = (function($) {
         // in WP heartbeat
         current_player_db_id = result[1];
 
-        if (edit_lock_removal) {
+        if (edit_lock_removal[result[1]]) {
           delete edit_lock_removal[result[1]];
         }
 
@@ -2432,11 +2434,6 @@ var fv_player_editor = (function($) {
     var ajax_data = build_ajax_data();
 
     overlay_show('loading');
-
-    // remove this ID from removals
-    if (edit_lock_removal) {
-      delete edit_lock_removal[current_player_db_id];
-    }
 
     // unmark DB player ID as being currently edited
     if ( current_player_db_id > -1 ) {
@@ -3711,16 +3708,38 @@ if( typeof(fv_player_editor_conf) != "undefined" ) {
     if( fv_player_editor.get_current_player_db_id() > -1 ) {
       data.fv_flowplayer_edit_lock_id = fv_player_editor.get_current_player_db_id();
     }
-    
-    if( fv_player_editor.get_edit_lock_removal() ) {
+
+    var
+      removals = fv_player_editor.get_edit_lock_removal(),
+      removalsEmpty = true;
+
+    for (var i in removals) {
+      removalsEmpty = false;
+      break;
+    }
+
+    if( !removalsEmpty ) {
       data.fv_flowplayer_edit_lock_removal = fv_player_editor.get_edit_lock_removal();
+    } else {
+      delete(data.fv_flowplayer_edit_lock_removal);
     }
   });
   
   // remove edit locks in the config if it was removed on the server
   jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
     if ( data.fv_flowplayer_edit_locks_removed ) {
-      fv_player_editor.set_edit_lock_removal({});
+      var
+        edit_lock_removal = fv_player_editor.get_edit_lock_removal(),
+        new_edit_lock_removal = {};
+
+      // remove only edit locks that were removed server-side
+      for (var i in edit_lock_removal) {
+        if (!data.fv_flowplayer_edit_locks_removed[i]) {
+          new_edit_lock_removal[i] = edit_lock_removal[i];
+        }
+      }
+
+      fv_player_editor.set_edit_lock_removal(new_edit_lock_removal);
     }
   });
 }
