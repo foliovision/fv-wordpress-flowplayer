@@ -1787,16 +1787,16 @@ var fv_player_editor = (function($) {
 
         shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
 
-        fv_flowplayer_conf.db_extra_shortcode_params = {};
+        fv_player_editor_conf.db_extra_shortcode_params = {};
         var preserve = [ 'playlist_start', 'autoplay', 'sort', 'logo', 'width', 'height', 'controlbar', 'embed', 'ab', 'share', 'liststyle', 'playlist_hide', 'playlist_advance', 'ad', 'ad_height', 'ad_width', 'vast', 'midroll', 'volume', 'fullscreen' ];
         for( var i in preserve ) {
           var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, preserve[i] );
           if (value && value[1]) {
-            fv_flowplayer_conf.db_extra_shortcode_params[preserve[i]] = value[1];
+            fv_player_editor_conf.db_extra_shortcode_params[preserve[i]] = value[1];
           }
         }
 
-        fv_flowplayer_conf.new_shortcode_active = true;
+        fv_player_editor_conf.new_shortcode_active = true;
         // DB-based player, create a "wait" overlay
         overlay_show('loading');
 
@@ -2060,7 +2060,7 @@ var fv_player_editor = (function($) {
           }
         });
       } else {
-        fv_flowplayer_conf.new_shortcode_active = false;
+        fv_player_editor_conf.new_shortcode_active = false;
         $doc.trigger('fv-non-db-shortcode');
 
         // ordinary text shortcode in the editor
@@ -2437,7 +2437,7 @@ var fv_player_editor = (function($) {
 
     if (preview) {
       // don't use DB preview if we're working with a standard shortcode
-      if (fv_flowplayer_conf.new_shortcode_active) {
+      if (fv_player_editor_conf.new_shortcode_active) {
         var previewDimensions = preview_dimensions();
         previewWidth = previewDimensions.width;
         previewHeight = previewDimensions.height;
