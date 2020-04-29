@@ -1103,7 +1103,7 @@ var fv_player_editor = (function($) {
       shortcode     = shortcode.replace( /(width=[\'"])\d*([\'"])/, "$1320$2" );  // 320
       shortcode     = shortcode.replace( /(height=[\'"])\d*([\'"])/, "$1240$2" ); // 240
 
-      var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
+      var url = fv_player_editor_conf.home_url + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
       $.get(url, function(response) {
         wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
         $doc.trigger('fvp-preview-complete', [ shortcode, wrapper.data('key'), wrapper ] );
@@ -1364,8 +1364,7 @@ var fv_player_editor = (function($) {
     if( typeof(fv_player_shortcode_editor_ajax) != "undefined" ) {
       fv_player_shortcode_editor_ajax.abort();
     }
-
-    $doc.trigger('fv-init');
+    
   }
   
   /*
@@ -1722,9 +1721,7 @@ var fv_player_editor = (function($) {
     var $doc = jQuery(document);
     $doc.trigger('fv_flowplayer_player_editor_reset');
 
-    // reset content of any input fields, except what has .extra-field
-    console.log('reset',el_editor.find("input:not(.extra-field)"));
-    
+    // reset content of any input fields, except what has .extra-field    
     el_editor.find("input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
     el_editor.find("textarea").each( function() { jQuery(this).val( '' ) } );
     el_editor.find('select').prop('selectedIndex',0);
@@ -2883,38 +2880,20 @@ var fv_player_editor = (function($) {
       editor_resize();
       return;
     }
-  
-    el_preview.attr('class','preview-loading');
-    var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=';
-  
-    if (typeof(is_post) !== 'undefined') {
-      url += 'POST';
-    } else {
-      url += encodeURIComponent(b64EncodeUnicode(data));
-    }
-  
+    
     if(preview_not_supported){
       jQuery('#fv-player-shortcode-editor-preview-new-tab > a').html('Open preview in a new window');
       if( jQuery('#fv-player-shortcode-editor-preview div.incompatibility').length == 0 ) jQuery('#fv-player-shortcode-editor-preview-new-tab').after('<div class="notice notice-warning incompatibility"><p>For live preview of the video player please use the latest Firefox, Chromium or Opera.</p></div>');
-    }
-  
-    // TODO: this opens preview in a new window for a nicer preview but won't work with new DB-based shortcode generation,
-    //       as we're sending all the inputs as data and that would be too big for a GET request
-    //       ... find a way to circumvent this
-    /*if(preview_single === -1 && jQuery('.fv-player-tab-video-files table').length > 9 || preview_not_supported){
-      $previewDiv.attr('class','preview-new-tab');
-      fv_player_shortcode_preview = false;
-      //console.log('fv_player_shortcode_preview = false');
-      jQuery('#fv-player-shortcode-editor-preview-new-tab > a').unbind('click').on('click',function(e){
-        fv_wp_flowplayer_submit(true);
-        url = fv_Player_site_base + '?fv_player_embed=1&fv_player_preview=' + encodeURIComponent(b64EncodeUnicode(data))
-        fv_player_open_preview_window( url, width, height + Math.ceil( (jQuery('.fv-player-tab-video-files table').length / 3)) * 155 );
-        return false;
-      });
-  
       return;
-    }*/
+    }
+    
+    //console.trace();
+    console.log('preview_show',data);
+    is_loading_preview = true;
   
+    el_preview.attr('class','preview-loading');
+    var url = fv_player_editor_conf.home_url + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=POST';
+   
     if( (typeof(is_post) !== 'undefined') || typeof(fv_player_shortcode_editor_last_url) == 'undefined' || url !== fv_player_shortcode_editor_last_url ){
       fv_player_shortcode_editor_last_url = url;
       var $previewTarget = jQuery('#fv-player-shortcode-editor-preview-target');
