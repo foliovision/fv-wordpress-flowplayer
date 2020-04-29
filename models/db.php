@@ -100,7 +100,8 @@ class FV_Player_Db {
       $vid_obj = $aPlayer['video_objects'][$index];
       $fv_fp->currentVideoObject = $vid_obj;
       
-      if( !empty($aItem['sources'][0]['src']) && is_numeric($aItem['sources'][0]['src']) ) {
+      if( !empty($aItem['sources'][0]['src']) && ( is_numeric($aItem['sources'][0]['src']) ) || stripos($aItem['sources'][0]['src'],'preview-') === 0 ) {
+
         $new = array( 'sources' => array() );
         if( $src = $vid_obj->getSrc() ) {
           $new['sources'][] = array( 'src' => apply_filters('fv_flowplayer_video_src',$src,array()), 'type' => $fv_fp->get_mime_type($src) );
@@ -443,11 +444,12 @@ class FV_Player_Db {
 
         // add rest of the videos into the playlist tag
         if ($videos && count($videos)) {
-          foreach ( $videos as $vid_object ) {
-            $vid                              = $vid_object->getAllDataValues();
-            $atts['video_objects'][]          = $vid_object;
-            $this->video_atts_cache[ $vid['id'] ] = $vid;
-            $new_playlist_tag[]               = $vid['id'];
+          foreach ( $videos as $k => $vid_object ) {
+            $vid_id                            = isset($vid['id']) ? $vid['id'] : 'preview-'.($k+1);
+            $vid                               = $vid_object->getAllDataValues();
+            $atts['video_objects'][]           = $vid_object;
+            $this->video_atts_cache[ $vid_id ] = $vid;
+            $new_playlist_tag[]                = $vid_id;
           }
 
           $atts['playlist'] = implode(';', $new_playlist_tag);
