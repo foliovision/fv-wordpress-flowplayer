@@ -34,6 +34,9 @@ var fv_player_editor = (function($) {
   // the post editor content being edited
   var editor_content;
   
+  // used in WP Heartbeat
+  var edit_lock_removal = {};
+  
   // used to size the lightbox in editor_resize()
   var editor_resize_height_record = 0;
   
@@ -1295,6 +1298,8 @@ var fv_player_editor = (function($) {
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-video-files]').trigger('click');
     jQuery('.nav-tab').show;
     
+    edit_lock_removal = {};
+    
     current_player_db_id = -1;
     item_index = 0;
     
@@ -1631,8 +1636,10 @@ var fv_player_editor = (function($) {
       
     }
   
-      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[fv_flowplayer_conf.current_player_db_id] = 1;
-      delete fv_flowplayer_conf.current_player_db_id;
+    // we need to do this now to make sure Heartbeat gets the correct data
+    if (current_player_db_id > -1 ){
+      edit_lock_removal[current_player_db_id] = 1;
+      current_player_db_id = -1;
     }
     
     editor_init();
@@ -1804,8 +1811,8 @@ var fv_player_editor = (function($) {
         // in WP heartbeat
         current_player_db_id = result[1];
 
-        if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-          delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[result[1]];
+        if (edit_lock_removal) {
+          delete edit_lock_removal[result[1]];
         }
 
         // check if we don't have multiple-playlists shortcode,
@@ -2450,8 +2457,8 @@ var fv_player_editor = (function($) {
       overlay_show('loading');
 
       // remove this ID from removals
-      if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-        delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[fv_flowplayer_conf.current_player_db_id];
+      if (edit_lock_removal) {
+        delete edit_lock_removal[current_player_db_id];
       }
 
       // unmark DB player ID as being currently edited
@@ -3220,9 +3227,26 @@ var fv_player_editor = (function($) {
   
   // Public stuff
   return {
+    get_current_player_db_id() {
+      return current_player_db_id;
+    },
+    
+    get_edit_lock_removal() {
+      return edit_lock_removal;
+    },
+    
     get_shortcode_remains: function() {
       return shortcode_remains;
     },
+    
+    set_current_video_to_edit( index ) {
+      current_video_to_edit = index;
+    },
+    
+    set_edit_lock_removal( val ) {
+      edit_lock_removal = val;
+    },
+    
     set_shortcode_remains: function(value) {
       shortcode_remains = value;
     },
@@ -3665,28 +3689,28 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
 For wp-admin -> FV Player screen, should not be here
 */
 
-if( typeof(fv_flowplayer_conf) != "undefined" ) {
+if( typeof(fv_player_editor_conf) != "undefined" ) {
   // extending DB player edit lock's timer
   jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
-    if (fv_flowplayer_conf.current_player_db_id) {
-      data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
+    if( fv_player_editor.get_current_player_db_id() > -1 ) {
+      data.fv_flowplayer_edit_lock_id = fv_player_editor.get_current_player_db_id();
     }
     
-    if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-      data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
+    if( fv_player_editor.get_edit_lock_removal() ) {
+      data.fv_flowplayer_edit_lock_removal = fv_player_editor.get_edit_lock_removal();
     }
   });
   
   // remove edit locks in the config if it was removed on the server
   jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
     if ( data.fv_flowplayer_edit_locks_removed ) {
-      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+      fv_player_editor.set_edit_lock_removal({});
     }
   });
 }
 
 jQuery(document).on('click','.fv_player_splash_list_preview', function() {
-  fv_flowplayer_conf.current_video_to_edit = jQuery(this).parents('.thumbs').find('.fv_player_splash_list_preview').index(this);
+  fv_player_editor.set_current_video_to_edit( jQuery(this).parents('.thumbs').find('.fv_player_splash_list_preview').index(this) );
   jQuery(this).parents('tr').find('.fv-player-edit').click();
 });
 jQuery(document).on('click','.column-shortcode input', function() {
