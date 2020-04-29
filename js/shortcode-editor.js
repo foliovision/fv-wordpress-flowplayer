@@ -121,7 +121,17 @@ var fv_player_editor = (function($) {
     return name;
   }
   
-  function get_item( index, tab ) {
+  /*
+   * Gives you the desired tab with video information
+   * 
+   * @param {int|string}  index   Number, or first, or last
+   * @param {string}      tab     Tab name to obtain, options:
+   *                              * video-files
+   *                              * subtitles
+   * 
+   * @return {object}             The tab element
+   */
+  function get_tab( index, tab ) {
     var selector = '.fv-player-tab-'+tab+' table';
     if( index == 'first' ) {
       selector += ':first';
@@ -133,7 +143,12 @@ var fv_player_editor = (function($) {
     return el_editor.find(selector);
   }
   
-  function get_items( tab ) {
+   /*
+   * Gives you all desired tabs of a certain kind
+   * 
+   * @return {object}            The tab elements
+   */
+  function get_tabs( tab ) {
     var selector = '.fv-player-tab-'+tab+' table';
     return el_editor.find(selector);
   }
@@ -407,7 +422,7 @@ var fv_player_editor = (function($) {
       var
         $parent = $(e.target).parents('[data-index]'),
         index = $parent.attr('data-index'),
-        id = get_item(index,'video-files').attr('data-id_video'),
+        id = get_tab(index,'video-files').attr('data-id_video'),
         $deleted_videos_element = $('#fv-player-deleted_videos');
 
       if (id && $deleted_videos_element.val()) {
@@ -417,8 +432,8 @@ var fv_player_editor = (function($) {
       }
 
       $parent.remove();
-      get_item(index,'video-files').remove();
-      get_item(index,'subtitles').remove();
+      get_tab(index,'video-files').remove();
+      get_tab(index,'subtitles').remove();
       
       // if no playlist item is left, add a new one
       // TODO: Some better way?
@@ -437,15 +452,15 @@ var fv_player_editor = (function($) {
     */
     $('.fv-player-tab-playlist table tbody').sortable({
       start: function( event, ui ) {
-        store_rtmp_server = get_field( 'rtmp', get_item('first','video-files') ).val();
+        store_rtmp_server = get_field( 'rtmp', get_tab('first','video-files') ).val();
       },
       update: function( event, ui ) {
         var new_sort = []; 
         $('.fv-player-tab-playlist table tbody tr').each(function(){
           var
             index = $(this).attr('data-index'),
-            video_tab_item = get_item(index,'video-files'),
-            subtitle_tab_item = get_item(index,'subtitles');
+            video_tab_item = get_tab(index,'video-files'),
+            subtitle_tab_item = get_tab(index,'subtitles');
 
           new_sort.push({
             video_tab_item : video_tab_item.clone(),
@@ -461,7 +476,7 @@ var fv_player_editor = (function($) {
           $('.fv-player-tab-subtitles').append(v.subtitle_tab_item);
         });
       
-        get_field( 'rtmp', get_item('first','video-files') ).val( store_rtmp_server );
+        get_field( 'rtmp', get_tab('first','video-files') ).val( store_rtmp_server );
         
         playlist_index();
         
@@ -563,7 +578,7 @@ var fv_player_editor = (function($) {
     });
     
     template_playlist_item = jQuery('.fv-player-tab-playlist table tbody tr').parent().html();
-    template_video = get_item('first','video-files').parent().html();
+    template_video = get_tab('first','video-files').parent().html();
     template_subtitles = jQuery('.fv-fp-subtitle').parent().html();
     template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
     /*
@@ -2590,10 +2605,10 @@ var fv_player_editor = (function($) {
     current.find('.fvp_item_video-filename').html( 'Video ' + (newIndex + 1) );
 
     jQuery('.fv-player-tab-video-files').append(template_video);
-    var new_item = get_item('last','video-files');
+    var new_item = get_tab('last','video-files');
     new_item.hide().attr('data-index', newIndex);
     jQuery('.fv-player-tab-subtitles').append(template_subtitles_tab);
-    var new_item_subtitles = get_item('last','subtitles');
+    var new_item_subtitles = get_tab('last','subtitles');
     new_item_subtitles.hide().attr('data-index', newIndex);
     
     // processing database input
@@ -2684,11 +2699,11 @@ var fv_player_editor = (function($) {
    
     $('a[data-tab=fv-player-tab-video-files]').click();    
     
-    get_items('video-files').hide();
-    var video_tab = get_item(new_index,'video-files').show();
+    get_tabs('video-files').hide();
+    var video_tab = get_tab(new_index,'video-files').show();
     
-    get_items('subtitles').hide();
-    get_item(new_index,'subtitles').show();
+    get_tabs('subtitles').hide();
+    get_tab(new_index,'subtitles').show();
   
     if($('.fv-player-tab-playlist [data-index]').length > 1){
       $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
