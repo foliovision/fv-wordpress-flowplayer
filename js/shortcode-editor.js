@@ -93,8 +93,17 @@ var fv_player_editor = (function($) {
   var fv_wp_flowplayer_save_ignore_errors = false;
   
   /*
-  A shorthand to save you from all the "fv_wp_flowplayer_field_"
-  */
+   * A shorthand to save you from all the "fv_wp_flowplayer_field_"
+   * when selecting fields
+   * 
+   * @param {string}         key    The field key. For example "src" gives 
+   *                                you "fv_wp_flowplayer_field_src"
+   * @param {object|string}  where  Lets you narrow down the element wher you
+   *                                want to locate he field. You can use a jQuery
+   *                                element or a string selector for jQuery
+   * 
+   * @return {object}               The field element
+   */
   function get_field( key, where ) {
     var element = false,
       selector = '.fv_wp_flowplayer_field_'+key+', [name=fv_wp_flowplayer_field_'+key+']';
@@ -114,6 +123,13 @@ var fv_player_editor = (function($) {
     return element;
   }
   
+  /*
+   * Gives you "src" out of "fv_wp_flowplayer_field_src"
+   * 
+   * @param {string}    name  The field name
+   * 
+   * @return {string}         The field.... real name?
+   */
   function get_field_name( name ) {
     if (name.indexOf('fv_wp_flowplayer_field_') > -1) {
       return name.replace('fv_wp_flowplayer_field_', '');
@@ -165,8 +181,6 @@ var fv_player_editor = (function($) {
     el_preview = $('#fv-player-shortcode-editor-preview');
     
     el_preview_refresh = $('#fv-player-shortcode-editor-preview-iframe-refresh');
-    
-    
 
     var
       previous = false,
@@ -656,6 +670,7 @@ var fv_player_editor = (function($) {
     * Video share option
     */
   
+    // TODO: Check
     jQuery('#fv_wp_flowplayer_field_share').change(function(){
       var value = jQuery(this).val();
       
@@ -1045,6 +1060,10 @@ var fv_player_editor = (function($) {
       fv_load_video_preview( jQuery(this).parents('.fv-player-editor-wrapper'));
     } );
 
+    /*
+    Custom Videos feature
+    TODO: Test
+    */
     function fv_show_video( wrapper ) {
       if( wrapper.find('.fv-player-editor-field').val() ) {
         wrapper.find('.edit-video').show();
@@ -1059,12 +1078,20 @@ var fv_player_editor = (function($) {
       jQuery('[data-key='+wrapper.data('key')+'] .fv-player-editor-more').last().show();  //  show last add more button only
     }
 
+    /*
+    Custom Videos feature
+    TODO: Test
+    */
     function fv_remove_video( id ) {
       $( '#widget-widget_fvplayer-'+id+'-text' ).val("");
       fv_show_video(id);
       $('#fv_edit_video-'+id+' .video-preview').html('');
     }
 
+    /*
+    Custom Videos feature
+    TODO: Test
+    */
     function fv_load_video_preview( wrapper ) {
       var shortcode = $(wrapper).find('.fv-player-editor-field').val();
       var indicator = $("<div class='fv-player-editor-player-loading'><span class='waiting spinner is-active'></span></div>").appendTo('.fp-playlist-external');
@@ -1224,8 +1251,9 @@ var fv_player_editor = (function($) {
 
 
   /*
-  * Initializes shortcode, removes playlist items, hides elements
-  */
+   *  Initializes shortcode, removes playlist items, hides elements, figures out
+   *  which actual field is edited - post editor, widget, etc.
+   */
   function editor_init() {
     fv_wp_flowplayer_save_ignore_errors = false;
     
@@ -1340,6 +1368,10 @@ var fv_player_editor = (function($) {
     $doc.trigger('fv-init');
   }
   
+  /*
+   *  Checks all the input fields and created the JavaScript object.
+   *  Works when saving and also previewing.
+   */
   function build_ajax_data( give_it_all ) {
     var
         $tabs                  = el_editor.find('.fv-player-tab'),
@@ -1610,8 +1642,14 @@ var fv_player_editor = (function($) {
     return data;
   }
   
+  /*
+   *  Closing the editor
+   *  * updates the wp-admin -> FV Player screen
+   *  * sets data for WordPress Heartbeat to unlock the player
+   *  * calls editor_init() for editor clean-up
+   */
   function editor_close() {
-    // this should remove the hidden tag which aids the editing
+    // TODO: this should remove the hidden tag which aids the editing
     
     /*
     editor_content = editor_content.replace(fv_wp_flowplayer_re_edit,'');
@@ -2371,6 +2409,9 @@ var fv_player_editor = (function($) {
     }
   }
   
+  /*
+   *  Calculate FV Player editor popup (Colorbox) size
+   */
   function editor_resize() {
     setTimeout(function(){
       var height = el_editor.height();
@@ -2493,8 +2534,6 @@ var fv_player_editor = (function($) {
       } else {
         json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
         
-        var overlay = overlay_show('error_saving');    
-          var overlay = overlay_show('error_saving');    
         var overlay = overlay_show('error_saving');    
         overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
 
@@ -2686,6 +2725,9 @@ var fv_player_editor = (function($) {
     return new_item;
   }
   
+  /*
+  Show a certain playlist item, it's Video and Subtitles tab
+  */
   function playlist_item_show( new_index ) {
     item_index = new_index;
     
@@ -2732,6 +2774,9 @@ var fv_player_editor = (function($) {
     preview_submit();  
   }
   
+  /*
+   *  Recalculate the data-index values for playlist items
+   */
   function playlist_index() {
     $('.fv-player-tab-playlist table tbody tr').each(function(){
       $(this).attr('data-index', $(this).index() );
@@ -2826,6 +2871,9 @@ var fv_player_editor = (function($) {
     };
   }
   
+  /*
+   *  Load the preview player
+   */
   function preview_show(has_src, data, is_post) {
     el_preview_refresh.hide();
     if (!has_src) {
@@ -2937,11 +2985,17 @@ var fv_player_editor = (function($) {
     }
   }
   
+  /*
+   *  Hide any overlays
+   */
   function overlay_hide() {
     $('.fv-player-editor-overlay').hide();
     return false;
   }
   
+  /*
+   *  Show a certain kind of overlay
+   */
   function overlay_show( type, message ) {
     overlay_hide();
     var overlayDiv = $('#fv-player-editor-'+type+'-overlay');
