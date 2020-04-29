@@ -427,7 +427,7 @@ var fv_player_editor = (function($) {
         jQuery('.fv-player-tab-playlist tr td').click();
       }
       
-      editor_submit('refresh-button');
+      preview_show_button();
 
       $doc.trigger('fv_flowplayer_shortcode_item_delete');
     });
@@ -465,7 +465,7 @@ var fv_player_editor = (function($) {
         
         playlist_index();
         
-        editor_submit('refresh-button');
+        preview_show_button();
 
         $doc.trigger('fv_flowplayer_shortcode_item_sort');
         
@@ -554,7 +554,7 @@ var fv_player_editor = (function($) {
               
             }
             
-            editor_submit('refresh-button');
+            preview_show_button();
         });
 
         //Open the uploader dialog
@@ -589,19 +589,19 @@ var fv_player_editor = (function($) {
         return;
       }
       
-      editor_submit('refresh-button');
+      preview_show_button();
     });
 
     $doc.on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
       if(e.key === 'Enter') {
-        editor_submit(true);
+        preview_submit();
       }
     });
     
     el_preview_refresh.click(function(){
       el_preview_refresh.hide();
       
-      editor_submit(true);
+      preview_submit();
     });
     
     /*
@@ -623,7 +623,7 @@ var fv_player_editor = (function($) {
           jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
           break;
         default:
-          editor_submit('refresh-button');
+          preview_show_button();
           break;
       }
     });
@@ -2343,7 +2343,7 @@ var fv_player_editor = (function($) {
         //initial preview
         tabs_refresh();
 
-        editor_submit(true);
+        preview_submit();
       }
     } else {
       jQuery(document).trigger('fv_flowplayer_shortcode_new');
@@ -2376,9 +2376,12 @@ var fv_player_editor = (function($) {
     },0);
   }
   
-  function editor_submit( preview ) {
+  /*
+   *  Saving the data
+   */
+  function editor_submit() {
     // bail out if we're already saving or we're loading meta data still
-    if (!preview && (ajax_save_this_please || is_saving || is_loading_video_data)) {
+    if ( ajax_save_this_please || is_saving || is_loading_video_data ) {
       // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
       if ( current_player_db_id < 0 ) {
         if (is_loading_video_data) {
@@ -2401,23 +2404,14 @@ var fv_player_editor = (function($) {
       }
     }
 
-    if( preview && typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
-      return;
-    }
-
-    if( preview == 'refresh-button' ) {
-      el_preview_refresh.show();
-      return;
-    }
-
-    fv_player_shortcode_preview = true;
+    // TODO: Is this needed?
+    //fv_player_shortcode_preview = true;
     //console.log('fv_player_shortcode_preview = true');
     
     var field_rtmp = get_field("rtmp"),
       field_rtmp_path = get_field("rtmp_path")
 
     if(
-      !preview &&
       field_rtmp.attr('placeholder') == '' &&
       get_field("rtmp_wrapper").is(":visible") &&
       (
@@ -2428,7 +2422,6 @@ var fv_player_editor = (function($) {
       alert('Please enter both server and path for your RTMP video.');
       return false;
     } else if(
-            !preview &&
             get_field("src").val() == ''
             && get_field("rtmp").val() == ''
             && get_field("rtmp_path").val() == '') {
@@ -2436,82 +2429,68 @@ var fv_player_editor = (function($) {
       return false;
     }
 
-    var
-      previewWidth = null,
-      previewHeight = null;
-
     var ajax_data = build_ajax_data();
 
-    if (preview) {
-      // don't use DB preview if we're working with a standard shortcode
-      if (fv_player_editor_conf.new_shortcode_active) {
-        var previewDimensions = preview_dimensions();
-        previewWidth = previewDimensions.width;
-        previewHeight = previewDimensions.height;
-        ajax_data['fv_wp_flowplayer_field_width'] = previewWidth;
-        ajax_data['fv_wp_flowplayer_field_height'] = previewHeight;
-        preview_show(true, ajax_data, true);
-        return;
-      }
-    } else {
-      overlay_show('loading');
+    overlay_show('loading');
 
-      // remove this ID from removals
-      if (edit_lock_removal) {
-        delete edit_lock_removal[current_player_db_id];
-      }
+    // remove this ID from removals
+    if (edit_lock_removal) {
+      delete edit_lock_removal[current_player_db_id];
+    }
 
-      // unmark DB player ID as being currently edited
-      if ( current_player_db_id > -1 ) {
-        current_player_db_id = -1;;
-      }
+    // unmark DB player ID as being currently edited
+    if ( current_player_db_id > -1 ) {
+      current_player_db_id = -1;
+    }
 
-      // save data
-      jQuery.post(ajaxurl, {
-        action: 'fv_player_db_save',
-        data: JSON.stringify(ajax_data),
-        nonce: fv_player_editor_conf.preview_nonce
-      }, function(response) {
-        // player saved, reset draft status
-        is_draft = false;
-        is_draft_changed = false;
+    // save data
+    jQuery.post(ajaxurl, {
+      action: 'fv_player_db_save',
+      data: JSON.stringify(ajax_data),
+      nonce: fv_player_editor_conf.preview_nonce
+    }, function(response) {
+      // player saved, reset draft status
+      is_draft = false;
+      is_draft_changed = false;
 
-        var player = JSON.parse(response);
-        current_player_db_id = parseInt(player.id);
-        if( current_player_db_id > 0 ) {
-          // we have extra parameters to keep
-          if (fv_player_editor_conf.db_extra_shortcode_params) {
-            var
-              params = jQuery.map(fv_player_editor_conf.db_extra_shortcode_params, function (value, index) {
-                return index + '="' + value + '"';
-              }),
-              to_append = '';
+      var player = JSON.parse(response);
+      current_player_db_id = parseInt(player.id);
+      if( current_player_db_id > 0 ) {
+        // we have extra parameters to keep
+        if (fv_player_editor_conf.db_extra_shortcode_params) {
+          var
+            params = jQuery.map(fv_player_editor_conf.db_extra_shortcode_params, function (value, index) {
+              return index + '="' + value + '"';
+            }),
+            to_append = '';
 
-            if (params.length) {
-              to_append = ' ' + params.join(' ');
-            }
-
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
-          } else {
-            // simple DB shortcode, no extra presentation parameters
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
+          if (params.length) {
+            to_append = ' ' + params.join(' ');
           }
 
-          jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
+          insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
         } else {
-          json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-          
-          var overlay = overlay_show('error_saving');    
-          overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-
-          jQuery('#fv_player_copy_to_clipboard').select();
+          // simple DB shortcode, no extra presentation parameters
+          insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
         }
-      }).error(function() {
-        overlay_show('message', 'An unexpected error has occurred. Please try again');
-      });
 
-      return;
-    }
+        jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
+      } else {
+        json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+        
+        var overlay = overlay_show('error_saving');    
+          var overlay = overlay_show('error_saving');    
+        var overlay = overlay_show('error_saving');    
+        overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+
+        jQuery('#fv_player_copy_to_clipboard').select();
+      }
+    }).error(function() {
+      overlay_show('message', 'An unexpected error has occurred. Please try again');
+    });
+
+    return;
+ 
   }
   
   /*
@@ -2735,7 +2714,7 @@ var fv_player_editor = (function($) {
   
     tabs_refresh();
   
-    editor_submit(true);  
+    preview_submit();  
   }
   
   function playlist_index() {
@@ -2813,7 +2792,7 @@ var fv_player_editor = (function($) {
     jQuery('.fv-player-tab-playlist').show();
     editor_resize();
     tabs_refresh();
-    editor_submit(true);
+    preview_submit();
 
     return false;
   }
@@ -2891,6 +2870,43 @@ var fv_player_editor = (function($) {
       }
     }else{
       jQuery(document).trigger('fvp-preview-complete');
+    }
+  }
+  
+  /*
+   *  Show button to refresh the preview player
+   */
+  function preview_show_button() {
+    if( typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
+      return;
+    }
+    
+    el_preview_refresh.show();
+  }
+  
+  /*
+   *  Ask for the preview
+   */
+  function preview_submit() {
+    if( typeof(fv_player_shortcode_preview) != "undefined" && fv_player_shortcode_preview ){
+      return;
+    }
+    
+    var
+      previewWidth = null,
+      previewHeight = null;
+
+    var ajax_data = build_ajax_data();
+
+    // don't use DB preview if we're working with a standard shortcode
+    if (fv_player_editor_conf.new_shortcode_active) {
+      var previewDimensions = preview_dimensions();
+      previewWidth = previewDimensions.width;
+      previewHeight = previewDimensions.height;
+      ajax_data['fv_wp_flowplayer_field_width'] = previewWidth;
+      ajax_data['fv_wp_flowplayer_field_height'] = previewHeight;
+      preview_show(true, ajax_data, true);
+      return;
     }
   }
   
