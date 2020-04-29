@@ -1210,10 +1210,6 @@ var fv_player_editor = (function($) {
     // if error / message overlay is visible, hide it
     overlay_hide();
 
-    // remove Insert as New button, or it'll all get renamed to Update
-    // when working with original shortcode
-    // jQuery('.fv_player_insert_as_new').remove();
-
     // remove hidden meta data inputs
     jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_last_video_meta_check"], input[name="fv_wp_flowplayer_field_auto_splash"], input[name="fv_wp_flowplayer_field_auto_caption"]').remove();
 
@@ -2356,7 +2352,7 @@ var fv_player_editor = (function($) {
 
       // rename insert to save for new playlists if we come from list view
       if ( is_fv_player_screen_add_new(editor_button_clicked) ) {
-        jQuery('.fv_player_field_insert-button:not(.fv_player_insert_as_new)').text('Save');
+        jQuery('.fv_player_field_insert-button').text('Save');
       }
     }
   }
@@ -2381,7 +2377,7 @@ var fv_player_editor = (function($) {
     },0);
   }
   
-  function editor_submit( preview, insert_as_new ) {
+  function editor_submit( preview ) {
     // bail out if we're already saving or we're loading meta data still
     if (!preview && (ajax_save_this_please || is_saving || is_loading_video_data)) {
       // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
@@ -2500,14 +2496,7 @@ var fv_player_editor = (function($) {
             insert_shortcode('[fvplayer id="' + playerID + '"' + to_append + ']');
           } else {
             // simple DB shortcode, no extra presentation parameters
-            insert_shortcode('[fvplayer id="' + playerID + '"]');
-          }
-
-          // if we're inserting player as new and we come from the list view,
-          // we need to store this player's ID in the original Edit link's data,
-          // so we can add it to the displayed table
-          if ( insert_as_new && is_fv_player_screen(editor_button_clicked) ) {
-            $(editor_button_clicked).data('insert_as_new_id', playerID);
+            insert_shortcode('[fvplayer id="' + editing_player_id + '"]');
           }
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
@@ -3380,7 +3369,7 @@ jQuery(document).on('click', '#fv-player-editor-export-overlay-copy', function()
 
 
 // TODO: This is used in editor-screenshots.js and FV Player Pay Per View!
-function fv_wp_flowplayer_submit( preview, insert_as_new ) {
+function fv_wp_flowplayer_submit( preview ) {
 
 }
 
