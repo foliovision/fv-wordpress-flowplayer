@@ -24,6 +24,10 @@ var fv_player_editor = (function($) {
   // data to save in Ajax
   var ajax_save_this_please = false;
   
+  var current_player_db_id = -1;
+  
+  var current_video_to_edit = -1;
+  
   // stores the button which has clicked to open the editor
   var editor_button_clicked = 0;
   
@@ -1291,6 +1295,7 @@ var fv_player_editor = (function($) {
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-video-files]').trigger('click');
     jQuery('.nav-tab').show;
     
+    current_player_db_id = -1;
     item_index = 0;
     
     is_playlist_active = false;
@@ -1592,10 +1597,9 @@ var fv_player_editor = (function($) {
     editor_content = editor_content.replace(fv_wp_flowplayer_re_edit,'');
     editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
     */
-    
-    delete(fv_flowplayer_conf.current_video_to_edit);
   
-    editor_init();
+    // this variable needs to be reset here and not in editor_init
+    current_video_to_edit = -1;
   
     if ( !is_fv_player_screen(editor_button_clicked) ) {
       // todo: what it the point of this call being made?
@@ -1606,47 +1610,33 @@ var fv_player_editor = (function($) {
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
       field.trigger('fv_flowplayer_shortcode_insert');
       
-    } else {
-      var
-        $buttonClicked = $(editor_button_clicked),
-        playerID = $buttonClicked.data('player_id'),
-        playerRow = jQuery('#the-list span[data-player_id="' + playerID + '"]'),
-        url = document.location.href.substr(0, document.location.href.indexOf('?page=fv_player')) + '?page=fv_player&id=';
-  
-      // check if we didn't use Insert as New button
-      if (typeof($buttonClicked.data('insert_as_new_id')) != 'undefined') {
-        jQuery.get(
-          url + $buttonClicked.data('insert_as_new_id'),
-          function (response) {
-            if ( is_fv_player_screen_add_new(editor_button_clicked) ) {
-              jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
-            }
-          });
-      } else {
-  
-        // reload our player's row
-        playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
-        jQuery.get(
-          url + playerID,
-          function (response) {
-            jQuery('#the-list span[data-player_id="' + playerID + '"]').closest('tr').replaceWith(jQuery(response).find('#the-list tr'));
-          });
+    } else if( current_player_db_id > -1 ) {
+      var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
+      if( playerRow.length == 0 ) {
+        var firstRow = $('#the-list tr:first'),
+          newRow = firstRow.clone();
+          
+        newRow.find('td').html('');
+        playerRow = newRow.find('td').eq(0);
+        
+        firstRow.before( newRow )
       }
+      
+      playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+      $.get(
+        fv_player_editor_conf.admin_url + '&id=' + current_player_db_id,
+        function (response) {
+          playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
+        });
+      
     }
-  
-    if (fv_flowplayer_conf.current_player_db_id){
-      if (!fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-        fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
-      }
   
       fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[fv_flowplayer_conf.current_player_db_id] = 1;
       delete fv_flowplayer_conf.current_player_db_id;
     }
     
-    if( fv_flowplayer_conf.current_video_to_edit ) {
-      delete fv_flowplayer_conf.current_video_to_edit;
-    }
-  
+    editor_init();
+    
   }
   
     
@@ -1727,8 +1717,10 @@ var fv_player_editor = (function($) {
       
     // is it the Edit button on wp-admin -> FV Player screen?
     } else if ( is_fv_player_screen_edit(editor_button_clicked) ) {
+      current_player_db_id = $(editor_button_clicked).data('player_id');
+      
       // create an artificial shortcode from which we can extract the actual player ID later below
-      editor_content = '[fvplayer id="' + $(editor_button_clicked).data('player_id') + '"]';
+      editor_content = '[fvplayer id="' + current_player_db_id + '"]';
       shortcode = [editor_content];
       
     // is it the Add new button on wp-admin -> FV Player screen?
@@ -1810,7 +1802,7 @@ var fv_player_editor = (function($) {
 
         // store player ID into fv_player_conf, so we can keep sending it
         // in WP heartbeat
-        fv_flowplayer_conf.current_player_db_id = result[1];
+        current_player_db_id = result[1];
 
         if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
           delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[result[1]];
@@ -2032,8 +2024,8 @@ var fv_player_editor = (function($) {
 
             // show playlist instead of the "add new video" form
             // if we have more than 1 video
-            if( typeof(fv_flowplayer_conf.current_video_to_edit) != "undefined" ) {
-              playlist_item_show(fv_flowplayer_conf.current_video_to_edit);
+            if( current_video_to_edit > -1 ) {
+              playlist_item_show(current_video_to_edit);
             } else if (vids.length > 1) {
               playlist_show();
             } else {
@@ -2381,7 +2373,7 @@ var fv_player_editor = (function($) {
     // bail out if we're already saving or we're loading meta data still
     if (!preview && (ajax_save_this_please || is_saving || is_loading_video_data)) {
       // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
-      if (typeof($(editor_button_clicked).data('player_id')) == 'undefined') {
+      if ( current_player_db_id < 0 ) {
         if (is_loading_video_data) {
           el_editor.find('.button-primary').attr('disabled', 'disabled').text('Saving...');
           var checker = setInterval(function() {
@@ -2463,8 +2455,8 @@ var fv_player_editor = (function($) {
       }
 
       // unmark DB player ID as being currently edited
-      if (fv_flowplayer_conf.current_player_db_id) {
-        delete fv_flowplayer_conf.current_player_db_id;
+      if ( current_player_db_id > -1 ) {
+        current_player_db_id = -1;;
       }
 
       // save data
@@ -2477,14 +2469,13 @@ var fv_player_editor = (function($) {
         is_draft = false;
         is_draft_changed = false;
 
-        var playerID = -1;
         var player = JSON.parse(response);
-        playerID = parseInt(player.id);
-        if( playerID > 0 ) {
+        current_player_db_id = parseInt(player.id);
+        if( current_player_db_id > 0 ) {
           // we have extra parameters to keep
-          if (fv_flowplayer_conf.db_extra_shortcode_params) {
+          if (fv_player_editor_conf.db_extra_shortcode_params) {
             var
-              params = jQuery.map(fv_flowplayer_conf.db_extra_shortcode_params, function (value, index) {
+              params = jQuery.map(fv_player_editor_conf.db_extra_shortcode_params, function (value, index) {
                 return index + '="' + value + '"';
               }),
               to_append = '';
@@ -2493,10 +2484,10 @@ var fv_player_editor = (function($) {
               to_append = ' ' + params.join(' ');
             }
 
-            insert_shortcode('[fvplayer id="' + playerID + '"' + to_append + ']');
+            insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
           } else {
             // simple DB shortcode, no extra presentation parameters
-            insert_shortcode('[fvplayer id="' + editing_player_id + '"]');
+            insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
           }
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
@@ -2762,6 +2753,7 @@ var fv_player_editor = (function($) {
     item_index = -1;
     
     is_playlist_active = true;
+    is_singular_active = false;
     el_editor.attr('class','is-playlist-active');
     
     jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
@@ -2793,6 +2785,7 @@ var fv_player_editor = (function($) {
       playlist_row.find('.fvp_item_video-filename').html( video_name );
 
       var playlist_row_div = playlist_row.find('.fvp_item_caption div');
+      // do not put in caption if it's loading
       if (!playlist_row_div.hasClass('fv-player-shortcode-editor-small-spinner')) {
         playlist_row_div.html( get_field("caption",current).val() );
       }
