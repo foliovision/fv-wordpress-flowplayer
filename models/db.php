@@ -35,7 +35,7 @@ class FV_Player_Db {
     
     add_action('save_post', array($this, 'store_post_ids' ));
 
-    add_action( 'wp_ajax_fv_player_db_load', array($this, 'return_shortcode_db_data') );
+    add_action( 'wp_ajax_fv_player_db_load', array($this, 'open_player_for_editing') );
     add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
     add_action( 'wp_ajax_fv_player_db_import', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
@@ -974,7 +974,7 @@ class FV_Player_Db {
   /**
    * AJAX method to return database data for the player ID given
    */
-  public function return_shortcode_db_data() {
+  public function open_player_for_editing() {
     global $fv_fp;
 
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
