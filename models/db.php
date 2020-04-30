@@ -1138,9 +1138,10 @@ class FV_Player_Db {
             if ( strstr( $meta_object->getMetaKey(), 'edit_lock_' ) !== false ) {
               if ( str_replace( 'edit_lock_', '', $meta_object->getMetaKey() ) == $userID ) {
                 // correct user, delete the lock
-                $locks_removed[$meta_object->getIdPlayer()] = 1;
                 $meta_object->delete();
               }
+
+              $locks_removed[$meta_object->getIdPlayer()] = 1;
             }
           }
         }
