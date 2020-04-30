@@ -3091,7 +3091,12 @@ var fv_player_editor = (function($) {
   /*
   Click on Loading Overlay Close button
   */
-  $doc.on('click', '#fv-player-editor-overlay-close', overlay_hide );
+  $doc.on('click', '#fv-player-editor-overlay-close', function() {
+    $.fn.fv_player_box.close();
+    // hide the overlay asynchronously to allow the actual modal close animation to finish,
+    // so it doesn't blink from error message to an empty editor and only then starts to fade
+    setTimeout(overlay_hide, 1000);
+  });
   
   /*
   Click on Import player
