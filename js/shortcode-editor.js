@@ -1240,7 +1240,12 @@ var fv_player_editor = (function($) {
         for (var i in json_data) {
           dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
         }
-        
+
+        // prepend the "Choose a player" option
+        if (dropdown.length) {
+          dropdown.unshift('<option hidden disabled selected value>Choose a Player...</option>');
+        }
+
         overlay.find('select').html( dropdown.join('') );
 
       }).error(function () {
