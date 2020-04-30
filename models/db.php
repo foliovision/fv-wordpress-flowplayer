@@ -995,10 +995,13 @@ class FV_Player_Db {
       // check player's meta data for an edit lock
       $userID = get_current_user_id();
       if ($fv_fp->current_player() && count($fv_fp->current_player()->getMetaData())) {
+        $edit_lock_found = false;
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
           $key = $meta_object->getMetaKey();
           $user_locked = str_replace('edit_lock_', '', $key);
           if ( strstr($key, 'edit_lock_') !== false ) {
+            $edit_lock_found = true;
+
             if ( $user_locked != $userID) {
               // someone else is editing this video, first check the timestamp
               $last_tick = $meta_object->getMetaValue();
@@ -1029,6 +1032,17 @@ class FV_Player_Db {
               $meta_object->save();
             }
           }
+        }
+
+        // no edit lock meta record - create new one
+        if (!$edit_lock_found) {
+          $meta = new FV_Player_Db_Player_Meta( null, array(
+            'id_player'  => $fv_fp->current_player()->getId(),
+            'meta_key'   => 'edit_lock_' . $userID,
+            'meta_value' => time()
+          ), $this );
+
+          $meta->save();
         }
       } else {
         // add player edit lock if none was found
