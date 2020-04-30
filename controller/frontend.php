@@ -323,7 +323,7 @@ function flowplayer_prepare_scripts() {
     $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
-    
+
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
       $path = '/flowplayer/modules/flowplayer.min.js';
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
@@ -340,6 +340,8 @@ function flowplayer_prepare_scripts() {
         $path = '/flowplayer/modules/'.basename($filename);
         wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
+
+      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/opentracing-browser.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
       
     } else {
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
