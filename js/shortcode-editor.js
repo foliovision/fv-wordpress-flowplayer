@@ -77,6 +77,10 @@ var fv_player_editor = (function($) {
   // also accessed from outside
   var shortcode_remains;  
   
+  // Some shortcode args should be kept. For example if you edit
+  // [fvplayer id="1 sort="newest"] that sort should not be removed
+  var store_shortcode_args = false;
+  
   // Flowplayer only lets us specify the RTMP server for the first video in plalist, so we store it here when the playlist item order is changing etc.
   var store_rtmp_server = '';
   
@@ -786,7 +790,6 @@ var fv_player_editor = (function($) {
             ajax(next);
             next = false;
           } else {
-            console.log('Done!');
             is_saving = false;
             el_editor.find('.button-primary').removeAttr('disabled');
             $('.fv-player-save-waiting').removeClass('is-active');
@@ -1855,12 +1858,11 @@ var fv_player_editor = (function($) {
 
         shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
 
-        fv_player_editor_conf.db_extra_shortcode_params = {};
-        var preserve = [ 'playlist_start', 'autoplay', 'sort', 'logo', 'width', 'height', 'controlbar', 'embed', 'ab', 'share', 'liststyle', 'playlist_hide', 'playlist_advance', 'ad', 'ad_height', 'ad_width', 'vast', 'midroll', 'volume', 'fullscreen' ];
-        for( var i in preserve ) {
-          var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, preserve[i] );
+        store_shortcode_args = {};
+        for( var i in fv_player_editor_conf.shortcode_args_to_preserve ) {
+          var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
           if (value && value[1]) {
-            fv_player_editor_conf.db_extra_shortcode_params[preserve[i]] = value[1];
+            store_shortcode_args[fv_player_editor_conf.shortcode_args_to_preserve[i]] = value[1];
           }
         }
         
@@ -2507,9 +2509,9 @@ var fv_player_editor = (function($) {
       current_player_db_id = parseInt(player.id);
       if( current_player_db_id > 0 ) {
         // we have extra parameters to keep
-        if (fv_player_editor_conf.db_extra_shortcode_params) {
+        if (store_shortcode_args) {
           var
-            params = jQuery.map(fv_player_editor_conf.db_extra_shortcode_params, function (value, index) {
+            params = jQuery.map(store_shortcode_args, function (value, index) {
               return index + '="' + value + '"';
             }),
             to_append = '';
