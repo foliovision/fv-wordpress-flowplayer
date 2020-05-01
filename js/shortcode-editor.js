@@ -1195,11 +1195,10 @@ var fv_player_editor = (function($) {
     // unfortunately there is no event for this which we could use
     $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
     $.fn.fv_player_box.close = function() {
-          
       if (is_draft && is_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
         return false;
       }
-      
+
       // prevent closing if we're still saving the data
       if (ajax_save_this_please || is_saving || is_loading_video_data) {
         // if we already have the overlay changed, bail out
@@ -1215,7 +1214,7 @@ var fv_player_editor = (function($) {
         // that will check for all meta data being loaded,
         // so we can auto-close this overlay once that's done
         editor_submit();
-    
+
         return;
       }
       
@@ -1225,7 +1224,12 @@ var fv_player_editor = (function($) {
       // reset variables
       is_draft = true;
       is_draft_changed = false;
-      
+
+      // manually invoke a heartbeat to remove an edit lock immediatelly
+      if (current_player_db_id > -1) {
+        // do this asynchronously to allow our cleanup procedures set lock removal data for the next hearbeat
+        setTimeout(wp.heartbeat.connectNow, 500);
+      }
     }
     
     /*
