@@ -1878,7 +1878,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sClass .= $this->aCurArgs['listdesign'];
     } else {
       $sClass .= $this->_get_option('playlist-design');
-    }    
+    }
+    
+    // Playlist design doesn't have any use for these two playlist styles:
+    if( in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+      $sClass = '';
+    }
 
     if( isset($this->aCurArgs['liststyle']) ) {
       $list_style = $this->aCurArgs['liststyle'];

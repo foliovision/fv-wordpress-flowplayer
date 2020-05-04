@@ -1457,7 +1457,7 @@
   opacity: 1;
   z-index: 9;
 }
-.fp-playlist-external.fp-playlist-polaroid.visible-captions a h4 span {
+.fp-playlist-external.fp-playlist-polaroid a h4 span {
   background-color: transparent;
   color: #000;
   top: auto;
@@ -2147,6 +2147,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   padding: 0;
   color: black;
   font-weight: bold;
+  background: transparent;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p {
   color: black;
