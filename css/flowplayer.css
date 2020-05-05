@@ -199,7 +199,7 @@
 
 .flowplayer.fp-default-playlist .fp-prev, .flowplayer.fp-default-playlist .fp-next {
   position: absolute;
-  top: 45%;
+  top: calc(50% - 2em);
   filter: alpha(opacity=30);
   opacity: 0.3;
   -webkit-transition: opacity 0.2s;
