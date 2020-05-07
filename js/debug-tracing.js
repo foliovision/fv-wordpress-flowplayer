@@ -16,17 +16,11 @@ function fv_player_trace(spanName, tags) {
     clearTimeout(fv_player_trace_timeout_check_timer);
   }
 
-  var
-    tx = hrtime(),
-    data = {
-    span_name: spanName,
-    hrtime: tx[0] + '.' + tx[1]
-  };
+  var data = { span_name: spanName };
 
   if (tags && typeof(tags) != 'undefined') {
     data.tags = tags;
   }
-
 
   // send out a new trace to the server
   jQuery.post( ajaxurl , {
@@ -45,13 +39,10 @@ function fv_player_trace(spanName, tags) {
 // sends out a final closing trace to the server, effectively closing the whole trace
 // and allowing the fv_player_trace() function to open a new one
 function fv_player_trace_send_final_span() {
-  var tx = hrtime();
-
   jQuery.post( ajaxurl , {
     action: 'fv_player_debug_trace',
     data: JSON.stringify( {
       span_name: 'final',
-      hrtime: tx[0] + '.' + tx[1],
       finalize: 1
     } ),
   }, function() {
@@ -68,30 +59,3 @@ function fv_player_trace_send_final_span() {
     fv_player_trace_timeout_check_timer = setTimeout(fv_player_trace_send_final_span, fv_player_max_full_trace_time_seconds * 1000);
   });
 }
-
-// polyfil for window.performance.now
-var performance = (typeof(global) != 'undefined' ? global.performance : {});
-var performanceNow =
-  performance.now        ||
-  performance.mozNow     ||
-  performance.msNow      ||
-  performance.oNow       ||
-  performance.webkitNow  ||
-  function(){ return (new Date()).getTime() };
-
-// generate timestamp or delta
-// see http://nodejs.org/api/process.html#process_process_hrtime
-function hrtime(previousTimestamp){
-  var clocktime = performanceNow.call(performance)*1e-3;
-  var seconds = Math.floor(clocktime);
-  var nanoseconds = Math.floor((clocktime%1)*1e9);
-  if (previousTimestamp) {
-    seconds = seconds - previousTimestamp[0];
-    nanoseconds = nanoseconds - previousTimestamp[1];
-    if (nanoseconds<0) {
-      seconds--;
-      nanoseconds += 1e9;
-    }
-  }
-  return [seconds,nanoseconds];
-};
