@@ -332,6 +332,7 @@ function flowplayer_prepare_scripts() {
       $path = '/flowplayer/modules/fv-player.js';
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
+      $aDependencies[] = 'debug-tracing';
       
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
         if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
@@ -341,8 +342,14 @@ function flowplayer_prepare_scripts() {
         wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
 
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/opentracing-browser.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
-      
+      // include the full opentracing JS logger
+      if (file_exists(dirname(dirname(__FILE__)).'/includes/zipkin/vendor/autoload.php') && file_exists(dirname(dirname(__FILE__)).'/js/debug-tracing.js')) {
+        wp_enqueue_script( 'debug-tracing', flowplayer::get_plugin_url() . '/js/debug-tracing.js', array( 'jquery' ), $fv_wp_flowplayer_ver, true );
+      } else if (!file_exists(dirname(dirname(__FILE__)).'/includes/zipkin/vendor/autoload.php')) {
+        // include console logger instead
+        wp_enqueue_script( 'debug-tracing', flowplayer::get_plugin_url() . '/js/debug-tracing-console.js', array( 'jquery' ), $fv_wp_flowplayer_ver, true );
+      }
+
     } else {
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       

@@ -375,6 +375,7 @@ var fv_player_editor = (function($) {
     * NAV TABS 
     */
     $('.fv-player-tabs-header a').click( function(e) {
+      fv_player_trace('nav-tab-click', { name : $(this).text() } );
       e.preventDefault();
       $('.fv-player-tabs-header a').removeClass('nav-tab-active');
       $(this).addClass('nav-tab-active')
