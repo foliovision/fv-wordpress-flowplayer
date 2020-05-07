@@ -38,12 +38,6 @@ class FV_Player_Debug_Tracing {
       die('Missing SPAN name!');
     }
 
-    // we need high resolution timestamp from the browser
-    if (!$data['hrtime']) {
-      header('HTTP/1.1 400 BAD REQUEST');
-      die('Missing HR timestamp!');
-    }
-
     // create the endpoint that describes our service
     $endpoint = Zipkin\Endpoint::create('fv_player');
 
