@@ -77,6 +77,10 @@ var fv_player_editor = (function($) {
   // also accessed from outside
   var shortcode_remains;  
   
+  // Some shortcode args should be kept. For example if you edit
+  // [fvplayer id="1 sort="newest"] that sort should not be removed
+  var store_shortcode_args = false;
+  
   // Flowplayer only lets us specify the RTMP server for the first video in plalist, so we store it here when the playlist item order is changing etc.
   var store_rtmp_server = '';
   
@@ -787,7 +791,6 @@ var fv_player_editor = (function($) {
             ajax(next);
             next = false;
           } else {
-            console.log('Done!');
             is_saving = false;
             el_editor.find('.button-primary').removeAttr('disabled');
             $('.fv-player-save-waiting').removeClass('is-active');
@@ -795,6 +798,10 @@ var fv_player_editor = (function($) {
 
             // close the overlay, if we're waiting for the save
             if (overlay_close_waiting_for_save) {
+              // add this player's ID into players that no longer need an edit lock
+              if (current_player_db_id > 0) {
+                edit_lock_removal[current_player_db_id] = 1;
+              }
               overlay_close_waiting_for_save = false;
               $.fn.fv_player_box.close();
             }
@@ -1189,11 +1196,10 @@ var fv_player_editor = (function($) {
     // unfortunately there is no event for this which we could use
     $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
     $.fn.fv_player_box.close = function() {
-          
       if (is_draft && is_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
         return false;
       }
-      
+
       // prevent closing if we're still saving the data
       if (ajax_save_this_please || is_saving || is_loading_video_data) {
         // if we already have the overlay changed, bail out
@@ -1209,7 +1215,7 @@ var fv_player_editor = (function($) {
         // that will check for all meta data being loaded,
         // so we can auto-close this overlay once that's done
         editor_submit();
-    
+
         return;
       }
       
@@ -1219,7 +1225,12 @@ var fv_player_editor = (function($) {
       // reset variables
       is_draft = true;
       is_draft_changed = false;
-      
+
+      // manually invoke a heartbeat to remove an edit lock immediatelly
+      if (current_player_db_id > -1) {
+        // do this asynchronously to allow our cleanup procedures set lock removal data for the next hearbeat
+        setTimeout(wp.heartbeat.connectNow, 500);
+      }
     }
     
     /*
@@ -1241,7 +1252,12 @@ var fv_player_editor = (function($) {
         for (var i in json_data) {
           dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
         }
-        
+
+        // prepend the "Choose a player" option
+        if (dropdown.length) {
+          dropdown.unshift('<option hidden disabled selected value>Choose a Player...</option>');
+        }
+
         overlay.find('select').html( dropdown.join('') );
 
       }).error(function () {
@@ -1345,9 +1361,7 @@ var fv_player_editor = (function($) {
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-playlist]').hide();
     jQuery('#fv-player-shortcode-editor a[data-tab=fv-player-tab-video-files]').trigger('click');
     jQuery('.nav-tab').show;
-    
-    edit_lock_removal = {};
-    
+
     current_player_db_id = -1;
     item_index = 0;
     
@@ -1849,12 +1863,11 @@ var fv_player_editor = (function($) {
 
         shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
 
-        fv_player_editor_conf.db_extra_shortcode_params = {};
-        var preserve = [ 'playlist_start', 'autoplay', 'sort', 'logo', 'width', 'height', 'controlbar', 'embed', 'ab', 'share', 'liststyle', 'playlist_hide', 'playlist_advance', 'ad', 'ad_height', 'ad_width', 'vast', 'midroll', 'volume', 'fullscreen' ];
-        for( var i in preserve ) {
-          var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, preserve[i] );
+        store_shortcode_args = {};
+        for( var i in fv_player_editor_conf.shortcode_args_to_preserve ) {
+          var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
           if (value && value[1]) {
-            fv_player_editor_conf.db_extra_shortcode_params[preserve[i]] = value[1];
+            store_shortcode_args[fv_player_editor_conf.shortcode_args_to_preserve[i]] = value[1];
           }
         }
         
@@ -1865,7 +1878,7 @@ var fv_player_editor = (function($) {
         // in WP heartbeat
         current_player_db_id = result[1];
 
-        if (edit_lock_removal) {
+        if (edit_lock_removal[result[1]]) {
           delete edit_lock_removal[result[1]];
         }
 
@@ -2482,11 +2495,6 @@ var fv_player_editor = (function($) {
 
     overlay_show('loading');
 
-    // remove this ID from removals
-    if (edit_lock_removal) {
-      delete edit_lock_removal[current_player_db_id];
-    }
-
     // unmark DB player ID as being currently edited
     if ( current_player_db_id > -1 ) {
       current_player_db_id = -1;
@@ -2506,9 +2514,9 @@ var fv_player_editor = (function($) {
       current_player_db_id = parseInt(player.id);
       if( current_player_db_id > 0 ) {
         // we have extra parameters to keep
-        if (fv_player_editor_conf.db_extra_shortcode_params) {
+        if (store_shortcode_args) {
           var
-            params = jQuery.map(fv_player_editor_conf.db_extra_shortcode_params, function (value, index) {
+            params = jQuery.map(store_shortcode_args, function (value, index) {
               return index + '="' + value + '"';
             }),
             to_append = '';
@@ -2869,7 +2877,16 @@ var fv_player_editor = (function($) {
    */
   function preview_show(data) {
     el_preview_refresh.hide();
-    if( !data.videos[0].fv_wp_flowplayer_field_src ) {
+    
+    $found_src = false;
+    $.each( data.videos, function(k,v) {
+      if( v.fv_wp_flowplayer_field_src ) {
+        $found_src = true;
+        return false;
+      }
+    });
+    
+    if( !$found_src ) {
       el_preview.attr('class', 'preview-no');
       editor_resize();
       return;
@@ -3127,7 +3144,12 @@ var fv_player_editor = (function($) {
   /*
   Click on Loading Overlay Close button
   */
-  $doc.on('click', '#fv-player-editor-overlay-close', overlay_hide );
+  $doc.on('click', '#fv-player-editor-overlay-close', function() {
+    $.fn.fv_player_box.close();
+    // hide the overlay asynchronously to allow the actual modal close animation to finish,
+    // so it doesn't blink from error message to an empty editor and only then starts to fade
+    setTimeout(overlay_hide, 1000);
+  });
   
   /*
   Click on Import player
@@ -3744,16 +3766,38 @@ if( typeof(fv_player_editor_conf) != "undefined" ) {
     if( fv_player_editor.get_current_player_db_id() > -1 ) {
       data.fv_flowplayer_edit_lock_id = fv_player_editor.get_current_player_db_id();
     }
-    
-    if( fv_player_editor.get_edit_lock_removal() ) {
+
+    var
+      removals = fv_player_editor.get_edit_lock_removal(),
+      removalsEmpty = true;
+
+    for (var i in removals) {
+      removalsEmpty = false;
+      break;
+    }
+
+    if( !removalsEmpty ) {
       data.fv_flowplayer_edit_lock_removal = fv_player_editor.get_edit_lock_removal();
+    } else {
+      delete(data.fv_flowplayer_edit_lock_removal);
     }
   });
   
   // remove edit locks in the config if it was removed on the server
   jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
     if ( data.fv_flowplayer_edit_locks_removed ) {
-      fv_player_editor.set_edit_lock_removal({});
+      var
+        edit_lock_removal = fv_player_editor.get_edit_lock_removal(),
+        new_edit_lock_removal = {};
+
+      // remove only edit locks that were removed server-side
+      for (var i in edit_lock_removal) {
+        if (!data.fv_flowplayer_edit_locks_removed[i]) {
+          new_edit_lock_removal[i] = edit_lock_removal[i];
+        }
+      }
+
+      fv_player_editor.set_edit_lock_removal(new_edit_lock_removal);
     }
   });
 }

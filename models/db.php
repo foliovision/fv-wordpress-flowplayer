@@ -35,7 +35,7 @@ class FV_Player_Db {
     
     add_action('save_post', array($this, 'store_post_ids' ));
 
-    add_action( 'wp_ajax_fv_player_db_load', array($this, 'return_shortcode_db_data') );
+    add_action( 'wp_ajax_fv_player_db_load', array($this, 'open_player_for_editing') );
     add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
     add_action( 'wp_ajax_fv_player_db_import', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
@@ -944,18 +944,6 @@ class FV_Player_Db {
         $id = $player->save($player_meta);
 
         if ($id) {
-          // delete edit lock meta key, if found
-          $meta = $player->getMetaData();
-
-          if (count($meta)) {
-            foreach ($meta as $meta_object) {
-              if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
-                $meta_object->delete();
-                break;
-              }
-            }
-          }
-
           $output = array( 'id' => $id );
           $videos = array();
           foreach( $player->getVideos() AS $video ) {
@@ -988,7 +976,7 @@ class FV_Player_Db {
   /**
    * AJAX method to return database data for the player ID given
    */
-  public function return_shortcode_db_data() {
+  public function open_player_for_editing() {
     global $fv_fp;
 
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
@@ -1009,10 +997,13 @@ class FV_Player_Db {
       // check player's meta data for an edit lock
       $userID = get_current_user_id();
       if ($fv_fp->current_player() && count($fv_fp->current_player()->getMetaData())) {
+        $edit_lock_found = false;
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
           $key = $meta_object->getMetaKey();
           $user_locked = str_replace('edit_lock_', '', $key);
           if ( strstr($key, 'edit_lock_') !== false ) {
+            $edit_lock_found = true;
+
             if ( $user_locked != $userID) {
               // someone else is editing this video, first check the timestamp
               $last_tick = $meta_object->getMetaValue();
@@ -1043,6 +1034,17 @@ class FV_Player_Db {
               $meta_object->save();
             }
           }
+        }
+
+        // no edit lock meta record - create new one
+        if (!$edit_lock_found) {
+          $meta = new FV_Player_Db_Player_Meta( null, array(
+            'id_player'  => $fv_fp->current_player()->getId(),
+            'meta_key'   => 'edit_lock_' . $userID,
+            'meta_value' => time()
+          ), $this );
+
+          $meta->save();
         }
       } else {
         // add player edit lock if none was found
@@ -1144,6 +1146,7 @@ class FV_Player_Db {
       // load meta for all players to remove locks for (and to auto-cache them as well)
       new FV_Player_Db_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])), $this);
       $meta = $this->getPlayerMetaCache();
+      $locks_removed = [];
 
       if (count($meta)) {
         foreach ( $meta as $player ) {
@@ -1153,11 +1156,13 @@ class FV_Player_Db {
                 // correct user, delete the lock
                 $meta_object->delete();
               }
+
+              $locks_removed[$meta_object->getIdPlayer()] = 1;
             }
           }
         }
 
-        $response['fv_flowplayer_edit_locks_removed'] = 1;
+        $response['fv_flowplayer_edit_locks_removed'] = $locks_removed;
       }
     }
 
