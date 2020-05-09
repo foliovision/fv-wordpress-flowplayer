@@ -1,4 +1,5 @@
 var
+  fv_player_trace_enabled = true, // if false, no tracing will occur
   fv_player_trace_timeout_check_timer = -1, // timer task that would be checking for a trace timeout, which will in turn
                                             // finalize the whole trace
   fv_player_max_full_trace_time_seconds = 10; // once this many seconds passed and no trace is sent out in the meanwhile,
@@ -11,6 +12,10 @@ var
  * @param tags Any additional tags with extra information that could help investigating current application state.
  */
 function fv_player_trace(spanName, tags) {
+  if (!fv_player_trace_enabled) {
+    return;
+  }
+
   // stop the trace timeout task, if found
   if (fv_player_trace_timeout_check_timer > -1) {
     clearTimeout(fv_player_trace_timeout_check_timer);
