@@ -813,7 +813,10 @@ var fv_player_editor = (function($) {
 
     setInterval( function() {
       if( !ajax_save_this_please || is_loading_video_data ) {
-        fv_player_trace(!ajax_save_this_please ? 'editor-save-no-data-bailout' : 'editor-save-loading-video-bailout');
+        // don't trace no data, as it always occurs during the 1.5s save check interval and would keep trace opened indefinitely
+        if (is_loading_video_data) {
+          fv_player_trace('editor-save-loading-video-bailout');
+        }
         return;
       }
 
