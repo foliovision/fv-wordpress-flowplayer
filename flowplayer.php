@@ -67,12 +67,6 @@ require_once(dirname( __FILE__ ) . '/models/db-video-meta.php');
 require_once(dirname( __FILE__ ) . '/models/db-player-meta.php');
 require_once(dirname( __FILE__ ) . '/models/db.php');
 
-if (file_exists(dirname(__FILE__).'/includes/zipkin/vendor/autoload.php')) {
-  require_once dirname(__FILE__).'/includes/zipkin/vendor/autoload.php';
-  require_once(dirname( __FILE__ ) . '/models/debug-tracing.php');
-  new FV_Player_Debug_Tracing();
-}
-
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();
 

@@ -28,7 +28,7 @@ function fv_player_trace(spanName, tags) {
   }
 
   // send out a new trace to the server
-  jQuery.post( ajaxurl , {
+  jQuery.post( flowplayer.conf.tracing_ajax , {
     action: 'fv_player_debug_trace',
     data: JSON.stringify( data ),
   }, function() {
@@ -44,8 +44,7 @@ function fv_player_trace(spanName, tags) {
 // sends out a final closing trace to the server, effectively closing the whole trace
 // and allowing the fv_player_trace() function to open a new one
 function fv_player_trace_send_final_span() {
-  jQuery.post( ajaxurl , {
-    action: 'fv_player_debug_trace',
+  jQuery.post( flowplayer.conf.tracing_ajax , {
     data: JSON.stringify( {
       span_name: 'final',
       finalize: 1

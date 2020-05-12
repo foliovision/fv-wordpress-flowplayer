@@ -30,7 +30,7 @@ function fv_player_trace(spanName, tags) {
     // start a new trace timeout task
     fv_player_trace_timeout_check_timer = setTimeout(function() {
       var tx = hrtime();
-      console.log('trace [' + tx[0] + '.' + tx[1] + '] - full trace cycle complete');
+      console.log('trace [' + tx[0] + '.' + tx[1] + '] - trace cycle complete');
 
       // cancel timed task in case this function was called manually
       if (fv_player_trace_timeout_check_timer > -1) {
@@ -43,7 +43,7 @@ function fv_player_trace(spanName, tags) {
 };
 
 function fv_player_trace_send_final_span() {
-  fv_player_trace('full trace cycle complete');
+  fv_player_trace('trace cycle complete');
 
   // cancel timed task in case this function was called manually
   if (fv_player_trace_timeout_check_timer > -1) {

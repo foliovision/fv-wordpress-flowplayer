@@ -343,13 +343,14 @@ function flowplayer_prepare_scripts() {
       }
 
       // include the full opentracing JS logger
-      if (file_exists(dirname(dirname(__FILE__)).'/includes/zipkin/vendor/autoload.php') && file_exists(dirname(dirname(__FILE__)).'/js/debug-tracing.js')) {
+      if (file_exists(dirname(dirname(__FILE__)).'/vendor/openzipkin/zipkin/composer.json') && file_exists(dirname(dirname(__FILE__)).'/js/debug-tracing.js')) {
         wp_enqueue_script( 'debug-tracing', flowplayer::get_plugin_url() . '/js/debug-tracing.js', array( 'jquery' ), $fv_wp_flowplayer_ver, true );
       } else if (!file_exists(dirname(dirname(__FILE__)).'/includes/zipkin/vendor/autoload.php')) {
         // include console logger instead
         wp_enqueue_script( 'debug-tracing', flowplayer::get_plugin_url() . '/js/debug-tracing-console.js', array( 'jquery' ), $fv_wp_flowplayer_ver, true );
       }
 
+      $aConf['tracing_ajax'] = str_replace('/controller/', '/', plugins_url('debug-tracing.php', __FILE__));
     } else {
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       
