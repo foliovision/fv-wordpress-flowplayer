@@ -12,21 +12,19 @@ flowplayer( function(api,root) {
   // first we need to obtain the video element
   api.on('ready', function() {
     did_start_playing = false;
-
-    // remove the previously bound events
-    if( video_tag ) {
-      video_tag.off( "waiting", wait_for_stalled );
-      //video_tag.off( "stalled suspend abort emptied error waiting", debug );
-      video_tag = false;
-    }    
     
     if( api.engine.engineName == 'html5' ) {
       // find the video
       video_tag = root.find('video');
       
-      // triggered if the iOS video player runs out of buffer
-      video_tag.on( "waiting", wait_for_stalled );
-      //video_tag.on( "stalled suspend abort emptied error waiting", debug );
+      if( !video_tag.data('fv-ios-recovery') ) {
+        // triggered if the iOS video player runs out of buffer
+        video_tag.on( "waiting", wait_for_stalled );
+        
+        // we use this to ensure the video tag has the event bound only once
+        video_tag.data('fv-ios-recovery',true);
+        //video_tag.on( "stalled suspend abort emptied error waiting", debug );
+      }
 
       api.one('progress', function() {
         did_start_playing = true;
