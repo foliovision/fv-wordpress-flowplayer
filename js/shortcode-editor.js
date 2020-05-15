@@ -456,6 +456,7 @@ var fv_player_editor = (function($) {
       $parent.remove();
       get_tab(index,'video-files').remove();
       get_tab(index,'subtitles').remove();
+      get_tab(index,'cues').remove();
       
       // if no playlist item is left, add a new one
       // TODO: Some better way?
@@ -477,6 +478,7 @@ var fv_player_editor = (function($) {
         store_rtmp_server = get_field( 'rtmp', get_tab('first','video-files') ).val();
       },
       update: function( event, ui ) {
+        $doc.trigger('fv-player-editor-sortable-update');
         var new_sort = []; 
         $('.fv-player-tab-playlist table tbody tr').each(function(){
           var
@@ -1382,7 +1384,8 @@ var fv_player_editor = (function($) {
     if( typeof(fv_player_shortcode_editor_ajax) != "undefined" ) {
       fv_player_shortcode_editor_ajax.abort();
     }
-    
+
+    $doc.trigger('fv-player-editor-init');
   }
   
   /*
@@ -2134,6 +2137,7 @@ var fv_player_editor = (function($) {
         });
         
       } else {
+        $doc.trigger('fv-player-editor-non-db-shortcode');
         // ordinary text shortcode in the editor
         var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
         shortcode_parse_fix = shortcode_parse_fix.replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
@@ -3400,6 +3404,7 @@ function fv_wp_delete_video_meta_record(id) {
 
 function fv_wp_flowplayer_dialog_resize() {
   // TODO: Used by FV Player Pro
+  // TODO: Used by Fv Cues Editor
 }
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
