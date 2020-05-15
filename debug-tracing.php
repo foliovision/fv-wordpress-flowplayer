@@ -56,10 +56,10 @@ function debug_trace() {
     session_start();
   }
 
-  if (!empty($_SESSION['fv_player_debug_trace'])) {
+  if (!empty($_SESSION['fv_player_js_debug_trace'])) {
     // existing trace found, extract context
     $extractor = $tracing->getPropagation()->getExtractor(new \Zipkin\Propagation\Map());
-    $extractedContext = $extractor($_SESSION['fv_player_debug_trace']);
+    $extractedContext = $extractor($_SESSION['fv_player_js_debug_trace']);
     $span = $tracer->newChild($extractedContext);
   } else {
     // new trace
@@ -89,15 +89,15 @@ function debug_trace() {
   // check that we did not ask for this trace to be finalized
   if (empty($data['finalize'])) {
     // store current trace into a session
-    if (empty($_SESSION['fv_player_debug_trace'])) {
-      $_SESSION['fv_player_debug_trace'] = [];
+    if (empty($_SESSION['fv_player_js_debug_trace'])) {
+      $_SESSION['fv_player_js_debug_trace'] = [];
     }
 
     $injector = $tracing->getPropagation()->getInjector(new \Zipkin\Propagation\Map());
-    $injector($span->getContext(), $_SESSION['fv_player_debug_trace']);
+    $injector($span->getContext(), $_SESSION['fv_player_js_debug_trace']);
   } else {
     // clear session context, so we can start a new trace on the next request
-    unset($_SESSION['fv_player_debug_trace']);
+    unset($_SESSION['fv_player_js_debug_trace']);
   }
 }
 
