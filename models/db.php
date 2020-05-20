@@ -507,6 +507,9 @@ class FV_Player_Db {
         if( $att_value == 'custom' && !empty($data['share_title']) && !empty($data['share_url']) ) {
           return $data['share_title'].';'.$data['share_url'];
         }
+      case 'liststyle':
+        // there was a bug which caused the Prev/Next Playlist style to save as prev/next rather than prevnext, so this code fixes the display without need to fix the database data
+        if($att_value == 'prev/next' ) return 'prevnext';
     }
 
     return $att_value;
