@@ -16,7 +16,8 @@ var fv_wp_fp_shortcode;
 // The actual editor
 var fv_player_editor = (function($) {
   
-  var $doc = $(document),
+var $doc = $(document),
+    $win = $(window),
     el_editor,
     el_preview,
     el_preview_refresh;
@@ -3358,6 +3359,19 @@ var fv_player_editor = (function($) {
     
     overlay_notice_close_all: function() {
       $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
+    },
+
+    fv_wp_flowplayer_dialog_resize: function() {
+      var iContentHeight = el_editor.height();
+      if( iContentHeight < 50 ) iContentHeight = 50;
+      if( iContentHeight > $win.height() - 160 ) iContentHeight = $win.height() - 160;
+
+      iContentHeight = iContentHeight + 50;
+
+      if( typeof(fv_wp_flowplayer_dialog_resize_height_record) == 'undefined' || fv_wp_flowplayer_dialog_resize_height_record <= iContentHeight ) {
+        fv_wp_flowplayer_dialog_resize_height_record = iContentHeight;
+        el_editor.fv_player_box.resize({width:1100, height:iContentHeight})
+      }
     }
   };
   
@@ -3405,8 +3419,10 @@ function fv_wp_delete_video_meta_record(id) {
 }
 
 function fv_wp_flowplayer_dialog_resize() {
-  // TODO: Used by FV Player Pro
-  // TODO: Used by Fv Cues Editor
+  console.log('WARNING! USE OF DEPRECATED FUNCTION fv_wp_flowplayer_dialog_resize() FOUND!');
+  console.log('Please update this to call the function as fv_player_editor.fv_wp_flowplayer_dialog_resize() instead!');
+
+  fv_player_editor.fv_wp_flowplayer_dialog_resize();
 }
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {

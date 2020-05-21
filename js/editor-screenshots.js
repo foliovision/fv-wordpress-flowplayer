@@ -49,7 +49,7 @@
         spinner.remove();
         button.prop("disabled",false);
         message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
-        fv_wp_flowplayer_dialog_resize();
+        fv_player_editor.fv_wp_flowplayer_dialog_resize()
         return;
       }
 
@@ -64,7 +64,7 @@
         }
         if(response.error) {
           message.html('<div class="error"><p>'+response.error+'</p></div>');
-          fv_wp_flowplayer_dialog_resize();
+          fv_player_editor.fv_wp_flowplayer_dialog_resize()
         }
         spinner.remove();
         button.prop("disabled",false);
