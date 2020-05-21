@@ -2782,6 +2782,8 @@ var fv_player_editor = (function($) {
    *  Recalculate the data-index values for playlist items
    */
   function playlist_index() {
+    $doc.trigger('fv-player-editor-initial-indexing');
+
     $('.fv-player-tab-playlist table tbody tr').each(function(){
       $(this).attr('data-index', $(this).index() );
     });
@@ -2840,9 +2842,9 @@ var fv_player_editor = (function($) {
         playlist_row_div.html( get_field("caption",current).val() );
       }
     });
-    
 
-    
+    playlist_index();
+
     if(!jQuery('.fvp_item_video-thumbnail>img').length){
       jQuery('#fv-player-list-list-view').click();
       jQuery('#fv-player-list-thumb-view').addClass('disabled');
