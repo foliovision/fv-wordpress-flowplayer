@@ -2992,7 +2992,7 @@ var $doc = $(document),
     if( typeof(message) != 'undefined' ) {
       overlayDiv.find('p').html( message );
     }
-    
+
     editor_resize();
     return overlayDiv;
   }
@@ -3027,7 +3027,7 @@ var $doc = $(document),
       
       get_field('subtitles_lang',subElement).val(sLang).change();
     }
-    
+
     editor_resize();
     return false;
   }
@@ -3361,18 +3361,7 @@ var $doc = $(document),
       $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
     },
 
-    fv_wp_flowplayer_dialog_resize: function() {
-      var iContentHeight = el_editor.height();
-      if( iContentHeight < 50 ) iContentHeight = 50;
-      if( iContentHeight > $win.height() - 160 ) iContentHeight = $win.height() - 160;
-
-      iContentHeight = iContentHeight + 50;
-
-      if( typeof(fv_wp_flowplayer_dialog_resize_height_record) == 'undefined' || fv_wp_flowplayer_dialog_resize_height_record <= iContentHeight ) {
-        fv_wp_flowplayer_dialog_resize_height_record = iContentHeight;
-        el_editor.fv_player_box.resize({width:1100, height:iContentHeight})
-      }
-    }
+    editor_resize: editor_resize,
   };
   
 })(jQuery);
@@ -3422,7 +3411,7 @@ function fv_wp_flowplayer_dialog_resize() {
   console.log('WARNING! USE OF DEPRECATED FUNCTION fv_wp_flowplayer_dialog_resize() FOUND!');
   console.log('Please update this to call the function as fv_player_editor.fv_wp_flowplayer_dialog_resize() instead!');
 
-  fv_player_editor.fv_wp_flowplayer_dialog_resize();
+  fv_player_editor.editor_resize();
 }
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
