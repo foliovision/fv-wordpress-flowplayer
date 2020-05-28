@@ -1195,7 +1195,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_ad a { color: <?php echo $this->_get_option('adLinksColor'); ?> }
     
     .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
-    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
+      .fp-playlist-external a h4,
+      .fp-playlist-external a:hover h4,
+      .fp-playlist-external a.is-active:hover h4,
+      .visible-captions.fp-playlist-external a h4 span,
+      .fv-playlist-design-2014.fp-playlist-external a h4,
+      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }
+    <?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
@@ -1871,7 +1878,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sClass .= $this->aCurArgs['listdesign'];
     } else {
       $sClass .= $this->_get_option('playlist-design');
-    }    
+    }
+    
+    // Playlist design doesn't have any use for these two playlist styles:
+    if( in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+      $sClass = '';
+    }
 
     if( isset($this->aCurArgs['liststyle']) ) {
       $list_style = $this->aCurArgs['liststyle'];

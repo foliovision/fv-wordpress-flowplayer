@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.21.727 - 2020/05/07 =
+
+* HLS - improved parsing of video qualities for video quality menu in case your m3u8 has video resolution information
+* Skin settings - allowing 0 for marginBottom
+* Bugfix - CSS - playlist font color setting not working
+* Bugfix - CSS - 2014 design titles background color in some themes
+* Bugfix - MPEG-DASH - fix for recovery of Vimeo videos in FV Player Pro
+
 = 7.4.17.727 - 2020/04/08 =
 
 * New setting - Multiple video playback - enable to allow multiple videos to play at the same time, only the last played video remains audible, the others are muted
