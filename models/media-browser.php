@@ -23,6 +23,7 @@ abstract class FV_Player_Media_Browser {
     wp_enqueue_script( 'flowplayer-browser-tablesorter', flowplayer::get_plugin_url().'/js/jquery.tablesorter.js', array('jquery'), $fv_wp_flowplayer_ver, true );
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery', 'flowplayer-browser-tablesorter'), $fv_wp_flowplayer_ver, true );
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','','1.0','screen');
+    wp_enqueue_style('fvwpflowplayer-s3-browser-tablesorter', flowplayer::get_plugin_url().'/css/s3-browser-table-sorter.css','','1.0','screen');
     $this->init();
   }
 
