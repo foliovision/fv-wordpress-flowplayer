@@ -133,9 +133,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
+    add_action( 'init', array( $this, 'flowplayer_endpoints' ) );
+
+    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
-    add_filter( 'init', array( $this, 'rewrite_check' ) );
+    // add_filter( 'init', array( $this, 'rewrite_check' ) );
     
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
 
@@ -2065,20 +2067,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   function rewrite_embed( $aRules ) {
     $aRulesNew = array();
     foreach( $aRules AS $k => $v ) {
-      $aRulesNew[$k] = $v;
-      if( stripos($k,'/trackback/') !== false ) {
-        $new_k = str_replace( '/trackback/', '/fvp/', $k );
-        $new_v = str_replace( '&tb=1', '&fv_player_embed=1', $v );
-        $aRulesNew[$new_k] = $new_v;
-        $new_k = str_replace( '/trackback/', '/fvp(-?\d+)?/', $k );
-        $new_v = str_replace( '&tb=1', '&fv_player_embed=$matches['.(substr_count($v,'$matches[')+1).']', $v );
-        $aRulesNew[$new_k] = $new_v;        
+      if( stripos($k,'/fvp(/') !== false ) {
+        $new_k = str_replace( '/fvp(/', '/fvp(', $k );
+        $aRulesNew[$new_k]= $v;
+      } else {
+        $aRulesNew[$k] = $v;
       }
     }
     return $aRulesNew;
   }
-  
-  
+
+  function flowplayer_endpoints() {
+    add_rewrite_endpoint( 'fvp', EP_PERMALINK | EP_PAGES, 'fv_player_embed' );
+  }
+
   function rewrite_vars( $public_query_vars ) {
     $public_query_vars[] = 'fv_player_embed';
     return $public_query_vars;
