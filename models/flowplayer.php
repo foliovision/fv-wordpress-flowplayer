@@ -2066,9 +2066,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function rewrite_embed( $aRules ) {
     $aRulesNew = array();
+    // Only fvp
+    $aRulesNew['(.?.+?)/fvp/?$'] = 'index.php?pagename=$matches[1]&fv_player_embed=1';
+    $aRulesNew['([^/]+)/fvp/?$'] = 'index.php?name=$matches[1]&fv_player_embed=1';
     foreach( $aRules AS $k => $v ) {
       if( stripos($k,'/fvp(/') !== false ) {
-        $new_k = str_replace( '/fvp(/', '/fvp(', $k );
+        $new_k = str_replace( '/fvp(/', '/fvp(-?', $k ); // fvp{number} or fvp-{number}
         $aRulesNew[$new_k]= $v;
       } else {
         $aRulesNew[$k] = $v;
