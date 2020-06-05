@@ -137,7 +137,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
-    // add_filter( 'init', array( $this, 'rewrite_check' ) );
     
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
 
@@ -2042,28 +2041,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     return $css;
   }  
-    
-  
-  function rewrite_check( $aRules ) {
-    $aRewriteRules = get_option('rewrite_rules');
-    if( empty($aRewriteRules) || !is_array($aRewriteRules) || count($aRewriteRules) == 0 ) {
-      return;
-    }
-    
-    $bFound = false;
-    foreach( $aRewriteRules AS $k => $v ) {
-      if( stripos($k,'/fvp(-?\d+)?/') !== false ) {
-        $bFound = true;
-        break;
-      }
-    }
-    
-    if( !$bFound ) {
-      flush_rewrite_rules( true );
-    }
-  }
-  
-  
+
+
   function rewrite_embed( $aRules ) {
     $aRulesNew = array();
     // Only fvp
