@@ -212,7 +212,10 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
-        
+    if( $player && count($player->getVideos()) == 1 ) {
+      $this->aCurArgs['liststyle'] = 'horizontal'; // if single video, force horizontal style (fix for video ads)
+    }
+
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
