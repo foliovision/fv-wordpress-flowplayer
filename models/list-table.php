@@ -39,8 +39,8 @@ class FV_Player_List_Table_View {
   function screen_columns() {
     return array(
       //'cb'             => '<input type="checkbox" />',
-      'id'               => __( 'Playlist', 'fv-wordpress-flowplayer' ),
-      'player_name'      => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
+      'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
+      'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
       'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
       'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
       'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
