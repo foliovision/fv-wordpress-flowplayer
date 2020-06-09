@@ -47,12 +47,12 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
     // set up POST data for video resume times
     $_POST['action'] = 'fv_wp_flowplayer_video_position_save';
-    $_POST['videoTimes'] = array(
+    $_POST['videoTimes'] = urlencode( json_encode( array(
       array(
         'name' => 'https://cdn.site.com/2.mp4',
         'position' => 12
       )
-    );
+    ) ) );
 
     // call the AJAX which
     try {
@@ -101,12 +101,12 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
     // set up POST data for video resume times
     $_POST['action'] = 'fv_wp_flowplayer_video_position_save';
-    $_POST['videoTimes'] = array(
+    $_POST['videoTimes'] = urlencode( json_encode( array(
       array(
         'name' => 'https://cdn.site.com/2.mp4',
         'position' => 12
       )
-    );
+    ) ) );
 
     // call the AJAX which
     try {
