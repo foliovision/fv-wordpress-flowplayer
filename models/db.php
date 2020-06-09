@@ -429,6 +429,9 @@ class FV_Player_Db {
         // cache first vid
         if (!$first_video_data_cached && $videos) {
           $vid = $videos[0]->getAllDataValues();
+
+          // we need to kee the player id!
+          unset($vid['id']);
           $atts = array_merge($atts, $vid);
           $atts['video_objects'] = array($videos[0]);
 
