@@ -2048,7 +2048,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     foreach( $aRules AS $k => $v ) {
       if( stripos($k,'/fvp(/') !== false ) {
         $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only
-        $new_v = str_replace( '$matches[3]', '1', $v ); // fv_player_embed=1
+        $new_v = preg_replace('/fv_player_embed=\$matches\[\d]/', 'fv_player_embed=1', $v); // fv_player_embed=1
         
         $aRulesNew[$new_k] = $new_v; 
         
