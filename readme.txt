@@ -357,6 +357,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.24.727 - 2020/06/09 =
+
+* AWS - adding new regions
+* HLS - live stream check - shows countdown and retries automatically if it's not up
+* List table - changing user interface text labels "Playlist" to "Player"
+* MPEG-DASH - partial fix for Disable HTML5 autoplay Chrome extension for Vimeo videos in FV Player Pro
+* Settings - Check template - fix when using Google PageSpeed module or SCRIPT_DEBUG
+* Bugfix - Editor - bugfix, couldn't save Prev/Next playlist style properly
+* Bugfix - iOS video recovery - bugfix, it was not allowing you to pause the video
+* Bugfix - Multiple video playback - would mute videos in playlist
+
 = 7.4.21.727 - 2020/05/07 =
 
 * HLS - improved parsing of video qualities for video quality menu in case your m3u8 has video resolution information
