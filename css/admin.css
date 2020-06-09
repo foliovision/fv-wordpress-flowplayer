@@ -165,3 +165,14 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   padding: .5em;
   border: 1px solid gray;
 }
+
+.fv-player-tab-cues { position: relative; }
+#fv-player-shortcode-editor .fv-player-tab-cues div.fv-cues-infobox {
+  text-align: center;
+  padding-top: 10px;
+  background-color: #fff;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
