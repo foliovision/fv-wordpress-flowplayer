@@ -133,9 +133,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_action( 'init', array( $this, 'flowplayer_endpoints' ) );
+    add_action( 'init', array( $this, 'fv_player_embed_rewrite_endpoint' ) );
 
-    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), PHP_INT_MAX );
+    add_filter( 'rewrite_rules_array', array( $this, 'fv_player_embed_rewrite_rules_fix' ), PHP_INT_MAX );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
@@ -2042,17 +2042,28 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $css;
   }  
 
-
-  function rewrite_embed( $aRules ) {
+  /*
+  * This function fixes the rule for /fvp/{number} to /fvp{number} or fvp-{number} and adds rule fo /fvp only
+  *
+  * Example:
+  * [(.?.+?)/fvp(/(.*))?/?$] => index.php?pagename=$matches[1]&fv_player_embed=$matches[3]
+  * is changed to
+  * [(.?.+?)/fvp((-?.*))?/?$] => index.php?pagename=$matches[1]&fv_player_embed=$matches[3]
+  * and new rule for /fvp without number is added, example:
+  * [(.?.+?)/fvp/?$] => index.php?pagename=$matches[1]&fv_player_embed=1
+  */
+  function fv_player_embed_rewrite_rules_fix( $aRules ) {
     $aRulesNew = array();
     foreach( $aRules AS $k => $v ) {
       if( stripos($k,'/fvp(/') !== false ) {
+        // 1st rule
         $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only
         $new_v = preg_replace('/fv_player_embed=\$matches\[\d]/', 'fv_player_embed=1', $v); // fv_player_embed=1
         
         $aRulesNew[$new_k] = $new_v; 
         
-        $new_k = str_replace( '/fvp(/', '/fvp(-?', $k ); // fvp{number} or fvp-{number}
+        // 2nd rule
+        $new_k = str_replace( '/fvp(/(', '/fvp((-?', $k ); // fvp{number} or fvp-{number}
         $aRulesNew[$new_k]= $v;
       } else {
         $aRulesNew[$k] = $v;
@@ -2061,7 +2072,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $aRulesNew;
   }
 
-  function flowplayer_endpoints() {
+  function fv_player_embed_rewrite_endpoint() {
     add_rewrite_endpoint( 'fvp', EP_PERMALINK | EP_PAGES, 'fv_player_embed' );
   }
 
