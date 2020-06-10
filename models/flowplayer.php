@@ -2043,12 +2043,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }  
 
   /*
-  * This function fixes the rule for /fvp/{number} to /fvp{number} or fvp-{number} and adds rule fo /fvp only
+  * This function changes the /fvp/{number} rewrite endpoint created with fv_player_embed_rewrite_endpoint()
+  * to accept /fvp{number} or  fvp-{number} and also adds rule fo /fvp only (no number)
   *
   * Example:
   * [(.?.+?)/fvp(/(.*))?/?$] => index.php?pagename=$matches[1]&fv_player_embed=$matches[3]
+  *
   * is changed to
+  *
   * [(.?.+?)/fvp((-?.*))?/?$] => index.php?pagename=$matches[1]&fv_player_embed=$matches[3]
+  *
   * and new rule for /fvp without number is added, example:
   * [(.?.+?)/fvp/?$] => index.php?pagename=$matches[1]&fv_player_embed=1
   */
