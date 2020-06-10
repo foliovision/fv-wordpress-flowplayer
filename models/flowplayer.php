@@ -135,7 +135,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     add_action( 'init', array( $this, 'flowplayer_endpoints' ) );
 
-    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );
+    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), PHP_INT_MAX );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
@@ -143,7 +143,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !empty($_GET['fv_player_preview']) ) {
       add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
     } else {
-      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
+      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), PHP_INT_MAX);
       add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     }
     
