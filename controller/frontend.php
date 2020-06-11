@@ -365,7 +365,7 @@ function flowplayer_prepare_scripts() {
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
     
-    if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
+    if( $sCommercialKey ) $aConf['key'] = base64_encode($sCommercialKey);
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !$fv_fp->_get_option('fixed_size') ) {
       $aConf['safety_resize'] = true;
     }
