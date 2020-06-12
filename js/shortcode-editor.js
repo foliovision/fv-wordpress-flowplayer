@@ -2731,6 +2731,13 @@ var $doc = $(document),
       }
     }
 
+    // fire up an update event if we're adding an empty template, which means this function is called
+    // outside of the player meta loading and we should inform plugins that they need to add their own
+    // video tab content
+    if (!input) {
+      $doc.trigger('fv-player-playlist-item-add');
+    }
+
     editor_resize();
     return new_item;
   }
