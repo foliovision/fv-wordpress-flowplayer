@@ -1754,91 +1754,96 @@ var $doc = $(document),
 
     var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
 
-    // if we've got a DB ID passed to this function, use it directly
-    if (db_id) {
-      editor_content = db_id;
-    
-    // load what's in the widget
-    } else if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
-      //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
-      if (editor_content.match(/\[/)) {
-        editor_content = '[' + helper_tag + editor_content.replace('[', '') + '';
-      } else {
-        editor_content = helper_tag + editor_content + '';
-      }
-
-    // Foliopress WYSIWYG
-    } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
-      var bFound = false;
-      var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
-      for (var start = position; start--; start >= 0) {
-        if (editor_content[start] == '[') {
-          bFound = true;
-          break;
-        } else if (editor_content[start] == ']') {
-          break
+    if (!db_id) {
+      if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
+        //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
+        if (editor_content.match(/\[/)) {
+          editor_content = '[' + helper_tag + editor_content.replace('[', '') + '';
+        } else {
+          editor_content = helper_tag + editor_content + '';
         }
-      }
-      var shortcode = [];
 
-      if (bFound) {
-        var temp = editor_content.slice(start);
-        temp = temp.match(/^\[fvplayer[^\[\]]*]?/);
-        if (temp) {
-          shortcode = temp;
-          editor_content = editor_content.slice(0, start) + '#fvp_placeholder#' + editor_content.slice(start).replace(/^\[[^\[\]]*]?/, '');
+        // Foliopress WYSIWYG
+      } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+        var bFound = false;
+        var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
+        for (var start = position; start--; start >= 0) {
+          if (editor_content[start] == '[') {
+            bFound = true;
+            break;
+          } else if (editor_content[start] == ']') {
+            break
+          }
+        }
+        var shortcode = [];
+
+        if (bFound) {
+          var temp = editor_content.slice(start);
+          temp = temp.match(/^\[fvplayer[^\[\]]*]?/);
+          if (temp) {
+            shortcode = temp;
+            editor_content = editor_content.slice(0, start) + '#fvp_placeholder#' + editor_content.slice(start).replace(/^\[[^\[\]]*]?/, '');
+          } else {
+            editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
+          }
         } else {
           editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
         }
-      } else {
-        editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
-      }
-      
-    // is it the Edit button on wp-admin -> FV Player screen?
-    } else if ( is_fv_player_screen_edit(editor_button_clicked) ) {
-      current_player_db_id = $(editor_button_clicked).data('player_id');
-      
-      // create an artificial shortcode from which we can extract the actual player ID later below
-      editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-      shortcode = [editor_content];
-      
-    // is it the Add new button on wp-admin -> FV Player screen?
-    } else if ( is_fv_player_screen_add_new(editor_button_clicked) ) {
-      // create empty shortcode for Add New button on the list page
-      editor_content = '';
-      shortcode = '';
-    
-    // is there TinyMCE?
-    } else if (instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden()) {
-      editor_content = instance_fp_wysiwyg.GetHTML();
-      if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
-        instance_fp_wysiwyg.InsertHtml(helper_tag);
+
+        // is it the Edit button on wp-admin -> FV Player screen?
+      } else if (is_fv_player_screen_edit(editor_button_clicked)) {
+        current_player_db_id = $(editor_button_clicked).data('player_id');
+
+        // create an artificial shortcode from which we can extract the actual player ID later below
+        editor_content = '[fvplayer id="' + current_player_db_id + '"]';
+        shortcode = [editor_content];
+
+        // is it the Add new button on wp-admin -> FV Player screen?
+      } else if (is_fv_player_screen_add_new(editor_button_clicked)) {
+        // create empty shortcode for Add New button on the list page
+        editor_content = '';
+        shortcode = '';
+
+        // is there TinyMCE?
+      } else if (instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden()) {
         editor_content = instance_fp_wysiwyg.GetHTML();
-      }
-      
-    } else {
-      editor_content = instance_tinymce.getContent();
-      instance_tinymce.settings.validate = false;
-      if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
-        var tags = ['b', 'span', 'div'];
-        for (var i in tags) {
-          instance_tinymce.execCommand('mceInsertContent', false, '<' + tags[i] + ' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></' + tags[i] + '>');
-          editor_content = instance_tinymce.getContent();
+        if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
+          instance_fp_wysiwyg.InsertHtml(helper_tag);
+          editor_content = instance_fp_wysiwyg.GetHTML();
+        }
 
-          fv_wp_flowplayer_re_edit = new RegExp('\\[f[^\\]]*?<' + tags[i] + '[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</' + tags[i] + '>.*?[^\]\\]', "mi");
-          fv_wp_flowplayer_re_insert = new RegExp('<' + tags[i] + '[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</' + tags[i] + '>', "gi");
+      } else {
+        editor_content = instance_tinymce.getContent();
+        instance_tinymce.settings.validate = false;
+        if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
+          var tags = ['b', 'span', 'div'];
+          for (var i in tags) {
+            instance_tinymce.execCommand('mceInsertContent', false, '<' + tags[i] + ' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></' + tags[i] + '>');
+            editor_content = instance_tinymce.getContent();
 
-          if (editor_content.match(fv_wp_flowplayer_re_insert)) {
-            break;
+            fv_wp_flowplayer_re_edit = new RegExp('\\[f[^\\]]*?<' + tags[i] + '[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</' + tags[i] + '>.*?[^\]\\]', "mi");
+            fv_wp_flowplayer_re_insert = new RegExp('<' + tags[i] + '[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?</' + tags[i] + '>', "gi");
+
+            if (editor_content.match(fv_wp_flowplayer_re_insert)) {
+              break;
+            }
+
           }
 
         }
-
+        instance_tinymce.settings.validate = true;
       }
-      instance_tinymce.settings.validate = true;
     }
 
-    var content = editor_content.replace(/\n/g, '\uffff');          
+    var content = editor_content.replace(/\n/g, '\uffff');
+
+    // if we've got a numeric DB ID passed to this function, use it directly
+    // but don't replace editor_content, since we'll need that to be actually updated
+    // rather then set to a player ID
+    if (db_id) {
+      content = db_id;
+    }
+
     if(typeof(shortcode) == 'undefined'){
       if (!db_id) {
         var shortcode = content.match( fv_wp_flowplayer_re_edit );
