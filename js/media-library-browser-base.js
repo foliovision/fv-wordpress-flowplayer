@@ -390,7 +390,7 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href) {
+  function getSplashImageForMediaFileHref(href, strip_signature) {
     var find = [ fileGetBase(href) ];
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
@@ -407,6 +407,12 @@ jQuery( function($) {
         var f = fv_flowplayer_scannedFiles[j];
         if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
           splash = (f.splash ? f.splash : f.link);
+
+          // remove signature if we're updating the Editor field, otherwise leave it in,
+          // so we can actually preview the splash
+          if (strip_signature && splash.indexOf('?') > -1) {
+            splash = splash.substring(0, splash.indexOf('?'));
+          }
         }
       }
     }
@@ -418,7 +424,7 @@ jQuery( function($) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href);
+      splash = getSplashImageForMediaFileHref(href, true);
 
     $url_input
       .val(href)
