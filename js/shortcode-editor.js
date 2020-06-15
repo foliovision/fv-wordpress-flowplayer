@@ -696,14 +696,9 @@ var $doc = $(document),
       }
     });
 
-    $doc.on("change", "#fv-player-shortcode-editor input, #fv-player-shortcode-editor select", save );
+    $doc.on("change", "#fv-player-shortcode-editor-right input, #fv-player-shortcode-editor-right select", save );
 
-    $doc.on("keyup", "#fv-player-shortcode-editor input[type=text], #fv-player-shortcode-editor textarea", function() {
-      if (this.id == 'fv_player_import_data' || this.id == 'fv_player_copy_to_clipboard') {
-        is_draft_changed = false;
-        return;
-      }
-
+    $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea", function() {
       clearTimeout(int_keyup);
       int_keyup = setTimeout( function() {
         save();

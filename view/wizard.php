@@ -137,7 +137,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
     </div>
     
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
-      <textarea name="fv_player_import_data" id="fv_player_import_data" rows="15" placeholder="Paste your FV Player Export JSON data here"></textarea>
+      <textarea name="fv_player_import_data" id="fv_player_import_data" rows="13" placeholder="Paste your FV Player Export JSON data here"></textarea>
       <br />
       <br />
       <a id="fv-player-editor-import-overlay-import" href="#" class="button button-primary">Import player</a>
@@ -146,7 +146,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
     </div>
     
     <div id="fv-player-editor-export-overlay" class="fv-player-editor-overlay">
-      <textarea name="fv_player_copy_to_clipboard" rows="15"></textarea>
+      <textarea name="fv_player_copy_to_clipboard" rows="13"></textarea>
       <br />
       <br />
       <a id="fv-player-editor-export-overlay-copy" href="#" class="button button-primary">Copy To Clipboard</a>
@@ -177,7 +177,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
         <a href="#" class="button" style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh"><?php _e('Refresh preview', 'fv_flowplayer'); ?></a>
       </div>
     </div>
-    <div class="fv-player-shortcode-editor-right">
+    <div class="fv-player-shortcode-editor-right" id="fv-player-shortcode-editor-right">
       <input type="text" class="hide-if-playlist hide-if-singular" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
       <div class="fv-player-tabs-header">
         <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
