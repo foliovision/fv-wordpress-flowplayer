@@ -66,7 +66,7 @@ class FV_Player_Db_Video {
       $caption = end($arr);
     }
 
-    $caption = apply_filters( 'fv_flowplayer_caption', $src , $caption );
+    $caption = apply_filters( 'fv_flowplayer_caption_src', $src , $caption );
 
     return urldecode($caption);
   }
