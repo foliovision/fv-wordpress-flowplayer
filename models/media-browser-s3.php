@@ -9,10 +9,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     }
   }
 
-  function init_for_gutenberg() {
-    add_action( 'admin_footer', array($this, 'init'), 1 );
-  }  
-
   function fv_wp_flowplayer_include_aws_sdk() {
     if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
       require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
