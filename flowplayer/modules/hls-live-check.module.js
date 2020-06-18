@@ -14,14 +14,16 @@ flowplayer( function(api,root) {
   
   api.on("error", function (e, api, err) {
     setTimeout( function() {
-      if( !api.conf.clip.live &&  !api.conf.live ) return;
+      // whitelisting Vimeo Event URLs used by FV Player Vimeo Live Streaming
+      if( !api.conf.clip.live && !api.conf.live && !err.video.src.match(/\/\/vimeo.com\/event\//) ) return;
       
       var delay = api.conf.clip.live_starts_in || initialDelay,
         message = api.conf.clip.live_starts_in ? "<h2>Live stream scheduled</h2><p>Starting in <span>" + secondsToDhms(delay) + "</span>.</p>" : "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>" + secondsToDhms(delay) + "</span> seconds ...</p>";
 
       clearInterval(timer);
 
-      if (err.code === 2 || err.code === 4) {
+      // 1 occurs in case of FV Player Vimeo Live Streaming
+      if (err.code === 1 || err.code === 2 || err.code === 4) {
         root.className += " is-offline";
 
         if (flowplayer.support.flashVideo) {
