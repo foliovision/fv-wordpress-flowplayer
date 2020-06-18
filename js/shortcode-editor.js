@@ -65,7 +65,7 @@ var $doc = $(document),
   var is_saving = false;
   
   // used when editing shortcode in TinyMCE
-  var helper_tag;
+  var helper_tag = window.fvwpflowplayer_helper_tag;
   
   // We disable preview in certain browsers
   var ua = window.navigator.userAgent;
