@@ -6,9 +6,11 @@ abstract class FV_Player_Media_Browser {
 
   public function __construct($ajax_action_name) {
     // load base JS
-    add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 );
-    add_action( 'enqueue_block_editor_assets', array($this, 'init_for_gutenberg_base') );
-    add_action( 'admin_footer', array($this, 'init_base'), 1 );
+    add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 ); // for old WP editor
+    add_action( 'enqueue_block_editor_assets', array($this, 'init_base') ); // for Gutenberg
+    add_action( 'admin_print_scripts-toplevel_page_fv_player', array($this, 'init_base'), 0 ); // wp-admin -> FV Player
+    add_action( 'admin_print_scripts-widgets.php', array($this, 'init_base'), 0 ); // wp-admin -> Widgets
+    add_action( 'admin_print_scripts-fv-player_page_fv_player_coconut', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Encode video
 
     // register extending class WP AJAX action
     $this->ajax_action_name = $ajax_action_name;
