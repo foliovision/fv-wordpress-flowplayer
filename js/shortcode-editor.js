@@ -1670,13 +1670,11 @@ var $doc = $(document),
    *  * calls editor_init() for editor clean-up
    */
   function editor_close() {
-    // TODO: this should remove the hidden tag which aids the editing
-    
-    /*
-    editor_content = editor_content.replace(fv_wp_flowplayer_re_edit,'');
+    // remove TinyMCE hidden tag which aids shortcode editing
+    // to prevent opening the same player over and over
     editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
-    */
-  
+    set_post_editor_content(editor_content);
+
     // this variable needs to be reset here and not in editor_init
     current_video_to_edit = -1;
   
@@ -1755,8 +1753,11 @@ var $doc = $(document),
     var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
 
     if (!db_id) {
+      // custom Field
       if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
-        //  this is a horrible hack as it adds the hidden marker to the otherwise clean text field value just to make sure the shortcode varible below is parsed properly. But it allows some extra text to be entered into the text widget, so for now - ok
+        // this is a horrible hack as it adds the hidden marker to the otherwise clean text field value
+        // just to make sure the shortcode varible below is parsed properly.
+        // But it allows some extra text to be entered into the text widget, so for now - ok
         if (editor_content.match(/\[/)) {
           editor_content = '[' + helper_tag + editor_content.replace('[', '') + '';
         } else {
@@ -1790,7 +1791,7 @@ var $doc = $(document),
           editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
         }
 
-        // is it the Edit button on wp-admin -> FV Player screen?
+        // Edit button on wp-admin -> FV Player screen
       } else if (is_fv_player_screen_edit(editor_button_clicked)) {
         current_player_db_id = $(editor_button_clicked).data('player_id');
 
@@ -1798,13 +1799,13 @@ var $doc = $(document),
         editor_content = '[fvplayer id="' + current_player_db_id + '"]';
         shortcode = [editor_content];
 
-        // is it the Add new button on wp-admin -> FV Player screen?
+        // Add new button on wp-admin -> FV Player screen
       } else if (is_fv_player_screen_add_new(editor_button_clicked)) {
         // create empty shortcode for Add New button on the list page
         editor_content = '';
         shortcode = '';
 
-        // is there TinyMCE?
+        // TinyMCE in Text Mode
       } else if (instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden()) {
         editor_content = instance_fp_wysiwyg.GetHTML();
         if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
@@ -1813,6 +1814,7 @@ var $doc = $(document),
         }
 
       } else {
+        // TinyMCE in Visual Mode
         editor_content = instance_tinymce.getContent();
         instance_tinymce.settings.validate = false;
         if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
