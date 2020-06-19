@@ -960,7 +960,7 @@
 .flowplayer.is-splash .fp-ui noscript{display:block;z-index: 1000;position: absolute;left:0;right:0;padding:2em;background:black;margin-top:20%}
 
 .flowplayer .fp-splash,
-.entry-content .flowplayer .fp-splash {
+.flowplayer .fp-player .fp-splash {
   object-fit: contain;
   height: 100%;
   width: 100%;
