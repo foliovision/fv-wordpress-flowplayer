@@ -909,7 +909,7 @@ class flowplayer_frontend extends flowplayer
 
     if (strlen(trim($popup)) > 0) {
       $popup_contents = array(
-          'html' => '<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>',
+          'html' => base64_encode('<div class="fv_player_popup' . $sClass . ' wpfp_custom_popup_content">' . $popup . '</div>'),
           'pause' => isset($aPopupData) && isset($aPopupData[$iPopupIndex]['pause']) ? $aPopupData[$iPopupIndex]['pause'] : false
       );
       return $popup_contents;
