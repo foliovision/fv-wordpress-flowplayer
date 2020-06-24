@@ -164,7 +164,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
       <div class="fv-player-editor-overlay-notice"></div>
     </div>
   
-    <div class="fv-player-shortcode-editor-left">
+    <div id="fv-player-shortcode-editor-left">
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
@@ -177,7 +177,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
         <a href="#" class="button" style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh"><?php _e('Refresh preview', 'fv_flowplayer'); ?></a>
       </div>
     </div>
-    <div class="fv-player-shortcode-editor-right" id="fv-player-shortcode-editor-right">
+    <div id="fv-player-shortcode-editor-right">
       <input type="text" class="hide-if-playlist hide-if-singular" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
       <div class="fv-player-tabs-header">
         <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>

@@ -50,8 +50,8 @@
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
 
-.fv-player-shortcode-editor-left{ float: left; width:42%; margin-right: 1% }
-.fv-player-shortcode-editor-right{ float: left; width:57%; }
+#fv-player-shortcode-editor-left{ float: left; width:42%; margin-right: 1% }
+#fv-player-shortcode-editor-right{ float: left; width:57%; }
 #fv-player-shortcode-editor #fv_wp_flowplayer_field_player_name { width: 96%; margin: 0 0 6px; }
 .fv-player-tab{position:relative;}
 .fv-player-tabs #fv-player-list-thumb-toggle{ position:absolute;right:10px;text-align:right;top:9px; }
