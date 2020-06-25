@@ -10,9 +10,6 @@ var fv_player_editor_matcher = {
   }
 };
 
-// TODO: Remove, only used in FV Player Pro for no reason as shortcode is deprecated
-var fv_wp_fp_shortcode;
-
 // The actual editor
 var fv_player_editor = (function($) {
   
@@ -1682,7 +1679,7 @@ var $doc = $(document),
       // todo: what it the point of this call being made?
       // TODO: Perhaps to ensure the temporary strings in editor are removed?
       //set_post_editor_content( editor_content.replace( fv_wp_flowplayer_re_insert, '' ) );
-      
+
       // trigger update for the FV Player Custom Videos/Meta Box
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
       field.trigger('fv_flowplayer_shortcode_insert');
