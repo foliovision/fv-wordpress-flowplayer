@@ -2973,6 +2973,10 @@ var $doc = $(document),
   }
   
   function set_post_editor_content( html ) {
+    if ( is_fv_player_screen(editor_button_clicked) ) {
+      return;
+    }
+
     if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
       jQuery('#content:not([aria-hidden=true])').val(html); 
       
