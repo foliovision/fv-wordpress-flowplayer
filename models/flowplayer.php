@@ -2238,6 +2238,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $tmp = array_reverse($shortcode['videos']);
           $item = array_pop($tmp);
           $src = $item['fv_wp_flowplayer_field_src'];
+
+          // we generate previews either from SRC or RTMP - if SRC is empty, try RTMP
+          if (!$src) {
+            $src = $item['fv_wp_flowplayer_field_rtmp'];
+          }
         } else {
           $src = 'none';
         }
