@@ -77,7 +77,7 @@ var $doc = $(document),
   
   // Some shortcode args should be kept. For example if you edit
   // [fvplayer id="1 sort="newest"] that sort should not be removed
-  var store_shortcode_args = false;
+  var store_shortcode_args = {};
   
   // Flowplayer only lets us specify the RTMP server for the first video in plalist, so we store it here when the playlist item order is changing etc.
   var store_rtmp_server = '';
@@ -1869,14 +1869,6 @@ var $doc = $(document),
                                   .replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
 
         shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
-
-        store_shortcode_args = {};
-        for( var i in fv_player_editor_conf.shortcode_args_to_preserve ) {
-          var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
-          if (value && value[1]) {
-            store_shortcode_args[fv_player_editor_conf.shortcode_args_to_preserve[i]] = value[1];
-          }
-        }
         
         // DB-based player, create a "wait" overlay
         overlay_show('loading');
@@ -2416,6 +2408,15 @@ var $doc = $(document),
         tabs_refresh();
         
       }
+
+      store_shortcode_args = {};
+      for( var i in fv_player_editor_conf.shortcode_args_to_preserve ) {
+        var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
+        if (value && value[1]) {
+          store_shortcode_args[fv_player_editor_conf.shortcode_args_to_preserve[i]] = value[1];
+        }
+      }
+
     } else {
       jQuery(document).trigger('fv_flowplayer_shortcode_new');
       shortcode_remains = '';
