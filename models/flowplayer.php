@@ -2241,7 +2241,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
           // we generate previews either from SRC or RTMP - if SRC is empty, try RTMP
           if (!$src) {
-            $src = $item['fv_wp_flowplayer_field_rtmp'];
+            $src = $item['fv_wp_flowplayer_field_rtmp_path'];
           }
         } else {
           $src = 'none';

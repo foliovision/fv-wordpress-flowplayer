@@ -2898,7 +2898,7 @@ var $doc = $(document),
     
     var found_src = false;
     $.each( data.videos, function(k,v) {
-      if( v.fv_wp_flowplayer_field_src || v.fv_wp_flowplayer_field_rtmp ) {
+      if( v.fv_wp_flowplayer_field_src || v.fv_wp_flowplayer_field_rtmp_path ) {
         found_src = true;
         return false;
       }
