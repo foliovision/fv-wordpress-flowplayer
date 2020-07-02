@@ -1,9 +1,17 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
-  
+  var original_prev, original_next, random_seed;
+
   if( !root.data('button-no-picture') && !root.data('button-repeat') && !root.data('button-rewind') ) return;
   
   api.bind('ready', function(e,api) {
+    
+    // Backup original api.next() and api.prev()
+    if( typeof original_next == 'undefined' && typeof original_prev == 'undefined' ) {
+      original_next = api.next;
+      original_prev = api.prev;
+    }
+
     if( !api.video.type.match(/^audio/) && root.data('button-no-picture') && root.find('.fv-fp-no-picture').length == 0 ) {
       var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="20px" height="20px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
       
@@ -18,13 +26,26 @@ flowplayer( function(api,root) {
     
     if( root.data('button-repeat') ) {
       if( api.conf.playlist.length > 0 && root.find('.fv-fp-playlist').length == 0 ) {
-        var playlist_button = jQuery('<strong class="fv-fp-playlist mode-normal"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>Replay Playlist</title><use xlink:href="#fvp-replay-list"></use></svg><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><use xlink:href="#fvp-shuffle"></use></svg><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>Replay Track</title><use xlink:href="#fvp-replay-track"></use></svg><span id="fvp-playlist-play" title="Play All">All</span></strong>'),
-            playlist_menu = jQuery('<div class="fp-menu fv-fp-playlist-menu"><a data-action="repeat_playlist"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>Replay Playlist</title><use xlink:href="#fvp-replay-list"></use></svg> <span class="screen-reader-text">Repeat Playlist</span></a><a data-action="shuffle_playlist"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>Shuffle Playlist</title><use xlink:href="#fvp-shuffle"></use></svg> <span class="screen-reader-text">Shuffle Playlist</span></a><a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>Repeat Track</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">Repeat Track</span></a><a class="fp-selected" data-action="normal"><span id="fvp-playlist-play" title="Play All">All</span></a></div>').insertAfter( root.find('.fp-controls') );
-            
-        api.conf.playlist_shuffle = api.conf.track_repeat = false;
+        var t = fv_flowplayer_translations,
+          playlist_button = jQuery(
+          '<strong class="fv-fp-playlist mode-normal">\
+            <svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg>\
+            <svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg>\
+            <svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg>\
+            <span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span>\
+            </strong>'),
+          playlist_menu = jQuery(
+            '<div class="fp-menu fv-fp-playlist-menu">\
+              <a data-action="repeat_playlist"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_all+'</span></a>\
+              <a data-action="shuffle_playlist"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg> <span class="screen-reader-text">'+t.playlist_shuffle+'</span></a>\
+              <a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_video+'</span></a>\
+              <a class="fp-selected" data-action="normal"><span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span></a>\
+              </div>').insertAfter( root.find('.fp-controls') );
           
-        var random_seed = randomize();
+        api.conf.playlist_shuffle = api.conf.track_repeat = false;
         
+        random_seed = randomize();
+
         var should_advance = api.conf.advance;
 
         playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
@@ -82,6 +103,22 @@ flowplayer( function(api,root) {
           
           }
           
+          if(api.conf.playlist_shuffle) {
+            api.next = function() {
+              api.play( random_seed.pop() );
+              if( random_seed.length == 0 ) random_seed = randomize();
+            };
+            
+            api.prev = function() {
+              api.play( random_seed.shift() );
+              if( random_seed.length == 0 ) random_seed = randomize();
+            };
+
+          } else {
+            api.next = original_next;
+            api.prev = original_prev;
+          }
+
         });
         
         if( api.conf.loop ) {
@@ -138,7 +175,7 @@ flowplayer( function(api,root) {
     root.find('.fv-fp-playlist').remove();
     root.find('.fv-fp-track-repeat').remove();
   });
-  
+
   function array_shuffle(a) {
     var j, x, i;
     for (i = a.length; i; i--) {
@@ -159,5 +196,6 @@ flowplayer( function(api,root) {
     random_seed = array_shuffle(random_seed);
     console.log('FV Player Randomizer random seed:',random_seed);
     return random_seed;
-  }  
+  }
+
 });

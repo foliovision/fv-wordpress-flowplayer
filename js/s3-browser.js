@@ -13,9 +13,6 @@ jQuery( function($) {
 
     $this.addClass('active').siblings().removeClass('active');
 
-    // remove infinite scroll checks from other tabs
-    $media_frame_content.off('mousewheel');
-
     // replace content by the new S3 content
     $media_frame_content.html($overlay_div);
 

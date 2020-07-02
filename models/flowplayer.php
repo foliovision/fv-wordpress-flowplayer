@@ -139,8 +139,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
 
-    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
-    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    if( !empty($_GET['fv_player_preview']) ) {
+      add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
+    } else {
+      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
+      add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    }
+    
+    add_action( 'do_rocket_lazyload', array( $this, 'preview_no_lazy_load' ) );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
     add_filter('fv_player_item', array($this, 'get_video_checker_media') );
@@ -341,11 +347,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
     }
 
-    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
-    $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.esc_attr($options['first_td_class']).'"' : '');
+    $class_name     = (!empty($options['class']) ? ' class="'.esc_attr($options['class']).'"' : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
-    $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
+    $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');     
 
@@ -357,11 +363,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
+    
+    // use the default value if the setting is empty
+    // however in case of marginBottom you might wish to enter 0 and we need to accept that
+    // so we just check if the default if a number and if it is, we allow even 0 value
+    $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
     ?>
       <tr>
         <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+          <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -399,7 +410,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.esc_attr($data_value).'"';
+                echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
             ?> />
@@ -478,7 +489,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             }
           ?>>
             <?php foreach( $aOptions AS $k => $v ) : ?>
-              <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && $selected == $k) || ($option == $k) ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
+              <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && strcmp($selected ,$k) == 0 ) || (strcmp($option,$k) == 0) ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
             <?php endforeach; ?>      
           </select>
         </td>   
@@ -653,7 +664,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _set_conf( $aNewOptions = false ) {
     if( !$aNewOptions ) $aNewOptions = $_POST;
     $sKey = !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
-    $sKey7 = !empty($aNewOptions['key7']) ? trim($aNewOptions['key7']) : false;
     
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
@@ -698,7 +708,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     
     if( $sKey ) $aNewOptions['key'] = trim($sKey);
-    if( $sKey7 ) $aNewOptions['key7'] = $sKey7;
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
@@ -972,7 +981,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();            
       }
       
-      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, $this );
+      $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
       $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
       
       if( $sItemCaption ) {
@@ -1051,7 +1060,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $sSplashImage = $this->_get_option('splash');
           }
           
-          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, $this, $aPlaylist_item );
+          $sSplashImage = apply_filters( 'fv_flowplayer_playlist_splash', $sSplashImage, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
           $sItemCaption = apply_filters( 'fv_flowplayer_caption', $sItemCaption, $aItem, $aArgs );
           
           if( $sItemCaption ) {
@@ -1128,7 +1137,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
   
       if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
-        $iMargin = intval($this->_get_option(array($skin, 'marginBottom')));
+        $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
         $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
         $css .= $sel.".has-caption { margin: 0 auto; }\n";
         $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
@@ -1142,7 +1151,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
         $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
-        $css .= $sel." .fv-fp-prevbtn:before, ".$sel." .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {
@@ -1186,7 +1195,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_ad a { color: <?php echo $this->_get_option('adLinksColor'); ?> }
     
     .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
-    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
+      .fp-playlist-external a h4,
+      .fp-playlist-external a:hover h4,
+      .fp-playlist-external a.is-active:hover h4,
+      .visible-captions.fp-playlist-external a h4 span,
+      .fv-playlist-design-2014.fp-playlist-external a h4,
+      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }
+    <?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
@@ -1862,7 +1878,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sClass .= $this->aCurArgs['listdesign'];
     } else {
       $sClass .= $this->_get_option('playlist-design');
-    }    
+    }
+    
+    // Playlist design doesn't have any use for these two playlist styles:
+    if( in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+      $sClass = '';
+    }
 
     if( isset($this->aCurArgs['liststyle']) ) {
       $list_style = $this->aCurArgs['liststyle'];
@@ -2079,7 +2100,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   function template_embed() {
-    
+    // Generate embed html
     if( $embed_id = get_query_var('fv_player_embed') ) {
       $content = ob_get_contents();
       ob_clean();
@@ -2097,88 +2118,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   </style>
 </head>
 <body class="fv-player-preview">
-  <?php if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
-    
-    if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
-      ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
-      <div style="background:white;">
-        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
-          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
-        </div>
-      </div>
-      <?php
-      die();
-    }
-    $dataInPost = ($_GET['fv_player_preview'] === 'POST');
-    $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
-    $matches = null;
-    $width ='';
-    $height ='';
-
-    // width from regular shortcdode data
-    if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)){
-      $width = 'width:'.$matches[1].'px;';
-    }
-
-    // width from DB shortcdode data
-    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])){
-      $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
-    }
-
-    // height from regular shortcdode data
-    if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)){
-      $height = 'min-height:'.$matches[1].'px;';
-    }
-
-    // height from DB shortcdode data
-    if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])){
-      $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
-    }
-
-    ?> 
-    <div style="background:white;">
-      <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
-        <?php
-        // regular shortcode data with source
-        global $fv_fp;
-        if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
-          $aAtts = shortcode_parse_atts($shortcode);
-          if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
-            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
-          }
-          echo do_shortcode($shortcode);          
-        } else if ($dataInPost) {
-          // DB-based shortcode data
-          if (
-            !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
-            $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
-            $fv_fp->_get_option('liststyle') == 'vertical'
-          ) {
-            _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
-          }
-
-          // note: we need to put "src" into the code or it won't get parsed at all
-          //       and at the same time, it displays the correct SRC in the preview
-          if( count($shortcode['videos']) > 0 ) {
-            $tmp = array_reverse($shortcode['videos']);
-            $item = array_pop($tmp);
-            $src = $item['fv_wp_flowplayer_field_src'];            
-          } else {
-            $src = 'none';
-          }
-          echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
-        } else { ?>
-          <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
-          <?php
-        }
-        ?>
-      </div>
-    </div>
-    
-  <?php else :
-    
+  <?php
     if( stripos($content,'<!--fv player end-->') !== false ) {
-      
+
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
@@ -2187,7 +2129,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sPostfix = $embed_id == 1 ? 'fvp' : 'fvp'.$embed_id;
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
-      
+
       $aPlayers = explode( '<!--fv player end-->', $content );
       if( $aPlayers ) {
         foreach( $aPlayers AS $k => $v ) {
@@ -2198,49 +2140,166 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
         }
       }
-      
+
       if( !$bFound && is_numeric($embed_id) && !empty($aPlayers[$embed_id-1]) ) {
         echo substr($aPlayers[$embed_id-1], stripos($aPlayers[$embed_id-1],'<div id="wpfp_') );
         $bFound = true;
       }
-      
+
       if( !$bFound ) {
         echo "<p>Player not found, see the full article: <a href='".get_permalink()."' target='_blank'>".get_the_title()."</a>.</p>";
-      }    
-      
-    }
-  endif;
-  
-  wp_footer();
-  
-  if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : ?>
-    <script>
-    jQuery(document).ready( function(){
-      var parent = window.parent.jQuery(window.parent.document);
-      if( typeof(flowplayer) != "undefined" ) {      
-        parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
-      
-      } else {
-        parent.trigger('fvp-preview-error');
       }
-    
-    });
-    
-    if (window.top===window.self) {
-      jQuery('#wrapper').css('margin','25px 50px 0 50px');
-    } 
-    </script>
-  <?php endif; ?>
 
-</body>
+    }
 
-</html>       
-      <?php
-      exit();  
+    wp_footer();
+  
+    ?>
+    </body>
+    </html>
+    <?php
+    exit();
     }
   }
   
+  function preview_no_lazy_load( $value ) {
+    if( isset($_REQUEST['fv_player_preview']) ) {
+      return false;
+    }
+    return $value;
+  }
 
+  function template_preview() {
+    // Generate preview html
+    show_admin_bar(false);
+    ?>
+    <html>
+      <head>
+        <?php wp_head(); ?>
+        <style>
+          body { margin: 0; padding: 0; overflow:hidden; background:white;}
+          body:before { height: 0px!important;}
+          html {margin-top: 0px !important; overflow:hidden; }
+        </style>
+      </head>
+      <body class="fv-player-preview">
+    <?php
+
+    $embed_id = get_query_var('fv_player_embed');
+
+    if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : 
+      if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
+        ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
+        <div style="background:white;">
+          <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+            <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
+          </div>
+        </div>
+        <?php
+        die();
+      }
+
+      $dataInPost = ($_GET['fv_player_preview'] === 'POST');
+      $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
+      $shortcode = apply_filters('fv_player_preview_data', $shortcode);
+  
+      $matches = null;
+      $width ='';
+      $height ='';
+  
+      // width from regular shortcdode data
+      if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)) {
+        $width = 'width:'.$matches[1].'px;';
+      }
+  
+      // width from DB shortcdode data
+      if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])) {
+        $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
+      }
+  
+      // height from regular shortcdode data
+      if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)) {
+        $height = 'min-height:'.$matches[1].'px;';
+      }
+  
+      // height from DB shortcdode data
+      if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])) {
+        $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
+      }
+
+      ?>
+      <div style="background:white;">
+        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+      <?php
+      // regular shortcode data with source
+      global $fv_fp;
+      if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
+        $aAtts = shortcode_parse_atts($shortcode);
+        if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
+          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+        }
+        echo do_shortcode($shortcode);          
+      } else if ($dataInPost) {
+        // DB-based shortcode data
+        if (
+          !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
+          $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
+          $fv_fp->_get_option('liststyle') == 'vertical'
+        ) {
+          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+        }
+
+        // note: we need to put "src" into the code or it won't get parsed at all
+        //       and at the same time, it displays the correct SRC in the preview
+        if( count($shortcode['videos']) > 0 ) {
+          $tmp = array_reverse($shortcode['videos']);
+          $item = array_pop($tmp);
+          $src = $item['fv_wp_flowplayer_field_src'];
+        } else {
+          $src = 'none';
+        }
+        echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
+      } else { ?>
+        <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
+        <?php
+      }
+      ?>
+      </div>
+    </div>
+  
+    <?php
+  
+    endif;
+      
+    ?>
+      <?php 
+      wp_footer(); 
+      if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+      ?>
+      <script>
+        jQuery(document).ready( function(){
+          var parent = window.parent.jQuery(window.parent.document);
+          if( typeof(flowplayer) != "undefined" ) {      
+            parent.trigger('fvp-preview-complete', [jQuery(document).width(),jQuery(document).height()]);
+          
+          } else {
+            parent.trigger('fvp-preview-error');
+          }
+        
+        });
+        
+        if (window.top===window.self) {
+          jQuery('#wrapper').css('margin','25px 50px 0 50px');
+        } 
+      </script>
+      <?php endif; ?>
+      </body>
+    </html>
+    <?php
+      
+    exit;
+  }
+  
 }
 
 function fv_wp_flowplayer_save_post( $post_id ) {
