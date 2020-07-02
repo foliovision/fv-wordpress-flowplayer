@@ -613,6 +613,16 @@ class flowplayer_frontend extends flowplayer
             }
           }
         }
+
+        if( $popup_contents = $this->get_popup_code() ) {
+          $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;
+          $attributes['data-popup'] = $this->json_encode( $popup_contents );
+        }
+
+        if( $ad_contents = $this->get_ad_code() ) {
+          $this->aAds["wpfp_{$this->hash}"] = $ad_contents;
+          $attributes['data-ad'] = $this->json_encode( $ad_contents );
+        }
         
         add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
         
@@ -641,13 +651,6 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($splashend_contents) ) {
           $this->ret['html'] .= $splashend_contents;
-        }
-        if( $popup_contents = $this->get_popup_code() ) {
-          $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;  
-        }
-
-        if( $ad_contents = $this->get_ad_code() ) {
-          $this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
         }
         
         if( flowplayer::is_special_editor() ) {
