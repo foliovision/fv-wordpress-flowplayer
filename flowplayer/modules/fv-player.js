@@ -638,6 +638,10 @@ function fv_autoplay_exec(){
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
           api.load();
+          root.find('.fp-play').attr("style", "display: none !important");
+          api.one('progress', function(){
+            root.find('.fp-play').removeAttr("style");
+          });
           if(root.data('fvautoplay') == 'muted') {
             api.mute(true,true);
           }
