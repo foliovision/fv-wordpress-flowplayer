@@ -141,12 +141,7 @@ class flowplayer_frontend extends flowplayer
     $src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
     $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;
 
-    // if this is a playlist, the splash image is already present in the $args array
-    if (!empty($args['playlist']) && !empty($args['splash'])) {
-      $splash_img = $args['splash'];
-    } else {
-      $splash_img = $this->get_splash();
-    }
+    $splash_img = $this->get_splash();
     
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
       if( stripos( $media_item, 'rtmp://' ) === 0 ) {

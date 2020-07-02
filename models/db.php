@@ -534,6 +534,18 @@ class FV_Player_Db {
     $is_multi_playlist = false;
 
     if (isset($atts['id'])) {
+
+      // video attributes which can still be set in shortcode
+      // this makes the preview work with YouTube playlists obtained via API
+      // this lets you set the splash screen for Vimeo channel
+      $preserve = array();
+      if( !empty($atts['src']) ) {
+        $preserve['src'] = $atts['src'];
+      }
+      if( !empty($atts['splash']) ) {
+        $preserve['splash'] = $atts['splash'];
+      }
+
       // numeric ID means we're coming from a shortcode somewhere in a post
       if (preg_match('/[\d,]+/', $atts['id']) === 1) {
         $is_multi_playlist = (strpos($atts['id'], ',') !== false);
@@ -669,12 +681,6 @@ class FV_Player_Db {
           // preload all videos
           $player->getVideos();
 
-          // video attributes which can still be set in shortcode
-          $preserve = array();
-          if( !empty($atts['splash']) ) {
-            $preserve['splash'] = $atts['splash'];
-          }          
-
           // add playlist / single video data
           $atts = array_merge( $atts, $this->generateFullPlaylistCode(
           // we need to prepare the same attributes array here
@@ -684,10 +690,6 @@ class FV_Player_Db {
               'playlist' => $data['videos']
             )
           ) );
-          
-          if( count($preserve) > 0 ) {
-            $atts = array_merge( $atts, $preserve );
-          }
 
         }
         
@@ -698,6 +700,10 @@ class FV_Player_Db {
         $preview = $this->db_store_player_data( json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
         $atts = array_merge( $atts, $FV_Player_Db->generateFullPlaylistCode( array(),$preview ));
         $fv_fp->currentPlayerObject = $preview['player'];
+      }
+
+      if( count($preserve) > 0 ) {
+        $atts = array_merge( $atts, $preserve );
       }
             
     } else {
