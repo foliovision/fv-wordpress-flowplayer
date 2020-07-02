@@ -44,9 +44,9 @@ flowplayer(function (api,root) {
   
   function show_popup( event ) {
     var popup = root.find('.wpfp_custom_popup');
-    if( typeof(fv_flowplayer_popup) != "undefined" && typeof(fv_flowplayer_popup[player_id]) != "undefined" && ( event == 'finish' || fv_flowplayer_popup[player_id].pause || atob(fv_flowplayer_popup[player_id].html).match(/fv-player-ppv-purchase-btn-wrapper/) ) ) {
+    if( typeof(fv_flowplayer_popup) != "undefined" && typeof(fv_flowplayer_popup[player_id]) != "undefined" && ( event == 'finish' || fv_flowplayer_popup[player_id].pause || fv_flowplayer_popup[player_id].html.match(/fv-player-ppv-purchase-btn-wrapper/) ) ) {
       root.addClass('is-popup-showing');
-      root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+atob(fv_flowplayer_popup[player_id].html)+'</div>' );
+      root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+fv_flowplayer_popup[player_id].html+'</div>' );
     }
   }
   
