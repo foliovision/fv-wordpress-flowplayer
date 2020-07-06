@@ -43,8 +43,9 @@ flowplayer.bean.on(document, "keydown.fp", function(e) {
     metaKeyPressed = e.ctrlKey || e.metaKey || e.altKey,
     key = e.which,
     conf = el && el.conf;
-    
-  
+
+  // no keybinds when controlbar is disabled
+  if( common.hasClass(focusedRoot, "no-controlbar") ) return;
   
   if (!el || !conf.keyboard || el.disabled) return;
   
@@ -75,8 +76,6 @@ flowplayer.bean.on(document, "keydown.fp", function(e) {
   
   // 1, 2, 3, 4 ..
   if (key < 58 && key > 47) return el.seekTo(key - 48);
-  
-  
   
   switch (key) {
     case 38: case 75: el.volume(el.volumeLevel + 0.15); break;
