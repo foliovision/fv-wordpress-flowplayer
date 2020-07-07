@@ -44,8 +44,8 @@ flowplayer.bean.on(document, "keydown.fp", function(e) {
     key = e.which,
     conf = el && el.conf;
 
-  // no keybinds when controlbar is disabled
-  if( common.hasClass(focusedRoot, "no-controlbar") ) return;
+  // no keybinds when controlbar is disabled or video ad
+  if( common.hasClass(focusedRoot, "no-controlbar") || common.hasClass(focusedRoot, "is-cva") ) return;
   
   if (!el || !conf.keyboard || el.disabled) return;
   
