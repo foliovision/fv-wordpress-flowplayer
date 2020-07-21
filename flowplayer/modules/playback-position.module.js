@@ -19,19 +19,24 @@ if (!Date.now) {
     cookieKeyName = 'video_positions',
     tempCookieKeyName = 'video_positions_tmp',
     playPositions = [],
+    sawVideo = [],
 
     // retrieves the original source of a video
-    getOriginalSource = function(video) {
+    getVideoId = function(video) {
+      if( video.id ) {
+        return video.id;
+      }
+      
       // logged-in users will have position stored within that video
       var out = (
         (typeof(video.sources_original) != "undefined" && typeof(video.sources_original[0]) != "undefined") ?
-          video.sources_original[0] :
-          video.sources[0]
+          video.sources_original[0].src :
+          video.sources[0].src
       );
 
       // remove all AWS signatures from the path, if an original video URL is not found / present
       if (typeof(video.sources_original) == "undefined" || typeof(video.sources_original[0]) == "undefined") {
-        out.src = removeAWSSignatures(out.src);
+        out = removeAWSSignatures(out);
       }
 
       return out;
@@ -61,12 +66,9 @@ if (!Date.now) {
     // called when the video finishes playing - removes that video position from cache, as it's no longer needed
     removeVideoPosition = function (e, api) {
       if (api.video.sources) {
-        if (typeof(playPositions) == 'undefined') {
-          playPositions = [];
-        }
-
-        var originalVideoApiPath = getOriginalSource(api.video);
-        playPositions[originalVideoApiPath.src] = 0;
+        var video_id = getVideoId(api.video);
+        playPositions[video_id] = 0;
+        sawVideo[video_id] = 1;
       }
     },
 
@@ -96,7 +98,8 @@ if (!Date.now) {
         // remove all AWS signatures from this video
         postData.push({
           name: video_name,
-          position: playPositions[video_name]
+          position: playPositions[video_name],
+          saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false
         });
       }
 
@@ -217,7 +220,7 @@ if (!Date.now) {
   flowplayer( function(api,root) {
     var
       $root = jQuery(root),
-      enabled = flowplayer.conf.video_position_save_enable || $root.data('save-position'),
+      enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position'),
       progressEventsCount = 0,
 
       // used to seek into the desired last stored position when he video has started
@@ -225,8 +228,8 @@ if (!Date.now) {
         if( api.video && api.video.live ) return;
 
         var
-          originalVideoApiPath = getOriginalSource(api.video),
-          position = originalVideoApiPath.position;
+          video_id = getVideoId(api.video),
+          position = api.video.position;
 
         api.bind('progress', storeVideoPosition);
 
@@ -238,11 +241,11 @@ if (!Date.now) {
             try {
               data = JSON.parse(data);
 
-              if (data[originalVideoApiPath.src]) {
-                seek(data[originalVideoApiPath.src]);
+              if (data[video_id]) {
+                seek(data[video_id]);
 
                 // remove the temporary cookie/localStorage data
-                delete data[originalVideoApiPath.src];
+                delete data[video_id];
 
                 // check if we have any data left
                 var stillHasData = false;
@@ -278,8 +281,8 @@ if (!Date.now) {
               try {
                 data = JSON.parse(data);
 
-                if (data[originalVideoApiPath.src]) {
-                  seek(data[originalVideoApiPath.src]);
+                if (data[video_id]) {
+                  seek(data[video_id]);
                 }
               } catch (e) {
                 // something went wrong...
@@ -298,20 +301,11 @@ if (!Date.now) {
         }
 
         if (api.video.sources) {
-          if (typeof(playPositions) == 'undefined') {
-            playPositions = [];
-          }
-
           var
-            originalVideoApiPath = getOriginalSource(api.video),
+            video_id = getVideoId(api.video),
             position = Math.round(api.video.time);
 
-          playPositions[originalVideoApiPath.src] = position;
-
-          // store the new position in the instance itself as well
-          if (originalVideoApiPath.position) {
-            originalVideoApiPath.position = position;
-          }
+          playPositions[video_id] = position;
 
           // make a call home every +-30 seconds to make sure a browser crash doesn't affect the position save too much
           // if (progressEventsCount++ >= sendPositionsEvery) {
