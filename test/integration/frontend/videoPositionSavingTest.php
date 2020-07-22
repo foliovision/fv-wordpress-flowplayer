@@ -135,7 +135,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 </div>
 	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim\" rel=\"some-test-hash\">
 		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/1.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/2.mp4\",\"type\":\"video\/mp4\",\"position\":\"12\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/2.mp4\",\"type\":\"video\/mp4\",\"position\":12}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/3.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 	</div>
 
