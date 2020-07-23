@@ -384,7 +384,7 @@ if (!Date.now) {
           if( api.conf.playlist.length ) {
             api.conf.playlist[i].sources[0].position = position;
           } else {
-            api.conf.clip[0].position = position;
+            api.conf.clip.sources[0].position = position;
           }
         }
 
@@ -392,7 +392,7 @@ if (!Date.now) {
           if( api.conf.playlist.length ) {
             api.conf.playlist[i].sources[0].saw = true;
           } else {
-            api.conf.clip[0].saw = true;
+            api.conf.clip.sources[0].saw = true;
           }
         }
       }
