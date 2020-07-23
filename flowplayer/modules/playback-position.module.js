@@ -152,8 +152,6 @@ if (!Date.now) {
               temp_saw_data[postData[i].name] = postData[i].saw;
             }
 
-            
-
             setCookieKey(tempPositionCookieKeyName, getSerialized(temp_position_data));
             setCookieKey(tempSawCookieKeyName, getSerialized(temp_saw_data));
           } catch (e) {
@@ -244,15 +242,6 @@ if (!Date.now) {
 
         api.bind('progress', storeVideoPosition);
 
-        // logged-in user, try to seek into a position stored during the last page reload if found,
-        // since sendBeacon() call might not have arrived into our DB yet
-        if (flowplayer.conf.is_logged_in == '1') {
-          var temp_seek_time = processTempData(tempPositionCookieKeyName,video_id);
-          if( temp_seek_time ) {
-            seek(temp_seek_time);
-          }
-        }
-
         // no temporary positions found, let's work with DB / cookies
         if (position) {
           seek(position);
@@ -340,7 +329,7 @@ if (!Date.now) {
           try {
             data = JSON.parse(data);
 
-            if (data[video_id]) {
+            if ( typeof(data[video_id]) != "undefined" ) {
               output = data[video_id];
 
               // remove the temporary cookie/localStorage data
@@ -383,16 +372,27 @@ if (!Date.now) {
       api.bind( 'ready', seekIntoPosition);
     }
 
-    // Check all the playlist items to see if any of them has the temporary "saw" cookie set
+    // Check all the playlist items to see if any of them has the temporary "position" or "saw" cookie set
     if (flowplayer.conf.is_logged_in == '1') {
       var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ];
       for( var i in playlist ) {
-        var saw = processTempData(tempSawCookieKeyName,getVideoId(playlist[i]));
+        var video_id = getVideoId(playlist[i]),
+          position = processTempData(tempPositionCookieKeyName,video_id),
+          saw = processTempData(tempSawCookieKeyName,video_id);
+
+        if( position ) {
+          if( api.conf.playlist.length ) {
+            api.conf.playlist[i].sources[0].position = position;
+          } else {
+            api.conf.clip[0].position = position;
+          }
+        }
+
         if( saw ) {
           if( api.conf.playlist.length ) {
-            api.conf.playlist[i].saw = true;
+            api.conf.playlist[i].sources[0].saw = true;
           } else {
-            api.conf.clip.saw = true;
+            api.conf.clip[0].saw = true;
           }
         }
       }
