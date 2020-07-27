@@ -203,6 +203,22 @@ var $doc = $(document),
 
     if( jQuery().fv_player_box ) {
       $doc.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
+        // make the TinyMCE editor below this button active,
+        // as otherwise we would be inserting into the last TinyMCE instance
+        // on the page if no TinyMCE instance was clicked into - which is not what we want to do
+        if (typeof(tinyMCE) != 'undefined' && typeof(tinyMCE.activeEditor) != 'undefined' && this.className.indexOf('fv-wordpress-flowplayer-button') > -1) {
+          var
+            $btn = jQuery(this),
+            $wraper_div = $btn.parents('.wp-editor-wrap:first');
+
+          for (var i in tinyMCE.editors) {
+            if ($wraper_div.find('#' + tinyMCE.editors[i].editorContainer.id).length) {
+              tinyMCE.activeEditor = tinyMCE.editors[i];
+              break;
+            }
+          }
+        }
+
         editor_button_clicked = this;
         e.preventDefault();
         $.fv_player_box( {
