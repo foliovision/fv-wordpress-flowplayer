@@ -275,7 +275,7 @@ class FV_Player_video_intelligence_Installer {
         "FV Player video intelligence",
         "fv-player-video-intelligence",
         "fv-player-video-intelligence.php",
-        "https://foliovision.com/plugins/public/fv-player-video-intelligence.zip",
+        "https://foliovision.com/downloads/fv-player-video-intelligence-for-integration-tests.zip",
         admin_url('options-general.php?page=fvplayer&fv_player_vi_install=1#postbox-container-tab_video_intelligence'),
         'fv_wordpress_flowplayer_deferred_notices',
         'fv_player_vi_install'

@@ -17,6 +17,11 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
 
+  // we had a problem that some websites would change the key in HTML if stored as $62\d+
+  try {
+    flowplayer.conf.key = atob(flowplayer.conf.key);
+  } catch(e) {}
+
   if( !flowplayer.support.android && flowplayer.conf.dacast_hlsjs ) {
     function FVAbrController(hls) {      
       this.hls = hls;

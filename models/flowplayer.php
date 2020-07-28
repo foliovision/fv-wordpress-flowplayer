@@ -347,11 +347,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
     }
 
-    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
-    $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.esc_attr($options['first_td_class']).'"' : '');
+    $class_name     = (!empty($options['class']) ? ' class="'.esc_attr($options['class']).'"' : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
-    $title          = (!empty($options['title']) ? ' title="'.$options['title'].'" ' : '');
+    $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');     
 
@@ -363,11 +363,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if ( is_array( $key ) && count( $key ) > 1 ) {
       $key = $key[0] . '[' . $key[1] . ']';
     }
+    
+    // use the default value if the setting is empty
+    // however in case of marginBottom you might wish to enter 0 and we need to accept that
+    // so we just check if the default if a number and if it is, we allow even 0 value
+    $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
     ?>
       <tr>
         <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input <?php echo $class_name; ?> id="<?php echo $key; ?>" name="<?php echo $key; ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+          <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -405,7 +410,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.esc_attr($data_value).'"';
+                echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
             ?> />
@@ -1132,7 +1137,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
   
       if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
-        $iMargin = intval($this->_get_option(array($skin, 'marginBottom')));
+        $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
         $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
         $css .= $sel.".has-caption { margin: 0 auto; }\n";
         $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
@@ -1190,7 +1195,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_ad a { color: <?php echo $this->_get_option('adLinksColor'); ?> }
     
     .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
-    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>.fp-playlist-external > a,.fp-playlist-vertical a h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }<?php endif; ?>
+    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
+      .fp-playlist-external a h4,
+      .fp-playlist-external a:hover h4,
+      .fp-playlist-external a.is-active:hover h4,
+      .visible-captions.fp-playlist-external a h4 span,
+      .fv-playlist-design-2014.fp-playlist-external a h4,
+      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }
+    <?php endif; ?>
     .fp-playlist-external > a.is-active > span { border-color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
@@ -1866,7 +1878,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sClass .= $this->aCurArgs['listdesign'];
     } else {
       $sClass .= $this->_get_option('playlist-design');
-    }    
+    }
+    
+    // Playlist design doesn't have any use for these two playlist styles:
+    if( in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+      $sClass = '';
+    }
 
     if( isset($this->aCurArgs['liststyle']) ) {
       $list_style = $this->aCurArgs['liststyle'];

@@ -195,7 +195,23 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	global $fv_wp_flowplayer_ver;
 	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
-	}
+  }
+
+  // when using Google PageSpeed module
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
+    return 1;
+  }
+
+  // when using SCRIPT_DEBUG
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=' ) !== false ) {
+		return 1;
+  }
+  
+  // when using SCRIPT_DEBUG with Google PageSpeed module
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js,qver=' ) !== false ) {
+    return 1;
+  }
+
 	return 0;
 }
 

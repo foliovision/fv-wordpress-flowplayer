@@ -17,9 +17,36 @@ if (!Date.now) {
     maxCookieSize = 2500,
     localStorageEnabled = null,
     cookieKeyName = 'video_positions',
-    tempCookieKeyName = 'video_positions_tmp',
+    tempPositionCookieKeyName = 'video_positions_tmp',
+    tempSawCookieKeyName = 'video_saw_tmp',
     playPositions = [],
     sawVideo = [],
+
+    getSerialized = function(data) {
+      var
+        serialized = JSON.stringify(data),
+        dataSize = getTextByteSize(serialized);
+
+      // check if we're not going over maximum cache size
+      if (dataSize > maxCookieSize) {
+        // we're over max cache size, let's delete some older videos
+        while (dataSize > maxCookieSize) {
+          // remove the first entry only
+          for (var i in data) {
+            delete data[i];
+
+            // re-serialize with the value removed
+            serialized = JSON.stringify(data);
+            // calculate new data size, so we can exit the while loop
+            dataSize = getTextByteSize(serialized);
+
+            break;
+          }
+        }
+      }
+
+      return serialized;
+    },
 
     // retrieves the original source of a video
     getVideoId = function(video) {
@@ -68,7 +95,7 @@ if (!Date.now) {
       if (api.video.sources) {
         var video_id = getVideoId(api.video);
         playPositions[video_id] = 0;
-        sawVideo[video_id] = 0;
+        sawVideo[video_id] = 1;
       }
     },
 
@@ -105,7 +132,8 @@ if (!Date.now) {
 
       if (!postData.length) {
         // no video positions? remove the temporary position cookie/localStorage data as well
-        removeCookieKey(tempCookieKeyName);
+        removeCookieKey(tempPositionCookieKeyName);
+        removeCookieKey(tempSawCookieKeyName);
         return;
       }
 
@@ -115,36 +143,17 @@ if (!Date.now) {
           // in case of a page reload, we'll store our last positions into a temporary cookie/localStorage
           // which will get removed on next page load
           try {
-            data = {};
+            var temp_position_data = {},
+              temp_saw_data = {};
 
             // add our video positions
             for (var i in postData) {
-              data[postData[i].name] = postData[i].position;
+              temp_position_data[postData[i].name] = postData[i].position;
+              temp_saw_data[postData[i].name] = postData[i].saw;
             }
 
-            var
-              serialized = JSON.stringify(data),
-              dataSize = getTextByteSize(serialized);
-
-            // check if we're not going over maximum cache size
-            if (dataSize > maxCookieSize) {
-              // we're over max cache size, let's delete some older videos
-              while (dataSize > maxCookieSize) {
-                // remove the first entry only
-                for (var i in data) {
-                  delete data[i];
-
-                  // re-serialize with the value removed
-                  serialized = JSON.stringify(data);
-                  // calculate new data size, so we can exit the while loop
-                  dataSize = getTextByteSize(serialized);
-
-                  break;
-                }
-              }
-            }
-
-            setCookieKey(tempCookieKeyName, serialized);
+            setCookieKey(tempPositionCookieKeyName, getSerialized(temp_position_data));
+            setCookieKey(tempSawCookieKeyName, getSerialized(temp_saw_data));
           } catch (e) {
             // JSON JS support missing
             return;
@@ -233,43 +242,6 @@ if (!Date.now) {
 
         api.bind('progress', storeVideoPosition);
 
-        // logged-in user, try to seek into a position stored during the last page reload if found,
-        // since sendBeacon() call might not have arrived into our DB yet
-        if (flowplayer.conf.is_logged_in == '1') {
-          var data = getCookieKey(tempCookieKeyName);
-          if (data && typeof(data) !== 'undefined') {
-            try {
-              data = JSON.parse(data);
-
-              if (data[video_id]) {
-                seek(data[video_id]);
-
-                // remove the temporary cookie/localStorage data
-                delete data[video_id];
-
-                // check if we have any data left
-                var stillHasData = false;
-                for (var i in data) {
-                  stillHasData = true;
-                  break;
-                }
-
-                if (stillHasData) {
-                  setCookieKey(tempCookieKeyName, JSON.stringify(data));
-                } else {
-                  removeCookieKey(tempCookieKeyName);
-                }
-              }
-
-              // we seeked into the correct position now, let's bail out,
-              // so the DB value doesn't override this
-              return;
-            } catch (e) {
-              // something went wrong, so the next block will continue
-            }
-          }
-        }
-
         // no temporary positions found, let's work with DB / cookies
         if (position) {
           seek(position);
@@ -348,7 +320,45 @@ if (!Date.now) {
           api.seek(parseInt(position)); // int for Dash.js!
           clearInterval(do_seek);
         }, 10 );
-      };
+      },
+
+      processTempData = function(temp_data_name, video_id) {
+        var data = getCookieKey(temp_data_name),
+          output = false;
+        if (data && typeof(data) !== 'undefined') {
+          try {
+            data = JSON.parse(data);
+
+            if ( typeof(data[video_id]) != "undefined" ) {
+              output = data[video_id];
+
+              // remove the temporary cookie/localStorage data
+              delete data[video_id];
+
+              // check if we have any data left
+              var stillHasData = false;
+              for (var i in data) {
+                stillHasData = true;
+                break;
+              }
+
+              if (stillHasData) {
+                setCookieKey(temp_data_name, JSON.stringify(data));
+              } else {
+                removeCookieKey(temp_data_name);
+              }
+            }
+
+            // we seeked into the correct position now, let's bail out,
+            // so the DB value doesn't override this
+            return output;
+          } catch (e) {
+            // something went wrong, so the next block will continue
+          }
+        }
+      }
+
+      
 
     if( !enabled ) return;
 
@@ -360,6 +370,33 @@ if (!Date.now) {
       api.one( 'progress', seekIntoPosition);
     } else {
       api.bind( 'ready', seekIntoPosition);
+    }
+
+    // Check all the playlist items to see if any of them has the temporary "position" or "saw" cookie set
+    if (flowplayer.conf.is_logged_in == '1') {
+      var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ];
+      for( var i in playlist ) {
+        var video_id = getVideoId(playlist[i]),
+          position = processTempData(tempPositionCookieKeyName,video_id),
+          saw = processTempData(tempSawCookieKeyName,video_id);
+
+        if( position ) {
+          if( api.conf.playlist.length ) {
+            api.conf.playlist[i].sources[0].position = position;
+          } else {
+            api.conf.clip.sources[0].position = position;
+          }
+        }
+
+        if( saw ) {
+          if( api.conf.playlist.length ) {
+            api.conf.playlist[i].sources[0].saw = true;
+          } else {
+            api.conf.clip.sources[0].saw = true;
+          }
+        }
+      }
+      
     }
 
     // TODO: find out what event can be used to force saving of playlist video positions on video change

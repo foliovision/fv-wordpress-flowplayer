@@ -6,34 +6,40 @@ flowplayer( function(api,root) {
   
   root = jQuery(root);
   
-  var video_tag = false;
+  var video_tag = false,
+    did_start_playing = false;
   
   // first we need to obtain the video element
   api.on('ready', function() {
-    // remove the previously bound events
-    if( video_tag ) {
-      video_tag.off( "waiting", wait_for_stalled );
-      //video_tag.off( "stalled suspend abort emptied error waiting", debug );
-      video_tag = false;
-      
-      // we don't want the initial seek when resuming position to trigger error
-      api.off('beforeseek', wait_for_stalled);
-    }    
+    did_start_playing = false;
     
     if( api.engine.engineName == 'html5' ) {
       // find the video
       video_tag = root.find('video');
       
-      // triggered if the iOS video player runs out of buffer
-      video_tag.on( "waiting", wait_for_stalled );
-      //video_tag.on( "stalled suspend abort emptied error waiting", debug );
-      
-      // triggered if you seek
+      if( !video_tag.data('fv-ios-recovery') ) {
+        // triggered if the iOS video player runs out of buffer
+        video_tag.on( "waiting", wait_for_stalled );
+        
+        // we use this to ensure the video tag has the event bound only once
+        video_tag.data('fv-ios-recovery',true);
+        //video_tag.on( "stalled suspend abort emptied error waiting", debug );
+      }
+
       api.one('progress', function() {
-        api.bind('beforeseek', wait_for_stalled);
+        did_start_playing = true;
       });
     }
 
+  });
+
+  // you might seek into unbuffered part of video too
+  api.bind('beforeseek', function() {
+    // we don't want the initial seek when resuming position to trigger error
+    // so we track if the playback did actually start in this variable
+    if( did_start_playing ) {
+      wait_for_stalled();
+    }
   });
   
   function debug(e) {
@@ -58,6 +64,12 @@ flowplayer( function(api,root) {
             console.log("FV PLayer: iOS video element continues playing, no need for error");
             return;
           }
+
+          // the video is paused, so it should not progress and it's fine
+          if( api.paused ) {
+            console.log("FV PLayer: iOS video element paused, no need for error");
+            return;
+          }          
           
           // so we can tell Flowplayer there is an error
           api.trigger('error', [api, { code: 4, video: api.video }]);

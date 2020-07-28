@@ -37,10 +37,14 @@ class FV_Player_Position_Save {
       foreach( $try AS $name ) {
         if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
           $aItem['sources'][0]['position'] = intval($metaPosition);
+          break;
         }
-        
+      }
+      
+      foreach( $try AS $name ) {
         if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_saw_' . $name, true ) ) {
           $aItem['sources'][0]['saw'] = true;
+          break;
         }
       }
     }
@@ -66,7 +70,7 @@ class FV_Player_Position_Save {
           update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
         }
         
-        if( !empty($record['saw']) && $record['saw'] == 'true' ) {
+        if( !empty($record['saw']) && $record['saw'] == true ) {
           update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
         }
       }
