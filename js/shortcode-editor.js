@@ -2132,6 +2132,21 @@ var $doc = $(document),
           if (db_id) {
             $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
           }
+
+          // hotfix:
+          // make sure the width and height inputs are in sync and have the correct value,
+          // as we have duplicate fields for them in 2 places (video tab and options tab)
+          // and if there is only a single video, the video tab takes precedence,
+          // otherwise it's the options tab
+          if ( $('.fv-player-tab-playlist table .ui-sortable-handle').length > 1) {
+            // multiple videos playlist, options tab values must be filled-in
+            $('.fv-player-tab-options .fv_wp_flowplayer_field_width').val(response.width);
+            $('.fv-player-tab-options .fv_wp_flowplayer_field_height').val(response.height)
+          } else {
+            // single video playlist, video tab values must be filled-in
+            $('.fv-player-tab-video-files .fv_wp_flowplayer_field_width').val(response.width);
+            $('.fv-player-tab-video-files .fv_wp_flowplayer_field_height').val(response.height);
+          }
         }).error(function(xhr) {
           if (xhr.status == 404) {
             overlay_show('message', 'The requested player could not be found. Please try again.');
@@ -2148,7 +2163,6 @@ var $doc = $(document),
             $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
           }
         });
-        
       } else {
         $doc.trigger('fv-player-editor-non-db-shortcode');
         // ordinary text shortcode in the editor
