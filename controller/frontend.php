@@ -326,6 +326,9 @@ function flowplayer_prepare_scripts() {
     
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
       $path = '/flowplayer/modules/flowplayer.min.js';
+      if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
+        $path = '/flowplayer/modules/flowplayer.js';
+      }
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'flowplayer';
       
