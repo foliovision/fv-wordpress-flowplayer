@@ -49,6 +49,16 @@ function fv_player_shortcode_editor_scripts_enqueue() {
       'vast',
       'volume',
       'width'
+    ),
+    'shortcode_args_not_db_compatible' => array(
+      'fullscreen',
+      'liststyle',
+      'logo',
+      'midroll',
+      'playlist_advance',
+      'sort',
+      'vast',
+      'volume'
     )
   ) );
   

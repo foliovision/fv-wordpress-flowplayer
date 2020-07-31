@@ -76,9 +76,15 @@ var $doc = $(document),
   var shortcode_remains;  
   
   // Some shortcode args should be kept. For example if you edit
-  // [fvplayer id="1 sort="newest"] that sort should not be removed
+  // [fvplayer id="1" sort="newest"] that sort should not be removed
   var store_shortcode_args = {};
-  
+
+  // Some shortcode args do not have a DB counterpars, so they should always
+  // be kept on the shortcode. For example if you edit
+  // [fvplayer src="some_video_url" sort="newest"] that sort should not be removed,
+  // as it's not been transferred into the DB
+  var always_keep_shortcode_args = {};
+
   // Flowplayer only lets us specify the RTMP server for the first video in plalist, so we store it here when the playlist item order is changing etc.
   var store_rtmp_server = '';
   
@@ -2440,10 +2446,18 @@ var $doc = $(document),
       }
 
       store_shortcode_args = {};
+      always_keep_shortcode_args = {};
       for( var i in fv_player_editor_conf.shortcode_args_to_preserve ) {
         var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
         if (value && value[1]) {
           store_shortcode_args[fv_player_editor_conf.shortcode_args_to_preserve[i]] = value[1];
+        }
+      }
+
+      for( var i in fv_player_editor_conf.shortcode_args_not_db_compatible ) {
+        var value = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_not_db_compatible[i] );
+        if (value && value[1]) {
+          always_keep_shortcode_args[fv_player_editor_conf.shortcode_args_not_db_compatible[i]] = value[1];
         }
       }
 
@@ -2534,6 +2548,8 @@ var $doc = $(document),
 
     overlay_show('loading');
 
+    var player_was_non_db = (current_player_db_id > -1 ? false : true);
+
     // unmark DB player ID as being currently edited
     if ( current_player_db_id > -1 ) {
       current_player_db_id = -1;
@@ -2552,10 +2568,35 @@ var $doc = $(document),
       var player = JSON.parse(response);
       current_player_db_id = parseInt(player.id);
       if( current_player_db_id > 0 ) {
-        // we have extra parameters to keep
+        // we have extra presentation parameters to keep
         if (store_shortcode_args) {
+          // if this was a non-DB player and is being converted into a DB-player,
+          // remove all parameters to keep that will go into the DB
+          var args_to_keep = {};
+
+          for (var i in store_shortcode_args) {
+            if (always_keep_shortcode_args[ i ]) {
+              args_to_keep[ i ] = store_shortcode_args[ i ];
+            }
+          }
+
+          store_shortcode_args = args_to_keep;
+
           var
             params = jQuery.map(store_shortcode_args, function (value, index) {
+              return index + '="' + value + '"';
+            }),
+            to_append = '';
+
+          if (params.length) {
+            to_append = ' ' + params.join(' ');
+          }
+
+          insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
+        } else if (always_keep_shortcode_args && player_was_non_db) {
+          // we have extra parameters to keep that are DB-incompatible
+          var
+            params = jQuery.map(always_keep_shortcode_args, function (value, index) {
               return index + '="' + value + '"';
             }),
             to_append = '';
