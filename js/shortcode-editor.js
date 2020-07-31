@@ -724,7 +724,7 @@ var $doc = $(document),
       }, 500 );
     });
 
-    $doc.on('fv_flowplayer_shortcode_new', function() {
+    $doc.on('fv_flowplayer_shortcode_new fv-player-editor-non-db-shortcode', function() {
       $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
     });
 
