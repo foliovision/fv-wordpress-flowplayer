@@ -399,6 +399,15 @@ if (!Date.now) {
       
     }
 
+    // store saw after finish
+    api.bind('finish', function (e, api) {
+      if( api.conf.playlist.length ) {
+        api.conf.playlist[api.video.index].sources[0].saw = true;
+      } else {
+        api.conf.clip.sources[0].saw = true;
+      }
+    });
+
     // TODO: find out what event can be used to force saving of playlist video positions on video change
     //api.bind('finish', forceSavePosition);
   });
