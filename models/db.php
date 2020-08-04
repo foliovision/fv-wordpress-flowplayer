@@ -40,7 +40,7 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_player_db_import', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
     add_action( 'wp_ajax_fv_player_db_remove', array($this, 'remove_player') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce
+    add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce, move into controller/editor.php
     add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
     add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') ); // todo: error message on failure
   }
@@ -1470,14 +1470,29 @@ class FV_Player_Db {
       'ts' => time()
     );
 
-    // add duration
-    global $FV_Player_Checker, $fv_fp;        
-    if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
-      $url = $secured_url;
-    }    
-    
-    $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($url), false, true);
-    $json_data['duration'] = $json_data['duration']['duration'];
+    // was only the file path provided?
+    $parsed = parse_url($url);
+    if( count($parsed) == 1 && !empty($parsed['path']) ) {
+      // then user the WordPress home URL
+      $url = home_url($url);
+      // but remove the "path" if WordPress runs in a folder
+      $wordpress_home = parse_url(home_url());
+      if( !empty($wordpress_home['path']) ) {
+        $url = str_replace( $wordpress_home['path'], '', $url );
+      }
+    }
+
+    // only run the actual check for real URLs
+    if( filter_var($url, FILTER_VALIDATE_URL) ) {
+      // add duration
+      global $FV_Player_Checker, $fv_fp;
+      if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
+        $url = $secured_url;
+      }
+      
+      $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($url), false, true);
+      $json_data['duration'] = $json_data['duration']['duration'];
+    }
 
     header('Content-Type: application/json');
     die(json_encode($json_data));
