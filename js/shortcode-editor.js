@@ -1338,7 +1338,7 @@ jQuery(function() {
       jQuery('#player_id_top_text').html('');
 
       // is there a Custom Video field or Gutenberg field next to the button?
-      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
+      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
       if( field.length ) {
         editor_content = jQuery(field).val();
 
@@ -1826,7 +1826,7 @@ jQuery(function() {
           shortcode = '';
 
           // TinyMCE in Text Mode
-        } else if (instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden()) {
+        } else if ((instance_tinymce == undefined || typeof tinyMCE !== 'undefined') && tinyMCE.activeEditor.isHidden()) {
           editor_content = instance_fp_wysiwyg.GetHTML();
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
             instance_fp_wysiwyg.InsertHtml(helper_tag);
