@@ -1338,7 +1338,7 @@ jQuery(function() {
       jQuery('#player_id_top_text').html('');
 
       // is there a Custom Video field or Gutenberg field next to the button?
-      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
+      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
       if( field.length ) {
         editor_content = jQuery(field).val();
 
@@ -1770,7 +1770,9 @@ jQuery(function() {
       el_editor.find("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
       el_editor.find(".fv_player_field_insert-button").text( 'Insert' );
 
-      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
+      var
+        field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
+        is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length;
 
       if (!db_id) {
         // custom Field
@@ -1869,6 +1871,11 @@ jQuery(function() {
       if(typeof(shortcode) == 'undefined'){
         if (!db_id) {
           var shortcode = content.match( fv_wp_flowplayer_re_edit );
+
+          // Gutenberg
+          if (is_gutenberg) {
+            shortcode = [ content ];
+          }
         } else {
           var shortcode = ['fvplayer id="' + db_id + '"'];
         }
