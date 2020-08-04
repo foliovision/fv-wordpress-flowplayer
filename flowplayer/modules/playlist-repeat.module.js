@@ -142,17 +142,17 @@ flowplayer( function(api,root) {
           e.preventDefault();
           e.stopPropagation();
           
+          jQuery(this).toggleClass('is-active fp-color-fill',api.video.loop);
+          
           if( api.video.loop ) {
             api.video.loop = false;
-            jQuery(this).removeClass('is-active fp-color-fill');
           } else {
             api.video.loop = true;
-            jQuery(this).addClass('is-active fp-color-fill');
           }
         });
         
         if( api.conf.loop ) {
-          button_track_repeat.click();
+          button_track_repeat.addClass('is-active fp-color-fill');
         }
         
       }
