@@ -66,18 +66,8 @@ class FV_Player_Db_Video {
       $caption = end($arr);
     }
 
-    // update YouTube and other video names
-    $vid_replacements = array(
-      'watch?v=' => 'YouTube: ',
-      'playlist?list=' => 'YouTube Playlist: ',
-    );  
+    $caption = apply_filters( 'fv_flowplayer_caption_src', $src , $caption );
 
-    $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
-    
-    if( is_numeric($caption) && intval($caption) == $caption && stripos($src,'vimeo.com/') !== false ) {
-      $caption = "Vimeo: ".$caption;
-    }
-    
     return urldecode($caption);
   }
   
