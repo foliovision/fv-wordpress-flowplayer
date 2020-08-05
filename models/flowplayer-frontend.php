@@ -587,10 +587,10 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
-          $attributes['data-fv_loop'] = true;
+          $attributes['data-loop'] = true;
         } else if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
           // compatibility fallback for classic (non-DB) shortcode
-          $attributes['data-fv_loop'] = true;
+          $attributes['data-loop'] = true;
         }
         
         if( isset($this->aCurArgs['admin_warning']) ) {
@@ -1227,7 +1227,7 @@ HTML;
       $tags['div']['data-engine'] = true;
       $tags['div']['data-embed'] = true;
       $tags['div']['data-fv-embed'] = true;
-      $tags['div']['data-fv_loop'] = true;
+      $tags['div']['data-loop'] = true;
       $tags['div']['data-fv_redirect'] = true;
       $tags['div']['data-fvautoplay'] = true;
       $tags['div']['data-fvsticky'] = true;
