@@ -586,13 +586,6 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
 
-        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
-          $attributes['data-loop'] = true;
-        } else if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-          // compatibility fallback for classic (non-DB) shortcode
-          $attributes['data-loop'] = true;
-        }
-        
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
         }
@@ -613,6 +606,16 @@ class flowplayer_frontend extends flowplayer
             }
           }
         }
+
+        if(
+          !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ||
+          // compatibility fallback for classic (non-DB) shortcode
+          isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true'
+        ) {
+          $attributes['data-loop'] = true;
+          unset($attributes['data-advance']); // loop won't work if auto advance is disabled
+        }
+                
 
         if( $popup_contents = $this->get_popup_code() ) {
           $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;
