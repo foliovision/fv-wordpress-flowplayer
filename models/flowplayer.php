@@ -735,7 +735,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     fv_wp_flowplayer_delete_extensions_transients();
     
-    if( $aOldOptions['key'] != $sKey ) {      
+    if( empty($aOldOptions['key']) || $aOldOptions['key'] != $sKey ) {      
       global $FV_Player_Pro_loader;
       if( isset($FV_Player_Pro_loader) ) {
         $FV_Player_Pro_loader->license_key = $sKey;
