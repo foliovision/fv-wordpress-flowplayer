@@ -525,7 +525,7 @@ function fv_autoplay_init(root, index ,time){
   }
   if(root.hasClass('lightboxed')){
     setTimeout(function(){
-      jQuery('[href=#' + root.attr('id')+ ']').click();
+      jQuery('[href=\\#' + root.attr('id')+ ']').click();
     },0);
   }
 

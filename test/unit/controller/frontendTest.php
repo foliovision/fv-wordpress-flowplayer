@@ -81,10 +81,6 @@ final class FV_Player_Controller extends TestCase {
     global $fv_fp;
     $fv_fp = new flowplayer();
     
-    //  todo: fix in core perhaps
-    $fv_fp->aAds = array();
-    $fv_fp->aPopups = array();
-    
     include_once "../../controller/frontend.php";
   }
 
