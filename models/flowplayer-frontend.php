@@ -731,7 +731,7 @@ class flowplayer_frontend extends flowplayer
   
   function get_ad_code() {
     $ad_contents = false;
-    var_dump('cur args',$this->aCurArgs);die();
+    
     if(
       ( trim($this->_get_option('ad')) || ( isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad']) ) ) 
       && !strlen($this->aCurArgs['ad_skip'])        
