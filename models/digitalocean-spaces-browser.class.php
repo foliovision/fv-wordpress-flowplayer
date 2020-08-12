@@ -40,10 +40,10 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
 
     $region = $FV_Player_DigitalOcean_Spaces->get_region();
     
-    $secret = $fv_fp->_get_option(array('pro','digitalocean_spaces_secret'));
-    $key    = $fv_fp->_get_option(array('pro','digitalocean_spaces_key'));
-    $bucket = $fv_fp->_get_option(array('pro','digitalocean_spaces_space'));
-    //$domain = $fv_fp->_get_option(array('pro','digitalocean_spaces_space'));
+    $secret = $fv_fp->_get_option(array('digitalocean_spaces','secret'));
+    $key    = $fv_fp->_get_option(array('digitalocean_spaces','key'));
+    $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
+    //$domain = $fv_fp->_get_option(array('digitalocean_spaces','space'));
 
     $output = array(
       'name' => 'Home',
@@ -189,10 +189,10 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     global $fv_fp;
 
     return (
-      $fv_fp->_get_option(array('pro','digitalocean_spaces_endpoint'))
-      && $fv_fp->_get_option(array('pro','digitalocean_spaces_secret'))
-      && $fv_fp->_get_option(array('pro','digitalocean_spaces_key'))
-      && $fv_fp->_get_option(array('pro','digitalocean_spaces_space'))
+      $fv_fp->_get_option(array('digitalocean_spaces','endpoint'))
+      && $fv_fp->_get_option(array('digitalocean_spaces','secret'))
+      && $fv_fp->_get_option(array('digitalocean_spaces','key'))
+      && $fv_fp->_get_option(array('digitalocean_spaces','space'))
     );
   }
 

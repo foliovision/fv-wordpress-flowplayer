@@ -17,10 +17,43 @@ abstract class FV_Player_CDN {
     if( !empty($args['title']) ) $this->title = $args['title'];
     
     if( !$this->aDomains && !$this->aSecureTokens ) {
-      add_action( 'admin_init', array( $this, 'register_meta_boxes' ), 20 );
+      // we use priority 21 to make sure it's after any FV_Player_Pro_Ajax_Loader::register_meta_boxes()
+      add_action( 'admin_init', array( $this, 'register_meta_boxes' ), 21 );
     }
     add_filter( 'plugins_loaded', array( $this, 'load_options' ), 8 );
   }
+
+
+  /*
+   * Used by FV Player Pro
+   */
+  function ajax() {
+    if( isset($_POST['action']) && $_POST['action'] == 'fv_fp_get_video_url' ) {
+      $bFound = false;
+      foreach( $this->aDomains AS $i => $sDomains ) {
+        $aDomains = explode(',',$sDomains);
+        foreach( $aDomains AS $sDomain ) {
+          foreach( $_POST['sources'] AS $key => $aVideo ) {
+            if( !isset($aVideo['src']) || !isset($aVideo['type']) ) continue;
+            
+            if( stripos($aVideo['src'],$sDomain) !== false ) {
+              $bFound = true;            
+              $aVideo['src'] = $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]);       
+              $_POST['sources'][$key] = $aVideo;
+            }          
+          }
+        }
+      }
+      
+      if( $bFound ) {
+        echo '<FVFLOWPLAYER>';
+        echo json_encode($_POST['sources']);            
+        echo '</FVFLOWPLAYER>';
+        die();
+      }
+    }
+    
+  }  
   
   
   function args( $args ) {
@@ -42,25 +75,28 @@ abstract class FV_Player_CDN {
   
   
   function get_signed_url( $url, $args, $ttl = false ) {
-    $bFound = false;
-    foreach( $this->aDomains AS $i => $sDomains ) {
-      $aDomains = explode(',',$sDomains);
-      foreach( $aDomains AS $sDomain ) {
-        if( stripos($url,$sDomain) !== false ) {
-          $bFound = true;
+    // either there is no FV_Player_Pro_Ajax_Loader from FV Player Pro or it's a back-end request for signed file URL
+    if( !class_exists('FV_Player_Pro_Ajax_Loader') || is_array($args) && isset($args['dynamic']) && $args['dynamic'] ) {
+      $bFound = false;
+      foreach( $this->aDomains AS $i => $sDomains ) {
+        $aDomains = explode(',',$sDomains);
+        foreach( $aDomains AS $sDomain ) {
+          if( stripos($url,$sDomain) !== false ) {
+            $bFound = true;
 
 
-          global $fv_fp, $post;
-          if( !empty($fv_fp) && method_exists($fv_fp,'current_video') && $fv_fp->current_video() ) {
-            $ttl = intval( $fv_fp->current_video()->getMetaValue('duration',true ) );
-          } else if( !empty($post) && !empty($post->ID) ) {
-            if( $sDuration = flowplayer::get_duration( $post->ID, $url, true ) ) {
-              $ttl = intval($sDuration);
+            global $fv_fp, $post;
+            if( !empty($fv_fp) && method_exists($fv_fp,'current_video') && $fv_fp->current_video() ) {
+              $ttl = intval( $fv_fp->current_video()->getMetaValue('duration',true ) );
+            } else if( !empty($post) && !empty($post->ID) ) {
+              if( $sDuration = flowplayer::get_duration( $post->ID, $url, true ) ) {
+                $ttl = intval($sDuration);
+              }
             }
+            
+            $url = $this->secure_link($url,$this->aSecureTokens[$i],$ttl);
           }
-          
-          $url = $this->secure_link($url,$this->aSecureTokens[$i],$ttl);
-        }          
+        }
       }
     }
     
@@ -75,8 +111,8 @@ abstract class FV_Player_CDN {
   
   function get_domains() {
     global $fv_fp;
-    if( isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro'][$this->key.'_domain']) ) {
-      return array( $fv_fp->conf['pro'][$this->key.'_domain'] );
+    if( isset($fv_fp->conf[$this->key]) && isset($fv_fp->conf[$this->key]['domain']) ) {
+      return array( $fv_fp->conf[$this->key]['domain'] );
     }
     return false;
   }
@@ -84,8 +120,8 @@ abstract class FV_Player_CDN {
   
   function get_secure_tokens() {
     global $fv_fp;
-    if( isset($fv_fp->conf['pro']) && isset($fv_fp->conf['pro'][$this->key.'_secure_token']) ) {
-      return array( $fv_fp->conf['pro'][$this->key.'_secure_token'] );
+    if( isset($fv_fp->conf[$this->key]) && isset($fv_fp->conf[$this->key]['secure_token']) ) {
+      return array( $fv_fp->conf[$this->key]['secure_token'] );
     }
     return false;
   }
@@ -104,7 +140,10 @@ abstract class FV_Player_CDN {
     
     if( $this->aDomains && $this->aSecureTokens ) {
       add_filter( 'fv_player_pro_video_ajaxify_domains', array( $this, 'domains'), 999, 2 );
-      add_filter( 'fv_player_pro_video_ajaxify_args', array( $this, 'args'), 999, 2 );     
+      add_filter( 'fv_player_pro_video_ajaxify_args', array( $this, 'args'), 999, 2 );
+      
+      add_action( 'plugins_loaded', array( $this, 'ajax' ), 9 );
+      
       add_filter( 'fv_flowplayer_video_src', array( $this, 'get_signed_url'), 10, 2 );
       
       add_filter( 'fv_flowplayer_splash', array( $this, 'get_signed_url_long') );
@@ -119,28 +158,21 @@ abstract class FV_Player_CDN {
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="vertical-align:top"><label for="pro[<?php echo $this->key; ?>_domain]"><?php _e('Domain', 'fv-player-pro'); ?>:</label></td>
+        <td style="vertical-align:top"><label for="<?php echo $this->key; ?>[domain]"><?php _e('Domain', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <input type="text" size="40" name="pro[<?php echo $this->key; ?>_domain]" id="pro[keycdn_domain]" value="<?php if( isset($fv_fp->conf['pro'][$this->key.'_domain']) && strlen(trim($fv_fp->conf['pro'][$this->key.'_domain'])) ) echo trim($fv_fp->conf['pro'][$this->key.'_domain']); ?>" />
-          <p class="description"><?php _e('You can enter multiple domains separated by <code>,</code>.', 'fv-player-pro'); ?></p>
+          <input type="text" size="40" name="<?php echo $this->key; ?>[domain]" id="<?php echo $this->key; ?>[keycdn_domain]" value="<?php if( isset($fv_fp->conf[$this->key][$this->key.'_domain']) && strlen(trim($fv_fp->conf[$this->key]['domain'])) ) echo trim($fv_fp->conf[$this->key]['domain']); ?>" />
+          <p class="description"><?php _e('You can enter multiple domains separated by <code>,</code>.', 'fv-wordpress-flowplayer'); ?></p>
         </td>
       </tr>        
       <tr>
-        <td><label for="pro[<?php echo $this->key; ?>_secure_token]"><?php _e('Secure Token', 'fv-player-pro'); ?>:</label></td>
+        <td><label for="<?php echo $this->key; ?>[secure_token]"><?php _e('Secure Token', 'fv-wordpress-flowplayer'); ?>:</label></td>
         <td>
-          <input type="text" size="40" name="pro[<?php echo $this->key; ?>_secure_token]" id="pro[<?php echo $this->key; ?>_secure_token]" value="<?php if( isset($fv_fp->conf['pro'][$this->key.'_secure_token']) && strlen(trim($fv_fp->conf['pro'][$this->key.'_secure_token'])) ) echo trim($fv_fp->conf['pro'][$this->key.'_secure_token']); ?>" />
+          <input type="text" size="40" name="<?php echo $this->key; ?>[secure_token]" id="<?php echo $this->key; ?>[secure_token]" value="<?php if( isset($fv_fp->conf[$this->key][$this->key.'_secure_token']) && strlen(trim($fv_fp->conf[$this->key]['secure_token'])) ) echo trim($fv_fp->conf[$this->key]['secure_token']); ?>" />
         </td>
-      </tr>
-      <!--<tr>
-        <td style="vertical-align:top"><label for="pro[<?php echo $this->key; ?>_fallback]"><?php _e('Fallback Domain', 'fv-player-pro'); ?>:</label></td>
-        <td>
-          <input type="text" size="40" name="pro[<?php echo $this->key; ?>_fallback]" id="pro[<?php echo $this->key; ?>_fallback]" value="<?php if( isset($fv_fp->conf['pro'][$this->key.'_fallback']) && strlen(trim($fv_fp->conf['pro'][$this->key.'_fallback'])) ) echo trim($fv_fp->conf['pro'][$this->key.'_fallback']); ?>" />
-          <p class="description"><?php _e('Will be used for Download feature, you can use some other CDN which you have configured on this screen.', 'fv-player-pro'); ?></p>
-        </td>
-      </tr>-->        
+      </tr>    
       <tr>    		
         <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-player-pro'); ?>" style="margin-top: 2ex;"/>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" style="margin-top: 2ex;"/>
         </td>
       </tr>         
     </table>

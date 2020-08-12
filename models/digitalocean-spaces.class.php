@@ -7,7 +7,11 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   function __construct() {
     // TODO: What if FV Player is not yet loaded?
     parent::__construct( array( 'key' => 'digitalocean_spaces', 'title' => 'DigitalOcean Spaces') );
-    add_action( 'plugins_loaded', array( $this, 'include_dos_media_browser' ) );
+    
+    // we use priority of 9 to make sure it's loaded before FV Player Pro would load it
+    add_action( 'plugins_loaded', array( $this, 'include_dos_media_browser' ), 9 );
+    add_action( 'admin_init', array( $this, 'remove_fv_player_pro_dos' ), 21 );
+    add_action( 'admin_init', array( $this, 'migrate_fv_player_pro_dos' ), 21 );
   }
 
   // includes the Digital Ocean Spaces handling class itself
@@ -19,7 +23,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   
   function get_endpoint() {
     global $fv_fp;
-    $parsed = parse_url( $fv_fp->_get_option( array('pro',$this->key.'_endpoint' ) ) );
+    $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
     
     if( count($parsed) == 1 && !empty($parsed['path']) ) { // for input like "region.digitaloceanspaces.com" it returns it as path, not realizing it's the hostname
       return $parsed['path'];
@@ -33,7 +37,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   function get_domains() {
     global $fv_fp;
-    $space = $fv_fp->_get_option( array('pro',$this->key.'_space' ) );
+    $space = $fv_fp->_get_option( array($this->key,'space' ) );
     $endpoint = $this->get_endpoint();
     if( $space && $endpoint ) {
       return array( $space.'.'.$endpoint, $endpoint.'/'.$space );
@@ -48,7 +52,41 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   
   function get_secure_tokens() {
     global $fv_fp;
-    return $fv_fp->_get_option( array('pro',$this->key.'_key' ) ) && $fv_fp->_get_option( array('pro',$this->key.'_secret' ) );
+    return $fv_fp->_get_option( array($this->key,'key' ) ) && $fv_fp->_get_option( array($this->key,'secret' ) );
+  }
+
+  /*
+   * Migrate DigitalOcean Spaces settings from FV Player Pro
+   */
+  function migrate_fv_player_pro_dos() {
+    $option = get_option('fvwpflowplayer');
+    
+    $found_anything = false;
+
+    global $fv_fp;
+    foreach( array(
+      'endpoint',
+      'secret',
+      'key',
+      'space'
+    ) AS $key ) {
+
+      // bail if we have something already
+      if( !empty($option['digitalocean_spaces']) && !empty($option['digitalocean_spaces'][$key]) ) continue;
+
+      if( $value = $fv_fp->_get_option( array( 'pro', 'digitalocean_spaces_'.$key ) ) ) {
+        if( empty($option['digitalocean_spaces']) ) $option['digitalocean_spaces'] = array();
+      
+        $option['digitalocean_spaces'][$key] = $value;
+
+        $found_anything = true;
+      }
+    }
+    
+    if( $found_anything ) {
+      update_option('fvwpflowplayer', $option);
+    }
+
   }
   
   function options() {
@@ -59,37 +97,42 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     <table class="form-table2" style="margin: 5px; ">
       <?php
       $fv_fp->_get_input_text( array(
-        'key' => array('pro',$this->key.'_space'),
+        'key' => array($this->key,'space'),
         'name' => 'Space Name',
         'first_td_class' => 'first'
       ) );
       $fv_fp->_get_input_text( array(
-        'key' => array('pro',$this->key.'_endpoint'),
+        'key' => array($this->key,'endpoint'),
         'name' => 'Endpoint'
       ) );
       $fv_fp->_get_input_text( array(
-        'key' => array('pro',$this->key.'_key'),
+        'key' => array($this->key,'key'),
         'name' => 'Key'
       ) );
       $fv_fp->_get_input_text( array(
-        'key' => array('pro',$this->key.'_secret'),
+        'key' => array($this->key,'secret'),
         'name' => 'Secret'
       ) );
       ?>
       <tr>
         <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-player-pro'); ?>" style="margin-top: 2ex;"/>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" style="margin-top: 2ex;"/>
         </td>
       </tr>
     </table>
     <?php
   }
+
+  function remove_fv_player_pro_dos() {
+    // remove the legacy settings box in FV Player Pro
+    remove_meta_box('fv_player_pro_digitalocean_spaces', 'fv_flowplayer_settings_hosting', 'normal');    
+  }
   
   function secure_link( $url, $secret, $ttl = false ) {
     global $fv_fp;
-    $key = $fv_fp->_get_option( array('pro',$this->key.'_key' ) );
-    $secret = $fv_fp->_get_option( array('pro',$this->key.'_secret' ) );
-    $endpoint = $fv_fp->_get_option( array('pro',$this->key.'_endpoint' ) );
+    $key = $fv_fp->_get_option( array($this->key,'key' ) );
+    $secret = $fv_fp->_get_option( array($this->key,'secret' ) );
+    $endpoint = $fv_fp->_get_option( array($this->key,'endpoint' ) );
     $endpoint = explode('.',$endpoint);
     $endpoint = $endpoint[0];
     
