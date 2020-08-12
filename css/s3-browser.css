@@ -5,10 +5,9 @@
 
 .attachments-browser .breadcrumbs {
     color: #000;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
-    line-height: 35px;
-    margin: 31px 0 0 17px;
+    margin: 50px 0 0 17px;
 }
 .attachments-browser .breadcrumbs a:link, .attachments-browser .breadcrumbs a:visited {
     color: #000;
@@ -273,12 +272,16 @@
 }
 
 #__assets_browser {
-    top: 55px;
+    top: 68px;
     z-index: 2; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
-#__assets_browser .attachments-browser .s3-media-toolbar {
-    height: 40px !important;
+#browser-dropdown {
+    margin-top: 10px;
+}
+
+.attachments-browser .s3-media-toolbar {
+    height: 50px !important;
 }
 
 #__assets_browser .attachments-browser .attachment .thumbnail img {

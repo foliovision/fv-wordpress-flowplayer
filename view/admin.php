@@ -1986,7 +1986,7 @@ jQuery(document).ready(function(){
   }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -1996,7 +1996,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -2030,7 +2030,7 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
     var el = jQuery(id);
     if(el.length){
       var tab = el.parents('.postbox-container').attr('id');
-      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=\\#'+tab+']').click()
     }
   }
 });
