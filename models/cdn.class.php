@@ -18,38 +18,8 @@ abstract class FV_Player_CDN {
     
     if( !$this->aDomains && !$this->aSecureTokens ) {
       add_action( 'admin_init', array( $this, 'register_meta_boxes' ), 20 );
-      add_action( 'admin_init', array( $this, 'fix_bad_options' ), 19 );
     }
     add_filter( 'plugins_loaded', array( $this, 'load_options' ), 8 );
-  }
-
-  
-  function ajax() {
-    if( isset($_POST['action']) && $_POST['action'] == 'fv_fp_get_video_url' ) {
-      $bFound = false;
-      foreach( $this->aDomains AS $i => $sDomains ) {
-        $aDomains = explode(',',$sDomains);
-        foreach( $aDomains AS $sDomain ) {
-          foreach( $_POST['sources'] AS $key => $aVideo ) {
-            if( !isset($aVideo['src']) || !isset($aVideo['type']) ) continue;
-            
-            if( stripos($aVideo['src'],$sDomain) !== false ) {
-              $bFound = true;            
-              $aVideo['src'] = $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]);       
-              $_POST['sources'][$key] = $aVideo;
-            }          
-          }
-        }
-      }
-      
-      if( $bFound ) {
-        echo '<FVFLOWPLAYER>';
-        echo json_encode($_POST['sources']);            
-        echo '</FVFLOWPLAYER>';
-        die();
-      }
-    }
-    
   }
   
   
@@ -71,34 +41,26 @@ abstract class FV_Player_CDN {
   }
   
   
-  function fix_bad_options() {
-    if( $this->key == 'bunnycdn' ) {
-      $option = get_option('fvwpflowplayer');
-      if( isset($option['pro']) && isset($option['pro']['_domain']) ) {
-        $option['pro'][$this->key.'_domain'] = $option['pro']['_domain'];
-        unset($option['pro']['_domain']);
-        update_option('fvwpflowplayer', $option);
-      }
-      if( isset($option['pro']) && isset($option['pro']['_secure_token']) ) {
-        $option['pro'][$this->key.'_secure_token'] = $option['pro']['_secure_token'];
-        unset($option['pro']['_secure_token']);
-        update_option('fvwpflowplayer', $option);
-      }
-    }
-  }
-  
-  
-  function get_backend_link( $url, $args, $ttl = false ) {
-    if( is_array($args) && isset($args['dynamic']) && $args['dynamic'] ) {
-      $bFound = false;
-      foreach( $this->aDomains AS $i => $sDomains ) {
-        $aDomains = explode(',',$sDomains);
-        foreach( $aDomains AS $sDomain ) {
-          if( stripos($url,$sDomain) !== false ) {
-            $bFound = true;            
-            $url = $this->secure_link($url,$this->aSecureTokens[$i],$ttl);                 
-          }          
-        }
+  function get_signed_url( $url, $args, $ttl = false ) {
+    $bFound = false;
+    foreach( $this->aDomains AS $i => $sDomains ) {
+      $aDomains = explode(',',$sDomains);
+      foreach( $aDomains AS $sDomain ) {
+        if( stripos($url,$sDomain) !== false ) {
+          $bFound = true;
+
+
+          global $fv_fp, $post;
+          if( !empty($fv_fp) && method_exists($fv_fp,'current_video') && $fv_fp->current_video() ) {
+            $ttl = intval( $fv_fp->current_video()->getMetaValue('duration',true ) );
+          } else if( !empty($post) && !empty($post->ID) ) {
+            if( $sDuration = flowplayer::get_duration( $post->ID, $url, true ) ) {
+              $ttl = intval($sDuration);
+            }
+          }
+          
+          $url = $this->secure_link($url,$this->aSecureTokens[$i],$ttl);
+        }          
       }
     }
     
@@ -106,8 +68,8 @@ abstract class FV_Player_CDN {
   }
   
   
-  function get_backend_link_long( $url ) {
-    return $this->get_backend_link($url, array( 'dynamic' => true ), 172800);
+  function get_signed_url_long( $url ) {
+    return $this->get_signed_url($url, array( 'dynamic' => true ), 172800);
   }
   
   
@@ -142,13 +104,12 @@ abstract class FV_Player_CDN {
     
     if( $this->aDomains && $this->aSecureTokens ) {
       add_filter( 'fv_player_pro_video_ajaxify_domains', array( $this, 'domains'), 999, 2 );
-      add_filter( 'fv_player_pro_video_ajaxify_args', array( $this, 'args'), 999, 2 );
-      add_action( 'plugins_loaded', array( $this, 'ajax' ), 9 );      
-      add_filter( 'fv_flowplayer_video_src', array( $this, 'get_backend_link'), 10, 2 );
+      add_filter( 'fv_player_pro_video_ajaxify_args', array( $this, 'args'), 999, 2 );     
+      add_filter( 'fv_flowplayer_video_src', array( $this, 'get_signed_url'), 10, 2 );
       
-      add_filter( 'fv_flowplayer_splash', array( $this, 'get_backend_link_long') );
-      add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_backend_link_long') );
-      add_filter( 'fv_flowplayer_resource', array( $this, 'get_backend_link_long') );
+      add_filter( 'fv_flowplayer_splash', array( $this, 'get_signed_url_long') );
+      add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_signed_url_long') );
+      add_filter( 'fv_flowplayer_resource', array( $this, 'get_signed_url_long') );
     }    
   }
   
