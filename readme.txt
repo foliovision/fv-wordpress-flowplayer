@@ -357,6 +357,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.31.727 - 2020/08/12 =
+
+* Auutoplay - hide initial play arrow animation when autoplaying a video
+* DASH.js library update to 3.1.2
+* Keyboard controls - disabled  when controlbar hidden
+* Loop fix for FV Player Pro YouTube engine
+* Video Position Saving - remember if logged in user saw the video already
+* WordPress 5.5 fixes
+
 = 7.4.24.727 - 2020/06/09 =
 
 * AWS - adding new regions
