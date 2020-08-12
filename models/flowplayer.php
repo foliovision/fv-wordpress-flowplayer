@@ -855,7 +855,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
-        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></span></span>';
+       if ( preg_match('/([\d]{1,2}\:)?[\d]{1,2}\:[\d]{2}/', $tDuration) ) { // convert hh:mm:ss to seconds
+        $tDuration = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $tDuration);
+        sscanf($tDuration, "%d:%d:%d", $hours, $minutes, $seconds);
+        $tDuration = $hours * 3600 + $minutes * 60 + $seconds;
+       }
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></
+        span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
