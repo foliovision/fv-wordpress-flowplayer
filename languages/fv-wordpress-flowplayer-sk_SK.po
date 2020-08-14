@@ -165,12 +165,8 @@ msgid "Mobile browser detected, serving low bandwidth video."
 msgstr "Mobilný telefón prehráva video so zníženou kvalitou."
 
 #: controller/frontend.php:64
-msgid "Click here"
-msgstr "Kliknite sem"
-
-#: controller/frontend.php:65
-msgid "for full quality."
-msgstr "pre plnú kvalitu."
+msgid "Click here for full quality"
+msgstr "Kliknite sem pre plnú kvalitu"
 
 #: controller/frontend.php:66 controller/frontend.php:67
 msgid ""
