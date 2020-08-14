@@ -1239,7 +1239,7 @@ function fv_wp_flowplayer_edit() {
                   var caps = real_val.charAt(0).toUpperCase() + real_val.slice(1);
                   $element.find('option').each(function() {
                     if (this.text == caps) {
-                      jQuery(this).attr('selected', 'selected');
+                      $element.val(caps);
                     }
                   });
                 }
