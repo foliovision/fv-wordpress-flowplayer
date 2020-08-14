@@ -357,6 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.32.727 - 2020/08/14 =
+
+* Bugfix - Editor - WordPress 5.5 fix for dropdown settings (HTML select tag)
+
 = 7.4.31.727 - 2020/08/12 =
 
 * Auutoplay - hide initial play arrow animation when autoplaying a video
