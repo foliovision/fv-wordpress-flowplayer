@@ -370,7 +370,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
