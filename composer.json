@@ -1,5 +1,8 @@
 {
   "require-dev": {
     "mockery/mockery": "dev-master"
+  },
+  "require": {
+    "aws/aws-sdk-php": "^3.149"
   }
 }
