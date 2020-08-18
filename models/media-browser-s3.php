@@ -199,9 +199,12 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
               
               // replace link with CloudFront URL, if we have one
               if( !empty($domains[$array_id]) ) {
-                // replace S3 URLs with buckets in the S3 subdomain
+                // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3-us-west-2.amazonaws.com/video.mp4
                 $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
-  
+
+                // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3.us-west-2.amazonaws.com/video.mp4
+                $link = preg_replace('/https?:\/\/' . $bucket . '\.s3\.[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
+                
                 // replace S3 URLs with bucket name as a subfolder
                 $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
               }
