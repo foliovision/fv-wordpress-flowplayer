@@ -824,23 +824,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
-    $tDuration = false;    
-    if ($this->current_video()) {
-      $tDuration = $this->current_video()->getDuration();
-    }
-    
-    if( !empty($aArgs['durations']) ) {
-      $aDurations = explode( ';', $aArgs['durations'] );
-      if( !empty($aDurations[$index]) ) {
-        $tDuration = $aDurations[$index];
+    $tDuration = false;
+    if( isset($aPlayer['fv_start']) && isset($aPlayer['fv_end']) ) { // change duration if using custom startend
+      $tDuration = flowplayer::hms_to_seconds( $aPlayer['fv_end']) - flowplayer::hms_to_seconds( $aPlayer['fv_start']) ;
+    } else {
+      if ($this->current_video()) {
+        $tDuration = $this->current_video()->getDuration();
       }
+      
+      if( !empty($aArgs['durations']) ) {
+        $aDurations = explode( ';', $aArgs['durations'] );
+        if( !empty($aDurations[$index]) ) {
+          $tDuration = $aDurations[$index];
+        }
+      }
+      
+      global $post;
+      if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
+        $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
+      }
+
+      if( isset($aPlayer['fv_start']) ) { // custom start only
+        $tDuration = flowplayer::hms_to_seconds( $tDuration ) - flowplayer::hms_to_seconds( $aPlayer['fv_start']);
+      }
+
+      if( isset($aPlayer['fv_end']) ) { // custom end only
+        $tDuration = flowplayer::hms_to_seconds( $aPlayer['fv_end']);
+      }
+
     }
-    
-    global $post;
-    if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
-      $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
-    }
-    
+
     if( $sListStyle != 'text' ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
@@ -855,11 +868,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
-       if ( preg_match('/([\d]{1,2}\:)?[\d]{1,2}\:[\d]{2}/', $tDuration) ) { // convert hh:mm:ss to seconds
-        $tDuration = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $tDuration);
-        sscanf($tDuration, "%d:%d:%d", $hours, $minutes, $seconds);
-        $tDuration = $hours * 3600 + $minutes * 60 + $seconds;
-       }
+        $tDuration = flowplayer::hms_to_seconds( $tDuration );
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></
         span></span>';
       } else if( !empty($aItem['saw']) ) {
@@ -1534,6 +1543,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
   
+  public static function hms_to_seconds( $tDuration ) {
+    if ( preg_match('/([\d]{1,2}\:)?[\d]{1,2}\:[\d]{2}/', $tDuration) ) {
+      $tDuration = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $tDuration);
+      sscanf($tDuration, "%d:%d:%d", $hours, $minutes, $seconds);
+      $tDuration = $hours * 3600 + $minutes * 60 + $seconds;
+    }
+    return $tDuration;
+  }
+
   public static function format_hms( $seconds ) {
     if( !is_numeric($seconds) ) return $seconds;
     
