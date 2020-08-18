@@ -608,6 +608,8 @@ function fv_autoplay_exec(){
 
       // first play if id is set
       for( var item in playlist ) {
+        if( !playlist.hasOwnProperty(item) ) continue;
+
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
         if( hash === id && autoplay ){
           console.log('fv_autoplay_exec for '+id,item);
@@ -618,6 +620,8 @@ function fv_autoplay_exec(){
       }
 
       for( var item in playlist ) {
+        if( !playlist.hasOwnProperty(item) ) continue;
+
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
         if( hash === src  && autoplay ){
           console.log('fv_autoplay_exec for '+src,item);
