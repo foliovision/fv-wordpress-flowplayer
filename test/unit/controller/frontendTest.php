@@ -81,10 +81,6 @@ final class FV_Player_Controller extends TestCase {
     global $fv_fp;
     $fv_fp = new flowplayer();
     
-    //  todo: fix in core perhaps
-    $fv_fp->aAds = array();
-    $fv_fp->aPopups = array();
-    
     include_once "../../controller/frontend.php";
   }
 
@@ -158,8 +154,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [video_expired] => <h2>Video file expired.<br />Please reload the page and play it again.</h2>
     [unsupported_format] => <h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>
     [mobile_browser_detected_1] => Mobile browser detected, serving low bandwidth video.
-    [mobile_browser_detected_2] => Click here
-    [mobile_browser_detected_3] => for full quality.
+    [mobile_browser_detected_2] => Click here for full quality
     [live_stream_failed] => <h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>
     [live_stream_failed_2] => <h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>
     [what_is_wrong] => Please tell us what is wrong :

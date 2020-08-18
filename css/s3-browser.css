@@ -121,10 +121,15 @@
     border-radius: 0.25em;
     color: #FFF;
     display: block;
-    margin-top: 0.9em;
     position: relative;
     overflow: hidden;
     box-shadow: 1.74em -2.1em 0 0 #A4A7AC inset;
+}
+.attachments-browser .attachment-info .thumbnail-image::after {
+    box-shadow: none;
+}
+#__assets_browser .icon.file {
+    margin-top: 0.9em;
 }
 .attachments-browser .icon.file:first-line {
     font-size: 13px;

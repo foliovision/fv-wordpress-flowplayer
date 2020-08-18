@@ -28,13 +28,7 @@ class flowplayer_frontend extends flowplayer
   
   var $expire_time = 0;
   
-  var $aAds = array();
-  
   var $aPlayers = array();
-  
-  var $aPlaylists = array();
-  
-  var $aPopups = array();
   
   var $aCurArgs = array();
   
@@ -559,10 +553,6 @@ class flowplayer_frontend extends flowplayer
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
           
-          if( $this->_get_option('old_code') ) {
-            $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
-          }
-          
         } else if( !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
@@ -618,12 +608,10 @@ class flowplayer_frontend extends flowplayer
                 
 
         if( $popup_contents = $this->get_popup_code() ) {
-          $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;
           $attributes['data-popup'] = $this->json_encode( $popup_contents );
         }
 
         if( $ad_contents = $this->get_ad_code() ) {
-          $this->aAds["wpfp_{$this->hash}"] = $ad_contents;
           $attributes['data-ad'] = $this->json_encode( $ad_contents );
         }
         

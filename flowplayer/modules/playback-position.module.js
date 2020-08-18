@@ -33,6 +33,8 @@ if (!Date.now) {
         while (dataSize > maxCookieSize) {
           // remove the first entry only
           for (var i in data) {
+            if( !data.hasOwnProperty(i) ) continue;
+
             delete data[i];
 
             // re-serialize with the value removed
@@ -122,6 +124,8 @@ if (!Date.now) {
       postData = [];
 
       for (var video_name in playPositions) {
+        if( !playPositions.hasOwnProperty(video_name) ) continue;
+
         // remove all AWS signatures from this video
         postData.push({
           name: video_name,
@@ -148,6 +152,8 @@ if (!Date.now) {
 
             // add our video positions
             for (var i in postData) {
+              if( !postData.hasOwnProperty(i) ) continue;
+
               temp_position_data[postData[i].name] = postData[i].position;
               temp_saw_data[postData[i].name] = postData[i].saw;
             }
@@ -191,6 +197,8 @@ if (!Date.now) {
 
           // add / edit our video positions
           for (var i in postData) {
+            if( !postData.hasOwnProperty(i) ) continue;
+
             data[postData[i].name] = postData[i].position;
           }
 
@@ -204,6 +212,8 @@ if (!Date.now) {
             while (dataSize > maxCookieSize) {
               // remove the first entry only
               for (var i in data) {
+                if( !data.hasOwnProperty(i) ) continue;
+
                 delete data[i];
 
                 // re-serialize with the value removed
@@ -301,6 +311,8 @@ if (!Date.now) {
         var inPlaylist = false;
 
         for (var i in api.conf.playlist) {
+          if( !api.conf.playlist.hasOwnProperty(i) ) continue;
+
           inPlaylist = true;
           break;
         }
@@ -338,6 +350,8 @@ if (!Date.now) {
               // check if we have any data left
               var stillHasData = false;
               for (var i in data) {
+                if( !data.hasOwnProperty(i) ) continue;
+
                 stillHasData = true;
                 break;
               }
@@ -376,6 +390,8 @@ if (!Date.now) {
     if (flowplayer.conf.is_logged_in == '1') {
       var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ];
       for( var i in playlist ) {
+        if (!playlist.hasOwnProperty(i)) continue;
+
         var video_id = getVideoId(playlist[i]),
           position = processTempData(tempPositionCookieKeyName,video_id),
           saw = processTempData(tempSawCookieKeyName,video_id);

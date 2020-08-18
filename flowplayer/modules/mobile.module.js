@@ -20,13 +20,15 @@ function fv_flowplayer_mobile_switch(id) {
 			}
 		} );
 		if( fv_fp_mobile ) {
-			jQuery('#wpfp_'+id).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a> '+fv_flowplayer_translations.mobile_browser_detected_3+'</p>');
+			jQuery('#wpfp_'+id).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a>.</p>');
 		}
 	}
 }
 
 if( typeof(fv_flowplayer_mobile_switch_array) != "undefined" ) {
   for( var i in fv_flowplayer_mobile_switch_array ) {
+		if( !fv_flowplayer_mobile_switch_array.hasOwnProperty(i) ) continue;
+
     fv_flowplayer_mobile_switch( i );
   }
 }

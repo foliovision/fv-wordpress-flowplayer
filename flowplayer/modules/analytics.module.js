@@ -10,6 +10,7 @@ flowplayer( function(api,root) {
       //return;
     //}
     for( var j in fv_ga_events ) {
+      if( !fv_ga_events.hasOwnProperty(j) ) continue;
       root.removeData('fv_track_'+fv_ga_events[j]);
     }
   }).bind('error', function(e,api,error) {
@@ -45,6 +46,8 @@ flowplayer( function(api,root) {
       if( root.data('fv_track_'+fv_ga_events[i]) ) return;			
           
       for( var j in fv_ga_events ) {  //  make sure user triggered the previous quartiles before tracking
+        if( !fv_ga_events.hasOwnProperty(j) ) continue;
+        
         if(j == i) break;    
         if( !root.data('fv_track_'+fv_ga_events[j]) ) return;      
       }
