@@ -2005,7 +2005,7 @@ jQuery('#normal-sortables .button-primary').on('click',function(e){
   if ('fv-wp-flowplayer-submit' == this.name) {
     // store windows scroll position, so we can return to the same spot after reload
     if (localStorage) {
-      localStorage["fv_posStorage"] = $(window).scrollTop();
+      localStorage["fv_posStorage"] = jQuery(window).scrollTop();
     }
   }
 
