@@ -642,10 +642,16 @@ function fv_autoplay_exec(){
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
           api.load();
-          root.find('.fp-ui').attr("style", "visibility: hidden"); // hide ui when autoplay is enabled
-          api.one('progress', function(){
-            root.find('.fp-ui').removeAttr("style"); // show on progress
+
+          // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
+          var play_icon = root.find('.fp-play').addClass('invisible'),
+            control_bar = root.find('.fp-controls').addClass('invisible');
+            
+          api.one('progress', function() {
+            play_icon.removeClass('invisible');
+            control_bar.removeClass('invisible');
           });
+
           if(root.data('fvautoplay') == 'muted') {
             api.mute(true,true);
           }
