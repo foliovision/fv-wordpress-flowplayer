@@ -357,13 +357,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.33.727 - 2020/08/24 =
+
+* Bugfix - Autoplay - hide initial play arrow animation when autoplaying a video did also hide the loading progress indicator
+* DASH.js library update to 3.0.0 as some videos wouldn't play on macOS 10.5.6 with Safari 13.1.2
+
 = 7.4.32.727 - 2020/08/14 =
 
 * Bugfix - Editor - WordPress 5.5 fix for dropdown settings (HTML select tag)
 
 = 7.4.31.727 - 2020/08/12 =
 
-* Auutoplay - hide initial play arrow animation when autoplaying a video
+* Autoplay - hide initial play arrow animation when autoplaying a video
 * DASH.js library update to 3.1.2
 * Keyboard controls - disabled  when controlbar hidden
 * Loop fix for FV Player Pro YouTube engine
