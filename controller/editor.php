@@ -87,7 +87,6 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
   $fv_fp_scripts = array( 'fv_player_admin_load' => array( 'load' => true ) ); //  without this or option js-everywhere the JS won't load
   $fv_fp->load_hlsjs= true;
   $fv_fp->load_dash = true;
-  $fv_fp->load_tabs = true;
   
   global $FV_Player_Pro;
   if( isset($FV_Player_Pro) && $FV_Player_Pro ) {

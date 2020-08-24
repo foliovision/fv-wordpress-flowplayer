@@ -33,8 +33,6 @@ class flowplayer_frontend extends flowplayer
   var $aCurArgs = array();
   
   var $sHTMLAfter = false;
-  
-  var $count_tabs = 0;
 
   var $currentPlayerObject = null;
 
@@ -249,15 +247,7 @@ class flowplayer_frontend extends flowplayer
         }
       }
     }
-
-    /*
-     *  Video player tabs
-     */
- 
-    if( $player_type == 'video'  && $this->aCurArgs['liststyle'] == 'tabs' && count($aPlaylistItems) > 1 ) {
-      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width);            
-    }
-    
+   
     
     /*
      *  Autoplay, in the older FV Player versions this setting was just true/false and that creates a ton of issues
@@ -551,7 +541,12 @@ class flowplayer_frontend extends flowplayer
             $attributes['class'] .= ' has-caption';
             $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
           }
-          $this->sHTMLAfter .= $playlist_items_external_html;
+
+          if( $this->aCurArgs['liststyle'] == 'tabs' ) {
+            $this->ret['html'] .= "<ul>".$playlist_items_external_html."</ul>";
+          } else {
+            $this->sHTMLAfter .= $playlist_items_external_html;
+          }
           
         } else if( !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
@@ -1053,53 +1048,6 @@ class flowplayer_frontend extends flowplayer
     }
 
     return $aSubtitles;
-  }
-  
-  
-  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
-    global $post;
-    
-    if( intval($width) == 0 ) $width = '100%';
-    $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
-    
-    $this->count_tabs++;
-    $output = new stdClass;
-    $output->ret = array();
-    $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs" style="max-width: '.$cssWidth.'"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
-    $output->ret['script'] = array();
-    
-    $output->ret['html'] .= '<ul>';
-    foreach( $aPlaylistItems AS $key => $aSrc ) {
-      $sCaption = !empty($aCaptions[$key]) ? $aCaptions[$key] : $key;
-      $output->ret['html'] .= '<li><a href="#tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$sCaption.'</a></li>';
-    }
-    $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
-
-    $aStartend = !empty($this->aCurArgs['startend']) ? explode(";",$this->aCurArgs['startend']) : array();  //  todo: somehow move to Pro?
-    
-    foreach( $aPlaylistItems AS $key => $aSrc ) {
-      if( !empty($aStartend[$key]) ) $this->aCurArgs['startend'] = $aStartend[$key];
-      
-      unset($this->aCurArgs['id']);
-      unset($this->aCurArgs['playlist']);
-      $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      
-      $this->aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:'';
-      unset($this->aCurArgs['caption']);
-      $this->aCurArgs['liststyle']='none';
-      
-      $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
-      $sClass = $key == 0 ? ' class="fv_flowplayer_tabs_first"' : '';
-      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'"'.$sClass.'>'.$aPlayer['html'].'</div>';
-      foreach( $aPlayer['script'] AS $key => $value ) {
-        $output->ret['script'][$key] = array_merge( isset($output->ret['script'][$key]) ? $output->ret['script'][$key] : array(), $aPlayer['script'][$key] );
-      }
-    }
-    $output->ret['html'] .= '<div class="fv_flowplayer_tabs_cl"></div><div class="fv_flowplayer_tabs_cr"></div></div></div>';
-          
-    $this->load_tabs = true;
-          
-    return $output->ret;    
   }
   
   

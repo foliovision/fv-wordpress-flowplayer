@@ -36,8 +36,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
    * Configuration variables array
    */
   public $conf = array();
-  
-  public $load_tabs = false;    
+
   /**
    * Store scripts to load in footer
    */
@@ -841,7 +840,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
     }
     
-    if( $sListStyle != 'text' ) {
+    if( $sListStyle != 'text' && $sListStyle != 'tabs'  ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
         if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
@@ -862,7 +861,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML .= "</div>";
     }
     
-    if( $sListStyle == 'season' ) {
+    if( $sListStyle == 'tabs' ) {
+      $sHTML .= "<li>".$sItemCaption."</li>";
+      
+    } else if( $sListStyle == 'season' ) {
       $sHTML .= "<div class='fvp-playlist-item-info'>";
       if( $sItemCaption ) {
         $sHTML .= "<h4>".$sItemCaption."</h4>";

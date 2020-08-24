@@ -146,15 +146,10 @@ HTML;
 HTML;
     
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
-        
-    global $fv_fp;
-    $this->assertTrue( $fv_fp->load_tabs );    
   }
   
   public function tearDown() {
     global $fv_fp, $FV_Player_lightbox;
-    $fv_fp->load_tabs = false;
     $FV_Player_lightbox = new FV_Player_lightbox(); // reset the lightbox loading flag and footer lightboxed players HTML
     
     parent::tearDown();
