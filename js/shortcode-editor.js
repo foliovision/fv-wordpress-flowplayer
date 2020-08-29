@@ -117,7 +117,7 @@ jQuery(function() {
      */
     function get_field( key, where ) {
       var element = false,
-        selector = '.fv_wp_flowplayer_field_'+key+', [name=fv_wp_flowplayer_field_'+key+']';
+        selector = '.' + fv_wp_flowplayer_map_names_to_editor_fields(key) + ', [name=' + fv_wp_flowplayer_map_names_to_editor_fields(key) + ']';
 
       if( where && typeof(where) == "object" ) {
         element = where.find(selector);
