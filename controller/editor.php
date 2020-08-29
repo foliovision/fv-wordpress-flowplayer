@@ -52,12 +52,9 @@ function fv_player_shortcode_editor_scripts_enqueue() {
     ),
     'shortcode_args_not_db_compatible' => array(
       'fullscreen',
-      'liststyle',
       'logo',
-      'midroll',
       'playlist_advance',
       'sort',
-      'vast',
       'volume'
     )
   ) );

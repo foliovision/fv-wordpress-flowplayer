@@ -2276,12 +2276,14 @@ jQuery(function() {
           }
           if( sliststyle != null && sliststyle[1] != null ) {
             var objPlaylistStyle = get_field("playlist")[0];
-            if (sliststyle[1] == 'tabs') objPlaylistStyle.selectedIndex = 1;
-            if (sliststyle[1] == 'prevnext') objPlaylistStyle.selectedIndex = 2;
-            if (sliststyle[1] == 'vertical') objPlaylistStyle.selectedIndex = 3;
-            if (sliststyle[1] == 'horizontal') objPlaylistStyle.selectedIndex = 4;
-            if (sliststyle[1] == 'text') objPlaylistStyle.selectedIndex = 5;
-            if (sliststyle[1] == 'slider') objPlaylistStyle.selectedIndex = 6;
+            if (sliststyle[1] == 'horizontal') objPlaylistStyle.selectedIndex = 1;
+            if (sliststyle[1] == 'tabs') objPlaylistStyle.selectedIndex = 2;
+            if (sliststyle[1] == 'prevnext') objPlaylistStyle.selectedIndex = 3;
+            if (sliststyle[1] == 'vertical') objPlaylistStyle.selectedIndex = 4;
+            if (sliststyle[1] == 'slider') objPlaylistStyle.selectedIndex = 5;
+            if (sliststyle[1] == 'season') objPlaylistStyle.selectedIndex = 6;
+            if (sliststyle[1] == 'polaroid') objPlaylistStyle.selectedIndex = 7;
+            if (sliststyle[1] == 'text') objPlaylistStyle.selectedIndex = 8;
           }
           if( sembed != null && sembed[1] != null ) {
             if (sembed[1] == 'true')
