@@ -3078,7 +3078,7 @@ jQuery(function() {
     }
 
     function set_post_editor_content( html ) {
-      if ( is_fv_player_screen(editor_button_clicked) || is_fv_player_widgets(editor_button_clicked) ) {
+      if ( is_fv_player_screen(editor_button_clicked) || is_fv_player_widgets(editor_button_clicked) || $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field').length) {
         return;
       }
 
