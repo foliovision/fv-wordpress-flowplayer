@@ -1775,15 +1775,15 @@ jQuery(function() {
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length;
 
       if (!db_id) {
-        // custom Field
+        // custom Field or Widget
         if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
           // this is a horrible hack as it adds the hidden marker to the otherwise clean text field value
           // just to make sure the shortcode varible below is parsed properly.
           // But it allows some extra text to be entered into the text widget, so for now - ok
           if (editor_content.match(/\[/)) {
-            editor_content = '[' + helper_tag + editor_content.replace('[', '') + '';
+            editor_content = '[<' + helper_tag +' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content.replace('[', '') + '';
           } else {
-            editor_content = helper_tag + editor_content + '';
+            editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
 
           // Foliopress WYSIWYG
@@ -1831,7 +1831,7 @@ jQuery(function() {
         } else if ((instance_tinymce == undefined || typeof tinyMCE !== 'undefined') && tinyMCE.activeEditor.isHidden()) {
           editor_content = instance_fp_wysiwyg.GetHTML();
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
-            instance_fp_wysiwyg.InsertHtml(helper_tag);
+            instance_fp_wysiwyg.InsertHtml('<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>');
             editor_content = instance_fp_wysiwyg.GetHTML();
           }
 
@@ -2576,6 +2576,22 @@ jQuery(function() {
         var player = JSON.parse(response);
         current_player_db_id = parseInt(player.id);
         if( current_player_db_id > 0 ) {
+          var
+            has_store_shortcode_args = false,
+            has_always_keep_shortcode_args = false;
+
+          // since both of the above variables are length-less Objects, we need to determine their emptyness
+          // by iterating over them and checking that they inded contain any values
+          for (var i in store_shortcode_args) {
+            has_store_shortcode_args = true;
+            break;
+          }
+
+          for (var i in always_keep_shortcode_args) {
+            has_always_keep_shortcode_args = true;
+            break;
+          }
+
           // we have extra presentation parameters to keep
           if (store_shortcode_args) {
             // if this was a non-DB player and is being converted into a DB-player,
@@ -2662,7 +2678,10 @@ jQuery(function() {
         // Prevents double event triggering in FV Player Custom Video box
         //field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
 
-        // or is it using Foliopress WYSIWYG?
+        // FV Player in a Widget
+      } else if( jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length ){
+        jQuery('#widget-widget_fvplayer-' + widget_id + '-text').val( shortcode );
+        jQuery('#widget-widget_fvplayer-' + widget_id + '-text').trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
         editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
         set_post_editor_content(editor_content);
@@ -2708,6 +2727,13 @@ jQuery(function() {
     */
     function is_fv_player_screen_edit(button) {
       return typeof( $(button).data('player_id') ) != 'undefined';
+    }
+
+    /*
+    Determines if the button clicked is Insert/Edit on wp-admin -> Appearance -> Widgets
+    */
+    function is_fv_player_widgets(button) {
+      return button.id.indexOf('widget-widget_fvplayer') > -1;
     }
 
     /*
@@ -3052,7 +3078,7 @@ jQuery(function() {
     }
 
     function set_post_editor_content( html ) {
-      if ( is_fv_player_screen(editor_button_clicked) ) {
+      if ( is_fv_player_screen(editor_button_clicked) || is_fv_player_widgets(editor_button_clicked) ) {
         return;
       }
 
