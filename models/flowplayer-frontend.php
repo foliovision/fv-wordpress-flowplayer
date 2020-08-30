@@ -91,14 +91,25 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = $args['liststyle'];
     }
 
-    // force horizontal playlist style for audio as that the only one styled properly
+    // load attributes from player into $this->aCurArgs if we're receiving
+    // preview POST data, as they are not all present here yet
     if( $player = $this->current_player() ) {
+
+      if (isset($_GET['fv_player_preview']) && $_GET['fv_player_preview'] == 'POST' && isset($_POST['fv_player_preview_json'])) {
+        foreach ($player->getAllDataValues() as $key => $value) {
+          if (empty($this->aCurArgs[$key]) && !empty($value)) {
+            $this->aCurArgs[$key] = $value;
+          }
+        }
+      }
+
       if( $videos = $player->getVideos() ) {
         if( !empty($videos[0]) && (
             $videos[0]->getMetaValue('audio',true) ||
             preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
           )
         ) {
+          // force horizontal playlist style for audio as that the only one styled properly
           $this->aCurArgs['liststyle'] = 'horizontal';
         }
       }
