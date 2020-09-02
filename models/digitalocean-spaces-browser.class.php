@@ -15,20 +15,8 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
   function init_for_gutenberg() {}
 
   function fv_wp_flowplayer_include_aws_sdk() {
-    $free_player_folder = '';
-
-    foreach (get_option('active_plugins') as $plug) {
-      if (strpos($plug, 'flowplayer.php')) {
-        $free_player_folder = dirname( WP_PLUGIN_DIR . '/' . $plug );
-      }
-    }
-
-    if (!$free_player_folder) {
-      throw new Exception('Could not find Free plugin folder to include the AWS SDK!');
-    }
-
     if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
-      require_once( $free_player_folder . "/includes/aws/aws-autoloader.php" );
+      require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
     }
   }
 
