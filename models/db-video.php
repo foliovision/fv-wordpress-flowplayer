@@ -38,7 +38,7 @@ class FV_Player_Db_Video {
   private static
     $db_table_name,
     $DB_Instance = null,
-    $stopwords;
+    $stopwords;  // used in self::get_search_stopwords()
   
   /**
    * @return int
@@ -485,6 +485,9 @@ CREATE TABLE " . self::$db_table_name . " (
     // assemble where part
     $where = array();
 
+    /*
+     * Inspired by core WP WP_Query::parse_search() but adjusted to make it fit our SQL query
+     */
     if ( $like ) {
       $search_terms_count = 1;
       $search_terms = '';
@@ -546,6 +549,8 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Copy of core WordPress WP_Query::parse_search_terms() for our purposes without any changes, but made static
+   * 
    * Check if the terms are suitable for searching.
    *
    * Uses an array of stopwords (terms) that are excluded from the separate
@@ -587,6 +592,8 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Copy of core WordPress WP_Query::get_search_stopwords() for our purposes without any changes, but made static
+   * 
    * Retrieve stopwords used when parsing search terms. ( from class-wp-query.php )
    *
    * @since 3.7.0
