@@ -181,6 +181,15 @@ if( isset($conf['addon-video-intelligence']) && !empty($conf['addon-video-intell
   if( !empty($conf['addon-video-intelligence']['publisherId']) ) $conf['addon-video-intelligence']['publisherId'] = '(redacted)';
 }
 
+function hide_private_info(&$item, $key) {
+  // if the value is not empty and it's not already redacted
+  // and the key is ending with key or secret
+  if( !empty($item) && stripos($item,'(redacted') !== 0 && preg_match('~(key|secret)$~',$key) ) {
+    $item = '(redacted)';
+  }
+}
+
+array_walk_recursive($conf,'hide_private_info');
 
 print_r( $conf );
 ?>
