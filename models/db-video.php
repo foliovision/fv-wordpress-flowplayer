@@ -491,16 +491,36 @@ CREATE TABLE " . self::$db_table_name . " (
     if ( $like ) {
       $search_terms_count = 1;
       $search_terms = '';
-      if ( preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search_string, $matches ) ) {
-        $search_terms_count = count( $matches[0] );
-        $search_terms = self::parse_search_terms( $matches[0] );
-        // If the search string has only short terms or stopwords, or is 10+ terms long, match it as sentence.
-        if ( empty( $search_terms ) || count( $search_terms ) > 9 ) {
+
+      $search_string = stripslashes( $search_string );
+
+      if( (substr($search_string, 0,1) == "'" && substr( $search_string,-1) == "'") || (substr($search_string, 0,1) == '"' && substr( $search_string,-1) == '"') ) { // Dont break term if in '' or ""
+        $search_string = substr($search_string, 1, -1);
+        $search_terms = array( $search_string );
+      } else {
+        if ( preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search_string, $matches ) ) {
+          $search_terms_count = count( $matches[0] );
+          $search_terms = self::parse_search_terms( $matches[0] );
+          // If the search string has only short terms or stopwords, or is 10+ terms long, match it as sentence.
+          if ( empty( $search_terms ) || count( $search_terms ) > 9 ) {
+            $search_terms = array( $search_string );
+          }
+        } else {
           $search_terms = array( $search_string );
         }
-      } else {
-        $search_terms = array( $search_string );
       }
+      
+      $search_terms_encoded = array();
+
+      foreach( $search_terms as $term ) {
+        $search_terms_encoded[] = $term; 
+        $search_terms_encoded[] = urlencode($term);
+        $search_terms_encoded[] = rawurlencode($term);
+      }
+
+      $search_terms = $search_terms_encoded;
+
+      unset($search_terms_encoded);
 
       $exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
       
