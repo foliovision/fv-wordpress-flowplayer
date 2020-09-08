@@ -18,7 +18,7 @@ flowplayer( function(api,root) {
   });
 
   // on iOS only one audible video can play at a time, so we must mute the other players
-  api.on('load', function() {
+  api.on('ready', function() {
     var i = 0,
       is_muted = root.data('volume') == 0;
 
