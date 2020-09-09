@@ -63,11 +63,14 @@ flowplayer( function(api,root) {
     var m = Math.floor(seconds % 3600 / 60);
     var s = Math.floor(seconds % 60);
     
-    var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute and " : " minutes and ") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-    return dDisplay + hDisplay + mDisplay + sDisplay;
+    var output = d > 0 ? d + (d == 1 ? " day" : " days") : "";
+    if( output && h > 0 ) output += ", ";
+    output += h > 0 ? h + (h == 1 ? " hour" : " hours") : "";
+    if( output && m > 0 ) output += ", ";
+    output += m > 0 ? m + (m == 1 ? " minute" : " minutes") : "";
+    if( output && s > 0 ) output += " and ";
+    output += s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return output;
   }
   
 });
