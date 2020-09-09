@@ -17,8 +17,14 @@ flowplayer( function(api,root) {
       // whitelisting Vimeo Event URLs used by FV Player Vimeo Live Streaming
       if( !api.conf.clip.live && !api.conf.live && !err.video.src.match(/\/\/vimeo.com\/event\//) ) return;
       
-      var delay = api.conf.clip.live_starts_in || initialDelay,
-        message = api.conf.clip.live_starts_in ? "<h2>Live stream scheduled</h2><p>Starting in <span>" + secondsToDhms(delay) + "</span>.</p>" : "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>" + secondsToDhms(delay) + "</span> seconds ...</p>";
+      var delay = initialDelay;
+      if( api.conf.clip.streaming_time ) {
+        delay = api.conf.clip.streaming_time - Math.floor( Date.now()/1000 );
+      } else if( api.conf.clip.live_starts_in ) {
+        delay = api.conf.clip.live_starts_in;
+      }
+
+      var message = api.conf.clip.live_starts_in ? "<h2>Live stream scheduled</h2><p>Starting in <span>" + secondsToDhms(delay) + "</span>.</p>" : "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>" + secondsToDhms(delay) + "</span> seconds ...</p>";
 
       clearInterval(timer);
 
@@ -35,10 +41,14 @@ flowplayer( function(api,root) {
         var messageElement = root.querySelector(".fp-ui .fp-message");
         messageElement.innerHTML = message;
 
+        // do not use too big waiting time, what if the stream is re-scheduled
+        var reload_delay = delay > 300 ? 300 : delay;
+
         timer = setInterval(function () {
+          reload_delay -= 1;
           delay -= 1;
 
-          if (delay > 0 && messageElement) {
+          if (reload_delay > 0 && messageElement) {
             messageElement.querySelector("span").innerHTML = secondsToDhms(delay);
           } else {
             clearInterval(timer);
