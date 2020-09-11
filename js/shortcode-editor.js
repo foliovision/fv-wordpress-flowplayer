@@ -2938,6 +2938,7 @@ jQuery(function() {
       is_singular_active = false;
       el_editor.attr('class','is-playlist-active');
 
+      // show all the tabs previously hidden
       jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
       jQuery('a[data-tab=fv-player-tab-playlist]').click();
 
@@ -3136,7 +3137,8 @@ jQuery(function() {
      * @param string  html  The OL > LI list of posts which contain the same player.
      */
     function set_embeds( html ) {
-      $('[data-tab=fv-player-tab-embeds]').toggle(!!html);
+      // ugly way of making sure that tab stays hidden as otherwise playlist_show() would reveal it
+      $('[data-tab=fv-player-tab-embeds]').toggleClass('always-hide',!html);
       get_tabs('embeds').find('td').html(html);
     }
 

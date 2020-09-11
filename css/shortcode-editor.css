@@ -64,6 +64,7 @@
 .is-playlist .fv-player-playlist-item-title{ display:block; }
 .is-playlist .fv_player_field_insert-button{ display:none; }
 
+.always-hide{display:none!important;}
 .is-playlist .hide-if-playlist{display:none!important;}
 .is-singular .hide-if-singular{display:none!important;}
 .is-playlist-active .hide-if-playlist-active{display:none!important;}
