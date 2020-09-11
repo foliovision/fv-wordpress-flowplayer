@@ -2685,8 +2685,17 @@ jQuery(function() {
       } else if( jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length ){
         jQuery('#widget-widget_fvplayer-' + widget_id + '-text').val( shortcode );
         jQuery('#widget-widget_fvplayer-' + widget_id + '-text').trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
+        
+        // tinyMCE Text tab
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
-        editor_content = editor_content.replace(/\[.*?#fvp_placeholder#.*?\]/, shortcode);
+        // editing
+        if( editor_content.match(/\[.*?#fvp_placeholder#.*?\]/) ) {
+          editor_content = editor_content.replace(/\[.*?#fvp_placeholder#.*?\]/, shortcode);
+        
+        //inserting
+        } else {
+          editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
+        }
         set_post_editor_content(editor_content);
 
         // or are we editing a shortcode in post content?
