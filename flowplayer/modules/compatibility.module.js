@@ -116,7 +116,7 @@ if( isIE11 ) {
 /*
  *  IE < 9 - disabling responsiveness
  */
-if( jQuery.browser && jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9 ) {
+if( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(flowplayer.support.version, 10) < 9 ) {
   jQuery('.flowplayer').each( function() {
     jQuery(this).css('width', jQuery(this).css('max-width'));
     jQuery(this).css('height', jQuery(this).css('max-height'));
