@@ -1192,6 +1192,7 @@ jQuery(function() {
 
       $doc.on('change', '#players_selector', function() {
         el_editor.find('.button-primary').text('Insert').removeAttr('disabled');
+        // TODO: This looses the #fvp_placeholder# so you can't pick the exising player in tinyMCE text mode
         editor_open(this.value);
       });
 
