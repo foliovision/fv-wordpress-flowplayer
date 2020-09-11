@@ -1400,6 +1400,8 @@ jQuery(function() {
 
       tabs_refresh();
 
+      set_embeds('');
+
       el_preview_target.html('');
 
       if( typeof(fv_player_shortcode_editor_ajax) != "undefined" ) {
@@ -1944,6 +1946,8 @@ jQuery(function() {
               jQuery('[data-index="0"]').remove();
               jQuery('.fv-player-tab-playlist table tbody tr').remove();
               jQuery('.fv-player-tab-video-files table').remove();
+
+              set_embeds(response['embeds']);
 
               if (!$id_player_element.length) {
                 // add player ID as a hidden field
@@ -3118,6 +3122,16 @@ jQuery(function() {
 
       editor_resize();
       return overlayDiv;
+    }
+
+    /*
+     * Populate content of the Embeds tab and show it if there is any content to be set
+     * 
+     * @param string  html  The OL > LI list of posts which contain the same player.
+     */
+    function set_embeds( html ) {
+      $('[data-tab=fv-player-tab-embeds]').toggle(!!html);
+      get_tabs('embeds').find('td').html(html);
     }
 
     /*

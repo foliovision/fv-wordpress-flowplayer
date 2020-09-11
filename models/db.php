@@ -1104,6 +1104,17 @@ class FV_Player_Db {
         $out['videos'][] = $vid;
       }
 
+      // load posts where this player is embedded
+      $embeds_html = '';
+      if( $posts = $fv_fp->current_player()->getMetaValue('post_id') ) {
+        foreach( $posts AS $post_id ) {
+          $embeds_html .= '<li><a href="'.get_permalink($post_id).'" target="_blank">'.get_the_title($post_id).'</a></li>';
+        }
+      }
+      if( $embeds_html ) {
+        $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
+      }
+
       header('Content-Type: application/json');      
       if (version_compare(phpversion(), '5.3', '<')) {
         echo json_encode($out);

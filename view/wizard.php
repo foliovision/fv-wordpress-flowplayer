@@ -187,6 +187,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
           <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e('Subtitles', 'fv-wordpress-flowplayer'); ?></a>
           <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e('Options', 'fv-wordpress-flowplayer'); ?></a>
           <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e('Actions', 'fv-wordpress-flowplayer'); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php _e('Embeds', 'fv-wordpress-flowplayer'); ?></a>
           <?php do_action('fv_player_shortcode_editor_tab'); ?>
         </h2>
       </div>
@@ -518,6 +519,15 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
             
           </table>
         </div>
+
+        <div class="fv-player-tab fv-player-tab-embeds" style="display: none">
+          <table width="100%">
+            <tr>
+              <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embedded_on" class="alignright"><?php _e('Embedded on', 'fv_flowplayer'); ?></label></th>
+              <td></td>
+            </tr>
+          </table>
+        </div>  
         
         <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
 
