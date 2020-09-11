@@ -1692,9 +1692,11 @@ jQuery(function() {
      *  * calls editor_init() for editor clean-up
      */
     function editor_close() {
-      // remove TinyMCE hidden tag which aids shortcode editing
+      // remove TinyMCE hidden tags and other similar tags which aids shortcode editing
       // to prevent opening the same player over and over
       editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
+      editor_content = editor_content.replace(fv_wp_flowplayer_re_edit,'');
+      editor_content = editor_content.replace(/#fvp_placeholder#/, '');
       set_post_editor_content(editor_content);
 
       // this variable needs to be reset here and not in editor_init
@@ -1788,32 +1790,27 @@ jQuery(function() {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
 
-          // Foliopress WYSIWYG
+          // TinyMCE in Text Mode
         } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
-          var bFound = false;
           var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
+
+          // look for start of shortcode
           for (var start = position; start--; start >= 0) {
             if (editor_content[start] == '[') {
-              bFound = true;
+              var sliced_content = editor_content.slice(start);
+              var matched = sliced_content.match(/^\[fvplayer[^\[\]]*]?/);
+              // found the shortcode!
+              if (matched) {
+                shortcode = matched;
+              }
+
               break;
             } else if (editor_content[start] == ']') {
               break
             }
           }
-          var shortcode = [];
-
-          if (bFound) {
-            var temp = editor_content.slice(start);
-            temp = temp.match(/^\[fvplayer[^\[\]]*]?/);
-            if (temp) {
-              shortcode = temp;
-              editor_content = editor_content.slice(0, start) + '#fvp_placeholder#' + editor_content.slice(start).replace(/^\[[^\[\]]*]?/, '');
-            } else {
-              editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
-            }
-          } else {
-            editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
-          }
+          // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
+          editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
 
           // Edit button on wp-admin -> FV Player screen
         } else if (is_fv_player_screen_edit(editor_button_clicked)) {
@@ -1829,7 +1826,7 @@ jQuery(function() {
           editor_content = '';
           shortcode = '';
 
-          // TinyMCE in Text Mode
+          // Foliopress WYSIWYG
         } else if ((instance_tinymce == undefined || typeof tinyMCE !== 'undefined') && tinyMCE.activeEditor.isHidden()) {
           editor_content = instance_fp_wysiwyg.GetHTML();
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
@@ -2689,7 +2686,7 @@ jQuery(function() {
         jQuery('#widget-widget_fvplayer-' + widget_id + '-text').val( shortcode );
         jQuery('#widget-widget_fvplayer-' + widget_id + '-text').trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
-        editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
+        editor_content = editor_content.replace(/\[.*?#fvp_placeholder#.*?\]/, shortcode);
         set_post_editor_content(editor_content);
 
         // or are we editing a shortcode in post content?
