@@ -17,8 +17,14 @@ flowplayer( function(api,root) {
       // whitelisting Vimeo Event URLs used by FV Player Vimeo Live Streaming
       if( !api.conf.clip.live && !api.conf.live && !err.video.src.match(/\/\/vimeo.com\/event\//) ) return;
       
-      var delay = api.conf.clip.live_starts_in || initialDelay,
-        message = api.conf.clip.live_starts_in ? "<h2>Live stream scheduled</h2><p>Starting in <span>" + secondsToDhms(delay) + "</span>.</p>" : "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>" + secondsToDhms(delay) + "</span> seconds ...</p>";
+      var delay = initialDelay;
+      if( api.conf.clip.streaming_time ) {
+        delay = api.conf.clip.streaming_time - Math.floor( Date.now()/1000 );
+      } else if( api.conf.clip.live_starts_in ) {
+        delay = api.conf.clip.live_starts_in;
+      }
+
+      var message = api.conf.clip.live_starts_in ? "<h2>Live stream scheduled</h2><p>Starting in <span>" + secondsToDhms(delay) + "</span>.</p>" : "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>" + secondsToDhms(delay) + "</span> seconds ...</p>";
 
       clearInterval(timer);
 
@@ -35,10 +41,14 @@ flowplayer( function(api,root) {
         var messageElement = root.querySelector(".fp-ui .fp-message");
         messageElement.innerHTML = message;
 
+        // do not use too big waiting time, what if the stream is re-scheduled
+        var reload_delay = delay > 300 ? 300 : delay;
+
         timer = setInterval(function () {
+          reload_delay -= 1;
           delay -= 1;
 
-          if (delay > 0 && messageElement) {
+          if (reload_delay > 0 && messageElement) {
             messageElement.querySelector("span").innerHTML = secondsToDhms(delay);
           } else {
             clearInterval(timer);
@@ -63,11 +73,14 @@ flowplayer( function(api,root) {
     var m = Math.floor(seconds % 3600 / 60);
     var s = Math.floor(seconds % 60);
     
-    var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute and " : " minutes and ") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-    return dDisplay + hDisplay + mDisplay + sDisplay;
+    var output = d > 0 ? d + (d == 1 ? " day" : " days") : "";
+    if( output && h > 0 ) output += ", ";
+    output += h > 0 ? h + (h == 1 ? " hour" : " hours") : "";
+    if( output && m > 0 ) output += ", ";
+    output += m > 0 ? m + (m == 1 ? " minute" : " minutes") : "";
+    if( output && s > 0 ) output += " and ";
+    output += s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return output;
   }
   
 });
