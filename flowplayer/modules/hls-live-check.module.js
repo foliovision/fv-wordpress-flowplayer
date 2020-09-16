@@ -24,7 +24,10 @@ flowplayer( function(api,root) {
         delay = api.conf.clip.live_starts_in;
       }
 
-      var message = api.conf.clip.live_starts_in ? "<h2>Live stream scheduled</h2><p>Starting in <span>" + secondsToDhms(delay) + "</span>.</p>" : "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>" + secondsToDhms(delay) + "</span> seconds ...</p>";
+      var startLabel = fv_flowplayer_translations.live_stream_starting.replace( /%d/, secondsToDhms(delay) );
+      var retryLabel = fv_flowplayer_translations.live_stream_retry.replace( /%d/, secondsToDhms(delay) );
+
+      var message = api.conf.clip.live_starts_in ? startLabel : retryLabel;
 
       clearInterval(timer);
 
