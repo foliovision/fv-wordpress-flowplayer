@@ -40,7 +40,7 @@ if( typeof(fv_flowplayer_browser_chrome_fail_array) != "undefined" ) {
 }
 
 function fv_flowplayer_browser_ie( hash ) {
-	if( ( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(flowplayer.support.browser.version, 10) >= 9) /*|| !!navigator.userAgent.match(/Trident.*rv[ :]*11\./)*/ ) {
+	if( ( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(flowplayer.support.browser.version, 10) >= 9) || !!navigator.userAgent.match(/Trident.*rv[ :]*11\./) ) {
 		jQuery('#wpfp_'+hash).attr('data-engine','flash');
 	}
 }
