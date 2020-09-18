@@ -1207,8 +1207,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
 
-    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
-    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
@@ -1222,7 +1222,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
+    .flowplayer .fp-player .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
   
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
