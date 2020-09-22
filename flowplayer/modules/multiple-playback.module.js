@@ -36,7 +36,7 @@ flowplayer( function(api,root) {
           if(player.playing) {
             player.mute(true,true);
           } else { 
-            player.clearCountdown(); // if not playing stop countdown and unload if other video plays
+            player.clearLiveStreamCountdown(); // if not playing stop countdown and unload if other video plays
           }
         }
       });
