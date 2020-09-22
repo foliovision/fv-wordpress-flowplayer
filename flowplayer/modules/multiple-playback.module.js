@@ -18,9 +18,8 @@ flowplayer( function(api,root) {
   });
 
   // on iOS only one audible video can play at a time, so we must mute the other players
-  api.on('ready', function() {
-    var i = 0,
-      is_muted = root.data('volume') == 0;
+  api.on('ready', function() { // using ready event to making sure other players are muted only if the video actually loads
+    var is_muted = root.data('volume') == 0;
 
     if( !is_muted ) {
       // we go through all the players to mute them all
@@ -33,8 +32,12 @@ flowplayer( function(api,root) {
         
         var player = jQuery(this).data('flowplayer');
 
-        if( player && player.playing ) {
-          player.mute(true,true);
+        if( player ) {
+          if(player.playing) {
+            player.mute(true,true);
+          } else { 
+            player.clearCountdown(); // if not playing stop countdown and unload if other video plays
+          }
         }
       });
 
