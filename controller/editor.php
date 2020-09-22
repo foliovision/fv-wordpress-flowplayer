@@ -442,9 +442,3 @@ Elementor support
 add_action( 'elementor/editor/wp_head', 'fv_player_shortcode_editor_scripts_enqueue' );
 add_action( 'elementor/editor/wp_head', 'fv_wp_flowplayer_edit_form_after_editor' );
 add_action( 'elementor/editor/wp_head', 'flowplayer_prepare_scripts' );
-add_action( 'elementor/editor/wp_head', 'fv_player_missing_wp_common_css' );
-
-function fv_player_missing_wp_common_css() {
-  // we need the core WordPress style to make sure the editor tabs have the proper styling
-  wp_enqueue_style('common');
-}
