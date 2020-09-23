@@ -172,6 +172,8 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [video_issues] => Video Issues
     [video_reload] => Video loading has stalled, click to reload
     [link_copied] => Video Link Copied to Clipboard
+    [live_stream_starting] => <h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>
+    [live_stream_retry] => <h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>
     [embed_copied] => Embed Code Copied to Clipboard
     [subtitles_disabled] => Subtitles disabled
     [subtitles_switched] => Subtitles switched to 
@@ -182,6 +184,14 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [warning_old_chrome] => You are using an old Chrome browser. Please make sure you use the latest version.
     [warning_old_firefox] => You are using an old Firefox browser. Please make sure you use the latest version.
     [warning_old_ie] => You are using a deprecated browser. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser.
+    [duration_1_day] => %s day
+    [duration_n_days] => %s day
+    [duration_1_hour] => %s hour
+    [duration_n_hours] => %s hour
+    [duration_1_minute] => %s minute
+    [duration_n_minutes] => %s minute
+    [duration_1_second] => %s second
+    [duration_n_seconds] => %s second
 )
 
 Localizing flowplayer with fv_fp_ajaxurl = https://site.com/wp//wp-admin/admin-ajax.php
