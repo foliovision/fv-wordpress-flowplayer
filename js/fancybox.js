@@ -177,7 +177,7 @@ if( document.addEventListener ) {
 }
 
 // overriding default Flowplayer fullscreen function
-jQuery(document).on('ready', function() {
+jQuery( function() {
   if( typeof(flowplayer) != "undefined" ) {
     flowplayer( function(api,root) {
       var lightbox_wrap = jQuery(root).closest('.fv_player_lightbox_hidden');
@@ -213,7 +213,7 @@ jQuery(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange
   fv_fancybox_check_size();
 });
 
-jQuery(document).ready(fv_player_lightbox_bind);
+jQuery(fv_player_lightbox_bind);
 jQuery(document).ajaxComplete(fv_player_lightbox_bind);
 
 function fv_player_lightbox_bind(){
