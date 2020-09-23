@@ -562,9 +562,6 @@ function fv_wp_flowplayer_init() {
   } else if( widget.length ){
     fv_wp_flowplayer_content = widget.val();
 
-    // trigger keyup to make sure Elementor updates the content
-    widget.trigger('keyup');
-
   } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
     fv_wp_flowplayer_content = jQuery('#content:not([aria-hidden=true])').val();
   } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
