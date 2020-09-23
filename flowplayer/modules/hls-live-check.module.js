@@ -3,9 +3,19 @@ If there is an error in live stream, it shows a special message and reload the s
 */
 
 flowplayer( function(api,root) {
-  
   var initialDelay = 30,
     timer;
+  
+  // clear interval, error + unload allowing the player to be clicked to play again
+  api.clearLiveStreamCountdown = function() {
+    if( timer ) {
+      clearInterval(timer);
+      api.error = api.loading = false;
+      jQuery(root).removeClass('is-error');
+      jQuery(root).find('.fp-message.fp-shown').remove();
+      api.unload();
+    }
+  }
   
   api.conf.flashls = {
     // limit amount of retries to load hls manifests in Flash
