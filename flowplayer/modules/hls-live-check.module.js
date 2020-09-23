@@ -75,14 +75,19 @@ flowplayer( function(api,root) {
     var h = Math.floor(seconds % (3600*24) / 3600);
     var m = Math.floor(seconds % 3600 / 60);
     var s = Math.floor(seconds % 60);
-    
-    var output = d > 0 ? d + (d == 1 ? " day" : " days") : "";
+    var t = fv_flowplayer_translations;
+
+    var output = d > 0 ? (d == 1 ? t.duration_1_day.replace(/%s/,d) : t.duration_n_days.replace(/%s/,d) ) : "";
     if( output && h > 0 ) output += ", ";
-    output += h > 0 ? h + (h == 1 ? " hour" : " hours") : "";
+    output += h > 0 ? (h == 1 ? t.duration_1_hour.replace(/%s/,h) : t.duration_n_hours.replace(/%s/,h) ) : "";
     if( output && m > 0 ) output += ", ";
-    output += m > 0 ? m + (m == 1 ? " minute" : " minutes") : "";
+    output += m > 0 ? (m == 1 ? t.duration_1_minute.replace(/%s/,m) : t.duration_n_minutes.replace(/%s/,m) )  : "";
     if( output && s > 0 ) output += " and ";
-    output += s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    output += s > 0 ? (s == 1 ? t.duration_1_second.replace(/%s/,s) : t.duration_n_seconds.replace(/%s/,s) )  : "";
+
+
+    console.log(output);
+
     return output;
   }
   
