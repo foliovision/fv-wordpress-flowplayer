@@ -246,6 +246,14 @@ msgid ""
 "a> or other modern browser."
 msgstr ""
 
+#: ../controller/frontend.php:82
+msgid "<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>"
+msgstr "<h2>Transmisión en vivo</h2><p>A partir de <span>%d</span>.</p>"
+
+#: ../controller/frontend.php:83
+msgid "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>"
+msgstr "<h2>Lo sentimos, actualmente no hay transmisión en vivo disponible.</h2><p>Reintentando en <span>%d</span> ...</p>"
+
 #: ../controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"
