@@ -553,12 +553,18 @@ function fv_wp_flowplayer_init() {
 
   jQuery('#player_id_top_text').html('');
 
-  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
+    widget = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text');
+
   if( field.length ) {
     fv_wp_flowplayer_content = jQuery(field).val();
 
-  } else if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
-    fv_wp_flowplayer_content = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val();
+  } else if( widget.length ){
+    fv_wp_flowplayer_content = widget.val();
+
+    // trigger keyup to make sure Elementor updates the content
+    widget.trigger('keyup');
+
   } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
     fv_wp_flowplayer_content = jQuery('#content:not([aria-hidden=true])').val();
   } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -1801,8 +1807,9 @@ function fv_wp_flowplayer_on_close() {
 
 
 function fv_wp_flowplayer_set_html( html ) {
-  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
-  var gutenberg = jQuery(fv_player_editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field');
+  var field = jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
+    gutenberg = jQuery(fv_player_editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
+    widget = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text');
   
   if( gutenberg.length ) {
     var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
@@ -1814,9 +1821,10 @@ function fv_wp_flowplayer_set_html( html ) {
     field.val(html);
     field.trigger('fv_flowplayer_shortcode_insert', [ html ] );
 
-  } else if( jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').length ){
-    jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').val(html);      
-    jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text').trigger('fv_flowplayer_shortcode_insert', [ html ] );
+  } else if( widget.length ){
+    widget.val(html);
+    widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content
+    widget.trigger('fv_flowplayer_shortcode_insert', [ html ] );
   }else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
     jQuery('#content:not([aria-hidden=true])').val(html); 
   }else if( fv_wp_flowplayer_hTinyMCE == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
