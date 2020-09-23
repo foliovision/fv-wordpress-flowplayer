@@ -113,7 +113,8 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   display:none;
 }
 
-#fv_flowplayer_admin_tabs .nav-tab-active {
+#fv_flowplayer_admin_tabs .nav-tab-active,
+#fv-player-shortcode-editor-right .nav-tab-active {
   background-color: #ffffff;
   border-bottom: #ffffff;
 }
