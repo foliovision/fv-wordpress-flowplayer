@@ -5,10 +5,9 @@
 
 .attachments-browser .breadcrumbs {
     color: #000;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
-    line-height: 35px;
-    margin: 31px 0 0 17px;
+    margin: 50px 0 0 17px;
 }
 .attachments-browser .breadcrumbs a:link, .attachments-browser .breadcrumbs a:visited {
     color: #000;
@@ -131,7 +130,6 @@
     border-radius: 0.25em;
     color: #FFF;
     display: block;
-    margin-top: 0.9em;
     position: relative;
     overflow: hidden;
     box-shadow: 1.74em -2.1em 0 0 #A4A7AC inset;
@@ -139,6 +137,13 @@
 .wp-core-ui .attachments-browser table .icon.file {
     margin: 0 1.5em 0 0;
     float: left;
+}
+
+.attachments-browser .attachment-info .thumbnail-image::after {
+    box-shadow: none;
+}
+#__assets_browser .icon.file {
+    margin-top: 0.9em;
 }
 .attachments-browser .icon.file:first-line {
     font-size: 13px;
@@ -285,12 +290,16 @@
 }
 
 #__assets_browser {
-    top: 55px;
+    top: 68px;
     z-index: 2; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
-#__assets_browser .attachments-browser .s3-media-toolbar {
-    height: 40px !important;
+#browser-dropdown {
+    margin-top: 10px;
+}
+
+.attachments-browser .s3-media-toolbar {
+    height: 50px !important;
 }
 
 #__assets_browser .attachments-browser .attachment .thumbnail img {

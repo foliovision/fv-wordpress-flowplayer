@@ -170,12 +170,8 @@ msgstr ""
 "Navegador móvil detectado, reproducción de vídeo de ancho de banda bajo."
 
 #: ../controller/frontend.php:64
-msgid "Click here"
-msgstr "Haz clic aquí"
-
-#: ../controller/frontend.php:65
-msgid "for full quality."
-msgstr "para una calidad total."
+msgid "Click here for full quality"
+msgstr "Haz clic aquí para una calidad total"
 
 #: ../controller/frontend.php:66 ../controller/frontend.php:67
 msgid ""

@@ -167,12 +167,8 @@ msgstr ""
 "Mobiler Browser erkannt, Video wird mit geringer Bandbreite abgespielt."
 
 #: controller/frontend.php:64
-msgid "Click here"
-msgstr "Hier klicken"
-
-#: controller/frontend.php:65
-msgid "for full quality."
-msgstr "für hohe Qualität."
+msgid "Click here for full quality"
+msgstr "Hier klicken für hohe Qualität"
 
 #: controller/frontend.php:66 controller/frontend.php:67
 msgid ""

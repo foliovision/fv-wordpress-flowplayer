@@ -39,8 +39,8 @@ class FV_Player_List_Table_View {
   function screen_columns() {
     return array(
       //'cb'             => '<input type="checkbox" />',
-      'id'               => __( 'Playlist', 'fv-wordpress-flowplayer' ),
-      'player_name'      => __( 'Playlist Name', 'fv-wordpress-flowplayer' ),
+      'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
+      'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
       'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
       'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
       'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
@@ -292,7 +292,7 @@ class FV_Player_List_Table extends WP_List_Table {
     $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'p.id';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
-    $search = !empty($_GET['s']) ? esc_sql($_GET['s']) : null;
+    $search = !empty($_GET['s']) ? $_GET['s'] : null;
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;

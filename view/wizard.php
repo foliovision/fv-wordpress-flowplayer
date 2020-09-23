@@ -362,6 +362,9 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                       <a class="fv_flowplayer_language_add_link" style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
                     </td>
                   </tr>
+
+                  <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append'); ?>
+
                   <tr class="submit-button-wrapper">
                     <td></td>
                     <td>
@@ -389,8 +392,19 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <?php fv_player_shortcode_row( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
-                   <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
-                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal', 'Text', 'Slider', 'Season', 'Polaroid' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
+                    array('','Default'),
+                    array('horizontal','Horizontal'),
+                    array('tabs','Tabs'),
+                    array('prevnext','Prev/Next'),
+                    array('vertical','Vertical'),
+                    array('slider','Slider'),
+                    array('season','Season'),
+                    array('polaroid','Polaroid'),
+                    array('text','Text')
+                  ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) );
+                  ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'dropdown' => array( 'Default', 'Yes', 'No', 'Custom' ) ) ); ?>
                   
                   <tr id="fv_wp_flowplayer_field_share_custom" style="display: none">

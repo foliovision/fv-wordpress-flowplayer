@@ -60,8 +60,7 @@ function fv_flowplayer_get_js_translations() {
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
   'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv-wordpress-flowplayer'),
   'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv-wordpress-flowplayer'),
-  'mobile_browser_detected_2' => __('Click here','fv-wordpress-flowplayer'),
-  'mobile_browser_detected_3' => __('for full quality.','fv-wordpress-flowplayer'),
+  'mobile_browser_detected_2' => __('Click here for full quality','fv-wordpress-flowplayer'),
   'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv-wordpress-flowplayer'),
@@ -326,6 +325,9 @@ function flowplayer_prepare_scripts() {
     
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
       $path = '/flowplayer/modules/flowplayer.min.js';
+      if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
+        $path = '/flowplayer/modules/flowplayer.js';
+      }
       wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'flowplayer';
       
@@ -365,7 +367,7 @@ function flowplayer_prepare_scripts() {
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
     
-    if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
+    if( $sCommercialKey ) $aConf['key'] = base64_encode($sCommercialKey);
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !$fv_fp->_get_option('fixed_size') ) {
       $aConf['safety_resize'] = true;
     }
@@ -460,13 +462,6 @@ function flowplayer_prepare_scripts() {
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
     
-    if( count($fv_fp->aAds) > 0 ) { //  todo: move into player
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds ); 
-    }
-    if( count($fv_fp->aPopups) > 0 ) {  //  todo: move into player
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
-    }    
-
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );

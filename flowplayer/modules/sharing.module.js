@@ -14,10 +14,6 @@ flowplayer( function(api,root) {
     });
   }
   
-  if( root.data('fv_loop') ) {
-    api.conf.loop = true;
-  }
-  
   jQuery('.fvfp_admin_error', root).remove();
   
   root.find('.fp-logo, .fp-header').click( function(e) {

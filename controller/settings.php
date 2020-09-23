@@ -366,6 +366,7 @@ function flowplayer_admin_footer_wp_js_restore() {
 function fv_player_get_aws_regions($translation_domain = 'fv-wordpress-flowplayer') {
 
   return array(
+    'af-south-1'     => __('Africa (Cape Town)', $translation_domain),
     'ap-east-1'      => __('Asia Pacific (Hong Kong)', $translation_domain),
     'ap-south-1'     => __('Asia Pacific (Mumbai)', $translation_domain),
     'ap-northeast-3' => __('Asia Pacific (Osaka-Local)', $translation_domain),
@@ -382,6 +383,7 @@ function fv_player_get_aws_regions($translation_domain = 'fv-wordpress-flowplaye
     'eu-central-1'   => __('Europe (Frankfurt)', $translation_domain),
     'eu-west-1'      => __('Europe (Ireland)', $translation_domain),
     'eu-west-2'      => __('Europe (London)', $translation_domain),
+    'eu-south-1'     => __('Europe (Milan)', $translation_domain),
     'eu-west-3'      => __('Europe (Paris)', $translation_domain),
     'eu-north-1'     => __('Europe (Stockholm)', $translation_domain),
     

@@ -1138,7 +1138,7 @@ jQuery(document).ready(function($) {
                     .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />
   
             <input id="skin-slim[durationColor]" name="skin-slim[durationColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
-                    .flowplayer .fp-controls &gt; .fv-fp-prevbtn:before, .flowplayer .fp-controls &gt; .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
+                    .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
   
             <input id="skin-slim[design-timeline]" name="skin-slim[design-timeline]" type="hidden"  value="fp-slim" data-fv-preview="" />
   
@@ -1185,7 +1185,7 @@ jQuery(document).ready(function($) {
                     .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />
   
             <input id="skin-youtuby[durationColor]" name="skin-youtuby[durationColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
-                    .flowplayer .fp-controls &gt; .fv-fp-prevbtn:before, .flowplayer .fp-controls &gt; .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
+                    .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
   
             <input id="skin-youtuby[design-timeline]" name="skin-youtuby[design-timeline]" type="hidden"  value="fp-full" data-fv-preview="" />
   
@@ -1227,7 +1227,7 @@ jQuery(document).ready(function($) {
             <tr>
           <td><label for="skin-custom[marginBottom]">Bottom Margin :</label></td>
           <td>
-            <input  id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text"  value="2.8" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+            <input  id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text"  value="" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
                   .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
                   .flowplayer.has-abloop { margin-bottom: %val%px !important; }
                   .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }" />          
@@ -1412,12 +1412,12 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     <tr>
       <td><label for="subtitleSize">Font Size</label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="16"
-                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor">Background Color</label></td>
       <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="rgba(0,0,0,0.5)"
-            data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
+            data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
     <tr>    		
       <td colspan="2">
@@ -1534,7 +1534,8 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             <td><label for="amazon_region[]">Region</td>
             <td>
               <select id="amazon_region[]" name="amazon_region[]">
-                <option value="">Select the region</option>                  <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
+                <option value="">Select the region</option>                  <option value="af-south-1">Africa (Cape Town)</option>
+                                    <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
                                     <option value="ap-south-1">Asia Pacific (Mumbai)</option>
                                     <option value="ap-northeast-3">Asia Pacific (Osaka-Local)</option>
                                     <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
@@ -1547,6 +1548,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
                                     <option value="eu-central-1">Europe (Frankfurt)</option>
                                     <option value="eu-west-1">Europe (Ireland)</option>
                                     <option value="eu-west-2">Europe (London)</option>
+                                    <option value="eu-south-1">Europe (Milan)</option>
                                     <option value="eu-west-3">Europe (Paris)</option>
                                     <option value="eu-north-1">Europe (Stockholm)</option>
                                     <option value="me-south-1">Middle East (Bahrain)</option>
@@ -2461,9 +2463,9 @@ jQuery( function($) {
 $('#fv-player-vi-remove').click( function() {
   $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
     $('#fv-player-vi-give-back').prop('checked',false);
-    $('[href=#postbox-container-tab_video_intelligence]').hide();
+    $('[href=\\#postbox-container-tab_video_intelligence]').hide();
     $('#fv_flowplayer_video_intelligence').hide();
-    $('[href=#postbox-container-tab_video_ads]').click();
+    $('[href=\\#postbox-container-tab_video_ads]').click();
     $('#fv_flowplayer_video_intelligence_revival').show();
   });
   
@@ -2639,7 +2641,7 @@ jQuery(document).ready(function(){
   }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -2648,7 +2650,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });  
@@ -2682,7 +2684,7 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
     var el = jQuery(id);
     if(el.length){
       var tab = el.parents('.postbox-container').attr('id');
-      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=\\#'+tab+']').click()
     }
   }
 });

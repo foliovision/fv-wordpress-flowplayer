@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,43 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.4.33.727 - 2020/08/24 =
+
+* Bugfix - Autoplay - hide initial play arrow animation when autoplaying a video did also hide the loading progress indicator
+* DASH.js library downgrade to 3.0.0 as some videos wouldn't play on macOS 10.5.6 with Safari 13.1.2
+
+= 7.4.32.727 - 2020/08/14 =
+
+* Bugfix - Editor - WordPress 5.5 fix for dropdown settings (HTML select tag)
+
+= 7.4.31.727 - 2020/08/12 =
+
+* Autoplay - hide initial play arrow animation when autoplaying a video
+* DASH.js library update to 3.1.2
+* Keyboard controls - disabled  when controlbar hidden
+* Loop fix for FV Player Pro YouTube engine
+* Video Position Saving - remember if logged in user saw the video already
+* WordPress 5.5 fixes
+
+= 7.4.24.727 - 2020/06/09 =
+
+* AWS - adding new regions
+* HLS - live stream check - shows countdown and retries automatically if it's not up
+* List table - changing user interface text labels "Playlist" to "Player"
+* MPEG-DASH - partial fix for Disable HTML5 autoplay Chrome extension for Vimeo videos in FV Player Pro
+* Settings - Check template - fix when using Google PageSpeed module or SCRIPT_DEBUG
+* Bugfix - Editor - bugfix, couldn't save Prev/Next playlist style properly
+* Bugfix - iOS video recovery - bugfix, it was not allowing you to pause the video
+* Bugfix - Multiple video playback - would mute videos in playlist
+
+= 7.4.21.727 - 2020/05/07 =
+
+* HLS - improved parsing of video qualities for video quality menu in case your m3u8 has video resolution information
+* Skin settings - allowing 0 for marginBottom
+* Bugfix - CSS - playlist font color setting not working
+* Bugfix - CSS - 2014 design titles background color in some themes
+* Bugfix - MPEG-DASH - fix for recovery of Vimeo videos in FV Player Pro
 
 = 7.4.17.727 - 2020/04/08 =
 

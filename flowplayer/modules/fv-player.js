@@ -17,6 +17,11 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
 
+  // we had a problem that some websites would change the key in HTML if stored as $62\d+
+  try {
+    flowplayer.conf.key = atob(flowplayer.conf.key);
+  } catch(e) {}
+
   if( !flowplayer.support.android && flowplayer.conf.dacast_hlsjs ) {
     function FVAbrController(hls) {      
       this.hls = hls;
@@ -92,7 +97,7 @@ function fv_player_videos_parse(args, root) {
         fv_fp_mobile = true;
       }
       if( fv_fp_mobile ) {
-        jQuery(root).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a> '+fv_flowplayer_translations.mobile_browser_detected_3+'</p>');
+        jQuery(root).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a>.</p>');
       }
     });
   }
@@ -520,7 +525,7 @@ function fv_autoplay_init(root, index ,time){
   }
   if(root.hasClass('lightboxed')){
     setTimeout(function(){
-      jQuery('[href=#' + root.attr('id')+ ']').click();
+      jQuery('[href=\\#' + root.attr('id')+ ']').click();
     },0);
   }
 
@@ -603,6 +608,8 @@ function fv_autoplay_exec(){
 
       // first play if id is set
       for( var item in playlist ) {
+        if( !playlist.hasOwnProperty(item) ) continue;
+
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
         if( hash === id && autoplay ){
           console.log('fv_autoplay_exec for '+id,item);
@@ -613,6 +620,8 @@ function fv_autoplay_exec(){
       }
 
       for( var item in playlist ) {
+        if( !playlist.hasOwnProperty(item) ) continue;
+
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
         if( hash === src  && autoplay ){
           console.log('fv_autoplay_exec for '+src,item);
@@ -633,6 +642,16 @@ function fv_autoplay_exec(){
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
           api.load();
+
+          // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
+          var play_icon = root.find('.fp-play').addClass('invisible'),
+            control_bar = root.find('.fp-controls').addClass('invisible');
+            
+          api.one('progress', function() {
+            play_icon.removeClass('invisible');
+            control_bar.removeClass('invisible');
+          });
+
           if(root.data('fvautoplay') == 'muted') {
             api.mute(true,true);
           }

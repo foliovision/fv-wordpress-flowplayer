@@ -429,7 +429,11 @@ class FV_Player_Db {
         // cache first vid
         if (!$first_video_data_cached && $videos) {
           $vid = $videos[0]->getAllDataValues();
-          $atts = array_merge($atts, $vid);
+
+          // we need to keep the player id!
+          $first_video = $vid;
+          unset($first_video['id']);
+          $atts = array_merge($atts, $first_video);
           $atts['video_objects'] = array($videos[0]);
 
           // don't cache if we're previewing
@@ -505,6 +509,9 @@ class FV_Player_Db {
         if( $att_value == 'custom' && !empty($data['share_title']) && !empty($data['share_url']) ) {
           return $data['share_title'].';'.$data['share_url'];
         }
+      case 'liststyle':
+        // there was a bug which caused the Prev/Next Playlist style to save as prev/next rather than prevnext, so this code fixes the display without need to fix the database data
+        if($att_value == 'prev/next' ) return 'prevnext';
     }
 
     return $att_value;
