@@ -1339,12 +1339,14 @@ jQuery(function() {
       jQuery('#player_id_top_text').html('');
 
       // is there a Custom Video field or Gutenberg field next to the button?
-      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field');
+      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
+        widget = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text');
+      
       if( field.length ) {
         editor_content = jQuery(field).val();
 
-      } else if( jQuery('#widget-widget_fvplayer-'+widget_id+'-text').length ){
-        editor_content = jQuery('#widget-widget_fvplayer-'+widget_id+'-text').val();
+      } else if( widget.length ){
+        editor_content = widget.val();
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
       } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -2666,8 +2668,9 @@ jQuery(function() {
         return;
       }
 
-      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
-      var gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field');
+      var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
+        gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
+        widget = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text');
 
       // is there a Gutenberg field together in wrapper with the button?
       if( gutenberg.length ) {
@@ -2683,9 +2686,10 @@ jQuery(function() {
         //field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
 
         // FV Player in a Widget
-      } else if( jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length ){
-        jQuery('#widget-widget_fvplayer-' + widget_id + '-text').val( shortcode );
-        jQuery('#widget-widget_fvplayer-' + widget_id + '-text').trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
+      } else if( widget.length ){
+        widget.val( shortcode );
+        widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content 
+        widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
         
         // tinyMCE Text tab
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
