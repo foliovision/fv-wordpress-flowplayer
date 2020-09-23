@@ -1340,7 +1340,7 @@ jQuery(function() {
 
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text');
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
       
       if( field.length ) {
         editor_content = jQuery(field).val();
@@ -2670,7 +2670,7 @@ jQuery(function() {
 
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+FVFP_sWidgetId+'-text');
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
 
       // is there a Gutenberg field together in wrapper with the button?
       if( gutenberg.length ) {
