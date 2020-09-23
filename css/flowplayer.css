@@ -1001,7 +1001,7 @@
     height: 2.4em; }
 .flowplayer.fp-slim.fp-full .fp-timeline {
   bottom: 2.4em;
-    height: .4em; }
+    height: .2em; }
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
