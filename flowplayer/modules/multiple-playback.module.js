@@ -25,10 +25,9 @@ flowplayer( function(api,root) {
       // we go through all the players to mute them all
       jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
         
-        // we must skip the current player, as the load even can occur multiple times
+        // we must skip the current player, as the ready event can occur multiple times
         // like for example when you switch to another video in playlist
-        var current_instance_id = root.data('flowplayer-instance-id');
-        if( current_instance_id == flowplayer.audible_instance ) return;
+        if( instance_id == jQuery(this).data('flowplayer-instance-id') || instance_id == flowplayer.audible_instance ) return;
         
         var player = jQuery(this).data('flowplayer');
 
