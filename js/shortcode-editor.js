@@ -3055,6 +3055,12 @@ jQuery(function() {
         }, function (response) {
           el_preview_target.html( $('#wrapper', response) );
           $doc.trigger('fvp-preview-complete');
+
+          // Allow autoplay to work for accurate preview
+          fv_player_did_autoplay = false;
+          setTimeout( function() {
+            fv_autoplay_exec();
+          }, 0 );
         }
       );
 
@@ -3453,7 +3459,7 @@ jQuery(function() {
     });
 
     // run autoplay check manually for each new preview
-    $(window).on('load', function() {
+    /*$(window).on('load', function() {
       flowplayer( function(api,root) {
         root = jQuery(root);
 
@@ -3470,7 +3476,7 @@ jQuery(function() {
           }, 100);
         });
       });
-    });
+    });*/
 
     // Public stuff
     return {
