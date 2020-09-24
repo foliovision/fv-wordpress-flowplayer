@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.34.727 - 2020/09/23 =
+
+* FV Player wp-admin Screen - search fixes and improvements - you can multiple words or quotes
+* HLS - live stream check - improving display and behavior when multiple video playbacks is enabled
+* Compatibility - AWS - library update
+* Compatibility - jQuery migrate fixes
+* Compatibility - Elementor fixes
+
 = 7.4.33.727 - 2020/08/24 =
 
 * Bugfix - Autoplay - hide initial play arrow animation when autoplaying a video did also hide the loading progress indicator
