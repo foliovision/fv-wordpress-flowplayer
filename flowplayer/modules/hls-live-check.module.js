@@ -3,7 +3,11 @@ If there is an error in live stream, it shows a special message and reload the s
 */
 
 flowplayer( function(api,root) {
-  var initialDelay = 30,
+  var
+    initialDelay = 30,
+    continueDelay = 10,
+    useDelay = initialDelay,
+    retryLabel = fv_flowplayer_translations.live_stream_retry,
     timer;
   
   // clear interval, error + unload allowing the player to be clicked to play again
@@ -21,13 +25,21 @@ flowplayer( function(api,root) {
     // limit amount of retries to load hls manifests in Flash
     manifestloadmaxretry: 2
   }
+
+  api.on('ready', function() {
+    useDelay = initialDelay;
+    retryLabel = fv_flowplayer_translations.live_stream_retry;
+  }).on('progress', function() {
+    useDelay = continueDelay;
+    retryLabel = fv_flowplayer_translations.live_stream_continue;
+  })
   
   api.on("error", function (e, api, err) {
     setTimeout( function() {
       // whitelisting Vimeo Event URLs used by FV Player Vimeo Live Streaming
       if( !api.conf.clip.live && !api.conf.live && !err.video.src.match(/\/\/vimeo.com\/event\//) ) return;
       
-      var delay = initialDelay;
+      var delay = useDelay;
       if( api.conf.clip.streaming_time ) {
         delay = api.conf.clip.streaming_time - Math.floor( Date.now()/1000 );
       } else if( api.conf.clip.live_starts_in ) {
@@ -35,7 +47,7 @@ flowplayer( function(api,root) {
       }
 
       var startLabel = fv_flowplayer_translations.live_stream_starting.replace( /%d/, secondsToDhms(delay) );
-      var retryLabel = fv_flowplayer_translations.live_stream_retry.replace( /%d/, secondsToDhms(delay) );
+      retryLabel = retryLabel.replace( /%d/, secondsToDhms(delay) );
 
       var message = api.conf.clip.live_starts_in ? startLabel : retryLabel;
 
@@ -94,9 +106,6 @@ flowplayer( function(api,root) {
     output += m > 0 ? (m == 1 ? t.duration_1_minute.replace(/%s/,m) : t.duration_n_minutes.replace(/%s/,m) )  : "";
     if( output && s > 0 ) output += " and ";
     output += s > 0 ? (s == 1 ? t.duration_1_second.replace(/%s/,s) : t.duration_n_seconds.replace(/%s/,s) )  : "";
-
-
-    console.log(output);
 
     return output;
   }
