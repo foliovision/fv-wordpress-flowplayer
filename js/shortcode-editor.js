@@ -3058,6 +3058,7 @@ jQuery(function() {
 
           // Allow autoplay to work for accurate preview
           fv_player_did_autoplay = false;
+          // Giving it a bit of time to update the DOM
           setTimeout( function() {
             fv_autoplay_exec();
           }, 0 );
@@ -3457,26 +3458,6 @@ jQuery(function() {
       console.log(this.id+' has been updated manually!');
       $element.data('fv_player_user_updated', 1);
     });
-
-    // run autoplay check manually for each new preview
-    /*$(window).on('load', function() {
-      flowplayer( function(api,root) {
-        root = jQuery(root);
-
-        // this is bound to the "unload" event because we want to react
-        // to the moment when the player gets inserted onto the page
-        // and is paused in its pre-ready state
-        api.on("unload", function() {
-          // this needs to be in an async timeout,
-          // as otherwise the browser would not have time to populate its DOM
-          // and api.load() in fv_autoplay_exec() would fail
-          setTimeout(function() {
-            fv_player_did_autoplay = false;
-            fv_autoplay_exec();
-          }, 100);
-        });
-      });
-    });*/
 
     // Public stuff
     return {
