@@ -139,7 +139,7 @@ class FV_Player_lightbox {
 
   function lightbox_html($html) {
     // disable lightbox HTML for previews
-    if (!empty($_POST['fv_player_preview_json'])) {
+    if (flowplayer::is_preview()) {
       return $html;
     }
 

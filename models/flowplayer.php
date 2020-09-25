@@ -762,6 +762,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $salt;
   }
 
+  /**
+   * @return boolean Returns TRUE if we're asking for a preview from the back-end editor, FALSE otherwise.
+   */
+  public static function is_preview() {
+    return !empty($_POST['fv_player_preview_json']);
+  }
+
   public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
     global $FV_Player_Pro;
     $media = $mediaData['sources'];
