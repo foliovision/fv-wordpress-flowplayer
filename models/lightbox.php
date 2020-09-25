@@ -138,6 +138,11 @@ class FV_Player_lightbox {
   }
 
   function lightbox_html($html) {
+    // disable lightbox HTML for previews
+    if (flowplayer::is_preview()) {
+      return $html;
+    }
+
     $aArgs = func_get_args();
 
     if (isset($aArgs[1]) ) {
@@ -357,7 +362,6 @@ class FV_Player_lightbox {
           var sLightbox = shortcode.match(/lightbox="(.*?)"/);
           if (sLightbox && typeof (sLightbox) != "undefined" && typeof (sLightbox[1]) != "undefined") {
             sLightbox = sLightbox[1];
-            fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace(/lightbox="(.*?)"/, '');
 
             if (sLightbox) {
               var aLightbox = sLightbox.split(/[;]/, 4);
@@ -384,16 +388,6 @@ class FV_Player_lightbox {
             }
           }
         });
-        jQuery(document).on('fv_flowplayer_shortcode_create', function () {
-          if (document.getElementById("fv_wp_flowplayer_field_lightbox").checked) {
-            var iWidth = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_width").value);
-            var iHeight = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_height").value);
-            var sSize = (iWidth && iHeight) ? ';' + iWidth + ';' + iHeight : '';
-            var sCaption = ';' + document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value.trim();
-            fv_wp_fp_shortcode += ' lightbox="true' + sSize + sCaption + '"';
-          }
-        })
-
       </script>
       <?php
     }

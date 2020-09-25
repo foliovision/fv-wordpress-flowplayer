@@ -659,7 +659,7 @@ jQuery( function($) {
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
-        if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
+        if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
           splash = (f.splash ? f.splash : f.link);
 
           // remove signature if we're updating the Editor field, otherwise leave it in,
@@ -693,8 +693,15 @@ jQuery( function($) {
       }
     }
     
-    if( extra && extra.hlskey ) {
-      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
+    if( extra ) {
+      if( extra.hlskey) {
+        $url_input.parents('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
+      }
+      if( extra.timeline_previews ) {
+        var data_index = $url_input.parents('table').data('index');
+        jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview').val(extra.timeline_previews);
+      }
+
     } else {
       $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
     }

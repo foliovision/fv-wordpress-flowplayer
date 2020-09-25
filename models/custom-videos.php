@@ -90,6 +90,7 @@ class FV_Player_Custom_Videos {
       $preview = false;
       $before = 0;
       if( $video ) {
+        $video = str_replace( '[fvplayer ', '[fvplayer autoplay="false" ', $video );
         $preview = do_shortcode($video);
         global $fv_fp;
         if( $fv_fp->current_player() ) {
@@ -98,19 +99,17 @@ class FV_Player_Custom_Videos {
       }
       
       $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
-          <div class='inside inside-child'>    
-            <div class='fv-player-editor-preview'>".$preview."</div>
-            <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
-            <input name='fv_player_videos_before[".$this->meta."][]' type='hidden' value='".$before."' />
-            <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
-              <button class='button fv-player-editor-button'>".$args['labels']['edit']."</button>
-              <button class='button fv-player-editor-remove'>".$args['labels']['remove']."</button>
-              $add_another
-            </div>
+          <div class='fv-player-editor-preview'>".$preview."</div>
+          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
+          <input name='fv_player_videos_before[".$this->meta."][]' type='hidden' value='".$before."' />
+          <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
+            <button class='button fv-player-editor-button'>".$args['labels']['edit']."</button>
+            <button class='button fv-player-editor-remove'>".$args['labels']['remove']."</button>
+            $add_another
+          </div>
 
-            <div class='add-video' ".($video ? 'style="display:none"' : '').">
-              <button class='button fv-player-editor-button'>Add Video</button>
-            </div>
+          <div class='add-video' ".($video ? 'style="display:none"' : '').">
+            <button class='button fv-player-editor-button'>Add Video</button>
           </div>
         </div>";
     } else {

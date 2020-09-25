@@ -1,4 +1,5 @@
-#content .fv-wp-flowplayer-notice-small, .fv-wp-flowplayer-notice-small { position: absolute; top: 0; left: 0; z-index: 20; }
+.fv-wp-flowplayer-notice-small { position: absolute; top: 0; left: 0; z-index: 20; }
+.flowplayer.is-error .fv-wp-flowplayer-notice-small { top: 2em }
 #content .flowplayer .fv-wp-flowplayer-notice-small small, .flowplayer .fv-wp-flowplayer-notice-small small { position:relative;left:15px;top:10px;-webkit-transition:all .15s 0s;-moz-transition:all .15s 0s;transition:all .15s 0s }
 #content .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small small, .flowplayer.is-mouseover.is-ready .fv-wp-flowplayer-notice-small small, #content .flowplayer.is-ready.is-paused .fv-wp-flowplayer-notice-small small, .flowplayer.is-ready.is-paused .fv-wp-flowplayer-notice-small small  { top: 3em }
 /*#content .flowplayer.is-ready.is-paused.has-video-checker .fv-wp-flowplayer-notice-small small, .flowplayer.is-ready.is-paused.has-video-checker .fv-wp-flowplayer-notice-small small { top: 0; }*/
@@ -112,7 +113,8 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   display:none;
 }
 
-#fv_flowplayer_admin_tabs .nav-tab-active {
+#fv_flowplayer_admin_tabs .nav-tab-active,
+#fv-player-shortcode-editor-right .nav-tab-active {
   background-color: #ffffff;
   border-bottom: #ffffff;
 }
@@ -144,7 +146,9 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 #wpfp_options .minicolors-input-swatch {display:none}
 #wpfp_options input[data-opacity] { background-image: url(checkered.png) }
 
-.fv-player-editor-wrapper { float: left }
+.fv-player-editor-wrapper { float: left; width: 100%}
+.fv-player-editor-player-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; opacity:.7}
+.fv-player-editor-player-loading .spinner { position: absolute; left: 0; right: 0; margin: auto; top: 0; bottom: 0 }
 
 /* otherwise "Drag boxes here" appears when you hide a meta box initially and then you show it with JS */
 .metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }
@@ -165,4 +169,13 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   background: white;
   padding: .5em;
   border: 1px solid gray;
+}
+
+#fv-player-shortcode-editor .fv-player-tab-cues div.fv-cues-infobox {
+  text-align: center;
+  padding: 15px 0;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
 }

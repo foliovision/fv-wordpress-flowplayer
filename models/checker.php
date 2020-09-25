@@ -196,15 +196,16 @@ class FV_Player_Checker {
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-            
-            $request = wp_remote_get($remotefilename_encoded);
+            $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
+            $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
             $response = wp_remote_retrieve_body( $request );
-  
             $playlist = false;
             $duration = 0;
             $segments = false;
-  
-            if(!preg_match_all('/^[^#].*\.m3u8(\?.*)?$/im', $response,$playlist)){
+
+            // match all the sub-playst m3u8 links
+            // if none are found, you are actually in the sub-playlist already and can start counting the durations
+            if(!preg_match_all('/^[^#].*\.m3u8/im', $response,$playlist)){ // TODO : query string
               if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
                 foreach($segments[1] as $segment_item){
                   $duration += $segment_item;
@@ -212,8 +213,11 @@ class FV_Player_Checker {
               }
             }else{
               foreach($playlist[0] as $item){
-                $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $remotefilename_encoded);
-                $request = wp_remote_get($item_url);
+                // take the "https://site.com/videos/promotion" out of https://site.com/videos/promotion/index.m3u8
+                // and glue the sub-playlist relative path to the end of it
+                $item_url = dirname($remotefilename_encoded)."/". $item;
+                $item_url = apply_filters( 'fv_flowplayer_video_src', $item_url , array('dynamic'=>true) );
+                $request = wp_remote_get($item_url, array( 'timeout' => 15 ) );
                 $playlist_item = wp_remote_retrieve_body( $request );
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
                   foreach($segments[1] as $segment_item){
@@ -227,7 +231,7 @@ class FV_Player_Checker {
   
             $time = $duration;
           }
-          
+
           $time = apply_filters( 'fv_flowplayer_checker_time', $time, $remotefilename_encoded );
           $key = flowplayer::get_video_key($remotefilename_encoded);
           

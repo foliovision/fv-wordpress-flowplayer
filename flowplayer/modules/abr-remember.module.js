@@ -1,42 +1,88 @@
 /*
  *  MPEG-DASH and HLS.js ABR changes
  */
-if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
-  flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
-}
 
 flowplayer( function(api,root) {
+  root = jQuery(root);
+
+console.log('api.conf.hd_streaming ',api.conf.hd_streaming );
   var hlsjs;
+
+  // this is the proper place to pick the initial HLS video quality 
   flowplayer.engine('hlsjs-lite').plugin(function(params) {
     hlsjs = params.hls;
+
+    // if hls decryption key is invalid show error
+    hlsjs.on(Hls.Events.ERROR, function (event, data) {
+      if( data.type == 'mediaError' && data.details == 'fragParsingError' && data.fatal == true ) {
+        hlsjs.destroy();
+        api.trigger('error', [api, { code: 3 }]);
+        setTimeout(function() {
+          root.removeClass('is-seeking');
+          root.addClass('is-paused');
+        },0)
+      }
+    });
+    // do we force HD playback?
+    var pick_quality = flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ? 720 : false;
+    // or did we disable it for this player?
+    if( jQuery(params.root).data('hd_streaming') == false ) pick_quality = false;
+    // or did the user pick some quality by hand?
+    if( localStorage.FVPlayerHLSQuality ) pick_quality = localStorage.FVPlayerHLSQuality;
+
+    if( pick_quality ) {
+      hlsjs.on(Hls.Events.MANIFEST_PARSED, function(_, data) {
+        // look for the exact matching quality
+        var found = false;
+        jQuery.each( data.levels, function(k,v) {
+          if( v.height == pick_quality ) found = k;
+        });
+
+        // if it's not the manual selection look for the highest quality
+        if( !localStorage.FVPlayerHLSQuality && !found ) {
+          jQuery.each( data.levels, function(k,v) {
+            if( v.height > found ) found = k;
+          });
+        }
+
+        if( found ) {
+          console.log('FV Player: Picked '+data.levels[found].height+'p quality');
+          hlsjs.startLevel = found;
+          hlsjs.currentLevel = found;
+        }
+
+      });
+    }
   });
   
-  root = jQuery(root);
   var search = document.location.search;
 
   if( localStorage.FVPlayerDashQuality ) {
     if( !api.conf.dash ) api.conf.dash = {};
     api.conf.dash.initialVideoQuality = 'restore'; // special flag for Dash.js
   }
-  
-  if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
-    flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
-  } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
-    flowplayer.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
-  }
-  
+
+  root = jQuery(root);
+
+  // store the hand-picked HLS quality height such as 720p in localStorage
+  root.on('click', '.fp-qsel-menu a', function() {
+    if(api.engine.engineName == 'hlsjs-lite' ) {
+      var quality = jQuery(this).data('quality');
+      if( quality == -1 ) {
+        localStorage.removeItem('FVPlayerHLSQuality');
+      } else {
+        var level = hlsjs.levels[quality];
+        localStorage.FVPlayerHLSQuality = level.height;
+      }
+    }
+  });
+
   api.bind('quality', function(e,api,quality) {
     if(api.engine.engineName == 'dash' ) {      
       if( quality == -1 ) {
         localStorage.removeItem('FVPlayerDashQuality');
       } else if( bitrates[quality] ) {
         localStorage.FVPlayerDashQuality = bitrates[quality].height;
-      }
-    } else if(api.engine.engineName == 'hlsjs-lite' ) {      
-      if( quality == -1 ) {
-        localStorage.removeItem('FVPlayerHLSQuality');
-      } else {
-        localStorage.FVPlayerHLSQuality = quality;
       }
     }
   });  
@@ -50,47 +96,31 @@ flowplayer( function(api,root) {
         api.quality(api.conf.dash.initialVideoQuality);
       }
       quality_sort();
+
     } else if(api.engine.engineName == 'hlsjs-lite' ) {
       if( api.video.qualities && api.video.qualities.length > 2 ) {
-        var qswitch = -1;
-        if( localStorage.FVPlayerHLSQuality ) {
-          qswitch = localStorage.FVPlayerHLSQuality;
-          
-        } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
-          jQuery(api.video.qualities).each( function(k,v) {
-            var height = parseInt(v.label);
-            if( height > 0 && hd_quality == -1 && height >= 720 && height <= 720 ) {
-              qswitch = k;
-            }
-          });
-          
-        }
-        
-        if( qswitch > -1 ) {
-          api.quality(qswitch);
-          root.one('progress', function() {
-            setTimeout( function() {
-              api.quality(qswitch);
-            });
-          });
-        }
-        
         quality_sort();
       }
+
+    // FV Player Pro Quality Switching of MP4 files
     } else if( api.video.sources_fvqs && api.video.sources_fvqs.length > 0 && api.video.src.match(/vimeo.*?\.mp4/) ) {
       setTimeout( quality_sort, 0 );      
+
     }    
     root.find('a[data-quality]').removeClass('is-current');
   });
 
+  // show debug information in overlay
   if( search.match(/dash_debug/) || search.match(/hls_debug/) ) var debug_log = jQuery('<div class="fv-debug" style="background: gray; color: white; top: 10%; position: absolute; z-index: 1000">').appendTo(root.find('.fp-player'));
   
   api.bind('ready progress', quality_process);
   
+  // the the quality label in control bar and debug info
   api.bind('quality', function() {
     setTimeout( quality_process, 0 );
   });
   
+  // the the quality label in control bar and debug info
   function quality_process() {
     if( api.engine.engineName == 'dash' ) {
       var stream_info = bitrates[api.engine.dash.getQualityFor('video')];
@@ -108,21 +138,32 @@ flowplayer( function(api,root) {
       
       if( search.match(/hls_debug/) ) {
         var level = hlsjs.levels[hlsjs.currentLevel];
-        quality_debug(level.width,level.height,level.bitrate);
+        if( level ) {
+          quality_debug(level.width,level.height,level.bitrate);
+        }
       }      
       
     }
   }
   
+  // the the quality label in control bar
   function quality_label(index,qualities) {
     if( !qualities[index] ) return;
     
+    // hd_limit allows us to treat 576p as HD if there is nothing higher
     var height = qualities[index].height,
       hd_limit = 541,
       lowest = 100000;
     jQuery(qualities).each( function(k,v) {
+      // if we have 720p, then that will be the HD
       if( v.height >= 720 && v.height < 1400 ) hd_limit = 720;
       if( v.height < lowest ) lowest = v.height;
+
+      // make sure the manually selected quality is shown in menu
+      if( localStorage.FVPlayerHLSQuality == v.height ) {
+        root.find('a[data-quality]').removeClass('fp-selected fp-color');
+        root.find('a[data-quality='+k+']').addClass('fp-selected fp-color');
+      }
     });
     
     root.find('a[data-quality]').removeClass('is-current');
@@ -138,6 +179,7 @@ flowplayer( function(api,root) {
     debug_log.html( "Using "+w+"x"+h+" at "+Math.round(br/1024)+" kbps" );
   }
   
+  // sort qualities in menu, omit the bitrate information
   function quality_sort() {
     var menu = root.find('.fp-qsel-menu');
     menu.children().each(function(i,a){menu.prepend(a)});

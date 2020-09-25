@@ -89,7 +89,7 @@ class FV_Player_Position_Save {
 
   function player_position_save_admin_default_options_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Remember video position', 'fv-wordpress-flowplayer'), 'video_position_save_enable', __('Stores the last video play position for users, so they can continue watching from where they left.'), __('It stored in usermeta for logged in users and in a localStorage or cookie for guest users.'));
+    $fv_fp->_get_checkbox(__('Remember video position', 'fv-wordpress-flowplayer'), 'video_position_save_enable', __('Stores the last video play position for users, so they can continue watching from where they left.'), __('Uses <code>usermeta</code> for logged in users and  localStorage or cookies for guest users.'));
   }
   
   function shortcode( $attributes, $media, $fv_fp ) {

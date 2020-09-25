@@ -5,6 +5,10 @@ flowplayer(function(api, root) {
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
     fsforce = root.data('fsforce') == true || playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid');
   
+  if( root.data('fullscreen') == false ) {
+    return;
+  }
+    
   // Force fullscreen on mobile setting
   if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce ) {
     if( !flowplayer.support.fullscreen ) {
@@ -52,12 +56,18 @@ flowplayer(function(api, root) {
         api.fullscreen(false);
       } else if( api.loading ) {
         is_closing = true;
-        api.one('ready', function(e) {
-          api.unload();
-        })
+        
+        // triggering unload on ready didn't work with HLS.js
+        api.one('resume', function(e) {
+          // it's already closed!
+          is_closing = false;
+          api.pause();
+        });
       }
       api.fakeFullscreen(false);
-      
+
+      // do not run Flowplayer unload() as that would reset the video time
+      return false;
     });
     
     jQuery('[rel='+root.attr('id')+'] a').on('click', function(e) {

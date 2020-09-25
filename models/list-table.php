@@ -37,7 +37,7 @@ class FV_Player_List_Table_View {
   }
   
   function screen_columns() {
-    return array(
+    $cols = array(
       //'cb'             => '<input type="checkbox" />',
       'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
       'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
@@ -48,9 +48,17 @@ class FV_Player_List_Table_View {
       'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
       'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
       'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' ),
-      'shortcode'        => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
-      'shortcode-copy'   => '',
     );
+
+    global $fv_fp;
+    if( $fv_fp->_get_option('video_stats_enable') ) {
+      $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
+    }
+
+    $cols['shortcode'] = __( 'Shortcode', 'fv-wordpress-flowplayer' );
+    $cols['shortcode-copy'] = '';
+
+    return $cols;
   }
   
   function screen_columns_hidden( $hidden, $screen, $use_defaults ) {

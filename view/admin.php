@@ -405,10 +405,10 @@ jQuery(document).ready(function($) {
 
           /*if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
-              $('#fv_wp_flowplayer_field_width').val(attachment.width);
+              $('.fv_wp_flowplayer_field_width').val(attachment.width);
             }
             if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
-              $('#fv_wp_flowplayer_field_height').val(attachment.height);
+              $('.fv_wp_flowplayer_field_height').val(attachment.height);
             }
             if( typeof(attachment.fileLength) != "undefined" ) {
               $('#fv_wp_flowplayer_file_info').show();
@@ -862,7 +862,6 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Subtitles', 'fv-wordpress-flowplayer'), array('interface', 'subtitles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sticky', 'fv-wordpress-flowplayer'), array('interface', 'sticky') ); ?>
           <?php $fv_fp->_get_checkbox(__('Synopsis', 'fv-wordpress-flowplayer'), array('interface', 'synopsis') ); ?>
           <?php $fv_fp->_get_checkbox(__('Video Actions', 'fv-wordpress-flowplayer'), array('interface', 'end_actions'), __('Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-wordpress-flowplayer') ); ?>

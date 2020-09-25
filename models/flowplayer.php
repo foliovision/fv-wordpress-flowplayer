@@ -762,6 +762,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $salt;
   }
 
+  /**
+   * @return boolean Returns TRUE if we're asking for a preview from the back-end editor, FALSE otherwise.
+   */
+  public static function is_preview() {
+    return !empty($_POST['fv_player_preview_json']);
+  }
+
   public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
     global $FV_Player_Pro;
     $media = $mediaData['sources'];
@@ -1299,7 +1306,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
       
       if( $this->bCSSInline ) {
-        $this->css_generate(false);        
+        $this->css_generate(false);
       }
       
     } else {
@@ -1881,7 +1888,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
     
     // Playlist design doesn't have any use for these two playlist styles:
-    if( in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+    if( !empty($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
       $sClass = '';
     }
 
@@ -2255,6 +2262,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $tmp = array_reverse($shortcode['videos']);
           $item = array_pop($tmp);
           $src = $item['fv_wp_flowplayer_field_src'];
+
+          // we generate previews either from SRC or RTMP - if SRC is empty, try RTMP
+          if (!$src) {
+            $src = $item['fv_wp_flowplayer_field_rtmp_path'];
+          }
         } else {
           $src = 'none';
         }
