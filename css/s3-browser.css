@@ -389,3 +389,7 @@
 .media-toolbar-primary.display-mode span {
     cursor: pointer;
 }
+
+.media-toolbar-primary.display-mode span.inactive {
+    color: #CACED2;
+}

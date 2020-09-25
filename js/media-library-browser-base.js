@@ -535,9 +535,15 @@ function renderBrowserPlaceholderHTML(options) {
     html += select_html + '</div>';
   }
 
+  var active_display_mode = 'grid';
+
+  if (typeof(window.localStorage) == 'object' && localStorage.getItem('fv_player_browser_display_mode')) {
+    active_display_mode = localStorage.getItem('fv_player_browser_display_mode');
+  }
+
   html += '<div class="media-toolbar-primary display-mode">' +
-    '<span class="dashicons dashicons-list-view" title="table view"></span>' +
-    '<span class="dashicons dashicons-grid-view" title="grid view"></span>' +
+    '<span class="dashicons dashicons-list-view' + (active_display_mode == 'table' ? '' : ' inactive') + '" title="table view"></span>' +
+    '<span class="dashicons dashicons-grid-view' + (active_display_mode == 'grid' ? '' : ' inactive') + '" title="grid view"></span>' +
     '</div>' +
     '<div class="media-toolbar-primary search-form">' +
     '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
@@ -585,6 +591,20 @@ jQuery( function($) {
     } catch(e) {
       console.log('Could not save browser display mode - local storage disabled.');
     } finally {
+      // mark the other icon inactive
+      var $e = $(this);
+      $e.removeClass('inactive');
+
+      if ($e.hasClass('dashicons-list-view')) {
+        $e
+          .siblings('.dashicons-grid-view')
+          .addClass('inactive');
+      } else {
+        $e
+          .siblings('.dashicons-list-view')
+          .addClass('inactive');
+      }
+
       // re-render using the selected mode
       var activeTabId = $('.media-menu-item.artificial.active');
       if (activeTabId.length && typeof(fv_flowplayer_browser_get_function[ activeTabId.attr('id') ]) == 'function') {
