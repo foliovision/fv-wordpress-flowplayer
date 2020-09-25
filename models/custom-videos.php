@@ -90,6 +90,7 @@ class FV_Player_Custom_Videos {
       $preview = false;
       $before = 0;
       if( $video ) {
+        $video = str_replace( '[fvplayer ', '[fvplayer autoplay="false" ', $video );
         $preview = do_shortcode($video);
         global $fv_fp;
         if( $fv_fp->current_player() ) {

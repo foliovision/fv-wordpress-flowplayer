@@ -543,11 +543,10 @@ class FV_Player_Db {
       // this makes the preview work with YouTube playlists obtained via API
       // this lets you set the splash screen for Vimeo channel
       $preserve = array();
-      if( !empty($atts['src']) ) {
-        $preserve['src'] = $atts['src'];
-      }
-      if( !empty($atts['splash']) ) {
-        $preserve['splash'] = $atts['splash'];
+      foreach( array('autoplay','splash','src') AS $attr2preserve ) {
+        if( !empty($atts[$attr2preserve]) ) {
+          $preserve[$attr2preserve] = $atts[$attr2preserve];
+        }
       }
 
       // numeric ID means we're coming from a shortcode somewhere in a post
