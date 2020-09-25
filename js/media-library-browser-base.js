@@ -6,9 +6,7 @@ var
   //     depending on which tab is currently active
   fv_flowplayer_browser_assets_loaders = {},
   $fv_player_overlay_div,
-  fv_flowplayer_browser_get_function = function() {
-     // set to empty function, as we're without a data adapter yet
-  };
+  fv_flowplayer_browser_get_function = {}; // object with functions to retrieve AJAX data for each module (key = module ID)
 
 function fv_flowplayer_browser_get_loader_div() {
   return $fv_player_overlay_div;
@@ -588,7 +586,10 @@ jQuery( function($) {
       console.log('Could not save browser display mode - local storage disabled.');
     } finally {
       // re-render using the selected mode
-      fv_flowplayer_browser_get_function();
+      var activeTabId = $('.media-menu-item.artificial.active');
+      if (activeTabId.length && typeof(fv_flowplayer_browser_get_function[ activeTabId.attr('id') ]) == 'function') {
+        fv_flowplayer_browser_get_function[ activeTabId.attr('id') ]();
+      }
     }
   });
 

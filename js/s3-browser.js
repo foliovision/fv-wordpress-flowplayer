@@ -11,7 +11,7 @@ jQuery( function($) {
         action: "load_s3_assets",
       };
 
-    fv_flowplayer_browser_get_function = fv_flowplayer_s3_browser_load_assets;
+    fv_flowplayer_browser_get_function[ 'fv_flowplayer_s3_browser_media_tab' ] = fv_flowplayer_s3_browser_load_assets;
 
     $this.addClass('active').siblings().removeClass('active');
 
