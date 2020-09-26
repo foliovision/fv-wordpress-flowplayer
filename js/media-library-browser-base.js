@@ -86,7 +86,12 @@ function fv_flowplayer_browser_clear_items() {
 // adds the actual loader GIF to the loader element on page
 function fv_flowplayer_browser_add_animated_loader() {
   var $browser = jQuery('#__assets_browser');
-  jQuery('#overlay-loader-item ' + ($browser.get(0).tagName == 'UL' ? 'div' : 'td')).first().html( $fv_player_overlay_div.clone().css('position', 'absolute') );
+  jQuery('#overlay-loader-item ' + ($browser.get(0).tagName == 'UL' ? 'div' : 'td')).first().html( $fv_player_overlay_div.clone().css({
+    'position' : 'absolute',
+    'width' : 'auto',
+    'min-height' : '32px',
+    'min-width' : '100%'
+  }) );
 }
 
 // removes the actual loader from the page
