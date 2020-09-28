@@ -648,9 +648,21 @@ function fv_player_footer_svg_rewind() {
   <?php
 }
 
-add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 3 );
+add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
 
-function fv_player_js_loader_mark_scripts( $tag, $handle, $src ) {
+/*
+ * Alers all the script tags related to FV Player, with excetption of the base FV Player library.
+ * The reason is that it's a dependency of most of the modules so then each module would have to be 
+ * adjusted to be able to load without it.
+ * 
+ * @param string $tag The original script tag.
+ * @param string $handle The WordPress script handle
+ * 
+ * @global object $fv_fp The FV Player plugin instance
+ * 
+ * @return string The adjusted script tag
+ */
+function fv_player_js_loader_mark_scripts( $tag, $handle ) {
   global $fv_fp;
   if( isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') ) {
     return $tag;
@@ -668,9 +680,9 @@ function fv_player_js_loader_mark_scripts( $tag, $handle, $src ) {
 }
 
 /*
- * Load FV Player JS Loader if we have at least a single FV Player script
+ * Outpput FV Player JS Loader into footer, hooked in in fv_player_js_loader_mark_scripts()
  */
-function fv_player_js_loader_load( $arg ) {
+function fv_player_js_loader_load() {
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
   $filesystem = new WP_Filesystem_Direct( new StdClass() );
