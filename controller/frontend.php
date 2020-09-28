@@ -656,8 +656,9 @@ function fv_player_js_loader_mark_scripts( $tag, $handle, $src ) {
   }
 
   if(
+    stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js
     stripos($handle,'fv-player') === 0 ||
-    stripos($handle,'fv_player') === 0
+    stripos($handle,'fv_player') === 0 
   ) {
     $tag = str_replace( ' src=', ' data-fv-player-loader-src=', $tag );
     add_action( 'wp_print_footer_scripts', 'fv_player_js_loader_load', PHP_INT_MAX );
