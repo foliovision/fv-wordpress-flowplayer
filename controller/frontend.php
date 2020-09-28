@@ -651,7 +651,8 @@ function fv_player_footer_svg_rewind() {
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 3 );
 
 function fv_player_js_loader_mark_scripts( $tag, $handle, $src ) {
-  if( isset($_GET['fv_player_loader_skip']) ) {
+  global $fv_fp;
+  if( isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') ) {
     return $tag;
   }
 
