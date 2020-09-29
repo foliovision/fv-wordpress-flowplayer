@@ -100,6 +100,8 @@ jQuery(function() {
 
     var fv_player_preview_window;
 
+    var fv_player_preview_loading = false;
+
 
     var fv_wp_flowplayer_save_ignore_errors = false;
 
@@ -2674,10 +2676,15 @@ jQuery(function() {
 
       // is there a Gutenberg field together in wrapper with the button?
       if( gutenberg.length ) {
-        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-        nativeInputValueSetter.call(gutenberg[0], shortcode);
+        var
+          nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
+          gutenbergTextarea = gutenberg.find('textarea').first()[0];
+
+        nativeInputValueSetter.call(gutenbergTextarea, shortcode);
         var ev2 = new Event('change', { bubbles: true});
-        gutenberg[0].dispatchEvent(ev2,shortcode);
+        gutenbergTextarea.dispatchEvent(ev2,shortcode);
+
+        fv_player_editor.gutenberg_preview( jQuery(editor_button_clicked).parents('.fv-player-editor-wrapper'), shortcode );
 
         // is there a plain text field together in wrapper with the button?
       } else if (field.length) {
@@ -3519,6 +3526,28 @@ jQuery(function() {
       },
 
       editor_resize: editor_resize,
+
+      gutenberg_preview: function( parent, shortcode ) {
+        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined') {
+          return;
+        } else if (fv_player_preview_loading !== false) {
+          clearTimeout(fv_player_preview_loading);
+        }
+
+        console.log('fv_player_gutenberg_preview',parent,shortcode);
+        var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + b64EncodeUnicode( shortcode );
+
+        // set timeout for the loading AJAX and wait a moment, as REACT will call this function
+        // even when we click into the Gutenberg block without actually editing anything
+        // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
+        fv_player_preview_loading = setTimeout(function() {
+          jQuery.get(url, function(response) {
+            jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
+          } ).always(function() {
+            fv_player_preview_loading = false;
+          })
+        }, 1500);
+      }
     };
 
   })(jQuery);
