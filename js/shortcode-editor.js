@@ -1345,8 +1345,11 @@ jQuery(function() {
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
       
       if( field.length ) {
-        editor_content = jQuery(field).val();
+        if (field[0].tagName != 'TEXTAREA') {
+          field = field.find('textarea').first();
+        }
 
+        editor_content = jQuery(field).val();
       } else if( widget.length ){
         editor_content = widget.val();
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
@@ -2678,7 +2681,7 @@ jQuery(function() {
       if( gutenberg.length ) {
         var
           nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
-          gutenbergTextarea = gutenberg.find('textarea').first()[0];
+          gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
 
         nativeInputValueSetter.call(gutenbergTextarea, shortcode);
         var ev2 = new Event('change', { bubbles: true});
