@@ -14,9 +14,33 @@ body.compensate-for-scrollbar{overflow:hidden;-ms-overflow-style:none}.fancybox-
 }
 
 /* Make sure FV Player respects fancybox fullscreen mode */
+.fancybox-is-fullscreen .fv_player_lightbox_hidden {
+    height: 100%;
+    margin: 0;
+    padding-bottom: 6px;
+}
+
+/* Proper sizing for mobile landscape view */
+.fancybox-slide .flowplayer, .fancybox-slide .fv-playlist-slider-wrapper {
+    margin-bottom: 0 !important;
+}
+.fancybox-slide .flowplayer.fixed-controls {
+    margin-bottom: 2.4em !important;
+}
+.fancybox-slide .flowplayer.fixed-controls.fp-full {
+    margin-bottom: 2.8em !important;
+}
+.fancybox-slide .flowplayer.fixed-controls.has-abloop {
+    margin-bottom: 5.2em !important;
+}
+
+.fancybox-slide .fv-playlist-slider-wrapper {
+    margin-top: 1em;
+}
 .fancybox-is-fullscreen .flowplayer {
-    max-width: 99% !important;
-    max-height: 99% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
 }
 .fancybox-is-fullscreen .flowplayer .fp-fullscreen:before {
     content: "\e016"; }

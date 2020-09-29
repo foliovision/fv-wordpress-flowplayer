@@ -166,7 +166,7 @@ function fv_flowplayer_browser_browse(data, options) {
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
-          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + '>' + name + '</div>'
+          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
           + '</div>'
           + '</div>'
           + '</div>' +
@@ -390,7 +390,7 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href) {
+  function getSplashImageForMediaFileHref(href, strip_signature) {
     var find = [ fileGetBase(href) ];
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
@@ -407,6 +407,12 @@ jQuery( function($) {
         var f = fv_flowplayer_scannedFiles[j];
         if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
           splash = (f.splash ? f.splash : f.link);
+
+          // remove signature if we're updating the Editor field, otherwise leave it in,
+          // so we can actually preview the splash
+          if (strip_signature && splash.indexOf('?') > -1) {
+            splash = splash.substring(0, splash.indexOf('?'));
+          }
         }
       }
     }
@@ -414,11 +420,11 @@ jQuery( function($) {
     return splash;
   }
 
-  function fileUrlIntoShortcodeEditor(href) {
+  function fileUrlIntoShortcodeEditor(href, extra) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href);
+      splash = getSplashImageForMediaFileHref(href, true);
 
     $url_input
       .val(href)
@@ -432,6 +438,21 @@ jQuery( function($) {
         splash_input.val(splash);
       }
     }
+    
+    if( extra && extra.hlskey ) {
+      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
+    } else {
+      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
+    }
+    
+    // TODO: Proper API!
+    if( extra && extra.encoding_job_id ) {
+      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val(extra.encoding_job_id);
+    } else {
+      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val('');
+    }
+    
+    
 
     $popup_close_btn.click();
 
@@ -610,7 +631,7 @@ jQuery( function($) {
       filenameDiv = $e.find('.filename div');
 
     if (filenameDiv.length && filenameDiv.data('link')) {
-      fileUrlIntoShortcodeEditor(filenameDiv.data('link'));
+      fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'));
     }
 
     return false;

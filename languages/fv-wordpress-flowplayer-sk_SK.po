@@ -165,12 +165,8 @@ msgid "Mobile browser detected, serving low bandwidth video."
 msgstr "Mobilný telefón prehráva video so zníženou kvalitou."
 
 #: controller/frontend.php:64
-msgid "Click here"
-msgstr "Kliknite sem"
-
-#: controller/frontend.php:65
-msgid "for full quality."
-msgstr "pre plnú kvalitu."
+msgid "Click here for full quality"
+msgstr "Kliknite sem pre plnú kvalitu"
 
 #: controller/frontend.php:66 controller/frontend.php:67
 msgid ""
@@ -244,6 +240,14 @@ msgid ""
 "please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</"
 "a> or other modern browser."
 msgstr ""
+
+#: ../controller/frontend.php:82
+msgid "<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>"
+msgstr "<h2>Živé vysielanie</h2><p>Začiatok o <span>%d</span>.</p>"
+
+#: ../controller/frontend.php:83
+msgid "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>"
+msgstr "<h2>Živé vysielanie je momentálne nedostupné.</h2><p>Opätovný pokus o <span>%d</span> ...</p>"
 
 #: controller/frontend.php:511
 #, php-format
@@ -2195,3 +2199,21 @@ msgstr ""
 #~ msgstr ""
 #~ "Poznámka pre admina: Upload videa je dočasne zakázaný, zaškrtnite "
 #~ "'Povoliť upload uživateľovi' v "
+
+msgid "All"
+msgstr "Všetko"
+
+msgid "Play All"
+msgstr "Prehrať všetko"
+
+msgid "Replay Playlist"
+msgstr "Opakuj playlist"
+
+msgid "Repeat Track"
+msgstr "Opakuj video"
+
+msgid "Shuffle Playlist"
+msgstr "Náhodný výber"
+
+msgid "Item %d."
+msgstr "Video %d."

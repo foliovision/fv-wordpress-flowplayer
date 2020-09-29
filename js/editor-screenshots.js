@@ -26,11 +26,12 @@
 
     button.click(function(){
       try {
-        spinner.insertAfter(button)
         button.prop("disabled",true);
         
         var screenshot = takeScreenshot();
         var item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
+        spinner.insertAfter( item.find('#fv_wp_flowplayer_field_splash') );
+        
         // Check title
         if(item.find('#fv_wp_flowplayer_field_caption').val()){
             title = item.find('#fv_wp_flowplayer_field_caption').val()

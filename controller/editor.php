@@ -18,7 +18,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver.'-fix' );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
@@ -33,6 +33,8 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   
   wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
   wp_enqueue_style('fvwpflowplayer-domwindow-css');
+  wp_register_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css','','1.0','screen');
+  wp_enqueue_style('fvwpflowplayer-shortcode-editor');
 }
 
 
@@ -390,9 +392,3 @@ Elementor support
 add_action( 'elementor/editor/wp_head', 'fv_player_shortcode_editor_scripts_enqueue' );
 add_action( 'elementor/editor/wp_head', 'fv_wp_flowplayer_edit_form_after_editor' );
 add_action( 'elementor/editor/wp_head', 'flowplayer_prepare_scripts' );
-add_action( 'elementor/editor/wp_head', 'fv_player_missing_wp_common_css' );
-
-function fv_player_missing_wp_common_css() {
-  // we need the core WordPress style to make sure the editor tabs have the proper styling
-  wp_enqueue_style('common');
-}

@@ -135,9 +135,13 @@ class FV_Player_video_intelligence_Installer {
       $('#fv-player-vi-remove').click( function() {
         $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
           $('#fv-player-vi-give-back').prop('checked',false);
-          $('[href=#postbox-container-tab_video_intelligence]').hide();
-          $('#fv_flowplayer_video_intelligence').hide();
-          $('[href=#postbox-container-tab_video_ads]').click();
+          $('[href=\\#postbox-container-tab_video_intelligence]').hide();
+          $('#postbox-container-tab_video_intelligence').hide();
+          if( $('[href=\\#postbox-container-tab_video_ads]').length ) {
+            $('[href=\\#postbox-container-tab_video_ads]').click();
+          } else {
+            $('[href=\\#postbox-container-tab_actions]').click();
+          }
           $('#fv_flowplayer_video_intelligence_revival').show();
         });
         
@@ -152,7 +156,11 @@ class FV_Player_video_intelligence_Installer {
       add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_hide', __('Hide vi Ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
-      add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
+      if( class_exists('FV_Player_Pro') ) {
+        add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
+      } else {
+        add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_actions', 'normal', 'low' );
+      }
     }
   }
   
@@ -174,10 +182,10 @@ class FV_Player_video_intelligence_Installer {
       $('#fv-player-vi-give-back').click( function() {
         $.post(ajaxurl, {action:'fv-player-vi-add'}, function() {
           $('#fv-player-vi-remove').prop('checked',false);
-          $('[href=#postbox-container-tab_video_intelligence]').show();
+          $('[href=\\#postbox-container-tab_video_intelligence]').show();
           $('#fv_flowplayer_video_intelligence').show();
           $('#fv_flowplayer_video_intelligence_account').show();
-          $('[href=#postbox-container-tab_video_intelligence]').click();
+          $('[href=\\#postbox-container-tab_video_intelligence]').click();
           $('#fv_flowplayer_video_intelligence_revival').hide();
         });
       });
@@ -275,7 +283,7 @@ class FV_Player_video_intelligence_Installer {
         "FV Player video intelligence",
         "fv-player-video-intelligence",
         "fv-player-video-intelligence.php",
-        "https://foliovision.com/plugins/public/fv-player-video-intelligence.zip",
+        "https://foliovision.com/downloads/fv-player-video-intelligence-for-integration-tests.zip",
         admin_url('options-general.php?page=fvplayer&fv_player_vi_install=1#postbox-container-tab_video_intelligence'),
         'fv_wordpress_flowplayer_deferred_notices',
         'fv_player_vi_install'

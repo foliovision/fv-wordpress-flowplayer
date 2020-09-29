@@ -104,8 +104,6 @@
   
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/shortcode-editor.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
-<link rel="stylesheet" type="text/css" href="<?php echo flowplayer::get_plugin_url().'/css/s3-browser.css'; ?>?ver=<?php echo $fv_wp_flowplayer_ver; ?>" />
   
 <script>
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
@@ -138,7 +136,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
             </div>
           </td>
           <td class="fv-player-shortcode-editor-right">
-            <input type="text" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
+            <input type="text" class="hide-if-playlist hide-if-singular" name="fv_wp_flowplayer_field_player_name" id="fv_wp_flowplayer_field_player_name" placeholder="Playlist name" /> <span id="player_id_top_text"></span>
             <div class="fv-player-tabs-header">
               <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
               <h2 class="nav-tab-wrapper hide-if-no-js">
@@ -364,6 +362,9 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                       <a class="fv_flowplayer_language_add_link" style="outline: 0" onclick="return fv_flowplayer_language_add(false, <?php echo ( isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true' ) ? 'true' : 'false'; ?>)" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
                     </td>
                   </tr>
+
+                  <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append'); ?>
+
                   <tr class="submit-button-wrapper">
                     <td></td>
                     <td>
@@ -391,8 +392,19 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <?php fv_player_shortcode_row( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
-                   <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
-                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array( 'Default', 'Tabs', 'Prev/Next', 'Vertical', 'Horizontal', 'Text', 'Slider', 'Season', 'Polaroid' ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
+                  <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
+                    array('','Default'),
+                    array('horizontal','Horizontal'),
+                    array('tabs','Tabs'),
+                    array('prevnext','Prev/Next'),
+                    array('vertical','Vertical'),
+                    array('slider','Slider'),
+                    array('season','Season'),
+                    array('polaroid','Polaroid'),
+                    array('text','Text')
+                  ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) );
+                  ?>
                   <?php fv_player_shortcode_row( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'dropdown' => array( 'Default', 'Yes', 'No', 'Custom' ) ) ); ?>
                   
                   <tr id="fv_wp_flowplayer_field_share_custom" style="display: none">
@@ -425,7 +437,8 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                                                        'playlist_label' => 'End of playlist',
                                                        'name' => 'end_actions',
                                                        'dropdown' => array(
-                                                            array('', 'Nothing'),
+                                                            array('', 'Default'),
+                                                            array('no', 'Nothing'),
                                                             array('redirect', 'Redirect'),
                                                             array('loop', 'Loop'),
                                                             array('popup', 'Show popup'),

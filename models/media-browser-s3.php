@@ -9,13 +9,9 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     }
   }
 
-  function init_for_gutenberg() {
-    add_action( 'admin_footer', array($this, 'init'), 1 );
-  }  
-
   function fv_wp_flowplayer_include_aws_sdk() {
     if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
-      require_once( dirname( __FILE__ ) . "/../includes/aws/aws-autoloader.php" );
+      require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
     }
   }
 
@@ -203,9 +199,12 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
               
               // replace link with CloudFront URL, if we have one
               if( !empty($domains[$array_id]) ) {
-                // replace S3 URLs with buckets in the S3 subdomain
+                // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3-us-west-2.amazonaws.com/video.mp4
                 $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
-  
+
+                // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3.us-west-2.amazonaws.com/video.mp4
+                $link = preg_replace('/https?:\/\/' . $bucket . '\.s3\.[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
+                
                 // replace S3 URLs with bucket name as a subfolder
                 $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
               }

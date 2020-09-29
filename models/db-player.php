@@ -496,6 +496,7 @@ CREATE TABLE " . self::$db_table_name . " (
    * @throws Exception When no valid ID nor options are provided.
    */
   function __construct($id, $options = array(), $DB_Cache = null) {
+
     global $wpdb;
 
     if ($DB_Cache) {
@@ -573,8 +574,10 @@ CREATE TABLE " . self::$db_table_name . " (
             }
 
             $where = ' WHERE '.implode(' OR ', $where_like_part);
+          } else if( array_key_exists( 'author_id', $options['db_options'] ) ) {
+            $where = ' WHERE author ='.$options['db_options']['author_id'];
           }
-          
+
           $order = '';
           if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
             $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
@@ -627,6 +630,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
+
         // single ID, just populate our own data
         if (!$multiID) {
           $this->fill_properties($player_data,$DB_Cache);

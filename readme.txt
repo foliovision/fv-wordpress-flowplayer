@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.2.2
+Tested up to: 5.5
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,100 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.4.34.727 - 2020/09/23 =
+
+* FV Player wp-admin Screen - search fixes and improvements - you can multiple words or quotes
+* HLS - live stream check - improving display and behavior when multiple video playbacks is enabled
+* Compatibility - AWS - library update
+* Compatibility - jQuery migrate fixes
+* Compatibility - Elementor fixes
+
+= 7.4.33.727 - 2020/08/24 =
+
+* Bugfix - Autoplay - hide initial play arrow animation when autoplaying a video did also hide the loading progress indicator
+* DASH.js library downgrade to 3.0.0 as some videos wouldn't play on macOS 10.5.6 with Safari 13.1.2
+
+= 7.4.32.727 - 2020/08/14 =
+
+* Bugfix - Editor - WordPress 5.5 fix for dropdown settings (HTML select tag)
+
+= 7.4.31.727 - 2020/08/12 =
+
+* Autoplay - hide initial play arrow animation when autoplaying a video
+* DASH.js library update to 3.1.2
+* Keyboard controls - disabled  when controlbar hidden
+* Loop fix for FV Player Pro YouTube engine
+* Video Position Saving - remember if logged in user saw the video already
+* WordPress 5.5 fixes
+
+= 7.4.24.727 - 2020/06/09 =
+
+* AWS - adding new regions
+* HLS - live stream check - shows countdown and retries automatically if it's not up
+* List table - changing user interface text labels "Playlist" to "Player"
+* MPEG-DASH - partial fix for Disable HTML5 autoplay Chrome extension for Vimeo videos in FV Player Pro
+* Settings - Check template - fix when using Google PageSpeed module or SCRIPT_DEBUG
+* Bugfix - Editor - bugfix, couldn't save Prev/Next playlist style properly
+* Bugfix - iOS video recovery - bugfix, it was not allowing you to pause the video
+* Bugfix - Multiple video playback - would mute videos in playlist
+
+= 7.4.21.727 - 2020/05/07 =
+
+* HLS - improved parsing of video qualities for video quality menu in case your m3u8 has video resolution information
+* Skin settings - allowing 0 for marginBottom
+* Bugfix - CSS - playlist font color setting not working
+* Bugfix - CSS - 2014 design titles background color in some themes
+* Bugfix - MPEG-DASH - fix for recovery of Vimeo videos in FV Player Pro
+
+= 7.4.17.727 - 2020/04/08 =
+
+* New setting - Multiple video playback - enable to allow multiple videos to play at the same time, only the last played video remains audible, the others are muted
+* Editor - Preview is now using a simpler and faster code
+* Iframe embedding - when you embed a playlist, it remembers which video did you play when obtaining the iframe embed code
+* iOS - better way of detecting 403 HTTP errors during playback
+* Subtitles - improving to show the first matching subtitle line when subtitles are first enabled, until now it would wait before playback time reaches another subtitle line
+* Volume control - dragging it down to zero mutes the video and shows the un-mute icon, which restores the last volume when clicked
+* Bugfix - Lightbox - Proper sizing for mobile landscape view
+* Bugfix - Video duration scanning when posting new files using editor and not using FV Player Pro 
+* Bugfix - Video Position Saving - not working for logged in users in Chrome version >= 80
+
+= 7.4.14.727 - 2020/01/28 =
+
+* HLS.js - enabling on iOS 13 and Safari above version 8
+* Bugfix - CSS - avoiding borders on splash images
+* Bugfix - Editor - Preview fix when using Lazy Load by WP Rocket
+* Bugfix - Sharing - fixing the custom URL and title in frontend, fixing link to Tweet
+* Bugfix - Splash screen code cleanup for FV Player Pro
+
+= 7.4.9.727 - 2019/12/12 =
+
+* AWS - adding new regions
+* New setting - Force HD Streaming for websites who prefer video quality over buffering speed
+* Playlist - add sort="reverse" to shortcode to shows the playlist in reverse item order
+* Bugfix - invisible menus trapping click events below the player on mobile
+* Bugfix - Playlist menu - not adding when there is a single video with ads
+* Bugfix - S3 Bucket browser - fix for missing styling
+* Bugfix - Vimeo/MPEG-DASH mute button fix
+
+= 7.4.8.727 - 2019/10/23 =
+
+* Playlist menu - fixing to not include the FV Player Pro Video Ads
+
+= 7.4.7.727 - 2019/10/22 =
+
+* Compatibility - Elementor fixes
+* Editor - removing playlist name field for single videos
+* FV Player wp-admin Screen - Screen Option to show player author
+* FV Player wp-admin Screen - only showing players for which the user has edit permissions
+* Lightbox - compatibility if your website already loads Fancybox 2
+* Lightbox - sizing fix for single video - respect desired size
+* HLS - going back to HLS.js 0.11.0 library due to encrypted HLSv4 issues
+* Maintenance - split the master JS file into modules for development, kept a single fv-flowplayer.min.js for normal use
+* MPEG-DASH - upgrading Dash.js to 3.0.0
+* Translations - adding hooks for the playlist repeat button
+* Video Speed - removing bad 0.25x speed when 0.5x speed step is set
+* Video Checker - code refactoring, making it work in FV Player Editor
 
 = 7.4.6.727 - 2019/09/17 =
 
