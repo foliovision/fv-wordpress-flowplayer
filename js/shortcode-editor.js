@@ -14,6 +14,8 @@ var fv_wp_fp_shortcode;
 var fv_player_preview_single = -1;
 var fv_player_preview_window;
 
+var fv_player_preview_loading = false;
+
 var fv_player_editor_button_clicked = 0;
 
 var fv_player_shortcode_preview_unsupported = false;
@@ -617,10 +619,13 @@ function fv_wp_flowplayer_insert( shortcode ) {
     var gutenberg = jQuery(fv_player_editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field');
     
     if( gutenberg.length ) {
-      var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-      nativeInputValueSetter.call(gutenberg[0], shortcode);
+      var
+        nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
+        gutenbergTextarea = gutenberg.find('textarea').first()[0];
+
+      nativeInputValueSetter.call(gutenbergTextarea, shortcode);
       var ev2 = new Event('change', { bubbles: true});
-      gutenberg[0].dispatchEvent(ev2,shortcode);
+      gutenbergTextarea.dispatchEvent(ev2,shortcode);
       
       fv_player_gutenberg_preview(jQuery(fv_player_editor_button_clicked).parents('.fv-player-editor-wrapper'),shortcode);
       
@@ -1787,11 +1792,10 @@ function fv_wp_flowplayer_set_html( html ) {
   var gutenberg = jQuery(fv_player_editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field');
   
   if( gutenberg.length ) {
-    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-    nativeInputValueSetter.call(gutenberg[0], html);
-    var ev2 = new Event('change', { bubbles: true});
-    gutenberg[0].dispatchEvent(ev2,html);
-    
+    // with Gutenberg, the fv_player_gutenberg_preview() function will take over and
+    // 1) set the actual block content
+    // 2) update the block preview to include the actual player
+    return;
   } else if( field.length ) {
     field.val(html);
     field.trigger('fv_flowplayer_shortcode_insert', [ html ] );
@@ -3529,11 +3533,25 @@ jQuery(document).on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplaye
 
 
 function fv_player_gutenberg_preview( parent, shortcode ) {
+  if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined') {
+    return;
+  } else if (fv_player_preview_loading !== false) {
+    clearTimeout(fv_player_preview_loading);
+  }
+
   console.log('fv_player_gutenberg_preview',parent,shortcode);
   var url = fv_Player_site_base + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
-  jQuery.get(url, function(response) {
-    jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
-  } );
+
+  // set timeout for the loading AJAX and wait a moment, as REACT will call this function
+  // even when we click into the Gutenberg block without actually editing anything
+  // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
+  fv_player_preview_loading = setTimeout(function() {
+    jQuery.get(url, function(response) {
+      jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
+    } ).always(function() {
+      fv_player_preview_loading = false;
+    })
+  }, 1500);
 }
 
 
