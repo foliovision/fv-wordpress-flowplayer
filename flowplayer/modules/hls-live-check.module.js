@@ -36,8 +36,8 @@ flowplayer( function(api,root) {
   
   api.on("error", function (e, api, err) {
     setTimeout( function() {
-      // whitelisting Vimeo Event URLs used by FV Player Vimeo Live Streaming
-      if( !api.conf.clip.live && !api.conf.live && !err.video.src.match(/\/\/vimeo.com\/event\//) ) return;
+      // exit if it's not live stream and the video is not Vimeo Event URL (used by FV Player Vimeo Live Streaming)
+      if( !api.conf.clip.live && !api.conf.live && !( err.video && err.video.src.match(/\/\/vimeo.com\/event\//) ) ) return;
       
       var delay = useDelay;
       if( api.conf.clip.streaming_time ) {
