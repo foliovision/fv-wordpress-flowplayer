@@ -95,8 +95,8 @@ function fv_flowplayer_get_js_translations() {
   'duration_n_days' => sprintf( _n( '%s day', '%s days', '%s' ), '%s' ),
   'duration_1_hour' => __( "%s hour" ),
   'duration_n_hours' => sprintf( _n( '%s hour', '%s hours', '%s' ), '%s' ),
-  'duration_1_minute' => __( "%s minute" ),
-  'duration_n_minutes' => sprintf( _n( '%s minute', '%s minutes', '%s' ), '%s' ),
+  'duration_1_minute' => __( "%s min" ),
+  'duration_n_minutes' => sprintf( _n( '%s min', '%s mins', '%s' ), '%s' ),
   'duration_1_second' => __( "%s second" ),
   'duration_n_seconds' => sprintf( _n( '%s second', '%s seconds', '%s' ), '%s' ),
 );
