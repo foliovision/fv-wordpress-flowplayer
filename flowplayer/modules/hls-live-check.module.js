@@ -99,13 +99,13 @@ flowplayer( function(api,root) {
     var s = Math.floor(seconds % 60);
     var t = fv_flowplayer_translations;
 
-    var output = d > 0 ? (d == 1 ? t.duration_1_day.replace(/%s/,d) : t.duration_n_days.replace(/%s/,d) ) : "";
+    var output = d > 0 ? (d == 1 ? t.duration_1_day.replace(/%s/,d) : t.duration_n_days.replace(/5/,d) ) : "";
     if( output && h > 0 ) output += ", ";
-    output += h > 0 ? (h == 1 ? t.duration_1_hour.replace(/%s/,h) : t.duration_n_hours.replace(/%s/,h) ) : "";
+    output += h > 0 ? (h == 1 ? t.duration_1_hour.replace(/%s/,h) : t.duration_n_hours.replace(/5/,h) ) : "";
     if( output && m > 0 ) output += ", ";
-    output += m > 0 ? (m == 1 ? t.duration_1_minute.replace(/%s/,m) : t.duration_n_minutes.replace(/%s/,m) )  : "";
+    output += m > 0 ? (m == 1 ? t.duration_1_minute.replace(/%s/,m) : t.duration_n_minutes.replace(/5/,m) )  : "";
     if( output && s > 0 ) output += " and ";
-    output += s > 0 ? (s == 1 ? t.duration_1_second.replace(/%s/,s) : t.duration_n_seconds.replace(/%s/,s) )  : "";
+    output += s > 0 ? (s == 1 ? t.duration_1_second.replace(/%s/,s) : t.duration_n_seconds.replace(/5/,s) )  : "";
 
     return output;
   }
