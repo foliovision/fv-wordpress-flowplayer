@@ -99,6 +99,7 @@ function fv_flowplayer_get_js_translations() {
   'duration_n_minutes' => sprintf( _n( '%s min', '%s mins', 5 ), '5' ),
   'duration_1_second' => __( "%s second" ),
   'duration_n_seconds' => sprintf( _n( '%s second', '%s seconds', 5 ), '5' ),
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' )
 );
   
   return $aStrings;
