@@ -27,7 +27,9 @@
 		parent.replaceChild(play_icon,preload);
 		
 		var admin_js_warning = player.querySelector('.fvfp_admin_error');
-		admin_js_warning.parentNode.removeChild( admin_js_warning );
+		if( admin_js_warning ) {
+			admin_js_warning.parentNode.removeChild( admin_js_warning );
+		}
 	});
 
 })();
