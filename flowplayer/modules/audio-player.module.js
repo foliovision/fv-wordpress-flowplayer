@@ -6,6 +6,7 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
   var bean = flowplayer.bean;
+  var splash_img = root.find('.fp-splash')
 
   if( root.hasClass('is-audio') ) {
     bean.off(root[0], "mouseenter");
@@ -26,4 +27,16 @@ flowplayer(function(api, root) {
     })
   }
 
+  // Show splash img if audio
+  api.on('ready', function(e, api){
+    if( api.video.type.match(/^audio/) ) {
+      setTimeout(function(){
+        if(splash_img.length) {
+          root.find('.fp-player').prepend(splash_img);
+        }
+      },0);
+    } else {
+      splash_img.remove();
+    }
+  })
 })
