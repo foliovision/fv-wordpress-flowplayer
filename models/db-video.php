@@ -82,7 +82,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getEnd() {
-    return $this->end;
+    return flowplayer::hms_to_seconds($this->end);
   }
 
   /**
@@ -145,7 +145,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getStart() {
-    return $this->start;
+    return flowplayer::hms_to_seconds($this->start);
   }
 
   /**

@@ -826,7 +826,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $tDuration = false;
     if( isset($aPlayer['fv_start']) && isset($aPlayer['fv_end']) ) { // change duration if using custom startend
-      $tDuration = flowplayer::hms_to_seconds( $aPlayer['fv_end']) - flowplayer::hms_to_seconds( $aPlayer['fv_start']) ;
+      $tDuration = $aPlayer['fv_end'] - $aPlayer['fv_start'];
     } else {
       if ($this->current_video()) {
         $tDuration = $this->current_video()->getDuration();
@@ -845,11 +845,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       if( isset($aPlayer['fv_start']) && !empty($tDuration) ) { // custom start only
-        $tDuration = flowplayer::hms_to_seconds( $tDuration ) - flowplayer::hms_to_seconds( $aPlayer['fv_start']);
+        $tDuration = flowplayer::hms_to_seconds( $tDuration ) -  $aPlayer['fv_start'];
       }
 
       if( isset($aPlayer['fv_end']) ) { // custom end only
-        $tDuration = flowplayer::hms_to_seconds( $aPlayer['fv_end']);
+        $tDuration = $aPlayer['fv_end'];
       }
 
     }
