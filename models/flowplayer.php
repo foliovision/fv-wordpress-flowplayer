@@ -844,7 +844,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
       }
 
-      if( isset($aPlayer['fv_start']) ) { // custom start only
+      if( isset($aPlayer['fv_start']) && !empty($tDuration) ) { // custom start only
         $tDuration = flowplayer::hms_to_seconds( $tDuration ) - flowplayer::hms_to_seconds( $aPlayer['fv_start']);
       }
 

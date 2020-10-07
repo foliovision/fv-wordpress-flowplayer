@@ -126,6 +126,10 @@ HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
   }
 
+  public function testHmsToSeconds() {
+    $this->assertEquals(  flowplayer::hms_to_seconds('01:04:11'), 3851 );
+  }
+
   public function testDBStartEnd() {
     global $post;
     $post = get_post( $this->post_id_testStartEnd );
@@ -133,16 +137,16 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="'.$this->import_ids[1].'"]' );
     
     $sample = <<< HTML
-<div id="wpfp_5ce572ceef2479a913f34b1de5aa9508" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
+<div id="wpfp_57f2e51f7c0c90d796d62b359da2beea" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
   <div class="fp-ratio" style="padding-top: 56.25%"></div>
   <img class="fp-splash" alt="Fire" src="https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg" />
   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 
 </div>
-  <div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_5ce572ceef2479a913f34b1de5aa9508">
-    <a href='#' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/dominika-960-31.mp4","type":"video\/mp4"}],"id":22,"fv_start":"10","fv_end":"40","fv_title":"Fire"}'><div class='fvp-playlist-thumb-img'><img  src='https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg' /></div><h4><span>Fire</span><i class="dur">00:30</i></h4></a>
-    <a href='#' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Paypal-video-on-home-page.mp4","type":"video\/mp4"}],"id":23,"fv_start":"5","fv_title":"PayPal Background Video"}'><div class='fvp-playlist-thumb-img'><img  src='https://foliovision.com/videos/paypal-splash.jpg' /></div><h4><span>PayPal Background Video</span><i class="dur">59:55</i></h4></a>
-    <a href='#' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Carly-Simon-Anticipation-1971.mp4","type":"video\/mp4"}],"id":24,"fv_title":"Carly Simon"}'><div class='fvp-playlist-thumb-img'><img  src='https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png' /></div><h4><span>Carly Simon</span><i class="dur">01:04:11</i></h4></a>
+  <div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_57f2e51f7c0c90d796d62b359da2beea">
+    <a href='#' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/dominika-960-31.mp4","type":"video\/mp4"}],"id":28,"fv_start":"00:10","fv_end":"00:00:40","fv_title":"Fire"}'><div class='fvp-playlist-thumb-img'><img  src='https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg' /></div><h4><span>Fire</span><i class="dur">00:30</i></h4></a>
+    <a href='#' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Paypal-video-on-home-page.mp4","type":"video\/mp4"}],"id":29,"fv_start":"00:00:05","fv_title":"PayPal Background Video"}'><div class='fvp-playlist-thumb-img'><img  src='https://foliovision.com/videos/paypal-splash.jpg' /></div><h4><span>PayPal Background Video</span></h4></a>
+    <a href='#' data-item='{"sources":[{"src":"https:\/\/foliovision.com\/videos\/Carly-Simon-Anticipation-1971.mp4","type":"video\/mp4"}],"id":30,"fv_title":"Carly Simon"}'><div class='fvp-playlist-thumb-img'><img  src='https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png' /></div><h4><span>Carly Simon</span><i class="dur">01:04:11</i></h4></a>
   </div>
 HTML;
 
