@@ -92,13 +92,14 @@ function fv_flowplayer_get_js_translations() {
   'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
   'duration_1_day' => __( "%s day" ),
-  'duration_n_days' => sprintf( _n( '%s day', '%s days', '%s' ), '%s' ),
+  'duration_n_days' => _n( '%s day', '%s days', 5 ),
   'duration_1_hour' => __( "%s hour" ),
-  'duration_n_hours' => sprintf( _n( '%s hour', '%s hours', '%s' ), '%s' ),
+  'duration_n_hours' => _n( '%s hour', '%s hours', 5 ),
   'duration_1_minute' => __( "%s min" ),
-  'duration_n_minutes' => sprintf( _n( '%s min', '%s mins', '%s' ), '%s' ),
+  'duration_n_minutes' => _n( '%s min', '%s mins', 5 ),
   'duration_1_second' => __( "%s second" ),
-  'duration_n_seconds' => sprintf( _n( '%s second', '%s seconds', '%s' ), '%s' ),
+  'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' )
 );
   
   return $aStrings;

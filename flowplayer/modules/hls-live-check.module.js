@@ -104,7 +104,7 @@ flowplayer( function(api,root) {
     output += h > 0 ? (h == 1 ? t.duration_1_hour.replace(/%s/,h) : t.duration_n_hours.replace(/%s/,h) ) : "";
     if( output && m > 0 ) output += ", ";
     output += m > 0 ? (m == 1 ? t.duration_1_minute.replace(/%s/,m) : t.duration_n_minutes.replace(/%s/,m) )  : "";
-    if( output && s > 0 ) output += " and ";
+    if( output && s > 0 ) output += t.and;
     output += s > 0 ? (s == 1 ? t.duration_1_second.replace(/%s/,s) : t.duration_n_seconds.replace(/%s/,s) )  : "";
 
     return output;
