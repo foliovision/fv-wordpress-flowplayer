@@ -227,7 +227,8 @@ function fv_player_preload() {
     var playlist_external = jQuery('[rel='+root.attr('id')+']');
     var playlist_progress = false;
 
-    var splash_img, splash_text;
+    var splash_img = root.find('.fp-splash');
+    var splash_text = root.find('.fv-fp-splash-text');
 
     api.bind('ready', function(e,api,video) {
       //console.log('playlist mark',video.index);
@@ -241,8 +242,18 @@ function fv_player_preload() {
         }
       }, 250 );
 
-      splash_img = root.find('.fp-splash').remove(); 
-      splash_text = root.find('.fv-fp-splash-text').remove();
+      // Show splash img if audio
+      if( api.video.type.match(/^audio/) ) {
+        setTimeout(function(){
+          if(splash_img.length) {
+            root.find('.fp-player').prepend(splash_img);
+          }
+        },0);
+      } else {
+        splash_img.remove();
+      }
+
+      splash_text.remove();
     } );
 
     api.bind( 'unload', function() {
