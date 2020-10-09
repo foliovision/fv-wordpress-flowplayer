@@ -821,6 +821,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
     } else {
       $arg = !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item';
+      if( $sSplashImage ) {
+        $aPlayer['splash'] = $sSplashImage;
+      }
       $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
