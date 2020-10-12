@@ -11,8 +11,8 @@ flowplayer(function(player, root) {
     scrollX,
     scrollY;
 
-  //  copy of original Flowplayer function
-  player.fullscreen = function(flag) {console.log('new fs');
+  //  copy of original Flowplayer function with some subtle changes
+  player.fullscreen = function(flag) {
     var wrapper = jQuery(root).find('.fp-player')[0];
     
     if (player.disabled) return;
