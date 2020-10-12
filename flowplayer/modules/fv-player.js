@@ -239,7 +239,7 @@ function fv_player_preload() {
     api.bind('ready', function(e,api,video) {
       //console.log('playlist mark',video.index);
       setTimeout( function() {
-        if( video.index > -1 ) {          
+        if( video.index > -1 ) {
           if( playlist_external.length > 0 ) {
             var playlist_item = jQuery('a',playlist_external).eq(video.index);
             fv_player_playlist_active(playlist_external,playlist_item);
@@ -249,11 +249,7 @@ function fv_player_preload() {
       }, 250 );
 
       // Show splash img if audio
-      if( api.video.type.match(/^audio/) ) {
-          if(splash_img.length) {
-            root.find('.fp-player').prepend(splash_img);
-          }
-      } else {
+      if( !api.video.type.match(/^audio/) ) {
         splash_img.remove();
         splash_text.remove();
       }
