@@ -138,7 +138,8 @@ function fv_player_preload() {
 
   flowplayer( function(api,root) {
     root = jQuery(root);
-    
+    var fv_player = root.find('.fp-player');
+
     if( root.hasClass('fixed-controls') ) {
       root.find('.fp-controls').click( function(e) {
         if( !api.loading && !api.ready ) {
@@ -218,7 +219,8 @@ function fv_player_preload() {
         if( splash_img.length ) {
           splash_img.attr('src', new_splash );
         } else {
-          root.find('.fp-player').prepend('<img class="fp-splash" alt="video" src="'+new_splash+'">')
+          var alt = $this.data('item').fv_title ? $this.data('item').fv_title : 'video'
+          fv_player.prepend('<img class="fp-splash" alt="'+alt+'" src="'+new_splash+'">')
         }
       }
 
@@ -248,6 +250,8 @@ function fv_player_preload() {
         }
       }, 250 );
 
+      splash_img = root.find('.fp-splash'); // must update, alt attr can change
+
       // Show splash img if audio
       if( !api.video.type.match(/^audio/) ) {
         splash_img.remove();
@@ -259,8 +263,8 @@ function fv_player_preload() {
       jQuery('.fp-playlist-external .now-playing').remove();
       jQuery('.fp-playlist-external a').removeClass('is-active');
 
-      root.find('.fp-player').prepend(splash_text);
-      root.find('.fp-player').prepend(splash_img);
+      fv_player.prepend(splash_text);
+      fv_player.prepend(splash_img);
 
       playlist_progress = false;
     });
