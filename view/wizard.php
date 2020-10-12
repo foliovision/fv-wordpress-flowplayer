@@ -246,7 +246,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" />
                   <?php if ($allow_uploads == "true") { ?>      
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
-                  <?php }; //allow uplads video ?></td>
+                  <?php }; //allow uplads video ?>
+                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
+                </td>
               </tr>
 
               <tr style="display: none" id="fv_wp_flowplayer_file_info">
@@ -263,6 +265,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?> 
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
+                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
                 </td>
               </tr>
 
@@ -272,6 +275,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?>  
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
+                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
                 </td>    			
               </tr>
               

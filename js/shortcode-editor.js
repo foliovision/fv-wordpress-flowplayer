@@ -870,6 +870,9 @@ jQuery(function() {
           $element.removeData('fv_player_video_auto_refresh_task');
         }*/
 
+        // perform video type compatibility check
+        window.fv_player_editor.src_playlist_url_check( $element );
+
         // set jQuery data related to certain meta data that we may have for current video
         if (!$auto_splash_element.length && $splash_element.val() ) {
           // splash for this video was manually updated
@@ -3530,6 +3533,12 @@ jQuery(function() {
 
       editor_resize: editor_resize,
 
+      /**
+       * Adds a preview to the Gutenberg FV Player block.
+       *
+       * @param parent Parent Gutenberg element in which we'll be showing the preview for.
+       * @param shortcode The actual player shortcode to generate the preview from.
+       */
       gutenberg_preview: function( parent, shortcode ) {
         if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined') {
           return;
@@ -3550,7 +3559,49 @@ jQuery(function() {
             fv_player_preview_loading = false;
           })
         }, 1500);
-      }
+      },
+
+      /**
+       * Checks for either an invalid video type being present in the SRC field
+       * (such as YouTube video in Free player, which does not directly support it)
+       * or for a playlist item URL in the SRC field when this player video is the first one existing.
+       *
+       * @param $src_input jQuery representation of the SRC input that was changed.
+       */
+      src_playlist_url_check: function( $src_input ) {
+        var result = {
+          'allok' : true,
+        };
+
+        if (
+          $src_input.val().indexOf('vimeo.com') > -1 ||
+          $src_input.val().indexOf('vimeopro.com') > -1 ||
+          $src_input.val().indexOf('youtube.com') > -1 ||
+          $src_input.val().indexOf('youtu.be') > -1
+        ) {
+          result.allok = false;
+
+        } else {
+          result.allok = true;
+        }
+
+        // fire up a JS event for the PRO player to catch,
+        // so it can check the URL and make sure we don't show
+        // a warning message for PRO-supported video types
+        $doc.trigger('editor_src_field_changed', [ $src_input, result ]);
+
+        if ( !result.allok ) {
+          $src_input
+            .siblings('.fv-player-src-below-notice')
+            .first()
+            .css('display', 'block');
+        } else {
+          $src_input
+            .siblings('.fv-player-src-below-notice')
+            .first()
+            .css('display', 'none');
+        }
+      },
     };
 
   })(jQuery);
