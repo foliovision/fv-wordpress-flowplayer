@@ -1,5 +1,5 @@
 /*
- * Improve the fullscreen calling to make sure the video covers the full visible viewport of Google Pixel 4 or iPhone X
+ * Improve the fullscreen calling to make sure the video covers the full visible viewport of Google Pixel 4 or iPhone Pro which have a special viewport shape
  */
 flowplayer(function(player, root) {
 
@@ -29,7 +29,9 @@ flowplayer(function(player, root) {
        if (flag) {
           ['requestFullScreen', 'webkitRequestFullScreen', 'mozRequestFullScreen', 'msRequestFullscreen'].forEach(function(fName) {
              if (typeof wrapper[fName] === 'function') {
-                wrapper[fName](Element.ALLOW_KEYBOARD_INPUT);
+                wrapper[fName]({
+                  navigationUI: "hide"  // hides the white bar on Google Pixel 4 etc.
+                });
                 if (fName === 'webkitRequestFullScreen' && !document.webkitFullscreenElement)  {
                    wrapper[fName]();
                 }
