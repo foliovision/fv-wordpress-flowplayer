@@ -104,7 +104,7 @@ jQuery(document).on('click', '.fv_fp_close', function() {
 } );
 
 /*
- *  Popups form
+ *  Popups form, disabling and enabling Flowplayer hotkeys when you enter/leave the field
  */
 jQuery(document).on('focus','.fv_player_popup input[type=text], .fv_player_popup input[type=email], .fv_player_popup textarea', function() {
   var api = jQuery(this).parents('.flowplayer').data('flowplayer');
