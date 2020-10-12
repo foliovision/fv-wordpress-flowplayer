@@ -231,7 +231,7 @@ function fv_player_preload() {
         if( splash_img.length ) {
           splash_img.attr('src', new_splash );
         } else {
-          var alt = $this.data('item').fv_title ? fv_escape_html($this.data('item').fv_title) : 'video'
+          var alt = $this.data('item').fv_title ? fv_escape_attr($this.data('item').fv_title) : 'video'
           fv_player.prepend('<img class="fp-splash" alt="'+alt+'" src="'+new_splash+'">')
         }
       }
