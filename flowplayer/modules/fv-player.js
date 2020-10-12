@@ -130,6 +130,18 @@ jQuery(document).ready( function() {
   }, 10 );
 });
 
+function fv_escape_attr(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 function fv_player_preload() {
  
   if( flowplayer.support.touch ) {
@@ -219,7 +231,7 @@ function fv_player_preload() {
         if( splash_img.length ) {
           splash_img.attr('src', new_splash );
         } else {
-          var alt = $this.data('item').fv_title ? encodeURI($this.data('item').fv_title) : 'video'
+          var alt = $this.data('item').fv_title ? fv_escape_html($this.data('item').fv_title) : 'video'
           fv_player.prepend('<img class="fp-splash" alt="'+alt+'" src="'+new_splash+'">')
         }
       }
