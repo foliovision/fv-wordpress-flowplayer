@@ -243,6 +243,10 @@ msgid ""
 "a> or other modern browser."
 msgstr ""
 
+#: ../controller/frontend.php:84
+msgid "Quality"
+msgstr "Qualität"
+
 #: controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"
