@@ -227,7 +227,7 @@ function fv_player_preload() {
       
       var new_splash = item.splash;
       if( !new_splash ) { // parse the splash from HTML if not found in playlist item
-        new_splash = $this.find('img.test').attr('src');
+        new_splash = $this.find('img').attr('src');
       }
 
       var splash_img = root.find('img.fp-splash');
