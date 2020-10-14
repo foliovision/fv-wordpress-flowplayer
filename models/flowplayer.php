@@ -821,9 +821,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
     } else {
       $arg = !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item';
-      if( $sSplashImage ) {
-        $aPlayer['splash'] = $sSplashImage;
-      }
       $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
@@ -990,6 +987,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sItemCaption ) {
         $aPlayer['fv_title'] = $sItemCaption;
       }
+
+      if( $splash_img ) {
+        $aPlayer['splash'] = $splash_img;
+      }
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -1068,7 +1069,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           if( $sItemCaption ) {
             $aPlayer['fv_title'] = $sItemCaption;
-          }          
+          }
+          
+          if( $sSplashImage ) {
+            $aPlayer['splash'] = $sSplashImage;
+          }
           
           $aPlaylistItems[] = $aPlayer;
           

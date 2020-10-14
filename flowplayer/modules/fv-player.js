@@ -150,7 +150,7 @@ function fv_player_preload() {
 
   flowplayer( function(api,root) {
     root = jQuery(root);
-    var fv_player = root.find('.fp-player');
+    var fp_player = root.find('.fp-player');
 
     if( root.hasClass('fixed-controls') ) {
       root.find('.fp-controls').click( function(e) {
@@ -197,6 +197,7 @@ function fv_player_preload() {
 
       var
         $this = jQuery(this),
+        item = $this.data('item'),
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
         index = jQuery('a',playlist).index(this);
         $prev = $this.prev('a');
@@ -224,16 +225,27 @@ function fv_player_preload() {
         api.play( index );
       }
       
-      var new_splash = $this.find('img').attr('src') ? $this.find('img').attr('src') : $this.data('item').splash;
-      
+      var new_splash = item.splash;
+      if( !new_splash ) { // parse the splash from HTML if not found in playlist item
+        new_splash = $this.find('img.test').attr('src');
+      }
+
+      var splash_img = root.find('img.fp-splash');
+
+      // do we have splash to show?
       if( new_splash ) {
-        var splash_img = root.find('img.fp-splash');
-        if( splash_img.length ) {
-          splash_img.attr('src', new_splash );
-        } else {
-          var alt = $this.data('item').fv_title ? fv_escape_attr($this.data('item').fv_title) : 'video'
-          fv_player.prepend('<img class="fp-splash" alt="'+alt+'" src="'+new_splash+'">')
+        // if the splash element missing? Create it!
+        if( splash_img.length == 0 ) {
+          splash_img = jQuery('<img class="fp-splash" />');
+          fp_player.prepend(splash_img)
         }
+
+        splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
+        splash_img.attr('src', new_splash );
+
+      // remove the splash image if there is nothing present for the item
+      } else if( splash_img.length ) {
+        splash_img.remove(); 
       }
 
       var rect = root[0].getBoundingClientRect();
@@ -260,7 +272,7 @@ function fv_player_preload() {
             playlist_progress = playlist_item.find('.fvp-progress');
           }
         }
-      }, 250 );
+      }, 100 );
 
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
@@ -275,8 +287,8 @@ function fv_player_preload() {
       jQuery('.fp-playlist-external .now-playing').remove();
       jQuery('.fp-playlist-external a').removeClass('is-active');
 
-      fv_player.prepend(splash_text);
-      fv_player.prepend(splash_img);
+      fp_player.prepend(splash_text);
+      fp_player.prepend(splash_img);
 
       playlist_progress = false;
     });
