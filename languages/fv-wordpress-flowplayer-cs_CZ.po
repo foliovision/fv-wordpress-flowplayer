@@ -257,6 +257,14 @@ msgstr "<h2>Živé vysílání je momentálně nedostupné.</h2><p>Opětovný po
 msgid "Quality"
 msgstr "Kvalita"
 
+#: ../controller/frontend.php:85
+msgid "Closed Captions"
+msgstr "Skryté titulky"
+
+#: ../controller/frontend.php:86
+msgid "No subtitles"
+msgstr "Žádné titulky"
+
 #: ../controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"

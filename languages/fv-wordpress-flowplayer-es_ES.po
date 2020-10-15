@@ -258,6 +258,14 @@ msgstr "<h2>Lo sentimos, actualmente no hay transmisión en vivo disponible.</h2
 msgid "Quality"
 msgstr "Calidad"
 
+#: ../controller/frontend.php:85
+msgid "Closed Captions"
+msgstr "Subtítulos"
+
+#: ../controller/frontend.php:86
+msgid "No subtitles"
+msgstr "Sin subtitulos"
+
 #: ../controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"
