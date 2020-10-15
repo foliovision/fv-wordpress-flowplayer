@@ -255,10 +255,9 @@ function fv_player_preload() {
       playlist_progress = false;
     });
     
-    api.bind( 'progress', function() {
-      if( playlist_progress && api.video.duration ) {
-        var progress = 100*api.video.time/api.video.duration;
-        playlist_progress.css('width',progress+'%');
+    api.bind( 'progress', function( e, api, time ) {
+      if( playlist_progress.length ) {
+        api.playlist_thumbnail_progress( playlist_progress, api.video, time );
       }
     });
     
