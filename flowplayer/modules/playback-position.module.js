@@ -250,29 +250,42 @@ if (!Date.now) {
           video_id = getVideoId(api.video),
           position = api.video.position;
 
+        // try to lookup position of a guest visitor
+        if (flowplayer.conf.is_logged_in != '1') {
+          var data = getCookieKey(cookieKeyName);
+          if (data && typeof(data) !== 'undefined') {
+            try {
+              data = JSON.parse(data);
+              if (data[video_id]) {
+                position = data[video_id];
+              }
+            } catch (e) {
+              // something went wrong...
+              // TODO: shall we try to reset guest data here?
+              return;
+            }
+          }
+        }
+
+        // Use the FV Player Pro method for custom end time if available
+        // - is the position is too late and should it be ignored?
+        if( !!api.get_custom_end && api.get_custom_end() < position ) {
+          return;
+        }
+
+        // Use the FV Player Pro method for custom start time if available
+        // - is the position too early and should it be ignored or adjusted?
+        if( !!api.get_custom_start && api.get_custom_start() > 0 ) {
+          if( position < api.get_custom_start() ) {
+            return;
+          }
+        }
+
         api.bind('progress', storeVideoPosition);
 
         // no temporary positions found, let's work with DB / cookies
         if (position) {
           seek(position);
-        } else {
-          // try to lookup position of a guest visitor
-          if (flowplayer.conf.is_logged_in != '1') {
-            var data = getCookieKey(cookieKeyName);
-            if (data && typeof(data) !== 'undefined') {
-              try {
-                data = JSON.parse(data);
-
-                if (data[video_id]) {
-                  seek(data[video_id]);
-                }
-              } catch (e) {
-                // something went wrong...
-                // TODO: shall we try to reset guest data here?
-                return;
-              }
-            }
-          }
         }
       },
 
@@ -325,6 +338,12 @@ if (!Date.now) {
       },
 
       seek = function(position) {
+        // use the FV Player Pro method if available which considers the custom start/end time
+        if( !!api.custom_seek ) {
+          api.custom_seek(position);
+          return;
+        }
+
         var seek_count = 0;
         var do_seek = setInterval( function() {
           if( ++seek_count > 20 ) clearInterval(do_seek);
