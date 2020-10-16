@@ -151,6 +151,7 @@ function fv_player_preload() {
   flowplayer( function(api,root) {
     root = jQuery(root);
     var fp_player = root.find('.fp-player');
+    var splash_click = false;
 
     if( root.hasClass('fixed-controls') ) {
       root.find('.fp-controls').click( function(e) {
@@ -195,11 +196,14 @@ function fv_player_preload() {
     jQuery('a',playlist).click( function(e) {
       e.preventDefault();
 
+      splash_click = true;
+
       var
         $this = jQuery(this),
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
         index = jQuery('a',playlist).index(this);
-        $prev = $this.prev('a');
+        $prev = $this.prev('a'),
+        item = $this.data('item');
 
       if ($prev.length && $this.is(':visible') && !$prev.is(':visible')) {
         $prev.click();
@@ -223,7 +227,14 @@ function fv_player_preload() {
         if( !api.video || api.video.index == index ) return;
         api.play( index );
       }
+
+      var new_splash = item.splash;
+      if( !new_splash ) {
+        new_splash = $this.find('img').attr('src');
+      }
       
+      player_splash(root, fp_player, item, new_splash);
+
       var rect = root[0].getBoundingClientRect();
       if((rect.bottom - 100) < 0){
         jQuery('html, body').animate({
@@ -259,14 +270,16 @@ function fv_player_preload() {
     }
 
     api.bind("load", function (e,api,video) {
-      var anchor = playlist_external.find('a').eq(video.index);
-      var item = anchor.data('item');
-      var new_splash = item.splash;
-      if( !new_splash ) { // parse the splash from HTML if not found in playlist item
-        new_splash = anchor.find('img').attr('src');
+      if( video.type.match(/^audio/) && !splash_click ) {
+        var anchor = playlist_external.find('a').eq(video.index);
+        var item = anchor.data('item');
+        var new_splash = item.splash;
+        if( !new_splash ) { // parse the splash from HTML if not found in playlist item
+          new_splash = anchor.find('img').attr('src');
+        }
+        player_splash(root, fp_player, item, new_splash);
       }
-
-      player_splash(root, fp_player, item, new_splash);
+      splash_click = false;
     });
 
     api.bind('ready', function(e,api,video) {
