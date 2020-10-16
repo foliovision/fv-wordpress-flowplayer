@@ -255,7 +255,7 @@ msgstr "Kvalita"
 
 #: ../controller/frontend.php:85
 msgid "Closed Captions"
-msgstr "Skryté titulky"
+msgstr "Titulky"
 
 #: ../controller/frontend.php:86
 msgid "No subtitles"
