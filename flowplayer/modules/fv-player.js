@@ -142,6 +142,26 @@ function fv_escape_attr(text) {
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
+function fv_player_splash(root, fp_player, item, new_splash) {
+  var splash_img = root.find('img.fp-splash');
+
+  // do we have splash to show?
+  if( new_splash ) {
+    // if the splash element missing? Create it!
+    if( splash_img.length == 0 ) {
+      splash_img = jQuery('<img class="fp-splash" />');
+      fp_player.prepend(splash_img)
+    }
+
+    splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
+    splash_img.attr('src', new_splash );
+
+  // remove the splash image if there is nothing present for the item
+  } else if( splash_img.length ) {
+    splash_img.remove(); 
+  }
+}
+
 function fv_player_preload() {
  
   if( flowplayer.support.touch ) {
@@ -197,7 +217,6 @@ function fv_player_preload() {
 
       var
         $this = jQuery(this),
-        item = $this.data('item'),
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
         index = jQuery('a',playlist).index(this);
         $prev = $this.prev('a');
@@ -213,7 +232,7 @@ function fv_player_preload() {
       
       fv_player_playlist_active(playlist,this);
       
-      if( api ){
+      if( api ) {
         if( api.error ) {
           api.pause();
           api.error = api.loading = false;
@@ -225,29 +244,6 @@ function fv_player_preload() {
         api.play( index );
       }
       
-      var new_splash = item.splash;
-      if( !new_splash ) { // parse the splash from HTML if not found in playlist item
-        new_splash = $this.find('img').attr('src');
-      }
-
-      var splash_img = root.find('img.fp-splash');
-
-      // do we have splash to show?
-      if( new_splash ) {
-        // if the splash element missing? Create it!
-        if( splash_img.length == 0 ) {
-          splash_img = jQuery('<img class="fp-splash" />');
-          fp_player.prepend(splash_img)
-        }
-
-        splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
-        splash_img.attr('src', new_splash );
-
-      // remove the splash image if there is nothing present for the item
-      } else if( splash_img.length ) {
-        splash_img.remove(); 
-      }
-
       var rect = root[0].getBoundingClientRect();
       if((rect.bottom - 100) < 0){
         jQuery('html, body').animate({
@@ -261,6 +257,17 @@ function fv_player_preload() {
 
     var splash_img = root.find('.fp-splash');
     var splash_text = root.find('.fv-fp-splash-text');
+
+    api.bind("load", function (e,api,video) {
+      var anchor = playlist_external.find('a').eq(video.index);
+      var item = anchor.data('item');
+      var new_splash = item.splash;
+      if( !new_splash ) { // parse the splash from HTML if not found in playlist item
+        new_splash = anchor.find('img').attr('src');
+      }
+
+      fv_player_splash(root, fp_player, item, new_splash);
+    });
 
     api.bind('ready', function(e,api,video) {
       //console.log('playlist mark',video.index);
