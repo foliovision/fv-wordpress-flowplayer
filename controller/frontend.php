@@ -94,6 +94,7 @@ function fv_flowplayer_get_js_translations() {
   'quality' => __('Quality','fv-wordpress-flowplayer'),
   'closed_captions' => __('Closed Captions', 'fv-wordpress-flowplayer'),
   'no_subtitles' => __('No subtitles', 'fv-wordpress-flowplayer'),
+  'speed' => __('Speed', 'fv-wordpress-flowplayer'),
   'duration_1_day' => __( "%s day" ),
   'duration_n_days' => _n( '%s day', '%s days', 5 ),
   'duration_1_hour' => __( "%s hour" ),
