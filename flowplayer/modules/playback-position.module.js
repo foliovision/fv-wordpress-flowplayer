@@ -405,9 +405,45 @@ if (!Date.now) {
       api.bind( 'ready', seekIntoPosition);
     }
 
+    /*
+     * Show the progress on the playlist item thumbnail
+     *
+     * @param element el The playlist item thumnbail progress indicator
+     * @param object video The Flowplayer video object to act upon
+     * @param int position Video position to show
+     */
+    api.playlist_thumbnail_progress = function(el,video,position) {
+      // Use the FV Player Pro method for custom start time if available
+      if( !!api.get_custom_start && api.get_custom_start(video) > 0 ) {
+        position -= api.get_custom_start(video);
+        if( position < 0 ) position = 0;
+      }
+      
+      var duration = video.duration;
+
+      // Use the FV Player Pro method for custom duration
+      if( !!api.get_custom_duration && api.get_custom_duration() > 0 ) {
+        duration = api.get_custom_duration();
+      }
+
+      // if the video is not yet loaded, take the data from HTML
+      if( !duration ) {
+        duration = el.data('duration');
+      }
+
+      if( !duration ) return; // TODO: Remove the marker?
+
+      var progress = 100 * position/duration;
+      el.css('width',progress+'%');
+    }    
+
     // Check all the playlist items to see if any of them has the temporary "position" or "saw" cookie set
+    // We do this as the position saving Ajax can no longer be synchronous and block the page reload
+    // So sometimes it takes longer to progress than the page load
     if (flowplayer.conf.is_logged_in == '1') {
-      var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ];
+      var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ],
+        playlist_external = jQuery('[rel='+jQuery(root).attr('id')+']');
+      
       for( var i in playlist ) {
         if (!playlist.hasOwnProperty(i)) continue;
 
@@ -417,7 +453,15 @@ if (!Date.now) {
 
         if( position ) {
           if( api.conf.playlist.length ) {
+            // set the position
             api.conf.playlist[i].sources[0].position = position;
+
+            // Show the position on the playlist thumbnail
+            var playlist_progress = jQuery('a',playlist_external).eq(i).find('.fvp-progress');
+            if( playlist_progress.length ) {
+              api.playlist_thumbnail_progress(playlist_progress,api.conf.playlist[i],position);
+            }
+
           } else {
             api.conf.clip.sources[0].position = position;
           }
