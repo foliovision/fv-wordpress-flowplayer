@@ -16,6 +16,11 @@ flowplayer( function(api,root) {
     }
   });
 
+  api.on('ready', function(e, api){
+    root.find('.fp-subtitle-menu strong').text(fv_flowplayer_translations.closed_captions); // translate closed captions
+    root.find('.fp-subtitle-menu a[data-subtitle-index="-1"]').text(fv_flowplayer_translations.no_subtitles) // translate no subtitles
+  });
+
   // Start checking on subtitle menu click
   // It would be better to listen to subtitle activation event, but there is none
   root.on('click', '.fp-subtitle-menu a[data-subtitle-index]', function(e) {
