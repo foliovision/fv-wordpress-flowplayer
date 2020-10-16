@@ -34,6 +34,7 @@ class FV_Player_List_Table_View {
   
   function set_screen_option($status, $option, $value) {
     if( 'fv_player_per_page' == $option ) return $value;
+    return $status;
   }
   
   function screen_columns() {
