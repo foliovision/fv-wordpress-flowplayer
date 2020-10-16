@@ -142,26 +142,6 @@ function fv_escape_attr(text) {
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-function fv_player_splash(root, fp_player, item, new_splash) {
-  var splash_img = root.find('img.fp-splash');
-
-  // do we have splash to show?
-  if( new_splash ) {
-    // if the splash element missing? Create it!
-    if( splash_img.length == 0 ) {
-      splash_img = jQuery('<img class="fp-splash" />');
-      fp_player.prepend(splash_img)
-    }
-
-    splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
-    splash_img.attr('src', new_splash );
-
-  // remove the splash image if there is nothing present for the item
-  } else if( splash_img.length ) {
-    splash_img.remove(); 
-  }
-}
-
 function fv_player_preload() {
  
   if( flowplayer.support.touch ) {
@@ -258,6 +238,26 @@ function fv_player_preload() {
     var splash_img = root.find('.fp-splash');
     var splash_text = root.find('.fv-fp-splash-text');
 
+    function player_splash(root, fp_player, item, new_splash) {
+      var splash_img = root.find('img.fp-splash');
+    
+      // do we have splash to show?
+      if( new_splash ) {
+        // if the splash element missing? Create it!
+        if( splash_img.length == 0 ) {
+          splash_img = jQuery('<img class="fp-splash" />');
+          fp_player.prepend(splash_img)
+        }
+    
+        splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
+        splash_img.attr('src', new_splash );
+    
+      // remove the splash image if there is nothing present for the item
+      } else if( splash_img.length ) {
+        splash_img.remove(); 
+      }
+    }
+
     api.bind("load", function (e,api,video) {
       var anchor = playlist_external.find('a').eq(video.index);
       var item = anchor.data('item');
@@ -266,7 +266,7 @@ function fv_player_preload() {
         new_splash = anchor.find('img').attr('src');
       }
 
-      fv_player_splash(root, fp_player, item, new_splash);
+      player_splash(root, fp_player, item, new_splash);
     });
 
     api.bind('ready', function(e,api,video) {
