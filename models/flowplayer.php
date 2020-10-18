@@ -499,7 +499,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }  
   
   
-  private function _get_conf() {
+  public function _get_conf() {
     $conf = get_option( 'fvwpflowplayer' );
     
     if( !$conf ) { // new install, hide some of the notices
