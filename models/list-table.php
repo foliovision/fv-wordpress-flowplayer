@@ -30,6 +30,7 @@ class FV_Player_List_Table_View {
     add_action( 'admin_menu', array($this, 'admin_menu') );
     add_action( 'admin_head', array($this, 'styling') );
     add_filter( 'set-screen-option', array($this, 'set_screen_option'), 10, 3);
+    add_filter( 'set_screen_option_fv_player_per_page', array($this, 'set_screen_option'), 10, 3);
   }
   
   function set_screen_option($status, $option, $value) {
