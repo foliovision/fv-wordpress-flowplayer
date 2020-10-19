@@ -266,6 +266,10 @@ msgstr "Subtítulos"
 msgid "No subtitles"
 msgstr "Sin subtitulos"
 
+#: ../controller/frontend.php:87
+msgid "Speed"
+msgstr "Velocidad"
+
 #: ../controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"

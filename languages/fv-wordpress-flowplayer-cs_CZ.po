@@ -265,6 +265,10 @@ msgstr "Titulky"
 msgid "No subtitles"
 msgstr "Žádné titulky"
 
+#: ../controller/frontend.php:87
+msgid "Speed"
+msgstr "Rychlost"
+
 #: ../controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"
