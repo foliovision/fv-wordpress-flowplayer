@@ -485,18 +485,7 @@ function flowplayer_prepare_scripts() {
     
   }
   
-  global $FV_Player_lightbox;
-  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('lightbox_force') ) ) {
-    $aConf = array();
-    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
-    
-    if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
-
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
-    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
-    
-  }
-  
+  FV_Player_lightbox()->maybe_load();
 }
 
 /**
