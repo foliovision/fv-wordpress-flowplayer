@@ -357,6 +357,20 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.35.727 - 2020/10/22 =
+
+* Audio - splash screen now stays up for the full duration of audio files
+* Compatiblity - Fullscreen appearance fix for Google Pixel 4
+* HLS - live stream check - countdown translation fixes
+* iOS video recovery - improved for expired MP4 file links
+* Playlist - show item splash when manually switching items
+* Translations - quality menu, speed menu and subtitles menu label
+* Bugfix - Compatiblity - Elementor editor CSS conflict fix
+* Bugfix - Editor - fix for picking of timeline previews in FV Player Pro
+* Bugfix - FV Player wp-admin screen - screen options per page setting fix
+* Bugfix - Video durations are now respecting FV Player Pro's custom start/end time
+* Bugfix - Video Position Saving - improvements to work with FV Player Pro's custom start/end time
+
 = 7.4.34.727 - 2020/09/23 =
 
 * FV Player wp-admin Screen - search fixes and improvements - you can multiple words or quotes
