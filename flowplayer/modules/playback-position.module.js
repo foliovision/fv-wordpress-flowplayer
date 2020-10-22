@@ -250,29 +250,42 @@ if (!Date.now) {
           video_id = getVideoId(api.video),
           position = api.video.position;
 
+        // try to lookup position of a guest visitor
+        if (flowplayer.conf.is_logged_in != '1') {
+          var data = getCookieKey(cookieKeyName);
+          if (data && typeof(data) !== 'undefined') {
+            try {
+              data = JSON.parse(data);
+              if (data[video_id]) {
+                position = data[video_id];
+              }
+            } catch (e) {
+              // something went wrong...
+              // TODO: shall we try to reset guest data here?
+              return;
+            }
+          }
+        }
+
+        // Use the FV Player Pro method for custom end time if available
+        // - is the position is too late and should it be ignored?
+        if( !!api.get_custom_end && api.get_custom_end() < position ) {
+          position = false;
+        }
+
+        // Use the FV Player Pro method for custom start time if available
+        // - is the position too early and should it be ignored or adjusted?
+        if( !!api.get_custom_start && api.get_custom_start() > 0 ) {
+          if( position < api.get_custom_start() ) {
+            position = false;
+          }
+        }
+
         api.bind('progress', storeVideoPosition);
 
         // no temporary positions found, let's work with DB / cookies
         if (position) {
           seek(position);
-        } else {
-          // try to lookup position of a guest visitor
-          if (flowplayer.conf.is_logged_in != '1') {
-            var data = getCookieKey(cookieKeyName);
-            if (data && typeof(data) !== 'undefined') {
-              try {
-                data = JSON.parse(data);
-
-                if (data[video_id]) {
-                  seek(data[video_id]);
-                }
-              } catch (e) {
-                // something went wrong...
-                // TODO: shall we try to reset guest data here?
-                return;
-              }
-            }
-          }
         }
       },
 
@@ -325,6 +338,12 @@ if (!Date.now) {
       },
 
       seek = function(position) {
+        // use the FV Player Pro method if available which considers the custom start/end time
+        if( !!api.custom_seek ) {
+          api.custom_seek(position);
+          return;
+        }
+
         var seek_count = 0;
         var do_seek = setInterval( function() {
           if( ++seek_count > 20 ) clearInterval(do_seek);
@@ -386,9 +405,45 @@ if (!Date.now) {
       api.bind( 'ready', seekIntoPosition);
     }
 
+    /*
+     * Show the progress on the playlist item thumbnail
+     *
+     * @param element el The playlist item thumnbail progress indicator
+     * @param object video The Flowplayer video object to act upon
+     * @param int position Video position to show
+     */
+    api.playlist_thumbnail_progress = function(el,video,position) {
+      // Use the FV Player Pro method for custom start time if available
+      if( !!api.get_custom_start && api.get_custom_start(video) > 0 ) {
+        position -= api.get_custom_start(video);
+        if( position < 0 ) position = 0;
+      }
+      
+      var duration = video.duration;
+
+      // Use the FV Player Pro method for custom duration
+      if( !!api.get_custom_duration && api.get_custom_duration() > 0 ) {
+        duration = api.get_custom_duration();
+      }
+
+      // if the video is not yet loaded, take the data from HTML
+      if( !duration ) {
+        duration = el.data('duration');
+      }
+
+      if( !duration ) return; // TODO: Remove the marker?
+
+      var progress = 100 * position/duration;
+      el.css('width',progress+'%');
+    }    
+
     // Check all the playlist items to see if any of them has the temporary "position" or "saw" cookie set
+    // We do this as the position saving Ajax can no longer be synchronous and block the page reload
+    // So sometimes it takes longer to progress than the page load
     if (flowplayer.conf.is_logged_in == '1') {
-      var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ];
+      var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ],
+        playlist_external = jQuery('[rel='+jQuery(root).attr('id')+']');
+      
       for( var i in playlist ) {
         if (!playlist.hasOwnProperty(i)) continue;
 
@@ -398,7 +453,15 @@ if (!Date.now) {
 
         if( position ) {
           if( api.conf.playlist.length ) {
+            // set the position
             api.conf.playlist[i].sources[0].position = position;
+
+            // Show the position on the playlist thumbnail
+            var playlist_progress = jQuery('a',playlist_external).eq(i).find('.fvp-progress');
+            if( playlist_progress.length ) {
+              api.playlist_thumbnail_progress(playlist_progress,api.conf.playlist[i],position);
+            }
+
           } else {
             api.conf.clip.sources[0].position = position;
           }

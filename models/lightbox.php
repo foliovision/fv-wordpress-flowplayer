@@ -2,11 +2,19 @@
 
 class FV_Player_lightbox {
 
+  static $instance = null;
+
   private $lightboxHtml;
   
-  public $bCSSLoaded = false;
-  
   public $bLoad = false;
+
+  public static function _get_instance() {
+    if( !self::$instance ) {
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+  }
   
   public function __construct() {
     add_action('init', array($this, 'remove_pro_hooks'), 10);
@@ -41,13 +49,19 @@ class FV_Player_lightbox {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
   }
   
+  /*
+   * Load CSS if it's actually needed or if the global settings are set.
+   * 
+   * @param bool $force Used to tell the function that the CSS is indeed required
+   */
   function css_enqueue( $force ) {
-    global $fv_fp;
-    if( !$force && !$fv_fp->_get_option('lightbox_images') && !$fv_fp->_get_option('lightbox_force') ) return;
+    global $fv_fp, $fv_wp_flowplayer_ver;
+    if(
+      !$force &&
+      !$fv_fp->_get_option('lightbox_images') && // "Use video lightbox for images as well" is disabled
+      !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
+    ) return;
     
-    $bCSSLoaded = true;
-    
-    global $fv_wp_flowplayer_ver;
     wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
   }
 
@@ -96,6 +110,9 @@ class FV_Player_lightbox {
     return $sType;
   }
   
+  /*
+   * Runs when "Remove fancyBox" compatibility option is enabled. Removes any other fancyBox script.
+   */
   function remove_other_fancybox() {
     global $fv_fp;
     if( $fv_fp->_get_option('lightbox_force') ) {
@@ -126,6 +143,13 @@ class FV_Player_lightbox {
     }
   }
 
+  /*
+   * Controls the stylesheet and script loading
+   */
+  function enqueue() {
+    $this->bLoad = true;
+  }
+
   function is_text_lightbox($aArgs) {
     $aLightbox = preg_split('~[;]~', $aArgs['lightbox']);
     
@@ -143,7 +167,8 @@ class FV_Player_lightbox {
     if (isset($aArgs[1]) ) {
       $args = $aArgs[1]->aCurArgs;
       if( isset($args['lightbox'])) {
-        $this->bLoad = true;
+
+        $this->enqueue();
         
         global $fv_fp;
         
@@ -229,6 +254,21 @@ class FV_Player_lightbox {
     return $html;
   }
 
+  /*
+   * Load the scripts and stylesheets
+   */
+  function load_scripts() {
+    global $fv_fp, $fv_wp_flowplayer_ver;
+
+    $aConf = array();
+    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images'); // should FV Player fancybox be used to show images?
+    
+    $this->css_enqueue(true);
+
+    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
+  }
+
   function html_to_lightbox_videos($content) {
 
     //  todo: disabling the option should turn this off
@@ -308,6 +348,21 @@ class FV_Player_lightbox {
       $aArgs['liststyle'] = 'slider';
     }
     return $aArgs;
+  }
+
+  /*
+   * Check if scripts and styles is the lightbox is actually used or it scripts are set to load everywhere. Called in FV Player's flowplayer_prepare_scripts()
+   */
+  function maybe_load() {
+    global $fv_fp;
+    if(
+      $this->should_load() ||
+      $fv_fp->_get_option('lightbox_images') || // "Use video lightbox for images as well" is enabled
+      $fv_fp->_get_option('js-everywhere') || // "Load FV Flowplayer JS everywhere" is enabled
+      $fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is enabled
+    ) {
+      $this->load_scripts();
+    }
   }
   
   function parse_args( $aArgs ) {
@@ -458,7 +513,18 @@ class FV_Player_lightbox {
     return " data-fancybox='gallery' data-options='".json_encode($options)."'";
   }
 
+  /*
+   * Was it enqueued  with self::enqueue() ?
+   */
+  function should_load() {
+    return $this->bLoad;
+  }
+
 }
 
 global $FV_Player_lightbox;
-$FV_Player_lightbox = new FV_Player_lightbox();
+$FV_Player_lightbox = FV_Player_lightbox::_get_instance();
+
+function FV_Player_lightbox() {
+  return FV_Player_lightbox::_get_instance();
+}
