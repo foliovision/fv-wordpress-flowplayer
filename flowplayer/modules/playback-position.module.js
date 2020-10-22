@@ -270,14 +270,14 @@ if (!Date.now) {
         // Use the FV Player Pro method for custom end time if available
         // - is the position is too late and should it be ignored?
         if( !!api.get_custom_end && api.get_custom_end() < position ) {
-          return;
+          position = false;
         }
 
         // Use the FV Player Pro method for custom start time if available
         // - is the position too early and should it be ignored or adjusted?
         if( !!api.get_custom_start && api.get_custom_start() > 0 ) {
           if( position < api.get_custom_start() ) {
-            return;
+            position = false;
           }
         }
 
