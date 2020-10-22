@@ -91,14 +91,19 @@ function fv_flowplayer_get_js_translations() {
   'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
+  'quality' => __('Quality','fv-wordpress-flowplayer'),
+  'closed_captions' => __('Closed Captions', 'fv-wordpress-flowplayer'),
+  'no_subtitles' => __('No subtitles', 'fv-wordpress-flowplayer'),
+  'speed' => __('Speed', 'fv-wordpress-flowplayer'),
   'duration_1_day' => __( "%s day" ),
-  'duration_n_days' => sprintf( _n( '%s day', '%s days', '%s' ), '%s' ),
+  'duration_n_days' => _n( '%s day', '%s days', 5 ),
   'duration_1_hour' => __( "%s hour" ),
-  'duration_n_hours' => sprintf( _n( '%s hour', '%s hours', '%s' ), '%s' ),
+  'duration_n_hours' => _n( '%s hour', '%s hours', 5 ),
   'duration_1_minute' => __( "%s min" ),
-  'duration_n_minutes' => sprintf( _n( '%s min', '%s mins', '%s' ), '%s' ),
+  'duration_n_minutes' => _n( '%s min', '%s mins', 5 ),
   'duration_1_second' => __( "%s second" ),
-  'duration_n_seconds' => sprintf( _n( '%s second', '%s seconds', '%s' ), '%s' ),
+  'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' )
 );
   
   return $aStrings;
@@ -481,18 +486,7 @@ function flowplayer_prepare_scripts() {
     
   }
   
-  global $FV_Player_lightbox;
-  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('lightbox_force') ) ) {
-    $aConf = array();
-    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
-    
-    if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
-
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
-    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
-    
-  }
-  
+  FV_Player_lightbox()->maybe_load();
 }
 
 /**

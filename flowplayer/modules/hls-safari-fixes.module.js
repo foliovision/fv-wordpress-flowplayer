@@ -7,10 +7,13 @@ flowplayer( function(api,root) {
   root = jQuery(root);
   
   var video_tag = false,
-    did_start_playing = false;
+    did_start_playing = false,
+    are_waiting_already = 0; // make sure you wait for the event only on one event at a time
   
   // first we need to obtain the video element
   api.on('ready', function() {
+    are_waiting_already = 0;
+
     did_start_playing = false;
     
     if( api.engine.engineName == 'html5' ) {
@@ -18,12 +21,13 @@ flowplayer( function(api,root) {
       video_tag = root.find('video');
       
       if( !video_tag.data('fv-ios-recovery') ) {
+        //video_tag.on( "stalled suspend abort emptied error waiting", debug );
+
         // triggered if the iOS video player runs out of buffer
         video_tag.on( "waiting", wait_for_stalled );
         
         // we use this to ensure the video tag has the event bound only once
-        video_tag.data('fv-ios-recovery',true);
-        //video_tag.on( "stalled suspend abort emptied error waiting", debug );
+        video_tag.data('fv-ios-recovery',true);        
       }
 
       api.one('progress', function() {
@@ -48,13 +52,43 @@ flowplayer( function(api,root) {
   
   function wait_for_stalled() {
     if( video_tag && api.engine.engineName == 'html5' ) {
+      are_waiting_already++;
+      if( are_waiting_already > 1 ) {
+        if( are_waiting_already > 3 ) {
+          console.log("FV PLayer: iOS video element needs a push, triggering 'stalled'");
+          video_tag.trigger( "stalled" );
+        }
+        return;
+      }
       
       console.log("FV PLayer: iOS video element will trigger error after 'stalled' arrives");
       
       // then it also triggers this event if it really fails to load more
       video_tag.one( "stalled", function() {
         var time = api.video.time;
-        
+
+        // simple video files can be checked directly
+        if( api.video.type.match(/video\//) ) {
+          console.log("FV PLayer: running Ajax check of video file...");
+          jQuery.ajax({
+            type: "HEAD",
+            url: api.video.src,
+            success: function(message, text, response){
+              are_waiting_already = 0;
+            },
+            error: function() {
+              // ensure the video did not start to play already
+              if( are_waiting_already > 0 ) {
+                // then we can tell Flowplayer there is an error
+                api.trigger('error', [api, { code: 4, video: api.video }]);
+              }
+            }
+          });
+
+          return;
+        }
+          
+        // for HLS streams - 
         // give it a bit more time to really play
         setTimeout( function() {
           console.log(api.video.time,time);

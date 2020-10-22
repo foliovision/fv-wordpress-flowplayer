@@ -22,8 +22,10 @@ flowplayer(function(api, root) {
     root.toggleClass('is-tiny', width < 400);
     root.toggleClass('is-small', width < 600 && width >= 400 );
     
+    // if .fp-full was not in initially we may need to remove it
     if( !had_fp_full ) {
-      root.toggleClass('fp-full', width < 480 + buttons_count*35 );
+      // unless the player is using AB loop or it's just too narrow
+      root.toggleClass('fp-full', root.hasClass('has-abloop') || width < 480 + buttons_count*35 );
     }
     
     var size = '';
