@@ -1010,6 +1010,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sItemCaption ) {
         $aPlayer['fv_title'] = $sItemCaption;
       }
+
+      if( $splash_img ) {
+        $aPlayer['splash'] = $splash_img;
+      }
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -1088,7 +1092,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           if( $sItemCaption ) {
             $aPlayer['fv_title'] = $sItemCaption;
-          }          
+          }
+          
+          if( $sSplashImage ) {
+            $aPlayer['splash'] = $sSplashImage;
+          }
           
           $aPlaylistItems[] = $aPlayer;
           
