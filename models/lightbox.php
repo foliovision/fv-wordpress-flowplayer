@@ -490,19 +490,19 @@ class FV_Player_lightbox {
     <script>
       jQuery(document).ready(function(){
         var lightbox_images = jQuery('#lightbox_images');
-        if(lightbox_images.attr('checked')){
+        if(lightbox_images.prop('checked')){
             jQuery('#lightbox-wp-galleries').show();
           }else{
             jQuery('#lightbox-wp-galleries').hide();
           }
         lightbox_images.on('click',function(){
-          if(jQuery(this).attr('checked')){
+          if(jQuery(this).prop('checked')){
             jQuery('#lightbox-wp-galleries').show();
           }else{
             jQuery('#lightbox-wp-galleries').hide();
           }
         })
-      })   
+      })
     </script>
     <?php
   }
