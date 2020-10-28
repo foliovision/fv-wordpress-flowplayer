@@ -58,6 +58,10 @@ flowplayer(function(player, root) {
   };
 
   player.on('fullscreen-exit', function() {
-    win.scrollTo(scrollX, scrollY);
+    // core Flowplayer already does the scroll, so here's where we revert that
+    jQuery(window).one('scroll', function() {
+      window.scrollTo(scrollX, scrollY);
+    });
+    win.scrollTo(scrollX, scrollY);    
   });
 });
