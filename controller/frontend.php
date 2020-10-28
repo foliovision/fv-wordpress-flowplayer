@@ -339,28 +339,30 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
+    // Load base Flowplayer library
+    $path = '/flowplayer/modules/flowplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
+      $path = '/flowplayer/modules/flowplayer.js';
+    }
+    
+    $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_ver;
+    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, $version, true );
+    $aDependencies[] = 'flowplayer';
+    
+    // Load modules
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      $path = '/flowplayer/modules/flowplayer.min.js';
-      if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
-        $path = '/flowplayer/modules/flowplayer.js';
-      }
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
-      $aDependencies[] = 'flowplayer';
-      
       $path = '/flowplayer/modules/fv-player.js';
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
       
-      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
-        if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
-        if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
-        
+      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.module.js') as $filename ) {
         $path = '/flowplayer/modules/'.basename($filename);
         wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
       
     } else {
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/fv-player.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       
     }
 
@@ -640,4 +642,47 @@ function fv_player_footer_svg_rewind() {
   </g>
 </svg>
   <?php
+}
+
+add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
+
+/*
+ * Alers all the script tags related to FV Player, with excetption of the base FV Player library.
+ * The reason is that it's a dependency of most of the modules so then each module would have to be 
+ * adjusted to be able to load without it.
+ * 
+ * @param string $tag The original script tag.
+ * @param string $handle The WordPress script handle
+ * 
+ * @global object $fv_fp The FV Player plugin instance
+ * 
+ * @return string The adjusted script tag
+ */
+function fv_player_js_loader_mark_scripts( $tag, $handle ) {
+  global $fv_fp;
+  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') ) {
+    return $tag;
+  }
+
+  if(
+    stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library
+    stripos($handle,'fv-player') === 0 ||
+    stripos($handle,'fv_player') === 0 
+  ) {
+    $tag = str_replace( ' src=', ' data-fv-player-loader-src=', $tag );
+    add_action( 'wp_print_footer_scripts', 'fv_player_js_loader_load', PHP_INT_MAX );
+  }
+  return $tag;
+}
+
+/*
+ * Outpput FV Player JS Loader into footer, hooked in in fv_player_js_loader_mark_scripts()
+ */
+function fv_player_js_loader_load() {
+  require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+  require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+  $filesystem = new WP_Filesystem_Direct( new StdClass() );
+  
+  // TODO: Min.js
+  echo '<script>'.$filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.dev.js' ).'</script>';
 }
