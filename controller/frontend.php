@@ -60,8 +60,7 @@ function fv_flowplayer_get_js_translations() {
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
   'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv-wordpress-flowplayer'),
   'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv-wordpress-flowplayer'),
-  'mobile_browser_detected_2' => __('Click here','fv-wordpress-flowplayer'),
-  'mobile_browser_detected_3' => __('for full quality.','fv-wordpress-flowplayer'),
+  'mobile_browser_detected_2' => __('Click here for full quality','fv-wordpress-flowplayer'),
   'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv-wordpress-flowplayer'),
@@ -79,6 +78,9 @@ function fv_flowplayer_get_js_translations() {
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
+  'live_stream_starting'=>__('<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>', 'fv-wordpress-flowplayer'),
+  'live_stream_retry'=>__( '<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
+  'live_stream_continue'=>__( '<h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
@@ -89,6 +91,19 @@ function fv_flowplayer_get_js_translations() {
   'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
+  'quality' => __('Quality','fv-wordpress-flowplayer'),
+  'closed_captions' => __('Closed Captions', 'fv-wordpress-flowplayer'),
+  'no_subtitles' => __('No subtitles', 'fv-wordpress-flowplayer'),
+  'speed' => __('Speed', 'fv-wordpress-flowplayer'),
+  'duration_1_day' => __( "%s day" ),
+  'duration_n_days' => _n( '%s day', '%s days', 5 ),
+  'duration_1_hour' => __( "%s hour" ),
+  'duration_n_hours' => _n( '%s hour', '%s hours', 5 ),
+  'duration_1_minute' => __( "%s min" ),
+  'duration_n_minutes' => _n( '%s min', '%s mins', 5 ),
+  'duration_1_second' => __( "%s second" ),
+  'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' )
 );
   
   return $aStrings;
@@ -471,18 +486,7 @@ function flowplayer_prepare_scripts() {
     
   }
   
-  global $FV_Player_lightbox;
-  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('lightbox_force') ) ) {
-    $aConf = array();
-    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
-    
-    if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
-
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
-    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
-    
-  }
-  
+  FV_Player_lightbox()->maybe_load();
 }
 
 /**

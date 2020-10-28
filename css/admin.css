@@ -109,7 +109,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   display:block;
 }
 
-.fv-metabox-holder .postbox:first-child > .hndle, .fv-metabox-holder .postbox:first-child > .handlediv {
+.fv-metabox-holder .postbox:first-child > .hndle, .fv-metabox-holder .postbox:first-child > .handlediv, .fv-metabox-holder .postbox:first-child > .postbox-header {
   display:none;
 }
 
@@ -152,6 +152,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 
 /* otherwise "Drag boxes here" appears when you hide a meta box initially and then you show it with JS */
 .metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }
+/* Disable WordPress 5.5 button to change box order */
+#wpfp_options .handle-order-higher, #wpfp_options .handle-order-lower { display: none }
+/* Disable box dragging */
+#wpfp_options .ui-sortable-handle { cursor: default; pointer-events: none; }
 
 #fv-player-system-info-textarea { font-family: monospace; width: 100%; }
 

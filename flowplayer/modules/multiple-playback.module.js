@@ -16,9 +16,8 @@ flowplayer( function(api,root) {
   });
 
   // on iOS only one audible video can play at a time, so we must mute the other players
-  api.on('load', function() {
-    var i = 0,
-      is_muted = root.data('volume') == 0;
+  api.on('ready', function() {
+    var is_muted = root.data('volume') == 0;
     
     // we go through all the players to paused or mute them all
     jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
@@ -29,13 +28,20 @@ flowplayer( function(api,root) {
       var current_instance_id = root.data('flowplayer-instance-id');
       if( current_instance_id == flowplayer.audible_instance ) return;      
 
-      if( player && player.playing ) {
-        // it multiple video playback is enabled we go through all the players to mute them all
-        // if this video is not muted
-        if( api.conf.multiple_playback && !is_muted ) {
-          player.mute(true,rue);
+      if( player ) {
+        if( player.playing ) {
+          // it multiple video playback is enabled we go through all the players to mute them all
+          // if this video is not muted
+          if( api.conf.multiple_playback && !is_muted ) {
+            player.mute(true,rue);
+          } else {
+            player.pause();
+          }
         } else {
-          player.pause();
+          player.clearLiveStreamCountdown(); // if not playing stop countdown and unload if other video plays
+
+          // TODO: Check for YouTube and Vimeo
+          player.unload();
         }
       }
     });

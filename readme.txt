@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.4
+Tested up to: 5.5
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,46 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.4.35.727 - 2020/10/22 =
+
+* Audio - splash screen now stays up for the full duration of audio files
+* Compatiblity - Fullscreen appearance fix for Google Pixel 4
+* HLS - live stream check - countdown translation fixes
+* iOS video recovery - improved for expired MP4 file links
+* Playlist - show item splash when manually switching items
+* Translations - quality menu, speed menu and subtitles menu label
+* Bugfix - Compatiblity - Elementor editor CSS conflict fix
+* Bugfix - Editor - fix for picking of timeline previews in FV Player Pro
+* Bugfix - FV Player wp-admin screen - screen options per page setting fix
+* Bugfix - Video durations are now respecting FV Player Pro's custom start/end time
+* Bugfix - Video Position Saving - improvements to work with FV Player Pro's custom start/end time
+
+= 7.4.34.727 - 2020/09/23 =
+
+* FV Player wp-admin Screen - search fixes and improvements - you can multiple words or quotes
+* HLS - live stream check - improving display and behavior when multiple video playbacks is enabled
+* Compatibility - AWS - library update
+* Compatibility - jQuery migrate fixes
+* Compatibility - Elementor fixes
+
+= 7.4.33.727 - 2020/08/24 =
+
+* Bugfix - Autoplay - hide initial play arrow animation when autoplaying a video did also hide the loading progress indicator
+* DASH.js library downgrade to 3.0.0 as some videos wouldn't play on macOS 10.5.6 with Safari 13.1.2
+
+= 7.4.32.727 - 2020/08/14 =
+
+* Bugfix - Editor - WordPress 5.5 fix for dropdown settings (HTML select tag)
+
+= 7.4.31.727 - 2020/08/12 =
+
+* Autoplay - hide initial play arrow animation when autoplaying a video
+* DASH.js library update to 3.1.2
+* Keyboard controls - disabled  when controlbar hidden
+* Loop fix for FV Player Pro YouTube engine
+* Video Position Saving - remember if logged in user saw the video already
+* WordPress 5.5 fixes
 
 = 7.4.24.727 - 2020/06/09 =
 

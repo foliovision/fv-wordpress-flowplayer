@@ -97,7 +97,7 @@ function fv_player_videos_parse(args, root) {
         fv_fp_mobile = true;
       }
       if( fv_fp_mobile ) {
-        jQuery(root).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a> '+fv_flowplayer_translations.mobile_browser_detected_3+'</p>');
+        jQuery(root).after('<p class="fv-flowplayer-mobile-switch">'+fv_flowplayer_translations.mobile_browser_detected_1+' <a href="'+document.URL+'?fv_flowplayer_mobile=no">'+fv_flowplayer_translations.mobile_browser_detected_2+'</a>.</p>');
       }
     });
   }
@@ -130,6 +130,18 @@ jQuery(document).ready( function() {
   }, 10 );
 });
 
+function fv_escape_attr(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 function fv_player_preload() {
  
   if( flowplayer.support.touch ) {
@@ -138,7 +150,9 @@ function fv_player_preload() {
 
   flowplayer( function(api,root) {
     root = jQuery(root);
-    
+    var fp_player = root.find('.fp-player');
+    var splash_click = false;
+
     if( root.hasClass('fixed-controls') ) {
       root.find('.fp-controls').click( function(e) {
         if( !api.loading && !api.ready ) {
@@ -182,12 +196,16 @@ function fv_player_preload() {
     jQuery('a',playlist).click( function(e) {
       e.preventDefault();
 
+      splash_click = true;
+
       var
         $this = jQuery(this),
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
         index = jQuery('a',playlist).index(this);
-        $prev = $this.prev('a');
+        $prev = $this.prev('a'),
+        item = $this.data('item');
       
+      // Open editing for the playlist item which was clicked
       // TODO: There should be a better way of sending a signal to the editor!
       if( location.href.match(/wp-admin/) && $this.parents('.fv-player-editor-preview').length > 0 ) {
         fv_flowplayer_conf.current_video_to_edit = index;
@@ -206,7 +224,7 @@ function fv_player_preload() {
       
       fv_player_playlist_active(playlist,this);
       
-      if( api ){
+      if( api ) {
         if( api.error ) {
           api.pause();
           api.error = api.loading = false;
@@ -217,11 +235,13 @@ function fv_player_preload() {
         if( !api.video || api.video.index == index ) return;
         api.play( index );
       }
-      
-      var new_splash = $this.find('img').attr('src');
-      if( new_splash ) {
-        root.find('img.fp-splash').attr('src', new_splash );
+
+      var new_splash = item.splash;
+      if( !new_splash ) {
+        new_splash = $this.find('img').attr('src');
       }
+      
+      player_splash(root, fp_player, item, new_splash);
 
       var rect = root[0].getBoundingClientRect();
       if((rect.bottom - 100) < 0){
@@ -234,38 +254,76 @@ function fv_player_preload() {
     var playlist_external = jQuery('[rel='+root.attr('id')+']');
     var playlist_progress = false;
 
-    var splash_img, splash_text;
+    var splash_img = root.find('.fp-splash');
+    var splash_text = root.find('.fv-fp-splash-text');
+
+    function player_splash(root, fp_player, item, new_splash) {
+      var splash_img = root.find('img.fp-splash');
+    
+      // do we have splash to show?
+      if( new_splash ) {
+        // if the splash element missing? Create it!
+        if( splash_img.length == 0 ) {
+          splash_img = jQuery('<img class="fp-splash" />');
+          fp_player.prepend(splash_img)
+        }
+    
+        splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
+        splash_img.attr('src', new_splash );
+    
+      // remove the splash image if there is nothing present for the item
+      } else if( splash_img.length ) {
+        splash_img.remove(); 
+      }
+    }
+
+    api.bind("load", function (e,api,video) {
+      if( video.type.match(/^audio/) && !splash_click ) {
+        var anchor = playlist_external.find('a').eq(video.index);
+        var item = anchor.data('item');
+        var new_splash = item.splash;
+        if( !new_splash ) { // parse the splash from HTML if not found in playlist item
+          new_splash = anchor.find('img').attr('src');
+        }
+        player_splash(root, fp_player, item, new_splash);
+      }
+      splash_click = false;
+    });
 
     api.bind('ready', function(e,api,video) {
       //console.log('playlist mark',video.index);
       setTimeout( function() {
-        if( video.index > -1 ) {          
+        if( video.index > -1 ) {
           if( playlist_external.length > 0 ) {
             var playlist_item = jQuery('a',playlist_external).eq(video.index);
             fv_player_playlist_active(playlist_external,playlist_item);
             playlist_progress = playlist_item.find('.fvp-progress');
           }
         }
-      }, 250 );
+      }, 100 );
 
-      splash_img = root.find('.fp-splash').remove(); 
-      splash_text = root.find('.fv-fp-splash-text').remove();
+      splash_img = root.find('.fp-splash'); // must update, alt attr can change
+
+      // Show splash img if audio
+      if( !api.video.type.match(/^audio/) ) {
+        splash_img.remove();
+        splash_text.remove();
+      }
     } );
 
     api.bind( 'unload', function() {
       jQuery('.fp-playlist-external .now-playing').remove();
       jQuery('.fp-playlist-external a').removeClass('is-active');
 
-      root.find('.fp-player').prepend(splash_text);
-      root.find('.fp-player').prepend(splash_img);
+      fp_player.prepend(splash_text);
+      fp_player.prepend(splash_img);
 
       playlist_progress = false;
     });
     
-    api.bind( 'progress', function() {
-      if( playlist_progress && api.video.duration ) {
-        var progress = 100*api.video.time/api.video.duration;
-        playlist_progress.css('width',progress+'%');
+    api.bind( 'progress', function( e, api, time ) {
+      if( playlist_progress.length ) {
+        api.playlist_thumbnail_progress( playlist_progress, api.video, time );
       }
     });
     
@@ -565,7 +623,7 @@ function fv_autoplay_init(root, index ,time){
   }
   if(root.hasClass('lightboxed')){
     setTimeout(function(){
-      jQuery('[href=#' + root.attr('id')+ ']').click();
+      jQuery('[href=\\#' + root.attr('id')+ ']').click();
     },0);
   }
 
@@ -648,6 +706,8 @@ function fv_autoplay_exec(){
 
       // first play if id is set
       for( var item in playlist ) {
+        if( !playlist.hasOwnProperty(item) ) continue;
+
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
         if( hash === id && autoplay ){
           console.log('fv_autoplay_exec for '+id,item);
@@ -658,6 +718,8 @@ function fv_autoplay_exec(){
       }
 
       for( var item in playlist ) {
+        if( !playlist.hasOwnProperty(item) ) continue;
+
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
         if( hash === src  && autoplay ){
           console.log('fv_autoplay_exec for '+src,item);
@@ -678,10 +740,16 @@ function fv_autoplay_exec(){
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
           api.load();
-          root.find('.fp-ui').attr("style", "visibility: hidden"); // hide ui when autoplay is enabled
-          api.one('progress', function(){
-            root.find('.fp-ui').removeAttr("style"); // show on progress
+
+          // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
+          var play_icon = root.find('.fp-play').addClass('invisible'),
+            control_bar = root.find('.fp-controls').addClass('invisible');
+            
+          api.one('progress', function() {
+            play_icon.removeClass('invisible');
+            control_bar.removeClass('invisible');
           });
+
           if(root.data('fvautoplay') == 'muted') {
             api.mute(true,true);
           }

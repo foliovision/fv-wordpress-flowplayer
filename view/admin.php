@@ -1467,12 +1467,12 @@ function fv_flowplayer_admin_skin_subtitles() {
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
-                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr($subtitleBgColor); ?>"
-                 data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
     <tr>    		
       <td colspan="2">
@@ -1985,7 +1985,7 @@ jQuery(document).ready(function(){
   }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -1995,7 +1995,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -2004,7 +2004,7 @@ jQuery('#normal-sortables .button-primary').on('click',function(e){
   if ('fv-wp-flowplayer-submit' == this.name) {
     // store windows scroll position, so we can return to the same spot after reload
     if (localStorage) {
-      localStorage["fv_posStorage"] = $(window).scrollTop();
+      localStorage["fv_posStorage"] = jQuery(window).scrollTop();
     }
   }
 
@@ -2029,7 +2029,7 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
     var el = jQuery(id);
     if(el.length){
       var tab = el.parents('.postbox-container').attr('id');
-      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=\\#'+tab+']').click()
     }
   }
 });

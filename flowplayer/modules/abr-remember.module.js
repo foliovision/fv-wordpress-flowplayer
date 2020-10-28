@@ -90,6 +90,8 @@ console.log('api.conf.hd_streaming ',api.conf.hd_streaming );
   var bitrates = [];
   var last_quality = -1;
   api.bind('ready', function(e,api) {
+    root.find('.fp-qsel-menu strong').text(fv_flowplayer_translations.quality); // translate Quality
+
     if(api.engine.engineName == 'dash' ) {      
       bitrates = api.engine.dash.getBitrateInfoListFor('video');
       if( localStorage.FVPlayerDashQuality && api.conf.dash.initialVideoQuality ) { // Dash.js gives us initialVideoQuality

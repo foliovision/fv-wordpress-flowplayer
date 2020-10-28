@@ -30,10 +30,12 @@ class FV_Player_List_Table_View {
     add_action( 'admin_menu', array($this, 'admin_menu') );
     add_action( 'admin_head', array($this, 'styling') );
     add_filter( 'set-screen-option', array($this, 'set_screen_option'), 10, 3);
+    add_filter( 'set_screen_option_fv_player_per_page', array($this, 'set_screen_option'), 10, 3);
   }
   
   function set_screen_option($status, $option, $value) {
     if( 'fv_player_per_page' == $option ) return $value;
+    return $status;
   }
   
   function screen_columns() {
@@ -300,7 +302,7 @@ class FV_Player_List_Table extends WP_List_Table {
     $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'p.id';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
-    $search = !empty($_GET['s']) ? esc_sql($_GET['s']) : null;
+    $search = !empty($_GET['s']) ? $_GET['s'] : null;
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;

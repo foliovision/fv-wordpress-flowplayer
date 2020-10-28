@@ -58,7 +58,6 @@
 #fv-player-list-thumb-toggle a{ text-decoration:none;margin-left:6px;color:#b4b9be; }
 #fv-player-list-thumb-toggle a.active{ color:#0073aa; }
 #fv-player-list-thumb-toggle a.disabled{ cursor:default; }
-.fv-player-playlist-item-title, .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
 
 /*Playlist view*/
 .is-playlist .fv-player-playlist-item-title{ display:block; }
@@ -253,11 +252,14 @@ a #add-format, a #add-rtmp {
 	text-decoration: none;
 	white-space: nowrap;
 }
+#fv-player-shortcode-editor .nav-tab-active {
+	background: #fff;
+	border-bottom: 1px solid #fff;
+}
 #fv-player-shortcode-editor .nav-tab-wrapper {
 	border-bottom: 1px solid #ccc;
 	margin: 0;
-	padding-top: 9px;
-	padding-bottom: 0;
+	padding: 0;
 	line-height: inherit;
 }
 #fv-player-shortcode-editor .nav-tab-wrapper:not(.wp-clearfix):after {
@@ -275,8 +277,8 @@ a #add-format, a #add-rtmp {
 #fv-player-shortcode-editor select,
 #fv-player-shortcode-editor textarea {
 	box-shadow: 0 0 0 transparent;
-	border-radius: 4px;
-	border: 1px solid #7e8993;
+	border-radius: 0;
+	border: 1px solid #ddd;
 	background-color: #fff;
 	color: #32373c;
 }
@@ -288,3 +290,5 @@ a #add-format, a #add-rtmp {
 	/* Only necessary for IE11 */
 	min-height: 30px;
 }
+
+#fv-player-shortcode-editor .fv-player-playlist-item-title, #fv-player-shortcode-editor .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }

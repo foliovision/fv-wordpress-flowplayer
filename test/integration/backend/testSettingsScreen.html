@@ -1412,12 +1412,12 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     <tr>
       <td><label for="subtitleSize">Font Size</label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="16"
-                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor">Background Color</label></td>
       <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="rgba(0,0,0,0.5)"
-            data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
+            data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
     <tr>    		
       <td colspan="2">
@@ -2463,9 +2463,9 @@ jQuery( function($) {
 $('#fv-player-vi-remove').click( function() {
   $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
     $('#fv-player-vi-give-back').prop('checked',false);
-    $('[href=#postbox-container-tab_video_intelligence]').hide();
+    $('[href=\\#postbox-container-tab_video_intelligence]').hide();
     $('#fv_flowplayer_video_intelligence').hide();
-    $('[href=#postbox-container-tab_video_ads]').click();
+    $('[href=\\#postbox-container-tab_video_ads]').click();
     $('#fv_flowplayer_video_intelligence_revival').show();
   });
   
@@ -2641,7 +2641,7 @@ jQuery(document).ready(function(){
   }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -2650,7 +2650,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });  
@@ -2684,7 +2684,7 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
     var el = jQuery(id);
     if(el.length){
       var tab = el.parents('.postbox-container').attr('id');
-      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=\\#'+tab+']').click()
     }
   }
 });

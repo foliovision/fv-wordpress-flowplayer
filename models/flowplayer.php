@@ -370,7 +370,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
@@ -735,7 +735,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     fv_wp_flowplayer_delete_extensions_transients();
     
-    if( $aOldOptions['key'] != $sKey ) {      
+    if( empty($aOldOptions['key']) || $aOldOptions['key'] != $sKey ) {      
       global $FV_Player_Pro_loader;
       if( isset($FV_Player_Pro_loader) ) {
         $FV_Player_Pro_loader->license_key = $sKey;
@@ -831,23 +831,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
-    $tDuration = false;    
-    if ($this->current_video()) {
-      $tDuration = $this->current_video()->getDuration();
-    }
-    
-    if( !empty($aArgs['durations']) ) {
-      $aDurations = explode( ';', $aArgs['durations'] );
-      if( !empty($aDurations[$index]) ) {
-        $tDuration = $aDurations[$index];
+    $tDuration = false;
+    if( isset($aPlayer['fv_start']) && isset($aPlayer['fv_end']) ) { // change duration if using custom startend
+      $tDuration = $aPlayer['fv_end'] - $aPlayer['fv_start'];
+    } else {
+      if ($this->current_video()) {
+        $tDuration = $this->current_video()->getDuration();
       }
+      
+      if( !empty($aArgs['durations']) ) {
+        $aDurations = explode( ';', $aArgs['durations'] );
+        if( !empty($aDurations[$index]) ) {
+          $tDuration = $aDurations[$index];
+        }
+      }
+      
+      global $post;
+      if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
+        $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
+      }
+
+      if( isset($aPlayer['fv_start']) && !empty($tDuration) ) { // custom start only
+        $tDuration = flowplayer::hms_to_seconds( $tDuration ) -  $aPlayer['fv_start'];
+      }
+
+      if( isset($aPlayer['fv_end']) ) { // custom end only
+        $tDuration = $aPlayer['fv_end'];
+      }
+
     }
-    
-    global $post;
-    if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
-      $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
-    }
-    
+
     if( $sListStyle != 'text' ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
@@ -861,8 +874,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
       }
       
-      if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
-        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></span></span>';
+      if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
+        $tDuration = flowplayer::hms_to_seconds( $tDuration );
+        $tPosition = $aItem['position'];
+        if( $tPosition > 0 && !empty($aPlayer['fv_start']) ) {
+          $tPosition -= $aPlayer['fv_start'];
+          if( $tPosition < 0 ) {
+            $tPosition = 0;
+          }
+        }
+
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * ( $tPosition ? $tPosition / $tDuration : 0) ).'%" data-duration="'.esc_attr($tDuration).'"></
+        span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
@@ -994,6 +1017,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sItemCaption ) {
         $aPlayer['fv_title'] = $sItemCaption;
       }
+
+      if( $splash_img ) {
+        $aPlayer['splash'] = $splash_img;
+      }
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -1072,7 +1099,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           if( $sItemCaption ) {
             $aPlayer['fv_title'] = $sItemCaption;
-          }          
+          }
+          
+          if( $sSplashImage ) {
+            $aPlayer['splash'] = $sSplashImage;
+          }
           
           $aPlaylistItems[] = $aPlayer;
           
@@ -1214,8 +1245,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
 
-    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
-    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
@@ -1229,7 +1260,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
+    .flowplayer .fp-player .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
   
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
@@ -1535,6 +1566,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
   
+  public static function hms_to_seconds( $tDuration ) {
+    if ( preg_match('/([\d]{1,2}\:)?[\d]{1,2}\:[\d]{2}/', $tDuration) ) {
+      $tDuration = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $tDuration);
+      sscanf($tDuration, "%d:%d:%d", $hours, $minutes, $seconds);
+      $tDuration = $hours * 3600 + $minutes * 60 + $seconds;
+    }
+    return $tDuration;
+  }
+
   public static function format_hms( $seconds ) {
     if( !is_numeric($seconds) ) return $seconds;
     
@@ -1855,7 +1895,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $output = 'application/'.$output;
           break;
         case 'mp3' :
-        case 'ogv' :
+        case 'ogg' :
         case 'wav' :
           $output = 'audio/'.$output;
           break;   

@@ -25,5 +25,4 @@ flowplayer(function(api, root) {
       }
     })
   }
-
 })
