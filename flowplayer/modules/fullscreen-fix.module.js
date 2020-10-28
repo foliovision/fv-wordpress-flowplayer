@@ -2,6 +2,10 @@
  * Improve the fullscreen calling to make sure the video covers the full visible viewport of Google Pixel 4 or iPhone Pro which have a special viewport shape
  */
 flowplayer(function(player, root) {
+  // if the fullscreen is not supported do not alter the Flowplayer behavior in any way
+  if (!support.fullscreen && player.conf.native_fullscreen && typeof common.createElement('video').webkitEnterFullScreen === 'function') {
+    return;
+  }
 
   //  copy of original Flowplayer variable declarations
   var FS_ENTER = "fullscreen",
