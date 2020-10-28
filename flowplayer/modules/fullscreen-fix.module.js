@@ -3,7 +3,7 @@
  */
 flowplayer(function(player, root) {
   // if the fullscreen is not supported do not alter the Flowplayer behavior in any way
-  if (!support.fullscreen && player.conf.native_fullscreen && typeof common.createElement('video').webkitEnterFullScreen === 'function') {
+  if (!flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof common.createElement('video').webkitEnterFullScreen === 'function') {
     return;
   }
 
