@@ -1186,7 +1186,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {
-        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background { background-color: ".$sBuffer." !important; }\n";
+        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
       }
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
