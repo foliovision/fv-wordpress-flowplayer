@@ -18,16 +18,38 @@ class FV_Player_List_Table_View {
     global $wpdb;
     if( current_user_can('edit_posts')  ) {
       add_menu_page( 'FV Player', 'FV Player', 'edit_posts', 'fv_player', '', flowplayer::get_plugin_url().'/images/icon@x2.png', 30 );
-      $this->list_page = add_submenu_page(  'fv_player', 'FV Player', 'FV Player', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
+      $this->list_page = add_submenu_page(  'fv_player', 'FV Player', 'Videos/Playlists', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
       
       add_action( 'load-'.$this->list_page, array( $this, 'screen_options' ) );
       add_filter( 'manage_toplevel_page_fv_player_columns', array( $this, 'screen_columns' ) );
       add_filter( 'hidden_columns', array( $this, 'screen_columns_hidden' ), 10, 3 );
     }
   }
+
+  function settings_link() {
+    add_submenu_page(  'fv_player', 'Settings Link', 'Settings', 'manage_options', 'fvplayer', 'fv_player_admin_page' );
+  }
+
+  function settings_link_fix_start() {
+    ob_start();
+  }
+
+  function settings_link_fix_end() {
+    $html = ob_get_clean();
+    $html = str_replace( 'admin.php?page=fvplayer', 'options-general.php?page=fvplayer', $html );
+    echo $html;
+  }
   
   function load_options() {
     add_action( 'admin_menu', array($this, 'admin_menu') );
+
+    // this adds a admin.php?page=fvplayer link to the menu
+    add_action( 'admin_menu', array($this, 'settings_link'), 12 );
+    // so we use output buffer to trap the menu output
+    add_action( 'admin_head', array($this, 'settings_link_fix_start'), PHP_INT_MAX );
+    // and then fix the link
+    add_action( 'adminmenu', array($this, 'settings_link_fix_end') );
+
     add_action( 'admin_head', array($this, 'styling') );
     add_filter( 'set-screen-option', array($this, 'set_screen_option'), 10, 3);
     add_filter( 'set_screen_option_fv_player_per_page', array($this, 'set_screen_option'), 10, 3);
