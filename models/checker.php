@@ -504,7 +504,7 @@ class FV_Player_Checker {
   
   
   public static function queue_get() {
-    return get_option( 'fv_flowplayer_checker_queue' );
+    return get_option( 'fv_flowplayer_checker_queue', array() );
   }
   
   

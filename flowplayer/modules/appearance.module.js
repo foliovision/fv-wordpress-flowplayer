@@ -7,6 +7,7 @@ flowplayer(function(api, root) {
     had_no_volume = root.hasClass('no-volume'),
     had_fp_mute = root.hasClass('fp-mute'),
     had_fp_full = root.hasClass('fp-full'),
+    had_fp_slim = root.hasClass('fp-slim'),
     timeline = root.find('.fp-timeline'),
     buttons_count = 0;
 
@@ -21,9 +22,16 @@ flowplayer(function(api, root) {
     // core Flowplayer classes which are normally added in requestAnimationFrame, which increases CPU load too much
     root.toggleClass('is-tiny', width < 400);
     root.toggleClass('is-small', width < 600 && width >= 400 );
-    
-    if( !had_fp_full ) {
-      root.toggleClass('fp-full', width < 480 + buttons_count*35 );
+
+    // if the player is too narrow we put the timeline on top of the control bar
+    var too_narrow = width < 480 + buttons_count*35;
+    // we do so by adding .fp-full if it was not there, it needs to stay on for AB loop bar too!
+    if( !had_fp_full ) {      
+      root.toggleClass('fp-full', root.hasClass('has-abloop') || too_narrow );
+    }
+    // ...and by removing .fp-slim if it was there, it needs to stay on for AB loop bar too!
+    if( had_fp_slim ) {
+      root.toggleClass('fp-slim', !too_narrow || root.hasClass('has-abloop') );
     }
     
     var size = '';

@@ -195,7 +195,23 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	global $fv_wp_flowplayer_ver;
 	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
-	}
+  }
+
+  // when using Google PageSpeed module
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
+    return 1;
+  }
+
+  // when using SCRIPT_DEBUG
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=' ) !== false ) {
+		return 1;
+  }
+  
+  // when using SCRIPT_DEBUG with Google PageSpeed module
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js,qver=' ) !== false ) {
+    return 1;
+  }
+
 	return 0;
 }
 
@@ -497,7 +513,6 @@ function fv_wp_flowplayer_admin_key_update() {
 	if( isset($data->domain) ) {  //  todo: test
 		if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
 			$fv_fp->conf['key'] = $data->key;
-            $fv_fp->conf['key7'] = $data->key7;
 			update_option( 'fvwpflowplayer', $fv_fp->conf );
 			update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
       

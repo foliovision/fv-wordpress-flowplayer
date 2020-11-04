@@ -60,8 +60,7 @@ function fv_flowplayer_get_js_translations() {
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
   'unsupported_format' => __('<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>','fv-wordpress-flowplayer'),
   'mobile_browser_detected_1' => __('Mobile browser detected, serving low bandwidth video.','fv-wordpress-flowplayer'),
-  'mobile_browser_detected_2' => __('Click here','fv-wordpress-flowplayer'),
-  'mobile_browser_detected_3' => __('for full quality.','fv-wordpress-flowplayer'),
+  'mobile_browser_detected_2' => __('Click here for full quality','fv-wordpress-flowplayer'),
   'live_stream_failed' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'live_stream_failed_2' => __('<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>','fv-wordpress-flowplayer'),
   'what_is_wrong' => __('Please tell us what is wrong :','fv-wordpress-flowplayer'),
@@ -71,9 +70,17 @@ function fv_flowplayer_get_js_translations() {
   'check_failed' =>__('Admin: Check failed.','fv-wordpress-flowplayer'),
   'playlist_current' =>__('Now Playing','fv-wordpress-flowplayer'),
   'playlist_item_no' =>__('Item %d.','fv-wordpress-flowplayer'),
+  'playlist_play_all' =>__('Play All','fv-wordpress-flowplayer'),
+  'playlist_play_all_button' =>__('All','fv-wordpress-flowplayer'),
+  'playlist_replay_all' =>__('Replay Playlist','fv-wordpress-flowplayer'),
+  'playlist_replay_video' =>__('Repeat Track','fv-wordpress-flowplayer'),
+  'playlist_shuffle' =>__('Shuffle Playlist','fv-wordpress-flowplayer'),  
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
+  'live_stream_starting'=>__('<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>', 'fv-wordpress-flowplayer'),
+  'live_stream_retry'=>__( '<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
+  'live_stream_continue'=>__( '<h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
@@ -84,6 +91,19 @@ function fv_flowplayer_get_js_translations() {
   'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
+  'quality' => __('Quality','fv-wordpress-flowplayer'),
+  'closed_captions' => __('Closed Captions', 'fv-wordpress-flowplayer'),
+  'no_subtitles' => __('No subtitles', 'fv-wordpress-flowplayer'),
+  'speed' => __('Speed', 'fv-wordpress-flowplayer'),
+  'duration_1_day' => __( "%s day" ),
+  'duration_n_days' => _n( '%s day', '%s days', 5 ),
+  'duration_1_hour' => __( "%s hour" ),
+  'duration_n_hours' => _n( '%s hour', '%s hours', 5 ),
+  'duration_1_minute' => __( "%s min" ),
+  'duration_n_minutes' => _n( '%s min', '%s mins', 5 ),
+  'duration_1_second' => __( "%s second" ),
+  'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' )
 );
   
   return $aStrings;
@@ -320,15 +340,23 @@ function flowplayer_prepare_scripts() {
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/modules/flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      $path = '/flowplayer/modules/flowplayer.min.js';
+      if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
+        $path = '/flowplayer/modules/flowplayer.js';
+      }
+      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'flowplayer';
-      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/modules/fv-player.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      
+      $path = '/flowplayer/modules/fv-player.js';
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
+      
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
         if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
         if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
         
-        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().'/flowplayer/modules/'.basename($filename), $aDependencies, $fv_wp_flowplayer_ver, true);
+        $path = '/flowplayer/modules/'.basename($filename);
+        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
       
     } else {
@@ -350,12 +378,12 @@ function flowplayer_prepare_scripts() {
     }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.1){
       $aConf['speeds'] = array( 0.25,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2 );
     }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.5){
-      $aConf['speeds'] = array( 0.25,0.5,1,1.5,2 );
+      $aConf['speeds'] = array( 0.5,1,1.5,2 );
     }
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
     
-    if( $sCommercialKey ) $aConf['key'] = $sCommercialKey;
+    if( $sCommercialKey ) $aConf['key'] = base64_encode($sCommercialKey);
     if( apply_filters( 'fv_flowplayer_safety_resize', true) && !$fv_fp->_get_option('fixed_size') ) {
       $aConf['safety_resize'] = true;
     }
@@ -395,7 +423,7 @@ function flowplayer_prepare_scripts() {
     if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.12.4';
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.11.0';
         
     if( $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
@@ -409,6 +437,14 @@ function flowplayer_prepare_scripts() {
 
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
+    }
+    
+    if( $fv_fp->_get_option('hd_streaming') ) {
+      $aConf['hd_streaming'] = true;
+    }
+
+    if( $fv_fp->_get_option('multiple_playback') ) {
+      $aConf['multiple_playback'] = true;
     }
 
     $aConf['hlsjs'] = array(
@@ -442,13 +478,6 @@ function flowplayer_prepare_scripts() {
     wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
     
-    if( count($fv_fp->aAds) > 0 ) { //  todo: move into player
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_ad', $fv_fp->aAds ); 
-    }
-    if( count($fv_fp->aPopups) > 0 ) {  //  todo: move into player
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_popup', $fv_fp->aPopups );
-    }    
-
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
@@ -457,18 +486,7 @@ function flowplayer_prepare_scripts() {
     
   }
   
-  global $FV_Player_lightbox;
-  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('lightbox_force') ) ) {
-    $aConf = array();
-    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
-    
-    if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
-
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
-    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
-    
-  }
-  
+  FV_Player_lightbox()->maybe_load();
 }
 
 /**

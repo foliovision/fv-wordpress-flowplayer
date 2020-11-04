@@ -11,18 +11,28 @@ jQuery(document).on('click','.vc_tta-tab a', function() {
   if( api ) api.pause();
 });
 
-/*
- *  Gravity Forms Partial Entries fix - the whole player is cloned if it's placed in the form, causing it to play again in the background
- */
 flowplayer(function(api, root) {
 
+  root = jQuery(root);
+
   api.bind('ready',function() {
+    /*
+    * Gravity Forms Partial Entries fix - the whole player is cloned
+    * if it's placed in the form causing it to play again in the background.
+    * Since the video is already playing by now we don't care about removing the attribute.
+    */
     setTimeout( function() {
       var video = jQuery('video',root);
       if( video.length > 0 ) {
         video.removeAttr('autoplay'); //  removing autoplay attribute fixes the issue
       }
     }, 100 ); //  by default the heartbeat JS event triggering this happens every 30 seconds, we just add a bit of delay to be sure
+
+    /*
+    * Avoiding Twenty Twenty video resize function
+    * https://core.trac.wordpress.org/ticket/49030
+    */
+    root.find('video.fp-engine').addClass('intrinsic-ignore');
   });
 
 });
@@ -116,7 +126,7 @@ if( isIE11 ) {
 /*
  *  IE < 9 - disabling responsiveness
  */
-if( jQuery.browser && jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9 ) {
+if( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(flowplayer.support.browser.version, 10) < 9 ) {
   jQuery('.flowplayer').each( function() {
     jQuery(this).css('width', jQuery(this).css('max-width'));
     jQuery(this).css('height', jQuery(this).css('max-height'));

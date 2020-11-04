@@ -123,6 +123,10 @@ function current_user_can( $capability ) {
   return false;
 }
 
+function did_action( $action ) {
+  return false;
+}
+
 function get_option() {
   return checkAndReturnRequestedValue();
 }
@@ -188,6 +192,11 @@ function wp_parse_args() {
 }
 
 function __($txt) {
+  // always return what was given for the translation function
+  return $txt;
+}
+
+function _n($txt) {
   // always return what was given for the translation function
   return $txt;
 }

@@ -158,7 +158,7 @@
         return;
       }
 
-    } ).error(function() { 
+    } ).fail(function() { 
       if( /MSIE 9/i.test(navigator.userAgent) ){
         jQuery('#wpfp_notice_'+hash).html('<p>'+fv_flowplayer_translations.no_support_IE9+'</p>');
       } else {

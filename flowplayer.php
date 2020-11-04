@@ -3,14 +3,14 @@
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.7.
-Version: 7.4.6.727
+Version: 7.4.36.727
 Author URI: http://foliovision.com/
 License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 /* FV Player - HTML5 video player with Flash fallback  
-	Copyright (C) 2018  Foliovision
+	Copyright (C) 2020  Foliovision
 		
 	This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.4.6.727.1';
-$fv_wp_flowplayer_core_ver = '7.2.7.1';
+$fv_wp_flowplayer_ver = '7.4.36.727.1';
+$fv_wp_flowplayer_core_ver = '7.2.7';
 
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -66,6 +66,9 @@ include_once(dirname( __FILE__ ) . '/models/db-video.php');
 include_once(dirname( __FILE__ ) . '/models/db-video-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db-player-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db.php');
+
+include_once(dirname( __FILE__ ).'/models/cdn.class.php');
+include_once(dirname( __FILE__ ).'/models/digitalocean-spaces.class.php');
 
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();
