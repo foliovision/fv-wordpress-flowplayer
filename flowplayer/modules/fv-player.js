@@ -278,6 +278,10 @@ function fv_player_preload() {
     }
 
     api.bind("load", function (e,api,video) {
+      if ( !api.conf.playlist.length ) { // no need to run if not in playlist
+        return;
+      }
+
       if( video.type.match(/^audio/) && !splash_click ) {
         var anchor = playlist_external.find('a').eq(video.index);
         var item = anchor.data('item');

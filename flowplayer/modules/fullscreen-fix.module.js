@@ -3,7 +3,7 @@
  */
 flowplayer(function(player, root) {
   // if the fullscreen is not supported do not alter the Flowplayer behavior in any way
-  if (!support.fullscreen && player.conf.native_fullscreen && typeof common.createElement('video').webkitEnterFullScreen === 'function') {
+  if (!flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function') {
     return;
   }
 
@@ -58,6 +58,15 @@ flowplayer(function(player, root) {
   };
 
   player.on('fullscreen-exit', function() {
-    win.scrollTo(scrollX, scrollY);
+    win.scrollTo(scrollX, scrollY);    
+
+    /*
+    * Core Flowplayer already does try to restore the scroll, but since it has no idea where
+    * the scroll position was here's where we fix it. This is required when using
+    * CSS scroll-behavior: smooth; in Chrome
+    */
+    jQuery(window).one('scroll', function() {
+      window.scrollTo(scrollX, scrollY);
+    });
   });
 });

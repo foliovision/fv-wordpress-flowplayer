@@ -357,6 +357,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.36.727 - 2020/10/28 =
+
+* Bugfix - typo in OGV video parsing resulting in bad video type
+* Bugfix - "Use native fullscreen on mobile" not working after last release
+
 = 7.4.35.727 - 2020/10/22 =
 
 * Audio - splash screen now stays up for the full duration of audio files
