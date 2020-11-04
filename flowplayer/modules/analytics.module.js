@@ -36,7 +36,7 @@ flowplayer( function(api,root) {
     }, 100 );
   });
 
-  api.bind("load unload", fv_track_heartbeat).bind("progress", function() {
+  api.bind("load unload", fv_track_seconds_played).bind("progress", function() {
 
     if (!api.seeking) {
        time += last ? (+new Date() - last) : 0;
@@ -55,14 +55,14 @@ flowplayer( function(api,root) {
   });
 
   api.bind('shutdown', function() {
-    bean.off(window, 'unload', fv_track_heartbeat);
+    bean.off(window, 'unload', fv_track_seconds_played);
   });
 
-  bean.on(window, 'unload', fv_track_heartbeat);
+  bean.on(window, 'unload', fv_track_seconds_played);
 
   var fv_ga_events = [ 'start', 'first quartile', 'second quartile', 'third quartile', 'complete' ];
 
-  function fv_track_heartbeat(e, api, video) {
+  function fv_track_seconds_played(e, api_not_needed, video) {
     video = video || api.video;
 
     if(e.type === 'load') {
@@ -120,7 +120,7 @@ function fv_player_track( ga_id, event, engineType, name, value){
 
   if( typeof(engineType) == "undefined" ) engineType = 'Unknown engine';
 
-  if( /fv_ga_debug/.test(window.location.href) ) console.log('FV GA: ' + event + ' - ' + engineType + " '" + name + "'");
+  if( /fv_ga_debug/.test(window.location.href) ) console.log('FV GA: ' + event + ' - ' + engineType + " '" + name + "'",value);
  // ga('linker:autoLink', ['destination.com']);
 
   if (typeof value === 'undefined') {
