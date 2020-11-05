@@ -33,7 +33,7 @@ flowplayer( function(api,root) {
           // it multiple video playback is enabled we go through all the players to mute them all
           // if this video is not muted
           if( api.conf.multiple_playback && !is_muted ) {
-            player.mute(true,rue);
+            player.mute(true,true);
           } else {
             player.pause();
           }
