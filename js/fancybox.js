@@ -145,12 +145,12 @@ function fv_lightbox_flowplayer_shutdown(e) {
     }
     if( e.type == 'afterShow' && jQuery(this).parents('.fancybox-slide--current').length ) return;
     if( api.ready ) {
-      api.unload();
+      api.pause();
     }
     if( api.loading  ) {
       api.one('ready',function(){
         if(api.engine.engineName === 'fvyoutube')
-          api.unload();
+          api.pause();
       })
     }
   } );
