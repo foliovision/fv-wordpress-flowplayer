@@ -93,6 +93,9 @@ flowplayer( function(api,root) {
       else if( data > dur/2 ) i = 2;
       else if( data > dur/4 ) i = 1;
     }
+    
+    // For live streams we can only track the start
+    if( api.live ) i = 0;
 
     if( root.data('fv_track_'+fv_ga_events[i]) ) return;
 
