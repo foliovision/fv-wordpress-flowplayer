@@ -766,8 +766,6 @@ class FV_Player_Db {
           'playlist' => $data['videos']
         )
       ) );
-    } else {
-      $fv_fp->currentPlayerObject = null;
     }
 
     return $atts;
