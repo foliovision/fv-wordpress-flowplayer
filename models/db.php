@@ -30,6 +30,7 @@ class FV_Player_Db {
 
   public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
+    add_filter('fv_flowplayer_args_pre', array($this, 'setPlayerAttsFromNumericSrc'), 5, 1);
     add_filter('fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
     add_action('wp_head', array($this, 'cache_players_and_videos' ));
     
@@ -525,14 +526,17 @@ class FV_Player_Db {
    * as opposed to getting them from the old full-text
    * shortcode format.
    *
-   * @param $id ID of the player to get attributes for.
-   *
    * @return array|mixed Returns an array with all player attributes in it.
    *                     If the player ID is not found, an empty array is returned.
    * @throws Exception When the underlying video object throws.
    */
-  public function getPlayerAttsFromDb($atts) {
-    
+  public function getPlayerAttsFromDb( $atts ) {
+    // bail out if we have a programatically-crafted shortcode
+    // that loads a player to show a custom user playlist on the front-end
+    if (isset( $atts['src'] ) && is_numeric( $atts['src'] ) && intval( $atts['src'] ) > 0 ) {
+      return $atts;
+    }
+
     global $fv_fp, $FV_Player_Db;
 
     $is_multi_playlist = false;
@@ -721,6 +725,49 @@ class FV_Player_Db {
       $cache = $FV_Player_Db->getPlayersCache();
       unset($cache[$player->getId()]);
       $FV_Player_Db->setPlayersCache($cache);
+    }
+
+    return $atts;
+  }
+
+  /**
+   * Creates a default player and fills its videos data
+   * from the database. Used for custom user front-end playlists.
+   *
+   * @param $atts Original player attributes coming from the execution point of this method's filter.
+   *
+   * @return array|mixed Returns an array with all player attributes in it.
+   *                     If the player ID is not found, an empty array is returned.
+   * @throws Exception When the underlying video object throws.
+   */
+  public function setPlayerAttsFromNumericSrc( $atts ) {
+
+    global $fv_fp, $FV_Player_Db;
+
+    if (isset( $atts['src'] ) && is_numeric( $atts['src'] ) && intval( $atts['src'] ) > 0 ) {
+      $player = new FV_Player_Db_Player( false, array(
+        'playlist' => ( !empty($atts['playlist']) ? $atts['playlist'] : $atts['src'] ),
+      ), $FV_Player_Db );
+
+      // fill-in videos data from the "playlist" shortcode parameter
+      $player->setVideos( str_replace( ';', ',', $atts['playlist'] ) );
+      $fv_fp->currentPlayerObject = $player;
+      $data = $player->getAllDataValues();
+
+      // preload all videos
+      $player->getVideos();
+
+      // add playlist / single video data
+      $atts = array_merge( $atts, $this->generateFullPlaylistCode(
+      // we need to prepare the same attributes array here
+      // as is ingested by generateFullPlaylistCode()
+      // when parsing the new playlist code on the front-end
+        array(
+          'playlist' => $data['videos']
+        )
+      ) );
+    } else {
+      $fv_fp->currentPlayerObject = null;
     }
 
     return $atts;
