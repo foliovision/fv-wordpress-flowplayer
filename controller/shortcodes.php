@@ -158,6 +158,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $arguments['post'] = get_the_ID();
   }
 
+  // accepts:
+  // 1) [fvplayer id="198"] - a DB-based shortcode in the form
+  // 2) [fvplayer src="198" playlist="198;199;200"] - a front-end user's playlist shortcode that is programatically passed to this method
   if( (!empty($arguments['id']) && intval($arguments['id']) > 0) || (!empty($arguments['src']) && is_numeric($arguments['src']) && intval($arguments['src']) > 0) ) {
     $new_player = $fv_fp->build_min_player(false, $arguments);
     if (!empty($new_player['script'])) {
