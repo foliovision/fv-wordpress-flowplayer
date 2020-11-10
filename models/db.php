@@ -730,8 +730,11 @@ class FV_Player_Db {
   }
 
   /**
-   * Creates a default player and fills its videos data
-   * from the database. Used for custom user front-end playlists.
+   * Creates an empty default player from a shortcode like [fvplayer src="1" playlist="1;2;3"]
+   * and fills its videos data from the database. Used for custom user front-end playlists.
+   *
+   * The SRC attribute of the above shortcode must be a numeric ID of the first video in the playlist,
+   * then the playlist must follow with all of the videos to be shown (including the first one from the SRC attribute).
    *
    * @param $atts Original player attributes coming from the execution point of this method's filter.
    *
