@@ -56,8 +56,16 @@ flowplayer( function(api,root) {
       if( api.video.qualities && api.video.qualities.length > 2 ) {
         var qswitch = -1;
         if( localStorage.FVPlayerHLSQuality ) {
-          qswitch = localStorage.FVPlayerHLSQuality;
-          
+          // do we have such quality?
+          jQuery(api.video.qualities).each( function(k,v) {
+            if( v.value == localStorage.FVPlayerHLSQuality ) {
+              // accept the remembered quality index
+              qswitch = localStorage.FVPlayerHLSQuality;  
+              return false;
+            }
+          });
+        
+        // is FV Player set to force HD?
         } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
           jQuery(api.video.qualities).each( function(k,v) {
             var height = parseInt(v.label);
