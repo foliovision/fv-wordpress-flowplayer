@@ -69,22 +69,20 @@ flowplayer( function(api,root) {
 
         // simple video files can be checked directly
         if( api.video.type.match(/video\//) ) {
-          console.log("FV PLayer: running Ajax check of video file...");
-          jQuery.ajax({
-            type: "HEAD",
-            url: api.video.src,
-            success: function(message, text, response){
-              are_waiting_already = 0;
-            },
-            error: function() {
-              // ensure the video did not start to play already
-              if( are_waiting_already > 0 ) {
-                // then we can tell Flowplayer there is an error
-                api.trigger('error', [api, { code: 4, video: api.video }]);
-              }
-            }
-          });
+          console.log("FV PLayer: Running check of video file...");
 
+          var test_video = document.createElement('video');
+          test_video.autoplay = true;
+          test_video.src = api.video.src;
+          test_video.onloadedmetadata = function() {
+            are_waiting_already = 0;
+          }
+
+          test_video.onerror = function() {
+            if( are_waiting_already > 0 ) {
+              api.trigger('error', [api, { code: 4, video: api.video }]);
+            }
+          }
           return;
         }
           
