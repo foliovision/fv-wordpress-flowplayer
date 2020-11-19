@@ -100,13 +100,6 @@ jQuery(window).on('resize tabsactivate',function(){
       var fit_thumbs = Math.floor(width/limit);
       if( fit_thumbs > 8 ) fit_thumbs = 8;
       playlist.addClass('fp-playlist-items-per-row-'+fit_thumbs);
-
-      // add class based on playlist width
-      if ( width >= 900 ) {
-        playlist.addClass('is-wide');
-      } else {
-        playlist.removeClass('is-wide');
-      }
     }
   });
   
