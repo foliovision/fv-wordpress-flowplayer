@@ -1395,6 +1395,76 @@
 
 /* Polaroid Playlist */
 
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-2 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-2 a {
+  width: 35.333333333333%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-2 a:nth-child(2n+1) {
+  clear: both;
+}
+
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-3 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-3 a {
+  width: 30.333333333333%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-3 a:nth-child(2n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-3 a:nth-child(3n+1) {
+  clear: both;
+}
+
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-4 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-4 a {
+  width: 22%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-4 a:nth-child(2n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-4 a:nth-child(3n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-4 a:nth-child(4n+1) {
+  clear: both;
+}
+
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a {
+  width: 15%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a:nth-child(2n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a:nth-child(3n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a:nth-child(4n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a:nth-child(5n+1) {
+  clear: both;
+}
+
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a {
+  width: 10%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a:nth-child(2n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a:nth-child(3n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a:nth-child(4n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a:nth-child(5n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a:nth-child(6n+1) {
+  clear: both;
+}
+
 .fp-playlist-external.fp-playlist-polaroid a,
 .entry-content .fp-playlist-external.fp-playlist-polaroid a {
   width: 47%;
@@ -1822,35 +1892,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 	.is-error.flowplayer .fp-player:before {background-size:20%}
 }
 
-
-@media screen and (min-width: 800px) {
-  .fp-playlist-external.fp-playlist-polaroid a,
-  .entry-content .fp-playlist-external.fp-playlist-polaroid a {
-    width: 30.333333333333%;
-  }
-  .fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
-    clear: none;
-  }
-  .fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
-    clear: both;
-  }
-}
-
-
 @media screen and (min-width: 1020px) {
-  .fp-playlist-external.fp-playlist-polaroid a,
-  .entry-content .fp-playlist-external.fp-playlist-polaroid a {
-    width: 22%;
-  }
-  .fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
-    clear: none;
-  }
-  .fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
-    clear: none;
-  }
-  .fp-playlist-external.fp-playlist-polaroid a:nth-child(4n+1) {
-    clear: both;
-  }
   .fp-player a.fp-sticky {
       display: none;
   }

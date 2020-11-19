@@ -87,8 +87,28 @@ flowplayer(function(api, root) {
 jQuery(window).on('resize tabsactivate',function(){
   jQuery('.fp-playlist-external').each(function(){
     var playlist = jQuery(this);
-    if( playlist.parent().width() >= 900 ) playlist.addClass('is-wide');
-    else playlist.removeClass('is-wide');
+    
+    // cleanup
+    playlist.removeClass('fp-playlist-items-per-row-2');
+    playlist.removeClass('fp-playlist-items-per-row-3');
+    playlist.removeClass('fp-playlist-items-per-row-4');
+    playlist.removeClass('fp-playlist-items-per-row-5');
+    playlist.removeClass('fp-playlist-items-per-row-6');
+    playlist.removeClass('is-wide');
+
+    // add class based on playlist width
+    if( playlist.parent().width() < 250 ) {
+      playlist.addClass('fp-playlist-items-per-row-2');
+    } else if( playlist.parent().width()  >= 250 && playlist.parent().width() < 400 ) {
+      playlist.addClass('fp-playlist-items-per-row-3');
+    } else if( playlist.parent().width() >= 400 && playlist.parent().width() < 600 ) {
+      playlist.addClass('fp-playlist-items-per-row-4');
+    } else if( playlist.parent().width() >= 600 && playlist.parent().width() < 900 ) {
+      playlist.addClass('fp-playlist-items-per-row-5');
+    } else if ( playlist.parent().width() >= 900 ) {
+      playlist.addClass('is-wide');
+      playlist.addClass('fp-playlist-items-per-row-6');
+    }
   })
 }).trigger('resize');
 
