@@ -1397,7 +1397,7 @@
 
 .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-2 a,
 .entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-2 a {
-  width: 35.333333333333%;
+  width: 47%;
 }
 .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-2 a:nth-child(2n+1) {
   clear: both;
@@ -1430,7 +1430,7 @@
 
 .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a,
 .entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a {
-  width: 15%;
+  width: 17%;
 }
 .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-5 a:nth-child(2n+1) {
   clear: none;
@@ -1447,7 +1447,7 @@
 
 .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a,
 .entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a {
-  width: 10%;
+  width: 14%;
 }
 .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-6 a:nth-child(2n+1) {
   clear: none;
@@ -1465,9 +1465,58 @@
   clear: both;
 }
 
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a {
+  width: 12%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a:nth-child(2n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a:nth-child(3n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a:nth-child(4n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a:nth-child(5n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a:nth-child(6n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-7 a:nth-child(7n+1) {
+  clear: both;
+}
+
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a,
+.entry-content .fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a {
+  width: 10.2%;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(2n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(3n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(4n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(5n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(6n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(7n+1) {
+  clear: none;
+}
+.fp-playlist-external.fp-playlist-polaroid.fp-playlist-items-per-row-8 a:nth-child(8n+1) {
+  clear: both;
+}
+
 .fp-playlist-external.fp-playlist-polaroid a,
 .entry-content .fp-playlist-external.fp-playlist-polaroid a {
-  width: 47%;
+  width: 100%;
   display: inline-block;
   vertical-align: top;
   margin: 0 1% 2%;
