@@ -301,7 +301,7 @@ function fv_player_preload() {
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
       // Show splash img if audio
-      if( !api.video.type.match(/^audio/) ) {
+      if( !video.type.match(/^audio/) ) {
         splash_img.remove();
         splash_text.remove();
       }
