@@ -357,6 +357,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.37.727 - 2020/11/20 =
+
+* Added Settings into wp-admin -> FV Player menu
+* Compatibility - Safari fullscreen fix for Twenty Twenty
+* Bugfix - HLS quality remembering - fix when remembered stream number doesn't exist
+* Bugfix - iOS video recovery - was causing issues with playback of MP4 videos
+* Bugfix - Playlist style selection not working for FV Player Pro Vimeo Channel parsing
+* Bugfix - S3 Browser - fix for CloudFront domains when using S3 path with region name
+
 = 7.4.36.727 - 2020/10/28 =
 
 * Bugfix - typo in OGV video parsing resulting in bad video type
