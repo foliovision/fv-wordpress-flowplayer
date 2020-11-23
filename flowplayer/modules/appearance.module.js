@@ -150,12 +150,6 @@ flowplayer(function(api, root) {
  *  Tabbed playlist
  */
 jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(event, ui){
-  var oldPlayer = jQuery('.flowplayer.is-playing').data('flowplayer');
-  if( typeof(oldPlayer) != "undefined" ) {
-    oldPlayer.pause();
-  }
-  
-  var objPlayer = jQuery('.flowplayer',ui.newPanel);
-  var api = objPlayer.data('flowplayer');
-  api.load();  
+  var player = jQuery('.fv_flowplayer_tabs').next('.flowplayer').data('flowplayer');
+  player.play( ui.newTab.index() );
 });
