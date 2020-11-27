@@ -138,7 +138,6 @@ flowplayer(function(api, root) {
       if (!session) return; // Already destoryed
       
       timer = timer || setInterval(function() {
-        console.log('timer',api.video.src);
         api.trigger('progress', [api, media.getEstimatedTime()]);
       }, 500);
       
@@ -253,7 +252,7 @@ flowplayer(function(api, root) {
     chrome.cast.requestSession(function(s) {
       session = s;
       var receiverName = session.receiver.friendlyName;
-      common.html(common.find('.fp-chromecast-engine-status')[0], 'Playing on device ' + receiverName);
+      common.html(common.find('.fp-chromecast-engine-status',root)[0], 'Playing on device ' + receiverName);
       
       load_media();
 

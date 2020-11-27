@@ -173,6 +173,9 @@
   right: 0;
   left: 0;
   color: #fff; }
+  .flowplayer .fp-chromecast-engine p {
+    color: #fff;
+  }
   .flowplayer .fp-chromecast-engine .fp-chromecast-engine-status {
     font-size: 150%;
     text-align: center; }
