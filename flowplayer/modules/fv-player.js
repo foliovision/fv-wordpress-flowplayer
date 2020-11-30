@@ -16,6 +16,13 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   flowplayer.conf = fv_flowplayer_conf;
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
+  
+  // without this core Flowplayer might not get the right conf in initializePlayer()
+  // need to be used only with flowplayer.js though, not needed with min.js (?)
+  /*setTimeout( function() {
+    flowplayer.conf = fv_flowplayer_conf;
+  }, 0 )
+  */
 
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
@@ -309,7 +316,7 @@ function fv_player_preload() {
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
       // Show splash img if audio
-      if( !api.video.type.match(/^audio/) ) {
+      if( !video.type.match(/^audio/) ) {
         splash_img.remove();
         splash_text.remove();
       }

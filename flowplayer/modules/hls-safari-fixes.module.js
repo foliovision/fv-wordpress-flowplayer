@@ -11,12 +11,13 @@ flowplayer( function(api,root) {
     are_waiting_already = 0; // make sure you wait for the event only on one event at a time
   
   // first we need to obtain the video element
-  api.on('ready', function() {
+  api.on('ready', function( e, api, video ) {
     are_waiting_already = 0;
 
     did_start_playing = false;
     
-    if( api.engine.engineName == 'html5' ) {
+    // only work if the video is using token in URL
+    if( api.engine.engineName == 'html5' && video.src.match(/\?/) ) {
       // find the video
       video_tag = root.find('video');
       
@@ -38,19 +39,20 @@ flowplayer( function(api,root) {
   });
 
   // you might seek into unbuffered part of video too
-  api.bind('beforeseek', function() {
-    // we don't want the initial seek when resuming position to trigger error
-    // so we track if the playback did actually start in this variable
-    if( did_start_playing ) {
-      wait_for_stalled();
-    }
-  });
+  api.bind('beforeseek', wait_for_stalled );
   
   function debug(e) {
     console.log("FV PLayer: iOS video element: " + e.type);
   }
   
   function wait_for_stalled() {
+    // do not run if there was not progress event
+    // we don't want the initial seek when resuming position to trigger error
+    // so we track if the playback did actually start
+    if( !did_start_playing ) {
+      return;
+    }
+
     if( video_tag && api.engine.engineName == 'html5' ) {
       are_waiting_already++;
       if( are_waiting_already > 1 ) {
@@ -69,22 +71,22 @@ flowplayer( function(api,root) {
 
         // simple video files can be checked directly
         if( api.video.type.match(/video\//) ) {
-          console.log("FV PLayer: running Ajax check of video file...");
-          jQuery.ajax({
-            type: "HEAD",
-            url: api.video.src,
-            success: function(message, text, response){
-              are_waiting_already = 0;
-            },
-            error: function() {
-              // ensure the video did not start to play already
-              if( are_waiting_already > 0 ) {
-                // then we can tell Flowplayer there is an error
-                api.trigger('error', [api, { code: 4, video: api.video }]);
-              }
-            }
-          });
+          console.log("FV PLayer: Running check of video file...");
 
+          // create a new video tag and let iOS fetch the meta data
+          var test_video = document.createElement('video');
+          test_video.src = api.video.src;
+          test_video.onloadedmetadata = function() {
+            are_waiting_already = 0;
+            console.log("FV Player: Video link works");
+          }
+
+          test_video.onerror = function() {
+            console.log("FV Player: Video link issue!");
+            if( are_waiting_already > 0 ) {
+              api.trigger('error', [api, { code: 4, video: api.video }]);
+            }
+          }
           return;
         }
           
