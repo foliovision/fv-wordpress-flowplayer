@@ -13,6 +13,8 @@ flowplayer(function(api, root) {
   if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce ) {
     if( !flowplayer.support.fullscreen ) {
       api.bind('ready', function() {
+        if( api.video.vr ) return;
+
         api.fullscreen(true);
       });
     }
@@ -29,6 +31,8 @@ flowplayer(function(api, root) {
     });
     
     api.on('resume', function() {
+      if( api.video.vr ) return;
+      
       if( !api.isFullscreen ) api.fullscreen();
     });
     
