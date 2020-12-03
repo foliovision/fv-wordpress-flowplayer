@@ -394,7 +394,7 @@
     text-align: center;
     cursor: pointer;
     color: #fff; }
-    .flowplayer .fp-ui a, .flowplayer .fp-ui strong {
+    .flowplayer .fp-ui a, .flowplayer .fp-ui strong, .flowplayer .fp-ui a:before {
       color: inherit !important;
       font-style: normal !important;
       text-decoration: none !important; }
