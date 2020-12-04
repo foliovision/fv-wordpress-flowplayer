@@ -1348,7 +1348,7 @@ jQuery(function() {
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
       
       if( field.length ) {
-        if (field[0].tagName != 'TEXTAREA') {
+        if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
           field = field.find('textarea').first();
         }
 
@@ -1901,7 +1901,7 @@ jQuery(function() {
 
       if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
         // check for new, DB-based player shortcode
-        var result = /fvplayer id="([\d,]+)"/g.exec(shortcode);
+        var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
           var
             shortcode_parse_fix = shortcode
@@ -3123,10 +3123,10 @@ jQuery(function() {
       if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
         jQuery('#content:not([aria-hidden=true])').val(html);
 
-      }else if( instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
+      }else if( typeof(instance_fp_wysiwyg) != 'undefined' && ( instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) ) {
         instance_fp_wysiwyg.SetHTML( html );
       }
-      else {
+      else if ( instance_tinymce ) { // instance_tinymce will be null if we're updating custom meta box
         instance_tinymce.setContent( html );
       }
     }
