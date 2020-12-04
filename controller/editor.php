@@ -62,10 +62,8 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');
   wp_enqueue_script('fvwpflowplayer-editor-screenshots');
   
-  wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
-  wp_enqueue_style('fvwpflowplayer-domwindow-css');
-  wp_register_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css','','1.0','screen');
-  wp_enqueue_style('fvwpflowplayer-shortcode-editor');
+  wp_enqueue_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css', '', $fv_wp_flowplayer_ver, 'screen');
+  wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', $fv_wp_flowplayer_ver, 'screen');
 }
 
 
