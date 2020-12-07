@@ -272,8 +272,14 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = '';
         if( $player->getIsValid() ) {
           if( $posts = $player->getMetaValue('post_id') ) {
-            foreach( $posts AS $post ) {
-              $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.get_the_title($post).'</a></li>';
+            foreach( $posts AS $post_id ) {
+              $post = get_post($post_id);
+              $title = $post->post_title ? $post->post_title : '#'.$post->ID;
+              if( $post->post_status != 'publish' ) {
+                $title .= ' ('.$post->post_status.')';
+              }
+              
+              $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.$title.'</a></li>';
             }
           }
         }
