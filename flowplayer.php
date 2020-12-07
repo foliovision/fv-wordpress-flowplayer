@@ -94,4 +94,6 @@ if( is_admin() ) {
 
 include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
 include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+
+include_once( dirname( __FILE__ ) . '/models/avada-builder-bridge.php' );
 include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
