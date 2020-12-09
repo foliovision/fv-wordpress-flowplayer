@@ -496,8 +496,6 @@ CREATE TABLE " . self::$db_table_name . " (
    * @param array $options                       Options for a newly created player that will be stored in a DB.
    * @param FV_Player_Db                         $DB_Cache Instance of the DB shortcode global object that handles caching
    *                                             of videos, players and their meta data.
-   *
-   * @throws Exception When no valid ID nor options are provided.
    */
   function __construct($id, $options = array(), $DB_Cache = null) {
 
@@ -711,8 +709,6 @@ CREATE TABLE " . self::$db_table_name . " (
         // no players found in DB
         $this->is_valid = false;
       }
-    } else {
-      throw new Exception('No options nor a valid ID was provided for DB player instance.');
     }
 
     // update cache, if changed
