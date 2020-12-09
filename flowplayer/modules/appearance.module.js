@@ -86,10 +86,23 @@ flowplayer(function(api, root) {
 
 jQuery(window).on('resize tabsactivate',function(){
   jQuery('.fp-playlist-external').each(function(){
-    var playlist = jQuery(this);
-    if( playlist.parent().width() >= 900 ) playlist.addClass('is-wide');
+    var playlist = jQuery(this),
+      width = playlist.parent().width();
+    if( width >= 900 ) playlist.addClass('is-wide');
     else playlist.removeClass('is-wide');
-  })
+
+    if( playlist.hasClass('fp-playlist-polaroid') ) {
+      var limit = 150,
+        current_class = playlist.attr('class');
+      
+      playlist.attr('class', current_class.replace(/ fp-playlist-items-per-row-\d+/,'') );
+      
+      var fit_thumbs = Math.floor(width/limit);
+      if( fit_thumbs > 8 ) fit_thumbs = 8;
+      playlist.addClass('fp-playlist-items-per-row-'+fit_thumbs);
+    }
+  });
+  
 }).trigger('resize');
 
 flowplayer(function(api, root) {
