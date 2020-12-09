@@ -1146,7 +1146,6 @@
 
 /* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
-.flowplayer .fvp-share-bar{font-size:12px}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
