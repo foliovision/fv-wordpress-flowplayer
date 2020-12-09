@@ -274,7 +274,8 @@ class FV_Player_List_Table extends WP_List_Table {
           if( $posts = $player->getMetaValue('post_id') ) {
             foreach( $posts AS $post_id ) {
               $post = get_post($post_id);
-              $title = $post->post_title ? $post->post_title : '#'.$post->ID;
+              if( !isset($post) ) continue;
+              $title = !empty($post->post_title) ? $post->post_title : '#'.$post->ID;
               if( $post->post_status != 'publish' ) {
                 $title .= ' ('.$post->post_status.')';
               }
