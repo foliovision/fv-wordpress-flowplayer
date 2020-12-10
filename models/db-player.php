@@ -709,6 +709,8 @@ CREATE TABLE " . self::$db_table_name . " (
         // no players found in DB
         $this->is_valid = false;
       }
+    } else {
+      trigger_error('No options nor a valid ID was provided for DB player instance.');
     }
 
     // update cache, if changed
