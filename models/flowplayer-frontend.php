@@ -206,8 +206,16 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
-    if( ( $player && count($player->getVideos()) == 1 ) || empty($this->aCurArgs['playlist']) ) {
-      $this->aCurArgs['liststyle'] = 'horizontal'; // if single video, force horizontal style (fix for video ads)
+    // if single video, force horizontal style (fix for FV Player Pro Video Ads)
+    // TODO: Perhaps FV Player Pro Video Ads should deal with this instead
+    if(
+      // when using the FV Player DB it's possible to have a single video only
+      // but then it might fill the playlist shortcode argument
+      // this happens for FV Player Pro Vimeo Channel functionality
+      $player && count($player->getVideos()) == 1 && empty($this->aCurArgs['playlist']) ||
+      empty($this->aCurArgs['playlist']) 
+    ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
     $aPlaylistItems = array();  //  todo: remove

@@ -151,7 +151,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 /* Disable WordPress 5.5 button to change box order */
 #wpfp_options .handle-order-higher, #wpfp_options .handle-order-lower { display: none }
 /* Disable box dragging */
-#wpfp_options .ui-sortable-handle { cursor: default; pointer-events: none; }
+#wpfp_options .ui-sortable-handle { cursor: pointer; }
 
 #fv-player-system-info-textarea { font-family: monospace; width: 100%; }
 
