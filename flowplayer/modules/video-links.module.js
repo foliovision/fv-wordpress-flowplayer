@@ -12,12 +12,13 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
 
         var hash = fv_player_get_video_link_hash(api);
         var sTime = ',' + fv_player_time_hms(api.video.time);
+        var abEnd = typeof api.get_ab_end() != 'undefined' && api.get_ab_end() ? ',' + fv_player_time_hms(api.get_ab_end()) : '';
         //console.log(sTime);
         jQuery('.fvp-sharing>li>a',root).each(function(){
           jQuery(this).attr('href',jQuery(this).attr('href').replace(/%23.*/,'') + '%23' + hash /*+ sTime*/);
         });
 
-        jQuery('.sharing-link',root).attr('href',jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime);
+        jQuery('.sharing-link',root).attr('href',jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime + abEnd);
       });
       
       jQuery('.sharing-link',root).click( function(e) {
