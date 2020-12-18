@@ -20,7 +20,7 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
         jQuery('.sharing-link',root).attr('href',jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime);
       });
       
-      jQuery('.sharing-link',root).click( function(e) {
+      jQuery('.sharing-link',root).on('click', function(e) {
 
         fv_player_clipboard( jQuery(this).attr('href'), function() {
           e.preventDefault();
