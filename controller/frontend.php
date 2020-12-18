@@ -657,6 +657,8 @@ add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX
  * The reason is that it's a dependency of most of the modules so then each module would have to be 
  * adjusted to be able to load without it.
  * 
+ * Fancybox lightbox library with additional code is also excluded.
+ * 
  * @param string $tag The original script tag.
  * @param string $handle The WordPress script handle
  * 
@@ -671,9 +673,16 @@ function fv_player_js_loader_mark_scripts( $tag, $handle ) {
   }
 
   if(
-    stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library
-    stripos($handle,'fv-player') === 0 ||
-    stripos($handle,'fv_player') === 0 
+    // script ID must start with one of following
+    (
+      stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
+      stripos($handle,'fv-player') === 0 ||
+      stripos($handle,'fv_player') === 0
+    
+    // script handle must not be one of
+    ) && !in_array( $handle, array(
+      'fv_player_lightbox' // without this it would be impossible to open the lightbox without hovering the page before it, so it's really a problem on mobile
+    ), true )
   ) {
     $tag = str_replace( ' src=', ' data-fv-player-loader-src=', $tag );
     add_action( 'wp_print_footer_scripts', 'fv_player_js_loader_load', PHP_INT_MAX );

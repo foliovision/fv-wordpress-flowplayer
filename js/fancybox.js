@@ -79,6 +79,7 @@ jQuery(document).ready(function() {
     
 });
 
+// special FV Player sizing and hiding of fancyBox buttons if it's a FV Player lightbox
 function fv_fancybox_check_size() {
   var
     $player_wrap = jQuery('.fancybox-slide--current .fv_player_lightbox_hidden'),
@@ -90,7 +91,7 @@ function fv_fancybox_check_size() {
     $playlist_items = jQuery('.fancybox-slide--current .fp-playlist-external').find('a:visible'),
     $fs_button = $player.find('.fp-fullscreen');
 
-  if ($player.length) {
+  if ( $player_wrap.length && $player.length) {
     
     if( typeof($player.data('orig-max-height')) == 'undefined' ) {
       $player.data('orig-max-height', parseInt($player.css('max-height')) ).data('orig-max-width', parseInt($player.css('max-width')) );
