@@ -161,7 +161,7 @@ function fv_player_preload() {
     var splash_click = false;
 
     if( root.hasClass('fixed-controls') ) {
-      root.find('.fp-controls').click( function(e) {
+      root.find('.fp-controls').on('click', function(e) {
         if( !api.loading && !api.ready ) {
           e.preventDefault();
           e.stopPropagation(); 
@@ -200,7 +200,7 @@ function fv_player_preload() {
     }
     
     //  playlist item click action
-    jQuery('a',playlist).click( function(e) {
+    jQuery('a',playlist).on('click', function(e) {
       e.preventDefault();
 
       splash_click = true;
@@ -216,12 +216,12 @@ function fv_player_preload() {
       // TODO: There should be a better way of sending a signal to the editor!
       if( location.href.match(/wp-admin/) && $this.parents('.fv-player-editor-preview').length > 0 ) {
         fv_flowplayer_conf.current_video_to_edit = index;
-        $this.parents('.fv-player-custom-video').find('.edit-video .fv-player-editor-button').click();
+        $this.parents('.fv-player-custom-video').find('.edit-video .fv-player-editor-button').trigger('click');
         return false;
       }
 
       if ($prev.length && $this.is(':visible') && !$prev.is(':visible')) {
-        $prev.click();
+        $prev.trigger('click');
         return false;
       }
 
@@ -622,7 +622,7 @@ function fv_autoplay_init(root, index ,time){
 
   if(root.parent().hasClass('ui-tabs-panel')){
     var tabId = root.parent().attr('id');
-    jQuery('[aria-controls=' + tabId + '] a').click();
+    jQuery('[aria-controls=' + tabId + '] a').trigger('click');
   }
 
   if( !root.find('.fp-player').attr('class').match(/\bis-sticky/) ){    
@@ -634,7 +634,7 @@ function fv_autoplay_init(root, index ,time){
   }
   if(root.hasClass('lightboxed')){
     setTimeout(function(){
-      jQuery('[href=\\#' + root.attr('id')+ ']').click();
+      jQuery('[href=\\#' + root.attr('id')+ ']').trigger('click');
     },0);
   }
 
