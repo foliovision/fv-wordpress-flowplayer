@@ -16,9 +16,9 @@ flowplayer( function(api,root) {
   
   jQuery('.fvfp_admin_error', root).remove();
   
-  root.find('.fp-logo, .fp-header').click( function(e) {
+  root.find('.fp-logo, .fp-header').on('click', function(e) {
     if (e.target !== this) return;
-    root.find('.fp-ui').click();
+    root.find('.fp-ui').trigger('click');
   });
     
   jQuery('.fvp-share-bar .sharing-facebook',root).append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#fff"><title>Facebook</title><path d="M11.9 5.2l-2.6 0 0-1.6c0-0.7 0.3-0.7 0.7-0.7 0.3 0 1.6 0 1.6 0l0-2.9 -2.3 0c-2.6 0-3.3 2-3.3 3.3l0 2 -1.6 0 0 2.9 1.6 0c0 3.6 0 7.8 0 7.8l3.3 0c0 0 0-4.2 0-7.8l2.3 0 0.3-2.9Z"/></svg>');
@@ -53,11 +53,11 @@ flowplayer( function(api,root) {
       var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
       var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
       root.find('.fp-controls .fp-playbtn').before(prev).after(next);
-      prev.click( function() {
+      prev.on('click', function() {
         api.trigger('prev',[api]);
         api.prev();
       });
-      next.click( function() {
+      next.on('click', function() {
         api.trigger('next',[api]);
         api.next();
       });
