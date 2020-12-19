@@ -24,7 +24,7 @@ class flowplayer_frontend extends flowplayer
 
   var $ajax_count = 0;
   
-  var $autobuffer_count = 0;  
+  var $autobuffer_count = 0;
   
   var $expire_time = 0;
   
@@ -33,8 +33,6 @@ class flowplayer_frontend extends flowplayer
   var $aCurArgs = array();
   
   var $sHTMLAfter = false;
-  
-  var $count_tabs = 0;
 
   var $currentPlayerObject = null;
 
@@ -232,8 +230,21 @@ class flowplayer_frontend extends flowplayer
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
-    
-    list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );    
+
+    if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext') ) ) {
+      $width_style = 'max-width: 100%;';
+    } else {
+      if( intval($width) == 0 ) $width = '100%';
+      if( intval($height) == 0 ) $height = '100%';
+      $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
+      if( $this->_get_option('fixed_size') ) {
+        $width_style = 'width: ' . $cssWidth . ';';
+      } else {
+        $width_style = 'max-width: ' . $cssWidth . ';';
+      }
+    }
+
+    list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img, false, $width_style );
     
     if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
       $playlist_items_external_html = false;
@@ -267,14 +278,6 @@ class flowplayer_frontend extends flowplayer
           break;
         }
       }
-    }
-
-    /*
-     *  Video player tabs
-     */
- 
-    if( $player_type == 'video'  && $this->aCurArgs['liststyle'] == 'tabs' && count($aPlaylistItems) > 1 ) {
-      return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width);            
     }
     
     
@@ -697,8 +700,12 @@ class flowplayer_frontend extends flowplayer
         }          
         
         $this->ret['html'] .= '</div>'."\n";
-        
-        $this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+
+        if ( !empty( $this->aCurArgs['liststyle'] ) && $this->aCurArgs['liststyle'] == 'tabs' ) {
+          $this->ret['html'] = $this->sHTMLAfter . $this->ret['html'] . $scripts_after;
+        } else {
+          $this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+        }
         
         //  change engine for IE9 and 10
         if( $this->aCurArgs['engine'] == 'false' ) {
@@ -1081,53 +1088,6 @@ class flowplayer_frontend extends flowplayer
 
     return $aSubtitles;
   }
-  
-  function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
-    global $post;
-    
-    if( intval($width) == 0 ) $width = '100%';
-    $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
-    
-    $this->count_tabs++;
-    $output = new stdClass;
-    $output->ret = array();
-    $output->ret['html'] = '<script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs" style="max-width: '.$cssWidth.'"><div id="tabs-'.$post->ID.'-'.$this->count_tabs.'" class="fv_flowplayer_tabs_content">';
-    $output->ret['script'] = array();
-    
-    $output->ret['html'] .= '<ul>';
-    foreach( $aPlaylistItems AS $key => $aSrc ) {
-      $sCaption = !empty($aCaptions[$key]) ? $aCaptions[$key] : $key;
-      $output->ret['html'] .= '<li><a href="#tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$sCaption.'</a></li>';
-    }
-    $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
-
-    $aStartend = !empty($this->aCurArgs['startend']) ? explode(";",$this->aCurArgs['startend']) : array();  //  todo: somehow move to Pro?
-    
-    foreach( $aPlaylistItems AS $key => $aSrc ) {
-      if( !empty($aStartend[$key]) ) $this->aCurArgs['startend'] = $aStartend[$key];
-      
-      unset($this->aCurArgs['id']);
-      unset($this->aCurArgs['playlist']);
-      $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
-      
-      $this->aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:'';
-      unset($this->aCurArgs['caption']);
-      $this->aCurArgs['liststyle']='none';
-      
-      $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
-      $sClass = $key == 0 ? ' class="fv_flowplayer_tabs_first"' : '';
-      $output->ret['html'] .= '<div id="tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'"'.$sClass.'>'.$aPlayer['html'].'</div>';
-      foreach( $aPlayer['script'] AS $key => $value ) {
-        $output->ret['script'][$key] = array_merge( isset($output->ret['script'][$key]) ? $output->ret['script'][$key] : array(), $aPlayer['script'][$key] );
-      }
-    }
-    $output->ret['html'] .= '<div class="fv_flowplayer_tabs_cl"></div><div class="fv_flowplayer_tabs_cr"></div></div></div>';
-          
-    $this->load_tabs = true;
-          
-    return $output->ret;    
-  }
-  
   
   function get_sharing_html() {
     global $post;
