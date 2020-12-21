@@ -204,15 +204,30 @@ class FV_Player_Checker {
             $duration = 0;
             $segments = false;
   
-            if(!preg_match_all('/^[^#].*\.m3u8(\?.*)?$/im', $response,$playlist)){
-              if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
-                foreach($segments[1] as $segment_item){
-                  $duration += $segment_item;
-                }  
+            if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
+              foreach($segments[1] as $segment_item){
+                $duration += $segment_item;
               }
             }else{
-              foreach($playlist[0] as $item){
+              $lines = explode( "\n", $response );
+
+              $streams = array();
+              $had_ext_x_stream_inf = false;
+              foreach( $lines AS $line ) {
+                // last line was starting with #EXT-X-STREAM-INF:
+                if( stripos($line,'#') !== 0 && $had_ext_x_stream_inf ) {
+                  $streams[] = trim($line);
+                  $had_ext_x_stream_inf = false;
+                }
+
+                if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) $had_ext_x_stream_inf = true;
+              }
+
+              foreach($streams as $item){
                 $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $remotefilename_encoded);
+                if( $secured_url = $fv_fp->get_video_src( $item_url, array( 'dynamic' => true ) ) ) {
+                  $item_url = $secured_url;
+                }
                 $request = wp_remote_get($item_url);
                 $playlist_item = wp_remote_retrieve_body( $request );
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
