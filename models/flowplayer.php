@@ -20,7 +20,6 @@ require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
 
 class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   private $count = 0;
-  private $tabsCount = 0;
   /**
    * Relative URL path
    */
@@ -864,36 +863,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     if( $sListStyle != 'text' ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
-
-      if ( $sListStyle != 'tabs' ) {
-        if ( $sSplashImage ) {
-          if ( ! ( defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
-            $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='$sSplashImage' />";
-          } else {
-            $sHTML .= "<img " . ( get_query_var( 'fv_player_embed' ) ? "data-no-lazy='1'" : "" ) . " src='$sSplashImage' />";
-          }
-
+      if( $sSplashImage ) {
+        if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
+          $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='$sSplashImage' />";
         } else {
-          $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
+          $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='$sSplashImage' />";
         }
-
-        if ( $tDuration && ( ! empty( $this->aCurArgs['saveposition'] ) || $this->_get_option( 'video_position_save_enable' ) ) && is_user_logged_in() ) {
-          $tDuration = flowplayer::hms_to_seconds( $tDuration );
-          $tPosition = $aItem['position'];
-          if ( $tPosition > 0 && ! empty( $aPlayer['fv_start'] ) ) {
-            $tPosition -= $aPlayer['fv_start'];
-            if ( $tPosition < 0 ) {
-              $tPosition = 0;
-            }
-          }
-
-          $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: ' . ( 100 * ( $tPosition ? $tPosition / $tDuration : 0 ) ) . '%" data-duration="' . esc_attr( $tDuration ) . '"></
-            span></span>';
-        } else if ( ! empty( $aItem['saw'] ) ) {
-          $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
-        }
+        
       } else {
-          $sHTML .= '<div class="fvp-playlist-tab-number">' . ++$this->tabsCount . '</div>';
+        $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
+      }
+      
+      if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
+        $tDuration = flowplayer::hms_to_seconds( $tDuration );
+        $tPosition = $aItem['position'];
+        if( $tPosition > 0 && !empty($aPlayer['fv_start']) ) {
+          $tPosition -= $aPlayer['fv_start'];
+          if( $tPosition < 0 ) {
+            $tPosition = 0;
+          }
+        }
+
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * ( $tPosition ? $tPosition / $tDuration : 0) ).'%" data-duration="'.esc_attr($tDuration).'"></
+        span></span>';
+      } else if( !empty($aItem['saw']) ) {
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
       $sHTML .= "</div>";
     }
@@ -916,7 +910,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       $sHTML .= "</div>";
       
-    } else if ( $sListStyle != 'tabs' ) {
+    } else {
       if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
       
       if( $tDuration ) {
@@ -942,8 +936,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   //  todo: this could be parsing rtmp://host/path/mp4:rtmp_path links as well
-  function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false, $css_width_style = '' ) {
-      $this->tabsCount = 0;
+  function build_playlist( $aArgs, $media, $src1, $src2, $rtmp, $splash_img, $suppress_filters = false ) {
+
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
       $sCaption = isset($aArgs['caption']) ? $aArgs['caption'] : false;
   
@@ -1036,7 +1030,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = array();
       
       if( isset($aArgs['liststyle']) && !empty($aArgs['liststyle'])   ){
-
+        
         $sHTML[] = $this->build_playlist_html( $aArgs, $splash_img, $sItemCaption, $aPlayer, 0 );
       }else{
         $sHTML[] = "<a href='#' class='is-active'><span ".( (isset($splash_img) && !empty($splash_img)) ? "style='background-image: url(\"".$splash_img."\")' " : "" )."></span>$sItemCaption</a>\n";
@@ -1112,7 +1106,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
           
           $aPlaylistItems[] = $aPlayer;
-
+          
           $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
           if( $sSplashImage ) {
             $aSplashScreens[] = $sSplashImage;
@@ -1133,8 +1127,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $attributes['rel'] = 'wpfp_'.$this->hash;
       if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $attributes['style'] = "width: ".(count($aPlaylistItems)*250)."px"; // we put in enough to be sure it will fit in, later JS calculates a better value
-      } else if ( $css_width_style ) {
-        $attributes['style'] = $css_width_style; // used for tabs to correctly align them with the player
       }
       
       $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );

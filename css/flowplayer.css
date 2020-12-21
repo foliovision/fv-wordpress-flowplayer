@@ -988,7 +988,7 @@
     background-color: rgba(0, 0, 0, .75) !important;
 }
 
-.flowplayer { margin: 0 auto 2.8em auto; display: block; max-width: 100%; clear: both; }
+.flowplayer { margin: 0 auto 2.8em auto; display: block; max-width: 100%; }
 .flowplayer.has-caption { margin: 0 auto; }
 .flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls { margin-bottom: 5.2em }
@@ -1653,13 +1653,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 /*
  *  FV Flowplayer Tabs
  */
-.fp-playlist-tabs { margin: 0 auto; }
-.fp-playlist-tabs .fvp-playlist-thumb-img { text-decoration: none; color:#5E5E5E; background-color:#EFEFEF; font-weight: bold; }
-.fp-playlist-tabs a.is-active .fvp-playlist-thumb-img { color: #FFF; background-color:#5E5E5E; }
-.fp-playlist-tabs .fvp-playlist-tab-number { margin: -0.8em -1em; }
-.fp-playlist-tabs a > strong { display: none; }
-
-.fp-playlist-external.fp-playlist-tabs a > .fvp-playlist-thumb-img { width: 1em; height: 1em; margin: 0; padding: 1em; float: left; }
 .fv_flowplayer_tabs { margin: 0 auto; }
 .fv_flowplayer_tabs ul.ui-tabs,.fv_flowplayer_tabs ul.ui-tabs-nav{margin:0 !important;font-size:13px;font-family:Arial, Helvetica, sans-serif;font-weight:bold;line-height:24px !important}
 .fv_flowplayer_tabs .ui-tabs { padding: 0; zoom: 1; }
