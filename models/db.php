@@ -131,6 +131,9 @@ class FV_Player_Db {
           if ($meta->getMetaKey() == 'dvr' && $meta->getMetaValue() == 'true') {
             $aItem['dvr'] = 'true';
           }
+          if ($meta->getMetaKey() == 'audio' && $meta->getMetaValue() == 'true') {
+            $aItem['is_audio_stream'] = 'true';
+          }
         }
       }
       
