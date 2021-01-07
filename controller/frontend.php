@@ -432,7 +432,7 @@ function flowplayer_prepare_scripts() {
     $aConf['script_dash_js_version'] = '2.7';
         
     if( $fv_fp->_get_option('googleanalytics') ) {
-      $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
+      $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
 
     if( $fv_fp->_get_option('chromecast') ) {

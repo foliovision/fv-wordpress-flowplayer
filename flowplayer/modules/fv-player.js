@@ -16,6 +16,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   flowplayer.conf = fv_flowplayer_conf;
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
+  flowplayer.conf.analytics = false;
   
   // without this core Flowplayer might not get the right conf in initializePlayer()
   // need to be used only with flowplayer.js though, not needed with min.js (?)
