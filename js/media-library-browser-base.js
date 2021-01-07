@@ -464,7 +464,7 @@ jQuery( function($) {
     
     var audio_checkbox = $url_input.closest('table').find('#fv_wp_flowplayer_field_audio');
     if( extra && extra.mime ) {
-      if( extra.mime.indexOf('mp3') !== -1 || extra.mime.indexOf('vaw') !== -1 ) {
+      if( extra.mime.indexOf('audio') !== -1 ) {
         audio_checkbox.prop( "checked", true );
       }
     }
