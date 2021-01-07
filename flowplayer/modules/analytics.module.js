@@ -111,6 +111,10 @@ flowplayer( function(api,root) {
 
     fv_player_track( api.conf.fvanalytics, "Video " + (root.hasClass('is-cva')?'Ad ':'') +  fv_ga_events[i] , api.engine.engineName + "/" + video.type, name );
   }
+  
+  api.get_time_played = function() {
+    return time/1000;
+  }
 });
 
 //Sends event statistics to Google analytics
