@@ -2234,7 +2234,7 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
       fv_player_shortcode_editor_ajax = jQuery.post(url, { 'fv_player_preview_json' : JSON.stringify(data) }, function (response) {
         
         console.log('FV Player Editor: Preview Ajax finished (POST).');
-        var wrapper = jQuery('#wrapper2', response);
+        var wrapper = jQuery('#wrapper', response);
         if( wrapper.length ) {
           console.log('FV Player Editor: Preview wrapper found.',wrapper.html());
         } else {
