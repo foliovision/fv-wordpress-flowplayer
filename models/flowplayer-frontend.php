@@ -206,8 +206,16 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
-    if( ( $player && count($player->getVideos()) == 1 ) || empty($this->aCurArgs['playlist']) ) {
-      $this->aCurArgs['liststyle'] = 'horizontal'; // if single video, force horizontal style (fix for video ads)
+    // if single video, force horizontal style (fix for FV Player Pro Video Ads)
+    // TODO: Perhaps FV Player Pro Video Ads should deal with this instead
+    if(
+      // when using the FV Player DB it's possible to have a single video only
+      // but then it might fill the playlist shortcode argument
+      // this happens for FV Player Pro Vimeo Channel functionality
+      $player && count($player->getVideos()) == 1 && empty($this->aCurArgs['playlist']) ||
+      empty($this->aCurArgs['playlist']) 
+    ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
     $aPlaylistItems = array();  //  todo: remove
@@ -397,10 +405,17 @@ class flowplayer_frontend extends flowplayer
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
   
-        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );
-        
-        if( !$bIsAudio && $video = $this->current_video() ) {          
+        // should the player appear as audio player?
+        $bIsAudio = false;
+        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+          $bIsAudio = true;
+        } else  if( $video = $this->current_video() ) {          
           $bIsAudio = $video->getMetaValue('audio',true);
+        }
+        
+        // if there is splash and it's different from the site-wide default splash
+        if( !empty($splash_img) && strcmp( $splash_img, $this->_get_option('splash') ) != 0 ) {
+          $bIsAudio = false;
         }
         
         $attributes['class'] = 'flowplayer no-brand is-splash';

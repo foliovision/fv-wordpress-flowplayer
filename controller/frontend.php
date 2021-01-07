@@ -434,11 +434,17 @@ function flowplayer_prepare_scripts() {
     $aConf['script_dash_js_version'] = '2.7';
         
     if( $fv_fp->_get_option('googleanalytics') ) {
-      $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
+      $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
 
     if( $fv_fp->_get_option('chromecast') ) {
-      $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
+      // if there is FV Player Pro above 7.4.39.727, then do not enable Chromecast here
+      if(
+        !function_exists('FV_Player_Pro') ||
+        version_compare( str_replace('.beta','',FV_Player_Pro()->version), '7.4.39.727' ) == -1
+      ) {
+        $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
+      }
     }
     
     if( $fv_fp->_get_option('hd_streaming') ) {

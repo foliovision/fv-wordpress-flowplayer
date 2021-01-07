@@ -448,6 +448,11 @@ jQuery(document).ready(function($) {
 
   });
 
+  // no sorting of settings boxes please
+  setTimeout( function() {
+    jQuery('#normal-sortables').sortable( "disable" )
+  }, 0 );
+
 });
 </script>
 					<div class="clear"></div>
