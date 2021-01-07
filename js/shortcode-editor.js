@@ -471,7 +471,7 @@ jQuery(document).ready(function($){
    * Preview iframe dialog resize
    */
   $document.on('fvp-preview-complete',function(e,width,height){
-    console.log('FV Player Editor: Preview shown.');
+    console.log('FV Player Editor: Preview shown.',jQuery('[id=fv-player-shortcode-editor-preview]').length);
     fv_player_shortcode_preview = false;
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
     setTimeout(function(){
