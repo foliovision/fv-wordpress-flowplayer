@@ -471,6 +471,7 @@ jQuery(document).ready(function($){
    * Preview iframe dialog resize
    */
   $document.on('fvp-preview-complete',function(e,width,height){
+    console.log('FV Player Editor: Preview shown.');
     fv_player_shortcode_preview = false;
     jQuery('#fv-player-shortcode-editor-preview').attr('class','preview-show');
     setTimeout(function(){
@@ -2226,15 +2227,34 @@ function fv_wp_flowplayer_show_preview(has_src, data, is_post) {
     fv_player_shortcode_editor_last_url = url;
     var $previewTarget = jQuery('#fv-player-shortcode-editor-preview-target');
     $previewTarget.html('');
+    
+    console.log('FV Player Editor: Preview requested...');
 
     if (typeof(is_post) != 'undefined') {
       fv_player_shortcode_editor_ajax = jQuery.post(url, { 'fv_player_preview_json' : JSON.stringify(data) }, function (response) {
-        $previewTarget.html(jQuery('#wrapper', response));
+        
+        console.log('FV Player Editor: Preview Ajax finished (POST).');
+        var wrapper = jQuery('#wrapper2', response);
+        if( wrapper.length ) {
+          console.log('FV Player Editor: Preview wrapper found.',wrapper.html());
+        } else {
+          console.error('FV Player Editor: Preview wrapper not found!',response);
+        }
+        
+        $previewTarget.html(wrapper);
         jQuery(document).trigger('fvp-preview-complete');
       });
     } else {
       fv_player_shortcode_editor_ajax = jQuery.get(url, function (response) {
-        $previewTarget.html(jQuery('#wrapper', response));
+        console.log('FV Player Editor: Preview Ajax finished (GET).');
+        var wrapper = jQuery('#wrapper', response);
+        if( wrapper.length ) {
+          console.log('FV Player Editor: Preview wrapper found.',wrapper.html());
+        } else {
+          console.error('FV Player Editor: Preview wrapper not found!',response);
+        }
+        
+        $previewTarget.html(wrapper);
         jQuery(document).trigger('fvp-preview-complete');
       });
     }
