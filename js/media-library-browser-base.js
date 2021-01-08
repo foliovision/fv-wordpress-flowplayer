@@ -466,6 +466,8 @@ jQuery( function($) {
     if( extra && extra.mime ) {
       if( extra.mime.indexOf('audio') !== -1 ) {
         audio_checkbox.prop( "checked", true );
+      } else {
+        audio_checkbox.prop( "checked", false );
       }
     }
 
