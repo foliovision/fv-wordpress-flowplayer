@@ -566,7 +566,7 @@
       margin: 0 .6em; }
       .flowplayer .fp-controls strong {
       	margin: 0;
-      	padding: 0 .6em;
+      	padding: .4em .6em;
       }
     .flowplayer .fp-controls > strong {
       letter-spacing: 1px; font-weight: 400; }
