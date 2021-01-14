@@ -360,6 +360,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 7.4.38.727 - 2021/01/14 =
 
 * Security - Security - XSS fix for wp-admin -> FV Player screen from logged in editors/admins. Thanks to Arcangelo Saracino for the report!
+* Compatibility - Avada builder (wp-admin) fixes
+* Google Analytics - switching from ga.js to analytics.js
+* Bugfix - Audio splash screen fix for HLS audio-only streams
+* Bugfix - Fullscreen subtitles font size
+* Bugfix - Video duration scanning issues with certain HLS streams
 
 = 7.4.37.727 - 2020/11/20 =
 
