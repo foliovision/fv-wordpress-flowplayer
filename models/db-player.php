@@ -443,6 +443,9 @@ CREATE TABLE " . self::$db_table_name . " (
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
       if (property_exists($this, $key)) {
+        if( $key != 'ad' ) {
+          $value = strip_tags($value);
+        }
         $this->$key = stripslashes($value);
         
       } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
@@ -992,6 +995,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
+        
+        if( $property != 'ad' ) {
+          $value = strip_tags($value);
+        }
 
         if (!$numeric_value) {
           $data_values[] = $value;
