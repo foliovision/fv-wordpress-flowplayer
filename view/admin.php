@@ -1313,6 +1313,7 @@ function fv_flowplayer_admin_skin() {
         'options' => array(
           'inherit'                                     => __( '(inherit from template)', 'fv-wordpress-flowplayer' ),
           '&quot;Courier New&quot;, Courier, monospace' => 'Courier New',
+          'Helvetica, sans-serif'                       => 'Helvetica',
           'Tahoma, Geneva, sans-serif'                  => 'Tahoma, Geneva'
         ),
         'default' => 'Tahoma, Geneva, sans-serif',
@@ -1464,8 +1465,9 @@ function fv_flowplayer_admin_skin_subtitles() {
       <td><label for="subtitle-font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-captions { font-family: %val% !important; }">
-          <option value="inherit"<?php if( $fv_fp->_get_option('subtitleFontFace') == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit)', 'fv-wordpress-flowplayer'); ?></option>          
-          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->_get_option('subtitleFontFace') == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
+          <option value="inherit"<?php if( $fv_fp->_get_option('subtitleFontFace') == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit from player)', 'fv-wordpress-flowplayer'); ?></option>          
+          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->_get_option('subtitleFontFace') == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>
+          <option value="Helvetica, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Helvetica, sans-serif" ) echo ' selected="selected"'; ?>>Helvetica</option>				  
           <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
         </select>
       </td>   
