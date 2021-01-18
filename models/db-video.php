@@ -772,6 +772,10 @@ CREATE TABLE " . self::$db_table_name . " (
         if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
           if( $meta_object->getMetaValue() != $value ) {
             $to_update = $meta_object->getId();
+          } else {
+            // we found the meta key but its value hasn't changed,
+            // bail out so we don't unneccessarily make a DB call
+            return false;
           }
         }
       }
