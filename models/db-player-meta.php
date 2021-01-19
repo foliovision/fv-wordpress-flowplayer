@@ -409,8 +409,6 @@ CREATE TABLE " . self::$db_table_name . " (
       } else {
         $this->is_valid = false;
       }
-    } else {
-      throw new Exception('No options nor a valid ID was provided for DB player meta data item.');
     }
 
     // update cache, if changed
