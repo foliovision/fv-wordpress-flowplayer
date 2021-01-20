@@ -357,6 +357,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.39.727 - 2021/01/20 =
+
+* Bugfix - removing exception trigger for missing FV_Player_Db_Player_Meta()
+
 = 7.4.38.727 - 2021/01/14 =
 
 * Security - Security - XSS fix for wp-admin -> FV Player screen from logged in editors/admins. Thanks to Arcangelo Saracino for the report!
