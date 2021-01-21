@@ -1421,7 +1421,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
-    $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+    $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, "/*\nFV Flowplayer custom styles\n\nWarning: This file is not mean to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n*/\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
@@ -1432,7 +1432,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $this->_get_conf();
     }
   }
-  
+
+  /*
+   * @param array $match
+   *        string $match[0] - CSS declaration with url() in "" or '' or without quotes,
+   *                           using path like "icons/flowplayer.eot?#iefix"
+   *                           or data URL like url("data:image/svg+xml;base64,PHN2...");
+   *
+   * @return string CSS declaration with fixed relative path.
+   */
+  function css_relative_paths_fix( $match ) {
+    $path = self::get_plugin_url().'/css/';
+    if(
+      stripos($match[0],'data:') === false || // skip data URLs
+      stripos($match[0],'//') === false  // skip absolute paths
+    ) {
+      if( stripos($match[0],'url("') === 0 ) {
+        $match[0] = str_replace( 'url("', 'url("'.$path, $match[0] );
+      } else if( stripos($match[0],"url('") === 0 ) {
+        $match[0] = str_replace( "url('", "url('".$path, $match[0] );
+      } else if( stripos($match[0],'url(') === 0 ) {
+        $match[0] = str_replace( 'url(', 'url('.$path, $match[0] );
+      }
+    }
+    return $match[0];
+  }  
   
   public static function esc_caption( $caption ) {
     return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
