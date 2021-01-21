@@ -123,6 +123,11 @@ flowplayer(function(api, root) {
     
     var mediaInfo = new chrome.cast.media.MediaInfo(src);
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
+    
+    // do not play the video from start, but continue where you left off
+    if( !api.live ) {
+      request.currentTime = api.video.time;
+    }
 
     // the old interval might be running and ruining the party
     clearInterval(timer);
@@ -257,7 +262,18 @@ flowplayer(function(api, root) {
   bean.on(root, 'click', '.fp-chromecast', function(ev) {
     ev.preventDefault();
     if (session) {
+      // without this the video cannot continue playing
       api.trigger('pause', [api]);
+      
+      // restore playback position
+      if( session.media[0].media ) {
+        var seek = session.media[0].getEstimatedTime();
+        setTimeout( function() {
+          console.log( 'seek to',seek );
+          api.seek( seek );
+        }, 0 );
+      }
+      
       session.stop();
       session = null;
       destroy();
