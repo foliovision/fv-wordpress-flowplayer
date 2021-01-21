@@ -357,8 +357,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.4.39.727 - 2021/01/20 =
+= 7.4.39.727 - 2021/01/21 =
 
+* Chromecast - icon fix
+* Chromecast - retain playback position when enabling/disabling
+* Chromecast - support replaying the video and playlists
+* Chromecast - support switching of audio tracks in multiple audio track HLS streams
+* Skin settings - adding Helvetica as an option
 * Bugfix - removing exception trigger for missing FV_Player_Db_Player_Meta()
 
 = 7.4.38.727 - 2021/01/14 =
