@@ -352,11 +352,15 @@ function flowplayer_prepare_scripts() {
       $aDependencies[] = 'fv-player';
       
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
-        if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
-        if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
+        $filename = basename($filename);
+        if(
+          strcmp($filename,'flowplayer.min.js') == 0 ||
+          strcmp($filename,'flowplayer.js') == 0 ||
+          strcmp($filename,'fv-player.js') == 0
+        ) continue;
         
-        $path = '/flowplayer/modules/'.basename($filename);
-        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
+        $path = '/flowplayer/modules/'.$filename;
+        wp_enqueue_script( 'fv-player-'.$filename, flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
       
     } else {
