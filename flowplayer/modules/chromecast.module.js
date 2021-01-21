@@ -133,12 +133,28 @@ flowplayer(function(api, root) {
     });
   }
 
-  function onMediaDiscovered(media) {
-    media.addUpdateListener(function(alive) {
+  function onMediaDiscovered(chromecast) {
+    // use the selected audio track
+    if( language = jQuery(root).find('.fv-fp-hls-menu [data-audio].fp-selected').data('audio') ) {
+      switch_track( chromecast, language );
+    }
+    
+    chromecast.addUpdateListener(function(alive) {
       if (!session) return; // Already destoryed
       
       timer = timer || setInterval(function() {
-        api.trigger('progress', [api, media.getEstimatedTime()]);
+        api.trigger('progress', [api, chromecast.getEstimatedTime()]);
+        
+        // hilight the audio track
+        jQuery.each( chromecast.media.tracks, function(k,v) {
+          if( v.trackId == chromecast.activeTrackIds[0] ) {
+            jQuery(root).find(".fv-fp-hls-menu a").each(function (k,el) {
+              jQuery(el).toggleClass("fp-selected", jQuery(el).attr("data-audio") === v.language);
+            });
+            return false;
+          }
+        });
+        
       }, 500);
       
       if (alive) {
@@ -147,7 +163,7 @@ flowplayer(function(api, root) {
         api.hijack({
           pause: function() {
             console.log('hijacked pause!');
-            media.pause();
+            chromecast.pause();
           },
           resume: function() {
           
@@ -161,16 +177,16 @@ flowplayer(function(api, root) {
               return;
             }
             
-            media.play();
+            chromecast.play();
           },
           seek: function(time) {
             var req = new chrome.cast.media.SeekRequest();
             req.currentTime = time;
-            media.seek(req);
+            chromecast.seek(req);
           }
         });
       }
-      var playerState = media.playerState;
+      var playerState = chromecast.playerState;
       
       if (api.paused && playerState === chrome.cast.media.PlayerState.PLAYING) api.trigger('resume', [api]);
       if (api.playing && playerState === chrome.cast.media.PlayerState.PAUSED) api.trigger('pause', [api]);
@@ -186,7 +202,7 @@ flowplayer(function(api, root) {
         api.trigger('seek', [api]);
       }
       
-      if( playerState == chrome.cast.media.PlayerState.IDLE && media.idleReason == chrome.cast.media.IdleReason.FINISHED ) {
+      if( playerState == chrome.cast.media.PlayerState.IDLE && chromecast.idleReason == chrome.cast.media.IdleReason.FINISHED ) {
         api.trigger('finish', [api]);
       }
       
@@ -249,7 +265,11 @@ flowplayer(function(api, root) {
     }
     if (api.playing) api.pause();
 
+    // bring up the Chromecast device selection
     chrome.cast.requestSession(function(s) {
+      // user clicked the Chromecast device, so let's make it impossible to use the player before it really initializes
+      jQuery(root).addClass('is-loading');
+      
       session = s;
       var receiverName = session.receiver.friendlyName;
       common.html(common.find('.fp-chromecast-engine-status',root)[0], 'Playing on device ' + receiverName);
@@ -261,10 +281,32 @@ flowplayer(function(api, root) {
     });
   });
   
+  bean.on(root, 'click', '.fv-fp-hls-menu [data-audio]', function() {
+    if( session && session.media[0].media ) {
+      switch_track( session.media[0], jQuery(this).data('audio') );
+      return false;
+    }
+  });
+  
   jQuery(window).on('unload', function(){
     if( session ) {
       session.stop();
     }
   });
+  
+  
+  function switch_track( chromecast, language ) {
+    jQuery.each( chromecast.media.tracks, function(k,v) {
+      if( v.language == language ) {
+        var tracksInfoRequest = new chrome.cast.media.EditTracksInfoRequest( [ v.trackId ] );
+        chromecast.editTracksInfo(tracksInfoRequest, function(){
+          console.log('FV Player: Chromecast audio track change successfull')
+        }, function(){
+          console.log('FV Player: Chromecast audio track change failed')
+        });
+        return false;
+      }
+    });
+  }
 
 });
