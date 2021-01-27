@@ -2,6 +2,8 @@
  *  Google Analytics improvements + heartbeat
  */
 flowplayer( function(api,root) {
+  if( !api.conf.fvanalytics ) return;
+  
   var root = jQuery(root);
   var bean = flowplayer.bean;
   var time = 0, last = 0, timer, event_name;
