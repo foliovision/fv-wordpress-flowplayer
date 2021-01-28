@@ -56,7 +56,7 @@ class FV_Player_Subtitles {
     $aSubtitles = $fv_fp->get_subtitles($index);
     if( count($aSubtitles) == 0 ) return $aItem;
         
-    $aLangs = flowplayer::get_languages();
+    $translations = get_site_transient( 'available_translations' );
     $countSubtitles = 0;
     $aOutput = array();
 
@@ -78,7 +78,6 @@ class FV_Player_Subtitles {
           $sCaption = 'English';
         
         } elseif( !empty($sCode) ) {
-          $translations = get_site_transient( 'available_translations' );
           $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
           if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
             $sCaption = $translations[$sLangCode]['native_name'];
@@ -92,7 +91,18 @@ class FV_Player_Subtitles {
         
       } else {
         $objSubtitle->srclang = $key;
-        $objSubtitle->label = $aLangs[strtoupper($key)];        
+        // get native name by locale code
+        if( !empty($translations) ) {
+          foreach( $translations as $translation ) {
+            foreach($translation['iso'] as $iso) {
+              if( $iso == $key ) {
+                $label = explode(' ', $translation['native_name'] ); // remove extra text from label, example: Deutsch (Schweiz) -> Deutch
+                $objSubtitle->label = $label[0];
+                break 2;
+              }
+            }
+          }
+        }
       }
       
 
