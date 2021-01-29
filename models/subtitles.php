@@ -56,7 +56,15 @@ class FV_Player_Subtitles {
     $aSubtitles = $fv_fp->get_subtitles($index);
     if( count($aSubtitles) == 0 ) return $aItem;
         
-    $translations = get_site_transient( 'available_translations' );
+    $translations = flowplayer::get_languages();
+    $transient_translations = false;
+
+    if(isset($translations['transient'])) {
+      unset($translations['transient']);
+      $transient_translations = $translations;
+      $translations =  wp_list_pluck( $translations, 'native_name', 'language' );
+    }
+
     $countSubtitles = 0;
     $aOutput = array();
 
@@ -68,7 +76,7 @@ class FV_Player_Subtitles {
       if( $key == 'sh' ) $key = 'sr';
       
       $objSubtitle = new stdClass;
-      if( $key == 'subtitles' ) {                   
+      if( $key == 'subtitles' ) {
         $aLang = explode('-', get_bloginfo('language'));
         if( !empty($aLang[0]) ) $objSubtitle->srclang = $aLang[0];
         $sCode = $aLang[0];
@@ -76,11 +84,10 @@ class FV_Player_Subtitles {
         $sCaption = '';
         if( !empty($sCode) && $sCode == 'en' ) {
           $sCaption = 'English';
-        
         } elseif( !empty($sCode) ) {
           $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
-          if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
-            $sCaption = $translations[$sLangCode]['native_name'];
+          if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]) ) {
+            $sCaption = $translations[$sLangCode];
           }
           
         }
@@ -91,14 +98,20 @@ class FV_Player_Subtitles {
         
       } else {
         $objSubtitle->srclang = $key;
-        // get native name by locale code
-        if( !empty($translations) ) {
-          foreach( $translations as $translation ) {
-            foreach($translation['iso'] as $iso) {
-              if( $iso == $key ) {
-                $label = explode(' ', $translation['native_name'] ); // remove extra text from label, example: Deutsch (Schweiz) -> Deutch
-                $objSubtitle->label = $label[0];
-                break 2;
+        if( isset($translations[$key]) ) {
+          $objSubtitle->label = $translations[$key];
+        } else if( isset($translations[strtoupper($key)]) ) {
+          $objSubtitle->label = $translations[strtoupper($key)];
+        } else {
+          // get native name by locale code
+          if(!empty($transient_translations) ) {
+            foreach( $translations as $translation ) {
+              foreach($translation['iso'] as $iso) {
+                if( $iso == $key ) {
+                  $label = explode(' ', $translation['native_name'] ); // remove extra text from label, example: Deutsch (Schweiz) -> Deutch
+                  $objSubtitle->label = $label[0];
+                  break 2;
+                }
               }
             }
           }
