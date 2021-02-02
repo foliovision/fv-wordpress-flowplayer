@@ -338,16 +338,10 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                           <option></option>
                           <?php
                           $aLanguages = flowplayer::get_languages();
-                          $transient = false;
-                          if(isset($aLanguages['transient'])) {
-                            unset($aLanguages['transient']);
-                            $aLanguages = wp_list_pluck( $aLanguages, 'native_name', 'language' );
-                            $transient = true;
-                          }
                           $aCurrent = explode('-', get_bloginfo('language'));
                           $sCurrent = ''; //aCurrent[0];
                           foreach ($aLanguages AS $sCode => $sLabel) {
-                            ?><option value="<?php echo $transient == true ? $sCode : strtolower($sCode); ?>"<?php if (strtolower($sCode) == $sCurrent || $sCode == $sCurrent) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
+                            ?><option value="<?php echo strtolower($sCode); ?>"<?php if (strtolower($sCode) == $sCurrent) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
                             <?php
                           }
                           ?>
