@@ -1694,6 +1694,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public static function get_languages() {
+    require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+    $transient = wp_get_available_translations();
+
     $aLangs = array(
       'SDH' => 'SDH',
       'AB' => 'Abkhazian',
@@ -1833,6 +1836,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'ZU' => 'Zulu'
     );
     
+    // translate to native language
+    if(!empty($transient)) {
+      foreach($aLangs as $code => $value){
+        foreach( $transient as $translation ) {
+          foreach($translation['iso'] as $iso) {
+            if( $iso == strtolower( $code ) ) {
+              $label = explode(' ', $translation['native_name'] ); // remove extra text from label, example: Deutsch (Schweiz) -> Deutch
+              $aLangs[$code] = $label[0];
+              break ;
+            }
+          }
+        }
+      }
+    }
+
     ksort($aLangs);
     
     return $aLangs;
