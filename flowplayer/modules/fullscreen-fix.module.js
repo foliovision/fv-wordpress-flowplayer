@@ -58,6 +58,7 @@ flowplayer(function(player, root) {
   };
 
   player.on('fullscreen-exit', function() {
+    if( player.engine.engineName == 'fvyoutube' ) return; // prevent conflict with youtube.module.js in pro plugin
     win.scrollTo(scrollX, scrollY);    
 
     /*
