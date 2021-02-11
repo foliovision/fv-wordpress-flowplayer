@@ -8,15 +8,13 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       delete fv_flowplayer_conf.volume;
     }
   } catch(e) {}
-  
-  if(typeof fv_flowplayer_conf.chromecast === "undefined") {
-    fv_flowplayer_conf.chromecast = false;
-  }
 
   flowplayer.conf = fv_flowplayer_conf;
+  flowplayer.conf.chromecast = false; // we have our own Chromecast code to use instead
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
-
+  flowplayer.conf.analytics = false;
+  
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
     flowplayer.conf.key = atob(flowplayer.conf.key);
@@ -301,7 +299,7 @@ function fv_player_preload() {
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
       // Show splash img if audio
-      if( !api.video.type.match(/^audio/) ) {
+      if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
         splash_img.remove();
         splash_text.remove();
       }

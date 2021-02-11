@@ -294,8 +294,19 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
 }
 
 
-function fv_player_time() {
+function fv_player_time( $args = array() ) {
   global $post, $fv_fp;
+	
+  if( !empty($args['id']) ) {
+    $player = new FV_Player_Db_Player($args['id']);
+    if( $player->getIsValid() ) {
+      foreach( $player->getVideos() AS $video ) {
+        if( $duration = $video->getDuration() ) {
+          return flowplayer::format_hms( $duration );
+        }
+      }
+    }
+  }
   
   if( $post->ID > 0 && isset($fv_fp->aCurArgs['src']) ) {
     return flowplayer::get_duration( $post->ID, $fv_fp->aCurArgs['src'] );

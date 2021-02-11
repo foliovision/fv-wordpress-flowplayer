@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.5
+Tested up to: 5.6
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,33 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.4.39.727 - 2021/01/21 =
+
+* Chromecast - icon fix
+* Chromecast - retain playback position when enabling/disabling
+* Chromecast - support replaying the video and playlists
+* Chromecast - support switching of audio tracks in multiple audio track HLS streams
+* Skin settings - adding Helvetica as an option
+* Bugfix - removing exception trigger for missing FV_Player_Db_Player_Meta()
+
+= 7.4.38.727 - 2021/01/14 =
+
+* Security - Security - XSS fix for wp-admin -> FV Player screen from logged in editors/admins. Thanks to Arcangelo Saracino for the report!
+* Compatibility - Avada builder (wp-admin) fixes
+* Google Analytics - switching from ga.js to analytics.js
+* Bugfix - Audio splash screen fix for HLS audio-only streams
+* Bugfix - Fullscreen subtitles font size
+* Bugfix - Video duration scanning issues with certain HLS streams
+
+= 7.4.37.727 - 2020/11/20 =
+
+* Added Settings into wp-admin -> FV Player menu
+* Compatibility - Safari fullscreen fix for Twenty Twenty
+* Bugfix - HLS quality remembering - fix when remembered stream number doesn't exist
+* Bugfix - iOS video recovery - was causing issues with playback of MP4 videos
+* Bugfix - Playlist style selection not working for FV Player Pro Vimeo Channel parsing
+* Bugfix - S3 Browser - fix for CloudFront domains when using S3 path with region name
 
 = 7.4.36.727 - 2020/10/28 =
 

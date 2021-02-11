@@ -173,6 +173,9 @@
   right: 0;
   left: 0;
   color: #fff; }
+  .flowplayer .fp-chromecast-engine p {
+    color: #fff;
+  }
   .flowplayer .fp-chromecast-engine .fp-chromecast-engine-status {
     font-size: 150%;
     text-align: center; }
@@ -394,7 +397,7 @@
     text-align: center;
     cursor: pointer;
     color: #fff; }
-    .flowplayer .fp-ui a, .flowplayer .fp-ui strong {
+    .flowplayer .fp-ui a, .flowplayer .fp-ui strong, .flowplayer .fp-ui a:before {
       color: inherit !important;
       font-style: normal !important;
       text-decoration: none !important; }
@@ -566,7 +569,7 @@
       margin: 0 .6em; }
       .flowplayer .fp-controls strong {
       	margin: 0;
-      	padding: 0 .6em;
+      	padding: .4em .6em;
       }
     .flowplayer .fp-controls > strong {
       letter-spacing: 1px; font-weight: 400; }
@@ -1061,23 +1064,24 @@
 .flowplayer.is-small .fp-captions{line-height:14px !important}
 .flowplayer.is-small .fp-captions p{font-size:14px !important;line-height:20px !important}
 
-.flowplayer.is-tiny .fp-captions{bottom:4px;line-height:12px !important}
+.flowplayer.is-tiny .fp-captions{line-height:12px !important; bottom: .2em}
+.flowplayer.is-tiny.is-mouseover .fp-captions, .flowplayer.is-tiny.is-paused .fp-captions {bottom: 3em}
 .flowplayer.is-tiny .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
 /* Fullscreen captions on large screens */
 @media (min-width: 64.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:175%;max-width:75%}
+.flowplayer.is-fullscreen .fp-player .fp-captions p{font-size:175%;max-width:75%}
 }
 @media (min-width: 90.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:200%}
+.flowplayer.is-fullscreen .fp-player .fp-captions p{font-size:200%}
 }
 @media (min-width: 120.063em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:225%;max-width:65%}
+.flowplayer.is-fullscreen .fp-player .fp-captions p{font-size:225%;max-width:65%}
 }
 @media (min-width: 128em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:300%}
+.flowplayer.is-fullscreen .fp-player .fp-captions p{font-size:300%}
 }
 @media (min-width: 160em) {
-.flowplayer.is-fullscreen .fp-captions p{font-size:350%}
+.flowplayer.is-fullscreen .fp-player .fp-captions p{font-size:350%}
 }
 
 /* reducing the spacing in .fp-header */
@@ -1146,7 +1150,6 @@
 
 /* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
-.flowplayer .fvp-share-bar{font-size:12px}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}

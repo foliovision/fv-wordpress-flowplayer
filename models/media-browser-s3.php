@@ -121,7 +121,9 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           }
           
           foreach( $buckets as $bucket_id => $bucket_name ) {
-            if( $bucket_name.'.s3.amazonaws.com' == $origin ) {
+            if( !empty($regions) && !empty($regions[$bucket_id]) && $bucket_name.'.s3.'.$regions[$bucket_id].'.amazonaws.com' == $origin ) {
+              $domains[$bucket_id] = 'https://'.$cf_domain; // todo: check if SSL is enabled for custom domains!
+            } else if( $bucket_name.'.s3.amazonaws.com' == $origin ) {
               $domains[$bucket_id] = 'https://'.$cf_domain; // todo: check if SSL is enabled for custom domains!
             }            
           }

@@ -405,7 +405,7 @@ jQuery( function($) {
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
-        if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
+        if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
           splash = (f.splash ? f.splash : f.link);
 
           // remove signature if we're updating the Editor field, otherwise leave it in,
@@ -462,7 +462,14 @@ jQuery( function($) {
       encoding_job_id_field.val('');
     }
     
-    
+    var audio_checkbox = $url_input.closest('table').find('#fv_wp_flowplayer_field_audio');
+    if( extra && extra.mime ) {
+      if( extra.mime.indexOf('audio') !== -1 ) {
+        audio_checkbox.prop( "checked", true );
+      } else {
+        audio_checkbox.prop( "checked", false );
+      }
+    }
 
     $popup_close_btn.click();
 
