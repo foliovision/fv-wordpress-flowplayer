@@ -869,7 +869,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
         $tDuration = flowplayer::hms_to_seconds( $tDuration );
-        $tPosition = $aItem['position'];
+        $tPosition = !empty($aItem['position']) ? $aItem['position'] : 0;
         if( $tPosition > 0 && !empty($aPlayer['fv_start']) ) {
           $tPosition -= $aPlayer['fv_start'];
           if( $tPosition < 0 ) {
@@ -877,7 +877,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
         }
 
-        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * ( $tPosition ? $tPosition / $tDuration : 0) ).'%" data-duration="'.esc_attr($tDuration).'"></
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $tPosition / $tDuration ).'%" data-duration="'.esc_attr($tDuration).'"></
         span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
