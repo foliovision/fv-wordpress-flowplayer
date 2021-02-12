@@ -568,8 +568,18 @@ function fv_player_time_seconds(time, duration) {
   return duration ? Math.min(seconds, duration) : seconds;
 }
 
-//Autoplays the video, queues the right video on mobile
-function fv_autoplay_init(root, index ,time, abEnd){
+/*
+ * Autoplays the video, queues the right video on mobile
+ *
+ * @param {$jQueryDomObject}  root  Player element
+ * @param {number}            index Video number in playlist
+ * @param {string|number}     time  Desired play position in hh:mm:ss
+ *                                  format or number of seconds
+ * @param {number}            abEnd Optional - end of FV Player Pro AB 
+ *                                  loop. If it's present we trigger
+ *                                  the loop-ab event for FV Player Pro
+ */
+function fv_autoplay_init(root, index, time, abEnd){
   if( fv_autoplay_exec_in_progress ) return;
 
   fv_autoplay_exec_in_progress = true;  
