@@ -579,6 +579,7 @@ function fv_autoplay_init(root, index, time, abEnd){
   if(!api) return;
 
   var fTime = fv_player_time_seconds(time);
+  abEnd = fv_player_time_seconds(abEnd);
 
   if(root.parent().hasClass('ui-tabs-panel')){
     var tabId = root.parent().attr('id');
