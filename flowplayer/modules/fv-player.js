@@ -566,9 +566,11 @@ function fv_player_time_seconds(time, duration) {
  * @param {number}            index Video number in playlist
  * @param {string|number}     time  Desired play position in hh:mm:ss
  *                                  format or number of seconds
- * @param {number}            abEnd Optional - end of FV Player Pro AB 
+ * @param {number}            abStart Optional - end of FV Player Pro AB 
  *                                  loop. If it's present we trigger
  *                                  the loop-ab event for FV Player Pro
+ * @param {number}            abEnd Optional - end of FV Player Pro AB 
+ *                                  loop.
  */
 function fv_autoplay_init(root, index, time, abStart, abEnd){
   if( fv_autoplay_exec_in_progress ) return;
@@ -613,7 +615,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
           fv_autoplay_exec_in_progress = false;
           if( fTime > -1 ){
             api.seek(fTime)
-            if (abEnd) api.trigger('link-ab', [api, abStart, abEnd]);
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
           }
         } );
       }
@@ -624,7 +626,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
           fv_autoplay_exec_in_progress = false;
           if( fTime > -1 ){
             api.seek(fTime)
-            if (abEnd) api.trigger('link-ab', [api, abStart, abEnd]);
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
           }
         } );
       });
@@ -652,7 +654,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
           var do_seek = setInterval( function() {
             if( api.loading ) return;
             api.seek(fTime)
-            if (abEnd) api.trigger('link-ab', [api, abStart, abEnd]);
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
             clearInterval(do_seek);
           }, 10 );
         }
