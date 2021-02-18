@@ -1694,6 +1694,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public static function get_languages() {
+    // List taken from https://www.localeplanet.com/icu/
     $aLangs = array(
       'SDH' => 'SDH',
       'AA' => 'Afaraf',
