@@ -1929,7 +1929,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // Uppercase first letter
     foreach( $aLangs as $code => $native ) {
-      $aLangs[$code] = ucfirst($native);
+      // $aLangs[$code] = ucfirst($native);
+      $aLangs[$code] = mb_convert_case($native, MB_CASE_TITLE, "UTF-8");
     }
 
     ksort($aLangs);
