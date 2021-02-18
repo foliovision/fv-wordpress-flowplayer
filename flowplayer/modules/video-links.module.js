@@ -7,7 +7,7 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
     if( jQuery(root).find('.sharing-link').length > 0 ) {
       var abEnd, abStart, hash, sTime;
 
-      function update_link( abStartNew = false, abEndNew = false ) {
+      function update_link( abStartNew, abEndNew ) {
         hash = fv_player_get_video_link_hash(api);
         sTime = ',' + fv_player_time_hms(api.video.time);
         
