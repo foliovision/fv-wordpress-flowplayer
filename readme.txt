@@ -357,6 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.40.727 - 2021/02/18 =
+
+* Bugfix - Fullscreen - bad scroll position after leaving fullscreen of YouTube with FV Player Pro
+* Bugfix - Google Analytics - only load when configured
+* Bugfix - prevent PHP notices for position and timeline_preview
+
 = 7.4.39.727 - 2021/01/21 =
 
 * Chromecast - icon fix
