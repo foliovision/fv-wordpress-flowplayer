@@ -12,9 +12,20 @@
 
 	Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function(player){
 		player.className = player.className.replace(/\bno-svg\b/g,'');
+		
+		// remove admin JavaScript warning
+		var admin_js_warning = player.querySelector('.fvfp_admin_error');
+		if( admin_js_warning ) {
+			admin_js_warning.parentNode.removeChild( admin_js_warning );
+		}
 
-		var preload = player.querySelector('.fp-preload'),
-			parent = preload.parentNode,
+		// replace preload icon with play icon
+		var preload = player.querySelector('.fp-preload');
+
+		// occurs for the audio player
+		if( !preload ) return;
+
+		var parent = preload.parentNode,
 			play_icon = document.createElement('div');
 			play_icon.className = 'fp-play fp-visible';
 
@@ -25,11 +36,6 @@
 	<svg class="fp-play-sharp-outline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.844 99.8434"><defs><style>.controlbuttonbg{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-outline</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><path class="controlbutton" d="M36.9443,72.2473V27.2916L75.8776,49.77Zm2.2-41.1455V68.4371L71.4776,49.77Z" filter="url(#f1)"/></svg>'.replace(/url\(#/g, 'url(' + window.location.href.replace(window.location.hash, "").replace(/\#$/g, '') + '#');
 		
 		parent.replaceChild(play_icon,preload);
-		
-		var admin_js_warning = player.querySelector('.fvfp_admin_error');
-		if( admin_js_warning ) {
-			admin_js_warning.parentNode.removeChild( admin_js_warning );
-		}
 	});
 
 })();

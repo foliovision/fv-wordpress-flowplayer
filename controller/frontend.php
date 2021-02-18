@@ -698,6 +698,14 @@ function fv_player_js_loader_load() {
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
   $filesystem = new WP_Filesystem_Direct( new StdClass() );
   
-  // TODO: Min.js
-  echo '<script>'.$filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.dev.js' ).'</script>';
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.dev.js' );
+  
+  // remove // comments
+  $js = preg_replace( '~^\s+//.*?$~m', '', $js );
+  // remove /* comments */
+  $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
+  // remove whitespace
+  $js = preg_replace( '~\s+~m', ' ', $js );
+  
+  echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }
