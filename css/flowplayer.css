@@ -803,6 +803,9 @@
       visibility: visible }
 	.flowplayer.fixed-controls .fp-menu.fp-active {
 		bottom: .2em;
+  }
+  .flowplayer.fixed-controls.is-fullscreen .fp-menu.fp-active {
+		bottom: 3.2em;
 	}
   .flowplayer .fp-speed-menu.fp-active.wont-fit {
   overflow-y: scroll;
