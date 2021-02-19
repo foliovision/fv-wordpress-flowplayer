@@ -107,7 +107,7 @@ function fv_player_settings_save() {
     
     global $fv_fp;
     if( method_exists($fv_fp,'_set_conf') ) {
-      $fv_fp->_set_conf();    
+      //$fv_fp->_set_conf();    
     } else {
       echo 'Error saving FV Flowplayer options.';
     }
