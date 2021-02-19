@@ -11,13 +11,13 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
         hash = fv_player_get_video_link_hash(api);
         sTime = ',' + fv_player_time_hms(api.video.time);
         
-        if( abStartNew && abEndNew ) {
-          abStart = ',' + fv_player_time_hms(abStartNew + api.get_custom_start());
-          abEnd = ',' + fv_player_time_hms(abEndNew + api.get_custom_start());
-        } else {
+        if( abStartNew && abEndNew ) { // new values from slider set event
+          abStart = ',' + fv_player_time_hms(abStartNew + api.get_custom_start(), true);
+          abEnd = ',' + fv_player_time_hms(abEndNew + api.get_custom_start(), true);
+        } else { // values from progress event
           var abEnabled = jQuery(root).find('.fv-player-ab.is-active').length;
-          abEnd = abEnabled && typeof api.get_ab_end() != 'undefined' && api.get_ab_end() ? ',' + fv_player_time_hms(api.get_ab_end()) : '';
-          abStart = abEnabled && typeof api.get_ab_start() != 'undefined' && api.get_ab_start() ? ',' + fv_player_time_hms(api.get_ab_start()) : '';
+          abEnd = abEnabled && typeof api.get_ab_end() != 'undefined' && api.get_ab_end() ? ',' + fv_player_time_hms(api.get_ab_end(), true) : '';
+          abStart = abEnabled && typeof api.get_ab_start() != 'undefined' && api.get_ab_start() ? ',' + fv_player_time_hms(api.get_ab_start(), true) : '';
         }
 
         jQuery('.sharing-link',root).attr('href',jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime + abStart + abEnd);

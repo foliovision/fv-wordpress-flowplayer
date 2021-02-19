@@ -531,7 +531,7 @@ function fv_player_get_video_link_hash(api) {
   return hash;
 }
 
-function fv_player_time_hms(seconds) {
+function fv_player_time_hms(seconds, hundred = false) {
 
   if(isNaN(seconds)){
     return NaN;
@@ -539,9 +539,16 @@ function fv_player_time_hms(seconds) {
 
   var date = new Date(null);
   date.setSeconds(seconds); // specify value for SECONDS here
-  var timeSrting = date.toISOString().substr(11, 8);
-  timeSrting = timeSrting.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
-  return timeSrting;
+  var timeString = date.toISOString().substr(11, 8);
+  timeString = timeString.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
+
+  if(hundred) {
+    seconds = parseFloat(seconds).toFixed(2)
+    var decimal = (seconds + "").split(".")[1];
+    timeString = timeString.replace(/([0-9]*)s$/, '$1' + '.' + decimal + 's'); // add hundredths
+  }
+
+  return timeString;
 }
 
 function fv_player_time_seconds(time, duration) {
