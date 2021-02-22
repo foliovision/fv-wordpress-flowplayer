@@ -166,7 +166,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
-    return $new_player['html'];
+
+    if ( $new_player ) {
+      return $new_player['html'];
+    } else {
+      return '';
+    }
         
   } else  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
@@ -187,7 +192,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         }
 
         $new_player = $fv_fp->build_min_player( $aArgs['src'],$aArgs );
-        $sHTML .= $new_player['html'];
+        if ( $new_player ) {
+          $sHTML .= $new_player['html'];
+        }
       }
 
       return $sHTML;
@@ -199,7 +206,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
-    return $new_player['html'];
+
+    if ( $new_player ) {
+      return $new_player['html'];
+    } else {
+      return '';
+    }
     
 	}
   return false;

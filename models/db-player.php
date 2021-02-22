@@ -710,7 +710,11 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->is_valid = false;
       }
     } else {
-      trigger_error('No options nor a valid ID was provided for DB player instance.');
+      if ( defined('WP_DEBUG') && WP_DEBUG ) {
+        trigger_error( 'No options nor a valid ID was provided for DB player instance.' );
+      }
+
+      return;
     }
 
     // update cache, if changed
