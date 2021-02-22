@@ -12,12 +12,12 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
         sTime = ',' + fv_player_time_hms(api.video.time);
         
         if( abStartNew && abEndNew ) { // new values from slider set event
-          abStart = ',' + fv_player_time_hms(abStartNew + api.get_custom_start(), true);
-          abEnd = ',' + fv_player_time_hms(abEndNew + api.get_custom_start(), true);
+          abStart = ',' + fv_player_time_hms_ms(abStartNew + api.get_custom_start());
+          abEnd = ',' + fv_player_time_hms_ms(abEndNew + api.get_custom_start());
         } else { // values from progress event
           var abEnabled = jQuery(root).find('.fv-player-ab.is-active').length;
-          abEnd = abEnabled && typeof api.get_ab_end() != 'undefined' && api.get_ab_end() ? ',' + fv_player_time_hms(api.get_ab_end(), true) : '';
-          abStart = abEnabled && typeof api.get_ab_start() != 'undefined' && api.get_ab_start() ? ',' + fv_player_time_hms(api.get_ab_start(), true) : '';
+          abEnd = abEnabled && typeof api.get_ab_end() != 'undefined' && api.get_ab_end() ? ',' + fv_player_time_hms_ms(api.get_ab_end()) : '';
+          abStart = abEnabled && typeof api.get_ab_start() != 'undefined' && api.get_ab_start() ? ',' + fv_player_time_hms_ms(api.get_ab_start()) : '';
         }
 
         jQuery('.sharing-link',root).attr('href',jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime + abStart + abEnd);

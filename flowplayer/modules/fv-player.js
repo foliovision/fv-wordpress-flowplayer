@@ -531,7 +531,25 @@ function fv_player_get_video_link_hash(api) {
   return hash;
 }
 
-function fv_player_time_hms(seconds, hundred = false) {
+function fv_player_time_hms_ms(seconds) {
+ 
+  if(isNaN(seconds)){
+    return NaN;
+  }
+
+  var date = new Date(null);
+  date.setSeconds(seconds); // specify value for SECONDS here
+  var timeString = date.toISOString().substr(11, 8);
+  timeString = timeString.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
+
+  seconds = parseFloat(seconds).toFixed(3)
+  var ms = (seconds + "").split(".")[1];
+  timeString += ms + "ms";
+
+  return timeString;
+}
+
+function fv_player_time_hms(seconds) {
 
   if(isNaN(seconds)){
     return NaN;
@@ -542,12 +560,6 @@ function fv_player_time_hms(seconds, hundred = false) {
   var timeString = date.toISOString().substr(11, 8);
   timeString = timeString.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
 
-  if(hundred) {
-    seconds = parseFloat(seconds).toFixed(2)
-    var decimal = (seconds + "").split(".")[1];
-    timeString = timeString.replace(/([0-9]*)s$/, '$1' + '.' + decimal + 's'); // add hundredths
-  }
-
   return timeString;
 }
 
@@ -557,12 +569,16 @@ function fv_player_time_seconds(time, duration) {
     return -1;
 
   var seconds = 0;
-  var aTime = time.replace(/[hm]/g,':').replace(/s/,'').split(':').reverse();
-
+  // var ms = time.match(/\d+ms$/) != null ? parseInt(time.match(/\d+ms$/)[0]) : false;
+  var ms = (time.match(/\d+ms$/) || false);
+  var aTime = time.replace(/\d+ms$/,'').replace(/[hm]/g,':').replace(/s/,'').split(':').reverse();
+  
   if( typeof(aTime[0]) != "undefined" ) seconds += parseFloat(aTime[0]);
   if( typeof(aTime[1]) != "undefined" ) seconds += parseInt(60*aTime[1]);
   if( typeof(aTime[2]) != "undefined" ) seconds += parseInt(60*60*aTime[2]);
 
+  if( ms && parseInt(ms[0]) ) seconds += parseInt(ms[0])/1000; // add miliseconds if present
+  
   return duration ? Math.min(seconds, duration) : seconds;
 }
 
