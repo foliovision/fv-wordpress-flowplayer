@@ -1750,7 +1750,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   
   ?>
   
-  <form id="wpfp_options" method="post" action="">
+  <form id="wpfp_options" method="post" action="<?php echo admin_url('options.php'); ?>">
     
     <p id="fv_flowplayer_admin_buttons">
       <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>

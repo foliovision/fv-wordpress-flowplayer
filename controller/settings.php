@@ -93,24 +93,23 @@ add_action('admin_init', 'fv_player_settings_save', 9);
 
 function fv_player_settings_save() {
   //  Trick media uploader to show video only, while making sure we use our custom type; Also save options
-  if( isset($_GET['type']) ) {
+  /*if( isset($_GET['type']) ) {
     if( $_GET['type'] == 'fvplayer_video' || $_GET['type'] == 'fvplayer_video_1' || $_GET['type'] == 'fvplayer_video_2' || $_GET['type'] == 'fvplayer_mobile' ) {
       $_GET['post_mime_type'] = 'video';
     }
     else if( $_GET['type'] == 'fvplayer_splash' || $_GET['type'] == 'fvplayer_logo' ) {
       $_GET['post_mime_type'] = 'image';
     }
-  }
+  }*/
   
   if( isset($_POST['fv-wp-flowplayer-submit']) ) {
     check_admin_referer('fv_flowplayer_settings_nonce','fv_flowplayer_settings_nonce');
     
     global $fv_fp;
-    if( method_exists($fv_fp,'_set_conf') ) {
-      //$fv_fp->_set_conf();    
-    } else {
-      echo 'Error saving FV Flowplayer options.';
-    }
+    $fv_fp->_set_conf();
+    
+    wp_redirect( admin_url('options-general.php?page=fvplayer') );
+    exit;
   }  
 }
 
