@@ -445,16 +445,19 @@ CREATE TABLE " . self::$db_table_name . " (
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
       if (!in_array($key, $this->ignored_input_fields)) {
-        if ( property_exists( $this, $key ) ) {
-          $this->$key = stripslashes( $value );
-
-        } else if ( in_array( $key, array( 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ) ) ) {
-          $this->$key = stripslashes( $value );
-
-        } else if ( ! in_array( $key, array( 'drm_text', 'email_list', 'live', 'popup_id' ) ) ) {
+        if (property_exists($this, $key)) {
+          if( $key != 'ad' ) {
+            $value = strip_tags($value);
+          }
+          $this->$key = stripslashes($value);
+          
+        } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
+          $this->$key = stripslashes($value);
+          
+        } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview'))) {
           // generate warning
-          trigger_error( 'Unknown property for new DB player: ' . $key );
-
+          trigger_error('Unknown property for new DB player: ' . $key);
+          
         }
       }
     }    
@@ -1010,6 +1013,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
+        
+        if( $property != 'ad' ) {
+          $value = strip_tags($value);
+        }
 
         if (!$numeric_value) {
           $data_values[] = $value;

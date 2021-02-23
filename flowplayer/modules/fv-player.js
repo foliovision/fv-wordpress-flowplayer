@@ -8,22 +8,13 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       delete fv_flowplayer_conf.volume;
     }
   } catch(e) {}
-  
-  if(typeof fv_flowplayer_conf.chromecast === "undefined") {
-    fv_flowplayer_conf.chromecast = false;
-  }
 
   flowplayer.conf = fv_flowplayer_conf;
+  flowplayer.conf.chromecast = false; // we have our own Chromecast code to use instead
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
+  flowplayer.conf.analytics = false;
   
-  // without this core Flowplayer might not get the right conf in initializePlayer()
-  // need to be used only with flowplayer.js though, not needed with min.js (?)
-  /*setTimeout( function() {
-    flowplayer.conf = fv_flowplayer_conf;
-  }, 0 )
-  */
-
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
     flowplayer.conf.key = atob(flowplayer.conf.key);
@@ -317,7 +308,7 @@ function fv_player_preload() {
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
       // Show splash img if audio
-      if( !video.type.match(/^audio/) ) {
+      if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
         splash_img.remove();
         splash_text.remove();
       }
@@ -610,24 +601,38 @@ function fv_player_time_seconds(time, duration) {
   return duration ? Math.min(seconds, duration) : seconds;
 }
 
-//Autoplays the video, queues the right video on mobile
-function fv_autoplay_init(root, index ,time){
+/*
+ * Autoplays the video, queues the right video on mobile
+ *
+ * @param {$jQueryDomObject}  root  Player element
+ * @param {number}            index Video number in playlist
+ * @param {string|number}     time  Desired play position in hh:mm:ss
+ *                                  format or number of seconds
+ * @param {number}            abStart Optional - end of FV Player Pro AB 
+ *                                  loop. If it's present we trigger
+ *                                  the loop-ab event for FV Player Pro
+ * @param {number}            abEnd Optional - end of FV Player Pro AB 
+ *                                  loop.
+ */
+function fv_autoplay_init(root, index, time, abStart, abEnd){
   if( fv_autoplay_exec_in_progress ) return;
 
-  fv_autoplay_exec_in_progress = true;  
+  fv_autoplay_exec_in_progress = true;
 
   var api = root.data('flowplayer');
   if(!api) return;
 
   var fTime = fv_player_time_seconds(time);
+  abEnd = fv_player_time_seconds(abEnd);
+  abStart = fv_player_time_seconds(abStart);
 
   if(root.parent().hasClass('ui-tabs-panel')){
     var tabId = root.parent().attr('id');
     jQuery('[aria-controls=' + tabId + '] a').trigger('click');
   }
 
-  if( !root.find('.fp-player').attr('class').match(/\bis-sticky/) ){    
-    var offset = jQuery(root).offset().top - (jQuery(window).height() - jQuery(root).height()) / 2;    
+  if( !root.find('.fp-player').attr('class').match(/\bis-sticky/) ){
+    var offset = jQuery(root).offset().top - (jQuery(window).height() - jQuery(root).height()) / 2;
     window.scrollTo(0,offset);
     api.one('ready',function(){
       window.scrollTo(0,offset);
@@ -650,7 +655,10 @@ function fv_autoplay_init(root, index ,time){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ) api.seek(fTime)
+          if( fTime > -1 ){
+            api.seek(fTime)
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
+          }
         } );
       }
     } else if( flowplayer.support.inlineVideo ) {
@@ -658,7 +666,10 @@ function fv_autoplay_init(root, index ,time){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ) api.seek(fTime)
+          if( fTime > -1 ){
+            api.seek(fTime)
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
+          }
         } );
       });
       
@@ -685,6 +696,7 @@ function fv_autoplay_init(root, index ,time){
           var do_seek = setInterval( function() {
             if( api.loading ) return;
             api.seek(fTime)
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
             clearInterval(do_seek);
           }, 10 );
         }
@@ -706,6 +718,9 @@ function fv_autoplay_exec(){
     var aHash = window.location.hash.match(/\?t=/) ? window.location.hash.substring(1).split('?t=') : window.location.hash.substring(1).split(',');
     var hash = aHash[0];
     var time = aHash[1] === undefined ? false : aHash[1];
+    var abStart = aHash[2] === undefined ? false : aHash[2];
+    var abEnd = aHash[3] === undefined ? false : aHash[3];
+
     jQuery('.flowplayer').each(function(){
       var root = jQuery(this);
       if(root.hasClass('lightbox-starter')){
@@ -714,7 +729,7 @@ function fv_autoplay_exec(){
       var api = root.data('flowplayer');
       if(!api) return;
       
-      var playlist = typeof(api.conf.playlist) !== 'undefined' && api.conf.playlist.length > 1 ? api.conf.playlist : [ api.conf.clip ];          
+      var playlist = typeof(api.conf.playlist) !== 'undefined' && api.conf.playlist.length > 1 ? api.conf.playlist : [ api.conf.clip ];
 
       // first play if id is set
       for( var item in playlist ) {
@@ -723,7 +738,7 @@ function fv_autoplay_exec(){
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
         if( hash === id && autoplay ){
           console.log('fv_autoplay_exec for '+id,item);
-          fv_autoplay_init(root, parseInt(item),time);
+          fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
           return false;
         }
@@ -735,7 +750,7 @@ function fv_autoplay_exec(){
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
         if( hash === src  && autoplay ){
           console.log('fv_autoplay_exec for '+src,item);
-          fv_autoplay_init(root, parseInt(item),time);
+          fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
           return false;
         }
