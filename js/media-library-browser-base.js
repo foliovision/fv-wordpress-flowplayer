@@ -462,7 +462,14 @@ jQuery( function($) {
       encoding_job_id_field.val('');
     }
     
-    
+    var audio_checkbox = $url_input.closest('table').find('#fv_wp_flowplayer_field_audio');
+    if( extra && extra.mime ) {
+      if( extra.mime.indexOf('audio') !== -1 ) {
+        audio_checkbox.prop( "checked", true );
+      } else {
+        audio_checkbox.prop( "checked", false );
+      }
+    }
 
     $popup_close_btn.click();
 
