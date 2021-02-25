@@ -166,7 +166,7 @@ class FV_Player_lightbox {
 
     if (isset($aArgs[1]) ) {
       $args = $aArgs[1]->aCurArgs;
-      if( isset($args['lightbox'])) {
+      if( isset($args['lightbox']) && empty(get_query_var('fv_player_embed')) ) {
 
         $this->enqueue();
         
