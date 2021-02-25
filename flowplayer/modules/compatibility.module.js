@@ -132,3 +132,12 @@ if( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(fl
     jQuery(this).css('height', jQuery(this).css('max-height'));
   } );
 }
+
+if( location.href.match(/elementor-preview=/) ) {
+  console.log('FV Player: Elementor editor is active');
+  setInterval( fv_player_load, 1000 );
+  
+} else if( location.href.match(/brizy-edit-iframe/) ) {
+  console.log('FV Player: Brizy editor is active');
+  setInterval( fv_player_load, 1000 );
+}
