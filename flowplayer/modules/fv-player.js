@@ -532,7 +532,7 @@ function fv_player_get_video_link_hash(api) {
 }
 
 /**
- * Converts seconds to mhs format, decimal part is converted to milliseconds, example : 12h15m05s, 5m13s120ms
+ * Converts seconds to hms format, example : 12h15m05s, 5m13s
  * 
  * @param {string|number} seconds input seconds parameter
  *
@@ -544,15 +544,6 @@ function fv_player_time_hms(seconds) {
     return NaN;
   }
   
-  // get milliseconds
-  var miliseconds = (parseFloat(seconds).toFixed(3) + "").split(".");
-
-  if( typeof miliseconds[1] != 'undefined' && miliseconds[1] > 0 ) {
-    miliseconds = miliseconds[1] + "ms";
-  } else {
-    miliseconds = ""
-  }
-
   // calculate h, m, s
   var sec_num = parseInt(seconds, 10)
   var hours   = Math.floor(sec_num / 3600)
@@ -581,7 +572,36 @@ function fv_player_time_hms(seconds) {
 
   seconds += "s";
 
-  var timeString = hours + minutes + seconds + miliseconds;
+  var timeString = hours + minutes + seconds;
+
+  return timeString;
+}
+
+/**
+ * Uses fv_player_time_hms and adds milliseconds
+ * 
+ * @param {number|string} seconds
+ * 
+ * @returns {string} Returns formatted string
+ */
+function fv_player_time_hms_ms(seconds) {
+
+  if(isNaN(seconds)){
+    return NaN;
+  }
+
+  seconds = parseFloat(seconds).toFixed(3);
+
+  // split by decimal point
+  var miliseconds = ( seconds + "").split(".");
+
+  if( typeof miliseconds[1] != 'undefined' && miliseconds[1] > 0 ) {
+    miliseconds = miliseconds[1] + "ms";
+  } else {
+    miliseconds = ""
+  }
+
+  var timeString  = fv_player_time_hms(seconds) + miliseconds;
 
   return timeString;
 }
