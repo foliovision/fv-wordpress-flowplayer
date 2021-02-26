@@ -531,58 +531,95 @@ function fv_player_get_video_link_hash(api) {
   return hash;
 }
 
-function fv_player_time_hms_ms(seconds) {
- 
-  if(isNaN(seconds)){
-    return NaN;
-  }
-
-  var date = new Date(null);
-  date.setSeconds(seconds); // specify value for SECONDS here
-  var timeString = date.toISOString().substr(11, 8);
-  timeString = timeString.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
-
-  seconds = parseFloat(seconds).toFixed(3)
-  var ms = (seconds + "").split(".")[1];
-  timeString += ms + "ms";
-
-  return timeString;
-}
-
+/**
+ * Converts seconds to mhs format, decimal part is converted to milliseconds, example : 12h15m05s, 5m13s120ms
+ * 
+ * @param {string|number} seconds input seconds parameter
+ *
+ * @returns {string} Returns formatted string
+ */
 function fv_player_time_hms(seconds) {
 
   if(isNaN(seconds)){
     return NaN;
   }
+  
+  // get milliseconds
+  var miliseconds = (parseFloat(seconds).toFixed(3) + "").split(".");
 
-  var date = new Date(null);
-  date.setSeconds(seconds); // specify value for SECONDS here
-  var timeString = date.toISOString().substr(11, 8);
-  timeString = timeString.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
+  if( typeof miliseconds[1] != 'undefined' && miliseconds[1] > 0 ) {
+    miliseconds = miliseconds[1] + "ms";
+  } else {
+    miliseconds = ""
+  }
+
+  // calculate h, m, s
+  var sec_num = parseInt(seconds, 10)
+  var hours   = Math.floor(sec_num / 3600)
+  var minutes = Math.floor(sec_num / 60) % 60
+  var seconds = sec_num % 60
+
+  if (hours) {
+    hours += "h"; 
+  } else {
+    hours = "";
+  }
+
+  // leading zero for minutes
+  if ( hours && minutes < 10) { // ecample: 1h05m
+    minutes = "0" + minutes + "m";
+  } else if( !hours && minutes ) { 
+    minutes += "m"; 
+  } else {
+    minutes = "";
+  }
+
+  // leading zero for seconds
+  if ( (hours || minutes) && seconds < 10) { // example 1h13m05s
+    seconds = "0" + seconds;
+  }
+
+  seconds += "s";
+
+  var timeString = hours + minutes + seconds + miliseconds;
 
   return timeString;
 }
 
-function fv_player_time_seconds(time, duration) {
+/**
+ * Converts hms format to seconds
+ * 
+ * @param {string} time 
+ * @param {number|string} duration 
+ * 
+ * @returns {number}
+ */
 
+function fv_player_time_seconds(time, duration) {
   if(!time)
     return -1;
 
   var seconds = 0;
-  // var ms = time.match(/\d+ms$/) != null ? parseInt(time.match(/\d+ms$/)[0]) : false;
-  var ms = (time.match(/\d+ms$/) || false);
-  var aTime = time.replace(/\d+ms$/,'').replace(/[hm]/g,':').replace(/s/,'').split(':').reverse();
-  
-  if( typeof(aTime[0]) != "undefined" ) seconds += parseFloat(aTime[0]);
-  if( typeof(aTime[1]) != "undefined" ) seconds += parseInt(60*aTime[1]);
-  if( typeof(aTime[2]) != "undefined" ) seconds += parseInt(60*60*aTime[2]);
+  var match = time.match(/(\d+[a-z]{1,2})/g);
 
-  if( ms && parseInt(ms[0]) ) seconds += parseInt(ms[0])/1000; // add miliseconds if present
+  match.forEach(function(item) {
+    if( item.endsWith('h') ) {
+      seconds += 3600 * parseInt(item);
+    } else if( item.endsWith('m') ) {
+      seconds += 60 * parseInt(item);
+    } else if( item.endsWith('s') && !item.endsWith('ms') ) {
+      seconds += parseInt(item)
+    } else if( item.endsWith('ms') ) {
+      if(parseInt(item)) {
+        seconds += (parseInt(item) / 1000);
+      }
+    }
+  });
   
   return duration ? Math.min(seconds, duration) : seconds;
 }
 
-/*
+/**
  * Autoplays the video, queues the right video on mobile
  *
  * @param {$jQueryDomObject}  root  Player element
