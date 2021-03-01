@@ -5,7 +5,6 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
-console.log('api.conf.hd_streaming ',api.conf.hd_streaming );
   var hlsjs;
 
   // this is the proper place to pick the initial HLS video quality 
