@@ -26,7 +26,7 @@ flowplayer( function(api,root) {
       // we must skip the current player, as the load even can occur multiple times
       // like for example when you switch to another video in playlist
       var current_instance_id = root.data('flowplayer-instance-id');
-      if( current_instance_id == flowplayer.audible_instance ) return;      
+      if( flowplayer.audible_instance == -1 || current_instance_id == flowplayer.audible_instance ) return;      
 
       if( player ) {
         if( player.playing ) {
