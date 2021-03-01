@@ -35,7 +35,8 @@
 	<svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg>\
 	<svg class="fp-play-sharp-outline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.844 99.8434"><defs><style>.controlbuttonbg{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-outline</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><path class="controlbutton" d="M36.9443,72.2473V27.2916L75.8776,49.77Zm2.2-41.1455V68.4371L71.4776,49.77Z" filter="url(#f1)"/></svg>'.replace(/url\(#/g, 'url(' + window.location.href.replace(window.location.hash, "").replace(/\#$/g, '') + '#');
 		
-		parent.replaceChild(play_icon,preload);
+		preload.style.display = 'none';
+		parent.appendChild(play_icon);
 	});
 
 })();
@@ -135,11 +136,20 @@ class FV_Player_JS_Loader {
 	 */
 	_loadScriptSrc() {
 		const scripts = document.querySelectorAll( `script[${ this.attrName }]` );
+		
+		window.FV_Player_JS_Loader_scripts_total = 0;
+		window.FV_Player_JS_Loader_scripts_loaded = 0;
+		
 		scripts.forEach( elem => {
 			const scriptSrc = elem.getAttribute( this.attrName );
 
 			elem.setAttribute( 'src', scriptSrc );
 			elem.removeAttribute( this.attrName );
+			
+			window.FV_Player_JS_Loader_scripts_total++;
+			elem.onload = function() {
+				window.FV_Player_JS_Loader_scripts_loaded++;
+			}
 		} );
 
 		this.reset();
@@ -149,13 +159,26 @@ class FV_Player_JS_Loader {
 	 * Window event listener - when triggered, invokes the load script src handler and then resets.
 	 */
 	triggerListener() {
+		// Show the preload indicator once again
+		Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function(player){
+			var preload = player.querySelector('.fp-preload');
+			if( preload ) {
+				preload.style.display = 'block';
+			}
+			
+			var play = player.querySelector('.fp-play');
+			if( play ) {
+				play.style.display = 'none';
+			}
+		});
+		
 		this._loadScriptSrc();
 		this._removeEventListener( this );
 	}
 
 	static run() {
 		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
-		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart' ], browser );
+		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
 	}
 }

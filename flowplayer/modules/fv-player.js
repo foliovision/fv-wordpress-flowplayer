@@ -120,7 +120,9 @@ jQuery(document).ready( function() {
       window.fv_video_intelligence_conf && !window.FV_Player_IMA ||
       window.fv_vast_conf && !window.FV_Player_IMA ||
       window.fv_player_pro && !window.FV_Flowplayer_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
-      window.fv_player_user_playlists && !fv_player_user_playlists.is_loaded
+      window.fv_player_user_playlists && !fv_player_user_playlists.is_loaded ||
+      // if using FV Player JS Loader wait until all scripts have finished loading
+      window.FV_Player_JS_Loader_scripts_total && window.FV_Player_JS_Loader_scripts_loaded < FV_Player_JS_Loader_scripts_total
     ) ) {      
       return;
     }
