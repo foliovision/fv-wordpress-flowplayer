@@ -8,7 +8,7 @@ class FV_Player_Stats {
     add_filter('fv_flowplayer_conf', array( $this, 'option' ) );
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
     
-    if ( !wp_next_scheduled( 'fv_player_stats' ) ) {
+    if ( function_exists('wp_next_scheduled') && !wp_next_scheduled( 'fv_player_stats' ) ) {
       wp_schedule_event( time(), '5minutes', 'fv_player_stats' );
     }
     
