@@ -180,6 +180,23 @@ class FV_Player_JS_Loader {
 		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
 		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
+		
+		// Load FV Player scripts instantly if any player is visible
+		var is_any_player_visible = false;
+		document.querySelectorAll('.flowplayer').forEach( el => {
+			var rect = el.getBoundingClientRect();
+			if( rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+			) {
+				is_any_player_visible = true;
+			}
+		});
+		
+		if( is_any_player_visible ) {
+			instance.triggerListener();
+		}
 	}
 }
 
