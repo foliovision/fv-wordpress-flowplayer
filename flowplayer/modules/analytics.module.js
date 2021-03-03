@@ -1,15 +1,14 @@
 /*
  *  Google Analytics improvements + heartbeat
+ *  Also provides custom fv_track_* events
  */
 flowplayer( function(api,root) {
-  if( !api.conf.fvanalytics ) return;
-  
   var root = jQuery(root);
   var bean = flowplayer.bean;
   var time = 0, last = 0, timer, event_name;
 
-  if (typeof(ga) == 'undefined') {
-    jQuery.getScript( "https://www.google-analytics.com/analytics.js", function() {
+  if( typeof(ga) == 'undefined' && api.conf.fvanalytics ) {
+    jQuery.getScript( { url: "https://www.google-analytics.com/analytics.js", cache: true }, function() {
       ga('create', api.conf.fvanalytics, 'auto');
     });
   }
