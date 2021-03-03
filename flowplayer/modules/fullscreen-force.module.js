@@ -112,9 +112,13 @@ flowplayer(function(api, root) {
     }
   }
   
-  if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen ) {
+  if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
-      screen.orientation.lock("landscape-primary");
+      if( api.video.width > api.video.height ) {
+        screen.orientation.lock("landscape-primary");
+      } else {
+        screen.orientation.lock("portrait-primary");
+      }
     })
   }
   
