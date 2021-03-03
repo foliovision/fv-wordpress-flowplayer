@@ -171,7 +171,7 @@ class FV_Player_lightbox {
 
     if (isset($aArgs[1]) ) {
       $args = $aArgs[1]->aCurArgs;
-      if( isset($args['lightbox'])) {
+      if( isset($args['lightbox']) && empty(get_query_var('fv_player_embed')) ) {
 
         $this->enqueue();
         
@@ -363,7 +363,7 @@ class FV_Player_lightbox {
     if(
       $this->should_load() ||
       $fv_fp->_get_option('lightbox_images') || // "Use video lightbox for images as well" is enabled
-      $fv_fp->_get_option('js-everywhere') || // "Load FV Flowplayer JS everywhere" is enabled
+      $fv_fp->should_load_js() || // "Load FV Flowplayer JS everywhere" is enabled
       $fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is enabled
     ) {
       $this->load_scripts();

@@ -179,3 +179,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   height: 100%;
   z-index: 1000;
 }
+
+/*
+Brizy editor support
+*/
+.brz-ed .brz-blocked .flowplayer, .brz-ed .brz-blocked .fp-playlist-external {
+  pointer-events: all;
+}
