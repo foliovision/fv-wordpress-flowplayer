@@ -427,9 +427,9 @@ function fv_player_load( forced_el ) {
       }
     }
 
+    var conf = false;
     if( root.attr('data-item') ) {
-      forced_api = flowplayer( root[0], { clip: fv_player_videos_parse(root.attr('data-item'), root) } );
-      root.data('flowplayer',forced_api);
+      conf = { clip: fv_player_videos_parse(root.attr('data-item'), root) };
       
     } else if( playlist = jQuery( '[rel='+root.attr('id')+']' ) ) {
       if ( playlist.find('a[data-item]').length == 0 ) return;  //  respect old playlist script setup
@@ -443,7 +443,13 @@ function fv_player_load( forced_el ) {
         }
       });
 
-      forced_api = flowplayer( root[0], { playlist: items } );
+      conf = { playlist: items };
+    }
+    
+    if( conf ) {
+      // without this none of the root element data attributes would be processed
+      conf = flowplayer.extend(conf, root.data());
+      forced_api = flowplayer( root[0], conf );
       root.data('flowplayer',forced_api);
     }
   } );
