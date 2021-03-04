@@ -136,8 +136,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
     add_filter( 'init', array( $this, 'rewrite_check' ) );
-    
-    add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
+
+    add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ), 10 );
+    add_filter( 'fv_player_custom_css', array( $this, 'custom_css' ), 11 );
 
     if( !empty($_GET['fv_player_preview']) ) {
       add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
@@ -697,7 +698,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       } else if( in_array( $key, array('width', 'height') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor', 'customCSS') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -2086,7 +2087,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return str_replace( "'", '\u0027', json_encode( $input ) );
     }
   }
-  
+
 
   function popup_css( $css ){
     $aPopupData = get_option('fv_player_popups');
@@ -2100,12 +2101,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
     if( strlen($sNewCss) ){
-      $css .= "\n/*custom popup css*/\n".$sNewCss."/*end custom popup css*/\n";
+      $css .= "\n/*custom popup css*/\n".$sNewCss."\n/*end custom popup css*/\n";
     }
     return $css;
   }  
-    
-  
+
+
+  function custom_css( $css ) {
+    global $fv_fp;
+    $aCustomCSS = $fv_fp->_get_option('customCSS');
+
+    if( strlen($aCustomCSS) ) {
+      $css .= "\n/*custom css*/\n".stripslashes($aCustomCSS)."\n/*end custom css*/\n";
+    }
+    return $css;
+  }
+
+
   function rewrite_check( $aRules ) {
     $aRewriteRules = get_option('rewrite_rules');
     if( empty($aRewriteRules) || !is_array($aRewriteRules) || count($aRewriteRules) == 0 ) {

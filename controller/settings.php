@@ -302,7 +302,13 @@ function fv_flowplayer_admin_scripts() {
   global $fv_wp_flowplayer_ver;
   if( fv_player_is_admin_screen() ) {
     wp_enqueue_media();
-    
+  
+    $cm_settings['codeEditor'] = wp_enqueue_code_editor(array('type' => 'text/css'));
+    wp_localize_script('jquery', 'cm_settings', $cm_settings);
+   
+    wp_enqueue_script('wp-theme-plugin-editor');
+    wp_enqueue_style('wp-codemirror');
+
     wp_enqueue_script('common');
     wp_enqueue_script('wp-lists');
     wp_enqueue_script('postbox');
