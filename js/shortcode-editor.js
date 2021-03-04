@@ -2174,7 +2174,7 @@ jQuery(function() {
               $('.fv-player-tab-video-files .fv_wp_flowplayer_field_height').val(response.height);
             }
 
-            $doc.trigger('fv-player-editor-finished');
+            $doc.trigger('fv_player_editor_finished');
             
           }).error(function(xhr) {
             if (xhr.status == 404) {
@@ -2496,7 +2496,7 @@ jQuery(function() {
         }
       }
       
-      $doc.trigger('fv-player-editor-finished');
+      $doc.trigger('fv_player_editor_finished');
     }
 
     /*
