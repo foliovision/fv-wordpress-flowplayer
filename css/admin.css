@@ -8,25 +8,25 @@
 .flowplayer .fv-player-video-checker.is-open small,
 #content .flowplayer.has-video-checker .fv-player-video-checker.is-open small,
 .flowplayer.has-video-checker .fv-player-video-checker.is-open small { top:0;left:0;-webkit-transition:none;-moz-transition:none;transition:none; }
-#content .is-open, .is-open { color: black !important; background-color: #FFFFE0; margin: 0; padding: 0 12px; pointer-events: auto; border-radius: 0; border: none; line-height: 15px; z-index: 100; width: 100%; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif }
-#content .is-open strong, .is-open strong { font-weight: bold; }
-#content .is-open p, .is-open p { font-family: sans-serif; margin: 0.5em 0; padding: 2px; color: #5b5b5b; }
-.is-open p tt, .is-open blockquote { color: #000; font-size: 12px; }
+#content .fv-player-video-checker.is-open, .fv-player-video-checker.is-open { color: black !important; background-color: #FFFFE0; margin: 0; padding: 0 12px; pointer-events: auto; border-radius: 0; border: none; line-height: 15px; z-index: 100; width: 100%; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif }
+#content .fv-player-video-checker.is-open strong, .fv-player-video-checker.is-open strong { font-weight: bold; }
+#content .fv-player-video-checker.is-open p, .fv-player-video-checker.is-open p { font-family: sans-serif; margin: 0.5em 0; padding: 2px; color: #5b5b5b; }
+.is-open p tt, .fv-player-video-checker.is-open blockquote { color: #000; font-size: 12px; }
 .is-open p tt.bluelink { color: #4189A7; }
 
-#content .is-open a { color: #800 !important; }
+#content .fv-player-video-checker.is-open a { color: #800 !important; }
 
-#content .is-open blockquote, #content .is-open pre, .is-open blockquote, .is-open pre { padding: 5px; margin: 0; }
+#content .fv-player-video-checker.is-open blockquote, #content .fv-player-video-checker.is-open pre, .fv-player-video-checker.is-open blockquote, .fv-player-video-checker.is-open pre { padding: 5px; margin: 0; }
 .is-open textarea.wpfp_message_field { border: 1px solid #dedede; color: #8f8f8f; font-size: 12px; padding: 1%; }
 .is-open input[type="button"] { border: 1px solid #960c0c; color: #fff; border-radius: 4px; padding: 5px 8px; box-shadow: inset 0 0 1px #de3232; background: #ad1010; font-size: 12px; line-height: 18px; float: right; margin-bottom: 8px; }
-#content .is-open a.techinfo, .is-open a.techinfo { background-image:url(img/techinfo.png); color: gray !important; background-repeat: no-repeat; background-position: left center; display: inline-block; min-height: 18px; padding-left: 24px; margin-top: 5px; }
-#content .is-open.fv-wp-flowplayer-error, .is-open.fv-wp-flowplayer-error { background-color: #FFEBE8; border-color: #CC0000; }
-#content .is-open.is-open, .is-open.is-open { background-color: #EDEDED; border-color: #c0c0c0; box-shadow: 0 0 4px #ccc; }
+#content .fv-player-video-checker.is-open a.techinfo, .fv-player-video-checker.is-open a.techinfo { background-image:url(img/techinfo.png); color: gray !important; background-repeat: no-repeat; background-position: left center; display: inline-block; min-height: 18px; padding-left: 24px; margin-top: 5px; }
+#content .fv-player-video-checker.is-open.fv-wp-flowplayer-error, .fv-player-video-checker.is-open.fv-wp-flowplayer-error { background-color: #FFEBE8; border-color: #CC0000; }
+#content .fv-player-video-checker.is-open.is-open, .fv-player-video-checker.is-open.is-open { background-color: #EDEDED; border-color: #c0c0c0; box-shadow: 0 0 4px #ccc; }
 .fv-player-video-checker .fv-player-video-checker-head { display: none; }
 .is-open.is-open .fv-player-video-checker-head { display: block; text-align: center; font-size: 14px; padding: 10px; line-height: 1; margin: 0 -12px 1em; background-color: #ccc; text-transform: uppercase; }
 .is-open.is-open .fv-player-video-checker-head span:after { position: absolute; top: 5px; right: 5px; content: '\f335'; font-family: 'dashicons'; line-height: 1; vertical-align: top; font-size: 24px; color: #666; cursor: pointer }
 
-.flowplayer.fp-is-embed .is-open {
+.flowplayer.fp-is-embed .fv-player-video-checker.is-open {
   height: 100%;
   overflow-x:hidden;
   overflow-y:scroll;
@@ -42,17 +42,17 @@
 .fv-player-video-checker.is-open .vid-issues { color: #670004; }
 
 .fv-wp-fp-hidden { display: none; }
-.is-open-parsed .row { text-align: left; border-bottom: 1px solid lightgray; border-right: 1px solid lightgray; border-left: 1px solid lightgray; padding-left: 5px; font-size: 12px; clear: both; }
-.is-open-parsed .close { height: 0px; }
-.is-open-parsed .value { border-left: 1px solid lightgray; display: inline-block; float: right; padding-left: 5px; width: 270px; /*height: 21px; overflow: hidden;*/ }	
-.is-open-parsed.indent { margin-left: 10px; }	
-.is-open-parsed.level-1 { background: #f8f8f8; }
-.is-open-parsed.level-2 { background: #f0f0f0; }	
-.is-open-parsed.level-3 { background: #e8e8e8; }	
-.is-open-parsed.level-4 { background: #e0e0e0; }	
-.is-open-parsed.level-5 { background: #d8d8d8; }	
-.is-open-parsed.level-6 { background: #d0d0d0; }	
-.is-open-parsed.level-7 { background: #c8c8c8; }		
+.fv-wp-flowplayer-notice-parsed .row { text-align: left; border-bottom: 1px solid lightgray; border-right: 1px solid lightgray; border-left: 1px solid lightgray; padding-left: 5px; font-size: 12px; clear: both; }
+.fv-wp-flowplayer-notice-parsed .close { height: 0px; }
+.fv-wp-flowplayer-notice-parsed .value { border-left: 1px solid lightgray; display: inline-block; float: right; padding-left: 5px; width: 270px; /*height: 21px; overflow: hidden;*/ }	
+.fv-wp-flowplayer-notice-parsed.indent { margin-left: 10px; }	
+.fv-wp-flowplayer-notice-parsed.level-1 { background: #f8f8f8; }
+.fv-wp-flowplayer-notice-parsed.level-2 { background: #f0f0f0; }	
+.fv-wp-flowplayer-notice-parsed.level-3 { background: #e8e8e8; }	
+.fv-wp-flowplayer-notice-parsed.level-4 { background: #e0e0e0; }	
+.fv-wp-flowplayer-notice-parsed.level-5 { background: #d8d8d8; }	
+.fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
+.fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
 .fv-player-interface-form-group td { width:50%; }
 

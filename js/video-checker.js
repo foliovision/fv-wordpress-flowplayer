@@ -152,7 +152,7 @@
         }
 
         jQuery('#wpfp_notice_'+hash).find('.mail-content-notice').html('<p>'+sCheckerInfo+'</p>');
-        jQuery('#wpfp_notice_'+hash).find('.mail-content-details .is-open-parsed').html(sCheckerDetails)
+        jQuery('#wpfp_notice_'+hash).find('.mail-content-details .fv-wp-flowplayer-notice-parsed').html(sCheckerDetails)
 
       } catch(e) {
         jQuery('#wpfp_notice_'+hash).html('<p>'+fv_flowplayer_translations.error_JSON+'</p>');
