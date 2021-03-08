@@ -1461,10 +1461,10 @@ function fv_flowplayer_admin_custom_css() {
   border: 1px solid #ddd;
   }
 </style>
- <p><?php _e('You can add custom CSS.', 'fv-wordpres-flowplayer'); ?></p>
- <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+ <p><?php echo _e( sprintf( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for someusefull CSS tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
+ <table class="form-table2">
     <tr>
-      <td>
+      <td colspan="2">
         <textarea id="customCSS" name="customCSS"><?php echo esc_textarea($customCSS); ?></textarea>
       </td>
     </tr>
