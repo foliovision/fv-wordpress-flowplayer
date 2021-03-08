@@ -1174,7 +1174,7 @@ function fv_flowplayer_admin_skin() {
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
 					.flowplayer .fp-color { background-color: #%val% !important }',
     'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
-                  .fv-wp-flowplayer-notice-small { color: #%val% !important; }',
+                  .fv-player-video-checker { color: #%val% !important; }',
     'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
                   .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }',
     'design-timeline' => '',

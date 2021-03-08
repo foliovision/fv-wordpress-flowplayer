@@ -1193,7 +1193,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
-      $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fv-player-video-checker { color: ".$sTime." !important; }\n";
       
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
