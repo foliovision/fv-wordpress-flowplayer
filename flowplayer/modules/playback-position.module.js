@@ -405,7 +405,7 @@ if (!Date.now) {
       api.bind( 'ready', seekIntoPosition);
     }
 
-    /*
+    /**
      * Show the progress on the playlist item thumbnail
      *
      * @param element el The playlist item thumnbail progress indicator
