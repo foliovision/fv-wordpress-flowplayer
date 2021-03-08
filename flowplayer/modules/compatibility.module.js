@@ -141,3 +141,13 @@ if( location.href.match(/elementor-preview=/) ) {
   console.log('FV Player: Brizy editor is active');
   setInterval( fv_player_load, 1000 );
 }
+
+
+/*
+ *  Disable HTML5 Autoplay
+ */
+if( window.DELEGATE_NAMES ) {
+  flowplayer( function(api,root) {
+    fv_player_notice(root,fv_flowplayer_translations.chrome_extension_disable_html5_autoplay);
+  });
+}

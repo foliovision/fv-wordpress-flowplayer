@@ -2173,6 +2173,9 @@ jQuery(function() {
               $('.fv-player-tab-video-files .fv_wp_flowplayer_field_width').val(response.width);
               $('.fv-player-tab-video-files .fv_wp_flowplayer_field_height').val(response.height);
             }
+
+            $doc.trigger('fv_player_editor_finished');
+            
           }).error(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
@@ -2492,6 +2495,8 @@ jQuery(function() {
           jQuery('.fv_player_field_insert-button').text('Save');
         }
       }
+      
+      $doc.trigger('fv_player_editor_finished');
     }
 
     /*
