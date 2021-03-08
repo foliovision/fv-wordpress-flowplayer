@@ -357,6 +357,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.41.727 - 2021/03/08 =
+
+* Compatibility - Brizy editor preview support
+* CSS - controlbar menus should get scrollbars automatically
+* Google Analytics - only run if configured - but allow custom tracking events (fv_track_events)
+* Mobile - Fullscreen orientation lock - fix for portrait videos
+* Video linking - added milisecond precision for FV Player Pro AB Loop Link
+* Bugfix - CSS - put controlbar menus above controlbar in fullscreen
+* Bugfix - Lightbox - fixing embed links to work (without lightbox)
+* Bugfix - PHP warnings - prevent when unknown properties set via editor
+* Bugfix - Video checker - unable to type when mouse hover on player
+
 = 7.4.40.727 - 2021/02/18 =
 
 * Bugfix - Fullscreen - bad scroll position after leaving fullscreen of YouTube with FV Player Pro
