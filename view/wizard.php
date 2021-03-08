@@ -541,10 +541,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
         
         <?php
-        $screen = get_current_screen();
-        if ( $screen->parent_base != 'fv_player' ) : ?>
-          <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-        <?php endif; ?>
+        if( function_exists('get_current_screen') && current_user_can('edit_posts') ) :
+          $screen = get_current_screen();
+          if ( $screen->parent_base != 'fv_player' ) : ?>
+            <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
+          <?php endif;
+        endif; ?>
       </div>
       <!--<div id="fv-player-tabs-debug"></div>-->
     </div>
