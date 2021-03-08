@@ -1,0 +1,31 @@
+.form-table.fv-player-wizard-step p {
+  margin: 1em 0;
+}
+.form-table.fv-player-wizard-step p:last-child {
+  margin-bottom: 0;
+}
+.form-table.fv-player-wizard-step p:first-child {
+  margin-bottom: 1em;
+}
+.form-table.fv-player-wizard-step img {
+  max-width: 100%;
+}
+
+.fv-player-wizard-step tr td:first-child {
+  width: 17em;
+}
+
+.field-notice, .field-error  {
+  background: #fff;
+  border-left: 4px solid #fff;
+  box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+  display: inline-block;
+  margin: 2px 5px;
+  padding: 1px 12px;
+}
+.field-notice {
+  border-left-color: #46b450;
+}
+.field-error  {
+  border-left-color: #dc3232;
+}
