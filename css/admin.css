@@ -166,3 +166,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   padding: .5em;
   border: 1px solid gray;
 }
+
+/*
+Brizy editor support
+*/
+.brz-ed .brz-blocked .flowplayer, .brz-ed .brz-blocked .fp-playlist-external {
+  pointer-events: all;
+}

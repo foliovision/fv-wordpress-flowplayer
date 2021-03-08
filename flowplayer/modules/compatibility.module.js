@@ -132,3 +132,22 @@ if( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(fl
     jQuery(this).css('height', jQuery(this).css('max-height'));
   } );
 }
+
+if( location.href.match(/elementor-preview=/) ) {
+  console.log('FV Player: Elementor editor is active');
+  setInterval( fv_player_load, 1000 );
+  
+} else if( location.href.match(/brizy-edit-iframe/) ) {
+  console.log('FV Player: Brizy editor is active');
+  setInterval( fv_player_load, 1000 );
+}
+
+
+/*
+ *  Disable HTML5 Autoplay
+ */
+if( window.DELEGATE_NAMES ) {
+  flowplayer( function(api,root) {
+    fv_player_notice(root,fv_flowplayer_translations.chrome_extension_disable_html5_autoplay);
+  });
+}

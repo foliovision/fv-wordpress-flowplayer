@@ -54,14 +54,6 @@ flowplayer(function(api, root) {
       if( !had_no_volume ) root.removeClass('no-volume');
       if( !had_fp_mute ) root.removeClass('fp-mute');
     }
-    
-    if( !root.hasClass('is-audio') ) {
-      var speed = root.find('.fp-speed-menu'); // speed menu should get scrollbar when needed    
-      speed.toggleClass('wont-fit', ++speed.children().length * 35 > player.height() );
-
-      var item = root.find('.fv-fp-list-menu'); 
-      item.toggleClass('wont-fit', ++item.children().length * 25 > player.height() );
-    }
   }
   
   check_size();

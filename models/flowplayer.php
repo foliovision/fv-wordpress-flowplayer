@@ -779,7 +779,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( $v ) {
           $temp_media = $this->get_video_src( $v['src'], array( 'dynamic' => true ) );
           if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
-            if($FV_Player_Pro->is_vimeo($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
+            if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
             }
           } 
@@ -1275,7 +1275,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     global $posts, $post;
     if( !$posts || empty($posts) ) $posts = array( $post );
     
-    if( !$force && !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
+    if( !$force && !$this->should_load_js() && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
       
       if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
@@ -2231,6 +2231,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     return $value;
+  }
+  
+  function should_load_js() {
+    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']);
   }
 
   function template_preview() {

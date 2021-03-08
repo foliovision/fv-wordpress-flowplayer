@@ -103,7 +103,8 @@ function fv_flowplayer_get_js_translations() {
   'duration_n_minutes' => _n( '%s min', '%s mins', 5 ),
   'duration_1_second' => __( "%s second" ),
   'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
-  'and' => sprintf( __( '%1$s and %2$s' ), '', '' )
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
+  'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
 );
   
   return $aStrings;
@@ -320,12 +321,12 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     $fv_fp->_get_option('js-everywhere')  ||
-     isset($_GET['fv_wp_flowplayer_check_template'])
+     $fv_fp->should_load_js() ||
+     isset($_GET['fv_wp_flowplayer_check_template']) 
   ){
     
     $aDependencies = array('jquery');
-    if( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_tabs ) {
+    if( $fv_fp->should_load_js() || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
@@ -424,7 +425,7 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
+    if( ( $fv_fp->should_load_js() || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.11.0';

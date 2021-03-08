@@ -799,9 +799,13 @@ function fv_autoplay_exec(){
   // If no video is matched by URL hash string, process autoplay
   if( autoplay && flowplayer.support.firstframe ) {
     jQuery('.flowplayer[data-fvautoplay]').each( function() {
-      var root = jQuery(this);
-      var api = root.data('flowplayer');
-      if( !fv_player_did_autoplay && root.data('fvautoplay') ) {
+      var root = jQuery(this),
+        api = root.data('flowplayer'),
+        // Not sure why but I saw root.data('fvautoplay') to return false on some
+        // sites while root.attr('data-fvautoplay') worked
+        autoplay = root.attr('data-fvautoplay');
+
+      if( !fv_player_did_autoplay && autoplay ) {
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
           api.load();
@@ -815,7 +819,7 @@ function fv_autoplay_exec(){
             control_bar.removeClass('invisible');
           });
 
-          if(root.data('fvautoplay') == 'muted') {
+          if( autoplay == 'muted' ) {
             api.mute(true,true);
           }
         }
@@ -916,9 +920,4 @@ function fv_player_doCopy(text) {
   } catch (err) {
     throw new Error('Unsuccessfull');
   }
-}
-
-if( location.href.match(/elementor-preview=/) ) {
-  console.log('FV Player: Elementor editor is active');
-  setInterval( fv_player_load, 1000 );
 }
