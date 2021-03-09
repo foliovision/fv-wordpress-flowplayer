@@ -51,6 +51,18 @@ jQuery( function($) {
       });
 
     });
+    
+    $(document).on( 'click', '[data-fv-player-wizard-prev]', function(e) {
+      var button_prev = $(this),
+        indicator = current_step_wrap.find('[data-fv-player-wizard-indicator]');
+
+      clear_field_errors(current_step_wrap);
+
+      button_prev.prop('disabled',true);
+      indicator.show();
+
+      go_to_prev_step();
+    });
 
     // add error notice for any element, like an input fielld
     function add_field_error(message,field) {
@@ -84,6 +96,12 @@ jQuery( function($) {
       // we use nextAll() and eq() as there might be some additional tags
       // such as scripts in between the step table elements
       return step.nextAll('[data-step]').eq(0);
+    }
+    
+    function get_prev_step( step ) {
+      // we use prevAll() and eq() as there might be some additional tags
+      // such as scripts in between the step table elements
+      return step.prevAll('[data-step]').eq(0);
     }
 
     function get_step_args() {
@@ -122,6 +140,14 @@ jQuery( function($) {
       current_step_wrap.hide();
       var next_step = get_next_step(current_step_wrap);
       current_step_number = next_step.data('step');
+      set_current_step_wrap();
+      current_step_wrap.show();
+    }
+    
+    function go_to_prev_step() {
+      current_step_wrap.hide();
+      var prev_step = get_prev_step(current_step_wrap);
+      current_step_number = prev_step.data('step');
       set_current_step_wrap();
       current_step_wrap.show();
     }

@@ -7,6 +7,9 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
   private $videos_data;
 
   var $buttons = array(
+    'prev' => array(
+      'value' => 'Adjust your replacement phrase'
+    ),
     'next' => array(
       'value' => 'Replace all',
       'primary' => true

@@ -4,10 +4,10 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
 
   var $buttons = array(
     'next' => array(
-      'value' => 'Search',
+      'value' => 'See what will be replaced',
       'primary' => true
     )
-  ); 
+  );
 
   function display() {
   global $fv_fp;
@@ -15,7 +15,7 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
 <tr>
   <td colspan="2">
     <h2>Step 1: What To Replace</h2>
-    <p>Enter string you want to replace:</p>
+    <p>Enter the part of the URL to replace (domain).</p>
   </td>
 </tr>
     <?php

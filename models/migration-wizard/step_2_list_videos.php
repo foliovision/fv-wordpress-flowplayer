@@ -6,6 +6,9 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   private $videos_data;
 
   var $buttons = array(
+    'prev' => array(
+      'value' => 'Adjust your search phrase'
+    ),
     'next' => array(
       'value' => 'Test Replace',
       'primary' => true
@@ -22,22 +25,12 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
     ?>
 <tr>
   <td colspan="2">
-    <h2>Step 2: What To Replace</h2>
-    <p>Enter new string you want to replace with:</p>
+    <h2>Step 2: Replace with...</h2>
   </td>
 </tr>
-<?php
-
-  $fv_fp->_get_input_text( array(
-    'key' => array('video_src_replace','replace_string'),
-    'name' => 'Replace string',
-    'class' => 'regular-text code'
-  ) );
-
-  ?>
 <tr>
   <td colspan="2">
-    <h2>Videos found:</h2>
+    <p>Videos found:</p>
   </td>
 </tr>
     <?php
@@ -51,9 +44,21 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   </td>
 </tr>
     <?php } ?>
-<input type="hidden" name="search_string" value="<?php echo $this->search_string ?>" >
+<input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
     <?php
     }
+    ?>
+<tr>
+  <td colspan="2">
+    <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
+  </td>
+</tr>
+    <?php
+    $fv_fp->_get_input_text( array(
+      'key' => array('video_src_replace','replace_string'),
+      'name' => 'Replace string',
+      'class' => 'regular-text code'
+    ) );
   }
 
   function process() {

@@ -1,7 +1,7 @@
 <?php
 
-require_once( dirname(__FILE__, 2).'/includes/migration-wizard/class.fv-player-wizard-base.php' );
-require_once( dirname(__FILE__, 2).'/includes/migration-wizard/class.fv-player-wizard-step-base.php' );
+require_once( dirname(__FILE__, 2).'/includes/class.fv-player-wizard-base.php' );
+require_once( dirname(__FILE__, 2).'/includes/class.fv-player-wizard-step-base.php' );
 
 class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base {
 
@@ -21,7 +21,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base {
     parent::__construct( array(
       'id' => 'fv_player_migration_wizard',
       'page' => 'fv_player_migration',
-      'steps_path' => dirname(__FILE__, 2).'/includes/migration-wizard/wizard-steps',
+      'steps_path' => dirname(__FILE__).'/migration-wizard',
       'title' => 'FV Player Migration Wizard'
     ) );
   }

@@ -11,7 +11,7 @@ class FV_Player_Wizard_Step_Finish extends FV_Player_Wizard_Step_Base {
 <tr>
   <td colspan="2">
     <h2>Finished</h2>
-    <p>All occurrences replaced !</p>
+    <p>All occurrences replaced!</p>
     <p><a href="<?php echo admin_url('admin.php?page=fv_player'); ?>" class="button button-primary">Check videos</a></p>
   </td>
 </tr>
