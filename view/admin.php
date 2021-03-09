@@ -2012,11 +2012,6 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 </script>
 
 <script>
-/* CodeMirror */
-jQuery(function($) {
-  wp.codeEditor.initialize($('#customCSS'), cm_settings);
-});
-
 /* TABS */  
 jQuery(document).ready(function(){
   jQuery('#fv_player_js_warning').hide();

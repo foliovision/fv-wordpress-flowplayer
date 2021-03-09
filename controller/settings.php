@@ -303,9 +303,6 @@ function fv_flowplayer_admin_scripts() {
   if( fv_player_is_admin_screen() ) {
     wp_enqueue_media();
   
-    $cm_settings['codeEditor'] = wp_enqueue_code_editor(array('type' => 'text/css'));
-    wp_localize_script('jquery', 'cm_settings', $cm_settings);
-   
     wp_enqueue_script('wp-theme-plugin-editor');
     wp_enqueue_style('wp-codemirror');
 
@@ -315,6 +312,8 @@ function fv_flowplayer_admin_scripts() {
     
     wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), $fv_wp_flowplayer_ver );
+  
+    wp_localize_script('fv-player-admin', 'cm_settings', wp_enqueue_code_editor(array('type' => 'text/css')) );
   }
 }
 
