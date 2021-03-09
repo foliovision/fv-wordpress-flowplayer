@@ -480,7 +480,7 @@ function flowplayer_prepare_scripts() {
     }
     
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
-    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
+    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', array(site_url().'/wp-admin/admin-ajax.php') );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
     
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
