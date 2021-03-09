@@ -8,6 +8,7 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   var $buttons = array(
     'next' => array(
       'value' => 'Test Replace',
+      'primary' => true
     )
   ); 
 
@@ -32,7 +33,7 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
     'name' => 'Replace string',
     'class' => 'regular-text code'
   ) );
-  
+
   ?>
 <tr>
   <td colspan="2">

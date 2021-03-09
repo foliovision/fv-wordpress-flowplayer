@@ -6,7 +6,7 @@ jQuery( function($) {
     
     set_current_step_wrap();
 
-    $(document).on( 'click', '[data-fv-player-wizard-next]', function() {
+    $(document).on( 'click', '[data-fv-player-wizard-next]', function(e) {
       var button_next = $(this),
         indicator = current_step_wrap.find('[data-fv-player-wizard-indicator]');
 

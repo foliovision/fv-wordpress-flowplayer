@@ -5,6 +5,7 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
   var $buttons = array(
     'next' => array(
       'value' => 'Search',
+      'primary' => true
     )
   ); 
 
