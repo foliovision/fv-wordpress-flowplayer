@@ -168,7 +168,7 @@ if (!Date.now) {
           var fd = new FormData();
           fd.append('action', 'fv_wp_flowplayer_video_position_save');
           fd.append('videoTimes', encodeURIComponent(JSON.stringify(postData)));
-          navigator.sendBeacon(fv_fp_ajaxurl, fd);
+          navigator.sendBeacon(fv_player.fv_fp_ajaxurl, fd);
 
           // return false, so no ajax.abort() will be tried if multiple players try to call this same script part
           return false;
@@ -177,7 +177,7 @@ if (!Date.now) {
           return jQuery.ajax({
             type: 'POST',
             async: async,
-            url: fv_fp_ajaxurl,
+            url: fv_player.fv_fp_ajaxurl,
             complete: callback,
             data: {
               action: 'fv_wp_flowplayer_video_position_save',

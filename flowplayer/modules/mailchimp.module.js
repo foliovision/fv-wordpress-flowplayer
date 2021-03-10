@@ -15,7 +15,7 @@
       $('[name]',this).each(function(){
         data[this.name] = $(this).val();
       });
-      $.post(fv_fp_ajaxurl,data,function( response ) {
+      $.post(fv_player.fv_fp_ajaxurl,data,function( response ) {
         response = JSON.parse(response);
         $('<div class="mailchimp-response"></div>').insertAfter('.mailchimp-form',root);
 
