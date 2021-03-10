@@ -1421,7 +1421,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
       return false;
     }
-    $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
+
     $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
