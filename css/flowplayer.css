@@ -406,10 +406,7 @@
       transition: opacity .1s;
       filter: alpha(opacity=0);
       opacity: 0; }
-    .flowplayer.fp-ui-shown .fp-ui, .flowplayer.is-mouseover .fp-ui, .flowplayer.is-loading .fp-ui, .is-splash.flowplayer .fp-player .fp-ui, .is-paused.flowplayer .fp-player .fp-ui,#content .is-paused.flowplayer .fp-player .fp-ui,#content .is-splash.flowplayer .fp-player .fp-ui {
-    /*background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.25)), color-stop(15%, transparent));
-    background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.25), transparent 15%);
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 15%);*/
+    .flowplayer.fp-ui-shown .fp-ui, .flowplayer.is-mouseover .fp-ui, .flowplayer.is-loading .fp-ui, .is-splash.flowplayer .fp-player .fp-ui, .is-paused.flowplayer .fp-player .fp-ui {
 	background-image: none;}
     .flowplayer.fp-ui-shown .fp-ui > *, .flowplayer.is-paused .fp-ui > *, .flowplayer.is-mouseover .fp-ui > *, .flowplayer.is-loading .fp-ui > *, .flowplayer.is-seeking .fp-ui > *  {
       filter: alpha(opacity=100);
