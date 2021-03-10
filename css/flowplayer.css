@@ -864,7 +864,7 @@
       color: #fff;
       white-space: nowrap; }
   .flowplayer .fp-subtitle-menu {
-    width: 9em; }
+    width: auto; }
   .flowplayer .fp-share-menu {
     width: 9em;
     padding-bottom: .2em; }
