@@ -2112,7 +2112,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $aCustomCSS = $fv_fp->_get_option('customCSS');
 
     if( strlen($aCustomCSS) ) {
-      $css .= "\n/*custom css*/\n".stripslashes($aCustomCSS)."\n/*end custom css*/\n";
+      $css .= "\n/*custom css*/\n".strip_tags( stripslashes($aCustomCSS) )."\n/*end custom css*/\n";
     }
     return $css;
   }
