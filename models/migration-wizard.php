@@ -2,14 +2,14 @@
 if( !class_exists('FV_Player_Migration') ) :
 
 class FV_Player_Migration {
-  public $admin_page;
 
   function __construct() {
-    add_action('admin_menu', array( $this, 'admin_page' ), 12 );
+    add_action('admin_menu', array( $this, 'admin_page' ) );
   }
 
   function admin_page() {
-    $this->admin_page = add_submenu_page(  'fv_player', 'FV Player Migration', 'FV Player Migration', 'edit_posts', 'fv_player_migration', array($this, 'tools_panel') );
+    add_submenu_page(  'fv_player', 'FV Player Migration', 'FV Player Migration', 'edit_posts', 'fv_player_migration', array($this, 'tools_panel') );
+    remove_submenu_page( 'fv_player', 'fv_player_migration' );
   }
 
   function tools_panel() {

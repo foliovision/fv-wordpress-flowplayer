@@ -542,6 +542,9 @@ function fv_flowplayer_admin_description_tools() {
         <p>
           <?php _e('Maintenance tools and debug info.', 'fv-wordpress-flowplayer'); ?>
         </p>
+        <p>
+          Need help with replacing video paths after migrating video from one CDN to another? Try the <a href="<?php echo admin_url('admin.php?page=fv_player_migration'); ?>" class="button">Migration Wizard</a>
+        </p>
       </td>
     </tr>
   </table>

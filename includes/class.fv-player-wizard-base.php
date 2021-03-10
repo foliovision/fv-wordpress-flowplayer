@@ -168,7 +168,7 @@ abstract class FV_Player_Wizard_Base {
     </style>
     <div class="fv-player-wizard" data-fv-player-wizard>
       <?php
-      echo '<img class="fv-player-wizard-logo" src="'.flowplayer::get_plugin_url().'/images/wizard-logo.png'.'" /><h1 class="wp-heading-inline">'.$this->get_title().'</h1>';
+      echo '<img class="fv-player-wizard-logo" src="'.plugins_url( 'images/logo.png', $this->args['steps_path'].'sample' ).'" /><h1 class="wp-heading-inline">'.$this->get_title().'</h1>';
 
       $shown_one_step = false; // only show a single step
       $i = 0; // keep track of the step being processed
