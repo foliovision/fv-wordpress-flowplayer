@@ -469,18 +469,22 @@ function flowplayer_prepare_scripts() {
     if( is_admin() ) $aConf['wpadmin'] = true;
     
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
-    
+    $aLocalize = array();
+
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
+      $aLocalize['admin_input'] = true;
+      $aLocalize['admin_js_test'] = true;
     }
     if( current_user_can('edit_posts') ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_user_edit', array(true) );     
+      $aLocalize['user_edit'] = true;
     }
     
+    $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
+
+    wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
+
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
-    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', array(site_url().'/wp-admin/admin-ajax.php') );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
     
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
