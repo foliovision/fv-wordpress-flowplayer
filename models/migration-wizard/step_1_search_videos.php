@@ -28,14 +28,9 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
   }
 
   function process() {
-    global $wpdb;
     $search_string = $_POST['video_src_search']['search_string'];
     
-    $videos_data = $wpdb->get_results( $wpdb->prepare(
-      "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s", '%' . $wpdb->esc_like($search_string) . '%'
-    ) );
-
-    $list_videos = new FV_Player_Wizard_Step_2_List_Videos($search_string, $videos_data);
+    $list_videos = new FV_Player_Wizard_Step_2_List_Videos($search_string);
 
     ob_start();
     $list_videos->display();

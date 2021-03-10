@@ -3,7 +3,6 @@
 class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
 
   private $search_string; 
-  private $videos_data;
 
   var $buttons = array(
     'prev' => array(
@@ -15,9 +14,8 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
     )
   ); 
 
-  public function __construct($search_string = false, $videos_data = false) {
+  public function __construct($search_string = false) {
     $this->search_string = $search_string;
-    $this->videos_data = $videos_data;
   }
 
   function display() {
@@ -34,18 +32,28 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   </td>
 </tr>
     <?php
-    if( !empty($this->videos_data) ) {
-      foreach($this->videos_data as $video) {
-    ?>
-<tr>
-  <td colspan="2">
-    <p>ID <?php echo $video->id ?> </p>
-    <p>Src <?php echo $video->src ?> </p>
-  </td>
-</tr>
-    <?php } ?>
-<input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
-    <?php
+    
+        
+    if( $this->search_string ) {
+      global $wpdb;
+      $videos_data = $wpdb->get_results( $wpdb->prepare(
+        "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s", '%' . $wpdb->esc_like($this->search_string) . '%'
+      ) );
+      
+      if( !empty($videos_data) ) {
+        foreach($videos_data as $video) {
+      ?>
+  <tr>
+    <td colspan="2">
+      <p>ID <?php echo $video->id ?> </p>
+      <p>Src <?php echo $video->src ?> </p>
+    </td>
+  </tr>
+      <?php } ?>
+  <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
+      <?php
+      }
+      
     }
     ?>
 <tr>
@@ -62,15 +70,10 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   }
 
   function process() {
-    global $wpdb;
-
     $search_string = $_POST['search_string'];
     $replace_string = $_POST['video_src_replace']['replace_string'];
-    $videos_data = $wpdb->get_results( $wpdb->prepare(
-      "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s", '%' . $wpdb->esc_like($search_string) . '%'
-    ) );
     
-    $test_replace = new FV_Player_Wizard_Step_3_Test_Replace($search_string, $replace_string ,$videos_data);
+    $test_replace = new FV_Player_Wizard_Step_3_Test_Replace($search_string, $replace_string);
 
     ob_start();
     $test_replace->display();

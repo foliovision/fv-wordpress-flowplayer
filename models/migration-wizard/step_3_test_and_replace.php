@@ -4,7 +4,6 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
 
   private $search_string; 
   private $replace_string;
-  private $videos_data;
 
   var $buttons = array(
     'prev' => array(
@@ -16,10 +15,9 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
     )
   );
 
-  public function __construct($search_string = false, $replace_string = false, $videos_data = false) {
+  public function __construct($search_string = false, $replace_string = false) {
     $this->search_string = $search_string ; 
     $this->replace_string = $replace_string;
-    $this->videos_data = $videos_data;
   }
 
   function display() {
@@ -40,20 +38,29 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
   </td>
 </tr>
     <?php
-    if( !empty($this->videos_data) ) {
-      foreach($this->videos_data as $video) {
-    ?>
-<tr>
-  <td colspan="2">
-    <p>ID <?php echo $video->id ?> </p>
-    <p>Src <?php echo  str_replace( $this->search_string, $this->replace_string, $video->src ) ?> </p>
-  </td>
-</tr>
-    <?php } ?>
-<input type="hidden" name="search_string" value="<?php echo $this->search_string ?>" >
-<input type="hidden" name="replace_string" value="<?php echo $this->replace_string ?>" >
-    <?php
+        
+    if( $this->search_string ) {
+      global $wpdb;
+      $videos_data = $wpdb->get_results( $wpdb->prepare(
+        "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s", '%' . $wpdb->esc_like($this->search_string) . '%'
+      ) );
+      
+      if( !empty($videos_data) ) {
+        foreach($videos_data as $video) {
+      ?>
+  <tr>
+    <td colspan="2">
+      <p>ID <?php echo $video->id ?> </p>
+      <p>Src <?php echo  str_replace( $this->search_string, $this->replace_string, $video->src ) ?> </p>
+    </td>
+  </tr>
+      <?php } ?>
+  <input type="hidden" name="search_string" value="<?php echo $this->search_string ?>" >
+  <input type="hidden" name="replace_string" value="<?php echo $this->replace_string ?>" >
+      <?php
+      }
     }
+
   }
 
   function process() {
