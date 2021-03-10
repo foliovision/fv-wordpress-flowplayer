@@ -357,6 +357,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.42.727 - 2021/03/10 =
+
+* Custom CSS - added field for easy player CSS customizations in wp-admin -> Settings -> FV Player -> Skin -> Custom CSS
+* Subtitles - using native language names for the menu
+* Bugfix - CSS - scrollbars appearing on player in some cases
+* Bugfix - PHP 8 - fixing warnings
+
 = 7.4.41.727 - 2021/03/08 =
 
 * Compatibility - Brizy editor preview support
