@@ -792,7 +792,7 @@
     height: 0;
     filter: alpha(opacity=0) !important;
     opacity: 0 !important;
-    visibility: hidden }
+    display: none }
     .flowplayer .fp-menu.fp-active {
       -webkit-transform: scale(1);
           -ms-transform: scale(1);
@@ -801,7 +801,7 @@
       bottom: 3.2em;
       filter: alpha(opacity=100) !important;
       opacity: 1 !important;
-      visibility: visible;
+      display: block;
       max-height: calc( 100% - 3.2em);
       overflow-y: auto;
     }
