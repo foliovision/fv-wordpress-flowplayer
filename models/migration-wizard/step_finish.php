@@ -4,15 +4,27 @@ class FV_Player_Wizard_Step_Finish extends FV_Player_Wizard_Step_Base {
 
   static $is_finish = true;
 
-  var $buttons = array();
+  var $buttons = array(); /* filled below as we need to call a function there */
+  
+  var $message = false;
+  
+  public function __construct($search_string = false, $replace_string = false ) {
+    
+    $this->buttons['done'] = array(
+      'href' => admin_url('admin.php?page=fv_player'),
+      'primary' => true,
+      'value' => 'Go back to FV Player'
+    );
+    
+    $this->search_string = $search_string ; 
+    $this->replace_string = $replace_string;
+  }
 
   function display() {
     ?>
 <tr>
   <td colspan="2">
-    <h2>Finished</h2>
-    <p>All occurrences replaced!</p>
-    <p><a href="<?php echo admin_url('admin.php?page=fv_player'); ?>" class="button button-primary">Check videos</a></p>
+    <?php echo $this->message; ?>
   </td>
 </tr>
     <?php

@@ -7,25 +7,16 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   var $buttons = array(
     'prev' => array(
       'value' => 'Adjust your search phrase'
-    ),
-    'next' => array(
-      'value' => 'Test Replace',
-      'primary' => true
     )
   ); 
 
-  public function __construct($search_string = 'amazon') {
+  public function __construct($search_string = false) {
     $this->search_string = $search_string;
   }
 
   function display() {
     global $fv_fp;
-    ?>
-<tr>
-  <td colspan="2">
-    <h2>Step 2: List of affected videos</h2>
-
-    <?php
+    $videos_data = false;
     if( $this->search_string ) {
       global $wpdb;
       $videos_data = $wpdb->get_results( $wpdb->prepare(
@@ -35,44 +26,61 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
         '%' . $wpdb->esc_like($this->search_string) . '%',
         '%' . $wpdb->esc_like($this->search_string) . '%'
       ) );
-      
-      if( !empty($videos_data) ) : ?>
-        <table class="wp-list-table widefat fixed striped logentries">
-          <thead>
-            <tr>
-              <td>Video ID</td>
-              <td>URL</td>
-              <td>Alternative URL</td>
-              <td>Alternative URL 2</td>
-              <td>Splash</td>
-            </tr>
-          </thead>
-          <?php foreach($videos_data as $video) : ?>
-            <tr>
-              <td><?php echo $video->id ?></td>
-              <td><?php echo $this->hilight($video->src); ?></td>
-              <td><?php echo $this->hilight($video->src1); ?></td>
-              <td><?php echo $this->hilight($video->src2); ?></td>
-              <td><?php echo $this->hilight($video->splash); ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </table>
-  <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
-      <?php endif;
-      
     }
     ?>
 <tr>
   <td colspan="2">
-    <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
-  </td>
-</tr>
-    <?php
-    $fv_fp->_get_input_text( array(
-      'key' => array('video_src_replace','replace_string'),
-      'name' => 'Replace string',
-      'class' => 'regular-text code'
-    ) );
+    <h2>Step 2: List of affected videos</h2>
+
+    <?php if( !empty($videos_data) ) :
+      $this->buttons['next'] = array(
+        'value' => 'Test Replace',
+        'primary' => true
+      );
+    
+      ?>
+      <p>Videos found: <?php echo count($videos_data); ?></p>
+      <table class="wp-list-table widefat fixed striped logentries">
+        <thead>
+          <tr>
+            <td>Video ID</td>
+            <td>URL</td>
+            <td>Alternative URL</td>
+            <td>Alternative URL 2</td>
+            <td>Splash</td>
+          </tr>
+        </thead>
+        <?php foreach($videos_data as $video) : ?>
+          <tr>
+            <td><?php echo $video->id ?></td>
+            <td><?php echo $this->hilight($video->src); ?></td>
+            <td><?php echo $this->hilight($video->src1); ?></td>
+            <td><?php echo $this->hilight($video->src2); ?></td>
+            <td><?php echo $this->hilight($video->splash); ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </table>
+      <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
+      
+    <?php else : ?>
+      <p>No matching videos found.</p>
+      
+    <?php endif; ?>
+    
+    <?php if( !empty($videos_data) ) : ?>
+      <tr>
+        <td colspan="2">
+          <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
+        </td>
+      </tr>
+      <?php
+      $fv_fp->_get_input_text( array(
+        'key' => array('video_src_replace','replace_string'),
+        'name' => 'Replace string',
+        'class' => 'regular-text code'
+      ) );
+    
+    endif;
   }
   
   function hilight( $string ) {
