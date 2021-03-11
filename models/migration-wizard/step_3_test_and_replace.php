@@ -15,7 +15,7 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
     )
   );
 
-  public function __construct($search_string = false, $replace_string = false) {
+  public function __construct($search_string = 'amazon', $replace_string = 'tatry') {
     $this->search_string = $search_string ; 
     $this->replace_string = $replace_string;
   }
@@ -26,45 +26,29 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
 <tr>
   <td colspan="2">
     <h2>Step 3: Replace Preview</h2>
-      <p>Test replacing <b><?php echo $this->search_string ?></b> with <b><?php echo $this->replace_string ?></b></p>
-  </td>
-</tr>
+    
+    <p>Test replacing <b><?php echo $this->search_string ?></b> with <b><?php echo $this->replace_string ?></b></p>
 
-<tr>
-  <td colspan="2">
-    <h2>Videos list:</h2>
-  </td>
-</tr>
-    <?php
-        
+    <?php  
     if( $this->search_string ) {
-      global $wpdb;
-      $videos_data = $wpdb->get_results( $wpdb->prepare(
-        "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s", '%' . $wpdb->esc_like($this->search_string) . '%'
-      ) );
+      $videos_data = FV_Player_Migration_Wizard::search_video($this->search_string);
       
       if( !empty($videos_data) ) {
-        foreach($videos_data as $video) {
-      ?>
-  <tr>
-    <td colspan="2">
-      <p>ID <?php echo $video->id ?> </p>
-      <p>Src <?php echo  str_replace( $this->search_string, $this->replace_string, $video->src ) ?> </p>
-    </td>
-  </tr>
-      <?php } ?>
+        FV_Player_Migration_Wizard::list_videos($videos_data, $this->search_string, $this->replace_string, '#8f8' );
+      }
+    }
+    ?>
+  </td>
+</tr>
       
   <tr>
     <td colspan="2">
-      <input type="checkbox" required name="confirmation" /> I have checked the above and I want the links to be replaced.
+      <input type="checkbox" required name="confirmation" /> I have checked the above, created database backup and want the links to be replaced.
       <input type="hidden" name="search_string" value="<?php echo $this->search_string ?>" >
       <input type="hidden" name="replace_string" value="<?php echo $this->replace_string ?>" >
     </td>
   </tr>
-      <?php
-      }
-    }
-
+    <?php
   }
 
   function process() {

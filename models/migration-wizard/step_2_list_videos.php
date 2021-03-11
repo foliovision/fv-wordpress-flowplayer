@@ -18,14 +18,7 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
     global $fv_fp;
     $videos_data = false;
     if( $this->search_string ) {
-      global $wpdb;
-      $videos_data = $wpdb->get_results( $wpdb->prepare(
-        "SELECT id, src, src1, src2, splash FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s OR src1 LIKE %s OR src2 LIKE %s OR splash LIKE %s",
-        '%' . $wpdb->esc_like($this->search_string) . '%',
-        '%' . $wpdb->esc_like($this->search_string) . '%',
-        '%' . $wpdb->esc_like($this->search_string) . '%',
-        '%' . $wpdb->esc_like($this->search_string) . '%'
-      ) );
+      $videos_data = FV_Player_Migration_Wizard::search_video($this->search_string);
     }
     ?>
 <tr>
@@ -37,29 +30,10 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
         'value' => 'Test Replace',
         'primary' => true
       );
+      
+      FV_Player_Migration_Wizard::list_videos($videos_data, $this->search_string, false, '#f88' );
     
       ?>
-      <p>Videos found: <?php echo count($videos_data); ?></p>
-      <table class="wp-list-table widefat fixed striped logentries">
-        <thead>
-          <tr>
-            <td>Video ID</td>
-            <td>URL</td>
-            <td>Alternative URL</td>
-            <td>Alternative URL 2</td>
-            <td>Splash</td>
-          </tr>
-        </thead>
-        <?php foreach($videos_data as $video) : ?>
-          <tr>
-            <td><?php echo $video->id ?></td>
-            <td><?php echo $this->hilight($video->src); ?></td>
-            <td><?php echo $this->hilight($video->src1); ?></td>
-            <td><?php echo $this->hilight($video->src2); ?></td>
-            <td><?php echo $this->hilight($video->splash); ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </table>
       <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
       
     <?php else : ?>
@@ -81,11 +55,6 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
       ) );
     
     endif;
-  }
-  
-  function hilight( $string ) {
-    $string = str_replace( $this->search_string, '<span style="background: #f88">'.$this->search_string.'</span>', $string );
-    return $string;
   }
 
   function process() {
