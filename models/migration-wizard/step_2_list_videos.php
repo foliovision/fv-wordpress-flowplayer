@@ -7,10 +7,6 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
   var $buttons = array(
     'prev' => array(
       'value' => 'Adjust your search phrase'
-    ),
-    'next' => array(
-      'value' => 'Test Replace',
-      'primary' => true
     )
   ); 
 
@@ -20,53 +16,45 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base {
 
   function display() {
     global $fv_fp;
-    ?>
-<tr>
-  <td colspan="2">
-    <h2>Step 2: Replace with...</h2>
-  </td>
-</tr>
-<tr>
-  <td colspan="2">
-    <p>Videos found:</p>
-  </td>
-</tr>
-    <?php
-    
-        
+    $videos_data = false;
     if( $this->search_string ) {
-      global $wpdb;
-      $videos_data = $wpdb->get_results( $wpdb->prepare(
-        "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s", '%' . $wpdb->esc_like($this->search_string) . '%'
-      ) );
-      
-      if( !empty($videos_data) ) {
-        foreach($videos_data as $video) {
-      ?>
-  <tr>
-    <td colspan="2">
-      <p>ID <?php echo $video->id ?> </p>
-      <p>Src <?php echo $video->src ?> </p>
-    </td>
-  </tr>
-      <?php } ?>
-  <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
-      <?php
-      }
-      
+      $videos_data = FV_Player_Migration_Wizard::search_video($this->search_string);
     }
     ?>
 <tr>
   <td colspan="2">
-    <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
-  </td>
-</tr>
-    <?php
-    $fv_fp->_get_input_text( array(
-      'key' => array('video_src_replace','replace_string'),
-      'name' => 'Replace string',
-      'class' => 'regular-text code'
-    ) );
+    <h2>Step 2: List of affected videos</h2>
+
+    <?php if( !empty($videos_data) ) :
+      $this->buttons['next'] = array(
+        'value' => 'Test Replace',
+        'primary' => true
+      );
+      
+      FV_Player_Migration_Wizard::list_videos($videos_data, $this->search_string, false, '#f88' );
+    
+      ?>
+      <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
+      
+    <?php else : ?>
+      <p>No matching videos found.</p>
+      
+    <?php endif; ?>
+    
+    <?php if( !empty($videos_data) ) : ?>
+      <tr>
+        <td colspan="2">
+          <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
+        </td>
+      </tr>
+      <?php
+      $fv_fp->_get_input_text( array(
+        'key' => array('video_src_replace','replace_string'),
+        'name' => 'Replace string',
+        'class' => 'regular-text code'
+      ) );
+    
+    endif;
   }
 
   function process() {

@@ -25,6 +25,52 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base {
       'title' => 'FV Player Migration Wizard'
     ) );
   }
+  
+  public static function list_videos( $videos, $from, $to, $color ) {
+    ?>
+    <p>Videos found: <?php echo count($videos); ?></p>
+    <table class="wp-list-table widefat fixed striped logentries">
+      <thead>
+        <tr>
+          <td>Video ID</td>
+          <td>URL</td>
+          <td>Alternative URL</td>
+          <td>Alternative URL 2</td>
+          <td>Splash</td>
+        </tr>
+      </thead>
+      <?php foreach($videos as $video) : ?>
+        <tr>
+          <td><?php echo $video->id ?></td>
+          <?php foreach( array( 'src', 'src1', 'src2', 'splash' ) AS $field ) : ?>
+            <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
+          <?php endforeach; ?>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+    <?php
+  }
+  
+  public static function hilight( $string, $from, $to, $color ) {
+    $phrase = $to ? $to : $from;
+    
+    $string = str_replace( $from, '<span style="background: '.$color.'">'.$phrase.'</span>', $string );
+    return $string;
+  }
+  
+  public static function search_video( $phrase ) {
+    global $wpdb;
+    
+    $like = '%' . $wpdb->esc_like($phrase) . '%';
+    
+    return $wpdb->get_results( $wpdb->prepare(
+      "SELECT id, src, src1, src2, splash FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s OR src1 LIKE %s OR src2 LIKE %s OR splash LIKE %s",
+      $like,
+      $like,
+      $like,
+      $like,
+    ) );
+  }
 
   public function view() {
     ?>
