@@ -46,7 +46,11 @@ abstract class FV_Player_Wizard_Step_Base {
   function get_buttons( $buttons ) {
     if( $buttons ) :
       foreach( $buttons AS $name => $button ) : ?>
-        <input type="button" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>" data-fv-player-wizard-<?php echo $name; ?> value="<?php echo $button['value']; ?>" />
+        <?php if( !empty($button['href']) ) : ?>
+          <a href="<?php echo esc_attr($button['href']); ?>" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>"><?php echo $button['value']; ?></a>
+        <?php else : ?>
+          <input type="button" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>" data-fv-player-wizard-<?php echo $name; ?> value="<?php echo $button['value']; ?>" />
+        <?php endif; ?>
       <?php endforeach; ?>
       <img data-fv-player-wizard-indicator width="16" height="16" src="<?php echo site_url('wp-includes/images/wpspin-2x.gif'); ?>" style="display: none" />
     <?php endif;
