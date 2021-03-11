@@ -29,6 +29,20 @@ abstract class FV_Player_Wizard_Step_Base {
     ) );
   }
 
+  /*
+   * @param array $buttons Sample:
+   *
+   *                               array(
+   *                                 'prev' => array(
+   *                                   'value' => 'Go Back'
+   *                                 ),
+   *                                 'next' => array(
+   *                                   'value' => 'Next Step',
+   *                                   'primary' => true
+   *                                 )
+   *                               ); 
+   * 
+   */
   function get_buttons( $buttons ) {
     if( $buttons ) :
       foreach( $buttons AS $name => $button ) : ?>

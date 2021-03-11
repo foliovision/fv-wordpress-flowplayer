@@ -10,7 +10,7 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
   );
 
   function display() {
-  global $fv_fp;
+    global $fv_fp;
     ?>
 <tr>
   <td colspan="2">
@@ -20,11 +20,11 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
 </tr>
     <?php
 
-  $fv_fp->_get_input_text( array(
-    'key' => array('video_src_search','search_string'),
-    'name' => 'Search string',
-    'class' => 'regular-text code'
-  ) );
+    $fv_fp->_get_input_text( array(
+      'key' => array('video_src_search','search_string'),
+      'name' => 'Search string',
+      'class' => 'regular-text code'
+    ) );
   }
 
   function process() {
