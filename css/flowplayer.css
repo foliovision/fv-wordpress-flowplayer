@@ -406,10 +406,7 @@
       transition: opacity .1s;
       filter: alpha(opacity=0);
       opacity: 0; }
-    .flowplayer.fp-ui-shown .fp-ui, .flowplayer.is-mouseover .fp-ui, .flowplayer.is-loading .fp-ui, .is-splash.flowplayer .fp-player .fp-ui, .is-paused.flowplayer .fp-player .fp-ui,#content .is-paused.flowplayer .fp-player .fp-ui,#content .is-splash.flowplayer .fp-player .fp-ui {
-    /*background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.25)), color-stop(15%, transparent));
-    background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.25), transparent 15%);
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 15%);*/
+    .flowplayer.fp-ui-shown .fp-ui, .flowplayer.is-mouseover .fp-ui, .flowplayer.is-loading .fp-ui, .is-splash.flowplayer .fp-player .fp-ui, .is-paused.flowplayer .fp-player .fp-ui {
 	background-image: none;}
     .flowplayer.fp-ui-shown .fp-ui > *, .flowplayer.is-paused .fp-ui > *, .flowplayer.is-mouseover .fp-ui > *, .flowplayer.is-loading .fp-ui > *, .flowplayer.is-seeking .fp-ui > *  {
       filter: alpha(opacity=100);
@@ -791,7 +788,7 @@
     height: 0;
     filter: alpha(opacity=0) !important;
     opacity: 0 !important;
-    visibility: hidden }
+    display: none }
     .flowplayer .fp-menu.fp-active {
       -webkit-transform: scale(1);
           -ms-transform: scale(1);
@@ -800,7 +797,7 @@
       bottom: 3.2em;
       filter: alpha(opacity=100) !important;
       opacity: 1 !important;
-      visibility: visible;
+      display: block;
       max-height: calc( 100% - 3.2em);
       overflow-y: auto;
     }
@@ -867,7 +864,7 @@
       color: #fff;
       white-space: nowrap; }
   .flowplayer .fp-subtitle-menu {
-    width: 9em; }
+    width: auto; }
   .flowplayer .fp-share-menu {
     width: 9em;
     padding-bottom: .2em; }
@@ -1701,13 +1698,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   -ms-user-select: none;
   user-select: none;
 }
-.fv_wp_fp_notice_content {
-  -webkit-touch-callout: auto;
-  -webkit-user-select: auto;
-  -khtml-user-select: auto;
-  -moz-user-select: auto;
-  -ms-user-select: auto;
-  user-select: auto;
+.fv-player-video-checker {
+  user-select: text;
 }
 
 
