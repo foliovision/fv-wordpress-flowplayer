@@ -1,6 +1,6 @@
 <?php
 
-class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base {
+class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base_Class {
 
   var $buttons = array(
     'next' => array(

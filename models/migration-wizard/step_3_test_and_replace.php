@@ -1,6 +1,6 @@
 <?php
 
-class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base {
+class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Class {
 
   private $search_string; 
   private $replace_string;

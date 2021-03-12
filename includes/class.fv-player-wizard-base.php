@@ -1,6 +1,6 @@
 <?php
 
-abstract class FV_Player_Wizard_Base {
+abstract class FV_Player_Wizard_Base_Class {
 
   private $args = array();
 
@@ -8,7 +8,7 @@ abstract class FV_Player_Wizard_Base {
 
   private $page;
 
-  // array of class names based on FV_Player_Wizard_Step_Base
+  // array of class names based on FV_Player_Wizard_Step_Base_Class
   private $steps = array();
 
   private $version = '7.4.32.727';
@@ -38,6 +38,8 @@ abstract class FV_Player_Wizard_Base {
 
     $this->set_title($this->args['title']);
 
+    // TODO: Somehow make these work even if self is only loadedd
+    // on the wizard screen
     add_action( 'wp_ajax_'.$this->get_id().'_step', array( $this, 'ajax' ) );
 
     add_action( 'admin_init', array( $this, 'styles' ) );

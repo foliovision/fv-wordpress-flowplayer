@@ -1,6 +1,6 @@
 <?php
 
-abstract class FV_Player_Wizard_Step_Base {
+abstract class FV_Player_Wizard_Step_Base_Class {
 
   var $buttons = array(
     'next' => array(

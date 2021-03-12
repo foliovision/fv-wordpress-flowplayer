@@ -1,6 +1,6 @@
 <?php
 
-class FV_Player_Wizard_Introduction extends FV_Player_Wizard_Step_Base {
+class FV_Player_Wizard_Introduction extends FV_Player_Wizard_Step_Base_Class {
 
   // prevent the standard buttons from showing
   var $buttons = array(
