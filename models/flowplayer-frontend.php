@@ -1181,6 +1181,8 @@ class flowplayer_frontend extends flowplayer
     if( $sHTMLSharing || $sHTMLEmbed || $sHTMLVideoLink) {
       $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLVideoLink$sHTMLEmbed</div>";
     }
+    
+    $sHTML = apply_filters( 'fv_player_sharing_html', $sHTML );
 
     return $sHTML;
   }
