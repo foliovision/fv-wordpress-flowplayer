@@ -62,7 +62,7 @@ flowplayer( function(api,root) {
 
     // audio options
     audioUXGroup.forEach(function (audioTrack) {
-      hls_audio_menu.append('<a data-audio="'+audioTrack.name+'">'+audioTrack.name+'</a>');
+      hls_audio_menu.append('<a data-audio="'+audioTrack.name+'" data-lang="'+audioTrack.lang+'">'+audioTrack.name+'</a>');
     });
 
     // button
