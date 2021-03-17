@@ -8,23 +8,13 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       delete fv_flowplayer_conf.volume;
     }
   } catch(e) {}
-  
-  if(typeof fv_flowplayer_conf.chromecast === "undefined") {
-    fv_flowplayer_conf.chromecast = false;
-  }
 
   flowplayer.conf = fv_flowplayer_conf;
+  flowplayer.conf.chromecast = false; // we have our own Chromecast code to use instead
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
   flowplayer.conf.analytics = false;
   
-  // without this core Flowplayer might not get the right conf in initializePlayer()
-  // need to be used only with flowplayer.js though, not needed with min.js (?)
-  /*setTimeout( function() {
-    flowplayer.conf = fv_flowplayer_conf;
-  }, 0 )
-  */
-
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
     flowplayer.conf.key = atob(flowplayer.conf.key);
@@ -357,6 +347,15 @@ function fv_player_preload() {
       if( height == 0 ) height = root.css('max-height');
       return height;
     }
+    
+    api.show_status = function( type ) {
+      var status = '';
+      [ 'loading', 'ready', 'playing', 'paused', 'seeking' ].every( function(v,k) {
+        if ( api[v] ) status += ' '+v;
+        return true;
+      });
+      console.log( 'FV Player Status ('+type+')', status );
+    }
   });
   
   //sets height for embedded players 
@@ -541,52 +540,146 @@ function fv_player_get_video_link_hash(api) {
   return hash;
 }
 
+/**
+ * Converts seconds to hms format, example : 12h15m05s, 5m13s
+ * 
+ * @param {string|number} seconds input seconds parameter
+ *
+ * @returns {string} Returns formatted string
+ */
 function fv_player_time_hms(seconds) {
 
   if(isNaN(seconds)){
     return NaN;
   }
+  
+  // calculate h, m, s
+  var sec_num = parseInt(seconds, 10)
+  var hours   = Math.floor(sec_num / 3600)
+  var minutes = Math.floor(sec_num / 60) % 60
+  var seconds = sec_num % 60
 
-  var date = new Date(null);
-  date.setSeconds(seconds); // specify value for SECONDS here
-  var timeSrting = date.toISOString().substr(11, 8);
-  timeSrting = timeSrting.replace(/([0-9]{2}):([0-9]{2}):([0-9]{2}\.?[0-9]*)/,'$1h$2m$3s').replace(/^00h(00m)?/,'').replace(/^0/,'');
-  return timeSrting;
+  if (hours) {
+    hours += "h"; 
+  } else {
+    hours = "";
+  }
+
+  // leading zero for minutes
+  if ( hours && minutes < 10) { // ecample: 1h05m
+    minutes = "0" + minutes + "m";
+  } else if( !hours && minutes ) { 
+    minutes += "m"; 
+  } else {
+    minutes = "";
+  }
+
+  // leading zero for seconds
+  if ( (hours || minutes) && seconds < 10) { // example 1h13m05s
+    seconds = "0" + seconds;
+  }
+
+  seconds += "s";
+
+  var timeString = hours + minutes + seconds;
+
+  return timeString;
 }
 
-function fv_player_time_seconds(time, duration) {
+/**
+ * Uses fv_player_time_hms and adds milliseconds
+ * 
+ * @param {number|string} seconds
+ * 
+ * @returns {string} Returns formatted string
+ */
+function fv_player_time_hms_ms(seconds) {
 
+  if(isNaN(seconds)){
+    return NaN;
+  }
+
+  seconds = parseFloat(seconds).toFixed(3);
+
+  // split by decimal point
+  var miliseconds = ( seconds + "").split(".");
+
+  if( typeof miliseconds[1] != 'undefined' && miliseconds[1] > 0 ) {
+    miliseconds = miliseconds[1] + "ms";
+  } else {
+    miliseconds = ""
+  }
+
+  var timeString  = fv_player_time_hms(seconds) + miliseconds;
+
+  return timeString;
+}
+
+/**
+ * Converts hms format to seconds
+ * 
+ * @param {string} time 
+ * @param {number|string} duration 
+ * 
+ * @returns {number}
+ */
+
+function fv_player_time_seconds(time, duration) {
   if(!time)
     return -1;
 
   var seconds = 0;
-  var aTime = time.replace(/[hm]/g,':').replace(/s/,'').split(':').reverse();
+  var match = time.match(/(\d+[a-z]{1,2})/g);
 
-  if( typeof(aTime[0]) != "undefined" ) seconds += parseFloat(aTime[0]);
-  if( typeof(aTime[1]) != "undefined" ) seconds += parseInt(60*aTime[1]);
-  if( typeof(aTime[2]) != "undefined" ) seconds += parseInt(60*60*aTime[2]);
-
+  match.forEach(function(item) {
+    if( item.endsWith('h') ) {
+      seconds += 3600 * parseInt(item);
+    } else if( item.endsWith('m') ) {
+      seconds += 60 * parseInt(item);
+    } else if( item.endsWith('s') && !item.endsWith('ms') ) {
+      seconds += parseInt(item)
+    } else if( item.endsWith('ms') ) {
+      if(parseInt(item)) {
+        seconds += (parseInt(item) / 1000);
+      }
+    }
+  });
+  
   return duration ? Math.min(seconds, duration) : seconds;
 }
 
-//Autoplays the video, queues the right video on mobile
-function fv_autoplay_init(root, index ,time){
+/**
+ * Autoplays the video, queues the right video on mobile
+ *
+ * @param {$jQueryDomObject}  root  Player element
+ * @param {number}            index Video number in playlist
+ * @param {string|number}     time  Desired play position in hh:mm:ss
+ *                                  format or number of seconds
+ * @param {number}            abStart Optional - end of FV Player Pro AB 
+ *                                  loop. If it's present we trigger
+ *                                  the loop-ab event for FV Player Pro
+ * @param {number}            abEnd Optional - end of FV Player Pro AB 
+ *                                  loop.
+ */
+function fv_autoplay_init(root, index, time, abStart, abEnd){
   if( fv_autoplay_exec_in_progress ) return;
 
-  fv_autoplay_exec_in_progress = true;  
+  fv_autoplay_exec_in_progress = true;
 
   var api = root.data('flowplayer');
   if(!api) return;
 
   var fTime = fv_player_time_seconds(time);
+  abEnd = fv_player_time_seconds(abEnd);
+  abStart = fv_player_time_seconds(abStart);
 
   if(root.parent().hasClass('ui-tabs-panel')){
     var tabId = root.parent().attr('id');
     jQuery('[aria-controls=' + tabId + '] a').click();
   }
 
-  if( !root.find('.fp-player').attr('class').match(/\bis-sticky/) ){    
-    var offset = jQuery(root).offset().top - (jQuery(window).height() - jQuery(root).height()) / 2;    
+  if( !root.find('.fp-player').attr('class').match(/\bis-sticky/) ){
+    var offset = jQuery(root).offset().top - (jQuery(window).height() - jQuery(root).height()) / 2;
     window.scrollTo(0,offset);
     api.one('ready',function(){
       window.scrollTo(0,offset);
@@ -609,7 +702,10 @@ function fv_autoplay_init(root, index ,time){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ) api.seek(fTime)
+          if( fTime > -1 ){
+            api.seek(fTime)
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
+          }
         } );
       }
     } else if( flowplayer.support.inlineVideo ) {
@@ -617,7 +713,10 @@ function fv_autoplay_init(root, index ,time){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ) api.seek(fTime)
+          if( fTime > -1 ){
+            api.seek(fTime)
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
+          }
         } );
       });
       
@@ -644,6 +743,7 @@ function fv_autoplay_init(root, index ,time){
           var do_seek = setInterval( function() {
             if( api.loading ) return;
             api.seek(fTime)
+            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
             clearInterval(do_seek);
           }, 10 );
         }
@@ -665,6 +765,9 @@ function fv_autoplay_exec(){
     var aHash = window.location.hash.match(/\?t=/) ? window.location.hash.substring(1).split('?t=') : window.location.hash.substring(1).split(',');
     var hash = aHash[0];
     var time = aHash[1] === undefined ? false : aHash[1];
+    var abStart = aHash[2] === undefined ? false : aHash[2];
+    var abEnd = aHash[3] === undefined ? false : aHash[3];
+
     jQuery('.flowplayer').each(function(){
       var root = jQuery(this);
       if(root.hasClass('lightbox-starter')){
@@ -673,7 +776,7 @@ function fv_autoplay_exec(){
       var api = root.data('flowplayer');
       if(!api) return;
       
-      var playlist = typeof(api.conf.playlist) !== 'undefined' && api.conf.playlist.length > 1 ? api.conf.playlist : [ api.conf.clip ];          
+      var playlist = typeof(api.conf.playlist) !== 'undefined' && api.conf.playlist.length > 1 ? api.conf.playlist : [ api.conf.clip ];
 
       // first play if id is set
       for( var item in playlist ) {
@@ -682,7 +785,7 @@ function fv_autoplay_exec(){
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
         if( hash === id && autoplay ){
           console.log('fv_autoplay_exec for '+id,item);
-          fv_autoplay_init(root, parseInt(item),time);
+          fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
           return false;
         }
@@ -694,7 +797,7 @@ function fv_autoplay_exec(){
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
         if( hash === src  && autoplay ){
           console.log('fv_autoplay_exec for '+src,item);
-          fv_autoplay_init(root, parseInt(item),time);
+          fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
           return false;
         }
@@ -705,9 +808,13 @@ function fv_autoplay_exec(){
   // If no video is matched by URL hash string, process autoplay
   if( autoplay && flowplayer.support.firstframe ) {
     jQuery('.flowplayer[data-fvautoplay]').each( function() {
-      var root = jQuery(this);
-      var api = root.data('flowplayer');
-      if( !fv_player_did_autoplay && root.data('fvautoplay') ) {
+      var root = jQuery(this),
+        api = root.data('flowplayer'),
+        // Not sure why but I saw root.data('fvautoplay') to return false on some
+        // sites while root.attr('data-fvautoplay') worked
+        autoplay = root.attr('data-fvautoplay');
+
+      if( !fv_player_did_autoplay && autoplay ) {
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
           api.load();
@@ -721,7 +828,7 @@ function fv_autoplay_exec(){
             control_bar.removeClass('invisible');
           });
 
-          if(root.data('fvautoplay') == 'muted') {
+          if( autoplay == 'muted' ) {
             api.mute(true,true);
           }
         }
@@ -822,9 +929,4 @@ function fv_player_doCopy(text) {
   } catch (err) {
     throw new Error('Unsuccessfull');
   }
-}
-
-if( location.href.match(/elementor-preview=/) ) {
-  console.log('FV Player: Elementor editor is active');
-  setInterval( fv_player_load, 1000 );
 }

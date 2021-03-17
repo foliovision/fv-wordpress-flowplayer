@@ -238,7 +238,7 @@ CREATE TABLE " . self::$db_table_name . " (
         
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
-            $this->$key = stripslashes($value);
+            $this->$key = strip_tags( stripslashes($value) );
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
@@ -816,7 +816,7 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
-        $data_values[] = $value;
+        $data_values[] = strip_tags($value);
       }
     }
 

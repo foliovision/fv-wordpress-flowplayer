@@ -12,12 +12,12 @@ flowplayer( function(api,root) {
 
   api.bind("error", function (e,api, error) {
     setTimeout(function(){
-      if( api.conf.playlist.length > 0 && api.error == true) {
+      if( playlist.length > 0 && api.error == true) {
         api.error = api.loading = false;
         root.removeClass('is-error');
         root.find('.fp-message.fp-shown').remove();
 
-        if ( api.conf.video_checker == '1' && api.conf.playlist[videoIndex].video_checker.length > 0 ) { // Run checker for admin
+        if ( api.conf.video_checker == '1' && playlist[videoIndex].video_checker && playlist[videoIndex].video_checker.length > 0 ) { // Run checker for admin
           return false;
         }
 

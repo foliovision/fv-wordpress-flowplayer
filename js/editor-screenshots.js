@@ -53,7 +53,7 @@
         return;
       }
 
-      jQuery.post(fv_fp_ajaxurl, data, function(response) {
+      jQuery.post(fv_player.fv_fp_ajaxurl, data, function(response) {
         if(response.src) {
           var splashInput = item.find('#fv_wp_flowplayer_field_splash');
           splashInput.val(response.src);
