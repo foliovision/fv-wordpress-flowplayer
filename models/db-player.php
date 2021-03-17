@@ -445,16 +445,21 @@ CREATE TABLE " . self::$db_table_name . " (
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
       if (!in_array($key, $this->ignored_input_fields)) {
-        if ( property_exists( $this, $key ) ) {
-          $this->$key = stripslashes( $value );
-
-        } else if ( in_array( $key, array( 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ) ) ) {
-          $this->$key = stripslashes( $value );
-
-        } else if ( ! in_array( $key, array( 'drm_text', 'email_list', 'live', 'popup_id' ) ) ) {
-          // generate warning
-          trigger_error( 'Unknown property for new DB player: ' . $key );
-
+        if (property_exists($this, $key)) {
+          if( $key != 'ad' ) {
+            $value = strip_tags($value);
+          }
+          $this->$key = stripslashes($value);
+          
+        } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
+          $this->$key = stripslashes($value);
+          
+        } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
+          if ( defined('WP_DEBUG') && WP_DEBUG ) {
+            // generate warning
+            trigger_error('Unknown property for new DB player: ' . $key);
+          }
+          
         }
       }
     }    
@@ -496,8 +501,6 @@ CREATE TABLE " . self::$db_table_name . " (
    * @param array $options                       Options for a newly created player that will be stored in a DB.
    * @param FV_Player_Db                         $DB_Cache Instance of the DB shortcode global object that handles caching
    *                                             of videos, players and their meta data.
-   *
-   * @throws Exception When no valid ID nor options are provided.
    */
   function __construct($id, $options = array(), $DB_Cache = null) {
 
@@ -712,7 +715,11 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->is_valid = false;
       }
     } else {
-      throw new Exception('No options nor a valid ID was provided for DB player instance.');
+      if ( defined('WP_DEBUG') && WP_DEBUG ) {
+        trigger_error( 'No options nor a valid ID was provided for DB player instance.' );
+      }
+
+      return;
     }
 
     // update cache, if changed
@@ -1008,6 +1015,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
+        
+        if( $property != 'ad' ) {
+          $value = strip_tags($value);
+        }
 
         if (!$numeric_value) {
           $data_values[] = $value;

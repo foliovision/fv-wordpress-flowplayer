@@ -11,18 +11,28 @@ jQuery(document).on('click','.vc_tta-tab a', function() {
   if( api ) api.pause();
 });
 
-/*
- *  Gravity Forms Partial Entries fix - the whole player is cloned if it's placed in the form, causing it to play again in the background
- */
 flowplayer(function(api, root) {
 
+  root = jQuery(root);
+
   api.bind('ready',function() {
+    /*
+    * Gravity Forms Partial Entries fix - the whole player is cloned
+    * if it's placed in the form causing it to play again in the background.
+    * Since the video is already playing by now we don't care about removing the attribute.
+    */
     setTimeout( function() {
       var video = jQuery('video',root);
       if( video.length > 0 ) {
         video.removeAttr('autoplay'); //  removing autoplay attribute fixes the issue
       }
     }, 100 ); //  by default the heartbeat JS event triggering this happens every 30 seconds, we just add a bit of delay to be sure
+
+    /*
+    * Avoiding Twenty Twenty video resize function
+    * https://core.trac.wordpress.org/ticket/49030
+    */
+    root.find('video.fp-engine').addClass('intrinsic-ignore');
   });
 
 });
@@ -121,4 +131,23 @@ if( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(fl
     jQuery(this).css('width', jQuery(this).css('max-width'));
     jQuery(this).css('height', jQuery(this).css('max-height'));
   } );
+}
+
+if( location.href.match(/elementor-preview=/) ) {
+  console.log('FV Player: Elementor editor is active');
+  setInterval( fv_player_load, 1000 );
+  
+} else if( location.href.match(/brizy-edit-iframe/) ) {
+  console.log('FV Player: Brizy editor is active');
+  setInterval( fv_player_load, 1000 );
+}
+
+
+/*
+ *  Disable HTML5 Autoplay
+ */
+if( window.DELEGATE_NAMES ) {
+  flowplayer( function(api,root) {
+    fv_player_notice(root,fv_flowplayer_translations.chrome_extension_disable_html5_autoplay);
+  });
 }

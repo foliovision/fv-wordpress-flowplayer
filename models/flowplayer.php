@@ -499,7 +499,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }  
   
   
-  private function _get_conf() {
+  public function _get_conf() {
     $conf = get_option( 'fvwpflowplayer' );
     
     if( !$conf ) { // new install, hide some of the notices
@@ -786,7 +786,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( $v ) {
           $temp_media = $this->get_video_src( $v['src'], array( 'dynamic' => true ) );
           if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
-            if($FV_Player_Pro->is_vimeo($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
+            if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
             }
           } 
@@ -831,23 +831,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
-    $tDuration = false;    
-    if ($this->current_video()) {
-      $tDuration = $this->current_video()->getDuration();
-    }
-    
-    if( !empty($aArgs['durations']) ) {
-      $aDurations = explode( ';', $aArgs['durations'] );
-      if( !empty($aDurations[$index]) ) {
-        $tDuration = $aDurations[$index];
+    $tDuration = false;
+    if( isset($aPlayer['fv_start']) && isset($aPlayer['fv_end']) ) { // change duration if using custom startend
+      $tDuration = $aPlayer['fv_end'] - $aPlayer['fv_start'];
+    } else {
+      if ($this->current_video()) {
+        $tDuration = $this->current_video()->getDuration();
       }
+      
+      if( !empty($aArgs['durations']) ) {
+        $aDurations = explode( ';', $aArgs['durations'] );
+        if( !empty($aDurations[$index]) ) {
+          $tDuration = $aDurations[$index];
+        }
+      }
+      
+      global $post;
+      if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
+        $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
+      }
+
+      if( isset($aPlayer['fv_start']) && !empty($tDuration) ) { // custom start only
+        $tDuration = flowplayer::hms_to_seconds( $tDuration ) -  $aPlayer['fv_start'];
+      }
+
+      if( isset($aPlayer['fv_end']) ) { // custom end only
+        $tDuration = $aPlayer['fv_end'];
+      }
+
     }
-    
-    global $post;
-    if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
-      $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
-    }
-    
+
     if( $sListStyle != 'text' ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
@@ -861,8 +874,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
       }
       
-      if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
-        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></span></span>';
+      if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
+        $tDuration = flowplayer::hms_to_seconds( $tDuration );
+        $tPosition = !empty($aItem['position']) ? $aItem['position'] : 0;
+        if( $tPosition > 0 && !empty($aPlayer['fv_start']) ) {
+          $tPosition -= $aPlayer['fv_start'];
+          if( $tPosition < 0 ) {
+            $tPosition = 0;
+          }
+        }
+
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $tPosition / $tDuration ).'%" data-duration="'.esc_attr($tDuration).'"></
+        span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
@@ -994,6 +1017,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sItemCaption ) {
         $aPlayer['fv_title'] = $sItemCaption;
       }
+
+      if( $splash_img ) {
+        $aPlayer['splash'] = $splash_img;
+      }
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -1072,7 +1099,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           if( $sItemCaption ) {
             $aPlayer['fv_title'] = $sItemCaption;
-          }          
+          }
+          
+          if( $sSplashImage ) {
+            $aPlayer['splash'] = $sSplashImage;
+          }
           
           $aPlaylistItems[] = $aPlayer;
           
@@ -1162,14 +1193,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {
-        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background { background-color: ".$sBuffer." !important; }\n";
+        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
       }
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
       }
       
       $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
-      $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fv-player-video-checker { color: ".$sTime." !important; }\n";
       
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
@@ -1251,7 +1282,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     global $posts, $post;
     if( !$posts || empty($posts) ) $posts = array( $post );
     
-    if( !$force && !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
+    if( !$force && !$this->should_load_js() && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
       
       if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
@@ -1397,7 +1428,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
-    $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+    $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, "/*\nFV Flowplayer custom styles\n\nWarning: This file is not mean to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n*/\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
@@ -1408,7 +1439,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $this->_get_conf();
     }
   }
-  
+
+  /*
+   * @param array $match
+   *        string $match[0] - CSS declaration with url() in "" or '' or without quotes,
+   *                           using path like "icons/flowplayer.eot?#iefix"
+   *                           or data URL like url("data:image/svg+xml;base64,PHN2...");
+   *
+   * @return string CSS declaration with fixed relative path.
+   */
+  function css_relative_paths_fix( $match ) {
+    $path = self::get_plugin_url().'/css/';
+    if(
+      stripos($match[0],'data:') === false || // skip data URLs
+      stripos($match[0],'//') === false  // skip absolute paths
+    ) {
+      if( stripos($match[0],'url("') === 0 ) {
+        $match[0] = str_replace( 'url("', 'url("'.$path, $match[0] );
+      } else if( stripos($match[0],"url('") === 0 ) {
+        $match[0] = str_replace( "url('", "url('".$path, $match[0] );
+      } else if( stripos($match[0],'url(') === 0 ) {
+        $match[0] = str_replace( 'url(', 'url('.$path, $match[0] );
+      }
+    }
+    return $match[0];
+  }  
   
   public static function esc_caption( $caption ) {
     return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
@@ -1535,6 +1590,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
   
+  public static function hms_to_seconds( $tDuration ) {
+    if ( preg_match('/([\d]{1,2}\:)?[\d]{1,2}\:[\d]{2}/', $tDuration) ) {
+      $tDuration = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $tDuration);
+      sscanf($tDuration, "%d:%d:%d", $hours, $minutes, $seconds);
+      $tDuration = $hours * 3600 + $minutes * 60 + $seconds;
+    }
+    return $tDuration;
+  }
+
   public static function format_hms( $seconds ) {
     if( !is_numeric($seconds) ) return $seconds;
     
@@ -1855,7 +1919,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $output = 'application/'.$output;
           break;
         case 'mp3' :
-        case 'ogv' :
+        case 'ogg' :
         case 'wav' :
           $output = 'audio/'.$output;
           break;   
@@ -2174,6 +2238,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     return $value;
+  }
+  
+  function should_load_js() {
+    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']);
   }
 
   function template_preview() {

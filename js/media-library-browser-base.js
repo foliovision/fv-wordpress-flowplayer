@@ -698,27 +698,37 @@ jQuery( function($) {
       }
     }
     
-    if( extra ) {
-      if( extra.hlskey) {
-        $url_input.parents('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
-      }
-      if( extra.timeline_previews ) {
-        var data_index = $url_input.parents('table').data('index');
-        jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview').val(extra.timeline_previews);
-      }
-
+    var hlskey_field = $url_input.closest('table').find('#fv_wp_flowplayer_hlskey');
+    if( extra && extra.hlskey ) {
+      hlskey_field.val(extra.hlskey);
     } else {
-      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
+      hlskey_field.val('');
+    }
+
+    var data_index = $url_input.parents('table').data('index');
+    var timeline_previews_field = jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview');
+    if( extra && extra.timeline_previews ) {
+      timeline_previews_field.val(extra.timeline_previews);
+    } else {
+      timeline_previews_field.val('');
     }
     
     // TODO: Proper API!
+    var encoding_job_id_field = $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id');
     if( extra && extra.encoding_job_id ) {
-      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val(extra.encoding_job_id);
+      encoding_job_id_field.val(extra.encoding_job_id);
     } else {
-      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val('');
+      encoding_job_id_field.val('');
     }
     
-    
+    var audio_checkbox = $url_input.closest('table').find('#fv_wp_flowplayer_field_audio');
+    if( extra && extra.mime ) {
+      if( extra.mime.indexOf('audio') !== -1 ) {
+        audio_checkbox.prop( "checked", true );
+      } else {
+        audio_checkbox.prop( "checked", false );
+      }
+    }
 
     $popup_close_btn.click();
 

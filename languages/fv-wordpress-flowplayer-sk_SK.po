@@ -241,6 +241,30 @@ msgid ""
 "a> or other modern browser."
 msgstr ""
 
+#: ../controller/frontend.php:82
+msgid "<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>"
+msgstr "<h2>Živé vysielanie</h2><p>Začiatok o <span>%d</span>.</p>"
+
+#: ../controller/frontend.php:83
+msgid "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>"
+msgstr "<h2>Živé vysielanie je momentálne nedostupné.</h2><p>Opätovný pokus o <span>%d</span> ...</p>"
+
+#: ../controller/frontend.php:84
+msgid "Quality"
+msgstr "Kvalita"
+
+#: ../controller/frontend.php:85
+msgid "Closed Captions"
+msgstr "Titulky"
+
+#: ../controller/frontend.php:86
+msgid "No subtitles"
+msgstr "Bez titulkov"
+
+#: ../controller/frontend.php:87
+msgid "Speed"
+msgstr "Rýchlosť"
+
 #: controller/frontend.php:511
 #, php-format
 msgid "Posts by %s"

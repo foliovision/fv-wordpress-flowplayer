@@ -83,7 +83,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getEnd() {
-    return $this->end;
+    return flowplayer::hms_to_seconds($this->end);
   }
 
   /**
@@ -146,7 +146,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getStart() {
-    return $this->start;
+    return flowplayer::hms_to_seconds($this->start);
   }
 
   /**
@@ -219,6 +219,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if ($DB_Cache) {
       self::$DB_Instance = $DB_Cache;
+    } else {
+      global $FV_Player_Db;
+      self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);
@@ -238,7 +241,7 @@ CREATE TABLE " . self::$db_table_name . " (
         
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
-            $this->$key = stripslashes($value);
+            $this->$key = strip_tags( stripslashes($value) );
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
@@ -769,6 +772,10 @@ CREATE TABLE " . self::$db_table_name . " (
         if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
           if( $meta_object->getMetaValue() != $value ) {
             $to_update = $meta_object->getId();
+          } else {
+            // we found the meta key but its value hasn't changed,
+            // bail out so we don't unneccessarily make a DB call
+            return false;
           }
         }
       }
@@ -816,7 +823,7 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
-        $data_values[] = $value;
+        $data_values[] = strip_tags($value);
       }
     }
 

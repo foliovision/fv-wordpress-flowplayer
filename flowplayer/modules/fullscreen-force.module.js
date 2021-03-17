@@ -3,16 +3,19 @@ flowplayer(function(api, root) {
   if( flowplayer.conf.wpadmin || jQuery(root).hasClass('is-audio') ) return;
   
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
-    fsforce = root.data('fsforce') == true || playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid');
+    playlist_with_fullscreen =  playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid');
+    fsforce = root.data('fsforce') == true; // used for players which load using Ajax after click and then they need fullscreen
   
   if( root.data('fullscreen') == false ) {
     return;
   }
     
   // Force fullscreen on mobile setting
-  if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce ) {
+  if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce || playlist_with_fullscreen ) {
     if( !flowplayer.support.fullscreen ) {
       api.bind('ready', function() {
+        if( api.video.vr ) return;
+
         api.fullscreen(true);
       });
     }
@@ -29,6 +32,8 @@ flowplayer(function(api, root) {
     });
     
     api.on('resume', function() {
+      if( api.video.vr ) return;
+      
       if( !api.isFullscreen ) api.fullscreen();
     });
     
@@ -41,6 +46,9 @@ flowplayer(function(api, root) {
        root.removeClass('forced-fullscreen');
     });
   
+  // only important if the player is loading with Ajax
+  // on click and then you need to go to fullscreen
+  // so at least you get the CSS fullscreen
   } else if( fsforce ) {
     var position, unload = root.find('.fp-unload'), is_closing = false;
     api.isFakeFullscreen = false;
@@ -104,9 +112,13 @@ flowplayer(function(api, root) {
     }
   }
   
-  if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen ) {
+  if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
-      screen.orientation.lock("landscape-primary");
+      if( api.video.width > api.video.height ) {
+        screen.orientation.lock("landscape-primary");
+      } else {
+        screen.orientation.lock("portrait-primary");
+      }
     })
   }
   

@@ -16,9 +16,13 @@ flowplayer( function(api,root) {
   });
 
   // on iOS only one audible video can play at a time, so we must mute the other players
-  api.on('load', function() {
-    var i = 0,
-      is_muted = root.data('volume') == 0;
+  api.on('ready', function() {
+    var is_muted = root.data('volume') == 0;
+    
+    if( !is_muted ) {
+      // mark the current player as the one who is making the noise
+      flowplayer.audible_instance = instance_id;
+    }
     
     // we go through all the players to paused or mute them all
     jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
@@ -26,23 +30,31 @@ flowplayer( function(api,root) {
       
       // we must skip the current player, as the load even can occur multiple times
       // like for example when you switch to another video in playlist
-      var current_instance_id = root.data('flowplayer-instance-id');
-      if( current_instance_id == flowplayer.audible_instance ) return;      
+      var current_instance_id = jQuery(this).data('flowplayer-instance-id');
 
-      if( player && player.playing ) {
-        // it multiple video playback is enabled we go through all the players to mute them all
-        // if this video is not muted
-        if( api.conf.multiple_playback && !is_muted ) {
-          player.mute(true,rue);
+      if( flowplayer.audible_instance == -1 || current_instance_id == flowplayer.audible_instance || current_instance_id == instance_id ) return;      
+
+      if( player ) {
+        if( player.ready ) {
+          // if multiple video playback is enabled we go through all the players to mute them all
+          if( api.conf.multiple_playback ) {
+            // but only if the video is audible
+            if( !is_muted ) {
+              player.mute(true,true);
+            }
+            
+          // otherwide pause the other player
+          } else if( player.playing ) {
+            player.pause();
+          }
         } else {
-          player.pause();
+          player.clearLiveStreamCountdown(); // if not playing stop countdown and unload if other video plays
+
+          // TODO: Check for YouTube and Vimeo
+          player.unload();
         }
       }
     });
-
-    // mark the current player as the one who is making the noise
-    flowplayer.audible_instance = instance_id;
-
 
   }).on('mute', function(e,api,muted) {
     // if the player was unmuted, mute the player which was audible previously

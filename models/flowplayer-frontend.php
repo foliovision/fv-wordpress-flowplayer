@@ -217,8 +217,16 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
-    if( ( $player && count($player->getVideos()) == 1 ) || empty($this->aCurArgs['playlist']) ) {
-      $this->aCurArgs['liststyle'] = 'horizontal'; // if single video, force horizontal style (fix for video ads)
+    // if single video, force horizontal style (fix for FV Player Pro Video Ads)
+    // TODO: Perhaps FV Player Pro Video Ads should deal with this instead
+    if(
+      // when using the FV Player DB it's possible to have a single video only
+      // but then it might fill the playlist shortcode argument
+      // this happens for FV Player Pro Vimeo Channel functionality
+      $player && count($player->getVideos()) == 1 && empty($this->aCurArgs['playlist']) ||
+      empty($this->aCurArgs['playlist']) 
+    ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
     $aPlaylistItems = array();  //  todo: remove
@@ -408,10 +416,17 @@ class flowplayer_frontend extends flowplayer
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
   
-        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );
-        
-        if( !$bIsAudio && $video = $this->current_video() ) {          
+        // should the player appear as audio player?
+        $bIsAudio = false;
+        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+          $bIsAudio = true;
+        } else  if( $video = $this->current_video() ) {          
           $bIsAudio = $video->getMetaValue('audio',true);
+        }
+        
+        // if there is splash and it's different from the site-wide default splash
+        if( !empty($splash_img) && strcmp( $splash_img, $this->_get_option('splash') ) != 0 ) {
+          $bIsAudio = false;
         }
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
@@ -1194,10 +1209,10 @@ class flowplayer_frontend extends flowplayer
     $sSpinURL = site_url('wp-includes/images/wpspin.gif');
 
     $sHTML = <<< HTML
-<div title="Only you and other admins can see this warning." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
-  <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Video Checker</div>
+<div title="Only you and other admins can see this warning." class="fv-player-video-checker fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
+  <div class="fv-player-video-checker-head">Video Checker <span></span></div>
   <small>Admin: <span class="video-checker-result">Checking the video file...</span></small>
-  <div style="display: none;" class="fv_wp_fp_notice_content" id="fv_wp_fp_notice_{$this->hash}">
+  <div style="display: none;" class="fv-player-video-checker-details" id="fv_wp_fp_notice_{$this->hash}">
     <div class="mail-content-notice">
     </div>
     <div class="support-{$this->hash}">

@@ -100,6 +100,8 @@ jQuery(function() {
 
     var fv_player_preview_window;
 
+    var fv_player_preview_loading = false;
+
 
     var fv_wp_flowplayer_save_ignore_errors = false;
 
@@ -868,6 +870,9 @@ jQuery(function() {
           $element.removeData('fv_player_video_auto_refresh_task');
         }*/
 
+        // perform video type compatibility check
+        window.fv_player_editor.src_playlist_url_check( $element );
+
         // set jQuery data related to certain meta data that we may have for current video
         if (!$auto_splash_element.length && $splash_element.val() ) {
           // splash for this video was manually updated
@@ -1343,8 +1348,11 @@ jQuery(function() {
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
 
       if( field.length ) {
-        editor_content = jQuery(field).val();
+        if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
+          field = field.find('textarea').first();
+        }
 
+        editor_content = jQuery(field).val();
       } else if( widget.length ){
         editor_content = widget.val();
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
@@ -1893,7 +1901,7 @@ jQuery(function() {
 
       if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
         // check for new, DB-based player shortcode
-        var result = /fvplayer id="([\d,]+)"/g.exec(shortcode);
+        var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
           var
             shortcode_parse_fix = shortcode
@@ -2165,6 +2173,9 @@ jQuery(function() {
               $('.fv-player-tab-video-files .fv_wp_flowplayer_field_width').val(response.width);
               $('.fv-player-tab-video-files .fv_wp_flowplayer_field_height').val(response.height);
             }
+
+            $doc.trigger('fv_player_editor_finished');
+            
           }).error(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
@@ -2484,6 +2495,8 @@ jQuery(function() {
           jQuery('.fv_player_field_insert-button').text('Save');
         }
       }
+      
+      $doc.trigger('fv_player_editor_finished');
     }
 
     /*
@@ -2674,10 +2687,15 @@ jQuery(function() {
 
       // is there a Gutenberg field together in wrapper with the button?
       if( gutenberg.length ) {
-        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-        nativeInputValueSetter.call(gutenberg[0], shortcode);
+        var
+          nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
+          gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
+
+        nativeInputValueSetter.call(gutenbergTextarea, shortcode);
         var ev2 = new Event('change', { bubbles: true});
-        gutenberg[0].dispatchEvent(ev2,shortcode);
+        gutenbergTextarea.dispatchEvent(ev2,shortcode);
+
+        fv_player_editor.gutenberg_preview( jQuery(editor_button_clicked).parents('.fv-player-editor-wrapper'), shortcode );
 
         // is there a plain text field together in wrapper with the button?
       } else if (field.length) {
@@ -3103,17 +3121,17 @@ jQuery(function() {
     }
 
     function set_post_editor_content( html ) {
-      if ( is_fv_player_screen(editor_button_clicked) || is_fv_player_widgets(editor_button_clicked) || $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field').length) {
+      if ( editor_button_clicked.className.indexOf('fv-player-editor-button') > -1 || is_fv_player_screen(editor_button_clicked) || is_fv_player_widgets(editor_button_clicked) || $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field').length) {
         return;
       }
 
       if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
         jQuery('#content:not([aria-hidden=true])').val(html);
 
-      }else if( instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) {
+      }else if( typeof(instance_fp_wysiwyg) != 'undefined' && ( instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) ) {
         instance_fp_wysiwyg.SetHTML( html );
       }
-      else {
+      else if ( instance_tinymce ) { // instance_tinymce will be null if we're updating custom meta box
         instance_tinymce.setContent( html );
       }
     }
@@ -3519,6 +3537,76 @@ jQuery(function() {
       },
 
       editor_resize: editor_resize,
+
+      /**
+       * Adds a preview to the Gutenberg FV Player block.
+       *
+       * @param parent Parent Gutenberg element in which we'll be showing the preview for.
+       * @param shortcode The actual player shortcode to generate the preview from.
+       */
+      gutenberg_preview: function( parent, shortcode ) {
+        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined') {
+          return;
+        } else if (fv_player_preview_loading !== false) {
+          clearTimeout(fv_player_preview_loading);
+        }
+
+        console.log('fv_player_gutenberg_preview',parent,shortcode);
+        var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + b64EncodeUnicode( shortcode );
+
+        // set timeout for the loading AJAX and wait a moment, as REACT will call this function
+        // even when we click into the Gutenberg block without actually editing anything
+        // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
+        fv_player_preview_loading = setTimeout(function() {
+          jQuery.get(url, function(response) {
+            jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
+          } ).always(function() {
+            fv_player_preview_loading = false;
+          })
+        }, 1500);
+      },
+
+      /**
+       * Checks for either an invalid video type being present in the SRC field
+       * (such as YouTube video in Free player, which does not directly support it)
+       * or for a playlist item URL in the SRC field when this player video is the first one existing.
+       *
+       * @param $src_input jQuery representation of the SRC input that was changed.
+       */
+      src_playlist_url_check: function( $src_input ) {
+        var result = {
+          'allok' : true,
+        };
+
+        if (
+          $src_input.val().indexOf('vimeo.com') > -1 ||
+          $src_input.val().indexOf('vimeopro.com') > -1 ||
+          $src_input.val().indexOf('youtube.com') > -1 ||
+          $src_input.val().indexOf('youtu.be') > -1
+        ) {
+          result.allok = false;
+
+        } else {
+          result.allok = true;
+        }
+
+        // fire up a JS event for the PRO player to catch,
+        // so it can check the URL and make sure we don't show
+        // a warning message for PRO-supported video types
+        $doc.trigger('editor_src_field_changed', [ $src_input, result ]);
+
+        if ( !result.allok ) {
+          $src_input
+            .siblings('.fv-player-src-below-notice')
+            .first()
+            .css('display', 'block');
+        } else {
+          $src_input
+            .siblings('.fv-player-src-below-notice')
+            .first()
+            .css('display', 'none');
+        }
+      },
     };
 
   })(jQuery);

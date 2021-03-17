@@ -78,6 +78,9 @@ function fv_flowplayer_get_js_translations() {
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
+  'live_stream_starting'=>__('<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>', 'fv-wordpress-flowplayer'),
+  'live_stream_retry'=>__( '<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
+  'live_stream_continue'=>__( '<h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
@@ -88,6 +91,20 @@ function fv_flowplayer_get_js_translations() {
   'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_ie' => __('You are using a deprecated browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
+  'quality' => __('Quality','fv-wordpress-flowplayer'),
+  'closed_captions' => __('Closed Captions', 'fv-wordpress-flowplayer'),
+  'no_subtitles' => __('No subtitles', 'fv-wordpress-flowplayer'),
+  'speed' => __('Speed', 'fv-wordpress-flowplayer'),
+  'duration_1_day' => __( "%s day" ),
+  'duration_n_days' => _n( '%s day', '%s days', 5 ),
+  'duration_1_hour' => __( "%s hour" ),
+  'duration_n_hours' => _n( '%s hour', '%s hours', 5 ),
+  'duration_1_minute' => __( "%s min" ),
+  'duration_n_minutes' => _n( '%s min', '%s mins', 5 ),
+  'duration_1_second' => __( "%s second" ),
+  'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
+  'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
+  'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
 );
   
   return $aStrings;
@@ -304,12 +321,12 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     $fv_fp->_get_option('js-everywhere')  ||
-     isset($_GET['fv_wp_flowplayer_check_template'])
+     $fv_fp->should_load_js() ||
+     isset($_GET['fv_wp_flowplayer_check_template']) 
   ){
     
     $aDependencies = array('jquery');
-    if( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_tabs ) {
+    if( $fv_fp->should_load_js() || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
@@ -323,28 +340,30 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
+    // Load base Flowplayer library
+    $path = '/flowplayer/modules/flowplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
+      $path = '/flowplayer/modules/flowplayer.js';
+    }
+    
+    $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_ver;
+    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, $version, true );
+    $aDependencies[] = 'flowplayer';
+    
+    // Load modules
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      $path = '/flowplayer/modules/flowplayer.min.js';
-      if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
-        $path = '/flowplayer/modules/flowplayer.js';
-      }
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
-      $aDependencies[] = 'flowplayer';
-      
       $path = '/flowplayer/modules/fv-player.js';
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
       
-      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
-        if( strcmp(basename($filename),'flowplayer.min.js') == 0 ) continue;
-        if( strcmp(basename($filename),'fv-player.js') == 0 ) continue;
-        
+      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.module.js') as $filename ) {
         $path = '/flowplayer/modules/'.basename($filename);
         wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
       
     } else {
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/fv-player.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       
     }
 
@@ -404,7 +423,7 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( ( $fv_fp->_get_option('js-everywhere') || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
+    if( ( $fv_fp->should_load_js() || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.11.0';
@@ -416,11 +435,11 @@ function flowplayer_prepare_scripts() {
     $aConf['script_dash_js_version'] = '2.7';
         
     if( $fv_fp->_get_option('googleanalytics') ) {
-      $aConf['analytics'] = $fv_fp->_get_option('googleanalytics');
+      $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
 
     if( $fv_fp->_get_option('chromecast') ) {
-      $aConf['chromecast'] = $fv_fp->_get_option('chromecast');
+      $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
     
     if( $fv_fp->_get_option('hd_streaming') ) {
@@ -470,18 +489,7 @@ function flowplayer_prepare_scripts() {
     
   }
   
-  global $FV_Player_lightbox;
-  if( isset($FV_Player_lightbox) && ( $FV_Player_lightbox->bLoad || $fv_fp->_get_option('lightbox_images') || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('lightbox_force') ) ) {
-    $aConf = array();
-    $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images');
-    
-    if( !$FV_Player_lightbox->bCSSLoaded ) $FV_Player_lightbox->css_enqueue(true);
-
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
-    wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
-    
-  }
-  
+  FV_Player_lightbox()->maybe_load();
 }
 
 /**
@@ -635,4 +643,64 @@ function fv_player_footer_svg_rewind() {
   </g>
 </svg>
   <?php
+}
+
+add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
+
+/*
+ * Alers all the script tags related to FV Player, with excetption of the base FV Player library.
+ * The reason is that it's a dependency of most of the modules so then each module would have to be 
+ * adjusted to be able to load without it.
+ * 
+ * Fancybox lightbox library with additional code is also excluded.
+ * 
+ * @param string $tag The original script tag.
+ * @param string $handle The WordPress script handle
+ * 
+ * @global object $fv_fp The FV Player plugin instance
+ * 
+ * @return string The adjusted script tag
+ */
+function fv_player_js_loader_mark_scripts( $tag, $handle ) {
+  global $fv_fp;
+  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') ) {
+    return $tag;
+  }
+
+  if(
+    // script ID must start with one of following
+    (
+      stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
+      stripos($handle,'fv-player') === 0 ||
+      stripos($handle,'fv_player') === 0
+    
+    // script handle must not be one of
+    ) && !in_array( $handle, array(
+      'fv_player_lightbox' // without this it would be impossible to open the lightbox without hovering the page before it, so it's really a problem on mobile
+    ), true )
+  ) {
+    $tag = str_replace( ' src=', ' data-fv-player-loader-src=', $tag );
+    add_action( 'wp_print_footer_scripts', 'fv_player_js_loader_load', PHP_INT_MAX );
+  }
+  return $tag;
+}
+
+/*
+ * Outpput FV Player JS Loader into footer, hooked in in fv_player_js_loader_mark_scripts()
+ */
+function fv_player_js_loader_load() {
+  require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+  require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+  $filesystem = new WP_Filesystem_Direct( new StdClass() );
+  
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.dev.js' );
+  
+  // remove // comments
+  $js = preg_replace( '~^\s+//.*?$~m', '', $js );
+  // remove /* comments */
+  $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
+  // remove whitespace
+  $js = preg_replace( '~\s+~m', ' ', $js );
+  
+  echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }

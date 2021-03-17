@@ -133,6 +133,9 @@ class FV_Player_Db {
           if ($meta->getMetaKey() == 'dvr' && $meta->getMetaValue() == 'true') {
             $aItem['dvr'] = 'true';
           }
+          if ($meta->getMetaKey() == 'audio' && $meta->getMetaValue() == 'true') {
+            $aItem['is_audio_stream'] = 'true';
+          }
         }
       }
       
@@ -449,8 +452,8 @@ class FV_Player_Db {
         // add rest of the videos into the playlist tag
         if ($videos && count($videos)) {
           foreach ( $videos as $k => $vid_object ) {
-            $vid_id                            = isset($vid['id']) ? $vid['id'] : 'preview-'.($k+1);
             $vid                               = $vid_object->getAllDataValues();
+            $vid_id                            = isset($vid['id']) ? $vid['id'] : 'preview-'.($k+1);
             $atts['video_objects'][]           = $vid_object;
             $this->video_atts_cache[ $vid_id ] = $vid;
             $new_playlist_tag[]                = $vid_id;
@@ -525,14 +528,17 @@ class FV_Player_Db {
    * as opposed to getting them from the old full-text
    * shortcode format.
    *
-   * @param $id ID of the player to get attributes for.
-   *
    * @return array|mixed Returns an array with all player attributes in it.
    *                     If the player ID is not found, an empty array is returned.
    * @throws Exception When the underlying video object throws.
    */
-  public function getPlayerAttsFromDb($atts) {
-    
+  public function getPlayerAttsFromDb( $atts ) {
+    // if we have a programatically-crafted shortcode that loads a player
+    // to show a custom user playlist on the front-end, process it here
+    if (isset( $atts['src'] ) && is_numeric( $atts['src'] ) && intval( $atts['src'] ) > 0 ) {
+      return $this->setPlayerAttsFromNumericSrc( $atts );
+    }
+
     global $fv_fp, $FV_Player_Db;
 
     $is_multi_playlist = false;
@@ -721,6 +727,50 @@ class FV_Player_Db {
       $cache = $FV_Player_Db->getPlayersCache();
       unset($cache[$player->getId()]);
       $FV_Player_Db->setPlayersCache($cache);
+    }
+
+    return $atts;
+  }
+
+  /**
+   * Creates an empty default player from a shortcode like [fvplayer src="1" playlist="1;2;3"]
+   * and fills its videos data from the database. Used for custom user front-end playlists.
+   *
+   * The SRC attribute of the above shortcode must be a numeric ID of the first video in the playlist,
+   * then the playlist must follow with all of the videos to be shown (including the first one from the SRC attribute).
+   *
+   * @param $atts Original player attributes coming from the execution point of this method's filter.
+   *
+   * @return array|mixed Returns an array with all player attributes in it.
+   *                     If the player ID is not found, an empty array is returned.
+   * @throws Exception When the underlying video object throws.
+   */
+  public function setPlayerAttsFromNumericSrc( $atts ) {
+
+    global $fv_fp, $FV_Player_Db;
+
+    if (isset( $atts['src'] ) && is_numeric( $atts['src'] ) && intval( $atts['src'] ) > 0 ) {
+      $player = new FV_Player_Db_Player( false, array(
+        'playlist' => ( !empty($atts['playlist']) ? $atts['playlist'] : $atts['src'] ),
+      ), $FV_Player_Db );
+
+      // fill-in videos data from the "playlist" shortcode parameter
+      $player->setVideos( str_replace( ';', ',', $atts['playlist'] ) );
+      $fv_fp->currentPlayerObject = $player;
+      $data = $player->getAllDataValues();
+
+      // preload all videos
+      $player->getVideos();
+
+      // add playlist / single video data
+      $atts = array_merge( $atts, $this->generateFullPlaylistCode(
+      // we need to prepare the same attributes array here
+      // as is ingested by generateFullPlaylistCode()
+      // when parsing the new playlist code on the front-end
+        array(
+          'playlist' => $data['videos']
+        )
+      ) );
     }
 
     return $atts;

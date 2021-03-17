@@ -27,7 +27,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.4.999.727.5';
+$fv_wp_flowplayer_ver = '7.4.999.727.7';
 $fv_wp_flowplayer_core_ver = '7.2.7.1';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -94,4 +94,6 @@ if( is_admin() ) {
 
 include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
 include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+
+include_once( dirname( __FILE__ ) . '/models/avada-builder-bridge.php' );
 include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );

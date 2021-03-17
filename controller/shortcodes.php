@@ -158,12 +158,20 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     $arguments['post'] = get_the_ID();
   }
 
-  if( !empty($arguments['id']) && intval($arguments['id']) > 0 ) {
+  // accepts:
+  // 1) [fvplayer id="198"] - a DB-based shortcode in the form
+  // 2) [fvplayer src="198" playlist="198;199;200"] - a front-end user's playlist shortcode that is programatically passed to this method
+  if( (!empty($arguments['id']) && intval($arguments['id']) > 0) || (!empty($arguments['src']) && is_numeric($arguments['src']) && intval($arguments['src']) > 0) ) {
     $new_player = $fv_fp->build_min_player(false, $arguments);
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
-    return $new_player['html'];
+
+    if ( $new_player ) {
+      return $new_player['html'];
+    } else {
+      return '';
+    }
         
   } else  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
@@ -184,7 +192,9 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         }
 
         $new_player = $fv_fp->build_min_player( $aArgs['src'],$aArgs );
-        $sHTML .= $new_player['html'];
+        if ( $new_player ) {
+          $sHTML .= $new_player['html'];
+        }
       }
 
       return $sHTML;
@@ -196,7 +206,12 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     if (!empty($new_player['script'])) {
       $GLOBALS['fv_fp_scripts'] = $new_player['script'];
     }
-    return $new_player['html'];
+
+    if ( $new_player ) {
+      return $new_player['html'];
+    } else {
+      return '';
+    }
     
 	}
   return false;
@@ -294,8 +309,19 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
 }
 
 
-function fv_player_time() {
+function fv_player_time( $args = array() ) {
   global $post, $fv_fp;
+	
+  if( !empty($args['id']) ) {
+    $player = new FV_Player_Db_Player($args['id']);
+    if( $player->getIsValid() ) {
+      foreach( $player->getVideos() AS $video ) {
+        if( $duration = $video->getDuration() ) {
+          return flowplayer::format_hms( $duration );
+        }
+      }
+    }
+  }
   
   if( $post->ID > 0 && isset($fv_fp->aCurArgs['src']) ) {
     return flowplayer::get_duration( $post->ID, $fv_fp->aCurArgs['src'] );

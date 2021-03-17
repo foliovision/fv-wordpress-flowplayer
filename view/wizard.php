@@ -114,6 +114,7 @@ var fv_flowplayer_set_post_thumbnail_id = <?php echo $post_id; ?>;
 var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_post_thumbnail-$post_id" ); ?>';
 <?php endif; ?>
 var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>';
+var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </script>
 
 <div style="display: none">
@@ -245,7 +246,9 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                 <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" />
                   <?php if ($allow_uploads == "true") { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
-                  <?php }; //allow uplads video ?></td>
+                  <?php }; //allow uplads video ?>
+                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
+                </td>
               </tr>
 
               <tr style="display: none" id="fv_wp_flowplayer_file_info">
@@ -262,6 +265,7 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <?php if ($allow_uploads == "true") { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
+                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
                 </td>
               </tr>
 
@@ -271,7 +275,8 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <?php if ($allow_uploads == "true") { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                </td>
+                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
+                </td>    			
               </tr>
 
               <tr class="hide-if-playlist">
@@ -334,12 +339,12 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
                   <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
                   <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
               </tr>
-
+              
               <tr class="fv_player_interface_hide">
                   <th scope="row" class="label"><label for="fv_wp_flowplayer_field_dvr" class="alignright"><?php _e('DVR stream', 'fv_flowplayer'); ?></label></th>
                   <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_dvr" name="fv_wp_flowplayer_field_dvr" /></td>
               </tr>
-
+              
               <tr class="fv_player_interface_hide">
                   <th scope="row" class="label"><label for="fv_wp_flowplayer_field_audio" class="alignright"><?php _e('Audio stream', 'fv_flowplayer'); ?></label></th>
                   <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_audio" name="fv_wp_flowplayer_field_audio" /></td>
@@ -536,10 +541,12 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
         <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
 
         <?php
-        $screen = get_current_screen();
-        if ( $screen->parent_base != 'fv_player' ) : ?>
-          <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-        <?php endif; ?>
+        if( function_exists('get_current_screen') && current_user_can('edit_posts') ) :
+          $screen = get_current_screen();
+          if ( $screen->parent_base != 'fv_player' ) : ?>
+            <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
+          <?php endif;
+        endif; ?>
       </div>
       <!--<div id="fv-player-tabs-debug"></div>-->
     </div>
