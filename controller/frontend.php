@@ -439,6 +439,17 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
+    
+    if( $fv_fp->_get_option('matomo_domain') && $fv_fp->_get_option('matomo_site_id') ) {
+      // take the domain name from Matomo Domain setting in case somebody entered full URL
+      $matomo_domain = $fv_fp->_get_option('matomo_domain');
+      $parsed = parse_url($matomo_domain);
+      if( $parsed && !empty($parsed['host']) ) { 
+        $matomo_domain = $parsed['host'];
+      }
+      $aConf['matomo_domain'] = $matomo_domain;
+      $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
+    }
 
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');

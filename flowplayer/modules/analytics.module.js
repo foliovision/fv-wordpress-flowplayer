@@ -12,6 +12,15 @@ flowplayer( function(api,root) {
       ga('create', api.conf.fvanalytics, 'auto');
     });
   }
+  
+  if( typeof(_paq) == 'undefined' && api.conf.matomo_domain && api.conf.matomo_site_id ) {
+    var u="//"+api.conf.matomo_domain+"/";
+    var _paq = window._paq = window._paq || [];
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', api.conf.matomo_site_id]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  }
 
   api.bind('progress', function(e,api,current) {
     fv_track(e,api,current);
@@ -32,7 +41,7 @@ flowplayer( function(api,root) {
 
       var name = fv_player_track_name(root,video);
       if( name && !name.match(/\/\/vimeo.com\/\d/) ) {
-        fv_player_track(api.conf.fvanalytics, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", error.message, name );
+        fv_player_track( false, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", error.message, name );
       }
     }, 100 );
   });
@@ -47,7 +56,7 @@ flowplayer( function(api,root) {
     if (!timer) {
       timer = setTimeout(function() {
         timer = null;
-        fv_player_track( api.conf.fvanalytics, "Flowplayer heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
+        fv_player_track( false, "Flowplayer heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
       }, 10*60*1000); // heartbeat every 10 minutes
     }
 
@@ -71,7 +80,7 @@ flowplayer( function(api,root) {
     }
 
     if (time) {
-      fv_player_track( api.conf.fvanalytics, "Video / Seconds played", api.engine.engineName + "/" + api.video.type, event_name, Math.round(time / 1000) );
+      fv_player_track( false, "Video / Seconds played", api.engine.engineName + "/" + api.video.type, event_name, Math.round(time / 1000) );
 
       time = 0;
       if (timer) {
@@ -110,7 +119,7 @@ flowplayer( function(api,root) {
     root.trigger('fv_track_'+fv_ga_events[i].replace(/ /,'_'), [api, name] );
     root.data('fv_track_'+fv_ga_events[i], true);
 
-    fv_player_track( api.conf.fvanalytics, "Video " + (root.hasClass('is-cva')?'Ad ':'') +  fv_ga_events[i] , api.engine.engineName + "/" + video.type, name );
+    fv_player_track( false, "Video " + (root.hasClass('is-cva')?'Ad ':'') +  fv_ga_events[i] , api.engine.engineName + "/" + video.type, name );
   }
   
   api.get_time_played = function() {
@@ -118,23 +127,41 @@ flowplayer( function(api,root) {
   }
 });
 
-//Sends event statistics to Google analytics
+/**
+ * Sends event statistics to Google analytics and Matomo
+ * 
+ * @param {string} ga_id Optional Google Analytics ID to use.
+ * @param {string} event
+ * @param {string} engineType
+ * @param {string} name
+ * @param {number} value
+ *
+ */
 function fv_player_track( ga_id, event, engineType, name, value){
-
-  if( !ga_id || typeof(ga) == 'undefined' ) return;
-
-  ga('create', ga_id, 'auto', name , { allowLinker: true});
-  ga('require', 'linker');
-
+  
+  if( !ga_id ) ga_id = flowplayer.conf.fvanalytics;
+  
   if( typeof(engineType) == "undefined" ) engineType = 'Unknown engine';
+  
+  if( /fv_player_track_debug/.test(window.location.href) ) console.log('FV Player Track: ' + event + ' - ' + engineType + " '" + name + "'",value);
 
-  if( /fv_ga_debug/.test(window.location.href) ) console.log('FV GA: ' + event + ' - ' + engineType + " '" + name + "'",value);
- // ga('linker:autoLink', ['destination.com']);
+  if( ga_id && typeof(ga) != 'undefined' ) {
+    ga('create', ga_id, 'auto', name , { allowLinker: true});
+    ga('require', 'linker');
 
-  if (typeof value === 'undefined') {
-    ga('send', 'event', event, engineType, name);
-  } else {
-    ga('send', 'event', event, engineType, name, value);
+    if( value ) {
+      ga('send', 'event', event, engineType, name, value);
+    } else {
+      ga('send', 'event', event, engineType, name);
+    }
+  }
+
+  if( flowplayer.conf.matomo_domain && flowplayer.conf.matomo_site_id && typeof(_paq) != 'undefined' ) {
+    if( value ) {
+      _paq.push(['trackEvent', event, engineType, name, value]);
+    } else {
+      _paq.push(['trackEvent', event, engineType, name]);
+    }
   }
 
 }

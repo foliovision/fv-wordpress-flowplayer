@@ -282,6 +282,16 @@ function fv_flowplayer_admin_default_options() {
                 </select>
               </td>
 						</tr>
+            
+            <tr>
+							<td><label for="matomo_domain"><?php _e('Matomo/Piwik Tracking', 'fv-wordpress-flowplayer'); ?>:</label></td>
+							<td>
+                <p class="description">
+                  <input type="text" name="matomo_domain" id="matomo_domain" value="<?php echo esc_attr( $fv_fp->_get_option('matomo_domain') ); ?>" placeholder="<?php _e('matomo.your-domain.com', 'fv-wordpress-flowplayer'); ?>" class="large" />
+                  <input type="text" name="matomo_site_id" id="matomo_site_id" value="<?php echo esc_attr( $fv_fp->_get_option('matomo_site_id') ); ?>" placeholder="<?php _e('Site ID', 'fv-wordpress-flowplayer'); ?>" class="small" />
+                </p>
+							</td>
+						</tr>
 
             <?php $fv_fp->_get_checkbox(__('Multiple video playback', 'fv-wordpress-flowplayer').' (beta)', 'multiple_playback', __('Allows multiple players to play at once. Only one player remains audible.', 'fv-wordpress-flowplayer') ); ?>
             
