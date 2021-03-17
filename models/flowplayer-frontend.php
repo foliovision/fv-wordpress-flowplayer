@@ -163,7 +163,7 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    if( preg_match( "~(youtu\.be/|youtube\.com|youtube-nocookie\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
       if( isset($aYoutube[5]) ) {
         $youtube = $aYoutube[5];
         $player_type = 'youtube';
