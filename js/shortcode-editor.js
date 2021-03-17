@@ -1346,7 +1346,7 @@ jQuery(function() {
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
-      
+
       if( field.length ) {
         if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
           field = field.find('textarea').first();
@@ -2706,15 +2706,15 @@ jQuery(function() {
         // FV Player in a Widget
       } else if( widget.length ){
         widget.val( shortcode );
-        widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content 
+        widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content
         widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
-        
+
         // tinyMCE Text tab
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
         // editing
         if( editor_content.match(/\[.*?#fvp_placeholder#.*?\]/) ) {
           editor_content = editor_content.replace(/\[.*?#fvp_placeholder#.*?\]/, shortcode);
-        
+
         //inserting
         } else {
           editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
@@ -3163,7 +3163,7 @@ jQuery(function() {
 
     /*
      * Populate content of the Embeds tab and show it if there is any content to be set
-     * 
+     *
      * @param string  html  The OL > LI list of posts which contain the same player.
      */
     function set_embeds( html ) {

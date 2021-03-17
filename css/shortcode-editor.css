@@ -106,7 +106,7 @@
   width: 100%;
 }
 #fv-player-editor-loading-overlay {
-  background-image: url(../../../../wp-includes/images/wpspin-2x.gif); 
+  background-image: url(../../../../wp-includes/images/wpspin-2x.gif);
   background-repeat: no-repeat;
   background-position: center;
 }

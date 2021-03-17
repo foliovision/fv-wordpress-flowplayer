@@ -11,17 +11,20 @@ jQuery( function($) {
         action: "load_s3_assets",
       };
 
+    fv_flowplayer_browser_get_function[ 'fv_flowplayer_s3_browser_media_tab' ] = fv_flowplayer_s3_browser_load_assets;
+
     $this.addClass('active').siblings().removeClass('active');
 
-    // replace content by the new S3 content
-    $media_frame_content.html($overlay_div);
-
-    if (typeof bucket === 'string' && bucket) {
-      ajax_data['bucket'] = bucket;
+    var $bucketsDropdown = jQuery('#browser-dropdown');
+    if ((typeof bucket === 'string' && bucket) || ($bucketsDropdown.length && $bucketsDropdown.val())) {
+      ajax_data['bucket'] = ((typeof bucket === 'string' && bucket) ? bucket : $bucketsDropdown.val());
     }
     if (typeof path === 'string' && path) {
       ajax_data['path'] = path;
     }
+
+    // replace content by the new S3 content
+    $media_frame_content.html($overlay_div);
 
     jQuery.post(ajaxurl, ajax_data, function(ret) {
       var
@@ -60,8 +63,7 @@ jQuery( function($) {
 
           if (!$err_div.length) {
             $err_div = jQuery('<div class="errors"></div>');
-            $err_div.insertBefore(jQuery('.filemanager .search'));
-            $err_div.after('<hr /><br />');
+            $err_div.insertAfter(jQuery('.attachments-browser .media-toolbar-secondary .spinner'));
           }
 
           $err_div.html('<strong>Bucket is missing settings. Please make sure you assigned region, key ID and secret key to this bucket.</strong>');
