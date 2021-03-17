@@ -8,7 +8,7 @@ flowplayer( function(api,root) {
   var time = 0, last = 0, timer, event_name;
 
   // Load analytics.js if ga.js is not already loaded
-  if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' ) {
+  if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' && typeof(gtag) == 'undefined' ) {
     jQuery.getScript( { url: "https://www.google-analytics.com/analytics.js", cache: true }, function() {
       ga('create', api.conf.fvanalytics, 'auto');
     });
@@ -147,8 +147,16 @@ function fv_player_track( ga_id, event, engineType, name, value){
   
   if( /fv_player_track_debug/.test(window.location.href) ) console.log('FV Player Track: ' + event + ' - ' + engineType + " '" + name + "'",value);
 
+  // gtag.js
+  if( typeof(gtag) != "undefined" ) {
+    gtag('event', event, {
+      'event_category': engineType,
+      'event_label': name,
+      'value': value ? value  : 1
+    });
+  
   // analytics.js
-  if( ga_id && typeof(ga) != 'undefined' ) {
+  } else if( ga_id && typeof(ga) != 'undefined' ) {
     ga('create', ga_id, 'auto', name , { allowLinker: true});
     ga('require', 'linker');
 
