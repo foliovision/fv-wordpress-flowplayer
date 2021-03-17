@@ -7,12 +7,14 @@ flowplayer( function(api,root) {
   var bean = flowplayer.bean;
   var time = 0, last = 0, timer, event_name;
 
-  if( typeof(ga) == 'undefined' && api.conf.fvanalytics ) {
+  // Load analytics.js if ga.js is not already loaded
+  if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' ) {
     jQuery.getScript( { url: "https://www.google-analytics.com/analytics.js", cache: true }, function() {
       ga('create', api.conf.fvanalytics, 'auto');
     });
   }
   
+  // Load Matomo if not already loaded when needed
   if( typeof(_paq) == 'undefined' && api.conf.matomo_domain && api.conf.matomo_site_id ) {
     var u="//"+api.conf.matomo_domain+"/";
     var _paq = window._paq = window._paq || [];
@@ -145,6 +147,7 @@ function fv_player_track( ga_id, event, engineType, name, value){
   
   if( /fv_player_track_debug/.test(window.location.href) ) console.log('FV Player Track: ' + event + ' - ' + engineType + " '" + name + "'",value);
 
+  // analytics.js
   if( ga_id && typeof(ga) != 'undefined' ) {
     ga('create', ga_id, 'auto', name , { allowLinker: true});
     ga('require', 'linker');
@@ -154,8 +157,24 @@ function fv_player_track( ga_id, event, engineType, name, value){
     } else {
       ga('send', 'event', event, engineType, name);
     }
+    
+  // ga.js
+  } else if( ga_id && typeof(_gat) != 'undefined' ) {
+    var tracker = _gat._getTracker(ga_id);
+    if( typeof(tracker._setAllowLinker) == "undefined" ) {
+      return;
+    }
+    
+    tracker._setAllowLinker(true);
+
+    if( value ) {
+      tracker._trackEvent( event, engineType, name, value );
+    } else {
+      tracker._trackEvent( event, engineType, name );
+    }
   }
 
+  // Matomo
   if( flowplayer.conf.matomo_domain && flowplayer.conf.matomo_site_id && typeof(_paq) != 'undefined' ) {
     if( value ) {
       _paq.push(['trackEvent', event, engineType, name, value]);
