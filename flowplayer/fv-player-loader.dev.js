@@ -172,7 +172,18 @@ class FV_Player_JS_Loader {
 			}
 		});
 		
-		this._loadScriptSrc();
+		// Not sure when, but sometimes the flowplayer script is not ready
+		if( window.flowplayer ) {
+			this._loadScriptSrc();
+		} else {
+			var that = this,
+				wait_for_flowplayer = setInterval( function() {
+				if( window.flowplayer ) {
+					that._loadScriptSrc();
+					clearInterval( wait_for_flowplayer );
+				}
+			}, 100 );
+		}
 		this._removeEventListener( this );
 	}
 	
