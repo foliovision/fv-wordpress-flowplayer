@@ -11,7 +11,7 @@ flowplayer( function(api,root) {
     videoIndex = video.index;
     
     attempted_load(video.index);
-  });``
+  });
 
   api.bind("error", function (e,api, error) {
     setTimeout(function(){
