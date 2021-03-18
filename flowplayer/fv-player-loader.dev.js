@@ -199,7 +199,9 @@ class FV_Player_JS_Loader {
 			first_click_done = true;
 			
 			var playlist_item = false;
-			e.path.forEach( function(el) {
+			
+			var path = event.path || (e.composedPath && e.composedPath());
+			path.forEach( function(el) {
 				// store playlist item for later use
 				if( el.getAttribute && el.getAttribute('data-item') ) {
 					playlist_item = el;
