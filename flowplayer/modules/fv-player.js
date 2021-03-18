@@ -868,7 +868,7 @@ function fv_autoplay_exec(){
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
 
-          if( jQuery.isNumeric(autoplay) ) {
+          if( api.conf.playlist.length && jQuery.isNumeric(autoplay) ) {
             api.play( parseInt(autoplay) );
           } else {
             api.load();

@@ -281,15 +281,15 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Autoplay, in the older FV Player versions this setting was just true/false and that creates a ton of issues
      */
-    $autoplay = false;
+    $autoplay = -1;
     if( $this->_get_option('autoplay') == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
-      $autoplay = true;
+      $autoplay = 0;
     } else if ( $this->_get_option('autoplay') == 'muted' && $this->aCurArgs['autoplay'] != 'false' ) {
       $autoplay = 'muted';
     }
     
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
-      $autoplay = true;
+      $autoplay = 0;
     }
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'muted')) {
       $autoplay = 'muted';
@@ -452,7 +452,7 @@ class flowplayer_frontend extends flowplayer
         }
       
         
-        if( $autoplay ) {
+        if( $autoplay != -1 ) {
           $attributes['data-fvautoplay'] = $autoplay;
         } 
 

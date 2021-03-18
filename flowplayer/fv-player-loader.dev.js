@@ -223,7 +223,7 @@ class FV_Player_JS_Loader {
 						
 					// was it playlist thumb?
 					} else if( el.className.match(/\bfp-playlist-external\b/) ) {
-						;
+						console.log('First click on playlist');
 						
 						var player = document.getElementById( el.getAttribute('rel') );
 						player.setAttribute( 'data-fvautoplay', Array.prototype.indexOf.call(el.children,playlist_item) );
@@ -231,8 +231,7 @@ class FV_Player_JS_Loader {
 					} else {
 						console.log('First click on player');
 						
-						// TODO: First remove the attribute for other players
-						el.setAttribute('data-fvautoplay',true);
+						el.setAttribute( 'data-fvautoplay', 0 );
 					}
 				}
 			});
