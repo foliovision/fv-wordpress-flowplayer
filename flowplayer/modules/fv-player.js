@@ -867,7 +867,12 @@ function fv_autoplay_exec(){
       if( !fv_player_did_autoplay && autoplay ) {
         if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
           fv_player_did_autoplay = true;
-          api.load();
+
+          if( jQuery.isNumeric(autoplay) ) {
+            api.play( parseInt(autoplay) );
+          } else {
+            api.load();
+          }
 
           // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
           var play_icon = root.find('.fp-play').addClass('invisible'),

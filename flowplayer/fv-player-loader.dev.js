@@ -194,25 +194,39 @@ class FV_Player_JS_Loader {
 
 		// If the first click was on player, play it
 		var first_click_done = false;
-		document.addEventListener('click', function (e) {
+		document.addEventListener('mousedown', function (e) {
 			if( first_click_done ) return;
 			first_click_done = true;
 			
+			var playlist_item = false;
 			e.path.forEach( function(el) {
-				if( el.className && el.className.match(/flowplayer/) ) {
+				// store playlist item for later use
+				if( el.getAttribute && el.getAttribute('data-item') ) {
+					playlist_item = el;
+				}
+				
+				if( el.className && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) ) {
 					// Players with autoplay should stop
 					document.querySelectorAll('[data-fvautoplay]').forEach( function(player) {
 						player.removeAttribute('data-fvautoplay');
 					});
 					
 					// VAST should not autoplay
-					fv_vast_conf.autoplay = false;
+					if( window.fv_vast_conf ) {
+						fv_vast_conf.autoplay = false;
+					}
 					
 					// TODO: Perhaps video link should not be parsed or it should be done here
 					
 					// was it lightbox?
-					if( el.className && el.className.match(/lightbox-starter/) ) {
+					if( el.className.match(/lightbox-starter/) ) {
 						
+					// was it playlist thumb?
+					} else if( el.className.match(/\bfp-playlist-external\b/) ) {
+						;
+						
+						var player = document.getElementById( el.getAttribute('rel') );
+						player.setAttribute( 'data-fvautoplay', Array.prototype.indexOf.call(el.children,playlist_item) );
 						
 					} else {
 						console.log('First click on player');
