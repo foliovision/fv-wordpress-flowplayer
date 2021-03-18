@@ -186,41 +186,45 @@ class FV_Player_JS_Loader {
 		}
 		this._removeEventListener( this );
 	}
-	
-	is_any_player_visible() {
-		var is_any_player_visible = false;
-		document.querySelectorAll('.flowplayer').forEach( el => {
-			var rect = el.getBoundingClientRect();
-			if( rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-			) {
-				is_any_player_visible = true;
-			}
-		});
-		console.log('is_any_player_visible',is_any_player_visible);
-		return is_any_player_visible;
-	}
 
 	static run() {
 		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
 		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
-		
-		// Load FV Player scripts instantly if any player is visible
-		if( instance.is_any_player_visible() ) {
-			instance.triggerListener();
+
+		// If the first click was on player, play it
+		var first_click_done = false;
+		document.addEventListener('click', function (e) {
+			if( first_click_done ) return;
+			first_click_done = true;
 			
-		// Try again on DCL
-		} else {
-			document.addEventListener( 'DOMContentLoaded', function() {
-				if( instance.is_any_player_visible() ) {
-					instance.triggerListener();
+			e.path.forEach( function(el) {
+				if( el.className && el.className.match(/flowplayer/) ) {
+					// Players with autoplay should stop
+					document.querySelectorAll('[data-fvautoplay]').forEach( function(player) {
+						player.removeAttribute('data-fvautoplay');
+					});
+					
+					// VAST should not autoplay
+					fv_vast_conf.autoplay = false;
+					
+					// TODO: Perhaps video link should not be parsed or it should be done here
+					
+					// was it lightbox?
+					if( el.className && el.className.match(/lightbox-starter/) ) {
+						
+						
+					} else {
+						console.log('First click on player');
+						
+						// TODO: First remove the attribute for other players
+						el.setAttribute('data-fvautoplay',true);
+					}
 				}
 			});
-		}
-
+		
+		}, false);
+		
 	}
 }
 
