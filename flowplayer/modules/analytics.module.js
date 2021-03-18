@@ -15,7 +15,7 @@ flowplayer( function(api,root) {
   }
   
   // Load Matomo if not already loaded when needed
-  if( typeof(_paq) == 'undefined' && api.conf.matomo_domain && api.conf.matomo_site_id ) {
+  if( !window._paq && api.conf.matomo_domain && api.conf.matomo_site_id ) {
     var u="//"+api.conf.matomo_domain+"/";
     var _paq = window._paq = window._paq || [];
     _paq.push(['setTrackerUrl', u+'matomo.php']);
