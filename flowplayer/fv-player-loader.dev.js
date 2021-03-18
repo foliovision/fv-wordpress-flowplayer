@@ -175,13 +175,8 @@ class FV_Player_JS_Loader {
 		this._loadScriptSrc();
 		this._removeEventListener( this );
 	}
-
-	static run() {
-		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
-		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
-		instance.init();
-		
-		// Load FV Player scripts instantly if any player is visible
+	
+	is_any_player_visible() {
 		var is_any_player_visible = false;
 		document.querySelectorAll('.flowplayer').forEach( el => {
 			var rect = el.getBoundingClientRect();
@@ -193,10 +188,28 @@ class FV_Player_JS_Loader {
 				is_any_player_visible = true;
 			}
 		});
+		console.log('is_any_player_visible',is_any_player_visible);
+		return is_any_player_visible;
+	}
+
+	static run() {
+		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
+		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
+		instance.init();
 		
-		if( is_any_player_visible ) {
+		// Load FV Player scripts instantly if any player is visible
+		if( instance.is_any_player_visible() ) {
 			instance.triggerListener();
+			
+		// Try again on DCL
+		} else {
+			document.addEventListener( 'DOMContentLoaded', function() {
+				if( instance.is_any_player_visible() ) {
+					instance.triggerListener();
+				}
+			});
 		}
+
 	}
 }
 
