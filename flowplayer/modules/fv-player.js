@@ -358,6 +358,15 @@ function fv_player_preload() {
       if( height == 0 ) height = root.css('max-height');
       return height;
     }
+    
+    api.show_status = function( type ) {
+      var status = '';
+      [ 'loading', 'ready', 'playing', 'paused', 'seeking' ].every( function(v,k) {
+        if ( api[v] ) status += ' '+v;
+        return true;
+      });
+      console.log( 'FV Player Status ('+type+')', status );
+    }
   });
   
   //sets height for embedded players 

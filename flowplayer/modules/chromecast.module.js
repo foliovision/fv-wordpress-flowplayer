@@ -4,7 +4,7 @@ flowplayer(function(api, root) {
   
   // TODO: Only load when some video is started?
   if( !window['__onGCastApiAvailable'] ) {
-    jQuery.getScript('https://www.gstatic.com/cv/js/sender/v1/cast_sender.js');
+    jQuery.getScript( { url: 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js', cache: true });
     window['__onGCastApiAvailable'] = function(loaded) {
       if (!loaded) return;
       initialize();
@@ -121,7 +121,26 @@ flowplayer(function(api, root) {
       return false;
     }
     
+    // TODO: Test with Vimeo
+    var cast_subtitles = [];
+    if( api.video.subtitles ) {
+      api.video.subtitles.forEach( function(v,k) {        
+        var subtitles = new chrome.cast.media.Track(k, chrome.cast.media.TrackType.TEXT);
+        subtitles.trackContentId = v.src;
+        subtitles.trackContentType = 'text/vtt';
+        subtitles.subtype = chrome.cast.media.TextTrackType.SUBTITLES;
+        subtitles.name = v.label;
+        // we add the index as there might be multiple subtitles in the same lang
+        subtitles.language = v.srclang+'-'+k,
+        subtitles.customData = null;
+        cast_subtitles.push( subtitles );
+      });
+
+    }
+
     var mediaInfo = new chrome.cast.media.MediaInfo(src);
+    mediaInfo.tracks = cast_subtitles;
+    
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     
     // do not play the video from start, but continue where you left off
@@ -139,10 +158,8 @@ flowplayer(function(api, root) {
   }
 
   function onMediaDiscovered(chromecast) {
-    // use the selected audio track
-    if( language = jQuery(root).find('.fv-fp-hls-menu [data-audio].fp-selected').data('audio') ) {
-      switch_track( chromecast, language );
-    }
+    // use the selected audio tracks or subtitles
+    switch_tracks( chromecast );
     
     chromecast.addUpdateListener(function(alive) {
       if (!session) return; // Already destoryed
@@ -150,14 +167,24 @@ flowplayer(function(api, root) {
       timer = timer || setInterval(function() {
         api.trigger('progress', [api, chromecast.getEstimatedTime()]);
         
-        // hilight the audio track
-        jQuery.each( chromecast.media.tracks, function(k,v) {
-          if( v.trackId == chromecast.activeTrackIds[0] ) {
-            jQuery(root).find(".fv-fp-hls-menu a").each(function (k,el) {
-              jQuery(el).toggleClass("fp-selected", jQuery(el).attr("data-audio") === v.language);
-            });
-            return false;
-          }
+        // hilight the active audio track
+        // seems like subtitles are hilighted elsewhere
+        chromecast.activeTrackIds.forEach( function(track_id) {
+          jQuery.each( chromecast.media.tracks, function(k,v) {
+
+            if( v.trackId == track_id && v.type == 'AUDIO' ) {
+              // Match by name first
+              var found = hilight_audio_track( "data-audio", v.language );
+              
+              // If no match found, match by language code
+              // We do this as there might be two different audio tracks
+              // which are in the same language but with different names
+              if( !found ) {
+                hilight_audio_track( "data-lang", v.language );
+              }
+              return false;
+            }
+          });
         });
         
       }, 500);
@@ -269,7 +296,6 @@ flowplayer(function(api, root) {
       if( session.media[0].media ) {
         var seek = session.media[0].getEstimatedTime();
         setTimeout( function() {
-          console.log( 'seek to',seek );
           api.seek( seek );
         }, 0 );
       }
@@ -297,9 +323,10 @@ flowplayer(function(api, root) {
     });
   });
   
-  bean.on(root, 'click', '.fv-fp-hls-menu [data-audio]', function() {
+  // changing audio tracks or subtitles
+  bean.on(root, 'click', '.fv-fp-hls-menu [data-audio], .fp-subtitle-menu [data-subtitle-index]', function() {
     if( session && session.media[0].media ) {
-      switch_track( session.media[0], jQuery(this).data('audio') );
+      switch_tracks( session.media[0] );
       return false;
     }
   });
@@ -311,18 +338,79 @@ flowplayer(function(api, root) {
   });
   
   
-  function switch_track( chromecast, language ) {
-    jQuery.each( chromecast.media.tracks, function(k,v) {
-      if( v.language == language ) {
-        var tracksInfoRequest = new chrome.cast.media.EditTracksInfoRequest( [ v.trackId ] );
-        chromecast.editTracksInfo(tracksInfoRequest, function(){
-          console.log('FV Player: Chromecast audio track change successfull')
-        }, function(){
-          console.log('FV Player: Chromecast audio track change failed')
-        });
-        return false;
+  function hilight_audio_track( attr, chromecast_language ) {
+    var audio_tracks_menu = jQuery(root).find(".fv-fp-hls-menu a"),
+      found = false;
+    
+    audio_tracks_menu.each(function (k,el) {
+      if( jQuery(el).attr(attr) === chromecast_language ) {
+        jQuery(el).addClass("fp-selected");
+        found = true;
+      } else {
+        jQuery(el).removeClass("fp-selected");
       }
     });
+
+    return found;
+  }
+  
+  
+  function switch_tracks( chromecast ) {
+    console.log( chromecast.media.tracks );
+    
+    // use the selected audio track
+    var audio = jQuery(root).find('.fv-fp-hls-menu [data-audio].fp-selected').data('audio'),
+      audio_lang = jQuery(root).find('.fv-fp-hls-menu [data-audio].fp-selected').data('lang'),
+      subtitle_index = jQuery(root).find('.fp-subtitle-menu [data-subtitle-index].fp-selected').data('subtitle-index'),
+      subtitles = subtitle_index > -1 ? api.video.subtitles[subtitle_index].srclang : false;
+    
+    var audio_found = false,
+      subtitles_found = false,
+      tracks_selected = [];
+    
+    // Match audio track by name
+    jQuery.each( chromecast.media.tracks, function(k,v) {
+      if( v.language == audio && v.type == 'AUDIO' ) {
+        audio_found = v;
+      }
+      
+      // we also chech the index as there might be multiple subtitles in the same lang
+      if( v.language == subtitles+'-'+subtitle_index && v.type == 'TEXT' ) {
+        subtitles_found = v;
+      }
+    });
+    
+    // If no audio track match found, match by language code
+    // We do this as there might be two different audio tracks
+    // which are in the same language but with different names
+    if( !audio_found ) {
+      jQuery.each( chromecast.media.tracks, function(k,v) {
+        if( v.language == audio_lang && v.type == 'AUDIO' ) {
+          audio_found = v;
+          return false;
+        }
+      });
+    }
+    
+    var debug_log = '';
+    if( audio_found ) {
+      tracks_selected.push( audio_found.trackId );
+      debug_log += audio_found.language+' audio';
+    }
+    if( subtitles_found ) {
+      tracks_selected.push( subtitles_found.trackId );
+      if( debug_log ) debug_log += ' ';
+      debug_log += subtitles_found.language+' subtitles';
+    }
+    
+    if( tracks_selected ) {
+      var request = new chrome.cast.media.EditTracksInfoRequest( tracks_selected );
+      chromecast.editTracksInfo(request, function(){
+        console.log('FV Player: Chromecast '+debug_log+' loaded');
+      }, function(){
+        console.log('FV Player: Chromecast '+debug_log+' failed');
+      });
+    }
   }
 
 });

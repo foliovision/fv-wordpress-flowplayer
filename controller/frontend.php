@@ -428,7 +428,7 @@ function flowplayer_prepare_scripts() {
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.11.0';
         
-    if( $fv_fp->load_dash ) {
+    if( $fv_fp->should_load_js() || $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js?ver='.$fv_wp_flowplayer_ver;
@@ -437,7 +437,19 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
+    
+    if( $fv_fp->_get_option('matomo_domain') && $fv_fp->_get_option('matomo_site_id') ) {
+      // take the domain name from Matomo Domain setting in case somebody entered full URL
+      $matomo_domain = $fv_fp->_get_option('matomo_domain');
+      $parsed = parse_url($matomo_domain);
+      if( $parsed && !empty($parsed['host']) ) { 
+        $matomo_domain = $parsed['host'];
+      }
+      $aConf['matomo_domain'] = $matomo_domain;
+      $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
+    }
 
+    $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
@@ -467,18 +479,22 @@ function flowplayer_prepare_scripts() {
     if( is_admin() ) $aConf['wpadmin'] = true;
     
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
-    
+    $aLocalize = array();
+
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_input', array(true) );
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_admin_js_test', array(true) );
+      $aLocalize['admin_input'] = true;
+      $aLocalize['admin_js_test'] = true;
     }
     if( current_user_can('edit_posts') ) {
-      wp_localize_script( 'flowplayer', 'fv_flowplayer_user_edit', array(true) );     
+      $aLocalize['user_edit'] = true;
     }
     
+    $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
+
+    wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
+
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
-    wp_localize_script( 'flowplayer', 'fv_fp_ajaxurl', site_url().'/wp-admin/admin-ajax.php' );
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
     
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {

@@ -174,7 +174,7 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    if( preg_match( "~(youtu\.be/|youtube\.com|youtube-nocookie\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
       if( isset($aYoutube[5]) ) {
         $youtube = $aYoutube[5];
         $player_type = 'youtube';
@@ -1199,6 +1199,8 @@ class flowplayer_frontend extends flowplayer
     if( $sHTMLSharing || $sHTMLEmbed || $sHTMLVideoLink) {
       $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLVideoLink$sHTMLEmbed</div>";
     }
+    
+    $sHTML = apply_filters( 'fv_player_sharing_html', $sHTML );
 
     return $sHTML;
   }

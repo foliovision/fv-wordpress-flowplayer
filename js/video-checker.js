@@ -84,7 +84,7 @@
     jQuery('#wpfp_notice_'+sID).find('.video-checker-result').attr('class','video-checker-result').html('Checking the video file...');
     admin_test_media( sID, media );
 
-    if( typeof(fv_flowplayer_admin_input) != "undefined" && fv_flowplayer_admin_input ) {
+    if( typeof(fv_player.admin_input) != "undefined" && fv_player.admin_input ) {
       jQuery(document).on('keyup', function(e) {
         if (e.keyCode == 27) { fv_wp_flowplayer_admin_show_notice(); 	}   // esc
       });

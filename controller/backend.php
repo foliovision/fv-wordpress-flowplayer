@@ -811,10 +811,10 @@ add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
   global $FV_Player_Pro;
-  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.4.39.727' ) == -1 ) :
+  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.4.42.727' ) == -1 ) :
   ?>
   <div class="error">
-      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.4.39.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
+      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.4.42.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
   </div>
   <?php
   endif;

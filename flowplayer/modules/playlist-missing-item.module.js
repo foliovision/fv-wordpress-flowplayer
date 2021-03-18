@@ -11,14 +11,15 @@ flowplayer( function(api,root) {
     videoIndex = video.index;
     
     attempted_load(video.index);
-  });
+  });``
 
   api.bind("error", function (e,api, error) {
     setTimeout(function(){
-      // make sure there is still error before going to business
-      if( playlist.length > 0 && api.error == true ) {
+      if( playlist.length > 0 && api.error == true) {
+        api.error = api.loading = false;
+        root.removeClass('is-error');
+        root.find('.fp-message.fp-shown').remove();
 
-        // if video checker is on and there is some media to check for the video we do not advance to next video to let admin see the error
         if ( api.conf.video_checker == '1' && playlist[videoIndex].video_checker && playlist[videoIndex].video_checker.length > 0 ) { // Run checker for admin
           return false;
         }
