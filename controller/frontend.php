@@ -440,6 +440,7 @@ function flowplayer_prepare_scripts() {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
 
+    $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
