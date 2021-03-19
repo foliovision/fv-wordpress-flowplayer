@@ -592,7 +592,7 @@ jQuery( function($) {
           }
 
           // show info about the file in right sidebar
-          jQuery('.media-sidebar').html('<div tabindex="0" class="attachment-details save-ready">\n' +
+          jQuery('.media-sidebar').html('<div tabindex="0" class="attachment-details save-ready" style="overflow: visible">\n' +
             '\t\t<h2>Media Details</h2>\n' +
             '\t\t<div class="attachment-info">\n' +
             '\t\t\t<div class="thumbnail thumbnail-image">\n' +
@@ -615,7 +615,7 @@ jQuery( function($) {
             '\t\t\t<span class="name">Copy Link</span>\n' +
             '\t\t\t<input type="text" value="' + $filenameDiv.data('link') + '" readonly="">\n' +
             '\t\t</label>\n' +
-            '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Insert Trailer</button>' : '' ) +
+            '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
           // enable Choose button
