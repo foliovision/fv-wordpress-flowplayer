@@ -594,26 +594,19 @@ CREATE TABLE " . self::$db_table_name . " (
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
 
-          if( !empty($_GET['page']) && $_GET['page'] == 'fv_player' ) {
-            $player_data = $wpdb->get_results('SELECT
-    '.$select.',
-    count(subtitles.id) as subtitles_count,
-    count(chapters.id) as chapters_count,
-    count(transcript.id) as transcript_count
-    FROM `'.self::$db_table_name.'` AS p
-    JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
-    LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
-    LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
-    LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
-    '.$where.'
-    GROUP BY p.id
-    '.$order.$limit);
-          } else {
-            $player_data = $wpdb->get_results('SELECT
-    '.$select.'
-    FROM `'.self::$db_table_name.'` AS p
-    '.$where.$order.$limit);
-          }
+          $player_data = $wpdb->get_results('SELECT
+  '.$select.',
+  count(subtitles.id) as subtitles_count,
+  count(chapters.id) as chapters_count,
+  count(transcript.id) as transcript_count
+  FROM `'.self::$db_table_name.'` AS p
+  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
+  '.$where.'
+  GROUP BY p.id
+  '.$order.$limit);
           
         } else if ($id !== null && !count($query_ids)) {
           $all_cached = true;
