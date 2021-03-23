@@ -448,7 +448,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
         $this->$key = stripslashes($value);
         
-      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
+      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
         $this->$key = stripslashes($value);
         
       } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
