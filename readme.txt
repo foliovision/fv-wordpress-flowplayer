@@ -357,6 +357,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.43.727 - 2021/03/23 =
+
+* Chromecast - support for video subtitles added
+* Google Analytics - compatibility with websites using ga.js or  gtag.js
+* Matomo tracking support (Piwik)
+* New Feature - Migration Wizard - found in Settings -> FV Player -> Tools, useful to mass replace video URLs
+* Bugfix - editor screenshots and video checker reports broken after PHP 8 fixes
+
 = 7.4.42.727 - 2021/03/10 =
 
 * Custom CSS - added field for easy player CSS customizations in wp-admin -> Settings -> FV Player -> Skin -> Custom CSS
