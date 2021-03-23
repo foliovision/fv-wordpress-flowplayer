@@ -1201,24 +1201,38 @@ class FV_Player_Db {
 
     // extend an existing lock
     if ( !empty( $data['fv_flowplayer_edit_lock_id'] ) ) {
-      if ($FV_Player_Db && $FV_Player_Db->isPlayerCached($data['fv_flowplayer_edit_lock_id'])) {
+      $player_id = $data['fv_flowplayer_edit_lock_id'];
+      
+      if ($FV_Player_Db && $FV_Player_Db->isPlayerCached($player_id)) {
         $player = $FV_Player_Db->getPlayersCache();
-        $player = $player[$data['fv_flowplayer_edit_lock_id']];
+        $player = $player[$player_id];
       } else {
-        $player = new FV_Player_Db_Player($data['fv_flowplayer_edit_lock_id'], array(), $FV_Player_Db);
+        $player = new FV_Player_Db_Player($player_id, array(), $FV_Player_Db);
       }
 
       if ($player->getIsValid()) {
+        $found = false;
         if (count($player->getMetaData())) {
           foreach ($player->getMetaData() as $meta_object) {
             if ( strstr($meta_object->getMetaKey(), 'edit_lock_') !== false ) {
               if (str_replace('edit_lock_', '', $meta_object->getMetaKey()) == $userID) {
+                $found = true;
+                
                 // same user, extend the lock
                 $meta_object->setMetaValue(time());
                 $meta_object->save();
               }
             }
           }
+        }
+        
+        if( !$found ) {
+          $meta_object = new FV_Player_Db_Player_Meta(null, array(
+            'id_player' => $player_id,
+            'meta_key' => 'edit_lock_'.$userID,
+            'meta_value' => time()
+          ), $FV_Player_Db);
+          $meta_object->save();
         }
       }
     }

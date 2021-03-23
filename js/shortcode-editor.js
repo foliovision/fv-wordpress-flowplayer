@@ -1940,6 +1940,9 @@ jQuery(function() {
             if (response) {
               if( typeof(response) != "object" ) {
                 overlay_show('message', 'Error: '+response);
+                
+                // The editor failed to load, it's not locked
+                edit_lock_removal[current_player_db_id] = 1;
                 return;
               }
 
@@ -4009,7 +4012,6 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
     }
   }
 };
-
 
 
 

@@ -357,10 +357,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.4.43.727 - 2021/03/23 =
+= 7.4.44.727 - 2021/03/23 =
 
 * Chromecast - support for video subtitles added
+* FV Player Pro 7.4.44.727 required for encrypted HLS with multiple audio tracks
 * Google Analytics - compatibility with websites using ga.js or  gtag.js
+* HLS.js - upgrade to 0.14.17 to fix subtle audio sync issues
 * Matomo tracking support (Piwik)
 * New Feature - Migration Wizard - found in Settings -> FV Player -> Tools, useful to mass replace video URLs
 * Bugfix - editor screenshots and video checker reports broken after PHP 8 fixes
