@@ -242,7 +242,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
   jQuery(button).attr("disabled", "disabled");
 
   jQuery.post(
-    fv_fp_ajaxurl,
+    fv_player.ajaxurl,
     {
       action: 'fv_wp_flowplayer_support_mail',
       comment: comment_text,
