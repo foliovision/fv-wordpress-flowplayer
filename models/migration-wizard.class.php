@@ -69,7 +69,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       $like,
       $like,
       $like,
-      $like,
+      $like
     ) );
   }
 
