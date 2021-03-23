@@ -1127,10 +1127,6 @@ function fv_wp_flowplayer_edit() {
       // DB-based player, create a "wait" overlay
       fv_wp_flowplayer_big_loader_show();
 
-      // store player ID into fv_player_conf, so we can keep sending it
-      // in WP heartbeat
-      fv_flowplayer_conf.current_player_db_id = result[1];
-
       if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
         delete fv_flowplayer_conf.fv_flowplayer_edit_lock_removal[result[1]];
       }
@@ -1156,6 +1152,10 @@ function fv_wp_flowplayer_edit() {
             fv_wp_flowplayer_big_loader_show('Error: '+response);
             return;
           }
+          
+          // store player ID into fv_player_conf, so we can keep sending it
+          // in WP heartbeat
+          fv_flowplayer_conf.current_player_db_id = result[1];
           
           var
             $id_player_element = jQuery('#id_player'),
@@ -3133,26 +3133,27 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
   }
 };
 
-if( typeof(fv_flowplayer_conf) != "undefined" ) {
-  // extending DB player edit lock's timer
-  jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
-    if (fv_flowplayer_conf.current_player_db_id) {
-      data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
-    }
+jQuery( function($) {
+  if( typeof(fv_flowplayer_conf) != "undefined" ) {
+    // extending DB player edit lock's timer
+    jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+      if (fv_flowplayer_conf.current_player_db_id) {
+        data.fv_flowplayer_edit_lock_id = fv_flowplayer_conf.current_player_db_id;
+      }
+      
+      if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
+        data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
+      }
+    });
     
-    if (fv_flowplayer_conf.fv_flowplayer_edit_lock_removal) {
-      data.fv_flowplayer_edit_lock_removal = fv_flowplayer_conf.fv_flowplayer_edit_lock_removal;
-    }
-  });
-  
-  // remove edit locks in the config if it was removed on the server
-  jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
-    if ( data.fv_flowplayer_edit_locks_removed ) {
-      fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
-    }
-  });
-}
-
+    // remove edit locks in the config if it was removed on the server
+    jQuery( document ).on( 'heartbeat-tick', function ( event, data ) {
+      if ( data.fv_flowplayer_edit_locks_removed ) {
+        fv_flowplayer_conf.fv_flowplayer_edit_lock_removal = {};
+      }
+    });
+  }
+});
 
 
 
