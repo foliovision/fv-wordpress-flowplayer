@@ -528,7 +528,7 @@ CREATE TABLE " . self::$db_table_name . " (
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
     if (is_array($options) && count($options) && !isset($options['db_options'])) {
-      
+
       if( !empty($options['id']) ) {
         // ID cannot be set, as it's automatically assigned to all new players
         trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
@@ -541,8 +541,18 @@ CREATE TABLE " . self::$db_table_name . " (
       if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
       if( empty($this->date_modified) ) $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
-      // add author
-      $this->author = $this->changed_by = get_current_user_id();
+      // add author, if we're creating new player and not loading a player from DB for caching purposes
+      if ( empty($options['author']) ) {
+        $this->author = get_current_user_id();
+      }
+
+      if ( empty($options['changed_by']) ) {
+        if ( !empty($options['author']) ) {
+          $this->changed_by = $options['author'];
+        } else {
+          $this->changed_by = get_current_user_id();
+        }
+      }
     } else if ($multiID || (is_numeric($id) && $id >= -1)) {
       /* @var $cache FV_Player_Db_Player[] */
       $cache = ($DB_Cache ? $DB_Cache->getPlayersCache() : array());
@@ -621,7 +631,7 @@ CREATE TABLE " . self::$db_table_name . " (
   '.$meta_counts_join.$where.'
   GROUP BY p.id
   '.$order.$limit);
-          
+
         } else if ($id !== null && !count($query_ids)) {
           $all_cached = true;
         } else {
