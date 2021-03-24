@@ -357,6 +357,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.45.727 - 2021/03/24 =
+
+* Bugfix - YouTube.com iframe embeds broken after adding support for youtube-nocokie.com in previous release
+* Bugfix - YouTube controlbar fix for iPad with Chrome for FV Player Pro
+
 = 7.4.44.727 - 2021/03/23 =
 
 * Chromecast - support for video subtitles added
