@@ -38,6 +38,19 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
     }
   }
   
+  // iOS version is not parsed for Chrome on iOS, so let's fix it here
+  function parseIOSVersion(UA) {
+    var e = /iP(ad|hone)(; CPU)? OS (\d+_\d)/.exec(UA);
+    if (e && e.length > 1) {
+        return parseFloat(e[e.length - 1].replace('_', '.'), 10);
+    }
+    return 0;
+  };
+
+  if( flowplayer.support.iOS && flowplayer.support.iOS.chrome && flowplayer.support.iOS.version == 0 ) {
+    flowplayer.support.iOS.version = parseIOSVersion(navigator.userAgent);
+  }
+  
   // iOS 13 and desktop Safari above version 8 support MSE, so let's use HLS.js there
   if(
     flowplayer.support.iOS && parseInt(flowplayer.support.iOS.version) >= 13 ||
