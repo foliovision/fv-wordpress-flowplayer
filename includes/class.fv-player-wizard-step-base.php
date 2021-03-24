@@ -23,8 +23,8 @@ abstract class FV_Player_Wizard_Step_Base_Class {
   function display() {
     global $fv_fp;
     $fv_fp->_get_input_text( array(
-      'key' => static::$key,
-      'name' => static::$name,
+      'key' => self::$key,
+      'name' => self::$name,
       'class' => 'regular-text code'
     ) );
   }
@@ -57,7 +57,7 @@ abstract class FV_Player_Wizard_Step_Base_Class {
   }
 
   function is_finish() {
-    return !empty(static::$is_finish) && static::$is_finish;
+    return !empty(self::$is_finish) && self::$is_finish;
   }
 
   // use to fill in field names that should be submitted with this step if they belonged to some other step
