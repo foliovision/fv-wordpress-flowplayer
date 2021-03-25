@@ -1838,7 +1838,7 @@ jQuery(function() {
           shortcode = '';
 
           // Foliopress WYSIWYG
-        } else if ((instance_tinymce == undefined || typeof tinyMCE !== 'undefined') && tinyMCE.activeEditor.isHidden()) {
+        } else if ((instance_tinymce == undefined || (typeof tinyMCE !== 'undefined') && tinyMCE.activeEditor.isHidden())) {
           editor_content = instance_fp_wysiwyg.GetHTML();
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
             instance_fp_wysiwyg.InsertHtml('<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>');
