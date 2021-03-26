@@ -191,6 +191,12 @@ class FV_Player_JS_Loader {
 		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
 		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
+		
+		// if using Video Link, load it all right away
+		if( location.hash.match(/fvp_/) ) {
+			instance.triggerListener();
+			return;
+		}
 
 		// If the first click was on player, play it
 		var first_click_done = false;
@@ -200,7 +206,7 @@ class FV_Player_JS_Loader {
 			
 			var playlist_item = false;
 			
-			var path = event.path || (e.composedPath && e.composedPath());
+			var path = e.path || (e.composedPath && e.composedPath());
 			path.forEach( function(el) {
 				// store playlist item for later use
 				if( el.getAttribute && el.getAttribute('data-item') ) {
