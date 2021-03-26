@@ -197,6 +197,66 @@ class FV_Player_JS_Loader {
 			instance.triggerListener();
 			return;
 		}
+		
+		// iOS specific block
+		// https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
+		function iOS() {
+			return [
+				'iPad Simulator',
+				'iPhone Simulator',
+				'iPod Simulator',
+				'iPad',
+				'iPhone',
+				'iPod'
+			].includes(navigator.platform)
+			// iPad on iOS 13 detection
+			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+		}
+		
+		if( iOS() ) {
+			
+			function load_if_any_player_visible() {
+				var is_any_player_visible = false;
+				
+				// if part of any player visible?
+				// TODO: What about playlist item thumbs?
+				document.querySelectorAll('.flowplayer').forEach( el => {
+					var rect = el.getBoundingClientRect();
+					if( rect.top >= -el.offsetHeight &&
+						rect.left >= -el.offsetWidth &&
+						rect.bottom <= ( window.innerHeight || document.documentElement.clientHeight ) + el.offsetHeight &&
+						rect.right <= ( window.innerWidth || document.documentElement.clientWidth ) + el.offsetWidth
+					) {
+						is_any_player_visible = true;
+					}
+				});
+				console.log( 'FV Player: Visible?', is_any_player_visible );
+				
+				if( is_any_player_visible ) {
+					instance.triggerListener();
+				}
+				
+				return is_any_player_visible;
+			}
+			
+			// Load FV Player scripts instantly if any player is visible
+			var was_visible = load_if_any_player_visible();
+				
+			// Try again once styles are loaded
+			if( !was_visible ) {
+				// once everything is loaded
+				window.addEventListener( 'load', load_if_any_player_visible );
+				
+				// ...or when Safari restores the scroll position
+				function load_on_scroll() {
+					this.removeEventListener( 'scroll', load_on_scroll );
+					load_if_any_player_visible();
+				}
+				window.addEventListener( 'scroll', load_on_scroll );
+			}
+			
+			return;
+		}
 
 		// If the first click was on player, play it
 		var first_click_done = false;
