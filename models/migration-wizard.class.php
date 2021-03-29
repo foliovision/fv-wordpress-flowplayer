@@ -38,12 +38,15 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
           <td>Alternative URL</td>
           <td>Alternative URL 2</td>
           <td>Splash</td>
+          <td>Mobile</td>
+          <td>RTMP</td>
+          <td>RTMP Path</td>
         </tr>
       </thead>
       <?php foreach($videos as $video) : ?>
         <tr>
           <td><?php echo $video->id ?></td>
-          <?php foreach( array( 'src', 'src1', 'src2', 'splash' ) AS $field ) : ?>
+          <?php foreach( array( 'src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) : ?>
             <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
           <?php endforeach; ?>
         </tr>
@@ -52,6 +55,29 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     <?php
   }
   
+  public static function list_meta_data( $videos, $from, $to, $color ) {
+    ?>
+    <p>Video meta found: </p>
+    <table class="wp-list-table widefat fixed striped logentries">
+      <thead>
+        <tr>
+          <td>Video ID</td>
+          <td>Meta Key</td>
+          <td>Meta Value</td>
+        </tr>
+      </thead>
+      <?php foreach($videos as $video) : ?>
+        <tr>
+          <td><?php echo $video->id_video ?></td>
+          <?php foreach( array( 'meta_key', 'meta_value' ) AS $field ) : ?>
+            <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
+          <?php endforeach; ?>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+    <?php
+  }
+
   public static function hilight( $string, $from, $to, $color ) {
     $phrase = $to ? $to : $from;
     
@@ -65,10 +91,24 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     $like = '%' . $wpdb->esc_like($phrase) . '%';
     
     return $wpdb->get_results( $wpdb->prepare(
-      "SELECT id, src, src1, src2, splash FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s OR src1 LIKE %s OR src2 LIKE %s OR splash LIKE %s",
+      "SELECT id, src, src1, src2, splash, mobile, rtmp, rtmp_path  FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s OR src1 LIKE %s OR src2 LIKE %s OR splash LIKE %s OR mobile LIKE %s OR rtmp LIKE %s OR rtmp_path LIKE %s",
       $like,
       $like,
       $like,
+      $like,
+      $like,
+      $like,
+      $like
+    ) );
+  }
+
+  public static function search_meta( $phrase ) {
+    global $wpdb;
+    
+    $like = '%' . $wpdb->esc_like($phrase) . '%';
+    
+    return $wpdb->get_results( $wpdb->prepare(
+      "SELECT id_video, meta_key, meta_value FROM `{$wpdb->prefix}fv_player_videometa` WHERE meta_value LIKE %s",
       $like
     ) );
   }

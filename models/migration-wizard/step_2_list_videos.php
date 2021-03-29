@@ -17,8 +17,10 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base_Cla
   function display() {
     global $fv_fp;
     $videos_data = false;
+    $meta_data =false;
     if( $this->search_string ) {
       $videos_data = FV_Player_Migration_Wizard::search_video($this->search_string);
+      $meta_data = FV_Player_Migration_Wizard::search_meta($this->search_string);
     }
     ?>
 <tr>
@@ -26,24 +28,31 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base_Cla
     <h2>Step 2: List of affected videos</h2>
 
     <?php if( !empty($videos_data) ) :
-      $this->buttons['next'] = array(
-        'value' => 'Test Replace',
-        'primary' => true
-      );
-      
       FV_Player_Migration_Wizard::list_videos($videos_data, $this->search_string, false, '#f88' );
-    
       ?>
-      <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
       
     <?php else : ?>
       <p>No matching videos found.</p>
-      
     <?php endif; ?>
     
-    <?php if( !empty($videos_data) ) : ?>
+    <?php if(!empty($meta_data)) : 
+      FV_Player_Migration_Wizard::list_meta_data($meta_data, $this->search_string, false, '#f88' );
+    ?>
+
+    <?php else : ?>
+      <p>No matching video meta found.</p>
+    <?php endif; ?>
+
+    <?php if( !empty($videos_data) || !empty($meta_data) ) : 
+    $this->buttons['next'] = array(
+        'value' => 'Test Replace',
+        'primary' => true
+      );
+    ?>
+     
       <tr>
         <td colspan="2">
+          <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
           <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
         </td>
       </tr>
