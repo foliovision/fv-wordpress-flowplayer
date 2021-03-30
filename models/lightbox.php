@@ -180,6 +180,14 @@ class FV_Player_lightbox {
         
         $aLightbox = preg_split('~[;]~', $args['lightbox']);
         
+        // Properties set up by FV Player DB
+        if( !empty($args['lightbox_width']) ) {
+          $aLightbox[1] = $args['lightbox_width'];
+        }
+        if( !empty($args['lightbox_height']) ) {
+          $aLightbox[2] = $args['lightbox_height'];
+        }
+        
         $hash = $aArgs[1]->hash;
         $container = "wpfp_".$hash."_container";
         $button = "fv_flowplayer_".$hash."_lightbox_starter";
@@ -238,6 +246,18 @@ class FV_Player_lightbox {
 
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
+          
+          // new ratio for responsiveness
+          if( $iWidth > 0 ) {
+            $ratio = $iHeight / $iWidth;
+            if( $ratio > 0 ) {
+              $ratio = round($ratio, 4);
+              $html = preg_replace( '~ data-ratio=".*?"~', ' data-ratio="'.$ratio.'"', $html );
+              
+              $ratio = str_replace(',','.', $ratio * 100 );
+              $html = preg_replace( '~<div class="fp-ratio".*?</div>~', '<div class="fp-ratio" style="padding-top: '.$ratio.'%"></div>', $html );
+            }
+          }
 
           // this is how we link playlist items to the player
           $html = str_replace( ' rel="wpfp_'.$hash.'"', ' rel="'.$button.'"', $html );
