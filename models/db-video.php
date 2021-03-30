@@ -767,7 +767,11 @@ CREATE TABLE " . self::$db_table_name . " (
       foreach ($data as $meta_object) {
         // find the matching video meta row and if id is provided as well, match on that too
         if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
-          if( $meta_object->getMetaValue() != $value ) {
+          if( is_string($value) ) {
+            if( strcmp( $meta_object->getMetaValue() , $value) == 0 ){
+              $to_update = $meta_object->getId();
+            }
+          } else if( $meta_object->getMetaValue() != $value ) {
             $to_update = $meta_object->getId();
           }
         }
