@@ -178,6 +178,16 @@ class FV_Player_lightbox {
         $iPlayerWidth = ( isset($args['width']) && intval($args['width']) > 0 ) ? intval($args['width']) : $iConfWidth;
         $iPlayerHeight = ( isset($args['height']) && intval($args['height']) > 0 ) ? intval($args['height']) : $iConfHeight;
         
+        /* 
+         * Going back to the oldschool days...
+         * The possibilities here are:
+         * 
+         * true
+         * true;text
+         * true;Lightbox title
+         * true;Lightbox title;text - not sure, TODO
+         * true;640;360;Lightbox title
+         */
         $aLightbox = preg_split('~[;]~', $args['lightbox']);
         
         // Properties set up by FV Player DB
@@ -187,16 +197,24 @@ class FV_Player_lightbox {
         if( !empty($args['lightbox_height']) ) {
           $aLightbox[2] = $args['lightbox_height'];
         }
+        if( !empty($args['lightbox_caption']) ) {
+          $aLightbox[3] = $args['lightbox_caption'];
+        }
         
         $hash = $aArgs[1]->hash;
         $container = "wpfp_".$hash."_container";
         $button = "fv_flowplayer_".$hash."_lightbox_starter";
         
         $sTitle = '';
+        
+        // Using "text" as in "true;640;360;text" makes it a text lightbox and it should not be used for the lightbox title
         if( !empty($aLightbox[3]) && $aLightbox[3] != 'text' ) {
           $sTitle = $aLightbox[3];
+          
+        // If we only have "true;Lightbox title" then we know it's the lightbox title
         } else if( !empty($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3]) && $aLightbox[1] != 'text'  ) {
           $sTitle = $aLightbox[1];
+          
         } else if( empty($args['playlist']) && !empty($args['caption']) ) {
           $sTitle = $args['caption'];
         }
