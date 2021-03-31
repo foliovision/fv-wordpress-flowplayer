@@ -344,6 +344,7 @@ if (!Date.now) {
           return;
         }
 
+        // TODO: Is this still needed?
         var seek_count = 0;
         var do_seek = setInterval( function() {
           if( ++seek_count > 20 ) clearInterval(do_seek);
@@ -399,11 +400,10 @@ if (!Date.now) {
     api.bind('finish', removeVideoPosition);
 
     // seek into the last saved position, it also hooks the progress event
-    if( flowplayer.support.fvmobile ) {
-      api.one( 'progress', seekIntoPosition);
-    } else {
-      api.bind( 'ready', seekIntoPosition);
-    }
+    // this used to run on ready event for !flowplayer.support.fvmobile,
+    // but then we run into some reliability issue with HLS.js, so it's safer
+    // to use progress
+    api.one( 'progress', seekIntoPosition);
 
     /**
      * Show the progress on the playlist item thumbnail
