@@ -79,7 +79,7 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
       }
 
       $affected_fields['meta_value'] = $wpdb->query( $wpdb->prepare(
-        "UPDATE `{$wpdb->prefix}fv_player_videometa` SET meta_value = REPLACE( meta_value, '%s', '%s' ) WHERE meta_value LIKE %s AND meta_key <> 'playlist_data'",
+        "UPDATE `{$wpdb->prefix}fv_player_videometa` SET meta_value = REPLACE( meta_value, '%s', '%s' ) WHERE meta_value LIKE %s AND meta_value NOT REGEXP '^(a|s|O):[0-9]:'",
         $search_string,
         $replace_string,
         '%' . $wpdb->esc_like($search_string) . '%'

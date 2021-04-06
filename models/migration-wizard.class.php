@@ -108,7 +108,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     $like = '%' . $wpdb->esc_like($phrase) . '%';
     
     return $wpdb->get_results( $wpdb->prepare(
-      "SELECT id_video, meta_key, meta_value FROM `{$wpdb->prefix}fv_player_videometa` WHERE meta_value LIKE %s AND meta_key <> 'playlist_data'",
+      "SELECT id_video, meta_key, meta_value FROM `{$wpdb->prefix}fv_player_videometa` WHERE meta_value LIKE %s AND meta_value NOT REGEXP '^(a|s|O):[0-9]:'",
       $like
     ) );
   }
