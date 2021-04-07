@@ -795,7 +795,9 @@ add_action( 'admin_notices', 'fv_player_pro_version_check' );
 function fv_player_pro_version_check() {
   $version = '7.4.44.727';
   
-  if( !fv_player_extension_version_is_min($version,'pro') ) :
+  global $FV_Player_Pro;
+  
+  if( !empty($FV_Player_Pro) && !fv_player_extension_version_is_min($version,'pro') ) :
   ?>
   <div class="error">
       <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
