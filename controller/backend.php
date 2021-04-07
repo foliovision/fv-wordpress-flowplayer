@@ -700,23 +700,6 @@ function flowplayer_deactivate() {
 
 
 
-add_action( 'admin_notices', 'fv_player_admin_notice_expired_license' );
-add_action( 'fv_player_settings_pre', 'fv_player_admin_notice_expired_license' );
-
-function fv_player_admin_notice_expired_license() {
-  global $FV_Player_Pro;
-  $screen = get_current_screen();
-  if( ( $screen && $screen->id == 'plugins' || did_action('fv_player_settings_pre') ) && isset($FV_Player_Pro) && isset($FV_Player_Pro->version) && version_compare( str_replace( '.beta', '', $FV_Player_Pro->version), '0.8.17') == -1 ) {
-    $aCheck = get_transient( 'fv-player-pro_license' );
-    if( !empty($aCheck->expired) || !empty($aCheck->error) ) { ?>
-      <div class="updated">
-        <?php echo $aCheck->message; ?>
-        <?php if( !empty($aCheck->changelog) ) echo $aCheck->changelog; ?>
-      </div>
-    <?php }
-  }
-}
-
 
 /*
  *  DB based player data saving
@@ -810,13 +793,45 @@ function fv_player_rollback_message( $val ) {
 add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
-  global $FV_Player_Pro;
-  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.4.44.727' ) == -1 ) :
+  $version = '7.4.44.727';
+  
+  if( !fv_player_extension_version_is_min($version,'pro') ) :
   ?>
   <div class="error">
-      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.4.44.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
+      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
   </div>
   <?php
   endif;
 }
 
+/*
+ * @param string $min The minimal version to check - like 7.4.44.727
+ * 
+ * @return bool True if the version is at least $min
+ */
+function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
+  $version = false;
+  if( $extension == 'pro' ) {
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) ) {
+      $version = $FV_Player_Pro->version;
+    }
+    
+  } else if( $extension == 'vast' ) {
+    global $FV_Player_VAST;
+    if( isset($FV_Player_VAST) && !empty($FV_Player_VAST->version) ) {
+      $version = $FV_Player_VAST->version;
+    }
+    
+  } else if( $extension == 'alternative-sources' ) {
+    global $FV_Player_Alternative_Sources;
+    if( isset($FV_Player_Alternative_Sources) && !empty($FV_Player_Alternative_Sources->version) ) {
+      $version = $FV_Player_Alternative_Sources->version;
+    }
+    
+  }
+  
+  $version = str_replace('.beta','',$version);
+  
+  return version_compare($version,$min ) != -1;
+}
