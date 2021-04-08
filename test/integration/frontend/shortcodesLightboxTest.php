@@ -56,8 +56,8 @@ HTML;
   public function testCaptionAndDimensions() {    
     $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true;320;240;Video 1" share="no" embed="false"]' );
     $sample = <<< HTML
-<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id="fv_flowplayer_f1f51bb87ed9702bd91ac63990cee57b_lightbox_starter" title='Video 1' href="#wpfp_f1f51bb87ed9702bd91ac63990cee57b" class="flowplayer lightbox-starter no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 320px; max-height: 240px; " data-ratio="0.5625">
-  <div class="fp-ratio" style="padding-top: 56.25%"></div>
+<div data-fancybox='gallery' data-options='{"touch":false,"thumb":"https:\/\/cdn.site.com\/video1.jpg"}' id="fv_flowplayer_f1f51bb87ed9702bd91ac63990cee57b_lightbox_starter" title='Video 1' href="#wpfp_f1f51bb87ed9702bd91ac63990cee57b" class="flowplayer lightbox-starter no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 320px; max-height: 240px; " data-ratio="0.75">
+  <div class="fp-ratio" style="padding-top: 75%"></div>
   <img class="fp-splash" alt="video" src="https://cdn.site.com/video1.jpg" />  
   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
 </div>

@@ -338,7 +338,13 @@ CREATE TABLE " . self::$db_table_name . " (
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $meta_data as $key => $value ) {
-            $this->$key = stripslashes($value);
+            // We got a report of "stripslashes() expects parameter 1 to be string, object given" for the stripslashes($value) call below
+            // Not sure how to handle this or how it could occur
+            if( is_object($value) ) {
+              $this->$key = $value;
+            } else {
+              $this->$key = stripslashes($value);
+            }
           }
 
           // cache this meta in DB object

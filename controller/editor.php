@@ -118,27 +118,32 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
   $fv_fp->load_dash = true;
   $fv_fp->load_tabs = true;
   
-  global $FV_Player_Pro;
-  if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
-    $FV_Player_Pro->bYoutube = true;
-    //  todo: there should be a better way than this
-    add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
-    add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
+  if( !fv_player_extension_version_is_min('7.4.46.727','pro') ) {
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+      $FV_Player_Pro->bYoutube = true;
+      add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
+      add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
+    }
   }
 
-  global $FV_Player_VAST ;
-  if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
-    //  todo: there should be a better way than this      
-    add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
+  if( !fv_player_extension_version_is_min('7.4.46.727','vast') ) {
+    global $FV_Player_VAST ;
+    if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
+      add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
+    }
   }
   
-  global $FV_Player_Alternative_Sources ;
-  if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
-    //  todo: there should be a better way than this
-    add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
-  }    
+  if( !fv_player_extension_version_is_min('7.4.46.727','alternative-sources') ) {
+    global $FV_Player_Alternative_Sources ;
+    if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
+      add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
+    }
+  }
   
+  // Tell all the (modern) extensions to load frontend+backend assets 
   do_action('fv_player_extensions_admin_load_assets');
+
   add_action('admin_footer','flowplayer_prepare_scripts');
 }
 

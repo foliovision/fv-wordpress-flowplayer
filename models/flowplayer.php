@@ -1283,7 +1283,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     global $posts, $post;
     if( !$posts || empty($posts) ) $posts = array( $post );
     
-    if( !$force && !$this->should_load_js() && isset($posts) && count($posts) > 0 ) {
+    if( !$force && !$this->should_force_load_js() && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
       
       if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
@@ -2353,8 +2353,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $value;
   }
   
-  function should_load_js() {
-    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']);
+  // Also used by FV Player extensions
+  function should_force_load_js() {
+    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']) || isset($_GET['elementor-preview']);
   }
 
   function template_preview() {
