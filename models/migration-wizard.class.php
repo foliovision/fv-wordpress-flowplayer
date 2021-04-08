@@ -33,8 +33,8 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     <table class="wp-list-table widefat fixed striped logentries">
       <thead>
         <tr>
-          <td>Video ID</td>
           <td>Player ID</td>
+          <td>Video ID</td>
           <td>URL</td>
           <td>Alternative URL</td>
           <td>Alternative URL 2</td>
@@ -46,8 +46,8 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       </thead>
       <?php foreach($videos as $video) : ?>
         <tr>
-          <td><?php echo $video->id ?></td>
           <td><?php if( isset($video->player_id) ) echo $video->player_id ?></td>
+          <td><?php echo $video->id ?></td>
           <?php foreach( array('src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) : ?>
             <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
           <?php endforeach; ?>
@@ -63,16 +63,16 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     <table class="wp-list-table widefat fixed striped logentries">
       <thead>
         <tr>
-          <td>Video ID</td>
           <td>Player ID</td>
+          <td>Video ID</td>
           <td>Meta Key</td>
           <td>Meta Value</td>
         </tr>
       </thead>
       <?php foreach($videos as $video) : ?>
         <tr>
-          <td><?php echo $video->id ?></td>
           <td><?php if( isset( $video->player_id) ) echo $video->player_id ?></td>
+          <td><?php echo $video->id ?></td>
           <?php foreach( array( 'meta_key', 'meta_value' ) AS $field ) : ?>
             <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
           <?php endforeach; ?>
