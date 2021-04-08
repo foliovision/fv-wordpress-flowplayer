@@ -162,7 +162,16 @@ function fv_flowplayer_browser_browse(data, options) {
           }
         }
 
-        file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
+        var css_class = 'attachment-preview js--select-attachment type-video subtype-mp4 landscape';
+        if( options && options.extraAttachmentClass ) {
+          css_class += ' ' + options.extraAttachmentClass;
+        }
+        
+        if( f.job_status ) {
+          css_class += ' job-status-'+f.job_status;
+        }
+        
+        file.append('<div class="'+css_class+'">'
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'

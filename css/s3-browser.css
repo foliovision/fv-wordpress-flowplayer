@@ -347,3 +347,13 @@
     bottom: 0;
     z-index: 10;
 }
+
+.job-status-completed .attachment-preview {
+    background: #ccf0cc;
+}
+.job-status-error .attachment-preview {
+    background: #fda5a5;
+}
+.job-status-processing .attachment-preview {
+    background: #eee69d;
+}

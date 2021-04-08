@@ -122,6 +122,8 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
             $item['items'] = array();
           }
 
+          $item = apply_filters( 'fv_player_media_browser_item', $item, 'dos' );
+
           $output['items'][] = $item;
 
           if (strtolower(substr($item['name'], strrpos($item['name'], '.') + 1)) === 'ts') {
