@@ -34,6 +34,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       <thead>
         <tr>
           <td>Video ID</td>
+          <td>Player ID</td>
           <td>URL</td>
           <td>Alternative URL</td>
           <td>Alternative URL 2</td>
@@ -46,7 +47,8 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       <?php foreach($videos as $video) : ?>
         <tr>
           <td><?php echo $video->id ?></td>
-          <?php foreach( array( 'src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) : ?>
+          <td><?php if( isset($video->player_id) ) echo $video->player_id ?></td>
+          <?php foreach( array('src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) : ?>
             <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
           <?php endforeach; ?>
         </tr>
@@ -62,13 +64,15 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       <thead>
         <tr>
           <td>Video ID</td>
+          <td>Player ID</td>
           <td>Meta Key</td>
           <td>Meta Value</td>
         </tr>
       </thead>
       <?php foreach($videos as $video) : ?>
         <tr>
-          <td><?php echo $video->id_video ?></td>
+          <td><?php echo $video->id ?></td>
+          <td><?php if( isset( $video->player_id) ) echo $video->player_id ?></td>
           <?php foreach( array( 'meta_key', 'meta_value' ) AS $field ) : ?>
             <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
           <?php endforeach; ?>
@@ -90,7 +94,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     
     $like = '%' . $wpdb->esc_like($phrase) . '%';
     
-    return $wpdb->get_results( $wpdb->prepare(
+    $videos_data = $wpdb->get_results( $wpdb->prepare(
       "SELECT id, src, src1, src2, splash, mobile, rtmp, rtmp_path  FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s OR src1 LIKE %s OR src2 LIKE %s OR splash LIKE %s OR mobile LIKE %s OR rtmp LIKE %s OR rtmp_path LIKE %s",
       $like,
       $like,
@@ -100,6 +104,10 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       $like,
       $like
     ) );
+
+    $videos_data = self::add_player_id( $videos_data );
+
+    return $videos_data;
   }
 
   public static function search_meta( $phrase ) {
@@ -107,10 +115,14 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
     
     $like = '%' . $wpdb->esc_like($phrase) . '%';
     
-    return $wpdb->get_results( $wpdb->prepare(
-      "SELECT id_video, meta_key, meta_value FROM `{$wpdb->prefix}fv_player_videometa` WHERE meta_value LIKE %s AND meta_value NOT REGEXP '^(a|s|O):[0-9]:'",
+    $videos_data = $wpdb->get_results( $wpdb->prepare(
+      "SELECT id_video as id , meta_key, meta_value FROM `{$wpdb->prefix}fv_player_videometa` WHERE meta_value LIKE %s AND meta_value NOT REGEXP '^(a|s|O):[0-9]:'",
       $like
     ) );
+
+    $videos_data = self::add_player_id( $videos_data );
+
+    return $videos_data;
   }
 
   public function view() {
@@ -128,6 +140,22 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
 
   }
 
+  private static function add_player_id( $videos_data ) {
+    global $wpdb;
+
+    $players = $wpdb->get_results( "SELECT id , videos FROM `{$wpdb->prefix}fv_player_players`" );
+
+    foreach ($videos_data as $kv => $video) {
+      foreach($players as $kp => $player) {
+        $videos = explode( ',', $player->videos );
+        if( in_array( $video->id, $videos ) ) {
+          $videos_data[$kv]->player_id = $player->id;
+        }
+      }
+    }
+  
+    return $videos_data;
+  }
 }
 
 function FV_Player_Migration_Wizard() {
