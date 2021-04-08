@@ -178,17 +178,43 @@ class FV_Player_lightbox {
         $iPlayerWidth = ( isset($args['width']) && intval($args['width']) > 0 ) ? intval($args['width']) : $iConfWidth;
         $iPlayerHeight = ( isset($args['height']) && intval($args['height']) > 0 ) ? intval($args['height']) : $iConfHeight;
         
+        /* 
+         * Going back to the oldschool days...
+         * The possibilities here are:
+         * 
+         * true
+         * true;text
+         * true;Lightbox title
+         * true;Lightbox title;text - not sure, TODO
+         * true;640;360;Lightbox title
+         */
         $aLightbox = preg_split('~[;]~', $args['lightbox']);
+        
+        // Properties set up by FV Player DB
+        if( !empty($args['lightbox_width']) ) {
+          $aLightbox[1] = $args['lightbox_width'];
+        }
+        if( !empty($args['lightbox_height']) ) {
+          $aLightbox[2] = $args['lightbox_height'];
+        }
+        if( !empty($args['lightbox_caption']) ) {
+          $aLightbox[3] = $args['lightbox_caption'];
+        }
         
         $hash = $aArgs[1]->hash;
         $container = "wpfp_".$hash."_container";
         $button = "fv_flowplayer_".$hash."_lightbox_starter";
         
         $sTitle = '';
+        
+        // Using "text" as in "true;640;360;text" makes it a text lightbox and it should not be used for the lightbox title
         if( !empty($aLightbox[3]) && $aLightbox[3] != 'text' ) {
           $sTitle = $aLightbox[3];
+          
+        // If we only have "true;Lightbox title" then we know it's the lightbox title
         } else if( !empty($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3]) && $aLightbox[1] != 'text'  ) {
           $sTitle = $aLightbox[1];
+          
         } else if( empty($args['playlist']) && !empty($args['caption']) ) {
           $sTitle = $args['caption'];
         }
@@ -238,6 +264,18 @@ class FV_Player_lightbox {
 
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
+          
+          // new ratio for responsiveness
+          if( $iWidth > 0 ) {
+            $ratio = $iHeight / $iWidth;
+            if( $ratio > 0 ) {
+              $ratio = round($ratio, 4);
+              $html = preg_replace( '~ data-ratio=".*?"~', ' data-ratio="'.$ratio.'"', $html );
+              
+              $ratio = str_replace(',','.', $ratio * 100 );
+              $html = preg_replace( '~<div class="fp-ratio".*?</div>~', '<div class="fp-ratio" style="padding-top: '.$ratio.'%"></div>', $html );
+            }
+          }
 
           // this is how we link playlist items to the player
           $html = str_replace( ' rel="wpfp_'.$hash.'"', ' rel="'.$button.'"', $html );
@@ -358,7 +396,7 @@ class FV_Player_lightbox {
     if(
       $this->should_load() ||
       $fv_fp->_get_option('lightbox_images') || // "Use video lightbox for images as well" is enabled
-      $fv_fp->should_load_js() || // "Load FV Flowplayer JS everywhere" is enabled
+      $fv_fp->should_force_load_js() || // "Load FV Flowplayer JS everywhere" is enabled
       $fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is enabled
     ) {
       $this->load_scripts();
