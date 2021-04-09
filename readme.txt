@@ -357,6 +357,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.46.727 - 2021/04/09 =
+
+* DASH.js - allowing it to recover from blocked autoplay on Safari
+* Handle WordPress audio/video - improved the setting to also work with YouTube oEmbed
+* Migration Wizard - improved to handle subtitles too
+* Bugfix - duplicate FV Player DB wp_fv_player_videometa rows being created
+* Bugfix - Lightbox - respect dimensions stored in FV Player DB
+* Bugfix - Position Saving - safer way of restoring position (for HLS.js)
+
 = 7.4.45.727 - 2021/03/24 =
 
 * Bugfix - YouTube.com iframe embeds broken after adding support for youtube-nocokie.com in previous release
