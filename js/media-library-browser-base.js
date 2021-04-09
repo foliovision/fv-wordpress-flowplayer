@@ -167,8 +167,8 @@ function fv_flowplayer_browser_browse(data, options) {
           css_class += ' ' + options.extraAttachmentClass;
         }
         
-        if( f.job_status ) {
-          css_class += ' job-status-'+f.job_status;
+        if( f.status ) {
+          css_class += ' job-status-'+f.status;
         }
         
         file.append('<div class="'+css_class+'">'
