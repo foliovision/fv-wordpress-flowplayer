@@ -708,14 +708,14 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   if(index){
     if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
-        if( fTime > -1 ) api.seek(fTime);
+        if( fTime > 0 ) api.seek(fTime);
         fv_autoplay_exec_in_progress = false;
         
       } else {
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ){
+          if( fTime > 0 ){
             api.seek(fTime)
             if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
           }
@@ -726,7 +726,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ){
+          if( fTime > 0 ){
             api.seek(fTime)
             if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
           }
@@ -741,7 +741,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
     }
   }else{
     if( api.ready ) {
-      if( fTime > -1 ) api.seek(fTime);
+      if( fTime > 0 ) api.seek(fTime);
       fv_autoplay_exec_in_progress = false;
       
     } else {
@@ -752,7 +752,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
       }
       api.one('ready', function() {
         fv_autoplay_exec_in_progress = false;
-        if( fTime > -1 ) {
+        if( fTime > 0 ) {
           var do_seek = setInterval( function() {
             if( api.loading ) return;
             api.seek(fTime)
