@@ -714,14 +714,14 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
       } else {
         api.play(parseInt(index));
         api.one('ready', function() {
-          fv_seek_and_link_ab( fTime, api, abEnd, abStart )
+          fv_seek_and_link_ab( api, fTime, abEnd, abStart );
         } );
       }
     } else if( flowplayer.support.inlineVideo ) {
       api.one( api.playing ? 'progress' : 'ready', function (e,api) {
         api.play(parseInt(index));
         api.one('ready', function() {
-          fv_seek_and_link_ab( fTime, api, abEnd, abStart )
+          fv_seek_and_link_ab( api, fTime, abEnd, abStart );
         } );
       });
       
@@ -743,20 +743,20 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
       }
       api.one('ready', function() {
-        fv_seek_and_link_ab( fTime, api, abEnd, abStart )
+        fv_seek_and_link_ab( api, fTime, abEnd, abStart );
       } );
     }
   }
   
 }
 
-function fv_seek_and_link_ab( fTime, api, abEnd, abStart ) {
+function fv_seek_and_link_ab( api, fTime, abEnd, abStart ) {
   fv_autoplay_exec_in_progress = false;
 
   var do_seek = setInterval( function() {
-    if( api.loading ) return;
-    if( fTime > 0 ) api.seek(fTime);
-    if ( fTime > -1 && abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
+    if ( api.loading ) return;
+    if ( fTime > 0 ) api.seek(fTime); // prevent seeking to 0s (causing glitch)
+    if ( fTime > -1 && abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]); // ab loop link must work even if time is 0, example: #fvp_1,0s,18s570ms,1m06s600ms
     clearInterval(do_seek);
   }, 10 );
 }
