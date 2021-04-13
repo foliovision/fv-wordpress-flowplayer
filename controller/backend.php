@@ -28,8 +28,8 @@ function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) ) {
 
   	$current_user = wp_get_current_user();    
-
-  	$content = '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
+    $content = "<h1>Admin: Video Issues</h1>\n";
+  	$content .= '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
   	$content .= '<p>User Agent: '.$_SERVER['HTTP_USER_AGENT']."</p>\n";  	
   	$content .= '<p>Referer: '.$_SERVER['HTTP_REFERER']."</p>\n";
   	$content .= "<p>Comment:</p>\n".wpautop( stripslashes($_POST['comment']) );  	  	
