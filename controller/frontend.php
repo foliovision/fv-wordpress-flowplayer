@@ -720,3 +720,35 @@ function fv_player_js_loader_load() {
   
   echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }
+
+/*
+ * @param string $min The minimal version to check - like 7.4.44.727
+ * 
+ * @return bool True if the version is at least $min
+ */
+function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
+  $version = false;
+  if( $extension == 'pro' ) {
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) ) {
+      $version = $FV_Player_Pro->version;
+    }
+    
+  } else if( $extension == 'vast' ) {
+    global $FV_Player_VAST;
+    if( isset($FV_Player_VAST) && !empty($FV_Player_VAST->version) ) {
+      $version = $FV_Player_VAST->version;
+    }
+    
+  } else if( $extension == 'alternative-sources' ) {
+    global $FV_Player_Alternative_Sources;
+    if( isset($FV_Player_Alternative_Sources) && !empty($FV_Player_Alternative_Sources->version) ) {
+      $version = $FV_Player_Alternative_Sources->version;
+    }
+    
+  }
+  
+  $version = str_replace('.beta','',$version);
+  
+  return version_compare($version,$min ) != -1;
+}
