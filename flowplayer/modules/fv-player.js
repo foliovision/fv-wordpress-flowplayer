@@ -715,8 +715,8 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > 0 ){
-            api.seek(fTime)
+          if( fTime > -1 ){
+            if( fTime > 0 ) api.seek(fTime);
             if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
           }
         } );
@@ -726,8 +726,8 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_autoplay_exec_in_progress = false;
-          if( fTime > 0 ){
-            api.seek(fTime)
+          if( fTime > -1 ){
+            if( fTime > 0 ) api.seek(fTime);
             if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
           }
         } );
@@ -752,10 +752,10 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
       }
       api.one('ready', function() {
         fv_autoplay_exec_in_progress = false;
-        if( fTime > 0 ) {
+        if( fTime > -1 ) {
           var do_seek = setInterval( function() {
             if( api.loading ) return;
-            api.seek(fTime)
+            if( fTime > 0 ) api.seek(fTime);
             if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
             clearInterval(do_seek);
           }, 10 );
