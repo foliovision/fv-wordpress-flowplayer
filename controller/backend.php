@@ -44,13 +44,17 @@ function fv_wp_flowplayer_support_mail() {
     $fv_wp_flowplayer_support_mail_from_name = $current_user->display_name;
     $fv_wp_flowplayer_support_mail_from = $current_user->user_email;
   	
-  	add_filter( 'wp_mail_content_type', create_function('', "return 'text/html';") );
+  	add_filter( 'wp_mail_content_type', 'fv_wp_content_type_func' );
   	
   	//add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
   	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content );
   	
   	die('1');
   }
+}
+
+function fv_wp_content_type_func() {
+  return 'text/html';
 }
 
 function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
