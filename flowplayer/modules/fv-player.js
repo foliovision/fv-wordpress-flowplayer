@@ -631,10 +631,10 @@ function fv_player_time_hms_ms(seconds) {
 /**
  * Converts hms format to seconds
  * 
- * @param {string} time 
+ * @param {string|bool} time 
  * @param {number|string} duration 
  * 
- * @returns {number}
+ * @returns {number} Returns -1 if the time was false
  */
 
 function fv_player_time_seconds(time, duration) {
@@ -666,8 +666,9 @@ function fv_player_time_seconds(time, duration) {
  *
  * @param {$jQueryDomObject}  root  Player element
  * @param {number}            index Video number in playlist
- * @param {string|number}     time  Desired play position in hh:mm:ss
- *                                  format or number of seconds
+ * @param {string|bool}       time  Desired play position in hh:mm:ss
+ *                                  format or number of seconds.
+ *                                  Or false when no start time specified.
  * @param {number}            abStart Optional - end of FV Player Pro AB 
  *                                  loop. If it's present we trigger
  *                                  the loop-ab event for FV Player Pro
@@ -756,7 +757,7 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
   var do_seek = setInterval( function() {
     if ( api.loading ) return;
     if ( fTime > 0 ) api.seek(fTime); // prevent seeking to 0s (causing glitch)
-    if ( fTime > -1 && abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]); // ab loop link must work even if fTime is 0, example: #fvp_1,0s,18s570ms,1m06s600ms
+    if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
     clearInterval(do_seek);
   }, 10 );
 }
