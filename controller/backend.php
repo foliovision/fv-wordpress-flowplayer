@@ -27,8 +27,8 @@ add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_ma
 function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) ) {
 
-  	$current_user = wp_get_current_user();    
-    $content = "<h1>Admin: Video Issues</h1>\n";
+  	$current_user = wp_get_current_user();
+    $content = "<h1>Admin: ".$_POST['status']."</h1>\n";
   	$content .= '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
   	$content .= '<p>User Agent: '.$_SERVER['HTTP_USER_AGENT']."</p>\n";  	
   	$content .= '<p>Referer: '.$_SERVER['HTTP_REFERER']."</p>\n";
@@ -36,7 +36,7 @@ function fv_wp_flowplayer_support_mail() {
   	$notice = str_replace( '<span class="value"', ': <span class="value"', stripslashes($_POST['notice']) );
   	$notice .= str_replace( '<span class="value"', ': <span class="value"', stripslashes($_POST['details']) );  	
   	
-  	$content .= "<p>Video analysis:</p>\n".$notice;  	  	
+  	$content .= "<p>Video analysis:</p>\n".$notice;
     
     global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
     
@@ -44,7 +44,7 @@ function fv_wp_flowplayer_support_mail() {
     $fv_wp_flowplayer_support_mail_from_name = $current_user->display_name;
     $fv_wp_flowplayer_support_mail_from = $current_user->user_email;
   	
-  	add_filter( 'wp_mail_content_type', 'fv_wp_content_type_func' );
+  	add_filter( 'wp_mail_content_type', 'fv_wp_flowplayer_support_mail_content_type' );
   	
   	//add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
   	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content );
@@ -53,7 +53,7 @@ function fv_wp_flowplayer_support_mail() {
   }
 }
 
-function fv_wp_content_type_func() {
+function fv_wp_flowplayer_support_mail_content_type() {
   return 'text/html';
 }
 

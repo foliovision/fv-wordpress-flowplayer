@@ -226,6 +226,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
   jQuery('.fv_flowplayer_submit_error').remove();
 
   var comment_text = jQuery('#wpfp_support_'+hash).val();
+  var status_text = jQuery('#wpfp_notice_'+hash+'.fv-player-video-checker .video-checker-result').text();
   var comment_words = comment_text.split(/\s/);
   if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
     jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>'+fv_flowplayer_translations.what_is_wrong+'</strong></p>');
@@ -246,14 +247,15 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
     fv_player.ajaxurl,
     {
       action: 'fv_wp_flowplayer_support_mail',
+      status: status_text,
       comment: comment_text,
       notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
-      details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()						
+      details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()
     },
     function( response ) {
-      jQuery('#wpfp_spin_'+hash).hide();					
+      jQuery('#wpfp_spin_'+hash).hide();
       jQuery(button).removeAttr("disabled");
       jQuery(button).after(' Message sent');
-    }	
+    }
   );
 }
