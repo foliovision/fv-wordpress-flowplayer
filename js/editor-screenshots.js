@@ -11,6 +11,9 @@
     message = jQuery('.fv-messages'),
     title ='';
 
+    // where to seek when trying to setup the crossOrigin attribute for video
+    var seek_recovery = false;
+
     function takeScreenshot() {
       var video = root.find('video').get(0);
       var canvas = document.createElement("canvas");
@@ -46,10 +49,24 @@
         };
       }
       catch(err) {
-        spinner.remove();
-        button.prop("disabled",false);
-        message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
-        fv_wp_flowplayer_dialog_resize();
+        var video_tag = root.find('video.fp-engine')[0];
+
+        // try to set crossOrigin if it's a HTML5 video - no HLS or DASH
+        if( video_tag && video_tag.crossOrigin != 'anonymous' && api.engine.engineName == 'html5' ) {
+          console.log('FV Player Editor Screenshots: Reloading with CORS');
+
+          // without this Flowplayer will remove that crossOrigin="anonymous" automatically!
+          api.conf.nativesubtitles = true;
+
+          video_tag.crossOrigin = 'anonymous';
+          reload_video();
+          return;
+        }
+
+        show_error();
+
+        console.log('FV Player Editor Screenshots: '+err);
+
         return;
       }
 
@@ -84,6 +101,54 @@
         }
     }
     });
+    
+    // Resume video after setting crossOrigin
+    api.on('resume progress', function(e) {
+      if( seek_recovery && api.video.seekable ) {
+        api.seek(seek_recovery, function() {
+          seek_recovery = false;
+          
+          // try to take the screenshot again
+          button.click();
+        });
+      }
+    });
+    
+    // Show error if video fails after setting crossOrigin
+    api.on('error', function(e, api, err) {
+      if( seek_recovery ) {
+        // prevent FV Player Pro from trying to recover
+        api.fv_retry_count = 100;
+        
+        console.log('FV Player Editor Screenshots: Video won\'t play with crossOrigin="anonymous"');
+        
+        show_error();
+      }
+    });
+    
+    function reload_video() {
+      seek_recovery = api.video.time;
+
+      var index = typeof(api.video.index) != "undefined" ? api.video.index : 0;
+      
+      api.error = api.loading = false;
+      jQuery(root).find('.fp-message').remove();
+      jQuery(root).removeClass("is-error").addClass("is-mouseover");
+      
+      if( api.conf.playlist.length ) {
+        api.setPlaylist(api.conf.playlist).play(index);
+      } else {
+        api.load(api.conf.clip);
+      }
+      
+    }
+    
+    function show_error() {
+      spinner.remove();
+      button.prop("disabled",false);
+      message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
+      fv_wp_flowplayer_dialog_resize();
+    }
 
   });
 
