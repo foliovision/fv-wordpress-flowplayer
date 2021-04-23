@@ -273,6 +273,7 @@ class FV_Player_Custom_Videos_Master {
     <?php
     
     if( !function_exists('is_plugin_active') ) include( ABSPATH . 'wp-admin/includes/plugin.php' );
+    if( !function_exists('fv_player_extension_version_is_min') ) include( dirname( __FILE__ ) . '/../controller/backend.php' );
     if( !function_exists('fv_wp_flowplayer_edit_form_after_editor') ) include( dirname( __FILE__ ) . '/../controller/editor.php' );
     
     fv_wp_flowplayer_edit_form_after_editor();
@@ -429,6 +430,7 @@ class FV_Player_Custom_Videos_Master {
     <?php
     
     if( !function_exists('is_plugin_active') ) include( ABSPATH . 'wp-admin/includes/plugin.php' );
+    if( !function_exists('fv_player_extension_version_is_min') ) include( dirname( __FILE__ ) . '/../controller/backend.php' );
     if( !function_exists('fv_wp_flowplayer_edit_form_after_editor') ) include( dirname( __FILE__ ) . '/../controller/editor.php' );
     
     fv_wp_flowplayer_edit_form_after_editor();
