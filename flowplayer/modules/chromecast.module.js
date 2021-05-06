@@ -124,7 +124,11 @@ flowplayer(function(api, root) {
     // TODO: Test with Vimeo
     var cast_subtitles = [];
     if( api.video.subtitles ) {
-      api.video.subtitles.forEach( function(v,k) {        
+      api.video.subtitles.forEach( function(v,k) {
+        if( v.src.match(/\.srt/) ) {
+          console.log('FV Player: Chromecast doesn\'t support SRT subtitles');
+        }
+        
         var subtitles = new chrome.cast.media.Track(k, chrome.cast.media.TrackType.TEXT);
         subtitles.trackContentId = v.src;
         subtitles.trackContentType = 'text/vtt';
@@ -280,7 +284,7 @@ flowplayer(function(api, root) {
       
       jQuery(trigger).show();
     } else {
-      FV_Flowplayer_Pro.log('FV Player Pro: Can\'t find media source suitable for Chromecast!');
+      FV_Flowplayer_Pro.log('FV Player: Can\'t find media source suitable for Chromecast!');
       jQuery(trigger).hide();
     }
 
