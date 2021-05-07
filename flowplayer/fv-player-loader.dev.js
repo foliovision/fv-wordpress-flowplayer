@@ -1,6 +1,7 @@
+/* Warning: only use /* comments here! */
 
 ( function() {
-	// forEach for IE 11: https://rimdev.io/foreach-for-ie-11/
+	/* forEach for IE 11: https://rimdev.io/foreach-for-ie-11/ */
 	if(window.NodeList && !NodeList.prototype.forEach) {
 		NodeList.prototype.forEach = Array.prototype.forEach;
 	}
@@ -21,16 +22,16 @@
 	Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function(player){
 		player.className = player.className.replace(/\bno-svg\b/g,'');
 		
-		// remove admin JavaScript warning
+		/* remove admin JavaScript warning */
 		var admin_js_warning = player.querySelector('.fvfp_admin_error');
 		if( admin_js_warning ) {
 			admin_js_warning.parentNode.removeChild( admin_js_warning );
 		}
 
-		// replace preload icon with play icon
+		/* replace preload icon with play icon */
 		var preload = player.querySelector('.fp-preload');
 
-		// occurs for the audio player
+		/* occurs for the audio player */
 		if( !preload ) return;
 
 		var parent = preload.parentNode,
@@ -71,7 +72,7 @@ class FV_Player_JS_Loader_Compatibility_Checker {
 	_checkPassiveOption( self ) {
 		try {
 			const options = {
-				// This function will be called when the browser attempts to access the passive property.
+				/* This function will be called when the browser attempts to access the passive property. */
 				get passive() {
 					self.passiveSupported = true;
 					return false;
@@ -167,7 +168,7 @@ class FV_Player_JS_Loader {
 	 * Window event listener - when triggered, invokes the load script src handler and then resets.
 	 */
 	triggerListener() {
-		// Show the preload indicator once again
+		/* Show the preload indicator once again */
 		Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function(player){
 			var preload = player.querySelector('.fp-preload');
 			if( preload ) {
@@ -180,7 +181,7 @@ class FV_Player_JS_Loader {
 			}
 		});
 		
-		// Not sure when, but sometimes the flowplayer script is not ready
+		/* Not sure when, but sometimes the flowplayer script is not ready */
 		if( window.flowplayer ) {
 			this._loadScriptSrc();
 		} else {
@@ -200,17 +201,16 @@ class FV_Player_JS_Loader {
 		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
 		
-		// if using Video Link, load it all right away
+		/* if using Video Link, load it all right away */
 		if( location.hash.match(/fvp_/) ) {
 			instance.triggerListener();
 			return;
 		}
 		
-		// iOS specific block
-		// https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
+		/* iOS specific block https://stackoverflow.com/questions/9038625/detect-if-device-is-ios */
 		function iOS() {
 			return navigator.platform.match(/iPad|iPhone|iPod/)
-			// iPad on iOS 13 detection
+			/* iPad on iOS 13 detection */
 			|| (navigator.userAgent.indexOf("Mac") !== -1 && "ontouchend" in document)
 		}
 		
@@ -219,8 +219,8 @@ class FV_Player_JS_Loader {
 			function load_if_any_player_visible() {
 				var is_any_player_visible = false;
 				
-				// if part of any player visible?
-				// TODO: What about playlist item thumbs?
+				/* if part of any player visible? */
+				/* TODO: What about playlist item thumbs? */
 				document.querySelectorAll('.flowplayer').forEach( el => {
 					var rect = el.getBoundingClientRect();
 					if( rect.top >= -el.offsetHeight &&
@@ -240,15 +240,15 @@ class FV_Player_JS_Loader {
 				return is_any_player_visible;
 			}
 			
-			// Load FV Player scripts instantly if any player is visible
+			/* Load FV Player scripts instantly if any player is visible */
 			var was_visible = load_if_any_player_visible();
 				
-			// Try again once styles are loaded
+			/* Try again once styles are loaded */
 			if( !was_visible ) {
-				// once everything is loaded
+				/* once everything is loaded */
 				window.addEventListener( 'load', load_if_any_player_visible );
 				
-				// ...or when Safari restores the scroll position
+				/* ...or when Safari restores the scroll position */
 				function load_on_scroll() {
 					this.removeEventListener( 'scroll', load_on_scroll );
 					load_if_any_player_visible();
@@ -259,7 +259,7 @@ class FV_Player_JS_Loader {
 			return;
 		}
 
-		// If the first click was on player, play it
+		/* If the first click was on player, play it */
 		var first_click_done = false;
 		document.addEventListener('mousedown', function (e) {
 			if( first_click_done ) return;
@@ -269,28 +269,28 @@ class FV_Player_JS_Loader {
 			
 			var path = e.path || (e.composedPath && e.composedPath());
 			path.forEach( function(el) {
-				// store playlist item for later use
+				/* store playlist item for later use */
 				if( el.getAttribute && el.getAttribute('data-item') ) {
 					playlist_item = el;
 				}
 				
 				if( el.className && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) ) {
-					// Players with autoplay should stop
+					/* Players with autoplay should stop */
 					document.querySelectorAll('[data-fvautoplay]').forEach( function(player) {
 						player.removeAttribute('data-fvautoplay');
 					});
 					
-					// VAST should not autoplay
+					/* VAST should not autoplay */
 					if( window.fv_vast_conf ) {
 						fv_vast_conf.autoplay = false;
 					}
 					
-					// TODO: Perhaps video link should not be parsed or it should be done here
+					/* TODO: Perhaps video link should not be parsed or it should be done here */
 					
-					// was it lightbox?
+					/* was it lightbox? */
 					if( el.className.match(/lightbox-starter/) ) {
 						
-					// was it playlist thumb?
+					/* was it playlist thumb? */
 					} else if( el.className.match(/\bfp-playlist-external\b/) ) {
 						console.log('First click on playlist');
 						
