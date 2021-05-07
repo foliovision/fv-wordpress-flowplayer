@@ -1,5 +1,13 @@
 
 ( function() {
+	// forEach for IE 11: https://rimdev.io/foreach-for-ie-11/
+	if(window.NodeList && !NodeList.prototype.forEach) {
+		NodeList.prototype.forEach = Array.prototype.forEach;
+	}
+	if(window.HTMLCollection && !HTMLCollection.prototype.forEach) {
+		HTMLCollection.prototype.forEach = Array.prototype.forEach;
+	}
+	
 	var filter = document.createElement('div');
 	filter.innerHTML = '<svg class="fp-filters" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 0"><defs><filter id="f1" x="-20%" y="-20%" width="200%" height="200%"><feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" /><feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.4 0" /><feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="4" /><feBlend in="SourceGraphic" in2="blurOut" mode="normal" /></filter></defs></svg>';
 	filter.style.width = 0;
@@ -201,16 +209,9 @@ class FV_Player_JS_Loader {
 		// iOS specific block
 		// https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
 		function iOS() {
-			return [
-				'iPad Simulator',
-				'iPhone Simulator',
-				'iPod Simulator',
-				'iPad',
-				'iPhone',
-				'iPod'
-			].includes(navigator.platform)
+			return navigator.platform.match(/iPad|iPhone|iPod/)
 			// iPad on iOS 13 detection
-			|| (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+			|| (navigator.userAgent.indexOf("Mac") !== -1 && "ontouchend" in document)
 		}
 		
 		if( iOS() ) {
