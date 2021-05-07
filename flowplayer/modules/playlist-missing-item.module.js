@@ -1,56 +1,48 @@
 /*
  * Advance to next playist item if a video is missing
+ *
+ * How to test this:
+ * 
+ * 1) Setup a playlist with two bad videos, then one working video, one bad video and a working video again
+ * 2) Clicking player needs to try first and second video, before playing third
+ * 3) Clicking first playlist item - needs to be same as above
+ * 4) Clicking third video and using "next" needs to try fourth video and play 5 th
+ * 5) Clicking fourth video needs to play fifth video
  */
 flowplayer( function(api,root) {
   root = jQuery(root);
   var playlist = api.conf.playlist,
-    videoIndex,
-    videos_attempted = []; // we do not want it to try same video again
+    videoIndex;
     
   api.bind("load", function (e, api, video) {
     videoIndex = video.index;
-    
-    attempted_load(video.index);
   });
 
   api.bind("error", function (e,api, error) {
     setTimeout(function(){
       if( playlist.length > 0 && api.error == true) {
+        videoIndex = api.video.index;
+
+        if ( api.conf.video_checker == '1' && playlist[videoIndex].video_checker && playlist[videoIndex].video_checker.length > 0 ) { // Run checker for admin
+          console.log('FV Player: Video checker message present, stopping auto-advance to next playlist item');
+          return false;
+        }
+        
         api.error = api.loading = false;
         root.removeClass('is-error');
         root.find('.fp-message.fp-shown').remove();
 
-        if ( api.conf.video_checker == '1' && playlist[videoIndex].video_checker && playlist[videoIndex].video_checker.length > 0 ) { // Run checker for admin
-          return false;
-        }
-   
-        var try_video = videoIndex + 1;
-        // if it was the last video, try second to last video again
-        if( videoIndex >= playlist.length -1 ) {
-          try_video = playlist.length -2;
-        }
+        videoIndex++;
         
-        api.error = api.loading = false;
-        root.removeClass('is-error');
-        root.find('.fp-message.fp-shown').remove();
-        
-        // we record the attempted load here as if the video type is not supported, the load event won't run for it
-        while( attempted_load(try_video) ) {
-          try_video++;
+        // loop playlist if out of items
+        if(videoIndex > playlist.length -1){
+          videoIndex = 0;
         }
-        
-        api.play(try_video);
+
+        console.log('FV Player: Playlist item failure, auto-advancing to '+(videoIndex+1)+'. item');
+        api.play(videoIndex);
       }
     }, 1000 );
   });
-  
-  // was the video already attempted? If no, add it to list
-  function attempted_load(index) {
-    if( !videos_attempted.includes(index) ) {
-      videos_attempted.push(index);
-      return false;
-    }
-    return true;
-  }
   
 });
