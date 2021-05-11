@@ -7,6 +7,7 @@ document.addEventListener('custombox:overlay:close', function(e) { // popup-anyt
     var api = jQuery(player).data("flowplayer");
     if( typeof(api) != "undefined") {
       if( api.playing ) api.pause(); // pause if playing
+      if( api.loading ) api.unload(); // uload if still loading
     }
   });
   
