@@ -5,16 +5,14 @@ document.addEventListener('custombox:overlay:close', function(e) { // popup-anyt
 
   $players.each(function(index,player) { 
     var api = jQuery(player).data("flowplayer");
+
     if( typeof(api) != "undefined") {
-      if( api.playing ) api.pause(); // pause if playing
-      if( api.loading  ) { // uload if still loading
-        if(api.engine.engineName === 'fvyoutube') {
-          api.one('ready',function(){
-            api.unload();
-          })
-        } else {
+      if( api.playing ) { // pause if playing
+        api.pause(); 
+      } else if( api.loading ) { // uload if still loading
+        api.one('ready', function() {
           api.unload();
-        }
+        })
       }
     }
   });
