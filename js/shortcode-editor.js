@@ -230,7 +230,7 @@ jQuery(document).ready(function($){
   /*
    * Playlist view thumbnail toggle
    */
-  $('#fv-player-list-thumb-toggle > a').click(function(e){
+  $('#fv-player-list-thumb-toggle > a').on('click', function(e){
     e.preventDefault();
     var button = $(e.currentTarget);
     if(button.hasClass('disabled')) return;
@@ -437,7 +437,7 @@ jQuery(document).ready(function($){
     }
   });
   
-  jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click(function(){
+  jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').on('click', function(){
     jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').hide();
     
     fv_wp_flowplayer_submit(true);
