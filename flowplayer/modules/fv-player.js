@@ -165,7 +165,7 @@ function fv_player_preload() {
     var splash_click = false;
 
     if( root.hasClass('fixed-controls') ) {
-      root.find('.fp-controls').click( function(e) {
+      root.find('.fp-controls').on('click', function(e) {
         if( !api.loading && !api.ready ) {
           e.preventDefault();
           e.stopPropagation(); 
@@ -204,7 +204,7 @@ function fv_player_preload() {
     }
     
     //  playlist item click action
-    jQuery('a',playlist).click( function(e) {
+    jQuery('a',playlist).on('click', function(e) {
       e.preventDefault();
 
       splash_click = true;

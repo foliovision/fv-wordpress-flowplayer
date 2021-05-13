@@ -199,7 +199,7 @@ jQuery(document).ready(function($){
   /* 
    * NAV TABS 
    */
-  $('.fv-player-tabs-header a').click( function(e) {
+  $('.fv-player-tabs-header a').on('click',  function(e) {
     e.preventDefault();
     $('.fv-player-tabs-header a').removeClass('nav-tab-active');
     $(this).addClass('nav-tab-active')
@@ -415,11 +415,11 @@ jQuery(document).ready(function($){
   });
   
   var fv_player_shortcode_click_element = null;
-  $document.mousedown(function(e) {
+  $document.on('mousedown', function(e) {
       fv_player_shortcode_click_element = jQuery(e.target);
   });
 
-  $document.mouseup(function(e) {
+  $document.on('mouseup', function(e) {
       fv_player_shortcode_click_element = null;
   });
 
@@ -447,7 +447,7 @@ jQuery(document).ready(function($){
    * End of playlist Actions   
    */
  
-  jQuery('#fv_wp_flowplayer_field_end_actions').change(function(){
+  jQuery('#fv_wp_flowplayer_field_end_actions').on('change', function() {
     var value = jQuery(this).val();
     jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
     switch(value){
@@ -482,7 +482,7 @@ jQuery(document).ready(function($){
    * Video share option
    */
  
-  jQuery('#fv_wp_flowplayer_field_share').change(function(){
+  jQuery('#fv_wp_flowplayer_field_share').on('change', function() {
     var value = jQuery(this).val();
     
     switch(value){

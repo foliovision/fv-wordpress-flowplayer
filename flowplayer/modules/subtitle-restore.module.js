@@ -15,7 +15,7 @@ flowplayer( function(api,root) {
       }
     }
 
-    root.find('.fp-subtitle-menu').click( function(e) {
+    root.find('.fp-subtitle-menu').on('click', function(e) {
       if(typeof(e.target.getAttribute('data-subtitle-index')) == 'string' && e.target.getAttribute('data-subtitle-index').length) {
         try {
           window.localStorage.fv_player_subtitle = api.video.subtitles[e.target.getAttribute('data-subtitle-index')].srclang;

@@ -183,7 +183,7 @@
     $('input.color, input.color-opacity').on('change', color_inputs);
     $('input.color, input.color-opacity').each(color_inputs);
     
-    $('form#wpfp_options').submit( function(e) {
+    $('form#wpfp_options').on('submit', function(e) {
       $('input.color-opacity').each( function() {
         var input = $(this);
         if( opacity = input.minicolors('opacity') ) {          
