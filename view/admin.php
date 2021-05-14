@@ -61,7 +61,7 @@ function fv_flowplayer_admin_ads() {
 									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('ad_css')); ?></textarea>
 									<p class="description"><?php _e('(Hint: put .wpfp_custom_ad_content before your own CSS selectors)', 'fv-wordpress-flowplayer'); ?></p>
 									<script type="text/javascript">
-									jQuery('#ad_css_select').change( function() {
+									jQuery('#ad_css_select').on('change', function() {
 										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
 											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
 										}									
@@ -841,7 +841,7 @@ function fv_flowplayer_admin_popups(){
 
     <script>
 
-    jQuery('#fv-player-popups-add').click( function() {
+    jQuery('#fv-player-popups-add').on('click', function() {
       var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
       jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
       jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
@@ -1916,7 +1916,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   }
   
   var fv_flowplayer_amazon_s3_count = 0;
-  jQuery('#amazon-s3-add').click( function() {
+  jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
   	new_inputs.find('input').attr('value','');  	
 		new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
@@ -1939,7 +1939,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
-    jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
+    jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
       
@@ -1971,13 +1971,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       });  
     } );
     
-    jQuery('.fv-flowplayer-admin-addon-installed').click( function() {
+    jQuery('.fv-flowplayer-admin-addon-installed').on('click', function() {
       jQuery('html, body').animate({
           scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
       }, 1000);
     } );
     
-    jQuery('.show-more').click( function(e) {
+    jQuery('.show-more').on('click', function(e) {
       e.preventDefault();
       
       var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
@@ -1986,7 +1986,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       
     } );
     
-    jQuery('.show-info').click( function(e) {
+    jQuery('.show-info').on('click', function(e) {
       e.preventDefault();
       jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
@@ -1994,7 +1994,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     /*
      * Color Picker Default  
      */	
-    jQuery('.playlistFontColor-show').click(function(e){
+    jQuery('.playlistFontColor-show').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-hide').show();
@@ -2003,7 +2003,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
     });
 
-    jQuery('.playlistFontColor-hide').click(function(e){
+    jQuery('.playlistFontColor-hide').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-show').show();
