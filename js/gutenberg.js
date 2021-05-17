@@ -2,7 +2,7 @@
   var el = wp.element.createElement;
   
   wp.blocks.registerBlockType( 'fv-player-gutenberg/basic', {
-      title: 'FV Player',
+      title: 'FV Player (old)',
   
       icon: 'controls-play',
   

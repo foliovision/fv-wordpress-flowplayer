@@ -3,3 +3,31 @@ composer.lock
 test/testSuite
 .DS_Store
 .vscode/launch.json
+
+# Logs
+block/logs
+block/*.log
+block/npm-debug.log*
+block/yarn-debug.log*
+block/yarn-error.log*
+
+# Coverage directory used by tools like istanbul
+block/coverage
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+block/build/Release
+
+# Dependency directories
+block/node_modules/
+
+# Optional npm cache directory
+block/.npm
+
+# Optional eslint cache
+block/.eslintcache
+
+# Output of 'npm pack'
+block/*.tgz
+
+# dotenv environment variables file
+block/.env

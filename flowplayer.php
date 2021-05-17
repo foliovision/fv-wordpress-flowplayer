@@ -100,3 +100,5 @@ include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
 
 include_once(dirname( __FILE__ ).'/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ).'/models/migration-wizard.php');
+
+include_once(dirname( __FILE__ ).'/block/fv-player-block.php');

@@ -1,0 +1,15 @@
+{
+	"apiVersion": 2,
+	"name": "fv-player-block/fv-wordpress-flowplayer",
+	"title": "FV Player",
+	"category": "media",
+	"icon": "youtube",
+	"description": "Host your video anywhere, enjoy magic powers everywhere",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "fv-wordpress-flowplayer",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css"
+}
