@@ -885,6 +885,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
         }
 
+        if( !empty($aItem['saw']) ) {
+          $tPosition = $tDuration;
+        }
+
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $tPosition / $tDuration ).'%" data-duration="'.esc_attr($tDuration).'"></
         span></span>';
       } else if( !empty($aItem['saw']) ) {
