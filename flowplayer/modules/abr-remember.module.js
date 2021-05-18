@@ -1,16 +1,12 @@
 /*
  *  MPEG-DASH and HLS.js ABR changes
  */
-if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
-  flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
-}
-
 flowplayer( function(api,root) {
   var hlsjs;
   flowplayer.engine('hlsjs-lite').plugin(function(params) {
     hlsjs = params.hls;
   });
-  
+
   root = jQuery(root);
   var search = document.location.search;
 
@@ -19,10 +15,14 @@ flowplayer( function(api,root) {
     api.conf.dash.initialVideoQuality = 'restore'; // special flag for Dash.js
   }
   
-  if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
-    flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
+  if( localStorage.FVPlayerHLSQuality ) {
+    api.conf.hlsjs.startLevel = parseInt(localStorage.FVPlayerHLSQuality);
+    api.conf.hlsjs.testBandwidth = false;
+    api.conf.hlsjs.autoLevelEnabled = false;
   } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
-    flowplayer.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
+    api.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
+    api.conf.hlsjs.testBandwidth = false;
+    api.conf.hlsjs.autoLevelEnabled = false;
   }
   
   api.bind('quality', function(e,api,quality) {
@@ -69,15 +69,16 @@ flowplayer( function(api,root) {
         } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
           jQuery(api.video.qualities).each( function(k,v) {
             var height = parseInt(v.label);
-            if( height > 0 && hd_quality == -1 && height >= 720 && height <= 720 ) {
-              qswitch = k;
+            if( height > 0 && qswitch == -1 && height >= 720 && height <= 720 ) {
+              qswitch = v.value;
             }
           });
           
         }
         
+        qswitch = parseInt(qswitch);
+
         if( qswitch > -1 ) {
-          api.quality(qswitch);
           root.one('progress', function() {
             setTimeout( function() {
               api.quality(qswitch);
