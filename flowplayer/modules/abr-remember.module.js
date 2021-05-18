@@ -53,6 +53,21 @@ flowplayer( function(api,root) {
       }
       quality_sort();
     } else if(api.engine.engineName == 'hlsjs-lite' ) {
+
+      // with HLS.js the stream might not be playing even after receiving the ready event
+      // so we need to indicate it's loading
+      // TODO: What about fixing that ready event instead? Core Flowplayer 7.2.8?
+      root.addClass('is-loading');
+      api.loading = true;
+
+      // once we get a progress event we know it's really playing
+      api.one('progress', function() {
+        if( api.loading ) {
+          root.removeClass('is-loading');
+          api.loading = false;
+        }
+      })
+
       if( api.video.qualities && api.video.qualities.length > 2 ) {
         var qswitch = -1;
         if( localStorage.FVPlayerHLSQuality ) {
