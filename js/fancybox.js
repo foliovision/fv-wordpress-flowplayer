@@ -183,7 +183,7 @@ jQuery( function() {
     flowplayer( function(api,root) {
       var lightbox_wrap = jQuery(root).closest('.fv_player_lightbox_hidden');
       if( lightbox_wrap.length ) {
-        lightbox_wrap.click( function(e) {
+        lightbox_wrap.on('click', function(e) {
           if( e.target == e.currentTarget) {
             jQuery.fancybox.close();
           }

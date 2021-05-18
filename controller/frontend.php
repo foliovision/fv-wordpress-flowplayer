@@ -321,12 +321,12 @@ function flowplayer_prepare_scripts() {
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
-     $fv_fp->should_load_js() ||
+     $fv_fp->should_force_load_js() ||
      isset($_GET['fv_wp_flowplayer_check_template']) 
   ){
     
     $aDependencies = array('jquery');
-    if( $fv_fp->should_load_js() || $fv_fp->load_tabs ) {
+    if( $fv_fp->should_force_load_js() || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
@@ -425,12 +425,12 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( ( $fv_fp->should_load_js() || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    if( ( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '0.14.17', true );
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=0.11.0';
         
-    if( $fv_fp->load_dash ) {
+    if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
     $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js?ver='.$fv_wp_flowplayer_ver;
@@ -439,7 +439,19 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
+    
+    if( $fv_fp->_get_option('matomo_domain') && $fv_fp->_get_option('matomo_site_id') ) {
+      // take the domain name from Matomo Domain setting in case somebody entered full URL
+      $matomo_domain = $fv_fp->_get_option('matomo_domain');
+      $parsed = parse_url($matomo_domain);
+      if( $parsed && !empty($parsed['host']) ) { 
+        $matomo_domain = $parsed['host'];
+      }
+      $aConf['matomo_domain'] = $matomo_domain;
+      $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
+    }
 
+    $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
@@ -649,4 +661,37 @@ function fv_player_footer_svg_rewind() {
   </g>
 </svg>
   <?php
+}
+
+
+/*
+ * @param string $min The minimal version to check - like 7.4.44.727
+ * 
+ * @return bool True if the version is at least $min
+ */
+function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
+  $version = false;
+  if( $extension == 'pro' ) {
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) ) {
+      $version = $FV_Player_Pro->version;
+    }
+    
+  } else if( $extension == 'vast' ) {
+    global $FV_Player_VAST;
+    if( isset($FV_Player_VAST) && !empty($FV_Player_VAST->version) ) {
+      $version = $FV_Player_VAST->version;
+    }
+    
+  } else if( $extension == 'alternative-sources' ) {
+    global $FV_Player_Alternative_Sources;
+    if( isset($FV_Player_Alternative_Sources) && !empty($FV_Player_Alternative_Sources->version) ) {
+      $version = $FV_Player_Alternative_Sources->version;
+    }
+    
+  }
+  
+  $version = str_replace('.beta','',$version);
+  
+  return version_compare($version,$min ) != -1;
 }

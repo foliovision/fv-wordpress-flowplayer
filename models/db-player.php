@@ -448,7 +448,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
         $this->$key = stripslashes($value);
         
-      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count'))) {
+      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
         $this->$key = stripslashes($value);
         
       } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
@@ -523,7 +523,7 @@ CREATE TABLE " . self::$db_table_name . " (
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
     if (is_array($options) && count($options) && !isset($options['db_options'])) {
-      
+
       if( !empty($options['id']) ) {
         // ID cannot be set, as it's automatically assigned to all new players
         trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
@@ -536,8 +536,18 @@ CREATE TABLE " . self::$db_table_name . " (
       if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
       if( empty($this->date_modified) ) $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
-      // add author
-      $this->author = $this->changed_by = get_current_user_id();
+      // add author, if we're creating new player and not loading a player from DB for caching purposes
+      if ( empty($options['author']) ) {
+        $this->author = get_current_user_id();
+      }
+
+      if ( empty($options['changed_by']) ) {
+        if ( !empty($options['author']) ) {
+          $this->changed_by = $options['author'];
+        } else {
+          $this->changed_by = get_current_user_id();
+        }
+      }
     } else if ($multiID || (is_numeric($id) && $id >= -1)) {
       /* @var $cache FV_Player_Db_Player[] */
       $cache = ($DB_Cache ? $DB_Cache->getPlayersCache() : array());
@@ -594,20 +604,29 @@ CREATE TABLE " . self::$db_table_name . " (
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
 
-          $player_data = $wpdb->get_results('SELECT
-  '.$select.',
+          $meta_counts_select = '';
+          $meta_counts_join = '';
+          if( is_admin() ) {
+            $meta_counts_select = ',
   count(subtitles.id) as subtitles_count,
+  count(cues.id) as cues_count,
   count(chapters.id) as chapters_count,
-  count(transcript.id) as transcript_count
-  FROM `'.self::$db_table_name.'` AS p
-  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  count(transcript.id) as transcript_count';
+            $meta_counts_join = 'LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
+  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS cues ON v.id = cues.id_video AND cues.meta_key like "cues%"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
   LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
-  '.$where.'
+  ';
+          }
+          
+          $player_data = $wpdb->get_results('SELECT
+  '.$select.$meta_counts_select.'
+  FROM `'.self::$db_table_name.'` AS p
+  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+  '.$meta_counts_join.$where.'
   GROUP BY p.id
   '.$order.$limit);
-          
+
         } else if ($id !== null && !count($query_ids)) {
           $all_cached = true;
         } else {

@@ -700,23 +700,6 @@ function flowplayer_deactivate() {
 
 
 
-add_action( 'admin_notices', 'fv_player_admin_notice_expired_license' );
-add_action( 'fv_player_settings_pre', 'fv_player_admin_notice_expired_license' );
-
-function fv_player_admin_notice_expired_license() {
-  global $FV_Player_Pro;
-  $screen = get_current_screen();
-  if( ( $screen && $screen->id == 'plugins' || did_action('fv_player_settings_pre') ) && isset($FV_Player_Pro) && isset($FV_Player_Pro->version) && version_compare( str_replace( '.beta', '', $FV_Player_Pro->version), '0.8.17') == -1 ) {
-    $aCheck = get_transient( 'fv-player-pro_license' );
-    if( !empty($aCheck->expired) || !empty($aCheck->error) ) { ?>
-      <div class="updated">
-        <?php echo $aCheck->message; ?>
-        <?php if( !empty($aCheck->changelog) ) echo $aCheck->changelog; ?>
-      </div>
-    <?php }
-  }
-}
-
 
 /*
  *  DB based player data saving
@@ -810,13 +793,15 @@ function fv_player_rollback_message( $val ) {
 add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
+  $version = '7.4.44.727';
+  
   global $FV_Player_Pro;
-  if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) && version_compare( str_replace('.beta','',$FV_Player_Pro->version),'7.4.42.727' ) == -1 ) :
+  
+  if( !empty($FV_Player_Pro) && !fv_player_extension_version_is_min($version,'pro') ) :
   ?>
   <div class="error">
-      <p><?php _e( 'FV Player: Please upgrade to FV Player Pro version 7.4.42.727 or above!', 'fv-wordpress-flowplayer' ); ?></p>
+      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
   </div>
   <?php
   endif;
 }
-

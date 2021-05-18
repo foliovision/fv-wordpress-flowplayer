@@ -61,7 +61,7 @@ function fv_flowplayer_admin_ads() {
 									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('ad_css')); ?></textarea>
 									<p class="description"><?php _e('(Hint: put .wpfp_custom_ad_content before your own CSS selectors)', 'fv-wordpress-flowplayer'); ?></p>
 									<script type="text/javascript">
-									jQuery('#ad_css_select').change( function() {
+									jQuery('#ad_css_select').on('change', function() {
 										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
 											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
 										}									
@@ -281,6 +281,16 @@ function fv_flowplayer_admin_default_options() {
                   <option <?php if( $value == 'top-right' ) echo "selected"; ?> value="top-right"><?php _e('Top-right', 'fv-wordpress-flowplayer'); ?></option>
                 </select>
               </td>
+						</tr>
+            
+            <tr>
+							<td><label for="matomo_domain"><?php _e('Matomo/Piwik Tracking', 'fv-wordpress-flowplayer'); ?>:</label></td>
+							<td>
+                <p class="description">
+                  <input type="text" name="matomo_domain" id="matomo_domain" value="<?php echo esc_attr( $fv_fp->_get_option('matomo_domain') ); ?>" placeholder="<?php _e('matomo.your-domain.com', 'fv-wordpress-flowplayer'); ?>" class="large" />
+                  <input type="text" name="matomo_site_id" id="matomo_site_id" value="<?php echo esc_attr( $fv_fp->_get_option('matomo_site_id') ); ?>" placeholder="<?php _e('Site ID', 'fv-wordpress-flowplayer'); ?>" class="small" />
+                </p>
+							</td>
 						</tr>
 
             <?php $fv_fp->_get_checkbox(__('Multiple video playback', 'fv-wordpress-flowplayer').' (beta)', 'multiple_playback', __('Allows multiple players to play at once. Only one player remains audible.', 'fv-wordpress-flowplayer') ); ?>
@@ -541,6 +551,9 @@ function fv_flowplayer_admin_description_tools() {
       <td colspan="4">
         <p>
           <?php _e('Maintenance tools and debug info.', 'fv-wordpress-flowplayer'); ?>
+        </p>
+        <p>
+          Need help with replacing video paths after migrating video from one CDN to another? Try the <a href="<?php echo admin_url('admin.php?page=fv_player_migration'); ?>" class="button">Migration Wizard</a>
         </p>
       </td>
     </tr>
@@ -828,7 +841,7 @@ function fv_flowplayer_admin_popups(){
 
     <script>
 
-    jQuery('#fv-player-popups-add').click( function() {
+    jQuery('#fv-player-popups-add').on('click', function() {
       var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
       jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
       jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
@@ -1701,11 +1714,6 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') ),
 );
 
-//unset video ads tab for Legacy PRO player
-if(version_compare( str_replace( '.beta','',get_option( 'fv_player_pro_ver' ) ),'0.7.23') == -1){
-  unset($fv_player_aSettingsTabs[4]);
-  $fv_player_aSettingsTabs = array_merge($fv_player_aSettingsTabs,array());
-}
 
 
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
@@ -1908,7 +1916,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   }
   
   var fv_flowplayer_amazon_s3_count = 0;
-  jQuery('#amazon-s3-add').click( function() {
+  jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
   	new_inputs.find('input').attr('value','');  	
 		new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
@@ -1931,7 +1939,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
-    jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
+    jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
       
@@ -1963,13 +1971,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       });  
     } );
     
-    jQuery('.fv-flowplayer-admin-addon-installed').click( function() {
+    jQuery('.fv-flowplayer-admin-addon-installed').on('click', function() {
       jQuery('html, body').animate({
           scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
       }, 1000);
     } );
     
-    jQuery('.show-more').click( function(e) {
+    jQuery('.show-more').on('click', function(e) {
       e.preventDefault();
       
       var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
@@ -1978,7 +1986,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       
     } );
     
-    jQuery('.show-info').click( function(e) {
+    jQuery('.show-info').on('click', function(e) {
       e.preventDefault();
       jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
@@ -1986,7 +1994,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     /*
      * Color Picker Default  
      */	
-    jQuery('.playlistFontColor-show').click(function(e){
+    jQuery('.playlistFontColor-show').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-hide').show();
@@ -1995,7 +2003,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
     });
 
-    jQuery('.playlistFontColor-hide').click(function(e){
+    jQuery('.playlistFontColor-hide').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-show').show();

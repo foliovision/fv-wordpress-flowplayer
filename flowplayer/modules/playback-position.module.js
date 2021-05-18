@@ -168,7 +168,7 @@ if (!Date.now) {
           var fd = new FormData();
           fd.append('action', 'fv_wp_flowplayer_video_position_save');
           fd.append('videoTimes', encodeURIComponent(JSON.stringify(postData)));
-          navigator.sendBeacon(fv_player.fv_fp_ajaxurl, fd);
+          navigator.sendBeacon(fv_player.ajaxurl, fd);
 
           // return false, so no ajax.abort() will be tried if multiple players try to call this same script part
           return false;
@@ -177,7 +177,7 @@ if (!Date.now) {
           return jQuery.ajax({
             type: 'POST',
             async: async,
-            url: fv_player.fv_fp_ajaxurl,
+            url: fv_player.ajaxurl,
             complete: callback,
             data: {
               action: 'fv_wp_flowplayer_video_position_save',
@@ -344,6 +344,7 @@ if (!Date.now) {
           return;
         }
 
+        // TODO: Is this still needed?
         var seek_count = 0;
         var do_seek = setInterval( function() {
           if( ++seek_count > 20 ) clearInterval(do_seek);
@@ -399,11 +400,10 @@ if (!Date.now) {
     api.bind('finish', removeVideoPosition);
 
     // seek into the last saved position, it also hooks the progress event
-    if( flowplayer.support.fvmobile ) {
-      api.one( 'progress', seekIntoPosition);
-    } else {
-      api.bind( 'ready', seekIntoPosition);
-    }
+    // this used to run on ready event for !flowplayer.support.fvmobile,
+    // but then we run into some reliability issue with HLS.js, so it's safer
+    // to use progress
+    api.one( 'progress', seekIntoPosition);
 
     /**
      * Show the progress on the playlist item thumbnail

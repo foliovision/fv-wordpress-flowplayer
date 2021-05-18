@@ -357,6 +357,30 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.46.727 - 2021/04/09 =
+
+* DASH.js - allowing it to recover from blocked autoplay on Safari
+* Handle WordPress audio/video - improved the setting to also work with YouTube oEmbed
+* Migration Wizard - improved to handle subtitles too
+* Bugfix - duplicate FV Player DB wp_fv_player_videometa rows being created
+* Bugfix - Lightbox - respect dimensions stored in FV Player DB
+* Bugfix - Position Saving - safer way of restoring position (for HLS.js)
+
+= 7.4.45.727 - 2021/03/24 =
+
+* Bugfix - YouTube.com iframe embeds broken after adding support for youtube-nocokie.com in previous release
+* Bugfix - YouTube controlbar fix for iPad with Chrome for FV Player Pro
+
+= 7.4.44.727 - 2021/03/23 =
+
+* Chromecast - support for video subtitles added
+* FV Player Pro 7.4.44.727 required for encrypted HLS with multiple audio tracks
+* Google Analytics - compatibility with websites using ga.js or  gtag.js
+* HLS.js - upgrade to 0.14.17 to fix subtle audio sync issues
+* Matomo tracking support (Piwik)
+* New Feature - Migration Wizard - found in Settings -> FV Player -> Tools, useful to mass replace video URLs
+* Bugfix - editor screenshots and video checker reports broken after PHP 8 fixes
+
 = 7.4.42.727 - 2021/03/10 =
 
 * Custom CSS - added field for easy player CSS customizations in wp-admin -> Settings -> FV Player -> Skin -> Custom CSS

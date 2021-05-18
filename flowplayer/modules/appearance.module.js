@@ -60,9 +60,7 @@ flowplayer(function(api, root) {
   
   jQuery(window).on('resize',check_size);
 
-  api.on('ready fullscreen fullscreen-exit',check_size);
-  
-  api.on('ready fullscreen fullscreen-exit', function() {
+  api.on('ready fullscreen fullscreen-exit sticky sticky-exit', function(e) {
     setTimeout( function() {
       buttons_count = root.find('.fp-controls > strong:visible').length + root.find('.fp-controls > .fp-icon:visible').length;
       check_size();

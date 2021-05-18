@@ -240,7 +240,7 @@ class FV_Player_Email_Subscription {
     </table>
 
     <script>
-      jQuery('#fv-player-email_lists-add').click( function() {
+      jQuery('#fv-player-email_lists-add').on('click', function() {
         var fv_player_list_index  = (parseInt( jQuery('#fv-player-email_lists-settings tr.data:last .id').html()  ) || 0 ) + 1;
         jQuery('#fv-player-email_lists-settings').append(jQuery('#fv-player-email_lists-settings tr.data:first').prop('outerHTML').replace(/#fv_list_dummy_key#/gi,fv_player_list_index + ""));
         jQuery('#fv-player-list-item-' + fv_player_list_index).show();
