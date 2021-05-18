@@ -793,7 +793,7 @@ function fv_player_rollback_message( $val ) {
 add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
-  $version = '7.4.44.727';
+  $version = '7.4.47.727';
   
   global $FV_Player_Pro;
   
