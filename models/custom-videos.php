@@ -198,7 +198,7 @@ class FV_Player_Custom_Videos_Master {
     add_action( 'save_post', array( $this, 'save_post' ) );
 
     add_filter( 'show_password_fields', array( $this, 'user_profile' ), 10, 2 );
-    add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 999, 2 );
+    add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
     
     add_filter( 'the_content', array( $this, 'show' ) );  //  adding post videos after content automatically
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );

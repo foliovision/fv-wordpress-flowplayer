@@ -1,7 +1,6 @@
 /*
  *  MPEG-DASH and HLS.js ABR changes
  */
-
 flowplayer( function(api,root) {
   root = jQuery(root);
 
@@ -53,7 +52,8 @@ flowplayer( function(api,root) {
       });
     }
   });
-  
+
+  root = jQuery(root);
   var search = document.location.search;
 
   if( localStorage.FVPlayerDashQuality ) {
@@ -61,9 +61,8 @@ flowplayer( function(api,root) {
     api.conf.dash.initialVideoQuality = 'restore'; // special flag for Dash.js
   }
 
-  root = jQuery(root);
-
   // store the hand-picked HLS quality height such as 720p in localStorage
+  // perhaps to ensure it's saved right away without it having to load
   root.on('click', '.fp-qsel-menu a', function() {
     if(api.engine.engineName == 'hlsjs-lite' ) {
       var quality = jQuery(this).data('quality');
@@ -76,6 +75,17 @@ flowplayer( function(api,root) {
     }
   });
 
+  
+  if( localStorage.FVPlayerHLSQuality ) {
+    api.conf.hlsjs.startLevel = parseInt(localStorage.FVPlayerHLSQuality);
+    api.conf.hlsjs.testBandwidth = false;
+    api.conf.hlsjs.autoLevelEnabled = false;
+  } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
+    api.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
+    api.conf.hlsjs.testBandwidth = false;
+    api.conf.hlsjs.autoLevelEnabled = false;
+  }
+  
   api.bind('quality', function(e,api,quality) {
     if(api.engine.engineName == 'dash' ) {      
       if( quality == -1 ) {
@@ -99,7 +109,54 @@ flowplayer( function(api,root) {
       quality_sort();
 
     } else if(api.engine.engineName == 'hlsjs-lite' ) {
+
+      // with HLS.js the stream might not be playing even after receiving the ready event
+      // so we need to indicate it's loading
+      // TODO: What about fixing that ready event instead? Core Flowplayer 7.2.8?
+      root.addClass('is-loading');
+      api.loading = true;
+
+      // once we get a progress event we know it's really playing
+      api.one('progress', function() {
+        if( api.loading ) {
+          root.removeClass('is-loading');
+          api.loading = false;
+        }
+      })
+
       if( api.video.qualities && api.video.qualities.length > 2 ) {
+        var qswitch = -1;
+        if( localStorage.FVPlayerHLSQuality ) {
+          // do we have such quality?
+          jQuery(api.video.qualities).each( function(k,v) {
+            if( v.value == localStorage.FVPlayerHLSQuality ) {
+              // accept the remembered quality index
+              qswitch = localStorage.FVPlayerHLSQuality;  
+              return false;
+            }
+          });
+        
+        // is FV Player set to force HD?
+        } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
+          jQuery(api.video.qualities).each( function(k,v) {
+            var height = parseInt(v.label);
+            if( height > 0 && qswitch == -1 && height >= 720 && height <= 720 ) {
+              qswitch = v.value;
+            }
+          });
+          
+        }
+        
+        qswitch = parseInt(qswitch);
+
+        if( qswitch > -1 ) {
+          root.one('progress', function() {
+            setTimeout( function() {
+              api.quality(qswitch);
+            });
+          });
+        }
+        
         quality_sort();
       }
 

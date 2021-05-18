@@ -638,11 +638,11 @@ jQuery(function() {
       });
 
       var fv_player_shortcode_click_element = null;
-      $doc.mousedown(function(e) {
+      $doc.on( 'mousedown', function(e) {
         fv_player_shortcode_click_element = jQuery(e.target);
       });
 
-      $doc.mouseup(function(e) {
+      $doc.on( 'mousedown', function(e) {
         fv_player_shortcode_click_element = null;
       });
 

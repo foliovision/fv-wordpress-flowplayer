@@ -357,6 +357,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.4.47.727 - 2021/05/18 =
+
+* Custom video fields - setting default hook priority to ensure boxes are placed higher up
+* Deprecated jQuery calls fix
+* HLS.js - upgrade to 1.0.4 to fix autoplay issues with some streams
+* Bugfix - Editor - Video Screenshot - fix for new crossOrigin requirement for MP4
+* Bugfix - Playlist - fixes when the playlist item fails to play and it auto-advances to next
+* Bugfix - Sticky player - subtitles sizing
+
 = 7.4.46.727 - 2021/04/09 =
 
 * DASH.js - allowing it to recover from blocked autoplay on Safari

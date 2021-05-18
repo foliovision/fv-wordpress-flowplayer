@@ -96,7 +96,8 @@ final class FV_Player_Controller extends TestCase {
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
 Registering flowplayer for fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver=1.2.3.4 footer? 1
-Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4 footer? 1
+Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.0.4 footer? 1
+Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fullscreen] => 1
@@ -120,9 +121,10 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
-    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=0.11.0
+    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.0.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
     [script_dash_js_version] => 2.7
+    [chromecast] => 
     [hlsjs] => Array
         (
             [startLevel] => -1
@@ -131,6 +133,11 @@ Localizing flowplayer with fv_flowplayer_conf = Array
             [capLevelToPlayerSize] => 1
         )
 
+)
+
+Localizing flowplayer with fv_player = Array
+(
+    [ajaxurl] => https://site.com/wp//wp-admin/admin-ajax.php
 )
 
 Localizing flowplayer with fv_flowplayer_translations = Array
@@ -195,9 +202,9 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [duration_1_second] => %s second
     [duration_n_seconds] => %s second
     [and] =>  and 
+    [chrome_extension_disable_html5_autoplay] => It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos
 )
 
-Localizing flowplayer with fv_fp_ajaxurl = https://site.com/wp//wp-admin/admin-ajax.php
 Localizing flowplayer with fv_flowplayer_playlists = Array
 (
 )

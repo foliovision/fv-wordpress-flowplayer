@@ -132,7 +132,7 @@ class FV_Player_video_intelligence_Installer {
     <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the vi Ads tab', 'fv-wordpress-flowplayer'); ?></label>
     <script>
     jQuery( function($) {
-      $('#fv-player-vi-remove').click( function() {
+      $('#fv-player-vi-remove').on('click', function() {
         $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
           $('#fv-player-vi-give-back').prop('checked',false);
           $('[href=\\#postbox-container-tab_video_intelligence]').hide();
@@ -179,7 +179,7 @@ class FV_Player_video_intelligence_Installer {
     <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e('Show the vi Ads tab again', 'fv-wordpress-flowplayer'); ?></label></a>
     <script>
     jQuery( function($) {
-      $('#fv-player-vi-give-back').click( function() {
+      $('#fv-player-vi-give-back').on('click', function() {
         $.post(ajaxurl, {action:'fv-player-vi-add'}, function() {
           $('#fv-player-vi-remove').prop('checked',false);
           $('[href=\\#postbox-container-tab_video_intelligence]').show();

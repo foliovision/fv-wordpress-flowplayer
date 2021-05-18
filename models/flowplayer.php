@@ -1183,9 +1183,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
         $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
         $css .= $sel.".has-caption { margin: 0 auto; }\n";
-        $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
-        $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
-        $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+
+        // we also use entry-content as some themes use .entry-content > * to set margin
+        $css .= $sel.".fixed-controls, .entry-content ".$sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
+        $css .= $sel.".has-abloop, .entry-content ".$sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+        $css .= $sel.".fixed-controls.has-abloop, .entry-content ".$sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
       }
       
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";

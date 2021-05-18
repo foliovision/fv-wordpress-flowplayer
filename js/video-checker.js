@@ -6,8 +6,8 @@
     var fv_flowplayer_scroll_video_checker = false;
     var checked_media = [];
     
-    jQuery(document).ready( function() { fv_flowplayer_scroll_video_checker = true; } );
-    jQuery(document).on( 'scroll', function() { fv_flowplayer_scroll_video_checker = true; } );
+    jQuery(document).ready(function() { fv_flowplayer_scroll_video_checker = true; } );
+    jQuery(document).on('scroll', function() { fv_flowplayer_scroll_video_checker = true; } );
 
     var index = api.video.index ? api.video.index : 0;
 
