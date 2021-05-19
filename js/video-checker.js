@@ -216,6 +216,10 @@ function fv_wp_flowplayer_admin_show_notice( id ) {
     jQuery(this).toggleClass("is-open", is_open );
     jQuery(this).find(".fv-player-video-checker-details").toggle( is_open );
     
+    if( is_open ) {
+      jQuery('#fv_wp_fp_notice_'+id).find('input').show();
+    }
+
     root.toggleClass( 'has-video-checker', is_open );
     
     api.disable( is_open );
@@ -254,6 +258,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
     },
     function( response ) {
       jQuery('#wpfp_spin_'+hash).hide();
+      jQuery('#fv_wp_fp_notice_'+hash).find('input').hide();
       jQuery(button).removeAttr("disabled");
       jQuery(button).after(' Message sent');
     }
