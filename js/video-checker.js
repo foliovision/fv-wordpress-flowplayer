@@ -6,8 +6,8 @@
     var fv_flowplayer_scroll_video_checker = false;
     var checked_media = [];
     
-    jQuery(document).ready( function() { fv_flowplayer_scroll_video_checker = true; } );
-    jQuery(document).scroll( function() { fv_flowplayer_scroll_video_checker = true; } );
+    jQuery(document).ready(function() { fv_flowplayer_scroll_video_checker = true; } );
+    jQuery(document).on('scroll', function() { fv_flowplayer_scroll_video_checker = true; } );
 
     var index = api.video.index ? api.video.index : 0;
 
@@ -89,7 +89,7 @@
         if (e.keyCode == 27) { fv_wp_flowplayer_admin_show_notice(); 	}   // esc
       });
 
-      jQuery(document).click( function(event) {
+      jQuery(document).on('click', function(event) {
         if( jQuery(event.target).parents('.is-open').length == 0 &&
           jQuery(event.target).parents('.fv-player-video-checker').length == 0 ) {
           if( jQuery('.is-open:visible').length ) {

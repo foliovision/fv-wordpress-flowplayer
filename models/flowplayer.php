@@ -1172,9 +1172,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
         $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
         $css .= $sel.".has-caption { margin: 0 auto; }\n";
-        $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
-        $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
-        $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+
+        // we also use entry-content as some themes use .entry-content > * to set margin
+        $css .= $sel.".fixed-controls, .entry-content ".$sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
+        $css .= $sel.".has-abloop, .entry-content ".$sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+        $css .= $sel.".fixed-controls.has-abloop, .entry-content ".$sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
       }
       
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
@@ -1182,7 +1184,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
-        $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
         $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }

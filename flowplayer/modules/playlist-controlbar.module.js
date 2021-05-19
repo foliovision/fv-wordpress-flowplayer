@@ -28,7 +28,7 @@ flowplayer( function(api,root) {
     }
   });
   
-  playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
+  playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
     
@@ -43,7 +43,7 @@ flowplayer( function(api,root) {
     }
   });
   
-  jQuery('a',playlist_menu).click( function() {
+  jQuery('a',playlist_menu).on('click', function() {
     if(typeof(api.conf.playlist[jQuery(this).data('index') - 1]) != 'undefined' && typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined' ) { // check if FV Player Pro Video Ad is in front of video - act as if clicked on Ad
       api.play(jQuery(this).data('index') - 1);
     } else {

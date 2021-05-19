@@ -24,7 +24,7 @@ flowplayer(function(api, root) {
     setTimeout( function() {
       var video = jQuery('video',root);
       if( video.length > 0 ) {
-        video.removeAttr('autoplay'); //  removing autoplay attribute fixes the issue
+        video.prop( "autoplay", false ); //  removing autoplay attribute fixes the issue
       }
     }, 100 ); //  by default the heartbeat JS event triggering this happens every 30 seconds, we just add a bit of delay to be sure
 

@@ -66,7 +66,7 @@ flowplayer( function(api,root) {
     });
 
     // button
-    hls_audio_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
+    hls_audio_button.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -79,7 +79,7 @@ flowplayer( function(api,root) {
       }
     });
 
-    jQuery('a',hls_audio_menu).click( function(e) {
+    jQuery('a',hls_audio_menu).on('click', function(e) {
       var adata = e.target.getAttribute("data-audio");
       if( hlsjs ) {
         var gid = hlsjs.audioTracks[hlsjs.audioTrack].groupId;

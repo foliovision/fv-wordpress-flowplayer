@@ -165,7 +165,7 @@ function fv_player_preload() {
     var splash_click = false;
 
     if( root.hasClass('fixed-controls') ) {
-      root.find('.fp-controls').click( function(e) {
+      root.find('.fp-controls').on('click', function(e) {
         if( !api.loading && !api.ready ) {
           e.preventDefault();
           e.stopPropagation(); 
@@ -204,7 +204,7 @@ function fv_player_preload() {
     }
     
     //  playlist item click action
-    jQuery('a',playlist).click( function(e) {
+    jQuery('a',playlist).on('click', function(e) {
       e.preventDefault();
 
       splash_click = true;
@@ -631,10 +631,10 @@ function fv_player_time_hms_ms(seconds) {
 /**
  * Converts hms format to seconds
  * 
- * @param {string} time 
+ * @param {string|bool} time 
  * @param {number|string} duration 
  * 
- * @returns {number}
+ * @returns {number} Returns -1 if the time was false
  */
 
 function fv_player_time_seconds(time, duration) {
@@ -666,8 +666,9 @@ function fv_player_time_seconds(time, duration) {
  *
  * @param {$jQueryDomObject}  root  Player element
  * @param {number}            index Video number in playlist
- * @param {string|number}     time  Desired play position in hh:mm:ss
- *                                  format or number of seconds
+ * @param {string|bool}       time  Desired play position in hh:mm:ss
+ *                                  format or number of seconds.
+ *                                  Or false when no start time specified.
  * @param {number}            abStart Optional - end of FV Player Pro AB 
  *                                  loop. If it's present we trigger
  *                                  the loop-ab event for FV Player Pro
@@ -708,28 +709,20 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   if(index){
     if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
-        if( fTime > -1 ) api.seek(fTime);
+        if( fTime > 0 ) api.seek(fTime);
         fv_autoplay_exec_in_progress = false;
         
       } else {
         api.play(parseInt(index));
         api.one('ready', function() {
-          fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ){
-            api.seek(fTime)
-            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
-          }
+          fv_player_video_link_seek( api, fTime, abEnd, abStart );
         } );
       }
     } else if( flowplayer.support.inlineVideo ) {
       api.one( api.playing ? 'progress' : 'ready', function (e,api) {
         api.play(parseInt(index));
         api.one('ready', function() {
-          fv_autoplay_exec_in_progress = false;
-          if( fTime > -1 ){
-            api.seek(fTime)
-            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
-          }
+          fv_player_video_link_seek( api, fTime, abEnd, abStart );
         } );
       });
       
@@ -741,7 +734,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
     }
   }else{
     if( api.ready ) {
-      if( fTime > -1 ) api.seek(fTime);
+      if( fTime > 0 ) api.seek(fTime);
       fv_autoplay_exec_in_progress = false;
       
     } else {
@@ -751,19 +744,22 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
       }
       api.one('ready', function() {
-        fv_autoplay_exec_in_progress = false;
-        if( fTime > -1 ) {
-          var do_seek = setInterval( function() {
-            if( api.loading ) return;
-            api.seek(fTime)
-            if (abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
-            clearInterval(do_seek);
-          }, 10 );
-        }
+        fv_player_video_link_seek( api, fTime, abEnd, abStart );
       } );
     }
   }
   
+}
+
+function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
+  fv_autoplay_exec_in_progress = false;
+
+  var do_seek = setInterval( function() {
+    if ( api.loading ) return;
+    if ( fTime > 0 ) api.seek(fTime); // prevent seeking to 0s (causing glitch)
+    if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
+    clearInterval(do_seek);
+  }, 10 );
 }
 
 

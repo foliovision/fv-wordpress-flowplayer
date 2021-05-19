@@ -78,6 +78,8 @@ flowplayer( function(api,root) {
           } else {
             clearInterval(timer);
             api.error = api.loading = false;
+            
+            messageElement = root.querySelector(".fp-ui .fp-message");
             if (messageElement) {
               root.querySelector(".fp-ui").removeChild(messageElement);
             }

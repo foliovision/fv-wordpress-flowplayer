@@ -797,7 +797,7 @@ function fv_player_rollback_message( $val ) {
 add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
-  $version = '7.4.44.727';
+  $version = '7.4.47.727';
   
   global $FV_Player_Pro;
   
@@ -808,36 +808,4 @@ function fv_player_pro_version_check() {
   </div>
   <?php
   endif;
-}
-
-/*
- * @param string $min The minimal version to check - like 7.4.44.727
- * 
- * @return bool True if the version is at least $min
- */
-function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
-  $version = false;
-  if( $extension == 'pro' ) {
-    global $FV_Player_Pro;
-    if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) ) {
-      $version = $FV_Player_Pro->version;
-    }
-    
-  } else if( $extension == 'vast' ) {
-    global $FV_Player_VAST;
-    if( isset($FV_Player_VAST) && !empty($FV_Player_VAST->version) ) {
-      $version = $FV_Player_VAST->version;
-    }
-    
-  } else if( $extension == 'alternative-sources' ) {
-    global $FV_Player_Alternative_Sources;
-    if( isset($FV_Player_Alternative_Sources) && !empty($FV_Player_Alternative_Sources->version) ) {
-      $version = $FV_Player_Alternative_Sources->version;
-    }
-    
-  }
-  
-  $version = str_replace('.beta','',$version);
-  
-  return version_compare($version,$min ) != -1;
 }
