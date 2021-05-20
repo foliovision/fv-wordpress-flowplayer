@@ -84,7 +84,7 @@ flowplayer(function(api, root) {
     }
     
     // if it's using encryption, we cannot use it
-    if( api.video.fvhkey ) return false;
+    if( api.video.fvhkey && !api.conf.hls_cast ) return false;
 
     if( media ) {
       // make sure you use the best quality available
