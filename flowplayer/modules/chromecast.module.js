@@ -78,13 +78,13 @@ flowplayer(function(api, root) {
     var sources = api.video.sources_fvqs || api.video.sources;
     for( var i in sources ) {
       if( sources[i].type == 'application/x-mpegurl' || sources[i].type == 'video/mp4' || sources[i].type == 'video/fv-mp4' ) {
-        media = sources[i].src;
+        media = sources[i];
         break;
       }
     }
     
     // if it's using encryption, we cannot use it
-    if( api.video.fvhkey ) return false;
+    if( api.video.fvhkey && !api.conf.hls_cast ) return false;
 
     if( media ) {
       // make sure you use the best quality available
@@ -98,7 +98,7 @@ flowplayer(function(api, root) {
         for( var i in api.video.sources_fvqs ) {
           var source = api.video.sources_fvqs[i]
           if( source.src.match(re) && source.type == 'video/mp4' ) {
-            top_quality = source.src;
+            top_quality = source;
             break;
           }
         }
@@ -115,9 +115,9 @@ flowplayer(function(api, root) {
   }
   
   function load_media() {
-    var src = get_media();
+    var media = get_media();
 
-    if( !src ) {
+    if( !media ) {
       return false;
     }
     
@@ -142,7 +142,8 @@ flowplayer(function(api, root) {
 
     }
 
-    var mediaInfo = new chrome.cast.media.MediaInfo(src);
+    // if we do not provide media.type below, then Stream Loader HLS streams won't be recognized as HLS
+    var mediaInfo = new chrome.cast.media.MediaInfo(media.src, media.type);
     mediaInfo.tracks = cast_subtitles;
     
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
