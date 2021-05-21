@@ -1697,6 +1697,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 .fv-player-video-checker {
   user-select: text;
