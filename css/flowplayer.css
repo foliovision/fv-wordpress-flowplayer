@@ -2180,3 +2180,31 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fp-ui .invisible {
   visibility: hidden;
 }
+
+.flowplayer .fv-fp-tap-left,
+.flowplayer .fv-fp-tap-right {
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  margin-top: 20%;
+  position: absolute;
+}
+.flowplayer .fv-fp-tap-right {
+  left: auto;
+  right: 0;  
+}
+.flowplayer .fv-fp-tap-left span,
+.flowplayer .fv-fp-tap-right span {
+  font-size: 1.5em;
+  opacity: 0;
+}
+.flowplayer .fv-fp-tap-left.is-active span,
+.flowplayer .fv-fp-tap-right.is-active span {
+  animation: fv-player-tap-left-right 0.5s ease-out;
+}
+@keyframes fv-player-tap-left-right {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
