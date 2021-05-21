@@ -1034,6 +1034,9 @@
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
+.flowplayer .fp-elapsed {min-width: 5.1ch}
+.flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
+
 .flowplayer.is-fullscreen.is-splash.is-error .fp-header {
   display: block;
   opacity: 1;
@@ -1044,9 +1047,6 @@
 .flowplayer.is-fullscreen.is-splash.is-error .fp-header .fp-unload {
   opacity: 1;
 }
-
-.flowplayer .fp-elapsed {min-width: 5.1ch}
-.flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
 
 .fv-fp-splash-text { position: absolute;bottom:20%;z-index:20;text-align:center;width:100%;color:#fff;text-shadow: 0 0 2px #333;background-color: rgba(0,0,0,0.5); font-size: 18px; padding: 5px 36px; pointer-events: none }
 .flowplayer.is-error .fv-fp-splash-text {display: none}
@@ -1165,8 +1165,8 @@
 
 /* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
-.flowplayer .fvp-share-bar{font-size:12px}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
+.flowplayer .fvp-share-bar{font-size:12px}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 
@@ -2191,4 +2191,32 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 
 .flowplayer .fp-ui .invisible {
   visibility: hidden;
+}
+
+.flowplayer .fv-fp-tap-left,
+.flowplayer .fv-fp-tap-right {
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  margin-top: 20%;
+  position: absolute;
+}
+.flowplayer .fv-fp-tap-right {
+  left: auto;
+  right: 0;  
+}
+.flowplayer .fv-fp-tap-left span,
+.flowplayer .fv-fp-tap-right span {
+  font-size: 1.5em;
+  opacity: 0;
+}
+.flowplayer .fv-fp-tap-left.is-active span,
+.flowplayer .fv-fp-tap-right.is-active span {
+  animation: fv-player-tap-left-right 0.5s ease-out;
+}
+@keyframes fv-player-tap-left-right {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
