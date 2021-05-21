@@ -66,26 +66,28 @@ flowplayer( function(api,root) {
 
 	left.fv_single_double_click(function () {
 		api.toggle();
-	}, function () {
-		maybe_seek( left, api.ready ? api.video.time - 10 : false );
+	}, function (e) {
+		maybe_seek( e, left, api.ready ? api.video.time - 10 : false );
 	});
 
 	right.fv_single_double_click(function () {
 		api.toggle();
-	}, function () {
-		maybe_seek( right, api.ready ? api.video.time + 10 : false );
+	}, function (e) {
+		maybe_seek( e, right, api.ready ? api.video.time + 10 : false );
 	});
 
 	root.find('.fp-ui').append(left).append(right);
 
-	function maybe_seek( el, time ) {
+	function maybe_seek( e, el, time ) {
 		if( api.ready ) {
-			api.seek( api.video.time += 10 );
+			api.seek( time );
 			animation(el);
 
 		} else {
 			api.toggle();
 		};
+
+		e.preventDefault();
 	}
 
 	function animation( el ) {
