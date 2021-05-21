@@ -74,12 +74,23 @@ flowplayer(function(api, root) {
   function get_media() {
     var media = false;
     
-    // we need MP4 of HLS
+    // we need MP4 or MPEG-DASH
     var sources = api.video.sources_fvqs || api.video.sources;
     for( var i in sources ) {
-      if( sources[i].type == 'application/x-mpegurl' || sources[i].type == 'video/mp4' || sources[i].type == 'video/fv-mp4' ) {
+      var type = sources[i].type;
+      if( type == 'video/mp4' || type == 'video/fv-mp4' || type == 'application/dash+xml' ) {
         media = sources[i];
         break;
+      }
+    }
+
+    // fallback to HLS
+    if( !media ) {
+      for( var i in sources ) {
+        if( sources[i].type == 'application/x-mpegurl' ) {
+          media = sources[i];
+          break;
+        }
       }
     }
     
