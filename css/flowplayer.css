@@ -1697,6 +1697,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 .fv-player-video-checker {
   user-select: text;
@@ -2189,7 +2190,15 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   height: 100%;
   margin-top: 20%;
   position: absolute;
-  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
 }
 .flowplayer .fv-fp-tap-right {
   left: auto;
