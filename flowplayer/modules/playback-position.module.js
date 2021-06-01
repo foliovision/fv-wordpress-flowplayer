@@ -16,10 +16,13 @@ if (!Date.now) {
     // maximum cookie size with saved video positions we should store
     maxCookieSize = 2500,
     localStorageEnabled = null,
-    cookieKeyName = 'video_positions',
+    cookiePositionsKeyName = 'video_positions',
+    cookiePlaylistsKeyName = 'player_playlist_item',
     tempPositionCookieKeyName = 'video_positions_tmp',
+    tempPlaylistsCookieKeyName = 'player_playlist_item_tmp',
     tempSawCookieKeyName = 'video_saw_tmp',
     playPositions = [],
+    playlistIndexes = [],
     sawVideo = [],
 
     getSerialized = function(data) {
@@ -121,20 +124,34 @@ if (!Date.now) {
         callback = function() {};
       }
 
-      postData = [];
+      postDataPositions = [];
+      postDataPlaylists = [];
 
       for (var video_name in playPositions) {
         if( !playPositions.hasOwnProperty(video_name) ) continue;
 
         // remove all AWS signatures from this video
-        postData.push({
+        postDataPositions.push({
           name: video_name,
           position: playPositions[video_name],
           saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false
         });
       }
 
-      if (!postData.length) {
+      for (var player_id in playlistIndexes) {
+        if( !playlistIndexes.hasOwnProperty(player_id) ) continue;
+
+        postDataPlaylists.push({
+          player: player_id,
+          item: playlistIndexes[player_id]
+        });
+      }
+
+      if (!postDataPlaylists.length) {
+        removeCookieKey(tempPlaylistsCookieKeyName);
+      }
+
+      if (!postDataPositions.length) {
         // no video positions? remove the temporary position cookie/localStorage data as well
         removeCookieKey(tempPositionCookieKeyName);
         removeCookieKey(tempSawCookieKeyName);
@@ -148,18 +165,26 @@ if (!Date.now) {
           // which will get removed on next page load
           try {
             var temp_position_data = {},
-              temp_saw_data = {};
+              temp_saw_data = {},
+              temp_playlist_data = {};
 
             // add our video positions
-            for (var i in postData) {
-              if( !postData.hasOwnProperty(i) ) continue;
+            for (var i in postDataPositions) {
+              if( !postDataPositions.hasOwnProperty(i) ) continue;
 
-              temp_position_data[postData[i].name] = postData[i].position;
-              temp_saw_data[postData[i].name] = postData[i].saw;
+              temp_position_data[postDataPositions[i].name] = postDataPositions[i].position;
+              temp_saw_data[postDataPositions[i].name] = postDataPositions[i].saw;
+            }
+
+            // playlist and item
+            for (var i in postDataPlaylists) {
+              if( !postDataPlaylists.hasOwnProperty(i) ) continue;
+              temp_playlist_data[postDataPlaylists[i].player] = postDataPlaylists[i].item;
             }
 
             setCookieKey(tempPositionCookieKeyName, getSerialized(temp_position_data));
             setCookieKey(tempSawCookieKeyName, getSerialized(temp_saw_data));
+            setCookieKey(tempPlaylistsCookieKeyName, getSerialized(temp_saw_data));
           } catch (e) {
             // JSON JS support missing
             return;
@@ -167,7 +192,8 @@ if (!Date.now) {
 
           var fd = new FormData();
           fd.append('action', 'fv_wp_flowplayer_video_position_save');
-          fd.append('videoTimes', encodeURIComponent(JSON.stringify(postData)));
+          fd.append('videoTimes', encodeURIComponent(JSON.stringify(postDataPositions)));
+          fd.append('playlistItems', encodeURIComponent(JSON.stringify(postDataPlaylists)));
           navigator.sendBeacon(fv_player.ajaxurl, fd);
 
           // return false, so no ajax.abort() will be tried if multiple players try to call this same script part
@@ -181,14 +207,15 @@ if (!Date.now) {
             complete: callback,
             data: {
               action: 'fv_wp_flowplayer_video_position_save',
-              videoTimes: postData
+              videoTimes: postDataPositions,
+              playlistItems: postDataPlaylists
             }
           });
         }
       } else {
         // guest visitor, store position in a cookie / localStorage
         try {
-          var data = getCookieKey(cookieKeyName);
+          var data = getCookieKey(cookiePositionsKeyName);
           if (data && typeof(data) !== 'undefined') {
             data = JSON.parse(data);
           } else {
@@ -196,10 +223,10 @@ if (!Date.now) {
           }
 
           // add / edit our video positions
-          for (var i in postData) {
-            if( !postData.hasOwnProperty(i) ) continue;
+          for (var i in postDataPositions) {
+            if( !postDataPositions.hasOwnProperty(i) ) continue;
 
-            data[postData[i].name] = postData[i].position;
+            data[postDataPositions[i].name] = postDataPositions[i].position;
           }
 
           var
@@ -226,7 +253,7 @@ if (!Date.now) {
             }
           }
 
-          setCookieKey(cookieKeyName, serialized);
+          setCookieKey(cookiePositionsKeyName, serialized);
         } catch (e) {
           // JSON JS support missing
           return;
@@ -252,7 +279,7 @@ if (!Date.now) {
 
         // try to lookup position of a guest visitor
         if (flowplayer.conf.is_logged_in != '1') {
-          var data = getCookieKey(cookieKeyName);
+          var data = getCookieKey(cookiePositionsKeyName);
           if (data && typeof(data) !== 'undefined') {
             try {
               data = JSON.parse(data);
@@ -301,6 +328,10 @@ if (!Date.now) {
             position = Math.round(api.video.time);
 
           playPositions[video_id] = position;
+
+          if( api.conf.playlist.length > 0 ) {
+            if( $root.data('player-id') ) playlistIndexes[ $root.data('player-id') ] = api.video.index; // player_id => playlist_item
+          }
 
           // make a call home every +-30 seconds to make sure a browser crash doesn't affect the position save too much
           // if (progressEventsCount++ >= sendPositionsEvery) {
