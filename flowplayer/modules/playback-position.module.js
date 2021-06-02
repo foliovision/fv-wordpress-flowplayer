@@ -213,47 +213,79 @@ if (!Date.now) {
           });
         }
       } else {
-        // guest visitor, store position in a cookie / localStorage
+        // guest visitor, store position and item in a cookie / localStorage
         try {
-          var data = getCookieKey(cookiePositionsKeyName);
-          if (data && typeof(data) !== 'undefined') {
-            data = JSON.parse(data);
+          var data_positions = getCookieKey(cookiePositionsKeyName);
+          var data_playlist_item = getCookieKey(cookiePlaylistsKeyName);
+
+          if (data_positions && typeof(data_positions) !== 'undefined') {
+            data_positions = JSON.parse(data_positions);
           } else {
-            data = {};
+            data_positions = {};
+          }
+
+          if (data_playlist_item && typeof(data_playlist_item) !== 'undefined') {
+            data_playlist_item = JSON.parse(data_playlist_item);
+          } else {
+            data_playlist_item = {};
           }
 
           // add / edit our video positions
           for (var i in postDataPositions) {
             if( !postDataPositions.hasOwnProperty(i) ) continue;
 
-            data[postDataPositions[i].name] = postDataPositions[i].position;
+            data_positions[postDataPositions[i].name] = postDataPositions[i].position;
+          }
+
+          for (var i in postDataPlaylists) {
+            if( !postDataPlaylists.hasOwnProperty(i) ) continue;
+
+            data_playlist_item[postDataPlaylists[i].player] = postDataPlaylists[i].item;
           }
 
           var
-            serialized = JSON.stringify(data),
-            dataSize = getTextByteSize(serialized);
+            serialized_positions = JSON.stringify(data_positions),
+            serialized_playlist_items = JSON.stringify(data_playlist_item),
+            dataSize_postions = getTextByteSize(serialized_positions),
+            dataSize_playlist_items = getTextByteSize(serialized_playlist_items);
 
           // check if we're not going over maximum cache size
-          if (dataSize > maxCookieSize) {
+          if (dataSize_postions > maxCookieSize) {
             // we're over max cache size, let's delete some older videos
-            while (dataSize > maxCookieSize) {
+            while (dataSize_postions > maxCookieSize) {
               // remove the first entry only
-              for (var i in data) {
-                if( !data.hasOwnProperty(i) ) continue;
+              for (var i in data_positions) {
+                if( !data_positions.hasOwnProperty(i) ) continue;
 
-                delete data[i];
+                delete data_positions[i];
 
                 // re-serialize with the value removed
-                serialized = JSON.stringify(data);
-                // calculate new data size, so we can exit the while loop
-                dataSize = getTextByteSize(serialized);
+                serialized_positions = JSON.stringify(data_positions);
+                // calculate new data_positions size, so we can exit the while loop
+                dataSize_postions = getTextByteSize(serialized_positions);
 
                 break;
               }
             }
           }
 
-          setCookieKey(cookiePositionsKeyName, serialized);
+          // do the same for playlist item
+           if (dataSize_playlist_items > maxCookieSize) {
+            while (dataSize_playlist_items > maxCookieSize) {
+              for (var i in data_positions) {
+                if( !data_playlist_item.hasOwnProperty(i) ) continue;
+                delete data_playlist_item[i];
+
+                serialized_playlist_items = JSON.stringify(data_playlist_item);
+                dataSize_playlist_items = getTextByteSize(serialized_positions);
+
+                break;
+              }
+            }
+          }
+
+          setCookieKey(cookiePositionsKeyName, serialized_positions);
+          setCookieKey(cookiePlaylistsKeyName, serialized_playlist_items);
         } catch (e) {
           // JSON JS support missing
           return;
@@ -268,6 +300,7 @@ if (!Date.now) {
       $root = jQuery(root),
       enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position'),
       progressEventsCount = 0,
+      player_id = $root.data('player-id') ? $root.data('player-id') : false,
 
       // used to seek into the desired last stored position when he video has started
       seekIntoPosition = function (e, api) {
@@ -330,7 +363,7 @@ if (!Date.now) {
           playPositions[video_id] = position;
 
           if( api.conf.playlist.length > 0 ) {
-            if( $root.data('player-id') ) playlistIndexes[ $root.data('player-id') ] = api.video.index; // player_id => playlist_item
+            if( player_id ) playlistIndexes[ player_id ] = api.video.index; // player_id => playlist_item
           }
 
           // make a call home every +-30 seconds to make sure a browser crash doesn't affect the position save too much
@@ -421,9 +454,29 @@ if (!Date.now) {
             // something went wrong, so the next block will continue
           }
         }
-      }
+      },
 
-      
+      restorePlaylistItem = function(e, api) {
+        if (flowplayer.conf.is_logged_in != '1' && $root.data('player-id') ) {
+          var data = getCookieKey(cookiePlaylistsKeyName);
+          if (data && typeof(data) !== 'undefined') {
+            try {
+              data = JSON.parse(data);
+              if (data[player_id]) {
+                item_index = data[player_id];
+
+                if ($root.data('position_changed') !== 1 && api.conf.playlist.length) {
+                  api.play(item_index);
+                  $root.data('position_changed', 1);
+                }
+
+              }
+            } catch (e) {
+              return;
+            }
+          }
+        }
+      };
 
     if( !enabled ) return;
 
@@ -435,6 +488,19 @@ if (!Date.now) {
     // but then we run into some reliability issue with HLS.js, so it's safer
     // to use progress
     api.one( 'progress', seekIntoPosition);
+
+    api.bind('unload', function() {
+      $root.removeData('position_changed');
+      api.one('ready', restorePlaylistItem);
+      api.video.index = 0;
+    });
+  
+    api.one('ready', restorePlaylistItem);
+  
+    jQuery(".fp-ui", root).on('click', function() {
+      restorePlaylistItem();
+      $root.data('position_changed', 1);
+    });
 
     /**
      * Show the progress on the playlist item thumbnail

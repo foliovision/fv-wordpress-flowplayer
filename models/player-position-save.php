@@ -125,8 +125,6 @@ class FV_Player_Position_Save {
 
       if( $fv_fp->current_player() ) { // db player
         $player_id = $fv_fp->current_player()->getId();
-      } else { // TODO shortcode player
-  
       }
 
       if( $player_id ) { // add id to data item if db player
