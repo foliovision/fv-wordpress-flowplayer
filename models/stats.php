@@ -13,8 +13,43 @@ class FV_Player_Stats {
     }
     
     add_action('fv_player_stats', array($this,'parseCachedFiles'));
-    
+
+    add_action('admin_init', array($this,'db_init') );
+    add_action('admin_init', array($this,'folder_init') );
+  }
+
+  function db_init( $force = false ) {
+    global $fv_fp;
+    if( !$force && !$fv_fp->_get_option('video_stats_enable') ) {
+      return;
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'fv_player_stats';
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
+      $sql = "CREATE TABLE `$table_name` (
+        `id_video` INT(11) NOT NULL AUTO_INCREMENT,
+        `date` DATETIME NULL DEFAULT NULL,
+        `play` INT(11) NOT NULL,
+        PRIMARY KEY (`id_video`)
+      )" . $wpdb->get_charset_collate() . ";";
+      require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+      dbDelta($sql);
+    }
+  }
+
+  function folder_init( $force = false ) {
+    global $fv_fp;
+    if( !$force && !$fv_fp->_get_option('video_stats_enable') ) {
+      return;
+    }
+
     // todo: create/delete the WP_CONTENT_DIR."/fv-player-tracking" based on the settin
+  }
+
+  function get_stat( $type ) {
+    // TODO: SQL
+    return 0;
   }
   
   function option( $conf ) {
@@ -34,7 +69,12 @@ class FV_Player_Stats {
     global $fv_fp;
     $fv_fp->_get_checkbox(__('Enable Video Stats', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a simple count of video playbacks.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
   }
-  
+
+  function set_stat( $type, $value ) {
+    // TODO: SQL
+    
+  }
+
   function shortcode( $attributes, $media, $fv_fp ) {
     if( !empty($fv_fp->aCurArgs['stats']) ) {
       if( $fv_fp->aCurArgs['stats'] != 'no' ) {
@@ -85,6 +125,8 @@ class FV_Player_Stats {
             if( $plays > 0 ) {
               $video->updateMetaValue( 'stats_'.$tag, $plays );
             }
+
+            // TODO: Store in wp_fv_player_stats
           }
         }
       }
@@ -103,6 +145,9 @@ class FV_Player_Stats {
     $cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
     if( !file_exists( $cache_directory ) )
       return;
+
+    // just in case...
+    $this->db_init( true );
 
     $cache_files = scandir( $cache_directory );
     foreach( $cache_files as $filename ){
