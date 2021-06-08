@@ -457,25 +457,31 @@ if (!Date.now) {
       },
 
       restorePlaylistItem = function(e, api) {
-        if (flowplayer.conf.is_logged_in != '1' && $root.data('player-id') ) {
+        if ( typeof api == 'undefined' || api.conf.playlist.length == 0 ) return;
+        
+        var item_index = false;
+
+        if ( flowplayer.conf.is_logged_in != '1' && player_id ) {
           var data = getCookieKey(cookiePlaylistsKeyName);
           if (data && typeof(data) !== 'undefined') {
             try {
               data = JSON.parse(data);
               if (data[player_id]) {
                 item_index = data[player_id];
-
-                if ($root.data('position_changed') !== 1 && api.conf.playlist.length) {
-                  api.play(item_index);
-                  $root.data('position_changed', 1);
-                }
-
               }
             } catch (e) {
               return;
             }
           }
+        } else if( flowplayer.conf.is_logged_in == '1' && player_id ) {
+          item_index = api.conf.playlist.length > 0 ? processTempData( tempPlaylistsCookieKeyName, player_id ) : false;
         }
+
+        if ( item_index && $root.data('position_changed') !== 1 && !$root.data('playlist_start')) {
+          api.play(item_index);
+          $root.data('position_changed', 1);
+        }
+
       };
 
     if( !enabled ) return;
