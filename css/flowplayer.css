@@ -998,10 +998,10 @@
 .flowplayer { margin: 0 auto 2.8em auto; display: block; max-width: 100%; }
 .flowplayer.has-caption { margin: 0 auto; }
 .flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin-bottom: 2.8em; }
-.flowplayer.fixed-controls { margin-bottom: 5.2em }
+.flowplayer.fixed-controls, .entry-content .flowplayer.fixed-controls { margin-bottom: 5.2em }
 .flowplayer.fixed-controls.skin-custom {border: none}
-.flowplayer.has-abloop { margin-bottom: 2.8em; }
-.flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
+.flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
+.flowplayer.fixed-controls.has-abloop, .entry-content .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 
 /* using fp-full and fp-slim at once should only make the timeline full width and nothings else should change */
 .flowplayer.fp-slim.fp-full .fp-controls {
@@ -1697,6 +1697,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 .fv-player-video-checker {
   user-select: text;
@@ -2179,4 +2180,41 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 
 .flowplayer .fp-ui .invisible {
   visibility: hidden;
+}
+
+.flowplayer .fv-fp-tap-left,
+.flowplayer .fv-fp-tap-right {
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  margin-top: 20%;
+  position: absolute;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+}
+.flowplayer .fv-fp-tap-right {
+  left: auto;
+  right: 0;  
+}
+.flowplayer .fv-fp-tap-left span,
+.flowplayer .fv-fp-tap-right span {
+  font-size: 1.5em;
+  opacity: 0;
+}
+.flowplayer .fv-fp-tap-left.is-active span,
+.flowplayer .fv-fp-tap-right.is-active span {
+  animation: fv-player-tap-left-right 0.5s ease-out;
+}
+@keyframes fv-player-tap-left-right {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }

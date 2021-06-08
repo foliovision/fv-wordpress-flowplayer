@@ -105,7 +105,7 @@ class FV_Player_List_Table_View {
       wp_enqueue_media();
     }
     ?>
-    <style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px}</style>
+    <style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px !important}</style>
     <?php
   }
   

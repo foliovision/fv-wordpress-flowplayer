@@ -305,16 +305,18 @@ function fv_player_splashcreen_action() {
     return urldecode($caption);
   }
 
-  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ){
+  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {
     $title = $_POST['title'];
     $img = $_POST['img'];
-    
+    $limit = 128 - 5; // .jpeg
+
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-  
+    $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+
     $decoded = base64_decode($img) ;
     
     $upload_dir = wp_upload_dir();
@@ -351,7 +353,7 @@ function fv_player_splashcreen_action() {
         'src'     =>  '',
         'error'   =>  $file_return['error']
       ); 
-    }else{
+    } else {
       $filename = $file_return['file'];
 
       $attachment = array(
@@ -361,21 +363,29 @@ function fv_player_splashcreen_action() {
         'post_status' => 'inherit',
         'guid' => $upload_dir['url'] . '/' . basename($filename)
       );
-      $attach_id = wp_insert_attachment( $attachment, $filename );
 
-      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_id = wp_insert_attachment( $attachment, $filename, 0, true );
+
+      if( is_wp_error( $attach_id ) ) {
+        $jsonReturn = array(
+          'src'     =>  '',
+          'error'   =>  $attach_id->get_error_message()
+        );
+      } else {
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
       
-      $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
-      wp_update_attachment_metadata( $attach_id, $attach_data );
-
-      $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
-
-      $jsonReturn = array(
-        'src'     =>  $src,
-        'error'   =>  ''
-      );
-    }      
-  }else{
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+  
+        $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
+  
+        $jsonReturn = array(
+          'src'     =>  $src,
+          'error'   =>  ''
+        );
+      }
+    }
+  } else {
     $jsonReturn = array(
       'src'     =>  '',
       'error'   =>  'Nonce error - please reload your page'

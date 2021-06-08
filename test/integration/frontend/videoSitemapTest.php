@@ -56,7 +56,15 @@ HTML
     $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );
     $output = ob_get_clean();
     
-    $this->assertEquals( $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') ), $this->fix_newlines($output) );      
+    // Fix bad play button image path due to running these tests on server console
+    $expect =  $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') );
+    $actual = $this->fix_newlines($output);
+    $regex = '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~';
+
+    $expect = preg_replace( $regex, 'wp-content/plugins/fv-wordpress-flowplayer/css', $expect );
+    $actual = preg_replace( $regex, 'wp-content/plugins/fv-wordpress-flowplayer/css', $actual );
+
+    $this->assertEquals($expect, $actual );      
   }
   
   public function tearDown() {

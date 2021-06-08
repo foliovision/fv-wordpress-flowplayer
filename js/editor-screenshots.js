@@ -27,7 +27,7 @@
       return img.src ;
     }
 
-    button.click(function(){
+    button.on('click', function(){
       try {
         button.prop("disabled",true);
         
