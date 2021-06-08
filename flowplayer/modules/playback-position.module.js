@@ -184,7 +184,7 @@ if (!Date.now) {
 
             setCookieKey(tempPositionCookieKeyName, getSerialized(temp_position_data));
             setCookieKey(tempSawCookieKeyName, getSerialized(temp_saw_data));
-            setCookieKey(tempPlaylistsCookieKeyName, getSerialized(temp_saw_data));
+            setCookieKey(tempPlaylistsCookieKeyName, getSerialized(temp_playlist_data));
           } catch (e) {
             // JSON JS support missing
             return;

@@ -120,7 +120,7 @@ class FV_Player_Position_Save {
       $attributes['data-save-position'] = $fv_fp->aCurArgs['saveposition'];
     }
 
-    if ( $fv_fp->_get_option('video_position_save_enable') ) {
+    if ( $fv_fp->_get_option('video_position_save_enable') || !empty($fv_fp->aCurArgs['saveposition']) ) {
       $player_id = false;
 
       if( $fv_fp->current_player() ) { // db player
