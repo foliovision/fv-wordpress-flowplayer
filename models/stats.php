@@ -130,6 +130,10 @@ class FV_Player_Stats {
 
             $plays_db =  $wpdb->get_var( $wpdb->prepare("SELECT `plays` FROM  $table_name WHERE date = %s AND id_video = %d ", date('Y-m-d'), $video_id ) );
 
+            if( $tag != "play" ) {
+              continue;
+            }
+
             if( $plays_db ) {
               $wpdb->update(
                 $table_name,
