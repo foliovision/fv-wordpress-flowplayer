@@ -17,6 +17,8 @@ class FV_Player_Stats {
 
     add_action( 'fv_player_version_changed', array( $this, 'db_init' ) );
 
+    // add_action( 'admin_init', array( $this, 'db_init' ) );
+
     add_action( 'admin_init', array( $this, 'folder_init' ) );
   }
 
@@ -37,11 +39,13 @@ class FV_Player_Stats {
     $table_name = $this->get_table_name();
 
     $sql = "CREATE TABLE `$table_name` (
-      `id_video` INT(11) NOT NULL AUTO_INCREMENT,
+      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `id_video` INT(11) NOT NULL,
       `date` DATE NULL DEFAULT NULL,
       `play` INT(11) NOT NULL,
-      PRIMARY KEY (`id_video`),
-      INDEX `date` (`date`)
+      PRIMARY KEY (`id`),
+      INDEX `date` (`date`),
+      INDEX `id_video` (`id_video`)
     )" . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
