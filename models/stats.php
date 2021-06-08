@@ -17,14 +17,7 @@ class FV_Player_Stats {
 
     add_action( 'fv_player_version_changed', array( $this, 'db_init' ) );
 
-    // add_action( 'admin_init', array( $this, 'db_init' ) );
-
     add_action( 'admin_init', array( $this, 'folder_init' ) );
-  }
-
-  function admin_page() {
-    add_submenu_page(  'fv_player', 'FV Player Stats', 'FV Player Stats', 'edit_posts', 'fv_player_stats', array( $this, 'tools_panel' ) );
-    remove_submenu_page( 'fv_player', 'fv_player_stats' );
   }
 
   function get_table_name() {
@@ -128,9 +121,9 @@ class FV_Player_Stats {
           global $FV_Player_Db;
           $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
           if( $video ) {
-            $plays = $plays + intval($video->getMetaValue('stats_'.$tag,true));
-            if( $plays > 0 ) {
-              $video->updateMetaValue( 'stats_'.$tag, $plays );
+            $plays_meta = $plays + intval($video->getMetaValue('stats_'.$tag,true));
+            if( $plays_meta > 0 ) {
+              $video->updateMetaValue( 'stats_'.$tag, $plays_meta );
             }
 
             $table_name = $this->get_table_name();
