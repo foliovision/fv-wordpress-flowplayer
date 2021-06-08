@@ -25,8 +25,12 @@ class FV_Player_Stats {
     return $wpdb->prefix . 'fv_player_stats';
   }
 
-  function db_init() {
+  function db_init( $force ) {
     global $fv_fp;
+
+    if( !$force && !$fv_fp->_get_option('video_stats_enable') ) {
+      return;
+    }
 
     global $wpdb;
     $table_name = $this->get_table_name();
@@ -180,7 +184,7 @@ class FV_Player_Stats {
    */
   function parse_cached_files() {
     // just in case...
-    // $this->db_init( true );
+    $this->db_init( true );
     $this->folder_init( true );
     
     $cache_files = scandir( $this->cache_directory );
