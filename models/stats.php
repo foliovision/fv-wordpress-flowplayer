@@ -20,12 +20,16 @@ class FV_Player_Stats {
     add_action( 'admin_init', array( $this, 'folder_init' ) );
   }
 
+  function get_stat_columns() {
+    return array( 'play' );
+  }
+
   function get_table_name() {
     global $wpdb;
     return $wpdb->prefix . 'fv_player_stats';
   }
 
-  function db_init( $force ) {
+  function db_init( $force = false ) {
     global $fv_fp;
 
     if( !$force && !$fv_fp->_get_option('video_stats_enable') ) {
@@ -38,12 +42,16 @@ class FV_Player_Stats {
     $sql = "CREATE TABLE `$table_name` (
       `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
       `id_video` INT(11) NOT NULL,
-      `date` DATE NULL DEFAULT NULL,
-      `play` INT(11) NOT NULL,
-      PRIMARY KEY (`id`),
+      `date` DATE NULL DEFAULT NULL,\n";
+
+    foreach( $this->get_stat_columns() AS $column ) {
+      $sql .= "      `".$column."` INT(11) NOT NULL,\n";
+    }
+      
+    $sql .= "    PRIMARY KEY (`id`),
       INDEX `date` (`date`),
       INDEX `id_video` (`id_video`)
-    )" . $wpdb->get_charset_collate() . ";";
+    ) " . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     
@@ -93,11 +101,13 @@ class FV_Player_Stats {
   /**
    * Process post counters from cache file and update post meta
    * @param  resource &$fp file handler
-   * @param  string   $tag post_meta name
+   * @param  string   $type Type of stats being parsed
    * @return void
    */
-  function process_cached_data( &$fp, $tag ) {
+  function process_cached_data( &$fp, $type ) {
     global $wpdb;
+
+    if( !in_array($type, $this->get_stat_columns() ) ) return;
 
     if( flock( $fp, LOCK_EX ) ) {
       $encoded_data = fgets( $fp );
@@ -117,32 +127,28 @@ class FV_Player_Stats {
         return;
 
       if( is_array($data) ) {
-        foreach( $data  AS $video_id => $plays ) {
-          if( !is_int($plays) || intval($plays) < 1 ) {
+        foreach( $data  AS $video_id => $value ) {
+          if( !is_int($value) || intval($value) < 1 ) {
             continue;
           }
 
           global $FV_Player_Db;
           $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
           if( $video ) {
-            $plays_meta = $plays + intval($video->getMetaValue('stats_'.$tag,true));
-            if( $plays_meta > 0 ) {
-              $video->updateMetaValue( 'stats_'.$tag, $plays_meta );
+            $meta_value = $value + intval($video->getMetaValue('stats_'.$type,true));
+            if( $meta_value > 0 ) {
+              $video->updateMetaValue( 'stats_'.$type, $meta_value );
             }
 
             $table_name = $this->get_table_name();
 
-            $plays_db =  $wpdb->get_var( $wpdb->prepare("SELECT `plays` FROM  $table_name WHERE date = %s AND id_video = %d ", date('Y-m-d'), $video_id ) );
+            $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d ", date('Y-m-d'), $video_id ) );
 
-            if( $tag != "play" ) {
-              continue;
-            }
-
-            if( $plays_db ) {
+            if( $existing ) {
               $wpdb->update(
                 $table_name,
                 array(
-                  'play' => $plays + $plays_db, // update plays in db
+                  $type => $value + $existing->{$type}, // update plays in db
                 ),
                 array( 'id_video' => $video_id , 'date' => date('Y-m-d') ), // update by video id and date
                 array(
@@ -159,7 +165,7 @@ class FV_Player_Stats {
                 array(
                   'id_video' => $video_id,
                   'date' => date('Y-m-d'),
-                  'play' => $plays
+                  $type => $value
                 ),
                 array(
                   '%d',
@@ -190,15 +196,15 @@ class FV_Player_Stats {
     $cache_files = scandir( $this->cache_directory );
     foreach( $cache_files as $filename ){
       if( preg_match( '/^([^-]+)-([^\.]+)\.data$/', $filename, $matches ) ) {
-        $tag = $matches[1];
-        if( !in_array($tag, array('play') ) ) continue;
+        $type = $matches[1];
+        if( !in_array($type, $this->get_stat_columns() ) ) continue;
         
         $blog_id = intval($matches[2]);
 
         if( get_current_blog_id() != $blog_id ) continue;
 
         $fp = fopen( $this->cache_directory."/".$filename, 'r+');
-        $this->process_cached_data( $fp, $tag );
+        $this->process_cached_data( $fp, $type );
         fclose( $fp );
       }
     }
