@@ -57,11 +57,11 @@ Class FvPlayerTrackerWorker {
    */
   function incrementCacheCounter() {
     $max_attempts = 3;
-    echo "incrementCacheCounter 0\n";
+
     for( $i = 0; $i < $max_attempts; $i++ ){
-      echo "incrementCacheCounter 1\n";  
+
       if( flock( $this->file, LOCK_EX | LOCK_NB ) ) {
-        echo "incrementCacheCounter 2\n";
+
         //increment counter
         $encoded_data = fgets( $this->file );
         $data = false;
@@ -69,7 +69,7 @@ Class FvPlayerTrackerWorker {
           $data = json_decode( $encoded_data, true );
   
           $json_error = json_last_error();
-          if( $json_error !== JSON_ERROR_NONE ) {echo "incrementCacheCounter 3\n";
+          if( $json_error !== JSON_ERROR_NONE ) {
             file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r')." JSON decode error:\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND ); // todo: remove
             ftruncate( $this->file, 0 );
             return false;
@@ -78,7 +78,6 @@ Class FvPlayerTrackerWorker {
         
         if( !$data ) $data = array();
         
-        echo "incrementCacheCounter 4\n";
         if( !isset( $data[$this->video_id] ) ) $data[$this->video_id] = 0;
         $data[$this->video_id]++;
 
@@ -87,15 +86,12 @@ Class FvPlayerTrackerWorker {
         ftruncate( $this->file, 0 );
         rewind( $this->file );
         fputs( $this->file, $encoded_data );
-        //var_dump( $encoded_data );
-        echo "incrementCacheCounter 5\n";
+
         //UNLOCK
         flock( $this->file, LOCK_UN );
-        echo "incrementCacheCounter 9\n";
         return true;
       }
       else{
-        echo "incrementCacheCounter 10\n";
         //wait random interval from 50ms to 100ms
         usleep( rand(50,100) );
       }
