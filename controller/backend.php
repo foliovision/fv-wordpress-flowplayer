@@ -57,7 +57,7 @@ function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
 	global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
 	
 	if( $fv_wp_flowplayer_support_mail_from_name ) {
-		$phpmailer->FromName = trim( $fv_filled_in_phpmailer_init_from_name );
+		$phpmailer->FromName = trim( $fv_wp_flowplayer_support_mail_from_name );
 	}
 	if( $fv_wp_flowplayer_support_mail_from ) {
 		if( strcmp( trim($phpmailer->From), trim($fv_wp_flowplayer_support_mail_from) ) != 0 && !trim($phpmailer->Sender) ) {
@@ -378,6 +378,8 @@ function fv_player_admin_update() {
   
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
+    do_action( 'fv_player_update' );
+
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
    if(!empty($aOptions['version']) ) {
       $aOptions['chromecast'] = true;
