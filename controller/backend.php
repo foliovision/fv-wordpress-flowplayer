@@ -57,7 +57,7 @@ function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
 	global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
 	
 	if( $fv_wp_flowplayer_support_mail_from_name ) {
-		$phpmailer->FromName = trim( $fv_filled_in_phpmailer_init_from_name );
+		$phpmailer->FromName = trim( $fv_wp_flowplayer_support_mail_from_name );
 	}
 	if( $fv_wp_flowplayer_support_mail_from ) {
 		if( strcmp( trim($phpmailer->From), trim($fv_wp_flowplayer_support_mail_from) ) != 0 && !trim($phpmailer->Sender) ) {
