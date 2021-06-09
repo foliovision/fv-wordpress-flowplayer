@@ -15,7 +15,7 @@ class FV_Player_Stats {
 
     add_action( 'fv_player_stats', array ( $this, 'parse_cached_files' ) );
 
-    add_action( 'fv_player_version_changed', array( $this, 'db_init' ) );
+    add_action( 'fv_player_update', array( $this, 'db_init' ) );
 
     add_action( 'admin_init', array( $this, 'folder_init' ) );
   }
