@@ -692,11 +692,26 @@ add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object
 
 
 function flowplayer_deactivate() {
-  if( flowplayer::is_licensed() ) {  
+  if ( WP_Filesystem() ) {
+    global $wp_filesystem;
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-player-tracking/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-player-tracking/', true );
+    }
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/', true );
+    }
+  }
+  
+  if( flowplayer::is_licensed() ) {
     delete_transient( 'fv_flowplayer_license' );
   }
+
   delete_option( 'fv_flowplayer_extension_install' );
-  wp_clear_scheduled_hook('fv_flowplayer_checker_event');
+
+  wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
+  wp_clear_scheduled_hook( 'fv_player_stats' );
 }
 
 

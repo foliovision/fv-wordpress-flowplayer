@@ -59,14 +59,24 @@ class FV_Player_Stats {
   }
 
   function folder_init( $force = false ) {
+    if ( !WP_Filesystem() ) {
+      return;
+    }
+  
     global $fv_fp;
+    global $wp_filesystem;
 
     if( !$force && !$fv_fp->_get_option('video_stats_enable') ) {
-      if( file_exists( $this->cache_directory ) ) rmdir( $this->cache_directory );
+      if( $wp_filesystem->exists( $this->cache_directory ) ) {
+        $wp_filesystem->rmdir( $this->cache_directory, true );
+      }
+
       return;
     }
 
-    if( !file_exists( $this->cache_directory ) ) mkdir( $this->cache_directory );
+    if( !$wp_filesystem->exists($this->cache_directory) ){
+      $wp_filesystem->mkdir( $this->cache_directory );
+    }
   }
 
   function option( $conf ) {
