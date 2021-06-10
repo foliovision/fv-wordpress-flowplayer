@@ -1,6 +1,6 @@
 <?php
 class FV_Player_Stats {
-  
+
   var $used = false;
   var $cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
@@ -16,6 +16,8 @@ class FV_Player_Stats {
     add_action( 'fv_player_stats', array ( $this, 'parse_cached_files' ) );
 
     add_action( 'fv_player_update', array( $this, 'db_init' ) );
+
+    // add_action( 'admin_init', array( $this, 'db_init' ) );
 
     add_action( 'admin_init', array( $this, 'folder_init' ) );
   }
@@ -42,15 +44,19 @@ class FV_Player_Stats {
     $sql = "CREATE TABLE `$table_name` (
       `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
       `id_video` INT(11) NOT NULL,
+      `id_player` INT(11) NOT NULL,
+      `id_post` INT(11) NOT NULL,
       `date` DATE NULL DEFAULT NULL,\n";
 
     foreach( $this->get_stat_columns() AS $column ) {
-      $sql .= "      `".$column."` INT(11) NOT NULL,\n";
+      $sql .= "`".$column."` INT(11) NOT NULL,\n";
     }
       
-    $sql .= "    PRIMARY KEY (`id`),
+    $sql .= "PRIMARY KEY (`id`),
       INDEX `date` (`date`),
-      INDEX `id_video` (`id_video`)
+      INDEX `id_video` (`id_video`),
+      INDEX `id_player` (`id_player`),
+      INDEX `id_post` (`id_post`)
     ) " . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -104,9 +110,17 @@ class FV_Player_Stats {
       }
       $attributes['data-fv_stats'] = $fv_fp->aCurArgs['stats'];
     }
+
+    if( !empty($fv_fp->aCurArgs['stats']) || $fv_fp->_get_option('video_stats_enable') ) {
+      global $post;
+
+      if( !empty($post->ID && $fv_fp->current_player()) ) {
+        $attributes['data-fv_stats_data'] = json_encode( array('player_id' => $fv_fp->current_player()->getId(), 'post_id' => $post->ID) );
+      }
+    }
+
     return $attributes;
   }
-  
 
   /**
    * Process post counters from cache file and update post meta
@@ -137,10 +151,17 @@ class FV_Player_Stats {
         return;
 
       if( is_array($data) ) {
-        foreach( $data  AS $video_id => $value ) {
-          if( !is_int($value) || intval($value) < 1 ) {
-            continue;
+        foreach( $data  AS $index => $item ) {
+          foreach( $item as $item_name => $item_value ) {
+            if( !is_int($item_value) || intval($item_value) < 1 ) {
+              continue;
+            }
           }
+
+          $video_id = intval($item['video_id']);
+          $player_id = intval($item['player_id']);
+          $post_id = intval($item['post_id']);
+          $value = intval($item[$type]);
 
           global $FV_Player_Db;
           $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
@@ -160,13 +181,15 @@ class FV_Player_Stats {
                 array(
                   $type => $value + $existing->{$type}, // update plays in db
                 ),
-                array( 'id_video' => $video_id , 'date' => date('Y-m-d') ), // update by video id and date
+                array( 'id_video' => $video_id , 'date' => date('Y-m-d'), 'id_player' => $player_id, 'id_post' => $post_id ), // update by video id, date, player id and post id
                 array(
                   '%d'
                 ),
                 array(
                   '%d',
-                  '%s'
+                  '%s',
+                  '%d',
+                  '%d'
                 )
               );
             } else { // insert new row
@@ -174,10 +197,14 @@ class FV_Player_Stats {
                 $table_name,
                 array(
                   'id_video' => $video_id,
+                  'id_player' => $player_id,
+                  'id_post' => $post_id,
                   'date' => date('Y-m-d'),
                   $type => $value
                 ),
                 array(
+                  '%d',
+                  '%d',
                   '%d',
                   '%s',
                   '%d'
@@ -218,11 +245,11 @@ class FV_Player_Stats {
         fclose( $fp );
       }
     }
-  }  
+  }
 
 }
-$FV_Player_Stats = new FV_Player_Stats();
 
+$FV_Player_Stats = new FV_Player_Stats();
 
 function fv_player_stats_top( $args = array() ) {
   $args = wp_parse_args( $args, array(

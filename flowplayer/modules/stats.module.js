@@ -6,11 +6,19 @@ flowplayer( function(api,root) {
   
   api.on('ready', function(e,api) {
     api.one('progress', function(e,api) {
-      if( api.video.id ) {
+      if( api.video.id && root.data('fv_stats_data') ) {
+        try {
+          var player_post_data = root.data('fv_stats_data');
+        } catch(e) {
+          return false;
+        }
+
         jQuery.post( api.conf.fv_stats.url, {
           'blog_id' : api.conf.fv_stats.blog_id,
-          'tag' : 'play',
-          'video_id' : api.video.id
+          'video_id' : api.video.id,
+          'player_id': player_post_data.player_id,
+          'post_id' : player_post_data.post_id,
+          'tag' : 'play'
         } );
       }
     });
