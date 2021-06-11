@@ -6,7 +6,7 @@ flowplayer( function(api,root) {
 
   if( typeof(start_index) == 'undefined' ) return; 
 
-  function start_position_changer() {  
+  function start_position_changer() {
     if ($root.data('position_changed') !== 1 && api.conf.playlist.length) {
       start_index--; // the index should start from 0
       api.play(start_index);

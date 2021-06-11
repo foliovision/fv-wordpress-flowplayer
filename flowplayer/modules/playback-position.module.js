@@ -458,28 +458,30 @@ if (!Date.now) {
 
       restorePlaylistItem = function(e, api) {
         if ( typeof api == 'undefined' || api.conf.playlist.length == 0 ) return;
-        
-        var item_index = false;
 
-        if ( flowplayer.conf.is_logged_in != '1' && player_id ) {
-          var data = getCookieKey(cookiePlaylistsKeyName);
-          if (data && typeof(data) !== 'undefined') {
-            try {
-              data = JSON.parse(data);
-              if (data[player_id]) {
-                item_index = data[player_id];
+        var item_index = -1;
+
+        if(player_id) {
+          if ( flowplayer.conf.is_logged_in != '1') {
+            var data = getCookieKey(cookiePlaylistsKeyName);
+            if (data && typeof(data) !== 'undefined') {
+              try {
+                data = JSON.parse(data);
+                if (data[player_id]) {
+                  item_index = data[player_id];
+                }
+              } catch (e) {
+                return;
               }
-            } catch (e) {
-              return;
             }
+          } else if( flowplayer.conf.is_logged_in == '1') {
+            item_index = api.conf.playlist.length > 0 ? processTempData( tempPlaylistsCookieKeyName, player_id ) : false;
           }
-        } else if( flowplayer.conf.is_logged_in == '1' && player_id ) {
-          item_index = api.conf.playlist.length > 0 ? processTempData( tempPlaylistsCookieKeyName, player_id ) : false;
         }
 
-        if ( item_index && $root.data('position_changed') !== 1 && !$root.data('playlist_start')) {
+        if ( item_index >= 0  &&  $root.data('item_changed') != 1 ) {
           api.play(item_index);
-          $root.data('position_changed', 1);
+          $root.data('item_changed', 1);
         }
 
       };
@@ -496,7 +498,7 @@ if (!Date.now) {
     api.one( 'progress', seekIntoPosition);
 
     api.bind('unload', function() {
-      $root.removeData('position_changed');
+      $root.removeData('item_changed');
       api.one('ready', restorePlaylistItem);
       api.video.index = 0;
     });
@@ -505,7 +507,7 @@ if (!Date.now) {
   
     jQuery(".fp-ui", root).on('click', function() {
       restorePlaylistItem();
-      $root.data('position_changed', 1);
+      $root.data('item_changed', 1);
     });
 
     /**

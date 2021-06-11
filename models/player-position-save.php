@@ -130,7 +130,9 @@ class FV_Player_Position_Save {
       if( $player_id ) { // add id to data item if db player
         $attributes['data-player-id'] = $player_id;
 
-        if ( $metaItem = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_player_playlist_' . $player_id, true ) ) {
+        $metaItem = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
+
+        if ( $metaItem >= 0 ) {
           // playlist item restore
           $attributes['data-playlist_start'] = intval($metaItem) + 1; // playlist-start-position module starts from 0
         }
