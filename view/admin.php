@@ -297,8 +297,6 @@ function fv_flowplayer_admin_default_options() {
             
             <?php $fv_fp->_get_checkbox(__('No Picture Button', 'fv-wordpress-flowplayer'), 'ui_no_picture_button', __('Adds a button to turn the video picture on and off.', 'fv-wordpress-flowplayer') ); ?>
 
-            <?php $fv_fp->_get_checkbox(__('Play Button', 'fv-wordpress-flowplayer'), 'ui_play_button', __('Adds play button to player controlbar.', 'fv-wordpress-flowplayer') ); ?>
-
             <tr>
 							<td><label for="liststyle"><?php _e('Playlist style', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td colspan="3">
@@ -325,7 +323,7 @@ function fv_flowplayer_admin_default_options() {
             
             <?php $fv_fp->_get_checkbox(__('Repeat Button', 'fv-wordpress-flowplayer'), 'ui_repeat_button', __('Adds a button to set playlist/track repeat and shuffle.', 'fv-wordpress-flowplayer') ); ?>
             
-            <?php $fv_fp->_get_checkbox(__('Rewind Button', 'fv-wordpress-flowplayer'), 'ui_rewind_button', __('Adds a button to go 10 seconds back.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Rewind/Forward Button', 'fv-wordpress-flowplayer'), 'ui_rewind_button', __('Adds a button to go 10 seconds back/forth.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
               <td><label for="sharing_text"><?php _e('Sharing Text', 'fv-wordpress-flowplayer'); ?>:</label></td>
