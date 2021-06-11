@@ -56,13 +56,15 @@ flowplayer( function(api,root) {
           if ( api.video.vr && this.id != player_id ) {
             let $player_el = jQuery(this);
 
-            if ( player.ready ) {
+            if ( player.ready || player.paused ) {
               // reset VR
               if ( $player_el.data('vr') ) {
                 $player_el.data('vr').reset();
                 $player_el.removeData('vr');
               }
             }
+
+            api.conf.splash = true;
           }
 
           // TODO: Check for YouTube and Vimeo
