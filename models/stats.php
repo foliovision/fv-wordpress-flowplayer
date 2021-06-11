@@ -153,8 +153,12 @@ class FV_Player_Stats {
       if( is_array($data) ) {
         foreach( $data  AS $index => $item ) {
           foreach( $item as $item_name => $item_value ) {
-            if( !is_int($item_value) || intval($item_value) < 1 ) {
+            if( strcmp( $item_name, 'id_post' ) == 0 && is_int($item_value) && intval($item_value) == 0 ) { // allow post id to be 0
               continue;
+            }
+
+            if( !is_int($item_value) || intval($item_value) < 1 ) {
+              continue 2;
             }
           }
 
@@ -173,7 +177,7 @@ class FV_Player_Stats {
 
             $table_name = $this->get_table_name();
 
-            $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d ", date('Y-m-d'), $video_id ) );
+            $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d", date('Y-m-d'), $video_id, $post_id, $player_id ) );
 
             if( $existing ) {
               $wpdb->update(
