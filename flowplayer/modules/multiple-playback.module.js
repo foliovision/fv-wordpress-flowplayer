@@ -23,7 +23,9 @@ flowplayer( function(api,root) {
       // mark the current player as the one who is making the noise
       flowplayer.audible_instance = instance_id;
     }
-    
+
+    var player_id = root.attr('id');
+
     // we go through all the players to paused or mute them all
     jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
       var player = jQuery(this).data('flowplayer');
@@ -35,7 +37,7 @@ flowplayer( function(api,root) {
       if( flowplayer.audible_instance == -1 || current_instance_id == flowplayer.audible_instance || current_instance_id == instance_id ) return;      
 
       if( player ) {
-        if( player.ready ) {
+        if( player.ready && !api.video.vr ) {
           // if multiple video playback is enabled we go through all the players to mute them all
           if( api.conf.multiple_playback ) {
             // but only if the video is audible
@@ -49,6 +51,19 @@ flowplayer( function(api,root) {
           }
         } else {
           player.clearLiveStreamCountdown(); // if not playing stop countdown and unload if other video plays
+
+          // unload VR, if loaded
+          if ( api.video.vr && this.id != player_id ) {
+            let $player_el = jQuery(this);
+
+            if ( player.ready ) {
+              // reset VR
+              if ( $player_el.data('vr') ) {
+                $player_el.data('vr').reset();
+                $player_el.removeData('vr');
+              }
+            }
+          }
 
           // TODO: Check for YouTube and Vimeo
           player.unload();
