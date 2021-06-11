@@ -114,8 +114,14 @@ class FV_Player_Stats {
     if( !empty($fv_fp->aCurArgs['stats']) || $fv_fp->_get_option('video_stats_enable') ) {
       global $post;
 
-      if( !empty($post->ID && $fv_fp->current_player()) ) {
-        $attributes['data-fv_stats_data'] = json_encode( array('player_id' => $fv_fp->current_player()->getId(), 'post_id' => $post->ID) );
+      $player_id = 0; // 0 if shortcode
+
+      if( $fv_fp->current_player() ) {
+        $player_id = $fv_fp->current_player()->getId();
+      }
+
+      if( !empty($post->ID ) ) {
+        $attributes['data-fv_stats_data'] = json_encode( array('player_id' => $player_id, 'post_id' => $post->ID) );
       }
     }
 
@@ -153,13 +159,11 @@ class FV_Player_Stats {
       if( is_array($data) ) {
         foreach( $data  AS $index => $item ) {
           foreach( $item as $item_name => $item_value ) {
-            if( strcmp( $item_name, 'id_post' ) == 0 && is_int($item_value) && intval($item_value) == 0 ) { // allow post id to be 0
+            if( is_int($item_value) && (intval($item_value) >= 0 || ( strcmp( $item_name, 'play' ) == 0 && intval($item_value) > 0 ) )) {
               continue;
             }
 
-            if( !is_int($item_value) || intval($item_value) < 1 ) {
-              continue 2;
-            }
+            continue 2;
           }
 
           $video_id = intval($item['video_id']);
@@ -167,58 +171,60 @@ class FV_Player_Stats {
           $post_id = intval($item['post_id']);
           $value = intval($item[$type]);
 
-          global $FV_Player_Db;
-          $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
-          if( $video ) {
-            $meta_value = $value + intval($video->getMetaValue('stats_'.$type,true));
-            if( $meta_value > 0 ) {
-              $video->updateMetaValue( 'stats_'.$type, $meta_value );
+          if( $video_id ) {
+            global $FV_Player_Db;
+            $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
+            
+            if( $video ) {
+              $meta_value = $value + intval($video->getMetaValue('stats_'.$type,true));
+              if( $meta_value > 0 ) {
+                $video->updateMetaValue( 'stats_'.$type, $meta_value );
+              }
             }
+          }
 
-            $table_name = $this->get_table_name();
+          $table_name = $this->get_table_name();
 
-            $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d", date('Y-m-d'), $video_id, $post_id, $player_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d", date('Y-m-d'), $video_id, $post_id, $player_id ) );
 
-            if( $existing ) {
-              $wpdb->update(
-                $table_name,
-                array(
-                  $type => $value + $existing->{$type}, // update plays in db
-                ),
-                array( 'id_video' => $video_id , 'date' => date('Y-m-d'), 'id_player' => $player_id, 'id_post' => $post_id ), // update by video id, date, player id and post id
-                array(
-                  '%d'
-                ),
-                array(
-                  '%d',
-                  '%s',
-                  '%d',
-                  '%d'
-                )
-              );
-            } else { // insert new row
-              $wpdb->insert(
-                $table_name,
-                array(
-                  'id_video' => $video_id,
-                  'id_player' => $player_id,
-                  'id_post' => $post_id,
-                  'date' => date('Y-m-d'),
-                  $type => $value
-                ),
-                array(
-                  '%d',
-                  '%d',
-                  '%d',
-                  '%s',
-                  '%d'
-                )
-              );
-            }
+          if( $existing ) {
+            $wpdb->update(
+              $table_name,
+              array(
+                $type => $value + $existing->{$type}, // update plays in db
+              ),
+              array( 'id_video' => $video_id , 'date' => date('Y-m-d'), 'id_player' => $player_id, 'id_post' => $post_id ), // update by video id, date, player id and post id
+              array(
+                '%d'
+              ),
+              array(
+                '%d',
+                '%s',
+                '%d',
+                '%d'
+              )
+            );
+          } else { // insert new row
+            $wpdb->insert(
+              $table_name,
+              array(
+                'id_video' => $video_id,
+                'id_player' => $player_id,
+                'id_post' => $post_id,
+                'date' => date('Y-m-d'),
+                $type => $value
+              ),
+              array(
+                '%d',
+                '%d',
+                '%d',
+                '%s',
+                '%d'
+              )
+            );
           }
         }
       }
-      
     }
     else {
       echo "Error: failed to obtain file lock.";

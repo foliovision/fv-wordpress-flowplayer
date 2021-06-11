@@ -6,7 +6,7 @@ flowplayer( function(api,root) {
   
   api.on('ready', function(e,api) {
     api.one('progress', function(e,api) {
-      if( api.video.id && root.data('fv_stats_data') ) {
+      if( root.data('fv_stats_data') ) {
         try {
           var player_post_data = root.data('fv_stats_data');
         } catch(e) {
@@ -15,7 +15,7 @@ flowplayer( function(api,root) {
 
         jQuery.post( api.conf.fv_stats.url, {
           'blog_id' : api.conf.fv_stats.blog_id,
-          'video_id' : api.video.id,
+          'video_id' : api.video.id ? api.video.id : 0,
           'player_id': player_post_data.player_id,
           'post_id' : player_post_data.post_id,
           'tag' : 'play'
