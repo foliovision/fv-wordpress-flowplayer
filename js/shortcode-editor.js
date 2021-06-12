@@ -221,7 +221,7 @@ jQuery(function() {
               $wraper_div = $btn.parents('.wp-editor-wrap:first');
 
             for (var i in tinyMCE.editors) {
-              if ($wraper_div.find('#' + tinyMCE.editors[i].editorContainer.id).length) {
+              if (tinyMCE.editors[i].editorContainer && tinyMCE.editors[i].editorContainer.id && $wraper_div.find('#' + tinyMCE.editors[i].editorContainer.id).length) {
                 tinyMCE.activeEditor = tinyMCE.editors[i];
                 break;
               }
