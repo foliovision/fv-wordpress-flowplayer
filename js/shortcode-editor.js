@@ -1199,7 +1199,6 @@ jQuery(function() {
 
       $doc.on('change', '#players_selector', function() {
         el_editor.find('.button-primary').text('Insert').removeAttr('disabled');
-        // TODO: This looses the #fvp_placeholder# so you can't pick the exising player in tinyMCE text mode
         editor_open(this.value);
       });
 
@@ -1882,6 +1881,29 @@ jQuery(function() {
       // rather then set to a player ID
       if (db_id) {
         content = db_id;
+
+        // we loose the #fvp_placeholder# placeholder in TinyMCE text mode, so let's re-add it here
+        if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+          var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
+
+          // look for start of shortcode
+          for (var start = position; start--; start >= 0) {
+            if (editor_content[start] == '[') {
+              var sliced_content = editor_content.slice(start);
+              var matched = sliced_content.match(/^\[fvplayer[^\[\]]*]?/);
+              // found the shortcode!
+              if (matched) {
+                shortcode = matched;
+              }
+
+              break;
+            } else if (editor_content[start] == ']') {
+              break
+            }
+          }
+          // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
+          editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
+        }
       }
 
       if(typeof(shortcode) == 'undefined'){
