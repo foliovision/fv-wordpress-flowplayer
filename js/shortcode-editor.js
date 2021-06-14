@@ -575,7 +575,7 @@ jQuery(function() {
         fv_flowplayer_uploader.on('select', function() {
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
 
-          $('.fv_flowplayer_target').val(attachment.url);
+          $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
