@@ -226,13 +226,15 @@ a #add-format, a #add-rtmp {
   padding: 1px 12px;
 }
 
-.fv-player-src-below-notice {
-    margin: 10px 0;
-    padding: 8px;
-    background: #fff;
-    border-left: 4px solid #bf0000;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    display: none;
+.fv-player-src-playlist-support-notice {
+  margin: 3px 0;
+  padding: 8px;
+  background: #fff;
+  border-left: 4px solid #bf0000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+  display: none;
+  position: absolute;
+  z-index: 2;
 }
 
 #fv-player-shortcode-editor h1 {

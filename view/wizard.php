@@ -247,7 +247,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?>      
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                  <div class="fv-player-src-below-notice" data-todo="martinv"><?php _e('Unsupported video type - this video will break playlists.', 'fv_flowplayer'); ?></div>
+                  <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>
               </tr>
 
@@ -265,7 +265,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?> 
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                  <div class="fv-player-src-below-notice" data-todo="martinv"><?php _e('Unsupported video type - this video will break playlists.', 'fv_flowplayer'); ?></div>
+                  <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>
               </tr>
 
@@ -275,7 +275,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?>  
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                  <div class="fv-player-src-below-notice" data-todo="martinv"><?php _e('Unsupported video type - this video will break playlists.', 'fv_flowplayer'); ?></div>
+                  <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>    			
               </tr>
               
