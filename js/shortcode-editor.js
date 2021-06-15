@@ -2644,7 +2644,7 @@ jQuery(function() {
         return false;
       }
 
-      var ajax_data = build_ajax_data();
+      var ajax_data = build_ajax_data(true);
 
       overlay_show('loading');
 
