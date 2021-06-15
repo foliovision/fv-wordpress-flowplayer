@@ -846,9 +846,48 @@ jQuery(function() {
         this.select();
       });
 
-      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {
-        // perform video type compatibility check
-        fv_player_editor.src_playlist_url_check( jQuery(this) );
+      /**
+       * Ensure user is notified about using video types which are not supported in playlists
+       */
+      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {      
+        var result = {
+          'supported': true
+        }
+        
+        var url = jQuery(this).val();
+
+        if (
+          url.indexOf('vimeo.com') > -1 ||
+          url.indexOf('vimeopro.com') > -1 ||
+          url.indexOf('youtube.com') > -1 ||
+          url.indexOf('youtube-nocookie.com') > -1 ||
+          url.indexOf('youtu.be') > -1
+        ) {
+          result.supported = false;
+        }
+
+        // fire up a JS event for the FV Player Pro to catch,
+        // so it can check the URL and make sure we don't show
+        // a warning message for PRO-supported video types
+        $doc.trigger('fv-player-editor-src-change', [ url, result ]);
+        
+        // Notice next to the input field
+        var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
+        
+        if( result.supported ) {
+          input_field_notice.hide();
+          
+          fv_player_editor.playlist_buttons_disable(false);
+          
+        } else {
+          // Show a notice if you have a playlist already
+          input_field_notice.toggle( fv_player_editor.get_playlist_items_count() > 1 );
+          
+          // Disable the playlist editing buttons if the video type is not supported in playlists
+          fv_player_editor.playlist_buttons_disable('FV Player Pro required for playlists with this video type');
+          
+        }
+        
       });
 
       $body.on('change', '#fv_wp_flowplayer_field_src', function() {
@@ -3627,53 +3666,6 @@ jQuery(function() {
         $('.playlist_add, .playlist_edit').show();
       },
 
-      /**
-       * Ensure user is notified about using video types which are not supported in playlists
-       *
-       * @param $src_input jQuery representation of the SRC input that was changed.
-       */
-      src_playlist_url_check: function( $src_input ) {
-        var result = {
-          'supported': true
-        }
-        
-        var url = $src_input.val();
-
-        if (
-          url.indexOf('vimeo.com') > -1 ||
-          url.indexOf('vimeopro.com') > -1 ||
-          url.indexOf('youtube.com') > -1 ||
-          url.indexOf('youtube-nocookie.com') > -1 ||
-          url.indexOf('youtu.be') > -1
-        ) {
-          result.supported = false;
-        }
-
-        // fire up a JS event for the FV Player Pro to catch,
-        // so it can check the URL and make sure we don't show
-        // a warning message for PRO-supported video types
-        $doc.trigger('fv-player-editor-src-change', [ url, result ]);
-        
-        console.log('FV Player editor playlist supported',result);
-        
-        // Notice next to the input field
-        var input_field_notice = $src_input.siblings('.fv-player-src-playlist-support-notice');
-        
-        if( result.supported ) {
-          input_field_notice.hide();
-          
-          fv_player_editor.playlist_buttons_disable(false);
-          
-        } else {
-          // Show a notice if you have a playlist already
-          input_field_notice.toggle( this.get_playlist_items_count() > 1 );
-          
-          // Disable the playlist editing buttons if the video type is not supported in playlists
-          fv_player_editor.playlist_buttons_disable('FV Player Pro required for playlists with this video type');
-          
-        }
-        
-      },
     };
 
   })(jQuery);
