@@ -33,7 +33,10 @@ class FV_Player_Db_Video {
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $meta_data = null; // object of this video's meta data
+    $meta_data = null, // object of this video's meta data
+    $ignored_video_fields = array(
+      'vr', // VR is a meta value, so it should not be stored globally per-player
+    );
 
   private static
     $db_table_name,
@@ -246,7 +249,7 @@ CREATE TABLE " . self::$db_table_name . " (
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
           }
-        } else {
+        } else if ( !in_array( $key, $this->ignored_video_fields ) ) {
           // generate warning
           trigger_error('Unknown property for new DB video: ' . $key);
         }
