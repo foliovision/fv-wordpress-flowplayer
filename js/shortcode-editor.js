@@ -798,6 +798,8 @@ jQuery(function() {
 
         $('.fv-player-save-waiting').addClass('is-active');
 
+        $('#wrapper').html("<div class='fv-player-editor-player-loading'><span class='waiting spinner is-active'></span></div>");
+
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_save_this_please),
@@ -828,6 +830,14 @@ jQuery(function() {
                 }
                 overlay_close_waiting_for_save = false;
                 $.fn.fv_player_box.close();
+              } else if ( player.preview_data && player.preview_data.html ) {
+                // auto-refresh preview
+                $('#wrapper')
+                  .html( player.preview_data.html )
+                  .find('.fv-player-editor-player-loading')
+                  .remove();
+
+                $doc.trigger('fvp-preview-complete');
               }
             }
           } catch(e) {
