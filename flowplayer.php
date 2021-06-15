@@ -26,6 +26,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// mute jQuery migrate in console, since it generates a lot of unneccessary notices
+function custom_mute_jquery_migrator() {
+  echo '<script>jQuery.migrateMute = true;</script>';
+}
+add_action( 'wp_head', 'custom_mute_jquery_migrator' );
+add_action( 'admin_head', 'custom_mute_jquery_migrator' );
+
 global $fv_wp_flowplayer_ver;
 $fv_wp_flowplayer_ver = '7.4.9999.727.16';
 $fv_wp_flowplayer_core_ver = '7.2.7.1';
