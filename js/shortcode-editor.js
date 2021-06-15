@@ -3306,6 +3306,8 @@ jQuery(function() {
       else {
         alert('Please enter the file name of your video file.');
       }
+      
+      return false;
     });
 
     /*
