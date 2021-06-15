@@ -3458,6 +3458,8 @@ jQuery(function() {
       item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_stream_checkboxes);
       item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_stream_checkboxes);
       item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!show_stream_checkboxes);
+      
+      editor_resize();
     }
 
     /*
