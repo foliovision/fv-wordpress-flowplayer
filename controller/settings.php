@@ -319,7 +319,6 @@ function fv_flowplayer_admin_scripts() {
     
     wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), $fv_wp_flowplayer_ver );
-    wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js',array('jquery'), $fv_wp_flowplayer_ver );
 
     wp_localize_script('fv-player-admin', 'cm_settings', wp_enqueue_code_editor(array('type' => 'text/css')) );
   }
