@@ -645,11 +645,15 @@ function fv_player_comment_text( $comment_text ) {
   return $comment_text;
 }
 
+add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_playlist' );
+
 function fv_player_footer_svg_playlist() {
   if( file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) {
     include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
   }
 }
+
+add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_rewind' );
 
 function fv_player_footer_svg_rewind() {
   ?>
