@@ -22,10 +22,20 @@ class FV_Player_Stats {
     add_action( 'admin_init', array( $this, 'folder_init' ) );
 
     add_action( 'admin_menu', array( $this, 'stats_link' ), 13 );
+  
+    add_filter( 'fv_player_is_admin_screen', array( $this, 'is_admin_screen' ));
   }
 
   function stats_link() {
     add_submenu_page( 'fv_player', 'Stats Link', 'Stats', 'manage_options', 'fv_player_stast', 'fv_player_stats_page' );
+  }
+
+  function is_admin_screen( $is ) {
+    if( isset($_GET['page']) && strcmp($_GET['page'],'fv_player_stast') == 0 ) {
+      return true;
+    }
+
+    return $is;
   }
 
   function get_stat_columns() {
