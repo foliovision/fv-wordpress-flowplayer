@@ -20,6 +20,12 @@ class FV_Player_Stats {
     // add_action( 'admin_init', array( $this, 'db_init' ) );
 
     add_action( 'admin_init', array( $this, 'folder_init' ) );
+
+    add_action( 'admin_menu', array( $this, 'stats_link' ), 13 );
+  }
+
+  function stats_link() {
+    add_submenu_page( 'fv_player', 'Stats Link', 'Stats', 'manage_options', 'fv_player_stast', 'fv_player_stats_page' );
   }
 
   function get_stat_columns() {
@@ -241,7 +247,7 @@ class FV_Player_Stats {
     $this->folder_init( true );
     
     $cache_files = scandir( $this->cache_directory );
-    foreach( $cache_files as $filename ){
+    foreach( $cache_files as $filename ) {
       if( preg_match( '/^([^-]+)-([^\.]+)\.data$/', $filename, $matches ) ) {
         $type = $matches[1];
         if( !in_array($type, $this->get_stat_columns() ) ) continue;
@@ -257,8 +263,78 @@ class FV_Player_Stats {
     }
   }
 
+  public function top_ten_videos() {
+    global $wpdb;
+
+    $results = $wpdb->get_results( "SELECT id_video FROM wp_fv_player_stats WHERE date > now() - INTERVAL 7 day GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10", ARRAY_N );
+
+    return $results;
+  }
+
+  public function get_video_stats() {
+    global $wpdb;
+
+    $datasets = array();
+    $top_ids = array();
+    $top_ids_arr = array();
+    $date_labels = array();
+    $top_ids_results = $this->top_ten_videos(); // get top video ids
+    
+    if( !empty($top_ids_results) ) {
+      foreach( $top_ids_results as $result ) {
+        $top_ids[] = $result[0];
+      }
+      $top_ids_arr = $top_ids;
+      $top_ids = implode( ',', array_values( $top_ids ) );
+    } else {
+      return false;
+    }
+
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, caption, src, play FROM wp_fv_player_stats AS s JOIN wp_fv_player_videos AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+
+    if( !empty($results) ) {
+      // get date labels
+      foreach( $results as $row) {
+        if( !in_array( $row['date'], $date_labels ) ) {
+          $date_labels[] = $row['date'];
+        }
+      }
+
+      // order data for graph,
+      foreach( $top_ids_arr as $id_video ) {
+        foreach( $date_labels as $date ) {
+          foreach( $results as $row) {
+            if( $row['id_video'] == $id_video ) {
+              if( !isset($datasets[$id_video]) ) {
+                $datasets[$id_video] = array();
+              }
+
+              $datasets[$id_video][$date] = array(
+                'id_player' => $row['id_player']
+              );
+
+              if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
+                $datasets[$id_video][$date]['play'] = $row['play'];
+              } else { // date row dont exists, add 0 plays
+                $datasets[$id_video][$date]['play'] = 0 ;
+              }
+
+              if( !isset($datasets[$id_video]['caption_src']) ) {
+                $datasets[$id_video]['caption_src'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
+              }
+            }
+          }
+        }
+      }
+      
+      $datasets['date-labels'] = $date_labels; // date will be used as X axis label
+    }
+
+    return $datasets;
+  }
 }
 
+global $FV_Player_Stats;
 $FV_Player_Stats = new FV_Player_Stats();
 
 function fv_player_stats_top( $args = array() ) {

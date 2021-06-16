@@ -5,7 +5,7 @@
  */
 add_action('admin_menu', 'fv_player_admin_menu');
 
-function fv_player_admin_menu () {
+function fv_player_admin_menu() {
   if( function_exists('add_submenu_page') ) {
     add_options_page( 'FV Player', 'FV Player', 'manage_options', 'fvplayer', 'fv_player_admin_page' );
   }
@@ -20,11 +20,19 @@ function fv_player_admin_page() {
 
 
 
+
 function fv_player_is_admin_screen() {
   if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
      return true;
   }
   return false;
+}
+
+
+
+
+function fv_player_stats_page() {
+  include dirname( __FILE__ ) . '/../view/stats.php';
 }
 
 
@@ -37,7 +45,7 @@ function fv_wp_flowplayer_plugin_action_links($links, $file) {
     $settings_link = '<a href="https://foliovision.com/pro-support" target="_blank">Premium Support</a>';
     array_unshift($links, $settings_link);
     $settings_link = '<a href="options-general.php?page=fvplayer">Settings</a>';
-    array_unshift($links, $settings_link);      
+    array_unshift($links, $settings_link);
   }
   return $links;
 }
