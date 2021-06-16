@@ -5,7 +5,7 @@
 ?>
 
 <div class="wrap">
-  <h1>Top Videos And Posts Statistics</h1>
+  <h1>FV Player Stats</h1>
   <script>
   // Randomize color for each line
   var fv_chart_dynamic_color = function() {
@@ -54,8 +54,8 @@
 <?php if(!empty($fv_video_stats_data) ): ?>
 
   <div>
-    <h2>Top Videos</h2>
-    <canvas width="768" height="384" id="chart-top-videos"></canvas>
+    <h2>Top 10 Videos in last week</h2>
+    <canvas id="chart-top-videos" style="max-height: 36vh"></canvas>
   </div>
 
   <script>
@@ -74,13 +74,7 @@
       datasets: top_videos_datasets
     },
     options: {
-      responsive: false,
-      plugins: {
-        title: {
-          display: true,
-          text: 'Top Videos For Last 7 Days',
-        }
-      },
+      responsive: true,
       scales: {
         y: {
           beginAtZero: true
@@ -94,8 +88,8 @@
 
 <?php if(!empty($fv_post_stats_data) ): ?>
   <div>
-    <h2>Top Posts</h2>
-    <canvas width="768" height="384" id="chart-top-posts"></canvas>
+    <h2>Top 10 Post Video plays in last week</h2>
+    <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
   <script>
     // Top Posts
@@ -112,13 +106,7 @@
         datasets: top_posts_datasets
       },
       options: {
-        responsive: false,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Top Posts For Last 7 Days',
-          }
-        },
+        responsive: true,
         scales: {
           y: {
             beginAtZero: true
