@@ -287,9 +287,9 @@ class FV_Player_Stats {
     }
 
     if( $type == 'video' ) { // video stats
-      $results = $wpdb->get_results( "SELECT date, id_player, id_video, caption, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN wp_fv_player_videos AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+      $results = $wpdb->get_results( "SELECT date, id_player, id_video, caption, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
     } else if( $type == 'post' ) { // post stats
-      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN wp_posts AS p ON s.id_post = p.ID WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_post, date;
+      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_post, date;
       ", ARRAY_A );
     }
 
@@ -376,9 +376,9 @@ function fv_player_stats_top( $args = array() ) {
   $join = $where = "";
   if( $taxonomy && $term ) {
     $join = "
-    INNER JOIN wp_term_relationships AS tr ON (pm.meta_value = tr.object_id)
-    INNER JOIN wp_term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-    INNER JOIN wp_terms AS t ON (t.term_id = tt.term_id)";
+    INNER JOIN {$wpdb->prefix}term_relationships AS tr ON (pm.meta_value = tr.object_id)
+    INNER JOIN {$wpdb->prefix}term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+    INNER JOIN {$wpdb->prefix}terms AS t ON (t.term_id = tt.term_id)";
     
     $where = "
     AND tt.taxonomy = '".esc_sql($taxonomy)."'
