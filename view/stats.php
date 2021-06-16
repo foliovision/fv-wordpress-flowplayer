@@ -80,6 +80,8 @@
 
   <script>
   jQuery( document ).ready(function() {
+    picked = [];
+
     // Top Videos
     var ctx_top_videos = document.getElementById('chart-top-videos').getContext('2d');
 
