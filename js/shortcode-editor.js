@@ -828,6 +828,14 @@ jQuery(function() {
                 }
                 overlay_close_waiting_for_save = false;
                 $.fn.fv_player_box.close();
+              } else if ( player.preview_data && player.preview_data.html ) {
+                // auto-refresh preview
+                $('#wrapper')
+                  .html( player.preview_data.html )
+                  .find('.fv-player-editor-player-loading')
+                  .remove();
+
+                $doc.trigger('fvp-preview-complete');
               }
             }
           } catch(e) {
@@ -846,9 +854,48 @@ jQuery(function() {
         this.select();
       });
 
-      $body.on('keyup', '#fv_wp_flowplayer_field_src', function() {
-        // perform video type compatibility check
-        window.fv_player_editor.src_playlist_url_check( jQuery(this) );
+      /**
+       * Ensure user is notified about using video types which are not supported in playlists
+       */
+      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {      
+        var result = {
+          'supported': true
+        }
+        
+        var url = jQuery(this).val();
+
+        if (
+          url.indexOf('vimeo.com') > -1 ||
+          url.indexOf('vimeopro.com') > -1 ||
+          url.indexOf('youtube.com') > -1 ||
+          url.indexOf('youtube-nocookie.com') > -1 ||
+          url.indexOf('youtu.be') > -1
+        ) {
+          result.supported = false;
+        }
+
+        // fire up a JS event for the FV Player Pro to catch,
+        // so it can check the URL and make sure we don't show
+        // a warning message for PRO-supported video types
+        $doc.trigger('fv-player-editor-src-change', [ url, result ]);
+        
+        // Notice next to the input field
+        var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
+        
+        if( result.supported ) {
+          input_field_notice.hide();
+          
+          fv_player_editor.playlist_buttons_disable(false);
+          
+        } else {
+          // Show a notice if you have a playlist already
+          input_field_notice.toggle( fv_player_editor.get_playlist_items_count() > 1 );
+          
+          // Disable the playlist editing buttons if the video type is not supported in playlists
+          fv_player_editor.playlist_buttons_disable('FV Player Pro required for playlists with this video type');
+          
+        }
+        
       });
 
       $body.on('change', '#fv_wp_flowplayer_field_src', function() {
@@ -1415,6 +1462,9 @@ jQuery(function() {
       jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
 
       tabs_refresh();
+      
+      fv_player_editor.playlist_buttons_disable(false);
+      fv_player_editor.playlist_buttons_show();      
 
       set_embeds('');
 
@@ -2602,7 +2652,7 @@ jQuery(function() {
         return false;
       }
 
-      var ajax_data = build_ajax_data();
+      var ajax_data = build_ajax_data(true);
 
       overlay_show('loading');
 
@@ -3306,6 +3356,8 @@ jQuery(function() {
       else {
         alert('Please enter the file name of your video file.');
       }
+      
+      return false;
     });
 
     /*
@@ -3458,6 +3510,8 @@ jQuery(function() {
       item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_stream_checkboxes);
       item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_stream_checkboxes);
       item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!show_stream_checkboxes);
+      
+      editor_resize();
     }
 
     /*
@@ -3603,69 +3657,23 @@ jQuery(function() {
       get_playlist_items_count: function() {
         return jQuery('.title.column-title').length;
       },
-
-      /**
-       * Checks for either an invalid video type being present in the SRC field
-       * (such as YouTube video in Free player, which does not directly support it)
-       * or for a playlist item URL in the SRC field when this player video is the first one existing.
-       *
-       * @param $src_input jQuery representation of the SRC input that was changed.
-       */
-      src_playlist_url_check: function( $src_input ) {
-        var result = {
-          'allok' : true,
-        };
-
-        if (
-          $src_input.val().indexOf('vimeo.com') > -1 ||
-          $src_input.val().indexOf('vimeopro.com') > -1 ||
-          $src_input.val().indexOf('youtube.com') > -1 ||
-          $src_input.val().indexOf('youtu.be') > -1
-        ) {
-          result.allok = false;
-
+      
+      playlist_buttons_disable: function( reason ) {
+        if( reason ) {
+          $('.playlist_add, .playlist_edit').addClass('disabled').attr('title', reason);
         } else {
-          result.allok = true;
-        }
-
-        // fire up a JS event for the PRO player to catch,
-        // so it can check the URL and make sure we don't show
-        // a warning message for PRO-supported video types
-        $doc.trigger('fv-player-editor-src-change', [ $src_input, result ]);
-
-        if ( this.get_playlist_items_count() == 1 ) {
-          // if we only have a single playlist item, show warning
-          // that this video type is unsupported in the FREE version
-          // and also hide the "+ Add playlist item" button
-          $src_input
-            .siblings('.fv-player-src-below-notice')
-            .first()
-            .toggle( !result.allok );
-
-          jQuery('.playlist_add, .playlist_edit').toggle( result.allok );
-        } else {
-          // if we're already editing a playlist with more than 1 video in it,
-          // we need to disable the "Back to playlist" button as well as the
-          // "+ Add playlist item" button and add explanation titles to them,
-          // so user is forced to edit the SRC field as not to break their
-          // existing playlist (the wrong URL is already auto-saved in the DB, so we
-          // need to force user to do this to undo their changes)
-          $src_input
-            .siblings('.fv-player-src-below-notice')
-            .first()
-            .toggle( !result.allok );
-
-          if ( !result.allok ) {
-            jQuery('.playlist_add, .playlist_edit')
-              .addClass('disabled')
-              .attr('title', 'FV Player Pro required for playlists with this video type');
-          } else {
-            jQuery('.playlist_add, .playlist_edit')
-              .removeClass('disabled')
-              .removeAttr('title');
-          }
+          $('.playlist_add, .playlist_edit').removeClass('disabled');
         }
       },
+      
+      playlist_buttons_hide: function() {
+        $('.playlist_add, .playlist_edit').hide();
+      },
+      
+      playlist_buttons_show: function() {
+        $('.playlist_add, .playlist_edit').show();
+      },
+
     };
 
   })(jQuery);

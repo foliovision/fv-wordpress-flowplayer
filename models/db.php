@@ -798,7 +798,7 @@ class FV_Player_Db {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
-    global $FV_Player_Db;
+    global $FV_Player_Db, $fv_fp;
 
     $player_options        = array();
     $video_ids             = array();
@@ -1020,11 +1020,11 @@ class FV_Player_Db {
           foreach( $player->getVideos() AS $video ) {
             $videos[] = $video->getId();
           }
-          $output = array( 'id' => $id, 'videos' => $videos );
-          echo wp_json_encode( $output );
-          
+
           do_action('fv_player_db_save', $id);
-          
+
+          $output = array( 'id' => $id, 'videos' => $videos, 'preview_data' => $fv_fp->build_min_player( false, array( 'id' => $id ) ) );
+          echo wp_json_encode( $output );
         } else {
           echo -1;
         }
