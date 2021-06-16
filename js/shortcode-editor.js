@@ -798,8 +798,6 @@ jQuery(function() {
 
         $('.fv-player-save-waiting').addClass('is-active');
 
-        $('#wrapper').html("<div class='fv-player-editor-player-loading'><span class='waiting spinner is-active'></span></div>");
-
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_save_this_please),
