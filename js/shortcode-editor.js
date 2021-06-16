@@ -221,7 +221,7 @@ jQuery(function() {
               $wraper_div = $btn.parents('.wp-editor-wrap:first');
 
             for (var i in tinyMCE.editors) {
-              if ($wraper_div.find('#' + tinyMCE.editors[i].editorContainer.id).length) {
+              if (tinyMCE.editors[i].editorContainer && tinyMCE.editors[i].editorContainer.id && $wraper_div.find('#' + tinyMCE.editors[i].editorContainer.id).length) {
                 tinyMCE.activeEditor = tinyMCE.editors[i];
                 break;
               }
@@ -575,7 +575,7 @@ jQuery(function() {
         fv_flowplayer_uploader.on('select', function() {
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
 
-          $('.fv_flowplayer_target').val(attachment.url);
+          $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
@@ -846,6 +846,11 @@ jQuery(function() {
         this.select();
       });
 
+      $body.on('keyup', '#fv_wp_flowplayer_field_src', function() {
+        // perform video type compatibility check
+        window.fv_player_editor.src_playlist_url_check( jQuery(this) );
+      });
+
       $body.on('change', '#fv_wp_flowplayer_field_src', function() {
         var
           $element = jQuery(this),
@@ -869,9 +874,6 @@ jQuery(function() {
           clearInterval($element.data('fv_player_video_auto_refresh_task'));
           $element.removeData('fv_player_video_auto_refresh_task');
         }*/
-
-        // perform video type compatibility check
-        window.fv_player_editor.src_playlist_url_check( $element );
 
         // set jQuery data related to certain meta data that we may have for current video
         if (!$auto_splash_element.length && $splash_element.val() ) {
@@ -1197,7 +1199,6 @@ jQuery(function() {
 
       $doc.on('change', '#players_selector', function() {
         el_editor.find('.button-primary').text('Insert').removeAttr('disabled');
-        // TODO: This looses the #fvp_placeholder# so you can't pick the exising player in tinyMCE text mode
         editor_open(this.value);
       });
 
@@ -1217,6 +1218,10 @@ jQuery(function() {
       });
 
       $doc.on('click', '.playlist_edit', function() {
+        if ( jQuery(this).hasClass('disabled') ) {
+          return false;
+        }
+
         return playlist_show();
       });
 
@@ -1876,6 +1881,29 @@ jQuery(function() {
       // rather then set to a player ID
       if (db_id) {
         content = db_id;
+
+        // we loose the #fvp_placeholder# placeholder in TinyMCE text mode, so let's re-add it here
+        if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+          var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
+
+          // look for start of shortcode
+          for (var start = position; start--; start >= 0) {
+            if (editor_content[start] == '[') {
+              var sliced_content = editor_content.slice(start);
+              var matched = sliced_content.match(/^\[fvplayer[^\[\]]*]?/);
+              // found the shortcode!
+              if (matched) {
+                shortcode = matched;
+              }
+
+              break;
+            } else if (editor_content[start] == ']') {
+              break
+            }
+          }
+          // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
+          editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
+        }
       }
 
       if(typeof(shortcode) == 'undefined'){
@@ -3570,6 +3598,13 @@ jQuery(function() {
       },
 
       /**
+       * Returns the number of videos in a playlist for the current player.
+       */
+      get_playlist_items_count: function() {
+        return jQuery('.title.column-title').length;
+      },
+
+      /**
        * Checks for either an invalid video type being present in the SRC field
        * (such as YouTube video in Free player, which does not directly support it)
        * or for a playlist item URL in the SRC field when this player video is the first one existing.
@@ -3596,18 +3631,39 @@ jQuery(function() {
         // fire up a JS event for the PRO player to catch,
         // so it can check the URL and make sure we don't show
         // a warning message for PRO-supported video types
-        $doc.trigger('editor_src_field_changed', [ $src_input, result ]);
+        $doc.trigger('fv-player-editor-src-change', [ $src_input, result ]);
 
-        if ( !result.allok ) {
+        if ( this.get_playlist_items_count() == 1 ) {
+          // if we only have a single playlist item, show warning
+          // that this video type is unsupported in the FREE version
+          // and also hide the "+ Add playlist item" button
           $src_input
             .siblings('.fv-player-src-below-notice')
             .first()
-            .css('display', 'block');
+            .toggle( !result.allok );
+
+          jQuery('.playlist_add, .playlist_edit').toggle( result.allok );
         } else {
+          // if we're already editing a playlist with more than 1 video in it,
+          // we need to disable the "Back to playlist" button as well as the
+          // "+ Add playlist item" button and add explanation titles to them,
+          // so user is forced to edit the SRC field as not to break their
+          // existing playlist (the wrong URL is already auto-saved in the DB, so we
+          // need to force user to do this to undo their changes)
           $src_input
             .siblings('.fv-player-src-below-notice')
             .first()
-            .css('display', 'none');
+            .toggle( !result.allok );
+
+          if ( !result.allok ) {
+            jQuery('.playlist_add, .playlist_edit')
+              .addClass('disabled')
+              .attr('title', 'FV Player Pro required for playlists with this video type');
+          } else {
+            jQuery('.playlist_add, .playlist_edit')
+              .removeClass('disabled')
+              .removeAttr('title');
+          }
         }
       },
     };
