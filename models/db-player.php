@@ -429,6 +429,7 @@ CREATE TABLE " . self::$db_table_name . " (
   video_ads varchar(10) NOT NULL,
   video_ads_post varchar(10) NOT NULL,
   width varchar(7) NOT NULL,
+  status varchar(9) NOT NULL default 'published',
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
