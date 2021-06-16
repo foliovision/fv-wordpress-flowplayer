@@ -119,6 +119,7 @@
   </div>
   <script>
   jQuery( document ).ready(function() {
+    picked = [];
      // Top Posts
     var ctx_top_posts = document.getElementById('chart-top-posts').getContext('2d');
 
