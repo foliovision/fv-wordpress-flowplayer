@@ -1,7 +1,7 @@
 <?php
   global $FV_Player_Stats;
   $fv_video_stats_data = $FV_Player_Stats->get_video_stats();
-  $fv_post_stats_data = $FV_Player_Stats->get_post_stats();
+  // $fv_post_stats_data = $FV_Player_Stats->get_post_stats();
 ?>
 
 <div class="wrap">
@@ -13,12 +13,12 @@
     var r = Math.floor(Math.random() * 255);
     var g = Math.floor(Math.random() * 255);
     var b = Math.floor(Math.random() * 255);
-    
+
     var colors = {
       backgroundColor: "rgba(" + r + "," + g + "," + b + ", 0.2)",
       borderColor: "rgba(" + r + "," + g + "," + b + ", 1)"
     }
-    
+
     return colors;
   };
   </script>
@@ -38,6 +38,8 @@
   var top_videos_datasets = [];
 
   for ( var id_video in top_video_results ) {
+    if( !top_video_results.hasOwnProperty(id_video) || id_video == 'date-labels' ) continue;
+
     var data = [];
     var colors = fv_chart_dynamic_color();
 
@@ -57,8 +59,6 @@
     dataset_item['data'] = data;
     top_videos_datasets.push(dataset_item);
   }
-
-  console.log('top_datasets', top_videos_datasets)
 
   var top_videos_chart = new Chart(ctx_top_videos, {
       type: 'line',

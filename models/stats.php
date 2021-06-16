@@ -266,7 +266,7 @@ class FV_Player_Stats {
   public function top_ten_videos() {
     global $wpdb;
 
-    $results = $wpdb->get_results( "SELECT id_video FROM wp_fv_player_stats WHERE date > now() - INTERVAL 7 day GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10", ARRAY_N );
+    $results = $wpdb->get_col( "SELECT id_video FROM wp_fv_player_stats WHERE date > now() - INTERVAL 7 day GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
 
     return $results;
   }
@@ -281,11 +281,8 @@ class FV_Player_Stats {
     $top_ids_results = $this->top_ten_videos(); // get top video ids
     
     if( !empty($top_ids_results) ) {
-      foreach( $top_ids_results as $result ) {
-        $top_ids[] = $result[0];
-      }
-      $top_ids_arr = $top_ids;
-      $top_ids = implode( ',', array_values( $top_ids ) );
+      $top_ids_arr = array_values( $top_ids_results );
+      $top_ids = implode( ',', array_values( $top_ids_arr ) );
     } else {
       return false;
     }
@@ -309,24 +306,27 @@ class FV_Player_Stats {
                 $datasets[$id_video] = array();
               }
 
-              $datasets[$id_video][$date] = array(
-                'id_player' => $row['id_player']
-              );
-
+              if( !isset($datasets[$id_video][$date]) ) {
+                $datasets[$id_video][$date] = array(
+                  'id_player' => $row['id_player']
+                );
+              }
+              
               if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
                 $datasets[$id_video][$date]['play'] = $row['play'];
-              } else { // date row dont exists, add 0 plays
+              } else if( !isset( $datasets[$id_video][$date]['play']) ) { // date row dont exists, add 0 plays - dont overwrite if value already set
                 $datasets[$id_video][$date]['play'] = 0 ;
               }
 
               if( !isset($datasets[$id_video]['caption_src']) ) {
                 $datasets[$id_video]['caption_src'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
               }
+              
             }
           }
         }
       }
-      
+
       $datasets['date-labels'] = $date_labels; // date will be used as X axis label
     }
 
