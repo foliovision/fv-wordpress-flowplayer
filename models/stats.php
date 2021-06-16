@@ -266,18 +266,17 @@ class FV_Player_Stats {
   public function top_ten_videos() {
     global $wpdb;
 
-    $results = $wpdb->get_col( "SELECT id_video FROM wp_fv_player_stats WHERE date > now() - INTERVAL 7 day GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date > now() - INTERVAL 7 day GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
 
     return $results;
   }
 
-  public function get_video_stats() {
+  public function get_top_video_post_stats( $type ) {
     global $wpdb;
 
-    $datasets = array();
+    $datasets = false;
     $top_ids = array();
     $top_ids_arr = array();
-    $date_labels = array();
     $top_ids_results = $this->top_ten_videos(); // get top video ids
     
     if( !empty($top_ids_results) ) {
@@ -287,51 +286,80 @@ class FV_Player_Stats {
       return false;
     }
 
-    $results = $wpdb->get_results( "SELECT date, id_player, id_video, caption, src, play FROM wp_fv_player_stats AS s JOIN wp_fv_player_videos AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+    if( $type == 'video' ) { // video stats
+      $results = $wpdb->get_results( "SELECT date, id_player, id_video, caption, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN wp_fv_player_videos AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+    } else if( $type == 'post' ) { // post stats
+      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN wp_posts AS p ON s.id_post = p.ID WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_post, date;
+      ", ARRAY_A );
+    }
 
     if( !empty($results) ) {
-      // get date labels
-      foreach( $results as $row) {
-        if( !in_array( $row['date'], $date_labels ) ) {
-          $date_labels[] = $row['date'];
-        }
-      }
-
-      // order data for graph,
-      foreach( $top_ids_arr as $id_video ) {
-        foreach( $date_labels as $date ) {
-          foreach( $results as $row) {
-            if( $row['id_video'] == $id_video ) {
-              if( !isset($datasets[$id_video]) ) {
-                $datasets[$id_video] = array();
-              }
-
-              if( !isset($datasets[$id_video][$date]) ) {
-                $datasets[$id_video][$date] = array(
-                  'id_player' => $row['id_player']
-                );
-              }
-              
-              if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
-                $datasets[$id_video][$date]['play'] = $row['play'];
-              } else if( !isset( $datasets[$id_video][$date]['play']) ) { // date row dont exists, add 0 plays - dont overwrite if value already set
-                $datasets[$id_video][$date]['play'] = 0 ;
-              }
-
-              if( !isset($datasets[$id_video]['caption_src']) ) {
-                $datasets[$id_video]['caption_src'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
-              }
-              
-            }
-          }
-        }
-      }
-
-      $datasets['date-labels'] = $date_labels; // date will be used as X axis label
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $type );
     }
 
     return $datasets;
   }
+
+  private function get_date_labels( $results ) {
+    $date_labels = array();
+
+    foreach( $results as $row) {
+      if( !in_array( $row['date'], $date_labels ) ) {
+        $date_labels[] = $row['date'];
+      }
+    }
+
+    return $date_labels;
+  }
+
+  private function process_graph_data( $results, $top_ids_arr, $type ) {
+    $datasets = array();
+    $date_labels = $this->get_date_labels( $results );
+
+    if( $type == 'video'  ) {
+      $id_item = 'id_player';
+    } else if( $type == 'post' ) {
+      $id_item = 'id_post';
+    }
+
+    // order data for graph,
+    foreach( $top_ids_arr as $id_video ) {
+      foreach( $date_labels as $date ) {
+        foreach( $results as $row) {
+          if( $row['id_video'] == $id_video ) {
+            if( !isset($datasets[$id_video]) ) {
+              $datasets[$id_video] = array();
+            }
+
+            if( !isset($datasets[$id_video][$date]) ) {
+              $datasets[$id_video][$date] = array(
+                'id_player_post'=> $row[$id_item]
+              );
+            }
+            
+            if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
+              $datasets[$id_video][$date]['play'] = $row['play'];
+            } else if( !isset( $datasets[$id_video][$date]['play']) ) { // date row dont exists, add 0 plays - dont overwrite if value already set
+              $datasets[$id_video][$date]['play'] = 0;
+            }
+
+            if( !isset($datasets[$id_video]['name']) ) {
+              if( $type == 'video'  ) {
+                $datasets[$id_video]['name'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
+              } else if( $type == 'post' ) {
+                $datasets[$id_video]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    $datasets['date-labels'] = $date_labels; // date will be used as X axis label
+
+    return $datasets;
+  }
+
 }
 
 global $FV_Player_Stats;
