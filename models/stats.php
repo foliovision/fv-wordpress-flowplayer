@@ -26,7 +26,7 @@ class FV_Player_Stats {
   }
 
   function stats_link() {
-    add_submenu_page( 'fv_player', 'Stats Link', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
+    add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
   }
 
   function get_stat_columns() {
