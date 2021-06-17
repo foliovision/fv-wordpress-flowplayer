@@ -1597,7 +1597,7 @@ class FV_Player_Db {
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    $players = $this->getListPageData('id, name', null, null, null);
+    $players = $this->getListPageData('date_created', 'desc', null, null);
     $json_data = array();
 
     foreach ($players as $player) {
