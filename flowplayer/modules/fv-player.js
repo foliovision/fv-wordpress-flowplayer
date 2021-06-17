@@ -385,7 +385,13 @@ function fv_player_preload() {
     if( !window.fv_player_loaded ) {
       window.fv_player_loaded = true;
       setTimeout( function() {
+
+        // jQuery event
         jQuery(document).trigger('fv_player_loaded');
+
+        // pure JS event
+        var event= new CustomEvent('fv_player_loaded',[]);
+        document.dispatchEvent(event);
       }, 100 );
     }
     
