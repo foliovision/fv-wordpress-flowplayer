@@ -357,6 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.0.727 - 2021/06/21 =
+
+*
+* 
+*
+*
+*
+*
+*
+
 = 7.4.47.727 - 2021/05/18 =
 
 * Custom video fields - setting default hook priority to ensure boxes are placed higher up
