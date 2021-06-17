@@ -240,7 +240,7 @@ class FV_Player_Db {
         $player_ids_when_searching = $player_video_ids;
 
         $db_options = array(
-          'select_fields'       => 'player_name, date_created, videos, author',
+          'select_fields'       => 'player_name, date_created, videos, author, status',
           'order_by'            => $order_by,
           'order'               => $order,
           'offset'              => $offset,
@@ -260,7 +260,7 @@ class FV_Player_Db {
       // load all players, which will put them into the cache automatically
 
       $db_options = array(
-        'select_fields' => 'player_name, date_created, videos, author',
+        'select_fields' => 'player_name, date_created, videos, author, status',
         'order_by'      => $order_by,
         'order'         => $order,
         'offset'        => $offset,
@@ -324,6 +324,7 @@ class FV_Player_Db {
           $result_row->subtitles_count = $player->getCount('subtitles');
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
+          $result_row->status = __($player->getStatus(), 'fv-wordpress-flowplayer');
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
@@ -373,6 +374,11 @@ class FV_Player_Db {
           // join name items, if present
           if (is_array($result_row->player_name)) {
             $result_row->player_name = join(', ', $result_row->player_name);
+          }
+
+          // add "Draft" at the end of player, if in draft status
+          if ( $player->getStatus() == 'draft' ) {
+            $result_row->player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
           }
 
           // join thumbnails
@@ -1004,6 +1010,11 @@ class FV_Player_Db {
 
       // create and save the player
       $player = new FV_Player_Db_Player(null, $player_options, $FV_Player_Db);
+
+      // if this player should have a "published" status, add it here
+      if ( !empty( $post_data['status'] ) && $post_data['status'] == 'published' ) {
+        $player->setStatus('published');
+      }
 
       // save only if we're not requesting new instances for preview purposes
       if (!$data) {

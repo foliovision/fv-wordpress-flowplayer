@@ -61,6 +61,7 @@ class FV_Player_Db_Player {
     $video_ads,
     $video_ads_post,
     $width, // with of the player on page
+    $status, // draft of published
     $videos, // comma-delimited IDs of videos for this player
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
@@ -355,6 +356,20 @@ class FV_Player_Db_Player {
   /**
    * @return string
    */
+  public function getStatus() {
+    return $this->status;
+  }
+
+  /**
+   * @param $status
+   */
+  public function setStatus( $status ) {
+    $this->status = $status;
+  }
+
+  /**
+   * @return string
+   */
   public function getVideoIds() {
     return $this->videos;
   } // comma-separated list of video IDs for this player
@@ -460,7 +475,7 @@ CREATE TABLE " . self::$db_table_name . " (
             // generate warning
             trigger_error('Unknown property for new DB player: ' . $key);
           }
-          
+
         }
       }
     }    
@@ -1022,6 +1037,17 @@ CREATE TABLE " . self::$db_table_name . " (
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
+        }
+
+        // make sure status is set to "draft" for a new player
+        if ( $property == 'status' ) {
+          if ( !$is_update ) {
+            $value = 'draft';
+          } else if ( !$value ) {
+            // for existing player, only update if we need to change player status
+            // from "draft" to "published", otherwise leave the status alone
+            continue;
+          }
         }
 
         $numeric_value = in_array( $property, $this->numeric_properties );

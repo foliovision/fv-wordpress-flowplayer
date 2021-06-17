@@ -47,7 +47,11 @@ jQuery(function() {
 
     // are you editing player which is not yet in DB?
     var is_draft = true;
-    var is_draft_changed = false;
+    //var is_draft_changed = false;
+
+    // is the player already saved in the DB but actually
+    // still in a "draft" status? i.e. not published yet
+    var status_is_draft = true;
 
     var is_loading_preview = false;
 
@@ -738,14 +742,15 @@ jQuery(function() {
         setTimeout( function() {
           loading = false;
           is_draft = false;
-          is_draft_changed = false;
+          //is_draft_changed = false;
         },100);
       });
 
       $doc.on('fv_flowplayer_player_editor_reset', function() {
         loading = true;
         is_draft = true;
-        is_draft_changed = false;
+        status_is_draft = true;
+        //is_draft_changed = false;
       });
 
       $doc.on('fv_flowplayer_shortcode_item_sort', save );
@@ -753,16 +758,16 @@ jQuery(function() {
 
       function save(e){
 
-        if (is_draft) {
+        /*if (is_draft) {
           is_draft_changed = true;
-        }
+        }*/
 
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
         // ... but if we're creating a new player from scratch, let's ignore it and save data anyway
         //     if we actually have any data to save
         if ( loading ) {
-          if ( !is_draft/* || !ajax_save_this_please*/ ) {
+          if ( !is_draft ) {
             return;
           } else {
             // we're not loading existing player but creating a new one
@@ -772,7 +777,25 @@ jQuery(function() {
 
         //console.log('Change?',e.type,e.currentTarget);
 
-        var ajax_data = build_ajax_data(true);
+        var
+          ajax_data = build_ajax_data(true),
+          db_data_loading = true;
+
+        for ( var item in ajax_data.videos ) {
+          // we have video data already loaded from DB,
+          // ... this is the only way to see if we actually have
+          //     at least a single object key while preserving
+          //     browsers compatibility for browsers without support
+          //     for Object.keys()
+          db_data_loading = false;
+          break;
+        }
+
+        if ( db_data_loading || !ajax_data.videos ) {
+          // editing a player and still waiting for the videos to load from DB
+          return;
+        }
+
         if( previous && JSON.stringify(ajax_data) == JSON.stringify(previous) ) {
           console.log('Not really!');
           return;
@@ -856,7 +879,7 @@ jQuery(function() {
                 init_saved_player_fields( player.id );
                 current_player_db_id = player.id;
                 is_draft = false;
-                is_draft_changed = false;
+                //is_draft_changed = false;
                 loading = false;
                 ajax_save_this_please = false;
               }
@@ -1278,6 +1301,8 @@ jQuery(function() {
           // so we'll just need to disable it again here
           $(this).attr('disabled', 'disabled');
         } else {
+          // make sure we mark this player as published in the DB
+          status_is_draft = false;
           editor_submit();
         }
 
@@ -1327,7 +1352,8 @@ jQuery(function() {
 
         // reset variables
         is_draft = true;
-        is_draft_changed = false;
+        status_is_draft = true;
+        //is_draft_changed = false;
 
         // manually invoke a heartbeat to remove an edit lock immediatelly
         if (current_player_db_id > -1) {
@@ -2227,6 +2253,9 @@ jQuery(function() {
               } else {
                 playlist_item_show(0);
               }
+
+              // if this player is published, mark it as such
+              status_is_draft = ( response.status == 'draft' );
             }
 
             overlay_hide();
@@ -2239,6 +2268,11 @@ jQuery(function() {
             if (db_id) {
               fv_player_editor.insert_button_show();
               fv_player_editor.copy_player_button_show();
+            } else if ( response.status == 'draft' ) {
+              // show Save / Insert button, as we're still
+              // in draft mode for this player
+              fv_player_editor.insert_button_show();
+              fix_save_btn_text();
             }
 
             // hotfix:
@@ -2571,14 +2605,24 @@ jQuery(function() {
       } else {
         jQuery(document).trigger('fv_flowplayer_shortcode_new');
         shortcode_remains = '';
-
-        // rename insert to save for new playlists if we come from list view
-        if ( is_fv_player_screen_add_new(editor_button_clicked) ) {
-          jQuery('.fv_player_field_insert-button').text('Save');
-        }
+        fix_save_btn_text();
       }
       
       $doc.trigger('fv_player_editor_finished');
+    }
+
+    /**
+     * Makes sure that the Save / Insert button is showing the correct text
+     * based on current context.
+     */
+    function fix_save_btn_text() {
+      // rename insert to save for new playlists if we come from list view
+      if ( is_fv_player_screen_add_new( editor_button_clicked ) || is_fv_player_screen_edit( editor_button_clicked ) ) {
+        jQuery('.fv_player_field_insert-button').text('Save');
+      } else {
+        // we're in a post / widget, rename save button to Insert
+        jQuery('.fv_player_field_insert-button').text('Insert');
+      }
     }
 
     /*
@@ -2664,6 +2708,11 @@ jQuery(function() {
         current_player_db_id = -1;
       }
 
+      // if player should be in published state, add it into the AJAX data
+      if ( !status_is_draft ) {
+        ajax_data['status'] = 'published';
+      }
+
       // save data
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_save',
@@ -2672,7 +2721,7 @@ jQuery(function() {
       }, function(response) {
         // player saved, reset draft status
         is_draft = false;
-        is_draft_changed = false;
+        //is_draft_changed = false;
 
         var player = JSON.parse(response);
         current_player_db_id = parseInt(player.id);

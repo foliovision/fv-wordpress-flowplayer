@@ -72,6 +72,7 @@ class FV_Player_List_Table_View {
       'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
       'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
       'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' ),
+      'status'           => __( 'Status', 'fv-wordpress-flowplayer' ),
     );
 
     global $fv_fp;
@@ -98,7 +99,7 @@ class FV_Player_List_Table_View {
       return;
    
     $args = array(
-      'label' => __('Players per page', 'pippin'),
+      'label' => __('Players per page', 'fv-wordpress-flowplayer'),
       'default' => 25,
       'option' => 'fv_player_per_page'
     );
@@ -223,7 +224,8 @@ class FV_Player_List_Table extends WP_List_Table {
       'date_created'     => array( 'date_created', true ),
       'subtitles_count'  => array( 'subtitles_count', true ),
       'chapters_count'   => array( 'chapters_count', true ),
-      'transcript_count' => array( 'transcript_count', true )
+      'transcript_count' => array( 'transcript_count', true ),
+      'status'           => array( 'status', true )
     );
   }
   
