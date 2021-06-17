@@ -306,7 +306,7 @@ class FV_Player_Stats {
 
     foreach( $results as $row) {
       if( !in_array( $row['date'], $date_labels ) ) {
-        $date_labels[] = date_i18n( 'Y-m-d', strtotime( $row['date'] ) );
+        $date_labels[] = $row['date'];
       }
     }
 
