@@ -192,7 +192,7 @@ class FV_Player_Stats {
 
           $table_name = $this->get_table_name();
 
-          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d", date('Y-m-d'), $video_id, $post_id, $player_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id ) );
 
           if( $existing ) {
             $wpdb->update(
@@ -200,7 +200,7 @@ class FV_Player_Stats {
               array(
                 $type => $value + $existing->{$type}, // update plays in db
               ),
-              array( 'id_video' => $video_id , 'date' => date('Y-m-d'), 'id_player' => $player_id, 'id_post' => $post_id ), // update by video id, date, player id and post id
+              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id ), // update by video id, date, player id and post id
               array(
                 '%d'
               ),
@@ -218,7 +218,7 @@ class FV_Player_Stats {
                 'id_video' => $video_id,
                 'id_player' => $player_id,
                 'id_post' => $post_id,
-                'date' => date('Y-m-d'),
+                'date' => date_i18n( 'Y-m-d' ),
                 $type => $value
               ),
               array(
@@ -306,7 +306,7 @@ class FV_Player_Stats {
 
     foreach( $results as $row) {
       if( !in_array( $row['date'], $date_labels ) ) {
-        $date_labels[] = $row['date'];
+        $date_labels[] = date_i18n( 'Y-m-d', strtotime( $row['date'] ) );
       }
     }
 
