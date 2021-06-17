@@ -1328,6 +1328,11 @@ jQuery(function() {
           return false;
         }*/
 
+        if ( ( !is_draft || is_saving ) && status_is_draft && !is_fv_player_screen( editor_button_clicked ) ) {
+          // TODO: change into notification bubble
+          alert('Your new player was saved as a draft. To reopen it, open the editor again and use the "Pick existing player" button.');
+        }
+
         // prevent closing if we're still saving the data
         if (ajax_save_this_please || is_saving || is_loading_video_data) {
           // if we already have the overlay changed, bail out
