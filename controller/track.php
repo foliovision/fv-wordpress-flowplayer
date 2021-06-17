@@ -7,6 +7,8 @@ Class FvPlayerTrackerWorker {
   private $cache_path = false;
   private $cache_filename = false;
   private $video_id = false;
+  private $post_id = false;
+  private $player_id = false;
 
   private $file = false;
   private $data = array();
@@ -24,6 +26,8 @@ Class FvPlayerTrackerWorker {
     $this->cache_path = $this->wp_content."/fv-player-tracking";
     $this->cache_filename = "{$tag}-{$blog_id}.data";
     $this->video_id = intval($_REQUEST['video_id']);
+    $this->player_id = intval($_REQUEST['player_id']);
+    $this->post_id = intval( $_REQUEST['post_id'] );
 
     $this->checkCacheFile();
   }
@@ -75,11 +79,28 @@ Class FvPlayerTrackerWorker {
             return false;
           }
         }
-        
-        if( !$data ) $data = array();
-        
-        if( !isset( $data[$this->video_id] ) ) $data[$this->video_id] = 0;
-        $data[$this->video_id]++;
+
+        if( !$data ) { 
+          $data = array();
+        }
+
+        $found = false;
+        foreach( $data as $index => $item ) {
+          if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id ) {
+            $data[$index]['play'] += 1;
+            $found = true;
+            break;
+          }
+        }
+
+        if( !$found ) {
+          $data[] = array(
+            'video_id' => $this->video_id,
+            'post_id' => $this->post_id,
+            'player_id' => $this->player_id,
+            'play' => 1
+          );
+        }
 
         $encoded_data = json_encode($data);
 
