@@ -107,7 +107,7 @@ class FV_Player_Stats {
 
   function options_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Enable Video Stats', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a simple count of video playbacks.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
+    $fv_fp->_get_checkbox(__('Video Stats', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
