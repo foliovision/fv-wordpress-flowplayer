@@ -1492,6 +1492,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( function_exists('get_rocket_cdn_url') ) {
         $item['sources'][$k]['src'] = get_rocket_cdn_url($source['src']);
       }
+
+      if( method_exists('CDN_Enabler_Engine', 'rewriter') ) {
+        $item['sources'][$k]['src'] = CDN_Enabler_Engine::rewriter($source['src']);
+      }
     }
 
     return $item;
