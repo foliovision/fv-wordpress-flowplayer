@@ -97,6 +97,9 @@
         datasets: top_videos_datasets
       },
       options: {
+        animation: {
+          duration: 0
+        },
         responsive: true,
         scales: {
           y: {
@@ -133,6 +136,9 @@
         datasets: top_posts_datasets
       },
       options: {
+        animation: {
+          duration: 0
+        },
         responsive: true,
         scales: {
           y: {
