@@ -626,7 +626,8 @@ function fv_flowplayer_admin_integrations() {
 					</tr>
 
           <?php $fv_fp->_get_checkbox(__('Handle WordPress audio/video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code>, <code><small>[audio]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
-          <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed. Required if you load content using Ajax, like in various LMS systems.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Optimize FV Flowplayer JS loading', 'fv-wordpress-flowplayer'), 'js-optimize', __('Helps with Google PageSpeed scores.', 'fv-wordpress-flowplayer'), __('FV Player JavaScript will be only loaded once the user user start to use the page or on video tap.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('postthumbnail') ) $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
@@ -2012,6 +2013,34 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     jQuery('#playlistFontColor-proxy').on('change',function(e){
       jQuery('#playlistFontColor').val(jQuery(e.target).val());
     });
+
+    /*
+    Ensure only one of "Load FV Flowplayer JS everywhere" and "Optimize FV Flowplayer JS loading" can be enabled
+    */
+    var cb_js_everywhere = $('#js-everywhere'),
+      cb_js_optimize = $('#js-optimize');
+
+    function check_js_everywhere( was_clicked ) {
+      if( was_clicked && cb_js_optimize.prop('checked') ) {
+        alert('Cannot be used together with "Optimize FV Flowplayer JS loading".');
+        return false;
+      }
+
+      cb_js_optimize.prop('readonly', cb_js_everywhere.prop('checked') );
+    }
+    cb_js_everywhere.click( check_js_everywhere );
+    check_js_everywhere();
+
+    function check_js_optimize( was_clicked ) {
+      if( was_clicked && cb_js_everywhere.prop('checked') ) {
+        alert('Cannot be used together with "Load FV Flowplayer JS everywhere".');
+        return false;
+      }
+
+      cb_js_everywhere.prop('readonly', cb_js_optimize.prop('checked') );
+    }
+    cb_js_optimize.click( check_js_optimize );
+    check_js_optimize();
   });
 	//]]>
 </script>

@@ -669,7 +669,7 @@ function fv_player_footer_svg_rewind() {
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
 
 /*
- * Alers all the script tags related to FV Player, with excetption of the base FV Player library.
+ * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
  * The reason is that it's a dependency of most of the modules so then each module would have to be 
  * adjusted to be able to load without it.
  * 
@@ -684,7 +684,7 @@ add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX
  */
 function fv_player_js_loader_mark_scripts( $tag, $handle ) {
   global $fv_fp;
-  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') ) {
+  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') || !$fv_fp->_get_option('js-optimize') ) {
     return $tag;
   }
 

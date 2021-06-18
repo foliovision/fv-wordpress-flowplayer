@@ -726,6 +726,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
     $aNewOptions = array_merge($aOldOptions,$aNewOptions);
+
+    
+    // Ensure only one of "Load FV Flowplayer JS everywhere" and
+    // "Optimize FV Flowplayer JS loading" can be enabled
+    // The first one takes priority as it's safer
+    if( !empty($aNewOptions['js-everywhere']) && $aNewOptions['js-everywhere'] == 'true' && !empty($aNewOptions['js-optimize']) ) {
+      unset($aNewOptions['js-optimize']);
+    }
     
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
