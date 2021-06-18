@@ -503,11 +503,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _get_conf() {
     $conf = get_option( 'fvwpflowplayer' );
     
-    if( !$conf ) { // new install, hide some of the notices
+    if( !$conf ) { // new install
+      // hide some of the notices
       $conf['nag_fv_player_7'] = true;
       $conf['notice_new_lightbox'] = true;
       $conf['notice_db'] = true;
       $conf['notice_xml_sitemap_iframes'] = true;
+
+      $conf['js-optimize'] = true;
     }
     
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
@@ -621,7 +624,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
-    if (!isset($conf['hlsjs'])) $conf['hlsjs'] = 'true';
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     
@@ -2393,7 +2395,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
         ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
         <div style="background:white;">
-          <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+          <div id="wrapper" style="background:white; overflow:hidden">
             <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
           </div>
         </div>
