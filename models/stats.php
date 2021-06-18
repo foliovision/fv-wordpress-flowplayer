@@ -306,19 +306,13 @@ class FV_Player_Stats {
 
     foreach( $results as $row) {
       if( !in_array( $row['date'], $date_labels ) ) {
-        $date_labels[] = $row['date'];
+        $date_labels[strtotime($row['date'])] = $row['date'];
       }
     }
 
-    uasort($date_labels,  array( $this, "sort_dates" ));
+    ksort($date_labels);
 
-    return $date_labels;
-  }
-
-  function sort_dates( $a, $b ) {
-    if ($a == $b) return 0;
-
-    return strtotime($a) - strtotime($b);
+    return array_values($date_labels);
   }
 
   private function process_graph_data( $results, $top_ids_arr, $type ) {
