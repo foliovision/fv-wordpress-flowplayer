@@ -126,6 +126,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure') );
+
+    add_filter( 'fv_player_item', array( $this, 'enable_cdn_rewrite'), 11 );
     
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
@@ -1479,7 +1481,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
     return $match[0];
-  }  
+  }
+
+  public function enable_cdn_rewrite( $item ) {
+    if( is_admin() ) {
+      return $item;
+    }
+
+    foreach( $item['sources'] AS $k => $source ) {
+      if( function_exists('get_rocket_cdn_url') ) {
+        $item['sources'][$k]['src'] = get_rocket_cdn_url($source['src']);
+      }
+    }
+
+    return $item;
+  }
   
   public static function esc_caption( $caption ) {
     return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
