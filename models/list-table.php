@@ -260,13 +260,13 @@ class FV_Player_List_Table extends WP_List_Table {
   public function column_default( $player, $column_name ) {
     $id = $player->id;
     switch ( $column_name ) {
-      case 'id':        
+      case 'id':
         $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
         break;
       case 'date_created' :
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
-      case 'player_name' :        
+      case 'player_name' :
         $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
@@ -299,11 +299,15 @@ class FV_Player_List_Table extends WP_List_Table {
       case 'author':
         $value = '<a href="#">'.get_the_author_meta( 'user_nicename' , $player->author ).'</a>';
       break;
-      case 'shortcode':        
+      case 'shortcode':
         $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
         break;
-      case 'shortcode-copy':        
+      case 'shortcode-copy':
         $value = '<a href="#" class="button fv-player-shortcode-copy">Copy</a>';
+        break;
+      case 'stats_play':
+        $value= '';
+        if( $player->stats_play ) $value = '<a href="'. admin_url( 'admin.php?page=fv_player_stats&player_id=' . $id ) .'" target="_blank">'. $player->stats_play .'</a>';
         break;
       default:
         $value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';

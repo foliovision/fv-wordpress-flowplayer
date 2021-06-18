@@ -301,6 +301,46 @@ class FV_Player_Stats {
     return $datasets;
   }
 
+  public function get_player_stats( $player_id ) {
+    global $wpdb;
+
+    $datasets = array();
+
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, player_name, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS v ON s.id_player = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( '%d' ) GROUP BY id_video, date", $player_id ), ARRAY_A );
+
+    $date_labels = $this->get_date_labels( $results );
+
+    if( !empty($results) ) {
+      foreach( $date_labels as $date ) {
+        foreach( $results as $row) {
+          if( !isset($datasets[$player_id]) ) {
+            $datasets[$player_id] = array();
+          }
+
+          if( !isset($datasets[$player_id][$date]) ) {
+            $datasets[$player_id][$date] = array(
+              'id_player_post'=> $player_id
+            );
+          }
+          
+          if( strcmp( $date, $row['date'] ) == 0 ) {
+            $datasets[$player_id][$date]['play'] = $row['play'];
+          } else if( !isset( $datasets[$player_id][$date]['play']) ) {
+            $datasets[$player_id][$date]['play'] = 0;
+          }
+
+          if( !isset($datasets[$player_id]['name']) ) {
+            $datasets[$player_id]['name'] = !empty($row['player_name'] ) ? $row['player_name'] : 'id_player_' . $player_id;
+          }
+        }
+      }
+    }
+
+    $datasets['date-labels'] = $date_labels;
+
+    return $datasets;
+  }
+
   private function get_date_labels( $results ) {
     $date_labels = array();
 
@@ -310,15 +350,7 @@ class FV_Player_Stats {
       }
     }
 
-    uasort($date_labels,  array( $this, "sort_dates" ));
-
     return $date_labels;
-  }
-
-  function sort_dates( $a, $b ) {
-    if ($a == $b) return 0;
-
-    return strtotime($a) - strtotime($b);
   }
 
   private function process_graph_data( $results, $top_ids_arr, $type ) {
