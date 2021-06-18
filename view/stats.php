@@ -20,22 +20,22 @@
 
   var fv_chart_dynamic_color = function() {
     var colors = [
-      'rgb(255, 99, 132)',
-      'rgb(54, 162, 235)',
-      'rgb(255, 206, 86)',
-      'rgb(75, 192, 192)',
-      'rgb(153, 102, 255)',
-      'rgb(255, 159, 64)',
-      'rgb(0, 255, 0)',
-      'rgb(255, 153, 0)',
-      'rgb(255, 0, 255)',
-      'rgb(204, 0, 0)'
+      '#2660A4',
+      '#F19953',
+      '#8377D1',
+      '#D6D9CE',
+      '#E88EED',
+      '#F3E37C',
+      '#B8B8F3',
+      '#7DD181',
+      '#914D76',
+      '#08415C',
     ];
 
     var i = 0;
     var pick = colors[i];
 
-    while( picked.includes(pick) ) {
+    while( i < picked.length && picked.includes(pick) ) {
       i++;
       pick = colors[i];
     }
@@ -56,9 +56,9 @@
 
       var dataset_item = {
         label: top_results[id_video]['name'],
-        borderWidth: 1,
         borderColor: colors,
         backgroundColor: colors,
+        fill: true
       }
 
       for ( var date in top_results[id_video] ) {
@@ -101,9 +101,13 @@
         datasets: top_videos_datasets
       },
       options: {
+        animation: {
+          duration: 0
+        },
         responsive: true,
         scales: {
           y: {
+            stacked: true,
             beginAtZero: true
           }
         }
@@ -136,9 +140,13 @@
         datasets: top_posts_datasets
       },
       options: {
+        animation: {
+          duration: 0
+        },
         responsive: true,
         scales: {
           y: {
+            stacked: true,
             beginAtZero: true
           }
         }
