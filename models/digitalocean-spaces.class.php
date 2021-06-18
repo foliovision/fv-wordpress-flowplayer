@@ -111,7 +111,8 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       ) );
       $fv_fp->_get_input_text( array(
         'key' => array($this->key,'secret'),
-        'name' => 'Secret'
+        'name' => 'Secret',
+        'secret' => true
       ) );
       ?>
       <tr>

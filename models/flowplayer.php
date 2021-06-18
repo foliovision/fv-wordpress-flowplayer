@@ -371,6 +371,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // however in case of marginBottom you might wish to enter 0 and we need to accept that
     // so we just check if the default if a number and if it is, we allow even 0 value
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
+
+    if( !empty($options['secret']) ) {
+      $val_original = $val;
+      $val_length = strlen($val);
+      $show_bit = floor($val_length*0.1);
+
+      $val = substr( $val_original, 0, $show_bit );
+      for( $i = $show_bit; $i < $val_length - $show_bit; $i++ ) {
+        $val .= '&#9679;';
+      }
+      $val .= substr( $val_original, -$show_bit, $show_bit );
+    }
+
     ?>
       <tr>
         <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
@@ -381,10 +394,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
-          ?> />          
+          ?> />
           <?php if ( $help ) { ?>
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo $help; ?></span></p>
           <?php } ?>
+          <?php if( !empty($options['secret']) ) { ?>
+            <input name="_is_secret_<?php echo esc_attr($key); ?>" value="<?php echo md5($val_original); ?>" type="hidden" />
+          <?php } ?>          
         </td>
       </tr>
 
