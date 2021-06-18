@@ -304,39 +304,18 @@ class FV_Player_Stats {
   public function get_player_stats( $player_id ) {
     global $wpdb;
 
-    $datasets = array();
+    $datasets = false;
 
-    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, player_name, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS v ON s.id_player = v.id WHERE date > now() - INTERVAL 7 day AND s.id_player IN( '%d' ) GROUP BY date", $player_id ), ARRAY_A );
-
-    $date_labels = $this->get_date_labels( $results );
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, caption, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
 
     if( !empty($results) ) {
-      foreach( $date_labels as $date ) {
-        foreach( $results as $row) {
-          if( !isset($datasets[$player_id]) ) {
-            $datasets[$player_id] = array();
-          }
-
-          if( !isset($datasets[$player_id][$date]) ) {
-            $datasets[$player_id][$date] = array(
-              'id_player_post'=> $player_id
-            );
-          }
-          
-          if( strcmp( $date, $row['date'] ) == 0 ) {
-            $datasets[$player_id][$date]['play'] = $row['play'];
-          } else if( !isset( $datasets[$player_id][$date]['play']) ) {
-            $datasets[$player_id][$date]['play'] = 0;
-          }
-
-          if( !isset($datasets[$player_id]['name']) ) {
-            $datasets[$player_id]['name'] = !empty($row['player_name'] ) ? $row['player_name'] : 'id_player_' . $player_id;
-          }
-        }
+      $ids_arr = array();
+      foreach( $results as $row ) {
+        $ids_arr[] = $row['id_video'];
       }
-    }
 
-    $datasets['date-labels'] = $date_labels;
+      $datasets = $this->process_graph_data( $results, $ids_arr, 'player' );
+    }
 
     return $datasets;
   }
@@ -357,8 +336,10 @@ class FV_Player_Stats {
     $datasets = array();
     $date_labels = $this->get_date_labels( $results );
 
-    if( $type == 'video'  ) {
+    if( $type == 'video' ) {
       $id_item = 'id_player';
+    } else if( $type == 'player' ) {
+      $id_item = 'player_name';
     } else if( $type == 'post' ) {
       $id_item = 'id_post';
     }
@@ -385,7 +366,7 @@ class FV_Player_Stats {
             }
 
             if( !isset($datasets[$id_video]['name']) ) {
-              if( $type == 'video'  ) {
+              if( $type == 'video' || $type == 'player' ) {
                 $datasets[$id_video]['name'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
               } else if( $type == 'post' ) {
                 $datasets[$id_video]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
