@@ -310,7 +310,15 @@ class FV_Player_Stats {
       }
     }
 
+    uasort($date_labels,  array( $this, "sort_dates" ));
+
     return $date_labels;
+  }
+
+  function sort_dates( $a, $b ) {
+    if ($a == $b) return 0;
+
+    return strtotime($a) - strtotime($b);
   }
 
   private function process_graph_data( $results, $top_ids_arr, $type ) {
