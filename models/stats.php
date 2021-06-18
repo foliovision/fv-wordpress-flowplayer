@@ -306,7 +306,7 @@ class FV_Player_Stats {
 
     $datasets = array();
 
-    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, player_name, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS v ON s.id_player = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( '%d' ) GROUP BY id_video, date", $player_id ), ARRAY_A );
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, player_name, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS v ON s.id_player = v.id WHERE date > now() - INTERVAL 7 day AND s.id_player IN( '%d' ) GROUP BY date", $player_id ), ARRAY_A );
 
     $date_labels = $this->get_date_labels( $results );
 
