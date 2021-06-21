@@ -862,12 +862,9 @@ jQuery(function() {
                 }
                 overlay_close_waiting_for_save = false;
                 $.fn.fv_player_box.close();
-              } else if ( player.preview_data && player.preview_data.html ) {
+              } else if ( player.html ) {
                 // auto-refresh preview
-                $('#wrapper')
-                  .html( player.preview_data.html )
-                  .find('.fv-player-editor-player-loading')
-                  .remove();
+                el_preview_target.html( player.html )
 
                 $doc.trigger('fvp-preview-complete');
               }

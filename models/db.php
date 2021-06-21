@@ -1034,7 +1034,11 @@ class FV_Player_Db {
 
           do_action('fv_player_db_save', $id);
 
-          $output = array( 'id' => $id, 'videos' => $videos, 'preview_data' => $fv_fp->build_min_player( false, array( 'id' => $id ) ) );
+          $output = array( 'id' => $id, 'videos' => $videos );
+          
+          $preview_data = $fv_fp->build_min_player( false, array( 'id' => $id ) );
+          $output['html'] = $preview_data['html'];
+          
           echo wp_json_encode( $output );
         } else {
           echo -1;
