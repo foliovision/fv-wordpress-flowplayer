@@ -213,16 +213,22 @@ a #add-format, a #add-rtmp {
   right: 0;
 }
 
-.fv-player-save-completed {
+.fv-player-save-notice {
   position: absolute;
   bottom: 10px;
   left: 0;
   right: 0;
   background: #fff;
-  border-left: 4px solid #46b450;
+  border-left: 4px solid gray;
   box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
   margin: 5px 15px 2px;
   padding: 1px 12px;
+}
+.fv-player-save-completed {
+  border-left: 4px solid #46b450;
+}
+.fv-player-save-error {
+  border-left: 4px solid #bf0000;
 }
 
 .fv-player-src-playlist-support-notice {

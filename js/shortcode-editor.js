@@ -789,6 +789,7 @@ jQuery(function() {
 
         el_spinner.show();
 
+        $('.fv-player-save-error').hide();
 
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
@@ -845,7 +846,14 @@ jQuery(function() {
           } catch(e) {
             error(e);
           }
-        }, 'json' ).error(error);
+
+        }, 'json' ).error( function() {
+          $('.fv-player-save-error').show();
+          
+          el_spinner.hide();
+          
+          is_saving = false;
+        });
 
         ajax_save_this_please = false;
 
