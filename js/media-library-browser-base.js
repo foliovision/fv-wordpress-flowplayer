@@ -475,9 +475,6 @@ jQuery( function($) {
 
     $popup_close_btn.click();
 
-    // refresh preview
-    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click();
-
     return false;
   }
 

@@ -17,8 +17,7 @@ jQuery(function() {
     var $doc = $(document),
       $win = $(window),
       el_editor,
-      el_preview,
-      el_preview_refresh;
+      el_preview;
 
     // data to save in Ajax
     var ajax_save_this_please = false;
@@ -197,7 +196,6 @@ jQuery(function() {
 
       el_preview = $('#fv-player-shortcode-editor-preview');
 
-      el_preview_refresh = $('#fv-player-shortcode-editor-preview-iframe-refresh');
 
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
@@ -492,8 +490,6 @@ jQuery(function() {
           jQuery('.fv-player-tab-playlist tr td').click();
         }
 
-        preview_show_button();
-
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
       });
 
@@ -530,8 +526,6 @@ jQuery(function() {
           get_field( 'rtmp', get_tab('first','video-files') ).val( store_rtmp_server );
 
           playlist_index();
-
-          preview_show_button();
 
           $doc.trigger('fv_flowplayer_shortcode_item_sort');
 
@@ -619,8 +613,6 @@ jQuery(function() {
             } );
 
           }
-
-          preview_show_button();
         });
 
         //Open the uploader dialog
@@ -632,43 +624,6 @@ jQuery(function() {
       template_video = get_tab('first','video-files').parent().html();
       template_subtitles = jQuery('.fv-fp-subtitle').parent().html();
       template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
-      /*
-      * Preview
-      */
-      $doc.on('input', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
-        if( !preview_not_supported && jQuery('.fv-player-tab-playlist tr').length < 10 ){
-          el_preview_refresh.show();
-        }
-      });
-
-      var fv_player_shortcode_click_element = null;
-      $doc.on( 'mousedown', function(e) {
-        fv_player_shortcode_click_element = jQuery(e.target);
-      });
-
-      $doc.on( 'mousedown', function(e) {
-        fv_player_shortcode_click_element = null;
-      });
-
-      $doc.on('blur', '.fv-player-tabs [name][data-live-update!=false]' ,function(){
-        if( fv_player_shortcode_click_element && fv_player_shortcode_click_element.hasClass('button-primary') ) {
-          return;
-        }
-
-        preview_show_button();
-      });
-
-      $doc.on('keypress', '.fv-player-tabs [name][data-live-update!=false]' ,function(e){
-        if(e.key === 'Enter') {
-          preview_submit();
-        }
-      });
-
-      el_preview_refresh.click(function(){
-        el_preview_refresh.hide();
-
-        preview_submit();
-      });
 
       /*
       * End of playlist Actions
@@ -689,7 +644,6 @@ jQuery(function() {
             jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
             break;
           default:
-            preview_show_button();
             break;
         }
       });
@@ -3060,8 +3014,6 @@ jQuery(function() {
       $('.fv_wp_flowplayer_field_subtitles_lang, .subtitle_language_add_link').attr('style',false);
 
       tabs_refresh();
-
-      preview_submit();
     }
 
     /*
@@ -3145,7 +3097,6 @@ jQuery(function() {
       jQuery('.fv-player-tab-playlist').show();
       editor_resize();
       tabs_refresh();
-      preview_submit();
 
       return false;
     }
@@ -3162,95 +3113,6 @@ jQuery(function() {
         width: width,
         height: height
       };
-    }
-
-    /*
-     *  Load the preview player
-     */
-    function preview_show(data) {
-      el_preview_refresh.hide();
-
-      var found_src = false;
-      $.each( data.videos, function(k,v) {
-        if( v.fv_wp_flowplayer_field_src || v.fv_wp_flowplayer_field_rtmp_path ) {
-          found_src = true;
-          return false;
-        }
-      });
-
-      if( !found_src ) {
-        el_preview.attr('class', 'preview-no');
-        editor_resize();
-        return;
-      }
-
-      if(preview_not_supported){
-        jQuery('#fv-player-shortcode-editor-preview-new-tab > a').html('Open preview in a new window');
-        if( jQuery('#fv-player-shortcode-editor-preview div.incompatibility').length == 0 ) jQuery('#fv-player-shortcode-editor-preview-new-tab').after('<div class="notice notice-warning incompatibility"><p>For live preview of the video player please use the latest Firefox, Chromium or Opera.</p></div>');
-        return;
-      }
-
-      //console.trace();
-      console.log('preview_show',data);
-      is_loading_preview = true;
-
-      el_preview.attr('class','preview-loading');
-      var url = fv_player_editor_conf.home_url + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=POST';
-
-      el_preview_target.html('');
-
-      fv_player_shortcode_editor_ajax = jQuery.post(
-        url,
-        {
-          'fv_player_preview_json' : JSON.stringify(data)
-        }, function (response) {
-          el_preview_target.html( $('#wrapper', response) );
-          $doc.trigger('fvp-preview-complete');
-
-          // Allow autoplay to work for accurate preview
-          fv_player_did_autoplay = false;
-          // Giving it a bit of time to update the DOM
-          setTimeout( function() {
-            fv_autoplay_exec();
-          }, 0 );
-        }
-      );
-
-    }
-
-    /*
-     *  Show button to refresh the preview player
-     */
-    function preview_show_button() {
-      // if it's already loading preview, wait until it's finished and then do it again
-      if( is_loading_preview ) {
-        $doc.one('fvp-preview-complete', preview_show_button);
-        return;
-      };
-
-      el_preview_refresh.show();
-    }
-
-    /*
-     *  Ask for the preview
-     */
-    function preview_submit() {
-      // if it's already loading preview, wait until it's finished and then do it again
-      if( is_loading_preview ) {
-        $doc.one('fvp-preview-complete', preview_submit);
-        return;
-      };
-
-      var
-        ajax_data = build_ajax_data(),
-        previewDimensions = preview_dimensions(),
-        previewWidth = previewDimensions.width,
-        previewHeight = previewDimensions.height;
-
-      ajax_data['fv_wp_flowplayer_field_width'] = previewWidth;
-      ajax_data['fv_wp_flowplayer_field_height'] = previewHeight;
-
-      preview_show(ajax_data);
     }
 
     function set_post_editor_content( html ) {
