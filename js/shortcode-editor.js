@@ -196,6 +196,7 @@ jQuery(function() {
 
       el_preview = $('#fv-player-shortcode-editor-preview');
 
+      el_spinner = $('#fv-player-shortcode-editor-preview-spinner');
 
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
@@ -784,7 +785,8 @@ jQuery(function() {
         is_saving = true;
         el_editor.find('.button-primary').attr('disabled', 'disabled');
 
-        $('.fv-player-save-waiting').addClass('is-active');
+        el_spinner.show();
+
 
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
@@ -804,8 +806,8 @@ jQuery(function() {
               next = false;
             } else {
               is_saving = false;
-              el_editor.find('.button-primary').removeAttr('disabled');
-              $('.fv-player-save-waiting').removeClass('is-active');
+              el_spinner.hide();
+
               $('.fv-player-save-completed').show().delay( 2500 ).fadeOut(400);
 
               // close the overlay, if we're waiting for the save
