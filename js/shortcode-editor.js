@@ -196,7 +196,6 @@ jQuery(function() {
 
       el_preview = $('#fv-player-shortcode-editor-preview');
 
-      el_spinner = $('#fv-player-shortcode-editor-preview-spinner');
 
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
@@ -687,17 +686,18 @@ jQuery(function() {
       });
 
       $doc.on('fv_flowplayer_shortcode_new fv-player-editor-non-db-shortcode', function() {
-        fv_player_editor.insert_button_toggle(true);
-        fv_player_editor.copy_player_button_toggle(true);
+        $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
       });
 
       $doc.on('fv_flowplayer_video_meta_load', function() {
-        fv_player_editor.insert_button_toggle(false);
-        fv_player_editor.copy_player_button_toggle(false);
+        $('#fv-player-shortcode-editor .button-primary, .copy_player').hide();
 
-        loading = false;
-        is_draft = false;
-        //is_draft_changed = false;
+        // not a good solution!
+        setTimeout( function() {
+          loading = false;
+          is_draft = false;
+          //is_draft_changed = false;
+        },100);
       });
 
       $doc.on('fv_flowplayer_player_editor_reset', function() {
@@ -775,8 +775,6 @@ jQuery(function() {
         is_saving = false;
         el_editor.find('.button-primary').removeAttr('disabled');
 
-        msg = typeof(msg) == 'object' && msg.statusText ? 'HTTP '+msg.statusText : msg;
-
         overlay_show('message', 'An unexpected error has occurred. Please try again. '+msg, true );
       }
 
@@ -784,11 +782,9 @@ jQuery(function() {
         if( !ajax_save_this_please || is_loading_video_data ) return;
 
         is_saving = true;
-        insert_button_disable(true);
+        el_editor.find('.button-primary').attr('disabled', 'disabled');
 
-        el_spinner.show();
-
-        $('.fv-player-save-error').hide();
+        $('.fv-player-save-waiting').addClass('is-active');
 
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
@@ -808,11 +804,8 @@ jQuery(function() {
               next = false;
             } else {
               is_saving = false;
-              
-              insert_button_disable(false);
-              
-              el_spinner.hide();
-
+              el_editor.find('.button-primary').removeAttr('disabled');
+              $('.fv-player-save-waiting').removeClass('is-active');
               $('.fv-player-save-completed').show().delay( 2500 ).fadeOut(400);
 
               // close the overlay, if we're waiting for the save
@@ -833,7 +826,7 @@ jQuery(function() {
               // if we're creating a new player, hide the Save / Insert button and
               // add all the data and inputs to page that we need for an existing player
               if ( is_draft ) {
-                fv_player_editor.copy_player_button_toggle(false);
+                fv_player_editor.copy_player_button_hide();
                 init_saved_player_fields( player.id );
                 current_player_db_id = player.id;
                 is_draft = false;
@@ -845,14 +838,7 @@ jQuery(function() {
           } catch(e) {
             error(e);
           }
-
-        }, 'json' ).error( function() {
-          $('.fv-player-save-error').show();
-          
-          el_spinner.hide();
-          
-          is_saving = false;
-        });
+        }, 'json' ).error(error);
 
         ajax_save_this_please = false;
 
@@ -1256,10 +1242,7 @@ jQuery(function() {
       });
 
       $doc.on('change', '#players_selector', function() {
-        insert_button_disable(false);
-        
-        // TODO
-        el_editor.find('.button-primary').text('Insert');
+        el_editor.find('.button-primary').text('Insert').removeAttr('disabled');
         editor_open(this.value);
       });
 
@@ -1267,7 +1250,7 @@ jQuery(function() {
         if (is_saving || ajax_save_this_please) {
           // for some reason, clicking on already-disabled primary button re-enables it,
           // so we'll just need to disable it again here
-          insert_button_disable(true);
+          $(this).attr('disabled', 'disabled');
         } else {
           // make sure we mark this player as published in the DB
           status_is_draft = false;
@@ -1486,7 +1469,7 @@ jQuery(function() {
       tabs_refresh();
       
       fv_player_editor.playlist_buttons_disable(false);
-      fv_player_editor.playlist_buttons_toggle(true);
+      fv_player_editor.playlist_buttons_show();      
 
       set_embeds('');
 
@@ -2027,8 +2010,6 @@ jQuery(function() {
             overlay_show('message', 'Shortcode editor is not available for multiple players shortcode tag.');
             return;
           }
-          
-          is_draft = false;
 
           // now load playlist data
           // load video data via an AJAX call
@@ -2234,13 +2215,6 @@ jQuery(function() {
             }
 
             overlay_hide();
-            
-            if ( response.html ) {
-              // auto-refresh preview
-              el_preview_target.html( response.html )
-
-              $doc.trigger('fvp-preview-complete');
-            }
 
             // show the Insert button, as this is only used when adding a new player into a post
             // and using the Pick existing player button, where we need to be able to actually
@@ -2248,12 +2222,12 @@ jQuery(function() {
             // ... also, keep the Pick existing player button showing, if we decided to choose
             //     a different player
             if (db_id) {
-              fv_player_editor.insert_button_toggle(true);
-              fv_player_editor.copy_player_button_toggle(true);
+              fv_player_editor.insert_button_show();
+              fv_player_editor.copy_player_button_show();
             } else if ( response.status == 'draft' ) {
               // show Save / Insert button, as we're still
               // in draft mode for this player
-              fv_player_editor.insert_button_toggle(true);
+              fv_player_editor.insert_button_show();
               fix_save_btn_text();
             }
 
@@ -2287,8 +2261,7 @@ jQuery(function() {
             // ... also, keep the Pick existing player button showing, if we decided to choose
             //     a different player
             if (db_id) {
-              fv_player_editor.insert_button_toggle(true);
-              fv_player_editor.copy_player_button_toggle(true);
+              $('#fv-player-shortcode-editor .button-primary, .copy_player').show();
             }
           });
         } else {
@@ -2640,9 +2613,7 @@ jQuery(function() {
         // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
         if ( current_player_db_id < 0 ) {
           if (is_loading_video_data) {
-            insert_button_disable(true);
-            
-            el_editor.find('.button-primary').text('Saving...');
+            el_editor.find('.button-primary').attr('disabled', 'disabled').text('Saving...');
             var checker = setInterval(function() {
               if (is_loading_video_data <= 0) {
                 clearInterval(checker);
@@ -2785,15 +2756,6 @@ jQuery(function() {
 
       return;
 
-    }
-              
-    function insert_button_disable( disable ) {
-      var button = $('.fv_player_field_insert-button');
-      if( disable ) {
-        button.attr('disabled', 'disabled');
-      } else {
-        button.removeAttr('disabled');
-      }
     }
 
     /*
@@ -3644,17 +3606,29 @@ jQuery(function() {
           $('.playlist_add, .playlist_edit').removeClass('disabled');
         }
       },
-
-      playlist_buttons_toggle: function( show ) {
-        $('.playlist_add, .playlist_edit').toggle( show );
-      },
-
-      insert_button_toggle: function( show ) {
-        $('.fv_player_field_insert-button').toggle( show );
+      
+      playlist_buttons_hide: function() {
+        $('.playlist_add, .playlist_edit').hide();
       },
       
-      copy_player_button_toggle: function( show ) {
-        $('#fv-player-shortcode-editor .copy_player').toggle( show );
+      playlist_buttons_show: function() {
+        $('.playlist_add, .playlist_edit').show();
+      },
+
+      insert_button_hide: function() {
+        $('.fv_player_field_insert-button').hide();
+      },
+
+      insert_button_show: function() {
+        $('.fv_player_field_insert-button').show();
+      },
+
+      copy_player_button_show: function() {
+        $('.copy_player').show();
+      },
+
+      copy_player_button_hide: function() {
+        $('.copy_player').hide();
       },
 
     };
