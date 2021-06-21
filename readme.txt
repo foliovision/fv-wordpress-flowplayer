@@ -357,6 +357,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.0.727 - 2021/06/21 =
+
+* New feature - Daily video play stats, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Video Stats
+* New feature - Multiple video playback, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Multiple video playback
+* Improved editing experience with autosave and autopreview
+* Improved Gutenberg integration - with player preview, we still look forward for a proper Gutenberg block
+* Improved handling of multiple players on page - previously played video will pause and not go back to beginning
+* Improved HLS quality remembering
+* Improved JavaScript loading - player only loads files once the user is actually using the page
+
 = 7.4.47.727 - 2021/05/18 =
 
 * Custom video fields - setting default hook priority to ensure boxes are placed higher up

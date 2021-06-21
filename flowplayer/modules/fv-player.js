@@ -380,6 +380,26 @@ function fv_player_preload() {
       });
       console.log( 'FV Player Status ('+type+')', status );
     }
+
+    // Tell the world that the FV Player has finished loading
+    if( !window.fv_player_loaded ) {
+      window.fv_player_loaded = true;
+      setTimeout( function() {
+
+        // jQuery event
+        jQuery(document).trigger('fv_player_loaded');
+
+        // pure JS event
+        var event= new CustomEvent('fv_player_loaded',[]);
+        document.dispatchEvent(event);
+      }, 100 );
+    }
+    
+    // It's good if the player element can tell others that the FV Player has loaded in it
+    setTimeout( function() {
+      root.trigger('fv_player_loaded');
+      // Seems like root.data('flowplayer') is only available after a while, it won't work without this delay
+    }, 10 );
   });
   
   //sets height for embedded players 
