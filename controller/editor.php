@@ -56,7 +56,8 @@ function fv_player_shortcode_editor_scripts_enqueue() {
       'playlist_advance',
       'sort',
       'volume'
-    )
+    ),
+    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
   ) );
   
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');
