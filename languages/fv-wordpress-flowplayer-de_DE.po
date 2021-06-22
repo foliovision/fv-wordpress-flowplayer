@@ -167,12 +167,8 @@ msgstr ""
 "Mobiler Browser erkannt, Video wird mit geringer Bandbreite abgespielt."
 
 #: controller/frontend.php:64
-msgid "Click here"
-msgstr "Hier klicken"
-
-#: controller/frontend.php:65
-msgid "for full quality."
-msgstr "für hohe Qualität."
+msgid "Click here for full quality"
+msgstr "Hier klicken für hohe Qualität"
 
 #: controller/frontend.php:66 controller/frontend.php:67
 msgid ""
@@ -246,6 +242,22 @@ msgid ""
 "please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</"
 "a> or other modern browser."
 msgstr ""
+
+#: ../controller/frontend.php:84
+msgid "Quality"
+msgstr "Qualität"
+
+#: ../controller/frontend.php:85
+msgid "Closed Captions"
+msgstr "Untertitel"
+
+#: ../controller/frontend.php:86
+msgid "No subtitles"
+msgstr "Keine Untertitel"
+
+#: ../controller/frontend.php:87
+msgid "Speed"
+msgstr "Geschwindigkeit"
 
 #: controller/frontend.php:511
 #, php-format

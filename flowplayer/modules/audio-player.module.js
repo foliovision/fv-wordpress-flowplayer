@@ -17,7 +17,7 @@ flowplayer(function(api, root) {
       jQuery('.fp-message',root).html( jQuery('.fp-message',root).html().replace(/video/,'audio') );
     });
 
-    root.click( function(e) {
+    root.on('click', function(e) {
       if( !api.ready) {
         e.preventDefault();
         e.stopPropagation();
@@ -25,5 +25,4 @@ flowplayer(function(api, root) {
       }
     })
   }
-
 })

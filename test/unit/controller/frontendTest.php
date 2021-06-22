@@ -78,18 +78,11 @@ final class FV_Player_Controller extends TestCase {
     $testReturnValue = '';
 
     include_once "../../models/flowplayer.php";
+    include_once "../../models/lightbox.php";
     global $fv_fp;
     $fv_fp = new flowplayer();
     
-    //  todo: fix in core perhaps
-    $fv_fp->aAds = array();
-    $fv_fp->aPopups = array();
-    
     include_once "../../controller/frontend.php";
-  }
-
-  public function tearDown() {
-    Mockery::close();
   }
   
   public function test_flowplayer_prepare_scripts_js_everywhere() {    
@@ -103,7 +96,8 @@ final class FV_Player_Controller extends TestCase {
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
 Registering flowplayer for fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver=1.2.3.4 footer? 1
-Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4 footer? 1
+Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.0.4 footer? 1
+Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fullscreen] => 1
@@ -127,9 +121,10 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
-    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=0.11.0
+    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.0.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
     [script_dash_js_version] => 2.7
+    [chromecast] => 
     [hlsjs] => Array
         (
             [startLevel] => -1
@@ -138,6 +133,11 @@ Localizing flowplayer with fv_flowplayer_conf = Array
             [capLevelToPlayerSize] => 1
         )
 
+)
+
+Localizing flowplayer with fv_player = Array
+(
+    [ajaxurl] => https://site.com/wp//wp-admin/admin-ajax.php
 )
 
 Localizing flowplayer with fv_flowplayer_translations = Array
@@ -158,8 +158,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [video_expired] => <h2>Video file expired.<br />Please reload the page and play it again.</h2>
     [unsupported_format] => <h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>
     [mobile_browser_detected_1] => Mobile browser detected, serving low bandwidth video.
-    [mobile_browser_detected_2] => Click here
-    [mobile_browser_detected_3] => for full quality.
+    [mobile_browser_detected_2] => Click here for full quality
     [live_stream_failed] => <h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>
     [live_stream_failed_2] => <h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>
     [what_is_wrong] => Please tell us what is wrong :
@@ -177,6 +176,9 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [video_issues] => Video Issues
     [video_reload] => Video loading has stalled, click to reload
     [link_copied] => Video Link Copied to Clipboard
+    [live_stream_starting] => <h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>
+    [live_stream_retry] => <h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>
+    [live_stream_continue] => <h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>
     [embed_copied] => Embed Code Copied to Clipboard
     [subtitles_disabled] => Subtitles disabled
     [subtitles_switched] => Subtitles switched to 
@@ -187,11 +189,31 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [warning_old_chrome] => You are using an old Chrome browser. Please make sure you use the latest version.
     [warning_old_firefox] => You are using an old Firefox browser. Please make sure you use the latest version.
     [warning_old_ie] => You are using a deprecated browser. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser.
+    [quality] => Quality
+    [closed_captions] => Closed Captions
+    [no_subtitles] => No subtitles
+    [speed] => Speed
+    [duration_1_day] => %s day
+    [duration_n_days] => %s day
+    [duration_1_hour] => %s hour
+    [duration_n_hours] => %s hour
+    [duration_1_minute] => %s min
+    [duration_n_minutes] => %s min
+    [duration_1_second] => %s second
+    [duration_n_seconds] => %s second
+    [and] =>  and 
+    [chrome_extension_disable_html5_autoplay] => It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos
 )
 
-Localizing flowplayer with fv_fp_ajaxurl = https://site.com/wp//wp-admin/admin-ajax.php
 Localizing flowplayer with fv_flowplayer_playlists = Array
 (
+)
+
+Registering fv_player_lightbox for fv-wordpress-flowplayer/css/fancybox.css?ver=1.2.3.4
+Registering fv_player_lightbox for fv-wordpress-flowplayer/js/fancybox.js?ver=1.2.3.4 footer? 1
+Localizing fv_player_lightbox with fv_player_lightbox = Array
+(
+    [lightbox_images] => 
 )
 
 ";  

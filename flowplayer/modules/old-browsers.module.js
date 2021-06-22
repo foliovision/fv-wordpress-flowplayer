@@ -1,11 +1,13 @@
 function fv_flowplayer_browser_ff_m4v( hash ) {
-	if( jQuery.browser && jQuery.browser.mozilla && navigator.appVersion.indexOf("Win")!=-1 ) {
+	if( flowplayer.support.browser && flowplayer.support.browser.mozilla && navigator.appVersion.indexOf("Win")!=-1 ) {
 		jQuery('#wpfp_'+hash).attr('data-engine','flash');
 	}
 }
 
 if( typeof(fv_flowplayer_browser_ff_m4v_array) != "undefined" ) {
   for( var i in fv_flowplayer_browser_ff_m4v_array ) {
+		if( !fv_flowplayer_browser_ff_m4v_array.hasOwnProperty(i) ) continue;
+
     fv_flowplayer_browser_ff_m4v( i );
   }
 }
@@ -31,18 +33,22 @@ function fv_flowplayer_browser_chrome_fail( hash, sAttributes, sVideo, bAutobuff
 
 if( typeof(fv_flowplayer_browser_chrome_fail_array) != "undefined" ) {
   for( var i in fv_flowplayer_browser_chrome_fail_array ) {
+		if( !fv_flowplayer_browser_chrome_fail_array.hasOwnProperty(i) ) continue;
+
     fv_flowplayer_browser_chrome_fail( i, fv_flowplayer_browser_chrome_fail_array[i]['attrs'], fv_flowplayer_browser_chrome_fail_array[i]['mp4'], fv_flowplayer_browser_chrome_fail_array[i]['auto_buffer'] );
   }
 }
 
 function fv_flowplayer_browser_ie( hash ) {
-	if( ( jQuery.browser && jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9) /*|| !!navigator.userAgent.match(/Trident.*rv[ :]*11\./)*/ ) {
+	if( ( flowplayer.support.browser && flowplayer.support.browser.msie && parseInt(flowplayer.support.browser.version, 10) >= 9) || !!navigator.userAgent.match(/Trident.*rv[ :]*11\./) ) {
 		jQuery('#wpfp_'+hash).attr('data-engine','flash');
 	}
 }
 
 if( typeof(fv_flowplayer_browser_ie_array) != "undefined" ) {
   for( var i in fv_flowplayer_browser_ie_array ) {
+		if( !fv_flowplayer_browser_ie_array.hasOwnProperty(i) ) continue;
+
     fv_flowplayer_browser_ie( i );
   }
 }
@@ -74,7 +80,7 @@ jQuery(document).ready( function() {
   if( (navigator.platform.indexOf("iPhone") != -1) || (navigator.platform.indexOf("iPod") != -1) || (navigator.platform.indexOf("iPad") != -1) ) {
     jQuery(window).trigger('load');
   }
-  jQuery('.flowplayer').mouseleave( function() {
+  jQuery('.flowplayer').on("mouseleave", function() {
     jQuery(this).find('.fvp-share-bar').removeClass('visible');
     jQuery(this).find('.embed-code').hide();
   } ); 

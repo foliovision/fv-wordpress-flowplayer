@@ -294,8 +294,19 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
 }
 
 
-function fv_player_time() {
+function fv_player_time( $args = array() ) {
   global $post, $fv_fp;
+	
+  if( !empty($args['id']) ) {
+    $player = new FV_Player_Db_Player($args['id']);
+    if( $player->getIsValid() ) {
+      foreach( $player->getVideos() AS $video ) {
+        if( $duration = $video->getDuration() ) {
+          return flowplayer::format_hms( $duration );
+        }
+      }
+    }
+  }
   
   if( $post->ID > 0 && isset($fv_fp->aCurArgs['src']) ) {
     return flowplayer::get_duration( $post->ID, $fv_fp->aCurArgs['src'] );
@@ -490,6 +501,7 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   
   
   add_filter( 'the_content', 'fv_player_handle_youtube_links' );
+  add_filter( 'embed_oembed_html', 'fv_player_handle_youtube_links' );
 
   function fv_player_handle_youtube_links( $html ) {
     $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]', $html );

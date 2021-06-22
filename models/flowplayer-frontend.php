@@ -28,13 +28,7 @@ class flowplayer_frontend extends flowplayer
   
   var $expire_time = 0;
   
-  var $aAds = array();
-  
   var $aPlayers = array();
-  
-  var $aPlaylists = array();
-  
-  var $aPopups = array();
   
   var $aCurArgs = array();
   
@@ -169,7 +163,7 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    if( preg_match( "~(youtu\.be/|youtube\.com/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
+    if( preg_match( "~(youtu\.be/|(?:youtube\.com|youtube-nocookie\.com)/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
       if( isset($aYoutube[5]) ) {
         $youtube = $aYoutube[5];
         $player_type = 'youtube';
@@ -212,7 +206,18 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = 'slider';
     }
     
-        
+    // if single video, force horizontal style (fix for FV Player Pro Video Ads)
+    // TODO: Perhaps FV Player Pro Video Ads should deal with this instead
+    if(
+      // when using the FV Player DB it's possible to have a single video only
+      // but then it might fill the playlist shortcode argument
+      // this happens for FV Player Pro Vimeo Channel functionality
+      $player && count($player->getVideos()) == 1 && empty($this->aCurArgs['playlist']) ||
+      empty($this->aCurArgs['playlist']) 
+    ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
+    }
+
     $aPlaylistItems = array();  //  todo: remove
     $aSplashScreens = array();
     $aCaptions = array();
@@ -400,10 +405,17 @@ class flowplayer_frontend extends flowplayer
           $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="position: absolute; background: url(\''.$splash_img.'\') no-repeat center center; background-size: contain; width: 100%; height: 100%; z-index: 1;"></div>';
         }
   
-        $bIsAudio = ( empty($splash_img) || $splash_img == $this->_get_option('splash') ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media );
-        
-        if( !$bIsAudio && $video = $this->current_video() ) {          
+        // should the player appear as audio player?
+        $bIsAudio = false;
+        if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+          $bIsAudio = true;
+        } else  if( $video = $this->current_video() ) {          
           $bIsAudio = $video->getMetaValue('audio',true);
+        }
+        
+        // if there is splash and it's different from the site-wide default splash
+        if( !empty($splash_img) && strcmp( $splash_img, $this->_get_option('splash') ) != 0 ) {
+          $bIsAudio = false;
         }
         
         $attributes['class'] = 'flowplayer no-brand is-splash';
@@ -556,10 +568,6 @@ class flowplayer_frontend extends flowplayer
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
           
-          if( $this->_get_option('old_code') ) {
-            $this->aPlaylists["wpfp_{$this->hash}"] = $aPlaylistItems;
-          }
-          
         } else if( !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
           $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
@@ -583,13 +591,6 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
         }
 
-        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ) {
-          $attributes['data-fv_loop'] = true;
-        } else if (isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true') {
-          // compatibility fallback for classic (non-DB) shortcode
-          $attributes['data-fv_loop'] = true;
-        }
-        
         if( isset($this->aCurArgs['admin_warning']) ) {
           $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
         }
@@ -609,6 +610,24 @@ class flowplayer_frontend extends flowplayer
               $attributes['data-advance'] = 'false';
             }
           }
+        }
+
+        if(
+          !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'loop' ||
+          // compatibility fallback for classic (non-DB) shortcode
+          isset($this->aCurArgs['loop']) && $this->aCurArgs['loop'] == 'true'
+        ) {
+          $attributes['data-loop'] = true;
+          unset($attributes['data-advance']); // loop won't work if auto advance is disabled
+        }
+                
+
+        if( $popup_contents = $this->get_popup_code() ) {
+          $attributes['data-popup'] = $this->json_encode( $popup_contents );
+        }
+
+        if( $ad_contents = $this->get_ad_code() ) {
+          $attributes['data-ad'] = $this->json_encode( $ad_contents );
         }
         
         add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
@@ -638,13 +657,6 @@ class flowplayer_frontend extends flowplayer
         
         if( isset($splashend_contents) ) {
           $this->ret['html'] .= $splashend_contents;
-        }
-        if( $popup_contents = $this->get_popup_code() ) {
-          $this->aPopups["wpfp_{$this->hash}"] = $popup_contents;  
-        }
-
-        if( $ad_contents = $this->get_ad_code() ) {
-          $this->aAds["wpfp_{$this->hash}"] = $ad_contents;  
         }
         
         if( flowplayer::is_special_editor() ) {
@@ -1169,6 +1181,8 @@ class flowplayer_frontend extends flowplayer
     if( $sHTMLSharing || $sHTMLEmbed || $sHTMLVideoLink) {
       $sHTML = "<div class='fvp-share-bar'>$sHTMLSharing$sHTMLVideoLink$sHTMLEmbed</div>";
     }
+    
+    $sHTML = apply_filters( 'fv_player_sharing_html', $sHTML );
 
     return $sHTML;
   }
@@ -1179,10 +1193,10 @@ class flowplayer_frontend extends flowplayer
     $sSpinURL = site_url('wp-includes/images/wpspin.gif');
 
     $sHTML = <<< HTML
-<div title="Only you and other admins can see this warning." class="fv-wp-flowplayer-notice-small fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
-  <div class="fv_wp_flowplayer_notice_head" onclick="fv_wp_flowplayer_admin_show_notice('{$this->hash}', this.parent); return false">Video Checker</div>
+<div title="Only you and other admins can see this warning." class="fv-player-video-checker fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
+  <div class="fv-player-video-checker-head">Video Checker <span></span></div>
   <small>Admin: <span class="video-checker-result">Checking the video file...</span></small>
-  <div style="display: none;" class="fv_wp_fp_notice_content" id="fv_wp_fp_notice_{$this->hash}">
+  <div style="display: none;" class="fv-player-video-checker-details" id="fv_wp_fp_notice_{$this->hash}">
     <div class="mail-content-notice">
     </div>
     <div class="support-{$this->hash}">
@@ -1221,7 +1235,7 @@ HTML;
       $tags['div']['data-engine'] = true;
       $tags['div']['data-embed'] = true;
       $tags['div']['data-fv-embed'] = true;
-      $tags['div']['data-fv_loop'] = true;
+      $tags['div']['data-loop'] = true;
       $tags['div']['data-fv_redirect'] = true;
       $tags['div']['data-fvautoplay'] = true;
       $tags['div']['data-fvsticky'] = true;

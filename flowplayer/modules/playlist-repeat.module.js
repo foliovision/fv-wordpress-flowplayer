@@ -15,7 +15,7 @@ flowplayer( function(api,root) {
     if( !api.video.type.match(/^audio/) && root.data('button-no-picture') && root.find('.fv-fp-no-picture').length == 0 ) {
       var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="20px" height="20px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
       
-      button_no_picture.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
+      button_no_picture.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -48,7 +48,7 @@ flowplayer( function(api,root) {
 
         var should_advance = api.conf.advance;
 
-        playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
+        playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
 
@@ -71,7 +71,7 @@ flowplayer( function(api,root) {
           }
         });
         
-        jQuery('a',playlist_menu).click( function() {
+        jQuery('a',playlist_menu).on('click', function() {
           jQuery(this).siblings('a').removeClass('fp-selected');
           jQuery(this).addClass('fp-selected');
           playlist_button.removeClass('mode-normal mode-repeat-track mode-repeat-playlist mode-shuffle-playlist');
@@ -138,21 +138,21 @@ flowplayer( function(api,root) {
         
       } else if( root.find('.fv-fp-track-repeat').length == 0 && api.conf.playlist.length == 0 ) {
         var button_track_repeat = jQuery('<strong class="fv-fp-track-repeat"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><use xlink:href="#fvp-replay-track"></use></svg></strong>');
-        button_track_repeat.insertAfter( root.find('.fp-controls .fp-volume') ).click( function(e) {
+        button_track_repeat.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
           
+          jQuery(this).toggleClass('is-active fp-color-fill',api.video.loop);
+          
           if( api.video.loop ) {
             api.video.loop = false;
-            jQuery(this).removeClass('is-active fp-color-fill');
           } else {
             api.video.loop = true;
-            jQuery(this).addClass('is-active fp-color-fill');
           }
         });
         
         if( api.conf.loop ) {
-          button_track_repeat.click();
+          button_track_repeat.addClass('is-active fp-color-fill');
         }
         
       }
@@ -161,7 +161,7 @@ flowplayer( function(api,root) {
     if( root.data('button-rewind') && root.find('.fv-fp-rewind').length == 0 ) {
       var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="24px" height="24px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
       
-      button_rewind.insertBefore( root.find('.fp-controls .fp-elapsed') ).click( function(e) {
+      button_rewind.insertBefore( root.find('.fp-controls .fp-elapsed') ).on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -170,10 +170,12 @@ flowplayer( function(api,root) {
 
       button_rewind.toggle(!api.video.live);
     }
+
   }).bind('unload', function() {
     root.find('.fv-fp-no-picture').remove();
     root.find('.fv-fp-playlist').remove();
     root.find('.fv-fp-track-repeat').remove();
+
   });
 
   function array_shuffle(a) {

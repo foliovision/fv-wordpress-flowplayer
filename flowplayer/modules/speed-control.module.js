@@ -72,6 +72,7 @@
         });
         ui.appendChild(menu);
         selectSpeed(api.currentSpeed);
+        jQuery(root).find('.fp-speed-menu strong').text(fv_flowplayer_translations.speed);
       }
 
       function selectSpeed(rate) {

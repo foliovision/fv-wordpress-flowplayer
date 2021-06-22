@@ -4,7 +4,9 @@
   var $playerDiv = $root.find('.fp-player');
   var sticky = $root.data("fvsticky");
   var globalSticky = false;
-  var videoRatio = $root.data("ratio");
+  var videoRatio = $root.data("ratio"),
+    is_sticky = false;
+  
   if (typeof(videoRatio) == "undefined") {
     videoRatio = 0.5625;
   }
@@ -31,6 +33,7 @@
       $flowplayerDiv = $root,
       top = $flowplayerDiv.offset().top,
       offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
+    
     api.on('ready', function() {
       change = true;
     });
@@ -76,6 +79,9 @@
       $playerDiv.css("width", stickyWidth);
       $playerDiv.css("height", stickyHeight);
       $playerDiv.css("max-height", stickyHeight);
+      
+      is_sticky = true;
+      api.trigger( 'sticky', [ api ] );
     }
     $playerDiv.parent(".flowplayer").addClass("is-stickable");
   }
@@ -86,6 +92,11 @@
     $playerDiv.css("height", "");
     $playerDiv.css("max-height", "");
     $playerDiv.parent(".flowplayer").removeClass("is-stickable");
+    
+    if( is_sticky ) {
+      is_sticky = false;
+      api.trigger( 'sticky-exit', [ api ] );
+    }
   }
 });
 
@@ -100,6 +111,11 @@ jQuery(function($) {
     $playerDiv.css("width", "");
     $playerDiv.css("height", "");
     $playerDiv.css("max-height", "");
+    
+    if( is_sticky ) {
+      is_sticky = false;
+      api.trigger( 'sticky-exit', [ api ] );
+    }
   });
   $(document).on('click', "div.flowplayer.is-unSticky", function() {
     $("div.flowplayer").removeClass("is-unSticky");

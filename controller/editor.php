@@ -18,7 +18,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
   wp_enqueue_script('fvwpflowplayer-domwindow');  
   
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver.'-fix' );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
@@ -89,27 +89,32 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
   $fv_fp->load_dash = true;
   $fv_fp->load_tabs = true;
   
-  global $FV_Player_Pro;
-  if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
-    $FV_Player_Pro->bYoutube = true;
-    //  todo: there should be a better way than this
-    add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
-    add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
+  if( !fv_player_extension_version_is_min('7.4.46.727','pro') ) {
+    global $FV_Player_Pro;
+    if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
+      $FV_Player_Pro->bYoutube = true;
+      add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
+      add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );
+    }
   }
 
-  global $FV_Player_VAST ;
-  if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
-    //  todo: there should be a better way than this      
-    add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
+  if( !fv_player_extension_version_is_min('7.4.46.727','vast') ) {
+    global $FV_Player_VAST ;
+    if( isset($FV_Player_VAST ) && $FV_Player_VAST ) {
+      add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
+    }
   }
   
-  global $FV_Player_Alternative_Sources ;
-  if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
-    //  todo: there should be a better way than this
-    add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
-  }    
+  if( !fv_player_extension_version_is_min('7.4.46.727','alternative-sources') ) {
+    global $FV_Player_Alternative_Sources ;
+    if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
+      add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
+    }
+  }
   
+  // Tell all the (modern) extensions to load frontend+backend assets 
   do_action('fv_player_extensions_admin_load_assets');
+
   add_action('admin_footer','flowplayer_prepare_scripts');
 }
 
@@ -300,16 +305,18 @@ function fv_player_splashcreen_action() {
     return urldecode($caption);
   }
 
-  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ){
+  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {
     $title = $_POST['title'];
     $img = $_POST['img'];
-    
+    $limit = 128 - 5; // .jpeg
+
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-  
+    $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+
     $decoded = base64_decode($img) ;
     
     $upload_dir = wp_upload_dir();
@@ -346,7 +353,7 @@ function fv_player_splashcreen_action() {
         'src'     =>  '',
         'error'   =>  $file_return['error']
       ); 
-    }else{
+    } else {
       $filename = $file_return['file'];
 
       $attachment = array(
@@ -356,21 +363,29 @@ function fv_player_splashcreen_action() {
         'post_status' => 'inherit',
         'guid' => $upload_dir['url'] . '/' . basename($filename)
       );
-      $attach_id = wp_insert_attachment( $attachment, $filename );
 
-      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_id = wp_insert_attachment( $attachment, $filename, 0, true );
+
+      if( is_wp_error( $attach_id ) ) {
+        $jsonReturn = array(
+          'src'     =>  '',
+          'error'   =>  $attach_id->get_error_message()
+        );
+      } else {
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
       
-      $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
-      wp_update_attachment_metadata( $attach_id, $attach_data );
-
-      $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
-
-      $jsonReturn = array(
-        'src'     =>  $src,
-        'error'   =>  ''
-      );
-    }      
-  }else{
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+  
+        $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
+  
+        $jsonReturn = array(
+          'src'     =>  $src,
+          'error'   =>  ''
+        );
+      }
+    }
+  } else {
     $jsonReturn = array(
       'src'     =>  '',
       'error'   =>  'Nonce error - please reload your page'
@@ -392,9 +407,3 @@ Elementor support
 add_action( 'elementor/editor/wp_head', 'fv_player_shortcode_editor_scripts_enqueue' );
 add_action( 'elementor/editor/wp_head', 'fv_wp_flowplayer_edit_form_after_editor' );
 add_action( 'elementor/editor/wp_head', 'flowplayer_prepare_scripts' );
-add_action( 'elementor/editor/wp_head', 'fv_player_missing_wp_common_css' );
-
-function fv_player_missing_wp_common_css() {
-  // we need the core WordPress style to make sure the editor tabs have the proper styling
-  wp_enqueue_style('common');
-}

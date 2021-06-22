@@ -14,13 +14,9 @@ flowplayer( function(api,root) {
     });
   }
   
-  if( root.data('fv_loop') ) {
-    api.conf.loop = true;
-  }
-  
   jQuery('.fvfp_admin_error', root).remove();
   
-  root.find('.fp-logo, .fp-header').click( function(e) {
+  root.find('.fp-logo, .fp-header').on('click', function(e) {
     if (e.target !== this) return;
     root.find('.fp-ui').click();
   });
@@ -57,11 +53,11 @@ flowplayer( function(api,root) {
       var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
       var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
       root.find('.fp-controls .fp-playbtn').before(prev).after(next);
-      prev.click( function() {
+      prev.on('click', function() {
         api.trigger('prev',[api]);
         api.prev();
       });
-      next.click( function() {
+      next.on('click', function() {
         api.trigger('next',[api]);
         api.next();
       });

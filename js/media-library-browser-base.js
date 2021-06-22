@@ -390,7 +390,7 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href) {
+  function getSplashImageForMediaFileHref(href, strip_signature) {
     var find = [ fileGetBase(href) ];
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
@@ -405,8 +405,14 @@ jQuery( function($) {
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
-        if( f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
+        if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
           splash = (f.splash ? f.splash : f.link);
+
+          // remove signature if we're updating the Editor field, otherwise leave it in,
+          // so we can actually preview the splash
+          if (strip_signature && splash.indexOf('?') > -1) {
+            splash = splash.substring(0, splash.indexOf('?'));
+          }
         }
       }
     }
@@ -414,11 +420,11 @@ jQuery( function($) {
     return splash;
   }
 
-  function fileUrlIntoShortcodeEditor(href, extra) {
+  function fileUrlIntoShortcodeEditor(href, extra, is_trailer) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href);
+      splash = getSplashImageForMediaFileHref(href, true);
 
     $url_input
       .val(href)
@@ -433,20 +439,39 @@ jQuery( function($) {
       }
     }
     
-    if( extra && extra.hlskey ) {
-      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val(extra.hlskey);
-    } else {
-      $url_input.closest('table').find('#fv_wp_flowplayer_hlskey').val('');
+    if( !is_trailer ) {
+      var hlskey_field = $url_input.closest('table').find('#fv_wp_flowplayer_hlskey');
+      if( extra && extra.hlskey ) {
+        hlskey_field.val(extra.hlskey);
+      } else {
+        hlskey_field.val('');
+      }
+  
+      var data_index = $url_input.parents('table').data('index');
+      var timeline_previews_field = jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview');
+      if( extra && extra.timeline_previews ) {
+        timeline_previews_field.val(extra.timeline_previews);
+      } else {
+        timeline_previews_field.val('');
+      }
     }
-    
+
     // TODO: Proper API!
+    var encoding_job_id_field = $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id');
     if( extra && extra.encoding_job_id ) {
-      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val(extra.encoding_job_id);
+      encoding_job_id_field.val(extra.encoding_job_id);
     } else {
-      $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id').val('');
+      encoding_job_id_field.val('');
     }
     
-    
+    var audio_checkbox = $url_input.closest('table').find('#fv_wp_flowplayer_field_audio');
+    if( extra && extra.mime ) {
+      if( extra.mime.indexOf('audio') !== -1 ) {
+        audio_checkbox.prop( "checked", true );
+      } else {
+        audio_checkbox.prop( "checked", false );
+      }
+    }
 
     $popup_close_btn.click();
 
@@ -567,7 +592,7 @@ jQuery( function($) {
           }
 
           // show info about the file in right sidebar
-          jQuery('.media-sidebar').html('<div tabindex="0" class="attachment-details save-ready">\n' +
+          jQuery('.media-sidebar').html('<div tabindex="0" class="attachment-details save-ready" style="overflow: visible">\n' +
             '\t\t<h2>Media Details</h2>\n' +
             '\t\t<div class="attachment-info">\n' +
             '\t\t\t<div class="thumbnail thumbnail-image">\n' +
@@ -590,6 +615,7 @@ jQuery( function($) {
             '\t\t\t<span class="name">Copy Link</span>\n' +
             '\t\t\t<input type="text" value="' + $filenameDiv.data('link') + '" readonly="">\n' +
             '\t\t</label>\n' +
+            '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
           // enable Choose button
@@ -625,9 +651,22 @@ jQuery( function($) {
       filenameDiv = $e.find('.filename div');
 
     if (filenameDiv.length && filenameDiv.data('link')) {
-      fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'));
+      fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'), false);
     }
 
     return false;
   });
+
+  $( document ).on( "click", ".trailer-button-select", function(event) {
+    var
+      $e = jQuery('#__assets_browser li.selected'),
+      filenameDiv = $e.find('.filename div');
+
+    if (filenameDiv.length && filenameDiv.data('extra').trailer_src[0] != undefined ) {
+      fileUrlIntoShortcodeEditor(filenameDiv.data('extra').trailer_src[0], filenameDiv.data('extra'), true);
+    }
+
+    return false;
+  });
+
 });

@@ -1138,7 +1138,7 @@ jQuery(document).ready(function($) {
                     .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />
   
             <input id="skin-slim[durationColor]" name="skin-slim[durationColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
-                    .flowplayer .fp-controls &gt; .fv-fp-prevbtn:before, .flowplayer .fp-controls &gt; .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
+                    .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
   
             <input id="skin-slim[design-timeline]" name="skin-slim[design-timeline]" type="hidden"  value="fp-slim" data-fv-preview="" />
   
@@ -1185,7 +1185,7 @@ jQuery(document).ready(function($) {
                     .fv-wp-flowplayer-notice-small { color: #%val% !important; }" />
   
             <input id="skin-youtuby[durationColor]" name="skin-youtuby[durationColor]" type="hidden"  value="" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
-                    .flowplayer .fp-controls &gt; .fv-fp-prevbtn:before, .flowplayer .fp-controls &gt; .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
+                    .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }" />
   
             <input id="skin-youtuby[design-timeline]" name="skin-youtuby[design-timeline]" type="hidden"  value="fp-full" data-fv-preview="" />
   
@@ -1227,7 +1227,7 @@ jQuery(document).ready(function($) {
             <tr>
           <td><label for="skin-custom[marginBottom]">Bottom Margin :</label></td>
           <td>
-            <input  id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text"  value="2.8" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+            <input  id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text"  value="" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
                   .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
                   .flowplayer.has-abloop { margin-bottom: %val%px !important; }
                   .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }" />          
@@ -1412,12 +1412,12 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     <tr>
       <td><label for="subtitleSize">Font Size</label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="Enter value in pixels" type="text" value="16"
-                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor">Background Color</label></td>
       <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="rgba(0,0,0,0.5)"
-            data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
+            data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
     <tr>    		
       <td colspan="2">
@@ -1682,7 +1682,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 
     <script>
 
-    jQuery('#fv-player-popups-add').click( function() {
+    jQuery('#fv-player-popups-add').on('click', function() {
       var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
       jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
       jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
@@ -1810,7 +1810,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
     </table>
 
     <script>
-      jQuery('#fv-player-email_lists-add').click( function() {
+      jQuery('#fv-player-email_lists-add').on('click', function() {
         var fv_player_list_index  = (parseInt( jQuery('#fv-player-email_lists-settings tr.data:last .id').html()  ) || 0 ) + 1;
         jQuery('#fv-player-email_lists-settings').append(jQuery('#fv-player-email_lists-settings tr.data:first').prop('outerHTML').replace(/#fv_list_dummy_key#/gi,fv_player_list_index + ""));
         jQuery('#fv-player-list-item-' + fv_player_list_index).show();
@@ -1931,7 +1931,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 .wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }</textarea>
 									<p class="description">(Hint: put .wpfp_custom_ad_content before your own CSS selectors)</p>
 									<script type="text/javascript">
-									jQuery('#ad_css_select').change( function() {
+									jQuery('#ad_css_select').on('change', function() {
 										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
 											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
 										}									
@@ -2460,12 +2460,12 @@ CREATE TABLE `wp_fv_player_videometa` (
 <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove">Hide the vi Ads tab</label>
 <script>
 jQuery( function($) {
-$('#fv-player-vi-remove').click( function() {
+$('#fv-player-vi-remove').on('click', function() {
   $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
     $('#fv-player-vi-give-back').prop('checked',false);
-    $('[href=#postbox-container-tab_video_intelligence]').hide();
+    $('[href=\\#postbox-container-tab_video_intelligence]').hide();
     $('#fv_flowplayer_video_intelligence').hide();
-    $('[href=#postbox-container-tab_video_ads]').click();
+    $('[href=\\#postbox-container-tab_video_ads]').click();
     $('#fv_flowplayer_video_intelligence_revival').show();
   });
   
@@ -2527,7 +2527,7 @@ $('#fv-player-vi-remove').click( function() {
   }
   
   var fv_flowplayer_amazon_s3_count = 0;
-  jQuery('#amazon-s3-add').click( function() {
+  jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
   	new_inputs.find('input').attr('value','');  	
 		new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
@@ -2550,7 +2550,7 @@ $('#fv-player-vi-remove').click( function() {
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
-    jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
+    jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
       
@@ -2582,13 +2582,13 @@ $('#fv-player-vi-remove').click( function() {
       });  
     } );
     
-    jQuery('.fv-flowplayer-admin-addon-installed').click( function() {
+    jQuery('.fv-flowplayer-admin-addon-installed').on('click', function() {
       jQuery('html, body').animate({
           scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
       }, 1000);
     } );
     
-    jQuery('.show-more').click( function(e) {
+    jQuery('.show-more').on('click', function(e) {
       e.preventDefault();
       
       var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
@@ -2597,7 +2597,7 @@ $('#fv-player-vi-remove').click( function() {
    
     } );  
 
-    jQuery('.show-info').click( function(e) {
+    jQuery('.show-info').on('click', function(e) {
       e.preventDefault();
       jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
@@ -2605,7 +2605,7 @@ $('#fv-player-vi-remove').click( function() {
     /*
      * Color Picker Default  
      */	
-    jQuery('.playlistFontColor-show').click(function(e){
+    jQuery('.playlistFontColor-show').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-hide').show();
@@ -2614,7 +2614,7 @@ $('#fv-player-vi-remove').click( function() {
       jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
     });
 
-    jQuery('.playlistFontColor-hide').click(function(e){
+    jQuery('.playlistFontColor-hide').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-show').show();
@@ -2641,7 +2641,7 @@ jQuery(document).ready(function(){
   }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -2650,7 +2650,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });  
@@ -2684,7 +2684,7 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
     var el = jQuery(id);
     if(el.length){
       var tab = el.parents('.postbox-container').attr('id');
-      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=\\#'+tab+']').click()
     }
   }
 });

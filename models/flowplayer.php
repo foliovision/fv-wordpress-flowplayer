@@ -137,8 +137,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     add_filter( 'rewrite_rules_array', array( $this, 'fv_player_embed_rewrite_rules_fix' ), PHP_INT_MAX );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
-    
-    add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ) );
+
+    add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ), 10 );
+    add_filter( 'fv_player_custom_css', array( $this, 'custom_css' ), 11 );
 
     if( !empty($_GET['fv_player_preview']) ) {
       add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
@@ -371,7 +372,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?> <?php if( $help ) echo '<a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
@@ -698,7 +699,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       } else if( in_array( $key, array('width', 'height') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor', 'customCSS') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -736,7 +737,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     fv_wp_flowplayer_delete_extensions_transients();
     
-    if( $aOldOptions['key'] != $sKey ) {      
+    if( empty($aOldOptions['key']) || $aOldOptions['key'] != $sKey ) {      
       global $FV_Player_Pro_loader;
       if( isset($FV_Player_Pro_loader) ) {
         $FV_Player_Pro_loader->license_key = $sKey;
@@ -780,7 +781,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( $v ) {
           $temp_media = $this->get_video_src( $v['src'], array( 'dynamic' => true ) );
           if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
-            if($FV_Player_Pro->is_vimeo($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
+            if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
             }
           } 
@@ -825,23 +826,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML = "\t\t<a href='#' ".$arg."='".$this->json_encode($aPlayer)."'>";
     }
     
-    $tDuration = false;    
-    if ($this->current_video()) {
-      $tDuration = $this->current_video()->getDuration();
-    }
-    
-    if( !empty($aArgs['durations']) ) {
-      $aDurations = explode( ';', $aArgs['durations'] );
-      if( !empty($aDurations[$index]) ) {
-        $tDuration = $aDurations[$index];
+    $tDuration = false;
+    if( isset($aPlayer['fv_start']) && isset($aPlayer['fv_end']) ) { // change duration if using custom startend
+      $tDuration = $aPlayer['fv_end'] - $aPlayer['fv_start'];
+    } else {
+      if ($this->current_video()) {
+        $tDuration = $this->current_video()->getDuration();
       }
+      
+      if( !empty($aArgs['durations']) ) {
+        $aDurations = explode( ';', $aArgs['durations'] );
+        if( !empty($aDurations[$index]) ) {
+          $tDuration = $aDurations[$index];
+        }
+      }
+      
+      global $post;
+      if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
+        $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
+      }
+
+      if( isset($aPlayer['fv_start']) && !empty($tDuration) ) { // custom start only
+        $tDuration = flowplayer::hms_to_seconds( $tDuration ) -  $aPlayer['fv_start'];
+      }
+
+      if( isset($aPlayer['fv_end']) ) { // custom end only
+        $tDuration = $aPlayer['fv_end'];
+      }
+
     }
-    
-    global $post;
-    if( !$tDuration && $post && isset($post->ID) && !empty($aItem['src']) ) {
-      $tDuration = flowplayer::get_duration( $post->ID, $aItem['src'], true );
-    }
-    
+
     if( $sListStyle != 'text' ) {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
@@ -855,8 +869,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
       }
       
-      if( intval($tDuration) > 0 && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
-        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * (isset($aItem['position']) ? $aItem['position'] / $tDuration : 0) ).'%"></span></span>';
+      if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
+        $tDuration = flowplayer::hms_to_seconds( $tDuration );
+        $tPosition = !empty($aItem['position']) ? $aItem['position'] : 0;
+        if( $tPosition > 0 && !empty($aPlayer['fv_start']) ) {
+          $tPosition -= $aPlayer['fv_start'];
+          if( $tPosition < 0 ) {
+            $tPosition = 0;
+          }
+        }
+
+        $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: '.( 100 * $tPosition / $tDuration ).'%" data-duration="'.esc_attr($tDuration).'"></
+        span></span>';
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
@@ -988,6 +1012,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $sItemCaption ) {
         $aPlayer['fv_title'] = $sItemCaption;
       }
+
+      if( $splash_img ) {
+        $aPlayer['splash'] = $splash_img;
+      }
       
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
@@ -1025,7 +1053,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sSplashImage = false;
 
           foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
-            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
+
+            // check known image extensions
+            // also accept i.vimeocdn.com which doesn't use image extensions
+            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) || stripos($aPlaylist_item_i, 'i.vimeocdn.com') !== false ) {
               $sSplashImage = $aPlaylist_item_i;
               continue;
             }
@@ -1066,7 +1097,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           if( $sItemCaption ) {
             $aPlayer['fv_title'] = $sItemCaption;
-          }          
+          }
+          
+          if( $sSplashImage ) {
+            $aPlayer['splash'] = $sSplashImage;
+          }
           
           $aPlaylistItems[] = $aPlayer;
           
@@ -1141,9 +1176,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
         $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
         $css .= $sel.".has-caption { margin: 0 auto; }\n";
-        $css .= $sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
-        $css .= $sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
-        $css .= $sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+
+        // we also use entry-content as some themes use .entry-content > * to set margin
+        $css .= $sel.".fixed-controls, .entry-content ".$sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
+        $css .= $sel.".has-abloop, .entry-content ".$sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
+        $css .= $sel.".fixed-controls.has-abloop, .entry-content ".$sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
       }
       
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
@@ -1151,19 +1188,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
-        $css .= $sel." a.fp-play, ".$sel." a.fp-mute, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
         $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
       if( $sBuffer ) {
-        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer, ".$sel." .noUi-background { background-color: ".$sBuffer." !important; }\n";
+        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
       }
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
       }
       
       $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
-      $css .= $sel." .fv-wp-flowplayer-notice-small { color: ".$sTime." !important; }\n";
+      $css .= $sel." .fv-player-video-checker { color: ".$sTime." !important; }\n";
       
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
@@ -1208,8 +1245,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
 
-    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
-    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
@@ -1223,7 +1260,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       
-    .flowplayer .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
+    .flowplayer .fp-player .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
   
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
     <?php echo apply_filters('fv_player_custom_css',''); ?>
@@ -1245,7 +1282,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     global $posts, $post;
     if( !$posts || empty($posts) ) $posts = array( $post );
     
-    if( !$force && !$this->_get_option('js-everywhere') && isset($posts) && count($posts) > 0 ) {
+    if( !$force && !$this->should_force_load_js() && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
       
       if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
@@ -1390,8 +1427,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
       return false;
     }
-    $sCSSCurrent = apply_filters('fv_player_custom_css',$sCSSCurrent);
-    $sCSSCurrent = preg_replace( '~url\(([\'"])?~', 'url($1'.self::get_plugin_url().'/css/', $sCSSCurrent ); //  fix relative paths!
+
+    $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, "/*\nFV Flowplayer custom styles\n\nWarning: This file is not mean to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n*/\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
@@ -1402,7 +1439,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $this->_get_conf();
     }
   }
-  
+
+  /*
+   * @param array $match
+   *        string $match[0] - CSS declaration with url() in "" or '' or without quotes,
+   *                           using path like "icons/flowplayer.eot?#iefix"
+   *                           or data URL like url("data:image/svg+xml;base64,PHN2...");
+   *
+   * @return string CSS declaration with fixed relative path.
+   */
+  function css_relative_paths_fix( $match ) {
+    $path = self::get_plugin_url().'/css/';
+    if(
+      stripos($match[0],'data:') === false || // skip data URLs
+      stripos($match[0],'//') === false  // skip absolute paths
+    ) {
+      if( stripos($match[0],'url("') === 0 ) {
+        $match[0] = str_replace( 'url("', 'url("'.$path, $match[0] );
+      } else if( stripos($match[0],"url('") === 0 ) {
+        $match[0] = str_replace( "url('", "url('".$path, $match[0] );
+      } else if( stripos($match[0],'url(') === 0 ) {
+        $match[0] = str_replace( 'url(', 'url('.$path, $match[0] );
+      }
+    }
+    return $match[0];
+  }  
   
   public static function esc_caption( $caption ) {
     return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
@@ -1529,6 +1590,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
   
+  public static function hms_to_seconds( $tDuration ) {
+    if ( preg_match('/([\d]{1,2}\:)?[\d]{1,2}\:[\d]{2}/', $tDuration) ) {
+      $tDuration = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $tDuration);
+      sscanf($tDuration, "%d:%d:%d", $hours, $minutes, $seconds);
+      $tDuration = $hours * 3600 + $minutes * 60 + $seconds;
+    }
+    return $tDuration;
+  }
+
   public static function format_hms( $seconds ) {
     if( !is_numeric($seconds) ) return $seconds;
     
@@ -1631,145 +1701,246 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public static function get_languages() {
+    // List taken from https://www.localeplanet.com/icu/
     $aLangs = array(
       'SDH' => 'SDH',
-      'AB' => 'Abkhazian',
-      'AA' => 'Afar',
+      'AA' => 'Afaraf',
+      'AB' => 'аҧсшәа',
       'AF' => 'Afrikaans',
-      'SQ' => 'Albanian',
-      'AM' => 'Amharic',
-      'AR' => 'Arabic',
-      'HY' => 'Armenian',
-      'AS' => 'Assamese',
-      'AY' => 'Aymara',
-      'AZ' => 'Azerbaijani',
-      'BA' => 'Bashkir',
-      'EU' => 'Basque',
-      'BN' => 'Bengali, Bangla',
-      'DZ' => 'Bhutani',
-      'BH' => 'Bihari',
+      'AGQ' => 'Aghem',
+      'AK' => 'Akan',
+      'AM' => 'አማርኛ',
+      'AR' => 'العربية',
+      'AS' => 'অসমীয়া',
+      'ASA' => 'Kipare',
+      'AST' => 'asturianu',
+      'AY' => 'aymar aru',
+      'AZ' => 'azərbaycan',
+      'BA' => 'башҡорт теле',
+      'BAS' => 'Ɓàsàa',
+      'BE' => 'беларуская',
+      'BEM' => 'Ichibemba',
+      'BEZ' => 'Hibena',
+      'BH' => 'भोजपुरी',
       'BI' => 'Bislama',
-      'BR' => 'Breton',
-      'BG' => 'Bulgarian',
-      'MY' => 'Burmese',
-      'BE' => 'Byelorussian',
-      'KM' => 'Cambodian',
-      'CA' => 'Catalan',
-      'ZH' => 'Chinese',
-      'ZH_HANS' => 'Chinese (Simplified)',
-      'CO' => 'Corsican',
-      'HR' => 'Croatian',
-      'CS' => 'Czech',
-      'DA' => 'Danish',
-      'NL' => 'Dutch',
+      'BG' => 'български',
+      'BM' => 'bamanakan',
+      'BN' => 'বাংলা',
+      'BO' => 'བོད་སྐད་',
+      'BR' => 'brezhoneg',
+      'BRX' => 'बड़ो',
+      'BS' => 'bosanski',
+      'CA' => 'català',
+      'CE' => 'нохчийн',
+      'CGG' => 'Rukiga',
+      'CHR' => 'ᏣᎳᎩ',
+      'CO' => 'Corsu',
+      'CKB' => 'کوردیی ناوەندی',
+      'CS' => 'Čeština',
+      'CY' => 'Cymraeg',
+      'DA' => 'dansk',
+      'DAV' => 'Kitaita',
+      'DE' => 'Deutsch',
+      'DJE' => 'Zarmaciine',
+      'DSB' => 'dolnoserbšćina',
+      'DUA' => 'duálá',
+      'DYO' => 'joola',
+      'DZ' => 'རྫོང་ཁ',
+      'EBU' => 'Kĩembu',
+      'EE' => 'Eʋegbe',
+      'EL' => 'Ελληνικά',
       'EN' => 'English',
-      'EO' => 'Esperanto',
-      'ET' => 'Estonian',
-      'FO' => 'Faeroese',
-      'FJ' => 'Fiji',
-      'FI' => 'Finnish',
-      'FR' => 'French',
-      'FY' => 'Frisian',
-      'GD' => 'Gaelic (Scots Gaelic)',
-      'GL' => 'Galician',
-      'KA' => 'Georgian',
-      'DE' => 'German',
-      'EL' => 'Greek',
-      'KL' => 'Greenlandic',
-      'GN' => 'Guarani',
-      'GU' => 'Gujarati',
+      'EO' => 'esperanto',
+      'ES' => 'español',
+      'ET' => 'eesti',
+      'EU' => 'euskara',
+      'EWO' => 'ewondo',
+      'FA' => 'فارسی',
+      'FF' => 'Pulaar',
+      'FI' => 'suomi',
+      'FJ' => 'vosa Vakaviti',
+      'FIL' => 'Filipino',
+      'FO' => 'føroyskt',
+      'FR' => 'français',
+      'FUR' => 'furlan',
+      'FY' => 'Frysk',
+      'GA' => 'Gaeilge',
+      'GD' => 'Gàidhlig',
+      'GL' => 'galego',
+      'GN' => 'Avañe\'ẽ',
+      'GSW' => 'Schwiizertüütsch',
+      'GU' => 'ગુજરાતી',
+      'GUZ' => 'Ekegusii',
+      'GV' => 'Gaelg',
       'HA' => 'Hausa',
-      'HE' => 'Hebrew',
-      'HI' => 'Hindi',
-      'HU' => 'Hungarian',
-      'IS' => 'Icelandic',
-      'ID' => 'Indonesian',
+      'HAW' => 'ʻŌlelo Hawaiʻi',
+      'HE' => 'עברית',
+      'HI' => 'हिन्दी',
+      'HR' => 'hrvatski',
+      'HSB' => 'hornjoserbšćina',
+      'HU' => 'magyar',
+      'HY' => 'հայերեն',
       'IA' => 'Interlingua',
       'IE' => 'Interlingue',
-      'IK' => 'Inupiak',
-      'GA' => 'Irish',
-      'IT' => 'Italian',
-      'JA' => 'Japanese',
-      'JV' => 'Javanese',
-      'KN' => 'Kannada',
-      'KS' => 'Kashmiri',
-      'KK' => 'Kazakh',
-      'RW' => 'Kinyarwanda',
-      'KY' => 'Kirghiz',      
-      'KO' => 'Korean',
-      'KU' => 'Kurdish',
-      'LO' => 'Laothian',
-      'LA' => 'Latin',
-      'LV' => 'Latvian, Lettish',
-      'LN' => 'Lingala',
-      'LT' => 'Lithuanian',
-      'MK' => 'Macedonian',
+      'ID' => 'Indonesia',
+      'IG' => 'Igbo',
+      'IK' => 'Iñupiatun',
+      'II' => 'ꆈꌠꉙ',
+      'IS' => 'íslenska',
+      'IT' => 'italiano',
+      'JA' => '日本語',
+      'JI' => 'אידיש',
+      'JV' => 'basa Jawa',
+      'JGO' => 'Ndaꞌa',
+      'JMC' => 'Kimachame',
+      'KA' => 'ქართული',
+      'KAB' => 'Taqbaylit',
+      'KAM' => 'Kikamba',
+      'KDE' => 'Chimakonde',
+      'KEA' => 'kabuverdianu',
+      'KHQ' => 'Koyra ciini',
+      'KI' => 'Gikuyu',
+      'KK' => 'қазақ тілі',
+      'KKJ' => 'kakɔ',
+      'KL' => 'kalaallisut',
+      'KLN' => 'Kalenjin',
+      'KM' => 'ខ្មែរ',
+      'KN' => 'ಕನ್ನಡ',
+      'KO' => '한국어',
+      'KOK' => 'कोंकणी',
+      'KS' => 'کٲشُر',
+      'KSB' => 'Kishambaa',
+      'KSF' => 'rikpa',
+      'KSH' => 'Kölsch',
+      'KW' => 'kernewek',
+      'KU' => 'كوردی‎',
+      'KY' => 'кыргызча',
+      'LA' => 'Latine',
+      'LAG' => 'Kɨlaangi',
+      'LB' => 'Lëtzebuergesch',
+      'LG' => 'Luganda',
+      'LKT' => 'Lakȟólʼiyapi',
+      'LN' => 'lingála',
+      'LO' => 'ລາວ',
+      'LRC' => 'لۊری شومالی',
+      'LT' => 'lietuvių',
+      'LU' => 'Tshiluba',
+      'LUO' => 'Dholuo',
+      'LUY' => 'Luluhia',
+      'LV' => 'latviešu',
+      'MAS' => 'Maa',
+      'MER' => 'Kĩmĩrũ',
+      'MFE' => 'kreol morisien',
       'MG' => 'Malagasy',
-      'MS' => 'Malay',
-      'ML' => 'Malayalam',
-      'MT' => 'Maltese',
-      'MI' => 'Maori',
-      'MR' => 'Marathi',      
-      'MN' => 'Mongolian',
-      'NA' => 'Nauru',
-      'NE' => 'Nepali',
-      'NO' => 'Norwegian',
-      'OC' => 'Occitan',
-      'OR' => 'Oriya',
-      'OM' => 'Oromo, Afan',
-      'PS' => 'Pashto, Pushto',
-      'FA' => 'Persian',
-      'PL' => 'Polish',
-      'PT' => 'Portuguese',
-      'PA' => 'Punjabi',
-      'QU' => 'Quechua',
-      'RM' => 'Rhaeto-Romance',
-      'RO' => 'Romanian',
-      'RN' => 'Rundi',
-      'RU' => 'Russian',
-      'SM' => 'Samoan',
-      'SG' => 'Sangro',
-      'SA' => 'Sanskrit',
-      'SR' => 'Serbian',      
+      'MGH' => 'Makua',
+      'MGO' => 'metaʼ',
+      'MI' => 'te reo Māori',
+      'MK' => 'македонски',
+      'ML' => 'മലയാളം',
+      'MN' => 'монгол',
+      'MR' => 'मराठी',
+      'MS' => 'Melayu',
+      'MT' => 'Malti',
+      'MUA' => 'MUNDAŊ',
+      'MY' => 'မြန်မာ',
+      'MZN' => 'مازرونی',
+      'NA' => 'Ekakairũ Naoero',
+      'NO' => 'Norsk',
+      'NAQ' => 'Khoekhoegowab',
+      'NB' => 'norsk bokmål',
+      'ND' => 'isiNdebele',
+      'NDS' => 'nds',
+      'NE' => 'नेपाली',
+      'NL' => 'Nederlands',
+      'NMG' => 'nmg',
+      'NN' => 'nynorsk',
+      'NNH' => 'Shwóŋò ngiembɔɔn',
+      'NUS' => 'Thok Nath',
+      'NYN' => 'Runyankore',
+      'OC' => 'occitan, lenga d\'òc',
+      'OM' => 'Oromoo',
+      'OR' => 'ଓଡ଼ିଆ',
+      'OS' => 'ирон',
+      'PA' => 'ਪੰਜਾਬੀ',
+      'PL' => 'polski',
+      'PS' => 'پښتو',
+      'PT' => 'português',
+      'QU' => 'Runasimi',
+      'RM' => 'rumantsch',
+      'RN' => 'Ikirundi',
+      'RO' => 'română',
+      'ROF' => 'Kihorombo',
+      'RU' => 'русский',
+      'RW' => 'Kinyarwanda',
+      'RWK' => 'Kiruwa',
+      'SA' => 'संस्कृतम्',
+      'SD' => 'सिन्धी, سنڌي، سندھی‎',
       'ST' => 'Sesotho',
+      'SAH' => 'саха тыла',
+      'SAQ' => 'Kisampur',
+      'SBP' => 'Ishisangu',
+      'SM' => 'gagana fa\'a Samoa',
+      'SE' => 'davvisámegiella',
+      'SEH' => 'sena',
+      'SES' => 'Koyraboro senni',
+      'SG' => 'Sängö',
+      'SHI' => 'ⵜⴰⵛⵍⵃⵉⵜ',
+      'SI' => 'සිංහල',
+      'SK' => 'slovenčina',
+      'SL' => 'slovenščina',
+      'SMN' => 'anarâškielâ',
+      'SN' => 'chiShona',
+      'SS' => 'SiSwati',
+      'SO' => 'Soomaali',
+      'SQ' => 'shqip',
+      'SR' => 'српски',
+      'SV' => 'svenska',
+      'SU' => 'Basa Sunda',
+      'SW' => 'Kiswahili',
+      'TA' => 'தமிழ்',
+      'TE' => 'తెలుగు',
+      'TEO' => 'Kiteso',
+      'TL' => 'Wikang Tagalog',
+      'TS' => 'Xitsonga',
+      'TK' => 'Türkmen, Түркмен',
+      'TG' => 'тоҷикӣ',
+      'TH' => 'ไทย',
+      'TI' => 'ትግርኛ',
       'TN' => 'Setswana',
-      'SN' => 'Shona',
-      'SD' => 'Sindhi',
-      'SI' => 'Singhalese',
-      'SS' => 'Siswati',
-      'SK' => 'Slovak',
-      'SL' => 'Slovenian',
-      'SO' => 'Somali',
-      'ES' => 'Spanish',
-      'SU' => 'Sudanese',
-      'SW' => 'Swahili',
-      'SV' => 'Swedish',
-      'TL' => 'Tagalog',
-      'TG' => 'Tajik',
-      'TA' => 'Tamil',
-      'TT' => 'Tatar',
-      'TE' => 'Tegulu',
-      'TH' => 'Thai',
-      'BO' => 'Tibetan',
-      'TI' => 'Tigrinya',
-      'TO' => 'Tonga',
-      'TS' => 'Tsonga',
-      'TR' => 'Turkish',
-      'TK' => 'Turkmen',
+      'TO' => 'lea fakatonga',
+      'TR' => 'Türkçe',
+      'TT' => 'татар',
       'TW' => 'Twi',
-      'UK' => 'Ukrainian',
-      'UR' => 'Urdu',
-      'UZ' => 'Uzbek',
-      'VI' => 'Vietnamese',
-      'VO' => 'Volapuk',
-      'CY' => 'Welsh',
+      'TWQ' => 'Tasawaq senni',
+      'TZM' => 'Tamaziɣt n laṭlaṣ',
+      'UG' => 'ئۇيغۇرچە',
+      'UK' => 'українська',
+      'UR' => 'اردو',
+      'UZ' => 'o‘zbek',
+      'VAI' => 'ꕙꔤ',
+      'VI' => 'Tiếng Việt',
+      'VO' => 'Volapük',
+      'VUN' => 'Kyivunjo',
+      'WAE' => 'Walser',
       'WO' => 'Wolof',
-      'XH' => 'Xhosa',
-      'JI' => 'Yiddish',
-      'YO' => 'Yoruba',
-      'ZU' => 'Zulu'
+      'XOG' => 'Olusoga',
+      'XH' => 'isiXhosa',
+      'YAV' => 'nuasue',
+      'YI' => 'ייִדיש',
+      'YO' => 'Èdè Yorùbá',
+      'YUE' => '粵語',
+      'ZGH' => 'ⵜⴰⵎⴰⵣⵉⵖⵜ',
+      'ZH' => '中文',
+      'ZH_HANS' => '中文（简体）',
+      'ZU' => 'isiZulu'
     );
-    
+
+    // Uppercase first letter
+    foreach( $aLangs as $code => $native ) {
+      // $aLangs[$code] = ucfirst($native);
+      $aLangs[$code] = mb_convert_case($native, MB_CASE_TITLE, "UTF-8");
+    }
+
     ksort($aLangs);
     
     return $aLangs;
@@ -1849,7 +2020,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $output = 'application/'.$output;
           break;
         case 'mp3' :
-        case 'ogv' :
+        case 'ogg' :
         case 'wav' :
           $output = 'audio/'.$output;
           break;   
@@ -2023,7 +2194,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return str_replace( "'", '\u0027', json_encode( $input ) );
     }
   }
-  
+
 
   function popup_css( $css ){
     $aPopupData = get_option('fv_player_popups');
@@ -2037,10 +2208,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
     if( strlen($sNewCss) ){
-      $css .= "\n/*custom popup css*/\n".$sNewCss."/*end custom popup css*/\n";
+      $css .= "\n/*custom popup css*/\n".$sNewCss."\n/*end custom popup css*/\n";
     }
     return $css;
-  }  
+  }
+
+  function custom_css( $css ) {
+    global $fv_fp;
+    $aCustomCSS = $fv_fp->_get_option('customCSS');
+
+    if( strlen($aCustomCSS) ) {
+      $css .= "\n/*custom css*/\n".strip_tags( stripslashes($aCustomCSS) )."\n/*end custom css*/\n";
+    }
+    return $css;
+  }
 
   /*
   * This function changes the /fvp/{number} rewrite endpoint created with fv_player_embed_rewrite_endpoint()
@@ -2168,6 +2349,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     return $value;
+  }
+  
+  // Also used by FV Player extensions
+  function should_force_load_js() {
+    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']) || isset($_GET['elementor-preview']);
   }
 
   function template_preview() {

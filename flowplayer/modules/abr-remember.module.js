@@ -1,16 +1,12 @@
 /*
  *  MPEG-DASH and HLS.js ABR changes
  */
-if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
-  flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
-}
-
 flowplayer( function(api,root) {
   var hlsjs;
   flowplayer.engine('hlsjs-lite').plugin(function(params) {
     hlsjs = params.hls;
   });
-  
+
   root = jQuery(root);
   var search = document.location.search;
 
@@ -19,10 +15,14 @@ flowplayer( function(api,root) {
     api.conf.dash.initialVideoQuality = 'restore'; // special flag for Dash.js
   }
   
-  if( localStorage.FVPlayerHLSQuality && typeof(flowplayer.conf.hlsjs.autoLevelEnabled) == "undefined" ) {
-    flowplayer.conf.hlsjs.startLevel = localStorage.FVPlayerHLSQuality;
+  if( localStorage.FVPlayerHLSQuality ) {
+    api.conf.hlsjs.startLevel = parseInt(localStorage.FVPlayerHLSQuality);
+    api.conf.hlsjs.testBandwidth = false;
+    api.conf.hlsjs.autoLevelEnabled = false;
   } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
-    flowplayer.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
+    api.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
+    api.conf.hlsjs.testBandwidth = false;
+    api.conf.hlsjs.autoLevelEnabled = false;
   }
   
   api.bind('quality', function(e,api,quality) {
@@ -44,6 +44,8 @@ flowplayer( function(api,root) {
   var bitrates = [];
   var last_quality = -1;
   api.bind('ready', function(e,api) {
+    root.find('.fp-qsel-menu strong').text(fv_flowplayer_translations.quality); // translate Quality
+
     if(api.engine.engineName == 'dash' ) {      
       bitrates = api.engine.dash.getBitrateInfoListFor('video');
       if( localStorage.FVPlayerDashQuality && api.conf.dash.initialVideoQuality ) { // Dash.js gives us initialVideoQuality
@@ -51,23 +53,47 @@ flowplayer( function(api,root) {
       }
       quality_sort();
     } else if(api.engine.engineName == 'hlsjs-lite' ) {
+
+      // with HLS.js the stream might not be playing even after receiving the ready event
+      // so we need to indicate it's loading
+      // TODO: What about fixing that ready event instead? Core Flowplayer 7.2.8?
+      root.addClass('is-loading');
+      api.loading = true;
+
+      // once we get a progress event we know it's really playing
+      api.one('progress', function() {
+        if( api.loading ) {
+          root.removeClass('is-loading');
+          api.loading = false;
+        }
+      })
+
       if( api.video.qualities && api.video.qualities.length > 2 ) {
         var qswitch = -1;
         if( localStorage.FVPlayerHLSQuality ) {
-          qswitch = localStorage.FVPlayerHLSQuality;
-          
+          // do we have such quality?
+          jQuery(api.video.qualities).each( function(k,v) {
+            if( v.value == localStorage.FVPlayerHLSQuality ) {
+              // accept the remembered quality index
+              qswitch = localStorage.FVPlayerHLSQuality;  
+              return false;
+            }
+          });
+        
+        // is FV Player set to force HD?
         } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
           jQuery(api.video.qualities).each( function(k,v) {
             var height = parseInt(v.label);
-            if( height > 0 && hd_quality == -1 && height >= 720 && height <= 720 ) {
-              qswitch = k;
+            if( height > 0 && qswitch == -1 && height >= 720 && height <= 720 ) {
+              qswitch = v.value;
             }
           });
           
         }
         
+        qswitch = parseInt(qswitch);
+
         if( qswitch > -1 ) {
-          api.quality(qswitch);
           root.one('progress', function() {
             setTimeout( function() {
               api.quality(qswitch);

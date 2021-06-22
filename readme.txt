@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.4
+Tested up to: 5.7
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -356,6 +356,147 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.4.47.727 - 2021/05/18 =
+
+* Custom video fields - setting default hook priority to ensure boxes are placed higher up
+* Deprecated jQuery calls fix
+* HLS.js - upgrade to 1.0.4 to fix autoplay issues with some streams
+* Bugfix - Editor - Video Screenshot - fix for new crossOrigin requirement for MP4
+* Bugfix - Playlist - fixes when the playlist item fails to play and it auto-advances to next
+* Bugfix - Sticky player - subtitles sizing
+
+= 7.4.46.727 - 2021/04/09 =
+
+* DASH.js - allowing it to recover from blocked autoplay on Safari
+* Handle WordPress audio/video - improved the setting to also work with YouTube oEmbed
+* Migration Wizard - improved to handle subtitles too
+* Bugfix - duplicate FV Player DB wp_fv_player_videometa rows being created
+* Bugfix - Lightbox - respect dimensions stored in FV Player DB
+* Bugfix - Position Saving - safer way of restoring position (for HLS.js)
+
+= 7.4.45.727 - 2021/03/24 =
+
+* Bugfix - YouTube.com iframe embeds broken after adding support for youtube-nocokie.com in previous release
+* Bugfix - YouTube controlbar fix for iPad with Chrome for FV Player Pro
+
+= 7.4.44.727 - 2021/03/23 =
+
+* Chromecast - support for video subtitles added
+* FV Player Pro 7.4.44.727 required for encrypted HLS with multiple audio tracks
+* Google Analytics - compatibility with websites using ga.js or  gtag.js
+* HLS.js - upgrade to 0.14.17 to fix subtle audio sync issues
+* Matomo tracking support (Piwik)
+* New Feature - Migration Wizard - found in Settings -> FV Player -> Tools, useful to mass replace video URLs
+* Bugfix - editor screenshots and video checker reports broken after PHP 8 fixes
+
+= 7.4.42.727 - 2021/03/10 =
+
+* Custom CSS - added field for easy player CSS customizations in wp-admin -> Settings -> FV Player -> Skin -> Custom CSS
+* Subtitles - using native language names for the menu
+* Bugfix - CSS - scrollbars appearing on player in some cases
+* Bugfix - PHP 8 - fixing warnings
+
+= 7.4.41.727 - 2021/03/08 =
+
+* Compatibility - Brizy editor preview support
+* CSS - controlbar menus should get scrollbars automatically
+* Google Analytics - only run if configured - but allow custom tracking events (fv_track_events)
+* Mobile - Fullscreen orientation lock - fix for portrait videos
+* Video linking - added milisecond precision for FV Player Pro AB Loop Link
+* Bugfix - CSS - put controlbar menus above controlbar in fullscreen
+* Bugfix - Lightbox - fixing embed links to work (without lightbox)
+* Bugfix - PHP warnings - prevent when unknown properties set via editor
+* Bugfix - Video checker - unable to type when mouse hover on player
+
+= 7.4.40.727 - 2021/02/18 =
+
+* Bugfix - Fullscreen - bad scroll position after leaving fullscreen of YouTube with FV Player Pro
+* Bugfix - Google Analytics - only load when configured
+* Bugfix - prevent PHP notices for position and timeline_preview
+
+= 7.4.39.727 - 2021/01/21 =
+
+* Chromecast - icon fix
+* Chromecast - retain playback position when enabling/disabling
+* Chromecast - support replaying the video and playlists
+* Chromecast - support switching of audio tracks in multiple audio track HLS streams
+* Skin settings - adding Helvetica as an option
+* Bugfix - removing exception trigger for missing FV_Player_Db_Player_Meta()
+
+= 7.4.38.727 - 2021/01/14 =
+
+* Security - Security - XSS fix for wp-admin -> FV Player screen from logged in editors/admins. Thanks to Arcangelo Saracino for the report!
+* Compatibility - Avada builder (wp-admin) fixes
+* Google Analytics - switching from ga.js to analytics.js
+* Bugfix - Audio splash screen fix for HLS audio-only streams
+* Bugfix - Fullscreen subtitles font size
+* Bugfix - Video duration scanning issues with certain HLS streams
+
+= 7.4.37.727 - 2020/11/20 =
+
+* Added Settings into wp-admin -> FV Player menu
+* Compatibility - Safari fullscreen fix for Twenty Twenty
+* Bugfix - HLS quality remembering - fix when remembered stream number doesn't exist
+* Bugfix - iOS video recovery - was causing issues with playback of MP4 videos
+* Bugfix - Playlist style selection not working for FV Player Pro Vimeo Channel parsing
+* Bugfix - S3 Browser - fix for CloudFront domains when using S3 path with region name
+
+= 7.4.36.727 - 2020/10/28 =
+
+* Bugfix - typo in OGV video parsing resulting in bad video type
+* Bugfix - "Use native fullscreen on mobile" not working after last release
+
+= 7.4.35.727 - 2020/10/22 =
+
+* Audio - splash screen now stays up for the full duration of audio files
+* Compatiblity - Fullscreen appearance fix for Google Pixel 4
+* HLS - live stream check - countdown translation fixes
+* iOS video recovery - improved for expired MP4 file links
+* Playlist - show item splash when manually switching items
+* Translations - quality menu, speed menu and subtitles menu label
+* Bugfix - Compatiblity - Elementor editor CSS conflict fix
+* Bugfix - Editor - fix for picking of timeline previews in FV Player Pro
+* Bugfix - FV Player wp-admin screen - screen options per page setting fix
+* Bugfix - Video durations are now respecting FV Player Pro's custom start/end time
+* Bugfix - Video Position Saving - improvements to work with FV Player Pro's custom start/end time
+
+= 7.4.34.727 - 2020/09/23 =
+
+* FV Player wp-admin Screen - search fixes and improvements - you can multiple words or quotes
+* HLS - live stream check - improving display and behavior when multiple video playbacks is enabled
+* Compatibility - AWS - library update
+* Compatibility - jQuery migrate fixes
+* Compatibility - Elementor fixes
+
+= 7.4.33.727 - 2020/08/24 =
+
+* Bugfix - Autoplay - hide initial play arrow animation when autoplaying a video did also hide the loading progress indicator
+* DASH.js library downgrade to 3.0.0 as some videos wouldn't play on macOS 10.5.6 with Safari 13.1.2
+
+= 7.4.32.727 - 2020/08/14 =
+
+* Bugfix - Editor - WordPress 5.5 fix for dropdown settings (HTML select tag)
+
+= 7.4.31.727 - 2020/08/12 =
+
+* Autoplay - hide initial play arrow animation when autoplaying a video
+* DASH.js library update to 3.1.2
+* Keyboard controls - disabled  when controlbar hidden
+* Loop fix for FV Player Pro YouTube engine
+* Video Position Saving - remember if logged in user saw the video already
+* WordPress 5.5 fixes
+
+= 7.4.24.727 - 2020/06/09 =
+
+* AWS - adding new regions
+* HLS - live stream check - shows countdown and retries automatically if it's not up
+* List table - changing user interface text labels "Playlist" to "Player"
+* MPEG-DASH - partial fix for Disable HTML5 autoplay Chrome extension for Vimeo videos in FV Player Pro
+* Settings - Check template - fix when using Google PageSpeed module or SCRIPT_DEBUG
+* Bugfix - Editor - bugfix, couldn't save Prev/Next playlist style properly
+* Bugfix - iOS video recovery - bugfix, it was not allowing you to pause the video
+* Bugfix - Multiple video playback - would mute videos in playlist
 
 = 7.4.21.727 - 2020/05/07 =
 

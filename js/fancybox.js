@@ -77,6 +77,7 @@ jQuery(document).ready(function() {
     
 });
 
+// special FV Player sizing and hiding of fancyBox buttons if it's a FV Player lightbox
 function fv_fancybox_check_size() {
   var
     $player_wrap = jQuery('.fancybox-slide--current .fv_player_lightbox_hidden'),
@@ -88,7 +89,7 @@ function fv_fancybox_check_size() {
     $playlist_items = jQuery('.fancybox-slide--current .fp-playlist-external').find('a:visible'),
     $fs_button = $player.find('.fp-fullscreen');
 
-  if ($player.length) {
+  if ( $player_wrap.length && $player.length) {
     
     if( typeof($player.data('orig-max-height')) == 'undefined' ) {
       $player.data('orig-max-height', parseInt($player.css('max-height')) ).data('orig-max-width', parseInt($player.css('max-width')) );
@@ -177,12 +178,12 @@ if( document.addEventListener ) {
 }
 
 // overriding default Flowplayer fullscreen function
-jQuery(document).on('ready', function() {
+jQuery( function() {
   if( typeof(flowplayer) != "undefined" ) {
     flowplayer( function(api,root) {
       var lightbox_wrap = jQuery(root).closest('.fv_player_lightbox_hidden');
       if( lightbox_wrap.length ) {
-        lightbox_wrap.click( function(e) {
+        lightbox_wrap.on('click', function(e) {
           if( e.target == e.currentTarget) {
             jQuery.fancybox.close();
           }
@@ -213,7 +214,7 @@ jQuery(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange
   fv_fancybox_check_size();
 });
 
-jQuery(document).ready(fv_player_lightbox_bind);
+jQuery(fv_player_lightbox_bind);
 jQuery(document).ajaxComplete(fv_player_lightbox_bind);
 
 function fv_player_lightbox_bind(){

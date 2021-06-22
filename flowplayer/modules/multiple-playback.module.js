@@ -18,23 +18,25 @@ flowplayer( function(api,root) {
   });
 
   // on iOS only one audible video can play at a time, so we must mute the other players
-  api.on('load', function() {
-    var i = 0,
-      is_muted = root.data('volume') == 0;
+  api.on('ready', function() { // using ready event to making sure other players are muted only if the video actually loads
+    var is_muted = root.data('volume') == 0;
 
     if( !is_muted ) {
       // we go through all the players to mute them all
       jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
         
-        // we must skip the current player, as the load even can occur multiple times
+        // we must skip the current player, as the ready event can occur multiple times
         // like for example when you switch to another video in playlist
-        var current_instance_id = root.data('flowplayer-instance-id');
-        if( current_instance_id == flowplayer.audible_instance ) return;
+        if( instance_id == jQuery(this).data('flowplayer-instance-id') || instance_id == flowplayer.audible_instance ) return;
         
         var player = jQuery(this).data('flowplayer');
 
-        if( player && player.playing ) {
-          player.mute(true,true);
+        if( player ) {
+          if(player.playing) {
+            player.mute(true,true);
+          } else { 
+            player.clearLiveStreamCountdown(); // if not playing stop countdown and unload if other video plays
+          }
         }
       });
 

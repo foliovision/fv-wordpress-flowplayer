@@ -5,7 +5,7 @@ flowplayer(function (api,root) {
   root = jQuery(root);
   var player_id = root.attr('id'),
     ad = false;
-  
+
   if( root.data('end_popup_preview') ){
     jQuery(document).ready( function() {      
       api.trigger('finish', [ api] );
@@ -25,28 +25,44 @@ flowplayer(function (api,root) {
   }
   
   function show_ad() {
-    if( !ad && !root.hasClass('is-cva') && typeof(fv_flowplayer_ad) != "undefined" && typeof(fv_flowplayer_ad[player_id]) != "undefined" && root.width() >= parseInt(fv_flowplayer_ad[player_id].width) ) {
-      var html = fv_flowplayer_ad[player_id].html;
-      html = html.replace( '%random%', Math.random() );
-      ad = jQuery('<div id="'+player_id+'_ad" class="wpfp_custom_ad">'+html+'</div>');
-      root.find('.fp-player').append(ad);
-      
-      ad_height_check();
-      // check if the ad contains any video and pause the player if the video is found
-      setTimeout( function() {
-        if( root.find('.wpfp_custom_ad video').length ) {
-          api.pause();
-        }
-      },500);
-    
+    var ad_data = root.attr('data-ad');
+    if( typeof(ad_data) !='undefined' && ad_data.length ) {
+      try {
+        ad_data = JSON.parse(ad_data);
+      } catch (e) {
+        return false
+      }
+
+      if( !ad && !root.hasClass('is-cva') && root.width() >= parseInt(ad_data.width) ) {
+        var html = ad_data.html;
+        html = html.replace( '%random%', Math.random() );
+        ad = jQuery('<div id="'+player_id+'_ad" class="wpfp_custom_ad">'+html+'</div>');
+        root.find('.fp-player').append(ad);
+
+        ad_height_check();
+        // check if the ad contains any video and pause the player if the video is found
+        setTimeout( function() {
+          if( root.find('.wpfp_custom_ad video').length ) {
+            api.pause();
+          }
+        },500);
+      }
     }
   }
-  
+
   function show_popup( event ) {
-    var popup = root.find('.wpfp_custom_popup');
-    if( typeof(fv_flowplayer_popup) != "undefined" && typeof(fv_flowplayer_popup[player_id]) != "undefined" && ( event == 'finish' || fv_flowplayer_popup[player_id].pause || fv_flowplayer_popup[player_id].html.match(/fv-player-ppv-purchase-btn-wrapper/) ) ) {
-      root.addClass('is-popup-showing');
-      root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+fv_flowplayer_popup[player_id].html+'</div>' );
+    var popup_data = root.attr('data-popup');
+    if( typeof(popup_data) !='undefined' && popup_data.length ) {
+      try {
+        popup_data = JSON.parse(popup_data);
+      } catch (e) {
+        return false;
+      }
+
+      if( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) ) {
+        root.addClass('is-popup-showing');
+        root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+popup_data.html+'</div>' );
+      }
     }
   }
   
@@ -88,7 +104,7 @@ jQuery(document).on('click', '.fv_fp_close', function() {
 } );
 
 /*
- *  Popups form
+ *  Popups form, disabling and enabling Flowplayer hotkeys when you enter/leave the field
  */
 jQuery(document).on('focus','.fv_player_popup input[type=text], .fv_player_popup input[type=email], .fv_player_popup textarea', function() {
   var api = jQuery(this).parents('.flowplayer').data('flowplayer');

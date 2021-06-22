@@ -61,7 +61,7 @@ function fv_flowplayer_admin_ads() {
 									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('ad_css')); ?></textarea>
 									<p class="description"><?php _e('(Hint: put .wpfp_custom_ad_content before your own CSS selectors)', 'fv-wordpress-flowplayer'); ?></p>
 									<script type="text/javascript">
-									jQuery('#ad_css_select').change( function() {
+									jQuery('#ad_css_select').on('change', function() {
 										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
 											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
 										}									
@@ -241,7 +241,7 @@ function fv_flowplayer_admin_default_options() {
 							</td>
 						</tr>
 
-            <?php $fv_fp->_get_checkbox(__('Force HD Streaming', 'fv-wordpress-flowplayer'), 'hd_streaming', __('Use HD quality even on slow connections.', 'fv-wordpress-flowplayer'), __( 'User can still switch to lower quality by hand. Works with MPEG-DASH streams on desktop and laptop computers.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Force HD Streaming', 'fv-wordpress-flowplayer'), 'hd_streaming', __('Use HD quality for HLS/MPEG-DASH even on slow connections.', 'fv-wordpress-flowplayer'), __( 'User can still switch to lower quality by hand. Doesn\'t work on iPhones.', 'fv-wordpress-flowplayer') ); ?>
 
             <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player top bar.', 'fv-wordpress-flowplayer') ); ?>
             
@@ -281,6 +281,16 @@ function fv_flowplayer_admin_default_options() {
                   <option <?php if( $value == 'top-right' ) echo "selected"; ?> value="top-right"><?php _e('Top-right', 'fv-wordpress-flowplayer'); ?></option>
                 </select>
               </td>
+						</tr>
+            
+            <tr>
+							<td><label for="matomo_domain"><?php _e('Matomo/Piwik Tracking', 'fv-wordpress-flowplayer'); ?>:</label></td>
+							<td>
+                <p class="description">
+                  <input type="text" name="matomo_domain" id="matomo_domain" value="<?php echo esc_attr( $fv_fp->_get_option('matomo_domain') ); ?>" placeholder="<?php _e('matomo.your-domain.com', 'fv-wordpress-flowplayer'); ?>" class="large" />
+                  <input type="text" name="matomo_site_id" id="matomo_site_id" value="<?php echo esc_attr( $fv_fp->_get_option('matomo_site_id') ); ?>" placeholder="<?php _e('Site ID', 'fv-wordpress-flowplayer'); ?>" class="small" />
+                </p>
+							</td>
 						</tr>
 
             <?php $fv_fp->_get_checkbox(__('Multiple video playback', 'fv-wordpress-flowplayer').' (beta)', 'multiple_playback', __('Allows multiple players to play at once. Only one player remains audible.', 'fv-wordpress-flowplayer') ); ?>
@@ -448,6 +458,11 @@ jQuery(document).ready(function($) {
 
   });
 
+  // no sorting of settings boxes please
+  setTimeout( function() {
+    jQuery('#normal-sortables').sortable( "disable" )
+  }, 0 );
+
 });
 </script>
 					<div class="clear"></div>
@@ -537,6 +552,9 @@ function fv_flowplayer_admin_description_tools() {
         <p>
           <?php _e('Maintenance tools and debug info.', 'fv-wordpress-flowplayer'); ?>
         </p>
+        <p>
+          Need help with replacing video paths after migrating video from one CDN to another? Try the <a href="<?php echo admin_url('admin.php?page=fv_player_migration'); ?>" class="button">Migration Wizard</a>
+        </p>
       </td>
     </tr>
   </table>
@@ -615,7 +633,7 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('postthumbnail') ) $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('engine') ) $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', __('Provides greater compatibility.', 'fv-wordpress-flowplayer'), __('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
+          <?php if( $fv_fp->_get_option('rtmp-live-buffer') ) $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
 
           <tr>
 						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
@@ -823,7 +841,7 @@ function fv_flowplayer_admin_popups(){
 
     <script>
 
-    jQuery('#fv-player-popups-add').click( function() {
+    jQuery('#fv-player-popups-add').on('click', function() {
       var fv_player_popup_index  = (parseInt( jQuery('#fv-player-popups-settings tr.data:last .id').html()  ) || 0 ) + 1;
       jQuery('#fv-player-popups-settings').append(jQuery('#fv-player-popups-settings tr.data:first').prop('outerHTML').replace(/#fv_popup_dummy_key#/gi,fv_player_popup_index + ""));
       jQuery('#fv-player-popup-item-'+fv_player_popup_index).show();
@@ -1169,7 +1187,7 @@ function fv_flowplayer_admin_skin() {
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
 					.flowplayer .fp-color { background-color: #%val% !important }',
     'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
-                  .fv-wp-flowplayer-notice-small { color: #%val% !important; }',
+                  .fv-player-video-checker { color: #%val% !important; }',
     'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
                   .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }',
     'design-timeline' => '',
@@ -1308,6 +1326,7 @@ function fv_flowplayer_admin_skin() {
         'options' => array(
           'inherit'                                     => __( '(inherit from template)', 'fv-wordpress-flowplayer' ),
           '&quot;Courier New&quot;, Courier, monospace' => 'Courier New',
+          'Helvetica, sans-serif'                       => 'Helvetica',
           'Tahoma, Geneva, sans-serif'                  => 'Tahoma, Geneva'
         ),
         'default' => 'Tahoma, Geneva, sans-serif',
@@ -1433,9 +1452,37 @@ function fv_flowplayer_admin_skin_playlist() {
         <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" />
         <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e('Use custom color', 'fv-wordpress-flowplayer'); ?><?php _e('', 'fv-wordpress-flowplayer'); ?></a>
         <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e('Inherit from theme', 'fv-wordpress-flowplayer'); ?><?php _e('', 'fv-wordpress-flowplayer'); ?></a>
-      </td>      
-    </tr>  
-    <tr>    		
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      </td>
+    </tr>
+  </table>
+  <div style="clear: both"></div>
+<?php
+}
+
+
+function fv_flowplayer_admin_custom_css() {
+  global $fv_fp;
+  $customCSS = $fv_fp->_get_option('customCSS');
+?>
+<style>
+  .CodeMirror {
+  border: 1px solid #ddd;
+  }
+</style>
+ <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for someusefull CSS tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
+ <table class="form-table2">
+    <tr>
+      <td colspan="2">
+        <textarea id="customCSS" name="customCSS"><?php echo esc_textarea($customCSS); ?></textarea>
+      </td>
+    </tr>
+
+    <tr>
       <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
       </td>
@@ -1459,21 +1506,22 @@ function fv_flowplayer_admin_skin_subtitles() {
       <td><label for="subtitle-font-face"><?php _e('Font Face', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="subtitle-font-face" name="subtitleFontFace" data-fv-preview=".flowplayer .fp-captions { font-family: %val% !important; }">
-          <option value="inherit"<?php if( $fv_fp->_get_option('subtitleFontFace') == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit)', 'fv-wordpress-flowplayer'); ?></option>          
-          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->_get_option('subtitleFontFace') == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>										  
-          <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>          
+          <option value="inherit"<?php if( $fv_fp->_get_option('subtitleFontFace') == 'inherit'  ) echo ' selected="selected"'; ?>><?php _e('(inherit from player)', 'fv-wordpress-flowplayer'); ?></option>          
+          <option value="&quot;Courier New&quot;, Courier, monospace"<?php if( $fv_fp->_get_option('subtitleFontFace') == "\"Courier New\", Courier, monospace" ) echo ' selected="selected"'; ?>>Courier New</option>
+          <option value="Helvetica, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Helvetica, sans-serif" ) echo ' selected="selected"'; ?>>Helvetica</option>				  
+          <option value="Tahoma, Geneva, sans-serif"<?php if( $fv_fp->_get_option('subtitleFontFace') == "Tahoma, Geneva, sans-serif" ) echo ' selected="selected"'; ?>>Tahoma, Geneva</option>
         </select>
       </td>   
     </tr>    
     <tr>
       <td><label for="subtitleSize"><?php _e('Font Size', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="subtitleSize" name="subtitleSize" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('subtitleSize') ); ?>"
-                 data-fv-preview=".flowplayer .fp-captions p { font-size: %val%px !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
       <td><label for="subtitleBgColor"><?php _e('Background Color', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr($subtitleBgColor); ?>"
-                 data-fv-preview=".flowplayer .fp-captions p { background-color: %val% !important; }"/></td>
+                 data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>    
     <tr>    		
       <td colspan="2">
@@ -1501,21 +1549,21 @@ function fv_flowplayer_admin_skin_sticky() {
     <tr>  
       <td><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
-        <select id="sticky_place" name="sticky_place">   
+        <select id="sticky_place" name="sticky_place">
           <option value="right-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
-          <option value="left-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>         
-          <option value="left-top"<?php if( $fv_fp->_get_option('sticky_place') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>										  
-          <option value="right-top"<?php if( $fv_fp->_get_option('sticky_place') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>                     
+          <option value="left-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>
+          <option value="left-top"<?php if( $fv_fp->_get_option('sticky_place') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>
+          <option value="right-top"<?php if( $fv_fp->_get_option('sticky_place') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>
         </select>
-      </td>   
-    </tr>    
+      </td>
+    </tr>
     <tr>
       <td><label for="sticky_width"><?php _e('Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
     </tr>
     
 
-    <tr>    		
+    <tr>
       <td colspan="2">
         <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
       </td>
@@ -1666,11 +1714,6 @@ $fv_player_aSettingsTabs = array(
   array('id' => 'fv_flowplayer_settings_help',      'hash' => 'tab_help',     	'name' => __('Help', 'fv-wordpress-flowplayer') ),
 );
 
-//unset video ads tab for Legacy PRO player
-if(version_compare( str_replace( '.beta','',get_option( 'fv_player_pro_ver' ) ),'0.7.23') == -1){
-  unset($fv_player_aSettingsTabs[4]);
-  $fv_player_aSettingsTabs = array_merge($fv_player_aSettingsTabs,array());
-}
 
 
 $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_player_aSettingsTabs);
@@ -1690,6 +1733,7 @@ if( !class_exists('FV_Player_Pro') ) {
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_skin_custom_css', __('Custom CSS', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_custom_css', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_sticky', 'fv_flowplayer_settings_skin', 'normal' );
 
@@ -1872,7 +1916,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   }
   
   var fv_flowplayer_amazon_s3_count = 0;
-  jQuery('#amazon-s3-add').click( function() {
+  jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
   	new_inputs.find('input').attr('value','');  	
 		new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
@@ -1895,7 +1939,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
-    jQuery('.fv_wp_flowplayer_activate_extension').click( function() {  //  todo: block multiple clicks
+    jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
       
@@ -1927,13 +1971,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       });  
     } );
     
-    jQuery('.fv-flowplayer-admin-addon-installed').click( function() {
+    jQuery('.fv-flowplayer-admin-addon-installed').on('click', function() {
       jQuery('html, body').animate({
           scrollTop: jQuery("#"+jQuery(this).attr("data-plugin") ).offset().top
       }, 1000);
     } );
     
-    jQuery('.show-more').click( function(e) {
+    jQuery('.show-more').on('click', function(e) {
       e.preventDefault();
       
       var more = jQuery('.more', jQuery(this).parents('tr') ).length ? jQuery('.more', jQuery(this).parents('tr') ) : jQuery(this).parent().siblings('.more');
@@ -1942,7 +1986,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       
     } );
     
-    jQuery('.show-info').click( function(e) {
+    jQuery('.show-info').on('click', function(e) {
       e.preventDefault();
       jQuery('.fv-player-admin-tooltip', jQuery(this).parents('tr') ).toggle();
     } );  
@@ -1950,7 +1994,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     /*
      * Color Picker Default  
      */	
-    jQuery('.playlistFontColor-show').click(function(e){
+    jQuery('.playlistFontColor-show').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-hide').show();
@@ -1959,7 +2003,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       jQuery('#playlistFontColor').val(jQuery('#playlistFontColor-proxy').data('previous'));
     });
 
-    jQuery('.playlistFontColor-hide').click(function(e){
+    jQuery('.playlistFontColor-hide').on('click', function(e){
       e.preventDefault();
       jQuery(e.target).hide();
       jQuery('.playlistFontColor-show').show();
@@ -1986,7 +2030,7 @@ jQuery(document).ready(function(){
   }
   
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -1996,7 +2040,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   window.location.hash = e.target.hash;
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=#'+anchor+']').addClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
 });
@@ -2005,7 +2049,7 @@ jQuery('#normal-sortables .button-primary').on('click',function(e){
   if ('fv-wp-flowplayer-submit' == this.name) {
     // store windows scroll position, so we can return to the same spot after reload
     if (localStorage) {
-      localStorage["fv_posStorage"] = $(window).scrollTop();
+      localStorage["fv_posStorage"] = jQuery(window).scrollTop();
     }
   }
 
@@ -2030,10 +2074,11 @@ jQuery('a.fv-settings-anchor').on('click',function(e){
     var el = jQuery(id);
     if(el.length){
       var tab = el.parents('.postbox-container').attr('id');
-      jQuery('#fv_flowplayer_admin_tabs').find('a[href=#'+tab+']').click()
+      jQuery('#fv_flowplayer_admin_tabs').find('a[href=\\#'+tab+']').click()
     }
   }
 });
+
 
 
 

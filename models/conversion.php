@@ -1,12 +1,6 @@
 <?php
 
 class FV_Player_Conversion {
-
-  private $lightboxHtml;
-  
-  public $bCSSLoaded = false;
-  
-  public $bLoad = false;
   
   public function __construct() {
     add_action( 'admin_notices', array( $this, 'convert__start') );

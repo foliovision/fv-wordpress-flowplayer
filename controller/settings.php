@@ -20,7 +20,6 @@ function fv_player_admin_page() {
 
 
 
-
 function fv_player_is_admin_screen() {
   if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
      return true;
@@ -62,7 +61,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
   <td class="plugin-update colspanchange" colspan="3">
     <div class="update-message">
-      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Easter sale!
+      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Summer sale!
     </div>
   </td>
 </tr>
@@ -302,13 +301,18 @@ function fv_flowplayer_admin_scripts() {
   global $fv_wp_flowplayer_ver;
   if( fv_player_is_admin_screen() ) {
     wp_enqueue_media();
-    
+  
+    wp_enqueue_script('wp-theme-plugin-editor');
+    wp_enqueue_style('wp-codemirror');
+
     wp_enqueue_script('common');
     wp_enqueue_script('wp-lists');
     wp_enqueue_script('postbox');
     
     wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), $fv_wp_flowplayer_ver );
+  
+    wp_localize_script('fv-player-admin', 'cm_settings', wp_enqueue_code_editor(array('type' => 'text/css')) );
   }
 }
 

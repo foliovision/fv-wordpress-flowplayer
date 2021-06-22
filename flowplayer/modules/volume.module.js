@@ -11,7 +11,7 @@ flowplayer(function(api, root) {
   var restore = -1;
   
   // Restore volume on click
-  root.on('click','.fp-volume', function(e) { 
+  root.on('click','.fp-volumebtn', function(e) {
     if(api.volumeLevel == 0 && restore != -1) {
       api.volume(restore);
       return false;
@@ -21,11 +21,19 @@ flowplayer(function(api, root) {
   // Click into volume bar and start dragging it down and drag it to very 0, it would remember the initial volume - the one which was there on mousedown
   // Other case is click into the volume bar and drag it from 1 to about 0.5. So 0.5 is remembered on mouseup, then drag it to 0. So clicking the mute icon would restore to 0.5
   // It's not so ideal with touchstart and touchend, it seems to remember some weird volume which user didn't intendt to set, but nothing too critical
-  root.on('mousedown touchstart mouseup touchend','.fp-volume', function(e) { 
+  root.on('mousedown touchstart mouseup touchend','.fp-volumebar', function(e) { 
     if ( api.volumeLevel != 0 ) { 
       restore = api.volumeLevel;
     }
   })
+
+  // When muting with the button forget about the volume to restore
+  // As otherwise the root.on('click','.fp-volumebtn', ... ) handler above would restore the volume
+  root.on('mousedown touchstart','.fp-volumebtn', function(e) {
+    if( api.volumeLevel > 0 ) {
+      restore = -1;
+    }
+  });
 
   // Mute
   api.on('volume', function(e,api) {

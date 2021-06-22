@@ -196,6 +196,11 @@ function __($txt) {
   return $txt;
 }
 
+function _n($txt) {
+  // always return what was given for the translation function
+  return $txt;
+}
+
 function _e($txt) {
   // always echo what was given for the translation function
   echo $txt;
