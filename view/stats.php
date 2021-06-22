@@ -2,8 +2,12 @@
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
-  $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video');
-  $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post');
+  if( isset($_GET['player_id']) && intval($_GET['player_id'])  ) {
+    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']) );
+  } else {
+    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video');
+    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post');
+  }
 
   wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
 ?>
@@ -71,7 +75,7 @@
   }
   </script>
 
-<?php if(!empty($fv_video_stats_data) ): ?>
+<?php if( isset($fv_video_stats_data) && !empty($fv_video_stats_data) ): ?>
 
   <div>
     <h2>Top 10 Videos in last week</h2>
@@ -114,7 +118,7 @@
 
 <?php endif;?>
 
-<?php if(!empty($fv_post_stats_data) ): ?>
+<?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
   <div>
     <h2>Top 10 Post Video plays in last week</h2>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
@@ -152,4 +156,41 @@
   </script>
 <?php endif; ?>
 
+<?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
+  <div>
+    <h2>Plays For Player <?php echo $_GET['player_id']; ?> in last week</h2>
+    <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
+  </div>
+  <script>
+  jQuery( document ).ready(function() {
+    picked = [];
+
+    var ctx_single_player = document.getElementById('chart-single-player').getContext('2d');
+
+    var single_player_results = <?php echo json_encode( $fv_single_player_stats_data ); ?>;
+
+    var single_player_datasets = fv_chart_add_dataset_items( single_player_results );
+
+    var single_player_chart = new Chart(ctx_single_player, {
+      type: 'line',
+      data: {
+        labels: single_player_results['date-labels'],
+        datasets: single_player_datasets
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+  </script>
+<?php elseif ( isset($fv_single_player_stats_data) ): ?>
+  <div>
+    <h2>No Plays For Player <?php echo $_GET['player_id']; ?> in last week</h2>
+  </div>
+<?php endif; ?>
 </div>
