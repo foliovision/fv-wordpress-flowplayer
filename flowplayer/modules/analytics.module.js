@@ -3,9 +3,14 @@
  *  Also provides custom fv_track_* events
  */
 flowplayer( function(api,root) {
-  var root = jQuery(root);
-  var bean = flowplayer.bean;
-  var time = 0, last = 0, timer, event_name;
+  var root = jQuery(root),
+      bean = flowplayer.bean,
+      time = 0, last = 0, timer, event_name,
+
+      is_ga_4 = function( api ) {
+        if( api.conf.fvanalytics.startsWith('G-') ) return true;
+        return false;
+      };
 
   // Load analytics.js if ga.js is not already loaded
   if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' && typeof(gtag) == 'undefined' ) {
@@ -26,7 +31,7 @@ flowplayer( function(api,root) {
 
   api.bind('progress', function(e,api,current) {
     fv_track(e,api,current);
-  }).bind('finish ready ', function(e,api) {				
+  }).bind('finish ready ', function(e,api) {
     //if( typeof(aFVPlayersSwitching[root.attr('id')]) != "undefined" ) { //  todo: problem that it won't work on video replay or playlist
       //return;
     //}
@@ -34,6 +39,8 @@ flowplayer( function(api,root) {
       if( !fv_ga_events.hasOwnProperty(j) ) continue;
       root.removeData('fv_track_'+fv_ga_events[j]);
     }
+    
+  // TODO errors in GA4
   }).bind('error', function(e,api,error) {
     setTimeout( function() {
       if( !api.error ) return;
@@ -43,12 +50,16 @@ flowplayer( function(api,root) {
 
       var name = fv_player_track_name(root,video);
       if( name && !name.match(/\/\/vimeo.com\/\d/) ) {
-        fv_player_track( false, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", error.message, name );
+        if( is_ga_4( api ) ) {
+
+        } else {
+          fv_player_track( api, false, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", error.message, name );
+        }
       }
     }, 100 );
   });
 
-  api.bind("load unload", fv_track_seconds_played).bind("progress", function() {
+  api.bind("load unload", fv_track_seconds_played).bind("progress", function(e, api) {
 
     if (!api.seeking) {
        time += last ? (+new Date() - last) : 0;
@@ -58,7 +69,9 @@ flowplayer( function(api,root) {
     if (!timer) {
       timer = setTimeout(function() {
         timer = null;
-        fv_player_track( false, "Flowplayer heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
+        if( !is_ga_4( api ) ) {
+          fv_player_track( api, false, "Flowplayer heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
+        }
       }, 10*60*1000); // heartbeat every 10 minutes
     }
 
@@ -72,7 +85,9 @@ flowplayer( function(api,root) {
 
   bean.on(window, 'unload', fv_track_seconds_played);
 
-  var fv_ga_events = [ 'start', 'first quartile', 'second quartile', 'third quartile', 'complete' ];
+  var fv_ga_events = is_ga_4( api ) ? 
+    [ 'Play', '25 Percent Played', '50  Percent Played', '75 Percent Played', '100 Percent Played' ] :
+    [ 'start', 'first quartile', 'second quartile', 'third quartile', 'complete' ];
 
   function fv_track_seconds_played(e, api_not_needed, video) {
     video = video || api.video;
@@ -82,7 +97,7 @@ flowplayer( function(api,root) {
     }
 
     if (time) {
-      fv_player_track( false, "Video / Seconds played", api.engine.engineName + "/" + api.video.type, event_name, Math.round(time / 1000) );
+      fv_player_track( api, false, "Video / Seconds played", api.engine.engineName + "/" + api.video.type, event_name, Math.round(time / 1000) );
 
       time = 0;
       if (timer) {
@@ -114,14 +129,14 @@ flowplayer( function(api,root) {
     for( var j in fv_ga_events ) {  //  make sure user triggered the previous quartiles before tracking
       if( !fv_ga_events.hasOwnProperty(j) ) continue;
       
-      if(j == i) break;    
+      if(j == i) break;
       if( !root.data('fv_track_'+fv_ga_events[j]) ) return;
     }
 
     root.trigger('fv_track_'+fv_ga_events[i].replace(/ /,'_'), [api, name] );
     root.data('fv_track_'+fv_ga_events[i], true);
 
-    fv_player_track( false, "Video " + (root.hasClass('is-cva')?'Ad ':'') +  fv_ga_events[i] , api.engine.engineName + "/" + video.type, name );
+    fv_player_track( api, false, "Video " + (root.hasClass('is-cva')?'Ad ':'') +  fv_ga_events[i] , api.engine.engineName + "/" + video.type, name );
   }
   
   api.get_time_played = function() {
@@ -139,7 +154,7 @@ flowplayer( function(api,root) {
  * @param {number} value
  *
  */
-function fv_player_track( ga_id, event, engineType, name, value){
+function fv_player_track( api, ga_id, event, engineType, name, value){
   
   if( !ga_id ) ga_id = flowplayer.conf.fvanalytics;
   
@@ -149,11 +164,20 @@ function fv_player_track( ga_id, event, engineType, name, value){
 
   // gtag.js
   if( typeof(gtag) != "undefined" ) {
-    gtag('event', event, {
-      'event_category': engineType,
-      'event_label': name,
-      'value': value ? value  : 1
-    });
+    if( is_ga_4( api ) ) {
+      gtag("event", event, {
+        'video_current_time': api.video.time,
+        'video_provider': engineType,
+        'video_duration': api.video.duration
+      });
+    } else {
+      gtag('event', event, {
+        'event_category': engineType,
+        'event_label': name,
+        'value': value ? value  : 1
+      });
+
+    }
   
   // analytics.js
   } else if( ga_id && typeof(ga) != 'undefined' ) {
@@ -196,7 +220,6 @@ function fv_player_track( ga_id, event, engineType, name, value){
 function fv_player_track_name(root,video) {
   var name = root.attr("title");
   if( !name && typeof(video.fv_title) != "undefined" ) name = video.fv_title;
-  if( !name && typeof(video.title) != "undefined" ) name = video.title;
   if( !name && typeof(video.src) != "undefined" ) {
     name = video.src.split("/").slice(-1)[0].replace(/\.(\w{3,4})(\?.*)?$/i, '');
     if( video.type.match(/mpegurl/) ) name = video.src.split("/").slice(-2)[0].replace(/\.(\w{3,4})(\?.*)?$/i, '') + '/' + name;
