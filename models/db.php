@@ -1188,6 +1188,9 @@ class FV_Player_Db {
         $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
       }
 
+      $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId() ) );
+      $out['html'] = $preview_data['html'];
+
       header('Content-Type: application/json');      
       if (version_compare(phpversion(), '5.3', '<')) {
         echo json_encode($out);
