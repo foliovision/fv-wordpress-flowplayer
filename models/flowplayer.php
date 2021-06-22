@@ -1074,7 +1074,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sSplashImage = false;
 
           foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
-            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
+
+            // check known image extensions
+            // also accept i.vimeocdn.com which doesn't use image extensions
+            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) || stripos($aPlaylist_item_i, 'i.vimeocdn.com') !== false ) {
               $sSplashImage = $aPlaylist_item_i;
               continue;
             }
