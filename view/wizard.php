@@ -175,7 +175,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
         </div>
         <div id="fv-player-shortcode-editor-preview-target"></div>
-        <a href="#" class="button" style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh"><?php _e('Refresh preview', 'fv_flowplayer'); ?></a>
       </div>
     </div>
     <div id="fv-player-shortcode-editor-right">
@@ -554,8 +553,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     
     <div style="clear: both"></div>
 
-    <span class="fv-player-save-waiting waiting spinner"></span>
-    <div class="fv-player-save-completed" style="display: none"><p>Saved!</p></div>
+    <div class="fv-player-save-notice fv-player-save-completed" style="display: none"><p>Saved!</p></div>
+    <div class="fv-player-save-notice fv-player-save-error" style="display: none"><p>Error saving changes.</p></div>
     <div class="fv-messages"></div>   
   </div>
 </div>
