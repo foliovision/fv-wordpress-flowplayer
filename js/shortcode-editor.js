@@ -695,6 +695,9 @@ jQuery(function() {
         fv_player_editor.insert_button_toggle(false);
         fv_player_editor.copy_player_button_toggle(false);
 
+        loading = false;
+        is_draft = false;
+        
         // not a good solution!
         setTimeout( function() {
           loading = false;
@@ -2028,6 +2031,9 @@ jQuery(function() {
             overlay_show('message', 'Shortcode editor is not available for multiple players shortcode tag.');
             return;
           }
+          
+          // stop Ajax saving that might occur from thinking it's a draft taking place
+          is_draft = false;
 
           // now load playlist data
           // load video data via an AJAX call
@@ -2233,6 +2239,13 @@ jQuery(function() {
             }
 
             overlay_hide();
+            
+            if ( response.html ) {
+              // auto-refresh preview
+              el_preview_target.html( response.html )
+
+              $doc.trigger('fvp-preview-complete');
+            }
 
             // show the Insert button, as this is only used when adding a new player into a post
             // and using the Pick existing player button, where we need to be able to actually
