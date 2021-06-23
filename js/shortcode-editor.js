@@ -1784,6 +1784,8 @@ jQuery(function() {
      *  * calls editor_init() for editor clean-up
      */
     function editor_close() {
+      editor_resize_height_record = 0;
+      
       // remove TinyMCE hidden tags and other similar tags which aids shortcode editing
       // to prevent opening the same player over and over
       editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
@@ -3188,7 +3190,6 @@ jQuery(function() {
     function overlay_show( type, message ) {
       overlay_hide();
       var overlayDiv = $('#fv-player-editor-'+type+'-overlay');
-      console.log(overlayDiv);
       overlayDiv.show();
 
       if( typeof(message) != 'undefined' ) {
