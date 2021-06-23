@@ -85,14 +85,25 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = $args['liststyle'];
     }
 
-    // force horizontal playlist style for audio as that the only one styled properly
+    // load attributes from player into $this->aCurArgs if we're receiving
+    // preview POST data, as they are not all present here yet
     if( $player = $this->current_player() ) {
+
+      if (isset($_GET['fv_player_preview']) && $_GET['fv_player_preview'] == 'POST' && isset($_POST['fv_player_preview_json'])) {
+        foreach ($player->getAllDataValues() as $key => $value) {
+          if (empty($this->aCurArgs[$key]) && !empty($value)) {
+            $this->aCurArgs[$key] = $value;
+          }
+        }
+      }
+
       if( $videos = $player->getVideos() ) {
         if( !empty($videos[0]) && (
             $videos[0]->getMetaValue('audio',true) ||
             preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
           )
         ) {
+          // force horizontal playlist style for audio as that the only one styled properly
           $this->aCurArgs['liststyle'] = 'horizontal';
         }
       }
@@ -270,15 +281,15 @@ class flowplayer_frontend extends flowplayer
     /*
      *  Autoplay, in the older FV Player versions this setting was just true/false and that creates a ton of issues
      */
-    $autoplay = false;
+    $autoplay = -1;
     if( $this->_get_option('autoplay') == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
-      $autoplay = true;
+      $autoplay = 0;
     } else if ( $this->_get_option('autoplay') == 'muted' && $this->aCurArgs['autoplay'] != 'false' ) {
       $autoplay = 'muted';
     }
     
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
-      $autoplay = true;
+      $autoplay = 0;
     }
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'muted')) {
       $autoplay = 'muted';
@@ -441,7 +452,7 @@ class flowplayer_frontend extends flowplayer
         }
       
         
-        if( $autoplay ) {
+        if( $autoplay != -1 ) {
           $attributes['data-fvautoplay'] = $autoplay;
         } 
 
@@ -484,7 +495,7 @@ class flowplayer_frontend extends flowplayer
         if( !empty($this->aCurArgs['fsforce']) ) {
           $attributes['data-fsforce'] = $this->aCurArgs['fsforce'];
         }
-
+        
         //  Align
         $attributes['class'] .= $this->get_align();
         
@@ -516,7 +527,7 @@ class flowplayer_frontend extends flowplayer
             $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
           }
         }
-                
+        
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
           $attributes['data-rtmp'] = $rtmp_server;
@@ -580,7 +591,7 @@ class flowplayer_frontend extends flowplayer
          if( !empty($this->aCurArgs['transcript']) ) {
           $attributes['class'] .= ' has-transcript';
         }
-        
+
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
@@ -645,8 +656,16 @@ class flowplayer_frontend extends flowplayer
         }
         
         if( !$bIsAudio && !empty($splash_img) ) {
-          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';          
-          $this->ret['html'] .= "\t".'<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />'."\n";
+          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';
+          
+           // load the image from WP Media Library if you got a number
+          if( is_numeric($splash_img) ) {
+            $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
+          } else {
+            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
+          }
+          
+          $this->ret['html'] .= "\t".$image."\n"; 
         }
         
         if( !$bIsAudio ) {
@@ -976,7 +995,7 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
       $splash_img = $this->aCurArgs['splash'];
       
-      if( strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
+      if( !is_numeric($splash_img) && strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
         $http = is_ssl() ? 'https://' : 'http://';
         
         //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
@@ -1069,7 +1088,6 @@ class flowplayer_frontend extends flowplayer
 
     return $aSubtitles;
   }
-  
   
   function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
     global $post;

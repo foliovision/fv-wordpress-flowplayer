@@ -196,10 +196,9 @@ class FV_Player_Checker {
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-            
-            $request = wp_remote_get($remotefilename_encoded);
+            $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
+            $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
             $response = wp_remote_retrieve_body( $request );
-  
             $playlist = false;
             $duration = 0;
             $segments = false;
@@ -242,7 +241,7 @@ class FV_Player_Checker {
   
             $time = $duration;
           }
-          
+
           $time = apply_filters( 'fv_flowplayer_checker_time', $time, $remotefilename_encoded );
           $key = flowplayer::get_video_key($remotefilename_encoded);
           

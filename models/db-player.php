@@ -61,10 +61,12 @@ class FV_Player_Db_Player {
     $video_ads,
     $video_ads_post,
     $width, // with of the player on page
+    $status, // draft of published
     $videos, // comma-delimited IDs of videos for this player
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
-    $meta_data = null;
+    $meta_data = null,
+    $ignored_input_fields = array();
 
   private static
     $db_table_name,
@@ -198,6 +200,7 @@ class FV_Player_Db_Player {
   
   public function getCount($video_meta) {
     if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
+    if( $video_meta == 'cues' && isset($this->cues_count) ) return $this->cues_count;
     if( $video_meta == 'chapters' && isset($this->chapters_count) ) return $this->chapters_count;
     if( $video_meta == 'transcript' && isset($this->transcript_count) ) return $this->transcript_count;
     return 0;
@@ -353,6 +356,20 @@ class FV_Player_Db_Player {
   /**
    * @return string
    */
+  public function getStatus() {
+    return $this->status;
+  }
+
+  /**
+   * @param $status
+   */
+  public function setStatus( $status ) {
+    $this->status = $status;
+  }
+
+  /**
+   * @return string
+   */
   public function getVideoIds() {
     return $this->videos;
   } // comma-separated list of video IDs for this player
@@ -427,6 +444,7 @@ CREATE TABLE " . self::$db_table_name . " (
   video_ads varchar(10) NOT NULL,
   video_ads_post varchar(10) NOT NULL,
   width varchar(7) NOT NULL,
+  status varchar(9) NOT NULL default 'published',
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -442,21 +460,23 @@ CREATE TABLE " . self::$db_table_name . " (
   private function fill_properties( $options, $DB_Cache = false ) {
     // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
     foreach ($options as $key => $value) {
-      if (property_exists($this, $key)) {
-        if( $key != 'ad' ) {
-          $value = strip_tags($value);
+      if (!in_array($key, $this->ignored_input_fields)) {
+        if (property_exists($this, $key)) {
+          if( $key != 'ad' ) {
+            $value = strip_tags($value);
+          }
+          $this->$key = stripslashes($value);
+          
+        } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
+          $this->$key = stripslashes($value);
+          
+        } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
+          if ( defined('WP_DEBUG') && WP_DEBUG ) {
+            // generate warning
+            trigger_error('Unknown property for new DB player: ' . $key);
+          }
+
         }
-        $this->$key = stripslashes($value);
-        
-      } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
-        $this->$key = stripslashes($value);
-        
-      } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
-        if ( defined('WP_DEBUG') && WP_DEBUG ) {
-          // generate warning
-          trigger_error('Unknown property for new DB player: ' . $key);
-        }
-        
       }
     }    
     
@@ -497,12 +517,13 @@ CREATE TABLE " . self::$db_table_name . " (
    * @param array $options                       Options for a newly created player that will be stored in a DB.
    * @param FV_Player_Db                         $DB_Cache Instance of the DB shortcode global object that handles caching
    *                                             of videos, players and their meta data.
-   *
-   * @throws Exception When no valid ID nor options are provided.
    */
   function __construct($id, $options = array(), $DB_Cache = null) {
 
     global $wpdb;
+
+    // add any extra fields from extending plugins that should be ORM-ignored
+    $this->ignored_input_fields = apply_filters('fv_flowplayer_add_ignored_input_names', $this->ignored_input_fields);
 
     if ($DB_Cache) {
       self::$DB_Instance = $DB_Cache;
@@ -603,7 +624,7 @@ CREATE TABLE " . self::$db_table_name . " (
           if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
             $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
           }
-
+          
           $meta_counts_select = '';
           $meta_counts_join = '';
           if( is_admin() ) {
@@ -720,7 +741,11 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->is_valid = false;
       }
     } else {
-      throw new Exception('No options nor a valid ID was provided for DB player instance.');
+      if ( defined('WP_DEBUG') && WP_DEBUG ) {
+        trigger_error( 'No options nor a valid ID was provided for DB player instance.' );
+      }
+
+      return;
     }
 
     // update cache, if changed
@@ -825,7 +850,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data'))) {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
         // change ID to ID_PLAYER, as ID is used as a shortcode property
         if ($property == 'id') {
           $property = 'id_player';
@@ -996,7 +1021,7 @@ CREATE TABLE " . self::$db_table_name . " (
     // fill date(s)
     $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
 
-    if (!$is_update) {
+    if (!$is_update && empty($this->date_created) ) {
       $this->date_created = $this->date_modified;
     }
 
@@ -1008,10 +1033,21 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields'))) {
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
+        }
+
+        // make sure status is set to "draft" for a new player
+        if ( $property == 'status' ) {
+          if ( !$is_update ) {
+            $value = 'draft';
+          } else if ( !$value ) {
+            // for existing player, only update if we need to change player status
+            // from "draft" to "published", otherwise leave the status alone
+            continue;
+          }
         }
 
         $numeric_value = in_array( $property, $this->numeric_properties );
@@ -1042,8 +1078,41 @@ CREATE TABLE " . self::$db_table_name . " (
     if (!$wpdb->last_error) {
       // check for any meta data
       if (is_array($meta_data) && count($meta_data)) {
+        // we check which meta values are no longer set and remove these
+        $existing_meta = $is_update ? $this->getMetaData() : array();
+        $existing_meta_ids = array();
+        foreach( $existing_meta AS $existing ) {
+          $found = false;
+          foreach ($meta_data as $meta_record) {
+            if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
+              $found = true;
+              break;
+            }
+          }
+          if( !$found ) {
+            $existing->delete();
+          } else {
+            $existing_meta_ids[$existing->getId()] = true;
+          }
+        }        
+        
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
+          // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
+          if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
+            unset($meta_record['id']);          
+          }
+          
+          // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
+          if( empty($meta_record['id']) ) {
+            foreach( $existing_meta AS $existing ) {
+              if( $meta_record['meta_key'] == $existing->getMetaKey() ) {
+                $meta_record['id'] = $existing->getId();
+                break;
+              }
+            }
+          }          
+          
           // add our player ID
           $meta_record['id_player'] = $this->id;
 
@@ -1051,8 +1120,10 @@ CREATE TABLE " . self::$db_table_name . " (
           $meta_object = new FV_Player_Db_Player_Meta(null, $meta_record, self::$DB_Instance);
 
           // add meta data ID
-          if ($is_update) {
+          if( !empty($meta_record['id']) ) {
             $meta_object->link2db($meta_record['id']);
+          } else if( empty($meta_record['meta_value']) ) {
+            continue;
           }
 
           $meta_object->save();
@@ -1082,7 +1153,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified'))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields'))) {
         $export_data[$property] = $value;
       }
     }
