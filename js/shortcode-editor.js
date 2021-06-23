@@ -230,7 +230,10 @@ jQuery(function() {
 
           editor_button_clicked = this;
           e.preventDefault();
-          $.fv_player_box( {
+         $(".fv-player-modal").toggle();
+		  $(".fv-player-modal-backdrop").toggle();
+		 
+		  /*$.fv_player_box( {
             top: "100px",
             initialWidth: 1100,
             initialHeight: 50,
@@ -242,7 +245,13 @@ jQuery(function() {
             onComplete : editor_open,
             onClosed : editor_close,
             onOpen: lightbox_open
-          } );
+          } ); */
+		  
+		  editor_open();
+		  
+		  //$("#fv-player-shortcode-editor").addClass('is-open');
+		 
+		  
           widget_id = $(this).data().number;
         });
 
