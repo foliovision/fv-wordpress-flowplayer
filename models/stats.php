@@ -2,9 +2,11 @@
 class FV_Player_Stats {
 
   var $used = false;
-  var $cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
+  var $cache_directory = false;
 
   public function __construct() {
+    $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
+
     add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'options_html' ) );
     add_filter( 'fv_flowplayer_conf', array( $this, 'option' ) );
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );

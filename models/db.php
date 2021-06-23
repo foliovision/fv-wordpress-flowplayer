@@ -1260,7 +1260,7 @@ class FV_Player_Db {
       // load meta for all players to remove locks for (and to auto-cache them as well)
       new FV_Player_Db_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])), $this);
       $meta = $this->getPlayerMetaCache();
-      $locks_removed = [];
+      $locks_removed = array();
 
       if (count($meta)) {
         foreach ( $meta as $player ) {
