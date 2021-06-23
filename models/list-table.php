@@ -79,9 +79,6 @@ class FV_Player_List_Table_View {
       $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
     }
 
-    $cols['shortcode'] = __( 'Shortcode', 'fv-wordpress-flowplayer' );
-    $cols['shortcode-copy'] = '';
-
     return $cols;
   }
   
@@ -273,6 +270,9 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
         $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
+
+        $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
+
         $value .= "</div>";
         break;
       case 'embeds':
@@ -298,12 +298,6 @@ class FV_Player_List_Table extends WP_List_Table {
       break;
       case 'author':
         $value = '<a href="#">'.get_the_author_meta( 'user_nicename' , $player->author ).'</a>';
-      break;
-      case 'shortcode':
-        $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
-        break;
-      case 'shortcode-copy':
-        $value = '<a href="#" class="button fv-player-shortcode-copy">Copy</a>';
         break;
       case 'stats_play':
         $value= '';

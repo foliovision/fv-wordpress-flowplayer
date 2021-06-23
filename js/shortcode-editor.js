@@ -1243,9 +1243,9 @@ jQuery(function() {
       $doc.on( 'click', '.fv-player-shortcode-copy', function(e) {
         var button = $(this);
         fv_player_clipboard( $(this).parents('tr').find('.fv-player-shortcode-input').val(), function() {
-          button.html('Ok!');
+          button.html('Coppied to clipboard!');
           setTimeout( function() {
-            button.html('Copy');
+            button.html('Copy Shortcode');
           }, 1000 );
         }, function() {
           button.html('Error');
