@@ -17,7 +17,9 @@ jQuery(function() {
     var $doc = $(document),
       $win = $(window),
       el_editor,
-      el_preview;
+      el_preview,
+      el_spinner,
+      el_preview_target;
 
     // data to save in Ajax
     var ajax_save_this_please = false;
@@ -71,9 +73,6 @@ jQuery(function() {
     // We disable preview in certain browsers
     var ua = window.navigator.userAgent;
     var preview_not_supported = ua.match(/edge/i) || ua.match(/safari/i) && !ua.match(/chrome/i) ;
-
-    // Should preview only show single video? If so, which one in the current playlist?
-    var preview_single = -1;
 
     // the part of shortcode outside of [fvplayer id="XYZ"]
     // also accessed from outside
@@ -420,9 +419,7 @@ jQuery(function() {
       */
       $doc.on('click','.fv-player-tab-playlist tr td', function(e) {
         var new_index = $(this).parents('tr').attr('data-index');
-
-        preview_single = new_index;
-
+        fv_player_editor.set_current_video_to_edit( new_index );
         playlist_item_show(new_index);
       });
 
@@ -793,6 +790,9 @@ jQuery(function() {
         el_spinner.show();
 
         $('.fv-player-save-error').hide();
+
+        // add current video that we're editing into the save data
+        ajax_save_this_please['current_video_to_edit'] = current_video_to_edit;
 
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
@@ -1794,7 +1794,7 @@ jQuery(function() {
       set_post_editor_content(editor_content);
 
       // this variable needs to be reset here and not in editor_init
-      current_video_to_edit = -1;
+      fv_player_editor.set_current_video_to_edit( -1 );
 
       if ( !is_fv_player_screen(editor_button_clicked) ) {
         // todo: what it the point of this call being made?
@@ -2042,7 +2042,8 @@ jQuery(function() {
           fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
-            playerID :  result[1]
+            playerID :  result[1],
+            current_video_to_edit: current_video_to_edit,
           }, function(response) {
             var vids = response['videos'];
 
@@ -2705,6 +2706,9 @@ jQuery(function() {
         ajax_data['status'] = 'published';
       }
 
+      // add current video that we're editing into the save data
+      ajax_data['current_video_to_edit'] = current_video_to_edit;
+
       // save data
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_save',
@@ -3059,6 +3063,7 @@ jQuery(function() {
       $('.fv_wp_flowplayer_field_subtitles_lang, .subtitle_language_add_link').attr('style',false);
 
       tabs_refresh();
+      reload_preview( current_video_to_edit );
     }
 
     /*
@@ -3086,6 +3091,7 @@ jQuery(function() {
     */
     function playlist_show() {
       item_index = -1;
+      fv_player_editor.set_current_video_to_edit( -1 );
 
       is_playlist_active = true;
       is_singular_active = false;
@@ -3094,8 +3100,6 @@ jQuery(function() {
       // show all the tabs previously hidden
       jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
       jQuery('a[data-tab=fv-player-tab-playlist]').click();
-
-      preview_single = -1;
 
       playlist_index();
 
@@ -3142,22 +3146,36 @@ jQuery(function() {
       jQuery('.fv-player-tab-playlist').show();
       editor_resize();
       tabs_refresh();
+      reload_preview( current_video_to_edit );
 
       return false;
     }
 
-    function preview_dimensions() {
-      var width = parseInt( get_field('width').val() ) || 460;
-      var height = parseInt( get_field('height').val() ) || 300;
-      if (el_preview.length && el_preview.width() < width) {
-        height = Math.round(height * (el_preview.width() / width));
-        width = el_preview.width();
-      }
+    function reload_preview( video_id ) {
+      el_spinner.show();
 
-      return {
-        width: width,
-        height: height
-      };
+      // load player data and reload preview of the full player
+      // when we go back from editing a single video in a playlist
+      fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
+        action : 'fv_player_db_load',
+        nonce : fv_player_editor_conf.db_load_nonce,
+        playerID :  current_player_db_id,
+        current_video_to_edit: video_id,
+      }, function(response) {
+        if ( response.html ) {
+          // auto-refresh preview
+          el_preview_target.html( response.html )
+          $doc.trigger('fvp-preview-complete');
+        }
+      }).error(function(xhr) {
+        if (xhr.status == 404) {
+          overlay_show('message', 'The requested player could not be found. Please try again.');
+        } else {
+          overlay_show('message', 'An unexpected error has occurred. Please try again.');
+        }
+      }).complete(function() {
+        el_spinner.hide();
+      });
     }
 
     function set_post_editor_content( html ) {

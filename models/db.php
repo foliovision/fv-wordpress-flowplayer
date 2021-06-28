@@ -1188,7 +1188,7 @@ class FV_Player_Db {
         $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
       }
 
-      $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId() ) );
+      $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId(), 'current_video_to_edit' => $_POST['current_video_to_edit'] ) );
       $out['html'] = $preview_data['html'];
 
       header('Content-Type: application/json');      
