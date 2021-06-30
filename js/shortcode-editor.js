@@ -4076,6 +4076,9 @@ For wp-admin -> FV Player screen, should not be here
 if( typeof(fv_player_editor_conf) != "undefined" ) {
   // extending DB player edit lock's timer
   jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+    // FV Player might not be loaded, like in case of Elementor
+    if( !window.fv_player_editor ) return;
+
     if( fv_player_editor.get_current_player_db_id() > -1 ) {
       data.fv_flowplayer_edit_lock_id = fv_player_editor.get_current_player_db_id();
     }
