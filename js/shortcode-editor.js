@@ -695,6 +695,9 @@ jQuery(function() {
         fv_player_editor.insert_button_toggle(false);
         fv_player_editor.copy_player_button_toggle(false);
 
+        loading = false;
+        is_draft = false;
+        
         // not a good solution!
         setTimeout( function() {
           loading = false;
@@ -1240,9 +1243,9 @@ jQuery(function() {
       $doc.on( 'click', '.fv-player-shortcode-copy', function(e) {
         var button = $(this);
         fv_player_clipboard( $(this).parents('tr').find('.fv-player-shortcode-input').val(), function() {
-          button.html('Ok!');
+          button.html('Coppied to clipboard!');
           setTimeout( function() {
-            button.html('Copy');
+            button.html('Copy Shortcode');
           }, 1000 );
         }, function() {
           button.html('Error');
@@ -1781,6 +1784,8 @@ jQuery(function() {
      *  * calls editor_init() for editor clean-up
      */
     function editor_close() {
+      editor_resize_height_record = 0;
+      
       // remove TinyMCE hidden tags and other similar tags which aids shortcode editing
       // to prevent opening the same player over and over
       editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
@@ -2028,6 +2033,9 @@ jQuery(function() {
             overlay_show('message', 'Shortcode editor is not available for multiple players shortcode tag.');
             return;
           }
+          
+          // stop Ajax saving that might occur from thinking it's a draft taking place
+          is_draft = false;
 
           // now load playlist data
           // load video data via an AJAX call
@@ -2233,6 +2241,13 @@ jQuery(function() {
             }
 
             overlay_hide();
+            
+            if ( response.html ) {
+              // auto-refresh preview
+              el_preview_target.html( response.html )
+
+              $doc.trigger('fvp-preview-complete');
+            }
 
             // show the Insert button, as this is only used when adding a new player into a post
             // and using the Pick existing player button, where we need to be able to actually
@@ -3175,7 +3190,6 @@ jQuery(function() {
     function overlay_show( type, message ) {
       overlay_hide();
       var overlayDiv = $('#fv-player-editor-'+type+'-overlay');
-      console.log(overlayDiv);
       overlayDiv.show();
 
       if( typeof(message) != 'undefined' ) {
@@ -3449,11 +3463,12 @@ jQuery(function() {
       // on fv_flowplayer_shortcode_new
       if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
 
-      var show_stream_checkboxes = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/) || src.match(/vimeo\.com\//) || src.match(/youtube\.com\//);
+      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/),
+        is_vimeo_or_youtube = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//) || src.match(/youtube\.com\//);
     
-      item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!show_stream_checkboxes);
-      item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!show_stream_checkboxes);
-      item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!show_stream_checkboxes);
+      item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!is_stream || !!is_vimeo_or_youtube);
+      item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!is_stream);
+      item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!is_stream);
       
       editor_resize();
     }
@@ -4061,6 +4076,9 @@ For wp-admin -> FV Player screen, should not be here
 if( typeof(fv_player_editor_conf) != "undefined" ) {
   // extending DB player edit lock's timer
   jQuery( document ).on( 'heartbeat-send', function ( event, data ) {
+    // FV Player might not be loaded, like in case of Elementor
+    if( !window.fv_player_editor ) return;
+
     if( fv_player_editor.get_current_player_db_id() > -1 ) {
       data.fv_flowplayer_edit_lock_id = fv_player_editor.get_current_player_db_id();
     }

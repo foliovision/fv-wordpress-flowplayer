@@ -135,9 +135,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
     
-    add_filter( 'rewrite_rules_array', array( $this, 'rewrite_embed' ), 999999 );    
+    add_action( 'init', array( $this, 'fv_player_embed_rewrite_endpoint' ) );
+
+    add_filter( 'rewrite_rules_array', array( $this, 'fv_player_embed_rewrite_rules_fix' ), PHP_INT_MAX );
     add_filter( 'query_vars', array( $this, 'rewrite_vars' ) );
-    add_filter( 'init', array( $this, 'rewrite_check' ) );
 
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ), 10 );
     add_filter( 'fv_player_custom_css', array( $this, 'custom_css' ), 11 );
@@ -145,7 +146,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !empty($_GET['fv_player_preview']) ) {
       add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
     } else {
-      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), 999999);
+      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), PHP_INT_MAX);
       add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     }
     
@@ -508,6 +509,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$conf ) { // new install
       // hide some of the notices
       $conf['nag_fv_player_7'] = true;
+      $conf['notice_7_5'] = true;
       $conf['notice_new_lightbox'] = true;
       $conf['notice_db'] = true;
       $conf['notice_xml_sitemap_iframes'] = true;
@@ -1074,7 +1076,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sSplashImage = false;
 
           foreach( apply_filters( 'fv_player_media', $aPlaylist_item, $this ) AS $aPlaylist_item_i ) {
-            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) ) {
+
+            // check known image extensions
+            // also accept i.vimeocdn.com which doesn't use image extensions
+            if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~',$aPlaylist_item_i) || stripos($aPlaylist_item_i, 'i.vimeocdn.com') !== false ) {
               $sSplashImage = $aPlaylist_item_i;
               continue;
             }
@@ -2247,8 +2252,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= "\n/*custom popup css*/\n".$sNewCss."\n/*end custom popup css*/\n";
     }
     return $css;
-  }  
-
+  }
 
   function custom_css( $css ) {
     global $fv_fp;
@@ -2260,44 +2264,44 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $css;
   }
 
-
-  function rewrite_check( $aRules ) {
-    $aRewriteRules = get_option('rewrite_rules');
-    if( empty($aRewriteRules) || !is_array($aRewriteRules) || count($aRewriteRules) == 0 ) {
-      return;
-    }
-    
-    $bFound = false;
-    foreach( $aRewriteRules AS $k => $v ) {
-      if( stripos($k,'/fvp(-?\d+)?/') !== false ) {
-        $bFound = true;
-        break;
-      }
-    }
-    
-    if( !$bFound ) {
-      flush_rewrite_rules( true );
-    }
-  }
-  
-  
-  function rewrite_embed( $aRules ) {
+  /*
+  * This function changes the /fvp/{number} rewrite endpoint created with fv_player_embed_rewrite_endpoint()
+  * to accept /fvp{number} or  fvp-{number} and also adds rule fo /fvp only (no number)
+  *
+  * Example:
+  * [(.?.+?)/fvp(/(.*))?/?$] => index.php?pagename=$matches[1]&fv_player_embed=$matches[3]
+  *
+  * is changed to
+  *
+  * [(.?.+?)/fvp((-?.*))?/?$] => index.php?pagename=$matches[1]&fv_player_embed=$matches[3]
+  *
+  * and new rule for /fvp without number is added, example:
+  * [(.?.+?)/fvp/?$] => index.php?pagename=$matches[1]&fv_player_embed=1
+  */
+  function fv_player_embed_rewrite_rules_fix( $aRules ) {
     $aRulesNew = array();
     foreach( $aRules AS $k => $v ) {
-      $aRulesNew[$k] = $v;
-      if( stripos($k,'/trackback/') !== false ) {
-        $new_k = str_replace( '/trackback/', '/fvp/', $k );
-        $new_v = str_replace( '&tb=1', '&fv_player_embed=1', $v );
-        $aRulesNew[$new_k] = $new_v;
-        $new_k = str_replace( '/trackback/', '/fvp(-?\d+)?/', $k );
-        $new_v = str_replace( '&tb=1', '&fv_player_embed=$matches['.(substr_count($v,'$matches[')+1).']', $v );
-        $aRulesNew[$new_k] = $new_v;        
+      if( stripos($k,'/fvp(/') !== false ) {
+        // 1st rule
+        $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only
+        $new_v = preg_replace('/fv_player_embed=\$matches\[\d]/', 'fv_player_embed=1', $v); // fv_player_embed=1
+        
+        $aRulesNew[$new_k] = $new_v; 
+        
+        // 2nd rule
+        $new_k = str_replace( '/fvp(/(', '/fvp((-?', $k ); // fvp{number} or fvp-{number}
+        $aRulesNew[$new_k]= $v;
+      } else {
+        $aRulesNew[$k] = $v;
       }
     }
     return $aRulesNew;
   }
-  
-  
+
+  function fv_player_embed_rewrite_endpoint() {
+    add_rewrite_endpoint( 'fvp', EP_PERMALINK | EP_PAGES, 'fv_player_embed' );
+  }
+
   function rewrite_vars( $public_query_vars ) {
     $public_query_vars[] = 'fv_player_embed';
     return $public_query_vars;

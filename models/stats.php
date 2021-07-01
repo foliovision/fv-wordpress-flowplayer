@@ -2,9 +2,11 @@
 class FV_Player_Stats {
 
   var $used = false;
-  var $cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
+  var $cache_directory = false;
 
   public function __construct() {
+    $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
+
     add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'options_html' ) );
     add_filter( 'fv_flowplayer_conf', array( $this, 'option' ) );
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
@@ -301,6 +303,25 @@ class FV_Player_Stats {
     return $datasets;
   }
 
+  public function get_player_stats( $player_id ) {
+    global $wpdb;
+
+    $datasets = false;
+
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, caption, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
+
+    if( !empty($results) ) {
+      $ids_arr = array();
+      foreach( $results as $row ) {
+        $ids_arr[] = $row['id_video'];
+      }
+
+      $datasets = $this->process_graph_data( $results, $ids_arr, 'player' );
+    }
+
+    return $datasets;
+  }
+
   private function get_date_labels( $results ) {
     $date_labels = array();
 
@@ -319,8 +340,10 @@ class FV_Player_Stats {
     $datasets = array();
     $date_labels = $this->get_date_labels( $results );
 
-    if( $type == 'video'  ) {
+    if( $type == 'video' ) {
       $id_item = 'id_player';
+    } else if( $type == 'player' ) {
+      $id_item = 'player_name';
     } else if( $type == 'post' ) {
       $id_item = 'id_post';
     }
@@ -347,7 +370,7 @@ class FV_Player_Stats {
             }
 
             if( !isset($datasets[$id_video]['name']) ) {
-              if( $type == 'video'  ) {
+              if( $type == 'video' || $type == 'player' ) {
                 $datasets[$id_video]['name'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
               } else if( $type == 'post' ) {
                 $datasets[$id_video]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;

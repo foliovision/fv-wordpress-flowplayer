@@ -69,7 +69,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
   <td class="plugin-update colspanchange" colspan="3">
     <div class="update-message">
-      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Easter sale!
+      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Summer sale!
     </div>
   </td>
 </tr>
@@ -145,6 +145,24 @@ function fv_player_admin_pointer_boxes() {
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __('Allow', 'fv-wordpress-flowplayer'),
       'button2' => __('Disable the video checker', 'fv-wordpress-flowplayer')
+    );
+  }
+  
+  if( !$fv_fp->_get_option('notice_7_5') ) {
+    $fv_fp->pointer_boxes['fv_flowplayer_notice_7_5'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_flowplayer_notice_7_5',
+      'heading' => __('FV Player 7.5', 'fv-wordpress-flowplayer'),
+      'content' => __("<p>This new version includes several improvements:</p>
+      <ul style='list-style-type: revert; margin-left: 3em'>
+        <li>Editor autosave and preview improvements</li>
+        <li>FV Player Video Play Stats</li>
+        <li>Improved player JavaScript loading</li>
+        <li>Multiple video playback improvements</li>
+      </ul>
+      <p>You can read more about it in our <a href='https://foliovision.com/?p=137472' target='_blank'>blog announcement</a>.</p>", 'fv-wordpress-flowplayer'),
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer')
     );
   }
   
@@ -261,6 +279,7 @@ function fv_wp_flowplayer_pointers_ajax() {
   }  
   
   $notices = array(
+    'fv_flowplayer_notice_7_5'                 => 'notice_7_5',
     'fv_flowplayer_new_lightbox'               => 'notice_new_lightbox',
     'fv_flowplayer_notice_xml_sitemap_iframes' => 'notice_xml_sitemap_iframes',
     'fv_flowplayer_db'                         => 'notice_db',
