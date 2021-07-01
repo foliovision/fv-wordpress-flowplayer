@@ -920,6 +920,7 @@ jQuery(function() {
           $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="' + $parent_table.attr('data-index') + '"] td.fvp_item_caption'),
           value = $element.val(),
           update_fields = null,
+          $chapters_element = $playlist_row = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
           $caption_element = $parent_table.find('#fv_wp_flowplayer_field_caption'),
           $splash_element = $parent_table.find('#fv_wp_flowplayer_field_splash'),
           $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash'),
@@ -961,6 +962,8 @@ jQuery(function() {
         // only make an AJAX call if we found a matcher
         if (update_fields !== null) {
           if (update_fields.length) {
+            debugger;
+
             // add spinners (loading indicators) to all inputs where data are being loaded
             var selector = '#fv_wp_flowplayer_field_src';
             if( update_fields.indexOf('caption') > 0 ) selector += ', #fv_wp_flowplayer_field_splash';
@@ -1018,6 +1021,14 @@ jQuery(function() {
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
                               $splash_element.val(json_data.thumbnail);
+                            }
+                          }
+                          break;
+
+                        case 'chapters':
+                          if(json_data.chapters) {
+                            if( !$chapters_element.val() || typeof($chapters_element.data('fv_player_user_updated')) == 'undefined' ) {
+                              $chapters_element.val(json_data.chapters)
                             }
                           }
                           break;
