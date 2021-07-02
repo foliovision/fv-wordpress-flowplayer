@@ -102,6 +102,55 @@
     <?php
   }
   
+  
+  function fv_player_shortcode_row_gutenberg( $args ) {
+    $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
+    $args = wp_parse_args( $args, array(
+                          'class' => 'components-base-control__field',
+                          'dropdown' => array( 'Default', 'On', 'Off' ),
+                          'id' => false,
+                          'label' => '',
+                          'live' => true,
+                          'name' => '',
+                          'playlist_label' => false,
+                         ) );
+    extract($args);
+    
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }    
+    
+    $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
+    if( $class ) {
+      $class = ' class="'.$class.'"';
+    }
+    
+    $live = !$live ? ' data-live-update="false"' : '';
+    
+    $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
+  
+    // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field 
+    ?>
+<div class="components-base-control">
+  <div <?php echo $id.$class; ?>>
+    <span class="components-form-toggle is-checked" id="test-id">
+      <input class="components-form-toggle__input" id="inspector-toggle-control-0" type="checkbox" aria-describedby="inspector-toggle-control-0__help" checked="">
+      <span class="components-form-toggle__track"></span>
+      <span class="components-form-toggle__thumb"></span>
+    </span>
+    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php _e( $label, 'fv_flowplayer'); ?></label>
+  </div>
+  <p id="inspector-toggle-control-0__help" class="components-base-control__help">This is a sub-text default style.</p>
+  <script>
+  document.getElementById('test-id').onclick = function() {
+    this.classList.toggle('is-checked');
+  }
+  </script>
+</div> 
+    <?php
+  }
+  
+  
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
 ?>
   
@@ -412,6 +461,19 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         </div>
 
         <div class="fv-player-tab fv-player-tab-options" style="display: none">
+			<div class="components-panel__body">
+				<?php fv_player_shortcode_row_gutenberg( array( 'label' => 'Autoplay', 'name' => 'autoplay', 'dropdown' => array(  array('true','Yes'), array('false','No') ) ) ); ?>
+			</div>
+			<div class="components-panel__body">	
+				<?php fv_player_shortcode_row_gutenberg( array( 'label' => 'Test1', 'name' => 'autoplay1', 'dropdown' => array(  array('true','Yes'), array('false','No') ) ) ); ?>
+				<?php fv_player_shortcode_row_gutenberg( array( 'label' => 'Test2', 'name' => 'autoplay2', 'dropdown' => array(  array('true','Yes'), array('false','No') ) ) ); ?>
+				
+			</div>
+			<div class="components-panel__body">	
+				<?php fv_player_shortcode_row_gutenberg( array( 'label' => 'Test1', 'name' => 'autoplay1', 'dropdown' => array(  array('true','Yes'), array('false','No') ) ) ); ?>
+				<?php fv_player_shortcode_row_gutenberg( array( 'label' => 'Test2', 'name' => 'autoplay2', 'dropdown' => array(  array('true','Yes'), array('false','No') ) ) ); ?>
+				
+			</div>
           <table width="100%">
             
             <tr class="hide-if-singular">
