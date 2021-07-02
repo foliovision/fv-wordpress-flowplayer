@@ -15,9 +15,8 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 function fv_player_shortcode_editor_scripts_enqueue() {  
   global $fv_wp_flowplayer_ver;
-  wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
-  wp_enqueue_script('fvwpflowplayer-domwindow');  
-  
+  wp_enqueue_script('fv-player-box', flowplayer::get_plugin_url().'/js/fv-player-box.js',array('jquery'), $fv_wp_flowplayer_ver  );
+
   wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver.'-fix' );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
@@ -62,6 +61,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');
   wp_enqueue_script('fvwpflowplayer-editor-screenshots');
   
+  // TODO: Eliminate, keep the close button
   wp_enqueue_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css', '', $fv_wp_flowplayer_ver, 'screen');
   wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', $fv_wp_flowplayer_ver, 'screen');
 }

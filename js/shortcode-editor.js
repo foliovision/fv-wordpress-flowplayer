@@ -36,9 +36,6 @@ jQuery(function() {
     // used in WP Heartbeat
     var edit_lock_removal = {};
 
-    // used to size the lightbox in editor_resize()
-    var editor_resize_height_record = 0;
-
     // TinyMCE instance, if any
     var instance_tinymce;
 
@@ -230,28 +227,15 @@ jQuery(function() {
 
           editor_button_clicked = this;
           e.preventDefault();
-         $(".fv-player-modal").toggle();
-		  $(".fv-player-modal-backdrop").toggle();
-		 
-		  /*$.fv_player_box( {
-            top: "100px",
-            initialWidth: 1100,
-            initialHeight: 50,
-            width:"1100px",
-            height:"100px",
+
+		      $.fv_player_box( {
             href: "#fv-player-shortcode-editor",
-            inline: true,
             title: 'Add FV Player',
             onComplete : editor_open,
             onClosed : editor_close,
             onOpen: lightbox_open
-          } ); */
-		  
-		  editor_open();
-		  
-		  //$("#fv-player-shortcode-editor").addClass('is-open');
-		 
-		  
+          } );
+
           widget_id = $(this).data().number;
         });
 
@@ -260,11 +244,6 @@ jQuery(function() {
 
           e.preventDefault();
           $.fv_player_box( {
-            top: "100px",
-            initialWidth: 1100,
-            initialHeight: 50,
-            width:"1100px",
-            height:"100px",
             href: "#fv-player-shortcode-editor",
             inline: true,
             title: 'Export FV Player',
@@ -299,11 +278,6 @@ jQuery(function() {
 
           e.preventDefault();
           $.fv_player_box( {
-            top: "100px",
-            initialWidth: 1100,
-            initialHeight: 50,
-            width:"1100px",
-            height:"100px",
             href: "#fv-player-shortcode-editor",
             inline: true,
             title: 'Import FV Player(s)',
@@ -416,8 +390,6 @@ jQuery(function() {
         $(this).addClass('nav-tab-active')
         $('.fv-player-tabs > .fv-player-tab').hide();
         $('.' + $(this).data('tab')).show();
-
-        editor_resize();
       });
 
       /*
@@ -706,7 +678,6 @@ jQuery(function() {
         is_loading_preview = false;
 
         el_preview.attr('class','preview-show');
-        editor_resize();
       });
 
       /*
@@ -1231,6 +1202,7 @@ jQuery(function() {
 
       // prevent closing of the overlay if we have unsaved data
       // unfortunately there is no event for this which we could use
+      // TODO:
       $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
       $.fn.fv_player_box.close = function() {
         if (is_draft && is_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
@@ -1770,8 +1742,6 @@ jQuery(function() {
     * @param {int} db_id Optional, force load of specified player ID
     */
     function editor_open(db_id) {
-      editor_resize_height_record = 0;
-
       $('#fv_player_box').removeAttr('tabindex');
 
       editor_init();
@@ -2512,29 +2482,6 @@ jQuery(function() {
     }
 
     /*
-     *  Calculate FV Player editor popup (Colorbox) size
-     */
-    function editor_resize() {
-      setTimeout(function(){
-        var height = el_editor.height();
-
-        // minimal height
-        if( height < 50 ) height = 50;
-
-        // maximum height
-        if( height > $(window).height() - 160 ) height = $(window).height() - 160;
-
-        // bit of space for padding
-        height = height + 50;
-
-        if( editor_resize_height_record <= height ) {
-          editor_resize_height_record = height;
-          el_editor.fv_player_box.resize({width:1100, height:height})
-        }
-      },0);
-    }
-
-    /*
      *  Saving the data
      */
     function editor_submit() {
@@ -2889,8 +2836,6 @@ jQuery(function() {
       if (!input) {
         $doc.trigger('fv-player-playlist-item-add');
       }
-
-      editor_resize();
       return new_item;
     }
 
@@ -3022,7 +2967,7 @@ jQuery(function() {
       }
 
       jQuery('.fv-player-tab-playlist').show();
-      editor_resize();
+
       tabs_refresh();
       preview_submit();
 
@@ -3059,7 +3004,6 @@ jQuery(function() {
 
       if( !found_src ) {
         el_preview.attr('class', 'preview-no');
-        editor_resize();
         return;
       }
 
@@ -3168,8 +3112,6 @@ jQuery(function() {
       if( typeof(message) != 'undefined' ) {
         overlayDiv.find('p').html( message );
       }
-
-      editor_resize();
       return overlayDiv;
     }
 
@@ -3214,8 +3156,6 @@ jQuery(function() {
 
         get_field('subtitles_lang',subElement).val(sLang).change();
       }
-
-      editor_resize();
       return false;
     }
 
@@ -3282,7 +3222,6 @@ jQuery(function() {
           get_field("src1_wrapper").show();
           get_field("src1_uploader").show();
         }
-        editor_resize();
       }
       else {
         alert('Please enter the file name of your video file.');
@@ -3296,7 +3235,6 @@ jQuery(function() {
       var item = $(this).parents('.fv-player-playlist-item');
       get_field("rtmp_wrapper", item).show();
       item.find(".add_rtmp_wrapper").hide();
-      editor_resize();
       return false;
     });
 
@@ -3329,8 +3267,6 @@ jQuery(function() {
         $parent.find('[name]').val('');
         $parent.removeAttr('data-id_subtitles');
       }
-      editor_resize();
-
       return false;
     });
 
@@ -3548,7 +3484,7 @@ jQuery(function() {
         $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
       },
 
-      editor_resize: editor_resize,
+      editor_resize: function() {},
 
       /**
        * Adds a preview to the Gutenberg FV Player block.
@@ -3665,12 +3601,7 @@ function fv_wp_delete_video_meta_record(id) {
   }
 }
 
-function fv_wp_flowplayer_dialog_resize() {
-  console.log('WARNING! USE OF DEPRECATED FUNCTION fv_wp_flowplayer_dialog_resize() FOUND!');
-  console.log('Please update this to call the function as fv_player_editor.fv_wp_flowplayer_dialog_resize() instead!');
-
-  fv_player_editor.editor_resize();
-}
+function fv_wp_flowplayer_dialog_resize() {}
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
   // at least one option is value-less
