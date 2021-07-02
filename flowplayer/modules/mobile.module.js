@@ -43,7 +43,7 @@ flowplayer( function(api,root) {
 	jQuery.fn.fv_single_double_click = function(single_click_callback, double_click_callback, timeout) {
 		return this.each(function(){
 			var clicks = 0, self = this;
-			jQuery(this).click(function(event){
+			jQuery(this).on( 'click', function(event){
 				clicks++;
 				if (clicks == 1) {
 					setTimeout(function(){

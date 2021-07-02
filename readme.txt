@@ -17,6 +17,7 @@ Custom HTML 5 video on your own site with Flash fallback for legacy browsers is 
 FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
 * Remembering video position both both guest users and members
+* Built in video plays stats
 * API for custom video fields
 * easy AB looped playback for your visitors (great for teaching sites)
 * improved and more powerful playlists (more playlist features coming soon).
@@ -26,11 +27,12 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Player all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
 * Single site pro license available (JW Player requires five pack for full features)
-* Ultra-efficient player: just 181kB of JavaScript and 10kB of Flash code. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* Ultra-efficient player: just 55.6kB of Javascript. Rest is loaded later when user is going to play the video. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers while HLS.js library gives you HLS playback on desktop browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
 * Supports video intelligence video ads
+* Integration with the Coconut.co video encoding service - using a free addon plugin: https://foliovision.com/downloads/fv-player-coconut
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](https://foliovision.com/player/download).
 
@@ -356,6 +358,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.0.727 - 2021/06/21 =
+
+* New feature - Daily video play stats, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Video Stats
+* New feature - Multiple video playback, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Multiple video playback
+* Improved editing experience with autosave and autopreview
+* Improved Gutenberg integration - with player preview, we still look forward for a proper Gutenberg block
+* Improved handling of multiple players on page - previously played video will pause and not go back to beginning
+* Improved HLS quality remembering
+* Improved JavaScript loading - player only loads files once the user is actually using the page
 
 = 7.4.47.727 - 2021/05/18 =
 

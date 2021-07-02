@@ -423,7 +423,7 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( ( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
+    if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.0.4', true );
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.0.4';
@@ -645,11 +645,15 @@ function fv_player_comment_text( $comment_text ) {
   return $comment_text;
 }
 
+add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_playlist' );
+
 function fv_player_footer_svg_playlist() {
   if( file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) {
     include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
   }
 }
+
+add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_rewind' );
 
 function fv_player_footer_svg_rewind() {
   ?>
@@ -669,7 +673,7 @@ function fv_player_footer_svg_rewind() {
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
 
 /*
- * Alers all the script tags related to FV Player, with excetption of the base FV Player library.
+ * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
  * The reason is that it's a dependency of most of the modules so then each module would have to be 
  * adjusted to be able to load without it.
  * 
@@ -684,7 +688,7 @@ add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX
  */
 function fv_player_js_loader_mark_scripts( $tag, $handle ) {
   global $fv_fp;
-  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') ) {
+  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') || !$fv_fp->_get_option('js-optimize') ) {
     return $tag;
   }
 

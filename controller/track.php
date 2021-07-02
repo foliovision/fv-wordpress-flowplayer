@@ -7,6 +7,8 @@ Class FvPlayerTrackerWorker {
   private $cache_path = false;
   private $cache_filename = false;
   private $video_id = false;
+  private $post_id = false;
+  private $player_id = false;
 
   private $file = false;
   private $data = array();
@@ -24,6 +26,8 @@ Class FvPlayerTrackerWorker {
     $this->cache_path = $this->wp_content."/fv-player-tracking";
     $this->cache_filename = "{$tag}-{$blog_id}.data";
     $this->video_id = intval($_REQUEST['video_id']);
+    $this->player_id = intval($_REQUEST['player_id']);
+    $this->post_id = intval( $_REQUEST['post_id'] );
 
     $this->checkCacheFile();
   }
@@ -57,11 +61,11 @@ Class FvPlayerTrackerWorker {
    */
   function incrementCacheCounter() {
     $max_attempts = 3;
-    echo "incrementCacheCounter 0\n";
+
     for( $i = 0; $i < $max_attempts; $i++ ){
-      echo "incrementCacheCounter 1\n";  
+
       if( flock( $this->file, LOCK_EX | LOCK_NB ) ) {
-        echo "incrementCacheCounter 2\n";
+
         //increment counter
         $encoded_data = fgets( $this->file );
         $data = false;
@@ -69,33 +73,46 @@ Class FvPlayerTrackerWorker {
           $data = json_decode( $encoded_data, true );
   
           $json_error = json_last_error();
-          if( $json_error !== JSON_ERROR_NONE ) {echo "incrementCacheCounter 3\n";
+          if( $json_error !== JSON_ERROR_NONE ) {
             file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r')." JSON decode error:\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND ); // todo: remove
             ftruncate( $this->file, 0 );
             return false;
           }
         }
-        
-        if( !$data ) $data = array();
-        
-        echo "incrementCacheCounter 4\n";
-        if( !isset( $data[$this->video_id] ) ) $data[$this->video_id] = 0;
-        $data[$this->video_id]++;
+
+        if( !$data ) { 
+          $data = array();
+        }
+
+        $found = false;
+        foreach( $data as $index => $item ) {
+          if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id ) {
+            $data[$index]['play'] += 1;
+            $found = true;
+            break;
+          }
+        }
+
+        if( !$found ) {
+          $data[] = array(
+            'video_id' => $this->video_id,
+            'post_id' => $this->post_id,
+            'player_id' => $this->player_id,
+            'play' => 1
+          );
+        }
 
         $encoded_data = json_encode($data);
 
         ftruncate( $this->file, 0 );
         rewind( $this->file );
         fputs( $this->file, $encoded_data );
-        //var_dump( $encoded_data );
-        echo "incrementCacheCounter 5\n";
+
         //UNLOCK
         flock( $this->file, LOCK_UN );
-        echo "incrementCacheCounter 9\n";
         return true;
       }
       else{
-        echo "incrementCacheCounter 10\n";
         //wait random interval from 50ms to 100ms
         usleep( rand(50,100) );
       }

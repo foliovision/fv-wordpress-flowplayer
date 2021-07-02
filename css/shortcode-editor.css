@@ -61,7 +61,6 @@
 
 /*Playlist view*/
 .is-playlist .fv-player-playlist-item-title{ display:block; }
-.is-playlist .fv_player_field_insert-button{ display:none; }
 
 .always-hide{display:none!important;}
 .is-playlist .hide-if-playlist{display:none!important;}
@@ -137,9 +136,9 @@
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-new-tab{display:block;}
 #fv-player-shortcode-editor-preview.preview-no #fv-player-shortcode-editor-preview-target,
 #fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-target{display:none}
-#fv-player-shortcode-editor-preview.preview-new-tab #fv-player-shortcode-editor-preview-iframe-refresh{display:none!important}
+#fv-player-shortcode-editor-preview.preview-new-tab {display:none!important}
 #fv-player-shortcode-editor-preview-spinner, .fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {background-image: url(../../../../wp-includes/images/wpspin-2x.gif); background-color: white;   background-repeat: no-repeat;   background-position: center}
-#fv-player-shortcode-editor-preview-spinner{z-index: 2; height: 200px; width: 100%;}
+#fv-player-shortcode-editor-preview-spinner{z-index: 2; height: 100%; width: 100%; position: absolute}
 .fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
 .fv-player-playlist-item .fv-player-shortcode-editor-small-spinner {position: absolute; top: 4px; right: 123px;}
 .fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
@@ -214,25 +213,33 @@ a #add-format, a #add-rtmp {
   right: 0;
 }
 
-.fv-player-save-completed {
+.fv-player-save-notice {
   position: absolute;
   bottom: 10px;
   left: 0;
   right: 0;
   background: #fff;
-  border-left: 4px solid #46b450;
+  border-left: 4px solid gray;
   box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
   margin: 5px 15px 2px;
   padding: 1px 12px;
 }
+.fv-player-save-completed {
+  border-left: 4px solid #46b450;
+}
+.fv-player-save-error {
+  border-left: 4px solid #bf0000;
+}
 
-.fv-player-src-below-notice {
-    margin: 10px 0;
-    padding: 8px;
-    background: #fff;
-    border-left: 4px solid #bf0000;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    display: none;
+.fv-player-src-playlist-support-notice {
+  margin: 3px 0;
+  padding: 8px;
+  background: #fff;
+  border-left: 4px solid #bf0000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+  display: none;
+  position: absolute;
+  z-index: 2;
 }
 
 #fv-player-shortcode-editor h1 {

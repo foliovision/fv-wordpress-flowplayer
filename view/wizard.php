@@ -229,7 +229,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
         </div>
         <div id="fv-player-shortcode-editor-preview-target"></div>
-        <a href="#" class="button" style="display:none;" id="fv-player-shortcode-editor-preview-iframe-refresh"><?php _e('Refresh preview', 'fv_flowplayer'); ?></a>
       </div>
     </div>
     <div id="fv-player-shortcode-editor-right">
@@ -301,7 +300,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?>      
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
+                  <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>
               </tr>
 
@@ -319,7 +318,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?> 
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
+                  <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>
               </tr>
 
@@ -329,7 +328,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == "true") { ?>  
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
-                  <div class="fv-player-src-below-notice"><?php _e('Unsupported video type - this video might break playlists.', 'fv_flowplayer'); ?></div>
+                  <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>    			
               </tr>
               
@@ -622,8 +621,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     
     <div style="clear: both"></div>
 
-    <span class="fv-player-save-waiting waiting spinner"></span>
-    <div class="fv-player-save-completed" style="display: none"><p>Saved!</p></div>
+    <div class="fv-player-save-notice fv-player-save-completed" style="display: none"><p>Saved!</p></div>
+    <div class="fv-player-save-notice fv-player-save-error" style="display: none"><p>Error saving changes.</p></div>
     <div class="fv-messages"></div>   
   </div>
 </div>

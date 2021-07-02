@@ -240,7 +240,7 @@ class FV_Player_Db {
         $player_ids_when_searching = $player_video_ids;
 
         $db_options = array(
-          'select_fields'       => 'player_name, date_created, videos, author',
+          'select_fields'       => 'player_name, date_created, videos, author, status',
           'order_by'            => $order_by,
           'order'               => $order,
           'offset'              => $offset,
@@ -260,7 +260,7 @@ class FV_Player_Db {
       // load all players, which will put them into the cache automatically
 
       $db_options = array(
-        'select_fields' => 'player_name, date_created, videos, author',
+        'select_fields' => 'player_name, date_created, videos, author, status',
         'order_by'      => $order_by,
         'order'         => $order,
         'offset'        => $offset,
@@ -324,6 +324,7 @@ class FV_Player_Db {
           $result_row->subtitles_count = $player->getCount('subtitles');
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
+          $result_row->status = __($player->getStatus(), 'fv-wordpress-flowplayer');
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
@@ -373,6 +374,11 @@ class FV_Player_Db {
           // join name items, if present
           if (is_array($result_row->player_name)) {
             $result_row->player_name = join(', ', $result_row->player_name);
+          }
+
+          // add "Draft" at the end of player, if in draft status
+          if ( $player->getStatus() == 'draft' ) {
+            $result_row->player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
           }
 
           // join thumbnails
@@ -798,7 +804,7 @@ class FV_Player_Db {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
-    global $FV_Player_Db;
+    global $FV_Player_Db, $fv_fp;
 
     $player_options        = array();
     $video_ids             = array();
@@ -1005,6 +1011,11 @@ class FV_Player_Db {
       // create and save the player
       $player = new FV_Player_Db_Player(null, $player_options, $FV_Player_Db);
 
+      // if this player should have a "published" status, add it here
+      if ( !empty( $post_data['status'] ) && $post_data['status'] == 'published' ) {
+        $player->setStatus('published');
+      }
+
       // save only if we're not requesting new instances for preview purposes
       if (!$data) {
         // link to DB, if we're doing an update
@@ -1020,11 +1031,15 @@ class FV_Player_Db {
           foreach( $player->getVideos() AS $video ) {
             $videos[] = $video->getId();
           }
-          $output = array( 'id' => $id, 'videos' => $videos );
-          echo wp_json_encode( $output );
-          
+
           do_action('fv_player_db_save', $id);
+
+          $output = array( 'id' => $id, 'videos' => $videos );
           
+          $preview_data = $fv_fp->build_min_player( false, array( 'id' => $id ) );
+          $output['html'] = $preview_data['html'];
+          
+          echo wp_json_encode( $output );
         } else {
           echo -1;
         }
@@ -1173,6 +1188,9 @@ class FV_Player_Db {
         $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
       }
 
+      $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId() ) );
+      $out['html'] = $preview_data['html'];
+
       header('Content-Type: application/json');      
       if (version_compare(phpversion(), '5.3', '<')) {
         echo json_encode($out);
@@ -1242,7 +1260,7 @@ class FV_Player_Db {
       // load meta for all players to remove locks for (and to auto-cache them as well)
       new FV_Player_Db_Player_Meta(null, array('id_player' => array_keys($data['fv_flowplayer_edit_lock_removal'])), $this);
       $meta = $this->getPlayerMetaCache();
-      $locks_removed = [];
+      $locks_removed = array();
 
       if (count($meta)) {
         foreach ( $meta as $player ) {
@@ -1586,7 +1604,7 @@ class FV_Player_Db {
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    $players = $this->getListPageData('id, name', null, null, null);
+    $players = $this->getListPageData('date_created', 'desc', null, null);
     $json_data = array();
 
     foreach ($players as $player) {
