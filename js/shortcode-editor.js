@@ -1764,9 +1764,7 @@ jQuery(function() {
      *  * sets data for WordPress Heartbeat to unlock the player
      *  * calls editor_init() for editor clean-up
      */
-    function editor_close() {
-      editor_resize_height_record = 0;
-      
+    function editor_close() {      
       // remove TinyMCE hidden tags and other similar tags which aids shortcode editing
       // to prevent opening the same player over and over
       editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
@@ -3415,8 +3413,6 @@ jQuery(function() {
       item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!is_stream || !!is_vimeo_or_youtube);
       item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!is_stream);
       item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!is_stream);
-      
-      editor_resize();
     }
 
     function init_saved_player_fields( id_player ) {
