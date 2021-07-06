@@ -235,7 +235,12 @@ class FV_Xml_Video_Sitemap {
             }
             
             if( $aCategories = get_the_category($objPost->ID) ) {
-              $xml_video['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
+              if( function_exists('mb_substr') ) {
+                $xml_video['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
+              } else {
+                $xml_video['category'] = substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
+              }
+              
             }
             $xml_video['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
             
