@@ -1006,7 +1006,8 @@ jQuery(function() {
                         case 'caption':
                           if (json_data.name) {
                             if (!$caption_element.val() || typeof($caption_element.data('fv_player_user_updated')) == 'undefined') {
-                              $caption_element.val(json_data.name);
+                              $caption_element.val(json_data.name).trigger('change');
+                              $caption_element.closest('tr').show();
 
                               // update caption in playlist table
                               if ($playlist_row.length) {
@@ -1019,7 +1020,8 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
-                              $splash_element.val(json_data.thumbnail);
+                              $splash_element.val(json_data.thumbnail).trigger('change');
+                              $splash_element.closest('tr').show();
                             }
                           }
                           break;
@@ -1027,7 +1029,8 @@ jQuery(function() {
                         case 'chapters':
                           if(json_data.chapters) {
                             if( !$chapters_element.val() || typeof($chapters_element.data('fv_player_user_updated')) == 'undefined' ) {
-                              $chapters_element.val(json_data.chapters)
+                              $chapters_element.val(json_data.chapters).trigger('change');
+                              $chapters_element.closest('tr').show();
                             }
                           }
                           break;
