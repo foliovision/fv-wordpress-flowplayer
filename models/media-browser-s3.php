@@ -220,6 +220,8 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
               $item['type'] = 'folder';
               $item['items'] = array();
             }
+            
+            $item = apply_filters( 'fv_player_media_browser_item', $item, 's3' );
 
             $output['items'][] = $item;
   
