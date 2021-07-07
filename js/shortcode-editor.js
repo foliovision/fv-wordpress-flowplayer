@@ -1814,10 +1814,20 @@ jQuery(function() {
         // TODO: Perhaps to ensure the temporary strings in editor are removed?
         //set_post_editor_content( editor_content.replace( fv_wp_flowplayer_re_insert, '' ) );
 
-        // trigger update for the FV Player Custom Videos/Meta Box
-        var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
-        field.trigger('fv_flowplayer_shortcode_insert');
+        // trigger update for the FV Player Custom Videos/Meta Box and Gutenberg field for preview refresh purposes
+        var
+          $editor_button_clicked = $(editor_button_clicked),
+          $fv_player_custom_meta_box = $editor_button_clicked.parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
+          $fv_player_gutenberg = $editor_button_clicked.parents('.fv-player-gutenberg');
 
+        if ( $fv_player_custom_meta_box.length ) {
+          $fv_player_custom_meta_box.trigger('fv_flowplayer_shortcode_insert');
+        }
+
+        if ( $fv_player_gutenberg.length ) {
+          var gutenbergTextarea = ($fv_player_gutenberg[0].tagName == 'TEXTAREA' ? $fv_player_gutenberg[0] : $fv_player_gutenberg.find('textarea').first()[0]);
+          fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
+        }
       } else if( current_player_db_id > -1 ) {
         var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
         if( playerRow.length == 0 ) {
