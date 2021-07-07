@@ -962,7 +962,6 @@ jQuery(function() {
         // only make an AJAX call if we found a matcher
         if (update_fields !== null) {
           if (update_fields.length) {
-            debugger;
 
             // add spinners (loading indicators) to all inputs where data are being loaded
             var selector = '#fv_wp_flowplayer_field_src';
