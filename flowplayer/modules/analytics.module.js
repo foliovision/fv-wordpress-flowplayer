@@ -102,11 +102,6 @@ flowplayer( function(api,root) {
     }
   }
 
-  function is_ga_4 ( api ) {
-    if( typeof api.conf.fvanalytics != 'undefined' && api.conf.fvanalytics && api.conf.fvanalytics.startsWith('G-') ) return true;
-    return false;
-  }
-
   function fv_track(e,api,data) {
     var video = api.video,
       dur = video.duration,
@@ -145,6 +140,17 @@ flowplayer( function(api,root) {
 });
 
 /**
+ * Checks if fvanalytics is using ga4
+ * 
+ * @param {object} api 
+ * @returns {boolean}
+ */
+function is_ga_4 ( api ) {
+  if( typeof api.conf.fvanalytics != 'undefined' && api.conf.fvanalytics && api.conf.fvanalytics.startsWith('G-') ) return true;
+  return false;
+}
+
+/**
  * Sends event statistics to Google analytics and Matomo
  * 
  * @param {string} ga_id Optional Google Analytics ID to use.
@@ -154,7 +160,7 @@ flowplayer( function(api,root) {
  * @param {number} value
  *
  */
-function fv_player_track( api, ga_id, event, engineType, name, value){
+function fv_player_track( api, ga_id, event, engineType, name, value) {
   
   if( !ga_id ) ga_id = flowplayer.conf.fvanalytics;
   
