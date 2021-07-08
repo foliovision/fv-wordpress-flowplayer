@@ -174,7 +174,8 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
       gtag("event", event, {
         'video_current_time': api.video.time,
         'video_provider': engineType,
-        'video_duration': api.video.duration
+        'video_duration': api.video.duration,
+        'value': value ? value  : 1
       });
     } else {
       gtag('event', event, {
