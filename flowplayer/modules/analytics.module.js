@@ -5,12 +5,7 @@
 flowplayer( function(api,root) {
   var root = jQuery(root),
       bean = flowplayer.bean,
-      time = 0, last = 0, timer, event_name,
-
-      is_ga_4 = function( api ) {
-        if( typeof api.conf.fvanalytics != 'undefined' && api.conf.fvanalytics && api.conf.fvanalytics.startsWith('G-') ) return true;
-        return false;
-      };
+      time = 0, last = 0, timer, event_name;
 
   // Load analytics.js if ga.js is not already loaded
   if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' && typeof(gtag) == 'undefined' ) {
@@ -105,6 +100,11 @@ flowplayer( function(api,root) {
         timer = null;
       }
     }
+  }
+
+  function is_ga_4 ( api ) {
+    if( typeof api.conf.fvanalytics != 'undefined' && api.conf.fvanalytics && api.conf.fvanalytics.startsWith('G-') ) return true;
+    return false;
   }
 
   function fv_track(e,api,data) {
