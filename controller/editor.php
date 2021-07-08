@@ -364,7 +364,8 @@ function fv_player_splashcreen_action() {
     
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-    $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+    
+    if( strlen( $title ) > $limit ) $title = substr($title, 0, $limit);
 
     $decoded = base64_decode($img) ;
     
