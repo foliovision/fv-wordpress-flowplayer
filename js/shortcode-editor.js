@@ -18,6 +18,9 @@ jQuery(function() {
       $doc = $(document),
       $el_editor,
       $el_preview,
+      $el_save_complete = $('.fv-player-save-completed'),
+      $el_save_error = $('.fv-player-save-error'),
+      $el_save_error_p = $el_save_error.find('p'),
 
     // data to save in Ajax
     ajax_save_this_please = false,
@@ -98,7 +101,12 @@ jQuery(function() {
 
     // used in Gutenberg preview to store a preview timeout task due to REACT not being fast enough to allow us previewing
     // player directly after we close the editor
-    fv_player_preview_loading = false;
+    fv_player_preview_loading = false,
+
+    // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
+    // ... this will be shown in place of the "Saved!" message bottom overlay and it will always show only the first error in this object,
+    //     as to not overload the user and UI with errors. Once that error is corrected, it gets removed from this object and next one (if any) is shown.
+    errors = {};
 
 
     /*
@@ -708,11 +716,6 @@ jQuery(function() {
       $doc.on('fv_flowplayer_shortcode_item_delete', save );
 
       function save(e){
-
-        /*if (is_draft) {
-          is_draft_changed = true;
-        }*/
-
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
         // ... but if we're creating a new player from scratch, let's ignore it and save data anyway
@@ -776,10 +779,29 @@ jQuery(function() {
       }
 
       setInterval( function() {
-        if( !ajax_save_this_please || is_loading_meta_data ) return;
+        if ( !ajax_save_this_please || is_loading_meta_data ) return;
+
+        // show error overlay if we have errors
+        var err = fv_player_editor.has_errors();
+        if ( err ) {
+          $el_save_error_p
+            .data( 'old_txt', $el_save_error.text() )
+            .text( err );
+          $el_save_error.show();
+
+          return;
+        } else {
+          // revert error text and hide error overlay if we have no errors to show
+          if ( $el_save_error_p.data( 'old_txt ') ) {
+            $el_save_error_p
+              .text( $el_save_error_p.data( 'old_txt ') )
+              .removeData( 'old_txt' );
+            $el_save_error.hide();
+          }
+        }
 
         is_saving = true;
-        insert_button_disable(true);
+        insert_button_toggle_disabled(true);
 
         el_spinner.show();
 
@@ -804,11 +826,11 @@ jQuery(function() {
             } else {
               is_saving = false;
               
-              insert_button_disable(false);
+              insert_button_toggle_disabled(false);
               
               el_spinner.hide();
 
-              $('.fv-player-save-completed').show().delay( 2500 ).fadeOut(400);
+              $el_save_complete.show().delay( 2500 ).fadeOut(400);
 
               // close the overlay, if we're waiting for the save
               if (overlay_close_waiting_for_save) {
@@ -980,14 +1002,14 @@ jQuery(function() {
               .parent()
               .append('<div class="fv-player-shortcode-editor-small-spinner"></div>');
 
-            is_loading_meta_data++;
+            fv_player_editor.meta_data_load_started();
             var ajax_call = function () {
               $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
                   action: 'fv_wp_flowplayer_retrieve_video_data',
                   video_url: $element.val(),
                   cookie: encodeURIComponent(document.cookie),
                 }, function (json_data) {
-                  is_loading_meta_data--;
+                fv_player_editor.meta_data_load_finished();
                   // check if we still have this element on page
                   if ($element.closest("body").length > 0 && update_fields.length) {
 
@@ -1126,7 +1148,7 @@ jQuery(function() {
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();
                 }).error(function () {
-                  is_loading_meta_data--;
+                fv_player_editor.meta_data_load_finished();
                   // remove element AJAX data
                   $element.removeData('fv_player_video_data_ajax');
 
@@ -1258,7 +1280,7 @@ jQuery(function() {
       });
 
       $doc.on('change', '#players_selector', function() {
-        insert_button_disable(false);
+        insert_button_toggle_disabled(false);
         
         // TODO
         $el_editor.find('.button-primary').text('Insert');
@@ -1269,7 +1291,7 @@ jQuery(function() {
         if (is_saving || ajax_save_this_please) {
           // for some reason, clicking on already-disabled primary button re-enables it,
           // so we'll just need to disable it again here
-          insert_button_disable(true);
+          insert_button_toggle_disabled(true);
         } else {
           // make sure we mark this player as published in the DB
           has_draft_status = false;
@@ -1294,6 +1316,11 @@ jQuery(function() {
       // unfortunately there is no event for this which we could use
       $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
       $.fn.fv_player_box.close = function() {
+        // don't close editor if we have errors showing, otherwise we'd just overlay them by an infinite loader
+        if ( fv_player_editor.has_errors() ) {
+          return;
+        }
+
         /*if (is_draft && is_draft_changed && !window.confirm('You have unsaved changes. Are you sure you want to close this dialog and loose them?')) {
           return false;
         }*/
@@ -1304,7 +1331,7 @@ jQuery(function() {
         }
 
         // prevent closing if we're still saving the data
-        if (ajax_save_this_please || is_saving || is_loading_meta_data) {
+        if ( ajax_save_this_please || is_saving || is_loading_meta_data ) {
           // if we already have the overlay changed, bail out
           if (overlay_close_waiting_for_save) {
             return;
@@ -1777,6 +1804,11 @@ jQuery(function() {
      *  * calls editor_init() for editor clean-up
      */
     function editor_close() {
+      // don't close editor if we have errors showing, otherwise we'd just overlay them by an infinite loader
+      if ( fv_player_editor.has_errors() ) {
+        return;
+      }
+
       editor_resize_height_record = 0;
       
       // remove TinyMCE hidden tags and other similar tags which aids shortcode editing
@@ -2645,12 +2677,12 @@ jQuery(function() {
      *  Saving the data
      */
     function editor_submit() {
-      // bail out if we're already saving or we're loading meta data still
-      if ( ajax_save_this_please || is_saving || is_loading_meta_data ) {
+      // bail out if we're already saving, we're loading meta data or we have errors
+      if ( ajax_save_this_please || is_saving || is_loading_meta_data || fv_player_editor.has_errors() ) {
         // if we're saving a new player, let's disable the Save button and wait until meta data are loaded
         if ( current_player_db_id < 0 ) {
           if (is_loading_meta_data) {
-            insert_button_disable(true);
+            insert_button_toggle_disabled(true);
             
             $el_editor.find('.button-primary').text('Saving...');
             var checker = setInterval(function() {
@@ -2668,6 +2700,12 @@ jQuery(function() {
           if (is_loading_meta_data) {
             return;
           }
+        }
+
+        // we have errors, disable the Save button
+        if ( fv_player_editor.has_errors() ) {
+          insert_button_toggle_disabled(true);
+          return;
         }
       }
 
@@ -2797,7 +2835,7 @@ jQuery(function() {
 
     }
               
-    function insert_button_disable( disable ) {
+    function insert_button_toggle_disabled( disable ) {
       var button = $('.fv_player_field_insert-button');
       if( disable ) {
         button.attr('disabled', 'disabled');
@@ -3665,6 +3703,58 @@ jQuery(function() {
         $('#fv-player-shortcode-editor .copy_player').toggle( show );
       },
 
+      meta_data_load_started() {
+        is_loading_meta_data++;
+      },
+
+      meta_data_load_finished() {
+        is_loading_meta_data--;
+      },
+
+      error_add( identifier, txt ) {
+        errors[ identifier ] = txt;
+
+        // no save button while we have errors
+        insert_button_toggle_disabled( true );
+      },
+
+      error_remove( identifier ) {
+        delete errors[ identifier ];
+
+        if ( !this.has_errors() ) {
+          // enable save button
+          insert_button_toggle_disabled( false );
+        }
+      },
+
+      errors_remove( prefix ) {
+        var errors_found = [];
+
+        for ( var key in errors ) {
+          if ( key.startsWith( prefix ) ) {
+            errors_found.push( key );
+          }
+        }
+
+        if ( errors_found.length ) {
+          for ( var val of errors_found ) {
+            delete errors[ val ];
+          }
+        }
+
+        if ( this.has_errors() ) {
+          // enable save button
+          insert_button_toggle_disabled( false );
+        }
+      },
+
+      has_errors() {
+        for ( var i in errors ) {
+          return errors[ i ];
+        }
+
+        return false;
+      }
     };
 
   })(jQuery);
