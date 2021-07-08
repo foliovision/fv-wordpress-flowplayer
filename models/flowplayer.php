@@ -2283,14 +2283,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     foreach( $aRules AS $k => $v ) {
       if( stripos($k,'/fvp(/') !== false ) {
         // 1st rule
-        $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only, placeholder for replace
+        $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only
         $new_v = preg_replace('/fv_player_embed=\$matches\[\d]/', 'fv_player_embed=1', $v); // fv_player_embed=1
 
-        $aRulesNew[$new_k] = $new_v; 
+        $aRulesNew[$new_k] = $new_v;
 
         // 2nd rule
-        $new_k = str_replace( '/fvp(/(', '/fvp((-?', $k ); // fvp{number} or fvp-{number}
-        $new_k = str_replace( '.*' , '\d+', $new_k ); // fvp((-?.*)) to fvp((-?\d+))
+        $new_k = str_replace( '/fvp(/(.*))', '/fvp((-?\d+))', $k ); // fvp{number} or fvp-{number}
 
         $aRulesNew[$new_k]= $v;
       } else {
