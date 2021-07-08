@@ -8,7 +8,7 @@ flowplayer( function(api,root) {
       time = 0, last = 0, timer, event_name,
 
       is_ga_4 = function( api ) {
-        if( api.conf.fvanalytics.startsWith('G-') ) return true;
+        if( typeof api.conf.fvanalytics != 'undefined' && api.conf.fvanalytics && api.conf.fvanalytics.startsWith('G-') ) return true;
         return false;
       };
 
