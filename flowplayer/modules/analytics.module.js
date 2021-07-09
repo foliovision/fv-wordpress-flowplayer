@@ -9,9 +9,22 @@ flowplayer( function(api,root) {
 
   // Load analytics.js if ga.js is not already loaded
   if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' && typeof(gtag) == 'undefined' ) {
-    jQuery.getScript( { url: "https://www.google-analytics.com/analytics.js", cache: true }, function() {
-      ga('create', api.conf.fvanalytics, 'auto');
-    });
+    if( is_ga_4(api) ) {
+      jQuery.getScript( { url: "https://www.googletagmanager.com/gtag/js?id=" + api.conf.fvanalytics , cache: true }, function() {
+        window.dataLayer = window.dataLayer || [];
+
+        window.gtag = function() {
+          window.dataLayer.push(arguments);
+        };
+
+        window.gtag('js', new Date());
+        window.gtag('config', api.conf.fvanalytics);
+      });
+    } else {
+      jQuery.getScript( { url: "https://www.google-analytics.com/analytics.js", cache: true }, function() {
+        ga('create', api.conf.fvanalytics, 'auto');
+      });
+    }
   }
   
   // Load Matomo if not already loaded when needed
