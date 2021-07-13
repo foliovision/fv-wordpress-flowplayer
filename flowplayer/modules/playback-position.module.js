@@ -392,8 +392,6 @@ if (!Date.now) {
         }
       }
 
-    console.log("Enabled", enabled)
-
     if( !enabled ) return;
 
     // stop events
