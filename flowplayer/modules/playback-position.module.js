@@ -239,7 +239,7 @@ if (!Date.now) {
   flowplayer( function(api,root) {
     var
       $root = jQuery(root),
-      enabled = ( ( /#fvp_\d+\?t=/.test(location.href) || /#fvp_\d+,\d+/.test(location.href) ) && ( flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position') ) ),
+      enabled = ( ( !/#fvp_\d+\?t=/.test(location.href) && !/#fvp_\d+,\d+/.test(location.href) ) && ( flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position') ) ),
       progressEventsCount = 0,
 
       // used to seek into the desired last stored position when he video has started
@@ -391,6 +391,8 @@ if (!Date.now) {
           }
         }
       }
+
+    console.log("Enabled", enabled)
 
     if( !enabled ) return;
 
