@@ -18,7 +18,7 @@ flowplayer( function(api,root) {
   
   root.find('.fp-logo, .fp-header').on('click', function(e) {
     if (e.target !== this) return;
-    root.find('.fp-ui').click();
+    root.find('.fp-ui').trigger('click');
   });
     
   jQuery('.fvp-share-bar .sharing-facebook',root).append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#fff"><title>Facebook</title><path d="M11.9 5.2l-2.6 0 0-1.6c0-0.7 0.3-0.7 0.7-0.7 0.3 0 1.6 0 1.6 0l0-2.9 -2.3 0c-2.6 0-3.3 2-3.3 3.3l0 2 -1.6 0 0 2.9 1.6 0c0 3.6 0 7.8 0 7.8l3.3 0c0 0 0-4.2 0-7.8l2.3 0 0.3-2.9Z"/></svg>');
@@ -104,22 +104,29 @@ flowplayer( function(api,root) {
   // replacing loading SVG with CSS animation
   root.find('.fp-waiting').html('<div class="fp-preload"><b></b><b></b><b></b><b></b></div>');    
   
+  var id = root.attr('id'),
+    alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen,
+    events_enter = 'fakefullscreen',
+    events_exit = 'fakefullscreen-exit';  
+  
   if( !flowplayer.support.fullscreen ) {
-    var id = root.attr('id'),
-      alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen;
-    
-  	api.bind('fullscreen', function(e,api) {
-      jQuery('#wpadminbar, .nc_wrapper').hide();
-	  if( alternative ) {
-        if( api.video.type == 'video/youtube' ) return;		
-        root.before('<span data-fv-placeholder="'+id+'"></span>');
-  	    root.appendTo('body');
-      }
-  	});
-    api.bind('fullscreen-exit', function(e,api,video) {
-      jQuery('#wpadminbar, .nc_wrapper').show();
-      if( alternative ) jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);		
-  	});
+    events_enter += ' fullscreen';
+    events_exit += ' fullscreen-exit';
   }
-    
+
+  api.bind( events_enter, function(e,api) {
+    jQuery('#wpadminbar, .nc_wrapper').hide();
+    if( alternative || e.type == 'fakefullscreen' ) {
+      if( api.video.type == 'video/youtube' ) return;		
+      root.before('<span data-fv-placeholder="'+id+'"></span>');
+      root.appendTo('body');
+    }
+  });
+  api.bind( events_exit, function(e,api,video) {
+    jQuery('#wpadminbar, .nc_wrapper').show();
+    if( alternative || e.type == 'fakefullscreen-exit' ) {
+      jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);
+    }
+  });
+  
 });

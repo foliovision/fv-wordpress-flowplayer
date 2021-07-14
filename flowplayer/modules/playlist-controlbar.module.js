@@ -38,7 +38,7 @@ flowplayer( function(api,root) {
     else {
       // workaround for flowplayer 7 not picking up our menu as one of its own,
       // thus not closing it
-      root.click();
+      root.trigger('click');
       api.showMenu(playlist_menu[0]);
     }
   });

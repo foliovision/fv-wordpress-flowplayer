@@ -442,16 +442,6 @@
                   Adds a button to turn the video picture on and off.                                </p>
           </td>
       </tr>
-                  <tr>
-          <td class="first"><label for="ui_play_button">Play Button:</label></td>
-          <td>
-              <p class="description">
-                  <input type="hidden" name="ui_play_button" value="false"/>
-                  <input type="checkbox" name="ui_play_button" id="ui_play_button" value="true" checked="checked" />
-                  Adds play button to player controlbar.                                </p>
-          </td>
-      </tr>
-      
             <tr>
 							<td><label for="liststyle">Playlist style:</label></td>
 							<td colspan="3">
@@ -644,10 +634,10 @@ jQuery(document).ready(function($) {
 
           /*if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
-              $('#fv_wp_flowplayer_field_width').val(attachment.width);
+              $('.fv_wp_flowplayer_field_width').val(attachment.width);
             }
             if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
-              $('#fv_wp_flowplayer_field_height').val(attachment.height);
+              $('.fv_wp_flowplayer_field_height').val(attachment.height);
             }
             if( typeof(attachment.fileLength) != "undefined" ) {
               $('#fv_wp_flowplayer_file_info').show();
@@ -2103,7 +2093,6 @@ Array
     [fixed_size] => false
     [js-everywhere] => false
     [marginBottom] => 28
-    [ui_play_button] => true
     [volume] => 0.7
     [player-position] => 
     [playlist_advance] => 

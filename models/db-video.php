@@ -33,7 +33,10 @@ class FV_Player_Db_Video {
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $meta_data = null; // object of this video's meta data
+    $meta_data = null, // object of this video's meta data
+    $ignored_video_fields = array(
+      'vr', // VR is a meta value, so it should not be stored globally per-player
+    );
 
   private static
     $db_table_name,
@@ -219,6 +222,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if ($DB_Cache) {
       self::$DB_Instance = $DB_Cache;
+    } else {
+      global $FV_Player_Db;
+      self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
     $this->initDB($wpdb);
@@ -243,7 +249,7 @@ CREATE TABLE " . self::$db_table_name . " (
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
           }
-        } else {
+        } else if ( !in_array( $key, $this->ignored_video_fields ) ) {
           // generate warning
           trigger_error('Unknown property for new DB video: ' . $key);
         }
@@ -665,7 +671,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
         $data[$property] = $value;
       }
     }
@@ -734,7 +740,7 @@ CREATE TABLE " . self::$db_table_name . " (
    */
   public function getMetaValue( $key, $single = false ) {
     $output = array();
-    $data = $this->getMetaData();    
+    $data = $this->getMetaData();
     if (count($data)) {
       foreach ($data as $meta_object) {
         if ($meta_object->getMetaKey() == $key) {
@@ -821,7 +827,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = strip_tags($value);
       }
@@ -842,8 +848,41 @@ CREATE TABLE " . self::$db_table_name . " (
     if (!$wpdb->last_error) {
       // check for any meta data
       if (is_array($meta_data) && count($meta_data)) {
+        // we check which meta values are no longer set and remove these
+        $existing_meta = $is_update ? $this->getMetaData() : array();
+        $existing_meta_ids = array();
+        foreach( $existing_meta as $existing ) {
+          $found = false;
+          foreach ($meta_data as $meta_record) {
+            if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
+              $found = true;
+              break;
+            }
+          }
+          if( !$found ) {
+            $existing->delete();
+          } else {
+            $existing_meta_ids[$existing->getId()] = true;
+          }
+        }
+        
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
+          // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
+          if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
+            unset($meta_record['id']);          
+          }
+          
+          // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
+          if( empty($meta_record['id']) ) {
+            foreach( $existing_meta AS $existing ) {
+              if( $meta_record['meta_key'] == $existing->getMetaKey() ) {
+                $meta_record['id'] = $existing->getId();
+                break;
+              }
+            }
+          }
+          
           // add our video ID
           $meta_record['id_video'] = $this->id;
 
@@ -851,8 +890,10 @@ CREATE TABLE " . self::$db_table_name . " (
           $meta_object = new FV_Player_Db_Video_Meta(null, $meta_record, self::$DB_Instance);
 
           // add meta data ID
-          if ($is_update) {
+          if( !empty($meta_record['id']) ) {
             $meta_object->link2db($meta_record['id']);
+          } else if( empty($meta_record['meta_value']) ) {
+            continue;
           }
 
           $meta_object->save();
@@ -882,7 +923,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
         $export_data[$property] = $value;
       }
     }

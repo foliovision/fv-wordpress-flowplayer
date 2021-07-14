@@ -61,7 +61,7 @@ class FV_Player_List_Table_View {
   }
   
   function screen_columns() {
-    return array(
+    $cols = array(
       //'cb'             => '<input type="checkbox" />',
       'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
       'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
@@ -71,10 +71,15 @@ class FV_Player_List_Table_View {
       'subtitles_count'  => __( 'Subtitles', 'fv-wordpress-flowplayer' ),
       'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
       'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
-      'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' ),
-      'shortcode'        => __( 'Shortcode', 'fv-wordpress-flowplayer' ),
-      'shortcode-copy'   => '',
+      'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' )
     );
+
+    global $fv_fp;
+    if( $fv_fp->_get_option('video_stats_enable') ) {
+      $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
+    }
+
+    return $cols;
   }
   
   function screen_columns_hidden( $hidden, $screen, $use_defaults ) {
@@ -90,7 +95,7 @@ class FV_Player_List_Table_View {
       return;
    
     $args = array(
-      'label' => __('Players per page', 'pippin'),
+      'label' => __('Players per page', 'fv-wordpress-flowplayer'),
       'default' => 25,
       'option' => 'fv_player_per_page'
     );
@@ -105,7 +110,7 @@ class FV_Player_List_Table_View {
       wp_enqueue_media();
     }
     ?>
-    <style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px}</style>
+    <style>#adminmenu #toplevel_page_fv_player .wp-menu-image img {width:28px;height:25px;padding-top:4px !important}</style>
     <?php
   }
   
@@ -252,19 +257,22 @@ class FV_Player_List_Table extends WP_List_Table {
   public function column_default( $player, $column_name ) {
     $id = $player->id;
     switch ( $column_name ) {
-      case 'id':        
+      case 'id':
         $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
         break;
       case 'date_created' :
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
-      case 'player_name' :        
+      case 'player_name' :
         $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
         $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
         $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
+
+        $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
+
         $value .= "</div>";
         break;
       case 'embeds':
@@ -290,12 +298,10 @@ class FV_Player_List_Table extends WP_List_Table {
       break;
       case 'author':
         $value = '<a href="#">'.get_the_author_meta( 'user_nicename' , $player->author ).'</a>';
-      break;
-      case 'shortcode':        
-        $value = '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" />';
         break;
-      case 'shortcode-copy':        
-        $value = '<a href="#" class="button fv-player-shortcode-copy">Copy</a>';
+      case 'stats_play':
+        $value= '';
+        if( $player->stats_play ) $value = '<a href="'. admin_url( 'admin.php?page=fv_player_stats&player_id=' . $id ) .'" target="_blank">'. $player->stats_play .'</a>';
         break;
       default:
         $value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';

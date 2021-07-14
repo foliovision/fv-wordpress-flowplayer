@@ -57,7 +57,7 @@ function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
 	global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
 	
 	if( $fv_wp_flowplayer_support_mail_from_name ) {
-		$phpmailer->FromName = trim( $fv_filled_in_phpmailer_init_from_name );
+		$phpmailer->FromName = trim( $fv_wp_flowplayer_support_mail_from_name );
 	}
 	if( $fv_wp_flowplayer_support_mail_from ) {
 		if( strcmp( trim($phpmailer->From), trim($fv_wp_flowplayer_support_mail_from) ) != 0 && !trim($phpmailer->Sender) ) {
@@ -193,12 +193,12 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	}
 	
 	global $fv_wp_flowplayer_ver;
-	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
+	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
   }
 
   // when using Google PageSpeed module
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-player.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
     return 1;
   }
 
@@ -378,6 +378,8 @@ function fv_player_admin_update() {
   
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
+    do_action( 'fv_player_update' );
+
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
    if(!empty($aOptions['version']) ) {
       $aOptions['chromecast'] = true;
@@ -690,11 +692,26 @@ add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object
 
 
 function flowplayer_deactivate() {
-  if( flowplayer::is_licensed() ) {  
+  if ( WP_Filesystem() ) {
+    global $wp_filesystem;
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-player-tracking/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-player-tracking/', true );
+    }
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/', true );
+    }
+  }
+  
+  if( flowplayer::is_licensed() ) {
     delete_transient( 'fv_flowplayer_license' );
   }
+
   delete_option( 'fv_flowplayer_extension_install' );
-  wp_clear_scheduled_hook('fv_flowplayer_checker_event');
+
+  wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
+  wp_clear_scheduled_hook( 'fv_player_stats' );
 }
 
 
@@ -793,7 +810,7 @@ function fv_player_rollback_message( $val ) {
 add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
-  $version = '7.4.47.727';
+  $version = '7.5.0.727';
   
   global $FV_Player_Pro;
   

@@ -340,32 +340,30 @@ function flowplayer_prepare_scripts() {
     
     $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
+    // Load base Flowplayer library
+    $path = '/flowplayer/modules/flowplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
+      $path = '/flowplayer/modules/flowplayer.js';
+    }
+    
+    $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_ver;
+    
+    wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, $version, true );
+    $aDependencies[] = 'flowplayer';
+    
+    // Load modules
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      $path = '/flowplayer/modules/flowplayer.min.js';
-      if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
-        $path = '/flowplayer/modules/flowplayer.js';
-      }
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
-      $aDependencies[] = 'flowplayer';
-      
       $path = '/flowplayer/modules/fv-player.js';
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
       
-      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.js') as $filename ) {
-        $filename = basename($filename);
-        if(
-          strcmp($filename,'flowplayer.min.js') == 0 ||
-          strcmp($filename,'flowplayer.js') == 0 ||
-          strcmp($filename,'fv-player.js') == 0
-        ) continue;
-        
-        $path = '/flowplayer/modules/'.$filename;
-        wp_enqueue_script( 'fv-player-'.$filename, flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
+      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.module.js') as $filename ) {
+        $path = '/flowplayer/modules/'.basename($filename);
+        wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
       
     } else {
-      wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().'/flowplayer/fv-flowplayer.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/fv-player.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
       
     }
 
@@ -425,7 +423,7 @@ function flowplayer_prepare_scripts() {
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
     
-    if( ( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) && $fv_fp->_get_option('hlsjs') ) {
+    if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.0.4', true );
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.0.4';
@@ -647,11 +645,15 @@ function fv_player_comment_text( $comment_text ) {
   return $comment_text;
 }
 
+add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_playlist' );
+
 function fv_player_footer_svg_playlist() {
   if( file_exists(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg') ) {
     include_once(dirname( __FILE__ ) . '/../css/fvp-icon-sprite.svg');
   }
 }
+
+add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_rewind' );
 
 function fv_player_footer_svg_rewind() {
   ?>
@@ -660,9 +662,71 @@ function fv_player_footer_svg_rewind() {
     <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z"  fill="#fff"/><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" fill="#fff"/><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" fill="#fff"/>
   </g>
 </svg>
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="http://www.w3.org/2000/svg">
+  <g id="fvp-forward">
+    <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z"  fill="#fff" transform="scale(-1,1) translate(-24,0)" /><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" fill="#fff" /><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" fill="#fff" />
+  </g>
+</svg>
   <?php
 }
 
+add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
+
+/*
+ * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
+ * The reason is that it's a dependency of most of the modules so then each module would have to be 
+ * adjusted to be able to load without it.
+ * 
+ * Fancybox lightbox library with additional code is also excluded.
+ * 
+ * @param string $tag The original script tag.
+ * @param string $handle The WordPress script handle
+ * 
+ * @global object $fv_fp The FV Player plugin instance
+ * 
+ * @return string The adjusted script tag
+ */
+function fv_player_js_loader_mark_scripts( $tag, $handle ) {
+  global $fv_fp;
+  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') || !$fv_fp->_get_option('js-optimize') ) {
+    return $tag;
+  }
+
+  if(
+    // script ID must start with one of following
+    (
+      stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
+      stripos($handle,'fv-player') === 0 ||
+      stripos($handle,'fv_player') === 0
+    
+    // script handle must not be one of
+    ) && !in_array( $handle, array(
+      'fv_player_lightbox' // without this it would be impossible to open the lightbox without hovering the page before it, so it's really a problem on mobile
+    ), true )
+  ) {
+    $tag = str_replace( ' src=', ' data-fv-player-loader-src=', $tag );
+    add_action( 'wp_print_footer_scripts', 'fv_player_js_loader_load', PHP_INT_MAX );
+  }
+  return $tag;
+}
+
+/*
+ * Outpput FV Player JS Loader into footer, hooked in in fv_player_js_loader_mark_scripts()
+ */
+function fv_player_js_loader_load() {
+  require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+  require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+  $filesystem = new WP_Filesystem_Direct( new StdClass() );
+  
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.babel.js' );
+  
+  // remove /* comments */
+  $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
+  // remove whitespace
+  $js = preg_replace( '~\s+~m', ' ', $js );
+  
+  echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
+}
 
 /*
  * @param string $min The minimal version to check - like 7.4.44.727

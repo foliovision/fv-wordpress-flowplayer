@@ -66,7 +66,7 @@ flowplayer( function(api,root) {
           else {
             // workaround for flowplayer 7 not picking up our menu as one of its own,
             // thus not closing it
-            root.click();
+            root.trigger('click');
             api.showMenu(playlist_menu[0]);
           }
         });
@@ -122,7 +122,7 @@ flowplayer( function(api,root) {
         });
         
         if( api.conf.loop ) {
-          jQuery('a[data-action=repeat_playlist]', playlist_menu ).click();
+          jQuery('a[data-action=repeat_playlist]', playlist_menu ).trigger('click');
         }
         
         api.on('progress', function() {
@@ -158,17 +158,32 @@ flowplayer( function(api,root) {
       }
     }
     
-    if( root.data('button-rewind') && root.find('.fv-fp-rewind').length == 0 ) {
-      var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="24px" height="24px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
-      
-      button_rewind.insertBefore( root.find('.fp-controls .fp-elapsed') ).on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    if( root.data('button-rewind') ) {
+      if( root.find('.fv-fp-rewind').length == 0 ) {
+        var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="24px" height="24px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
         
-        api.seek(api.video.time-10);
-      });
+        button_rewind.insertBefore( root.find('.fp-controls .fp-playbtn') ).on('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          api.seek(api.video.time-10);
+        });
 
-      button_rewind.toggle(!api.video.live);
+        button_rewind.toggle(!api.video.live);
+      }
+
+      if( root.find('.fv-fp-forward').length == 0 ) {
+        var button_forward = jQuery('<span class="fv-fp-forward"><svg viewBox="0 0 24 24" width="24px" height="24px" class="fvp-icon fvp-forward"><use xlink:href="#fvp-forward"></use></svg></span>');
+        
+        button_forward.insertAfter( root.find('.fp-controls .fp-playbtn') ).on('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          api.seek(api.video.time+10);
+        });
+
+        button_forward.toggle(!api.video.live);
+      }
     }
 
   }).bind('unload', function() {

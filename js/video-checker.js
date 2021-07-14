@@ -85,7 +85,7 @@
     admin_test_media( sID, media );
 
     if( typeof(fv_player.admin_input) != "undefined" && fv_player.admin_input ) {
-      jQuery(document).keyup(function(e) { 
+      jQuery(document).on('keyup', function(e) {
         if (e.keyCode == 27) { fv_wp_flowplayer_admin_show_notice(); 	}   // esc
       });
 
@@ -93,7 +93,6 @@
         if( jQuery(event.target).parents('.is-open').length == 0 &&
           jQuery(event.target).parents('.fv-player-video-checker').length == 0 ) {
           if( jQuery('.is-open:visible').length ) {
-            console.log('fv_wp_flowplayer_admin_show_notice click');
             fv_wp_flowplayer_admin_show_notice();
           };
         }
@@ -112,7 +111,7 @@
       try {
         response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
         response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
-        obj = jQuery.parseJSON( response );
+        obj = JSON.parse( response );
 
         var sCheckerInfo = '';
         var sCheckerDetails = '';
@@ -248,10 +247,10 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
       action: 'fv_wp_flowplayer_support_mail',
       comment: comment_text,
       notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
-      details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()						
+      details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()
     },
     function( response ) {
-      jQuery('#wpfp_spin_'+hash).hide();					
+      jQuery('#wpfp_spin_'+hash).hide();
       jQuery(button).removeAttr("disabled");
       jQuery(button).after(' Message sent');
     }	
