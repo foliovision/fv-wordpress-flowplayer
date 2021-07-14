@@ -301,6 +301,7 @@ if (!Date.now) {
       enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position'),
       progressEventsCount = 0,
       player_id = $root.data('player-id') ? $root.data('player-id') : false,
+      item_changed = false,
 
       // used to seek into the desired last stored position when he video has started
       seekIntoPosition = function (e, api) {
@@ -479,14 +480,20 @@ if (!Date.now) {
           }
         }
 
-        if ( item_index >= 0  &&  $root.data('item_changed') != 1 ) {
+        if ( item_index >= 0  && !item_changed ) {
           api.play(item_index);
-          $root.data('item_changed', 1);
+          item_changed = true;
         }
 
       };
 
     if( !enabled ) return;
+
+    // console.log('Temp cookie', getCookieKey(tempPlaylistsCookieKeyName));
+
+    if( getCookieKey(tempPlaylistsCookieKeyName) ) {
+      $root.removeData('playlist_start'); // prevent conflict with playlist start module
+    }
 
     // stop events
     api.bind('finish', removeVideoPosition);
@@ -498,7 +505,7 @@ if (!Date.now) {
     api.one( 'progress', seekIntoPosition);
 
     api.bind('unload', function() {
-      $root.removeData('item_changed');
+      item_changed = false;
       api.one('ready', restorePlaylistItem);
       api.video.index = 0;
     });
@@ -507,7 +514,6 @@ if (!Date.now) {
   
     jQuery(".fp-ui", root).on('click', function() {
       restorePlaylistItem();
-      $root.data('item_changed', 1);
     });
 
     /**
@@ -540,7 +546,7 @@ if (!Date.now) {
 
       var progress = 100 * position/duration;
       el.css('width',progress+'%');
-    }    
+    }
 
     // Check all the playlist items to see if any of them has the temporary "position" or "saw" cookie set
     // We do this as the position saving Ajax can no longer be synchronous and block the page reload
