@@ -920,6 +920,7 @@ jQuery(function() {
           $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="' + $parent_table.attr('data-index') + '"] td.fvp_item_caption'),
           value = $element.val(),
           update_fields = null,
+          $chapters_element = $playlist_row = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
           $caption_element = $parent_table.find('#fv_wp_flowplayer_field_caption'),
           $splash_element = $parent_table.find('#fv_wp_flowplayer_field_splash'),
           $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash'),
@@ -961,6 +962,7 @@ jQuery(function() {
         // only make an AJAX call if we found a matcher
         if (update_fields !== null) {
           if (update_fields.length) {
+
             // add spinners (loading indicators) to all inputs where data are being loaded
             var selector = '#fv_wp_flowplayer_field_src';
             if( update_fields.indexOf('caption') > 0 ) selector += ', #fv_wp_flowplayer_field_splash';
@@ -1004,7 +1006,8 @@ jQuery(function() {
                         case 'caption':
                           if (json_data.name) {
                             if (!$caption_element.val() || typeof($caption_element.data('fv_player_user_updated')) == 'undefined') {
-                              $caption_element.val(json_data.name);
+                              $caption_element.val(json_data.name).trigger('change');
+                              $caption_element.closest('tr').show();
 
                               // update caption in playlist table
                               if ($playlist_row.length) {
@@ -1017,7 +1020,17 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
-                              $splash_element.val(json_data.thumbnail);
+                              $splash_element.val(json_data.thumbnail).trigger('change');
+                              $splash_element.closest('tr').show();
+                            }
+                          }
+                          break;
+
+                        case 'chapters':
+                          if(json_data.chapters) {
+                            if( !$chapters_element.val() || typeof($chapters_element.data('fv_player_user_updated')) == 'undefined' ) {
+                              $chapters_element.val(json_data.chapters).trigger('change');
+                              $chapters_element.closest('tr').show();
                             }
                           }
                           break;
@@ -1801,10 +1814,20 @@ jQuery(function() {
         // TODO: Perhaps to ensure the temporary strings in editor are removed?
         //set_post_editor_content( editor_content.replace( fv_wp_flowplayer_re_insert, '' ) );
 
-        // trigger update for the FV Player Custom Videos/Meta Box
-        var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field');
-        field.trigger('fv_flowplayer_shortcode_insert');
+        // trigger update for the FV Player Custom Videos/Meta Box and Gutenberg field for preview refresh purposes
+        var
+          $editor_button_clicked = $(editor_button_clicked),
+          $fv_player_custom_meta_box = $editor_button_clicked.parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
+          $fv_player_gutenberg = $editor_button_clicked.parents('.fv-player-gutenberg');
 
+        if ( $fv_player_custom_meta_box.length ) {
+          $fv_player_custom_meta_box.trigger('fv_flowplayer_shortcode_insert');
+        }
+
+        if ( $fv_player_gutenberg.length ) {
+          var gutenbergTextarea = ($fv_player_gutenberg[0].tagName == 'TEXTAREA' ? $fv_player_gutenberg[0] : $fv_player_gutenberg.find('textarea').first()[0]);
+          fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
+        }
       } else if( current_player_db_id > -1 ) {
         var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
         if( playerRow.length == 0 ) {
