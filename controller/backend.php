@@ -455,6 +455,14 @@ function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
 add_action('admin_init', 'fv_player_lchecks');
 
 function fv_player_lchecks() {
+  // Do not run if it's WP Ajax
+  if( defined('DOING_AJAX') && DOING_AJAX ) {
+    // And it's not related to anythin FV
+    if( empty($_REQUEST['action']) || stripos($_REQUEST['action'], 'fv' ) === false ) {
+      return;
+    }
+  }
+
 	if( isset($_GET['fv-licensing']) && $_GET['fv-licensing'] == "check" ){
     delete_option("fv_wordpress_flowplayer_persistent_notices");
     
