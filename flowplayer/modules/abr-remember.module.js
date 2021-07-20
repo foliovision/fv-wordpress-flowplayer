@@ -27,7 +27,7 @@ flowplayer( function(api,root) {
       hlsjs.on(Hls.Events.KEY_LOADED, function (event) {
         if( event == 'hlsKeyLoaded' ) {
           setTimeout( function() {
-            if( api.loading || api.paused ) {
+            if( api.loading ) {
               console.log('FV Player: Safari stuck loading HLS, resuming playback...');
               api.resume();
             }
