@@ -112,6 +112,9 @@ function fv_player_videos_parse(args, root) {
       }
     });
   }
+
+  root.trigger( 'fv_player_videos_parse', videos );
+
   return videos;
 }
 
