@@ -21,6 +21,21 @@ flowplayer( function(api,root) {
         },0)
       }
     });
+
+    // Safari needs a little push with some of the encrypted streams to start playing
+    if( flowplayer.support.browser.safari ) {
+      hlsjs.on(Hls.Events.KEY_LOADED, function (event) {
+        if( event == 'hlsKeyLoaded' ) {
+          setTimeout( function() {
+            if( api.loading || api.paused ) {
+              console.log('FV Player: Safari stuck loading HLS, resuming playback...');
+              api.resume();
+            }
+          }, 0 );
+        }
+      });
+    }
+
     // do we force HD playback?
     var pick_quality = flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ? 720 : false;
     // or did we disable it for this player?
@@ -111,7 +126,7 @@ flowplayer( function(api,root) {
     } else if(api.engine.engineName == 'hlsjs-lite' ) {
 
       // with HLS.js the stream might not be playing even after receiving the ready event
-      // so we need to indicate it's loading
+      // like when the decryption key is loading, so we need to indicate it's loading
       // TODO: What about fixing that ready event instead? Core Flowplayer 7.2.8?
       root.addClass('is-loading');
       api.loading = true;
@@ -122,7 +137,7 @@ flowplayer( function(api,root) {
           root.removeClass('is-loading');
           api.loading = false;
         }
-      })
+      });
 
       if( api.video.qualities && api.video.qualities.length > 2 ) {
         var qswitch = -1;
