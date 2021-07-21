@@ -57,8 +57,10 @@ flowplayer(function(player, root) {
     return player;
   };
 
-  var lastClick, common = flowplayer.common;
 
+  //  copy of original Flowplayer variable declarations and FS events
+  var lastClick, common = flowplayer.common;
+  
   player.on("mousedown.fs", function() {
     if (+new Date() - lastClick < 150 && player.ready) player.fullscreen();
     lastClick = +new Date();
@@ -86,7 +88,7 @@ flowplayer(function(player, root) {
       if (!FS_SUPPORT && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
       player.isFullscreen = false;
 
-      if( player.engine.engineName != 'fvyoutube' ){
+      if( player.engine.engineName != 'fvyoutube' ){ // youtube scroll ignore
         win.scrollTo(scrollX, scrollY);
       } 
    }).on('unload', function() {
