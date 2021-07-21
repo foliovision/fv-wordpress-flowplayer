@@ -359,6 +359,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.1.727 - 2021/07/21 =
+
+* Google Analytics - compatibility with Google Analytics 4
+* WordPress 5.8 - fix for the Widgets screen loading issues and FV Player widgets preview
+* Bugfix - Android landscape fullscreen lock not working with HLS
+* Bugfix - popup notice on 7.5 upgrade not going away when dismissed - possibly due to object cache issues, but we added a browser cookie to prevent it
+* Bugfix - some encrypted HLS streams failing to start properly in Safari
+
 = 7.5.0.727 - 2021/06/21 =
 
 * New feature - Daily video play stats, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Video Stats
