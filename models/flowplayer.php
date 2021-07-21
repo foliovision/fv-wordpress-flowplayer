@@ -921,9 +921,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sHTML .= wpautop($sSynopsis);
         }
       }
+
+      if( !empty($aArgs['synopsis']) ) {
+        // preserver semicolons
+        $synopsis_items = str_replace( '\;', '{fv-player-semicolon}', $aArgs['synopsis'] );
+
+        $synopsis_items = explode( ';', $synopsis_items );
+        if( !empty($synopsis_items[$index]) ) {
+          // put back semicolons
+          $sHTML .= wpautop( str_replace( '{fv-player-semicolon}', ';', $synopsis_items[$index] ) );
+        }
+      }
       
       if( $tDuration ) {
-        $sHTML .= '<i class="dur">('.ceil($tDuration/60).'m)</i>';
+        $sHTML .= '<i class="dur">('.ceil( flowplayer::hms_to_seconds($tDuration)/60).'m)</i>';
       }
       
       $sHTML .= "</div>";
