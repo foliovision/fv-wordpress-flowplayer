@@ -3,7 +3,7 @@
  */
 flowplayer(function(player, root) {
   // if the fullscreen is not supported do not alter the Flowplayer behavior in any way
-  if (!flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function') {
+  if ( !flowplayer.conf.fv_fullscreen && !flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function') {
     return;
   }
 
@@ -57,17 +57,45 @@ flowplayer(function(player, root) {
     return player;
   };
 
-  player.on('fullscreen-exit', function() {
-    if( player.engine.engineName == 'fvyoutube' ) return; // prevent conflict with youtube.module.js in pro plugin
-    win.scrollTo(scrollX, scrollY);    
+  var lastClick, common = flowplayer.common;
 
-    /*
-    * Core Flowplayer already does try to restore the scroll, but since it has no idea where
-    * the scroll position was here's where we fix it. This is required when using
-    * CSS scroll-behavior: smooth; in Chrome
-    */
-    jQuery(window).one('scroll', function() {
-      window.scrollTo(scrollX, scrollY);
-    });
+  player.on("mousedown.fs", function() {
+    if (+new Date() - lastClick < 150 && player.ready) player.fullscreen();
+    lastClick = +new Date();
   });
+
+  player.on(FS_ENTER, function() {
+      common.addClass(root, 'is-fullscreen');
+      common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
+      common.removeClass(root, 'fp-minimal');
+
+      if (!FS_SUPPORT) common.css(root, 'position', 'fixed');
+      player.isFullscreen = true;
+
+   }).on(FS_EXIT, function() {
+     debugger;
+      var oldOpacity;
+      common.toggleClass(root, 'fp-minimal', common.hasClass(root, 'fp-minimal-fullscreen'));
+      common.removeClass(root, 'fp-minimal-fullscreen');
+      if (!FS_SUPPORT && player.engine === "html5") {
+        oldOpacity = root.css('opacity') || '';
+        common.css(root, 'opacity', 0);
+      }
+      if (!FS_SUPPORT) common.css(root, 'position', '');
+
+      common.removeClass(root, 'is-fullscreen');
+      if (!FS_SUPPORT && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
+      player.isFullscreen = false;
+
+      if( player.engine.engineName != 'fvyoutube' ){
+        win.scrollTo(scrollX, scrollY);
+      } 
+   }).on('unload', function() {
+     if (player.isFullscreen) player.fullscreen();
+   });
+
+   player.on('shutdown', function() {
+     FULL_PLAYER = null;
+     common.removeNode(wrapper);
+   });
 });

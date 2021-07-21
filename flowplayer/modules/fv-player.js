@@ -184,7 +184,7 @@ function fv_player_preload() {
       root.find('.fp-volume').hide();
     }
     
-    if( root.data('fullscreen') == false ) {
+    if( root.data('fv_fullscreen') == false ) {
       root.find('.fp-fullscreen').remove();
     }
 
