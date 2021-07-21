@@ -73,7 +73,6 @@ flowplayer(function(player, root) {
       player.isFullscreen = true;
 
    }).on(FS_EXIT, function() {
-     debugger;
       var oldOpacity;
       common.toggleClass(root, 'fp-minimal', common.hasClass(root, 'fp-minimal-fullscreen'));
       common.removeClass(root, 'fp-minimal-fullscreen');

@@ -6,7 +6,7 @@ flowplayer(function(api, root) {
     playlist_with_fullscreen =  playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid');
     fsforce = root.data('fsforce') == true; // used for players which load using Ajax after click and then they need fullscreen
   
-  if( root.data('fullscreen') == false ) {
+  if( root.data('fv_fullscreen') == false ) {
     return;
   }
     
