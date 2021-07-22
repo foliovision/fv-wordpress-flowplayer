@@ -921,9 +921,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sHTML .= wpautop($sSynopsis);
         }
       }
+
+      if( !empty($aArgs['synopsis']) ) {
+        // preserver semicolons
+        $synopsis_items = str_replace( '\;', '{fv-player-semicolon}', $aArgs['synopsis'] );
+
+        $synopsis_items = explode( ';', $synopsis_items );
+        if( !empty($synopsis_items[$index]) ) {
+          // put back semicolons
+          $sHTML .= wpautop( str_replace( '{fv-player-semicolon}', ';', $synopsis_items[$index] ) );
+        }
+      }
       
       if( $tDuration ) {
-        $sHTML .= '<i class="dur">('.ceil($tDuration/60).'m)</i>';
+        $sHTML .= '<i class="dur">('.ceil( flowplayer::hms_to_seconds($tDuration)/60).'m)</i>';
       }
       
       $sHTML .= "</div>";
@@ -1295,7 +1306,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   function css_enqueue( $force = false ) {
     
-    if( is_admin() && !did_action('admin_footer') && !did_action('elementor/editor/wp_head') && ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) ) {
+    if(
+      is_admin() && // do not load in wp-admin
+      !did_action('admin_footer') && // if the footer was not yet shown
+      !did_action('elementor/editor/wp_head') && // and if Elementor head was not yet loaded
+      ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) && // and unless it's the FV Player player
+      !empty($_GET['legacy-widget-preview[idBase]']) // and unless it's the legacy widget preview of Gutenberg-powered WordPress 5.8 widgets
+    ) {
       return;
     }
     
