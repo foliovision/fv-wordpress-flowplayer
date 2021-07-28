@@ -116,14 +116,11 @@ flowplayer(function(api, root) {
     api.on('fullscreen', function(a,api) {
       // If the video dimensions are not known assume it's wide and landscape mode should be used
       // TODO: Instead fix HLS.js engine to report video width and height properly
-      if( typeof api.video.width == ' undefined' && typeof api.video.height == 'undefined' ) { 
-        screen.orientation.lock("landscape-primary"); // if no width or height then force landscape
-      } else if( api.video.width == 0 && api.video.height == 0 || api.video.width > api.video.height ) {
-        screen.orientation.lock("landscape-primary");
-      } else {
+      if( (typeof api.video.width != ' undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 || api.video.width < api.video.height) ) { 
         screen.orientation.lock("portrait-primary");
+      } else {
+        screen.orientation.lock("landscape-primary");
       }
-
     })
   }
   
