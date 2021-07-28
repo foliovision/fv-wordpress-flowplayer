@@ -753,6 +753,18 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
       $version = $FV_Player_Alternative_Sources->version;
     }
     
+  } else if( $extension == 'ppv' ) {
+    global $FV_Player_PayPerView;
+    if( isset($FV_Player_PayPerView) && !empty($FV_Player_PayPerView->version) ) {
+      $version = $FV_Player_PayPerView->version;
+    }
+
+  } else if( $extension == 'ppv-woocommerce' ) {
+    global $FV_Player_PayPerView_WooCommerce;
+    if( isset($FV_Player_PayPerView_WooCommerce) && !empty($FV_Player_PayPerView_WooCommerce->version) ) {
+      $version = $FV_Player_PayPerView_WooCommerce->version;
+    }
+    
   }
   
   $version = str_replace('.beta','',$version);
