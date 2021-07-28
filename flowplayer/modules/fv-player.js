@@ -185,10 +185,6 @@ function fv_player_preload() {
       root.find('.fp-volume').hide();
     }
     
-    if( root.data('fv_fullscreen') == false ) {
-      root.find('.fp-fullscreen').remove();
-    }
-
     if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
       root.find('.fp-volume').remove();
     }

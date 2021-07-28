@@ -533,8 +533,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-rtmp'] = $rtmp_server;
         }
 
-        if( !$this->_get_option('allowfullscreen') || isset($this->aCurArgs['fv_fullscreen']) && $this->aCurArgs['fv_fullscreen'] == 'false' ) {
-          $attributes['data-fv_fullscreen'] = 'false';
+        if( !$this->_get_option('allowfullscreen') || isset($this->aCurArgs['fullscreen']) && $this->aCurArgs['fullscreen'] == 'false' ) {
+          $attributes['data-fullscreen'] = 'false';
         }
         
         if( !$bIsAudio && stripos($width,'%') == false && intval($width) > 0 && stripos($height,'%') == false && intval($height) > 0 ) {

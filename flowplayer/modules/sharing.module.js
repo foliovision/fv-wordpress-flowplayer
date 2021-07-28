@@ -68,8 +68,12 @@ flowplayer( function(api,root) {
     root.addClass('no-brand');
   });
 
+  api.one('ready', function() {
+    root.find('.fp-fullscreen').clone().appendTo( root.find('.fp-controls') );
+  });
+
   api.bind("ready", function (e, api, video) {
-    setTimeout( function () {      
+    setTimeout( function () {
       jQuery('.fvp-share-bar',root).show();
       
       jQuery('.fv-player-buttons-wrap',root).appendTo(jQuery('.fv-player-buttons-wrap',root).parent().find('.fp-ui'));
