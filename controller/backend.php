@@ -822,3 +822,35 @@ function fv_player_pro_version_check() {
   <?php
   endif;
 }
+
+add_action( 'admin_notices', 'fv_player_pay_per_view_version_check' );
+
+function fv_player_pay_per_view_version_check() {
+  $version = '7.5.2.727';
+  
+  global $FV_Player_PayPerView;
+  
+  if( !empty($FV_Player_PayPerView) && !fv_player_extension_version_is_min($version,'ppv') ) :
+  ?>
+  <div class="error">
+      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pay Per View version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+  </div>
+  <?php
+  endif;
+}
+
+add_action( 'admin_notices', 'fv_player_pay_per_view_woocommerce_version_check' );
+
+function fv_player_pay_per_view_woocommerce_version_check() {
+  $version = '7.5.2.727';
+  
+  global $FV_Player_PayPerView_WooCommerce;
+  
+  if( !empty($FV_Player_PayPerView_WooCommerce) && !fv_player_extension_version_is_min($version,'ppv-woocommerce') ) :
+  ?>
+  <div class="error">
+      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+  </div>
+  <?php
+  endif;
+}
