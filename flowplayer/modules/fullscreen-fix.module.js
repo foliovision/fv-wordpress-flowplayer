@@ -3,13 +3,11 @@
  */
 flowplayer(function(player, root) {
   // if the fullscreen is not supported do not alter the Flowplayer behavior in any way
-  if ( !flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function') {
+  if ( jQuery(root).data('fv_fullscreen') != false && !flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function' ) {
     return;
   }
 
-  if(flowplayer.conf.fv_fullscreen) {
-    jQuery(root).find('.fp-controls').append('<a class="fp-fullscreen fp-icon"></a>');
-  }
+  jQuery(root).find('.fp-controls').append('<a class="fp-fullscreen fp-icon"></a>');
 
   //  copy of original Flowplayer variable declarations
   var FS_ENTER = "fullscreen",
@@ -57,7 +55,7 @@ flowplayer(function(player, root) {
     } else {
        player.trigger(flag ? FS_ENTER : FS_EXIT, [player]);
     }
-    
+
     return player;
   };
 
