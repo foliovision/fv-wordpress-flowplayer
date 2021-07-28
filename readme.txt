@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.2.727 - 2021/07/28 =
+
+* Bugfix - editor auto-save for FV Player Pay Per View and FV Player Pay Per View for WooCommerce
+
 = 7.5.1.727 - 2021/07/21 =
 
 * Google Analytics - compatibility with Google Analytics 4
