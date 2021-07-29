@@ -1231,6 +1231,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
+        $css .= $sel. " .fp-bar span.fv_fp_timeline_chapter{ background: ".$sTimeline." !important; }";
       }
       
       $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
