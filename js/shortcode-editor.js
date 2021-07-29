@@ -3153,10 +3153,16 @@ jQuery(function() {
         var video_preview = get_field("splash",current).val();
         playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? '<img src="' + video_preview + '" />':'');
 
-        var video_name = decodeURIComponent(currentUrl).split("/").pop();
+        var decoded_arr = decodeURIComponent(currentUrl).split("/");
+        decoded_arr = decoded_arr.filter(function(e){return e}); // remove empty values
+    
+        var video_name = decoded_arr.pop();
         video_name = video_name.replace(/\+/g,' ');
         video_name = video_name.replace(/watch\?v=/,'YouTube: ');
-
+    
+        if( decoded_arr.includes('www.bitchute.com') ) {
+          video_name ='Bitchute: ' + video_name;
+        }
         playlist_row.find('.fvp_item_video-filename').html( video_name );
 
         var playlist_row_div = playlist_row.find('.fvp_item_caption div');

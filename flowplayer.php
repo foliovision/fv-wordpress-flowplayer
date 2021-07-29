@@ -67,8 +67,10 @@ include_once(dirname( __FILE__ ) . '/models/db-video-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db-player-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db.php');
 
-include_once(dirname( __FILE__ ).'/models/cdn.class.php');
-include_once(dirname( __FILE__ ).'/models/digitalocean-spaces.class.php');
+include_once(dirname( __FILE__ ) . '/models/cdn.class.php');
+include_once(dirname( __FILE__ ) . '/models/digitalocean-spaces.class.php');
+
+include_once(dirname( __FILE__ ) . '/models/bitchute.php');
 
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();

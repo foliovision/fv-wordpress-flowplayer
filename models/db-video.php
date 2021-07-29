@@ -64,7 +64,12 @@ class FV_Player_Db_Video {
     $src = $this->getSrc();
     $arr = explode('/', $src);
     $caption = end($arr);
-    
+    $arr = array_filter( explode('/', $src));
+
+    if( in_array('www.bitchute.com', $arr) ) {
+      $caption = "Bitchute: ".$caption;
+    }
+
     if( $caption == 'index.m3u8' ) {
       unset($arr[count($arr)-1]);
       $caption = end($arr);
