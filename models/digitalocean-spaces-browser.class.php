@@ -11,10 +11,10 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
       global $fv_wp_flowplayer_ver;
 
       $endpoint = $fv_fp->_get_option(array('digitalocean_spaces','endpoint'));
+      $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
       if ( strpos( $endpoint, 'http://') === false && strpos( $endpoint, 'https://') === false ) {
-        $endpoint = 'https://' . $endpoint;
+        $endpoint = 'https://' . $bucket . '.' . $endpoint . ':443/';
       }
-
       wp_enqueue_script( 'fv-player-dos-browser', flowplayer::get_plugin_url().'/js/digitalocean-spaces-browser.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
       wp_localize_script( 'fv-player-dos-browser', 'fv_player_dos_browser', array(
         'dos_browser_endpoint' => $endpoint,
@@ -52,6 +52,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
       'conditions' => array(
         array('bucket' => $bucket),
         array('acl' => 'public-read'),
+        array('starts-with', '$utf8', ''),
         array('starts-with', '$key', ''),
         array('starts-with', '$Content-Type', ''), // accept all files
         // Plupload internally adds name field, so we need to mention it here
