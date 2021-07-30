@@ -17,6 +17,7 @@ flowplayer( function(api,root) {
   //if( !playlist.hasClass('fp-playlist-season') ) return; // todo: what about mobile? Should we always allow this?
   
   var playlist_button = jQuery('<strong class="fv-fp-list">Item 1.</strong>'),
+      playlist_button_name = jQuery('<strong class="fv-fp-list-name">Item 1.</strong>'),
     playlist_menu = jQuery('<div class="fp-menu fv-fp-list-menu"></div>').insertAfter( root.find('.fp-controls') );
   
   var i =0 , item_index = [];
@@ -28,7 +29,7 @@ flowplayer( function(api,root) {
     }
   });
   
-  playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
+  function playlist_button_click(e) {
     e.preventDefault();
     e.stopPropagation();
     
@@ -41,8 +42,11 @@ flowplayer( function(api,root) {
       root.trigger('click');
       api.showMenu(playlist_menu[0]);
     }
-  });
-  
+  }
+
+  playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', playlist_button_click);
+  playlist_button_name.insertAfter(playlist_button);
+
   jQuery('a',playlist_menu).on('click', function() {
     if(typeof(api.conf.playlist[jQuery(this).data('index') - 1]) != 'undefined' && typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined' ) { // check if FV Player Pro Video Ad is in front of video - act as if clicked on Ad
       api.play(jQuery(this).data('index') - 1);
@@ -59,6 +63,7 @@ flowplayer( function(api,root) {
     label = label.replace( /%d/, item_index.indexOf(api.video.index) + 1 );
     label = label.replace( /%s/, parse_title( thumb.find('h4') ) );
     playlist_button.html(label);
+    playlist_button_name.html( video.fv_title + ' - ' + video.index  );
   });
   
   function parse_title(el) {

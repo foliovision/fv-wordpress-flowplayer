@@ -2199,6 +2199,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-tiny .fv-fp-list {display: none}
 .flowplayer .fv-fp-list-menu {width: auto; top:auto}
 .flowplayer .fv-fp-list-menu a {text-align:left}
+.flowplayer .fv-fp-list-name {display: none}
 
 .flowplayer .fp-ui .invisible {
   visibility: hidden;
