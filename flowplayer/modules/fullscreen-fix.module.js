@@ -3,12 +3,14 @@
  */
 flowplayer(function(player, root) {
   // if the fullscreen is not supported do not alter the Flowplayer behavior in any way
-  if ( jQuery(root).data('fullscreen') != false && !flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function' ) {
+  if ( jQuery(root).data('fullscreen') == false || (!flowplayer.support.fullscreen && player.conf.native_fullscreen && typeof flowplayer.common.createElement('video').webkitEnterFullScreen === 'function' ) ) {
     return;
   }
 
   player.on("ready", function (e,api,video) {
-    jQuery(root).find('.fp-header').append('<a class="fp-fullscreen fp-icon"></a>');
+    if( jQuery(root).find('.fp-fullscreen').length == 0 ) {
+      jQuery(root).find('.fp-header').append('<a class="fp-fullscreen fp-icon"></a>');
+    }
   });
 
   //  copy of original Flowplayer variable declarations
