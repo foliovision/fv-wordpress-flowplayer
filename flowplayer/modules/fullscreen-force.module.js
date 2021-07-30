@@ -112,16 +112,24 @@ flowplayer(function(api, root) {
     }
   }
   
-  if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
+  if( flowplayer.support.android && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
-      // If the video dimensions are not known assume it's wide and landscape mode should be used
-      // TODO: Instead fix HLS.js engine to report video width and height properly
-      if( (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height) ) { 
+      if( is_portrait_video(api) ) { 
         screen.orientation.lock("portrait-primary");
-      } else { // if no height or width then force landscape
+      } else {
         screen.orientation.lock("landscape-primary");
       }
-    })
+    });
+  }
+  /**
+   * Does the video has portrait orientation? = Is the height is larger than width?
+   * @param {object} api - Flowplayer object
+   * @return {bool} True if portrait, false if landscape
+   */
+  function is_portrait_video( api ) {
+    // If the video dimensions are not known assume it's wide and landscape mode should be used
+    // TODO: Instead fix HLS.js engine to report video width and height properly
+    return (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height);
   }
   
 });
