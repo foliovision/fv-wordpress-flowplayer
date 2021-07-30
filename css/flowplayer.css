@@ -2236,3 +2236,25 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   50% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+@media (orientation: portrait) {
+  .flowplayer.is-fullscreen.ios-landscape-video .fp-player {
+    transform: rotate( 90deg );
+    width: 100vh;
+    height: 100vw;
+    transform-origin: left top;
+    left: 100%;
+  }
+  .flowplayer.is-fullscreen.ios-landscape-video .fp-timeline {
+    display: none;
+  }
+
+  body.ios-has-location-bar .flowplayer.is-fullscreen.ios-landscape-video .fp-controls {
+    width: calc( 100% - 75px );
+  }
+  body.ios-has-location-bar .flowplayer.is-fullscreen.ios-landscape-video .fp-header .fp-icon {
+    left: -75px;
+    position: relative;
+  }
+
+}

@@ -12,7 +12,8 @@ flowplayer(function(api, root) {
     buttons_count = 0;
 
   function check_size() {
-    var width = player.width() || root.width();
+    // We might need to check the height if the player has been rotated to show in landscape orientation on iPhone
+    var width = root.hasClass('ios-landscape-video') ? player.height() || root.height() : player.width() || root.width();
     if(width > 900) {
       jQuery('.fp-subtitle',root).addClass('is-wide');
     } else {

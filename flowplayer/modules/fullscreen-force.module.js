@@ -121,6 +121,35 @@ flowplayer(function(api, root) {
       }
     });
   }
+  
+  // If "Force landscape orientation in fullscreen" is on
+  // We add a special class for iPhone, telling the CSS to rotate the player by 90 degrees
+  if( flowplayer.conf.mobile_ios_landscape_fullscreen && flowplayer.support.iOS && !flowplayer.support.fullscreen ) {
+    api.on('fullscreen', function(a,api) {
+      if( is_portrait_video(api) ) { 
+
+      } else {
+        root.addClass('ios-landscape-video')
+      }
+    }).on('fullscreen-exit', function(a,api) {
+      root.removeClass('ios-landscape-video')
+    });
+
+    // We hook an event to detect the location bar appearance
+    // Unfortunately using "safe-area-inset-top" doesn't work: https://stackoverflow.com/questions/63531281/detect-whether-an-ios-device-has-a-home-bar-using-js-or-css
+    if( !flowplayer.conf.mobile_ios_landscape_fullscreen_hooked ) {
+      flowplayer.conf.mobile_ios_landscape_fullscreen_hooked = true;
+
+      var body = jQuery('body');
+
+      window.addEventListener('resize', function() {
+        // using 0.6 works on 375x628 window size
+        body.toggleClass( 'ios-has-location-bar', window.innerWidth / window.innerHeight > 0.6 );
+      });
+    }
+
+  }
+
   /**
    * Does the video has portrait orientation? = Is the height is larger than width?
    * @param {object} api - Flowplayer object
