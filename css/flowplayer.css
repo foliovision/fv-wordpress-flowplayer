@@ -2248,12 +2248,22 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   .flowplayer.is-fullscreen.ios-landscape-video .fp-timeline {
     display: none;
   }
-
+}
+@media (orientation: portrait) and (max-width: 375px) {
   body.ios-has-location-bar .flowplayer.is-fullscreen.ios-landscape-video .fp-controls {
     width: calc( 100% - 75px );
   }
   body.ios-has-location-bar .flowplayer.is-fullscreen.ios-landscape-video .fp-header .fp-icon {
     left: -75px;
+    position: relative;
+  }
+}
+@media (orientation: portrait) and (max-width: 414px) {
+  body.ios-has-location-bar .flowplayer.is-fullscreen.ios-landscape-video .fp-controls {
+    width: calc( 100% - 114px );
+  }
+  body.ios-has-location-bar .flowplayer.is-fullscreen.ios-landscape-video .fp-header .fp-icon {
+    left: -114px;
     position: relative;
   }
 

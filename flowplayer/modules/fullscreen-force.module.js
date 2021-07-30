@@ -130,6 +130,7 @@ flowplayer(function(api, root) {
 
       } else {
         root.addClass('ios-landscape-video')
+        check_for_location_bar();
       }
     }).on('fullscreen-exit', function(a,api) {
       root.removeClass('ios-landscape-video')
@@ -142,10 +143,7 @@ flowplayer(function(api, root) {
 
       var body = jQuery('body');
 
-      window.addEventListener('resize', function() {
-        // using 0.6 works on 375x628 window size
-        body.toggleClass( 'ios-has-location-bar', window.innerWidth / window.innerHeight > 0.6 );
-      });
+      window.addEventListener('resize', check_for_location_bar );
     }
 
   }
@@ -159,6 +157,12 @@ flowplayer(function(api, root) {
     // If the video dimensions are not known assume it's wide and landscape mode should be used
     // TODO: Instead fix HLS.js engine to report video width and height properly
     return (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height);
+  }
+
+  function check_for_location_bar() {
+    // using 0.6 works on 375x628 window size, 0.575 on bigger iPhones, like 414x719px ones
+    var magic_number = window.innerWidth <= 375 ? 0.6 : 0.575;
+    body.toggleClass( 'ios-has-location-bar', window.innerWidth / window.innerHeight > magic_number );
   }
   
 });
