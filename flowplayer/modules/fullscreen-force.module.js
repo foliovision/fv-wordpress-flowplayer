@@ -121,6 +121,20 @@ flowplayer(function(api, root) {
       }
     });
   }
+
+  // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
+  if( flowplayer.support.iOS && !flowplayer.support.fullscreen ) {
+    api.on('fullscreen', show_iphone_notice );
+    window.addEventListener('resize', show_iphone_notice );
+    window.addEventListener('resize', function() {
+      // No location bar? We are all good!
+      if( !check_for_location_bar() ) {
+        clearTimeout(api.show_iphone_notice_timeout);
+        api.trigger('resize-good');
+      }
+    } );
+  }
+
   /**
    * Does the video has portrait orientation? = Is the height is larger than width?
    * @param {object} api - Flowplayer object
@@ -130,6 +144,30 @@ flowplayer(function(api, root) {
     // If the video dimensions are not known assume it's wide and landscape mode should be used
     // TODO: Instead fix HLS.js engine to report video width and height properly
     return (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height);
+  }
+
+  function check_for_location_bar() {
+    var is_portrait = window.innerWidth < window.innerHeight,
+      magic_number = is_portrait ?
+        // using 0.6 works on 375x628 window size, 0.575 on bigger iPhones, like 414x719px ones
+        ( window.innerWidth <= 375 ? 0.6 : 0.575 ) :
+        ( window.innerWidth <= 667 ? 2 : 2.4 ),
+      has = window.innerWidth / window.innerHeight > magic_number;
+
+    return has;
+  }
+
+  function show_iphone_notice() {
+    if( api.isFullscreen && window.innerWidth > window.innerHeight && check_for_location_bar() ) {
+      // Show the notice until the location bar disappears
+      fv_player_notice( root, fv_flowplayer_translations.iphone_swipe_up_location_bar, 'resize-good' );
+
+      // Hide the notice after 5 seconds
+      api.show_iphone_notice_timeout = setTimeout( function() {
+        console.log('timeout');
+        api.trigger('resize-good');
+      }, 5000 );
+    }
   }
   
 });

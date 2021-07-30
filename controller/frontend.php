@@ -107,7 +107,8 @@ function fv_flowplayer_get_js_translations() {
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
   'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
   'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
-  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer')
+  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
+  'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
 );
 
   return $aStrings;
