@@ -47,7 +47,7 @@ flowplayer( function(api,root) {
   }
 
   playlist_button.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', playlist_button_click);
-  playlist_button_name.insertAfter(playlist_button);
+  playlist_button_name.insertAfter(playlist_button).on('click', playlist_button_click);
 
   jQuery('a',playlist_menu).on('click', function() {
     if(typeof(api.conf.playlist[jQuery(this).data('index') - 1]) != 'undefined' && typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined' ) { // check if FV Player Pro Video Ad is in front of video - act as if clicked on Ad
