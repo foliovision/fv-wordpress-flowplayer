@@ -2195,11 +2195,19 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   color: #000;
 }
 
-.flowplayer.is-small .fv-fp-list {display: none}
-.flowplayer.is-tiny .fv-fp-list {display: none}
+.flowplayer.is-small .fv-fp-list, .flowplayer.is-tiny .fv-fp-list {display: none}
 .flowplayer .fv-fp-list-menu {width: auto; top:auto}
 .flowplayer .fv-fp-list-menu a {text-align:left}
 .flowplayer .fv-fp-list-name {display: none}
+
+.flowplayer .fv-fp-list-name {
+  display: none;
+  width: 8em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.flowplayer.is-small .fv-fp-list-name, .flowplayer.is-tiny .fv-fp-list-name {display: none}
 
 .flowplayer .fp-ui .invisible {
   visibility: hidden;
