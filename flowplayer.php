@@ -59,7 +59,6 @@ include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
-include_once(dirname( __FILE__ ) . '/models/stats.php');
 
 include_once(dirname( __FILE__ ) . '/models/db-player.php');
 include_once(dirname( __FILE__ ) . '/models/db-video.php');
@@ -100,3 +99,5 @@ include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
 
 include_once(dirname( __FILE__ ).'/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ).'/models/migration-wizard.php');
+
+include_once(dirname( __FILE__ ) . '/models/stats.php');
