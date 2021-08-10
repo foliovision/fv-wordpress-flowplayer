@@ -362,6 +362,9 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 = 7.5.3.727 - 2021/08/10 =
 
 * Security - fix for XSS vulnerability in stats screen
+* Bugfix - Force landscape orientation in fullscreen setting fix
+* Bugfix - bad scroll position after leaving fullscreen
+* Bugfix - Sticky player code should not run on mobile
 
 = 7.5.2.727 - 2021/07/28 =
 
