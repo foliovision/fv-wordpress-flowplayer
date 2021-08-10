@@ -811,7 +811,7 @@ function fv_player_pro_version_check() {
 add_action( 'admin_notices', 'fv_player_pay_per_view_version_check' );
 
 function fv_player_pay_per_view_version_check() {
-  $version = '7.5.2.727';
+  $version = '7.5.3.727';
   
   global $FV_Player_PayPerView;
   
@@ -827,7 +827,7 @@ function fv_player_pay_per_view_version_check() {
 add_action( 'admin_notices', 'fv_player_pay_per_view_woocommerce_version_check' );
 
 function fv_player_pay_per_view_woocommerce_version_check() {
-  $version = '7.5.2.727';
+  $version = '7.5.3.727';
   
   global $FV_Player_PayPerView_WooCommerce;
   
