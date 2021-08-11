@@ -115,13 +115,20 @@ class FV_Player_Checker {
     if( !empty($meta) ) {
       extract( $meta, EXTR_SKIP );
     }
-    
-    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-      $URLs = json_decode( stripslashes( trim($_POST['media']) ));
+
+    $media_check = false;
+
+    if( isset($_POST['media']) ) {
+      $media_check = stripslashes( trim($_POST['media']));
+    }
+
+    if( defined('DOING_AJAX') && DOING_AJAX && $media_check && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
+      $URLs = json_decode( $media_check );
     }
 
     if( isset($URLs) ) {
       $all_sources = $URLs;
+      $hash = false;
 
       foreach( $all_sources AS $source ) {
         if( preg_match( '!^rtmp://!', $source, $match ) ) {
@@ -129,10 +136,14 @@ class FV_Player_Checker {
         } else if( !isset($media) && !preg_match( '!\.(m3u8ALLOW|m3uALLOW|avi)$!', $source) ) {
           $media = $source;
         }
-      }    
-              
+      }
+
+      if( isset($_POST['hash']) ) {
+        $hash = htmlspecialchars( $_POST['hash'] );
+      }
+
       //$random = rand( 0, 10000 );
-      $random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
+      $random =  $hash ? trim($hash) : false;
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
