@@ -580,16 +580,8 @@ function fv_player_playlist_active(playlist,item) {
 }
 
 
-jQuery( function() {
-  jQuery('.flowplayer').each( function() {
-    flowplayer.bean.off(jQuery(this)[0],'contextmenu');
-  });
-} );
-
 var fv_fp_date = new Date();
 var fv_fp_utime = fv_fp_date.getTime();
-
-
 
 
 /* *
