@@ -116,19 +116,12 @@ class FV_Player_Checker {
       extract( $meta, EXTR_SKIP );
     }
 
-    $media_check = false;
-
-    if( isset($_POST['media']) ) {
-      $media_check = stripslashes( trim($_POST['media']));
-    }
-
-    if( defined('DOING_AJAX') && DOING_AJAX && $media_check && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-      $URLs = json_decode( $media_check );
+    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) { 
+      $URLs = json_decode( stripslashes( trim( wp_strip_all_tags( $_POST['media'] ) ) ) );
     }
 
     if( isset($URLs) ) {
       $all_sources = $URLs;
-      $hash = false;
 
       foreach( $all_sources AS $source ) {
         if( preg_match( '!^rtmp://!', $source, $match ) ) {
@@ -138,12 +131,8 @@ class FV_Player_Checker {
         }
       }
 
-      if( isset($_POST['hash']) ) {
-        $hash = htmlspecialchars( $_POST['hash'] );
-      }
-
       //$random = rand( 0, 10000 );
-      $random =  $hash ? trim($hash) : false;
+      $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( $_POST['hash'] ) ) : false;
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
