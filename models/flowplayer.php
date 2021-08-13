@@ -117,8 +117,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $vid = isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'] : $aURL['scheme'].'://'.$aURL['host'];
       if (dirname($_SERVER['PHP_SELF']) != '/') 
         $vid .= dirname($_SERVER['PHP_SELF']);
+      define('VIDEO_PATH', $vid.VIDEO_DIR);
+    }
+
+    if( !defined('VIDEO_DIR') ) {
       define('VIDEO_DIR', '/videos/');
-      define('VIDEO_PATH', $vid.VIDEO_DIR);  
     }
     
     

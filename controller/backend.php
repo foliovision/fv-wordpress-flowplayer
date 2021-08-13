@@ -249,7 +249,9 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
 
 function fv_wp_flowplayer_check_files() {
   global $wpdb;
-  define('VIDEO_DIR', '/videos/');
+  if( !defined('VIDEO_DIR') ) {
+    define('VIDEO_DIR', '/videos/');
+  }
   
   $bNotDone = false;
   $tStart = microtime(true);
