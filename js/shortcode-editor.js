@@ -1546,6 +1546,15 @@ jQuery(function() {
       // add playlist name
       data['fv_wp_flowplayer_field_player_name'] = jQuery('#fv_wp_flowplayer_field_player_name').val();
 
+      // add post ID manually here, as it's a special meta key
+      fv_flowplayer_insertUpdateOrDeletePlayerMeta({
+        data: data,
+        meta_section: 'player',
+        meta_key: 'post_id',
+        element: jQuery('#fv_wp_flowplayer_field_post_id')[0],
+        handle_delete: false
+      });
+
       // trigger meta data save events, so we get meta data from different
       // plugins included as we post
       jQuery(document).trigger('fv_flowplayer_player_meta_save', [data, $tabs]);
