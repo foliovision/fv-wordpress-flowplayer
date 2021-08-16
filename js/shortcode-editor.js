@@ -696,13 +696,6 @@ jQuery(function() {
 
         loading = false;
         is_unsaved = false;
-        
-        // not a good solution!
-        setTimeout( function() {
-          loading = false;
-          is_unsaved = false;
-          //is_draft_changed = false;
-        },100);
       });
 
       $doc.on('fv_flowplayer_player_editor_reset', function() {
@@ -3754,7 +3747,7 @@ jQuery(function() {
         }
 
         return false;
-      }
+      },
     };
 
   })(jQuery);
