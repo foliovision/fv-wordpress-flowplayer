@@ -107,7 +107,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
        //  pointer boxes
       parent::__construct();
     }
-    
+
+    if( !defined('VIDEO_DIR') ) {
+      define('VIDEO_DIR', '/videos/');
+    }
 
     // define needed constants
     if (!defined('FV_FP_RELATIVE_PATH')) {
@@ -120,11 +123,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       define('VIDEO_PATH', $vid.VIDEO_DIR);
     }
 
-    if( !defined('VIDEO_DIR') ) {
-      define('VIDEO_DIR', '/videos/');
-    }
-    
-    
     //add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
