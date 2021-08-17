@@ -1632,8 +1632,9 @@ class FV_Player_Db {
     if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', $post->post_content, $matches1 ) ) {
       $matches = array_merge( $matches, $matches1[1] );
     }
-    
-    if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
+
+    // The [fvplayer] shortcode might be stored in plain form, or with the quotes escaped like fvplayer id=\"56\"]
+    if( preg_match_all('~\[fvplayer.*?id=\\\?[\'"]([0-9,]+)~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
       $matches = array_merge( $matches, $matches2[1] );
     }
     
