@@ -24,6 +24,8 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_player_type', array($this, 'lightbox_enable'));
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos
+    add_filter('fv_flowplayer_args', array($this, 'lightbox_button_align')); // save align class for lightbox button
+
     add_filter('fv_flowplayer_args_pre', array($this, 'lightbox_playlist_style')); // force slider style for lightboxed playlist
 
     add_filter('fv_flowplayer_args', array($this, 'parse_html_caption'), 0);
@@ -258,17 +260,24 @@ class FV_Player_lightbox {
           $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
           $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
 
+          // new classes to be added
+          $add_classes = array( 'lightbox-starter' );
+
+          if( isset($args['lightbox_align']) ) {
+            $add_classes[] = 'align' . $args['lightbox_align'];
+          }
+
           $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $args['src']);
 
           // re-use the existing player HTML and add data-fancybox, data-options, new id and href
           $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
 
           // add all the new classes
-          $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter ', $html );
+          $html = str_replace( 'class="flowplayer ', 'class="flowplayer ' . implode(' ', $add_classes ). ' ' , $html );
 
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
-          
+
           // new ratio for responsiveness
           if( $iWidth > 0 ) {
             $ratio = $iHeight / $iWidth;
@@ -386,6 +395,14 @@ class FV_Player_lightbox {
   function disable_autoplay($aArgs) {
     if (isset($aArgs['lightbox'])) {
       $aArgs['autoplay'] = 'false';
+    }
+    return $aArgs;
+  }
+
+  function lightbox_button_align($aArgs) {
+    if (isset($aArgs['lightbox']) && !empty($aArgs['align']) ) {
+      $aArgs['lightbox_align'] = $aArgs['align']; // save align to new key
+      unset($aArgs['align']);
     }
     return $aArgs;
   }
