@@ -6,7 +6,7 @@ flowplayer( function(api,root) {
   
   if( !api.conf.fv_stats || !api.conf.fv_stats.enabled && ( !root.data('fv_stats') || root.data('fv_stats') == 'no' ) ) return;
   
-  api.on('ready', function(e,api) {
+  api.on('ready finish', function(e,api) { // first play and replay
     api.one('progress', function(e,api) {
       if( root.data('fv_stats_data') ) {
         try {
