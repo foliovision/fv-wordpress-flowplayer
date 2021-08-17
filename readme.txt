@@ -359,6 +359,23 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.4.727 - 2021/08/18 =
+
+* Bugfix - Embedded post ID missing when editing player with FV Player Pay Per View enabled
+* Bugfix - Lightbox should not use left/right align
+* Bugfix - Video Stats - clear scheduled job hook if setting not active
+
+= 7.5.3.727 - 2021/08/10 =
+
+* Security - fix for XSS vulnerability in stats screen
+* Bugfix - Force landscape orientation in fullscreen setting fix
+* Bugfix - bad scroll position after leaving fullscreen
+* Bugfix - Sticky player code should not run on mobile
+
+= 7.5.2.727 - 2021/07/28 =
+
+* Bugfix - editor auto-save for FV Player Pay Per View and FV Player Pay Per View for WooCommerce
+
 = 7.5.1.727 - 2021/07/21 =
 
 * Google Analytics - compatibility with Google Analytics 4

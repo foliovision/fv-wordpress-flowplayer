@@ -338,7 +338,7 @@ function flowplayer_prepare_scripts() {
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
     $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
     
-    $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
+    $aConf = array( 'fv_fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
     // Load base Flowplayer library
     $path = '/flowplayer/modules/flowplayer.min.js';
@@ -751,6 +751,18 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
     global $FV_Player_Alternative_Sources;
     if( isset($FV_Player_Alternative_Sources) && !empty($FV_Player_Alternative_Sources->version) ) {
       $version = $FV_Player_Alternative_Sources->version;
+    }
+    
+  } else if( $extension == 'ppv' ) {
+    global $FV_Player_PayPerView;
+    if( isset($FV_Player_PayPerView) && !empty($FV_Player_PayPerView->version) ) {
+      $version = $FV_Player_PayPerView->version;
+    }
+
+  } else if( $extension == 'ppv-woocommerce' ) {
+    global $FV_Player_PayPerView_WooCommerce;
+    if( isset($FV_Player_PayPerView_WooCommerce) && !empty($FV_Player_PayPerView_WooCommerce->version) ) {
+      $version = $FV_Player_PayPerView_WooCommerce->version;
     }
     
   }
