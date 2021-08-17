@@ -24,7 +24,7 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_player_type', array($this, 'lightbox_enable'));
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos
-    add_filter('fv_flowplayer_args', array($this, 'lightbox_button_align')); // save align class for lightbox button
+    add_filter('fv_flowplayer_args', array($this, 'lightbox_button_align')); // save align for lightbox button
 
     add_filter('fv_flowplayer_args_pre', array($this, 'lightbox_playlist_style')); // force slider style for lightboxed playlist
 
@@ -263,6 +263,7 @@ class FV_Player_lightbox {
           // new classes to be added
           $add_classes = array( 'lightbox-starter' );
 
+          // use the align for the lightbox button
           if( isset($args['lightbox_align']) ) {
             $add_classes[] = 'align' . $args['lightbox_align'];
           }
@@ -402,7 +403,7 @@ class FV_Player_lightbox {
   function lightbox_button_align($aArgs) {
     if (isset($aArgs['lightbox']) && !empty($aArgs['align']) ) {
       $aArgs['lightbox_align'] = $aArgs['align']; // save align to new key
-      unset($aArgs['align']);
+      unset($aArgs['align']); // do not allow the align for lightbox as it doesn't make sense
     }
     return $aArgs;
   }
