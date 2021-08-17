@@ -359,6 +359,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.4.727 - 2021/08/18 =
+
+* Bugfix - Embedded post ID missing when editing player with FV Player Pay Per View enabled
+* Bugfix - Lightbox should not use left/right align
+* Bugfix - Video Stats - clear scheduled job hook if setting not active
+
 = 7.5.3.727 - 2021/08/10 =
 
 * Security - fix for XSS vulnerability in stats screen
