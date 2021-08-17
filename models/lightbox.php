@@ -227,7 +227,10 @@ class FV_Player_lightbox {
           $sTitle = " title='".esc_attr($sTitle)."'";
         }
         
+        // The original player HTML markup becomes the hidden lightbox content
+        // We add the lightboxed class
         $lightbox = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
+        // ...and wrap it in hidden DIV
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
         
         if ( $this->is_text_lightbox($args) ) {
