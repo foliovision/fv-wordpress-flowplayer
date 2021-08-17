@@ -2,6 +2,7 @@
   require_once 'bootstrap.php';
 
   // setup
+  global $fv_fp;
   $invalid_player_id_value = '1 2'; // this should in reality be 12, but with an errorneous space, it becomes 1 2
 
   // execution

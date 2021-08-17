@@ -1,7 +1,8 @@
 <?php
   // configuration
   $config = array(
-    'existing_video_id' => 1
+    'existing_video_id' => 1,
+    'existing_player_id' => 1,
   );
 
   // initialization
