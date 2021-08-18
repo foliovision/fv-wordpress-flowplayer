@@ -101,7 +101,7 @@ Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?v
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
-    [fullscreen] => 1
+    [fv_fullscreen] => 1
     [swf] => fv-wordpress-flowplayer/flowplayer/flowplayer.swf?ver=1.2.3.4
     [swfHls] => fv-wordpress-flowplayer/flowplayer/flowplayerhls.swf?ver=1.2.3.4
     [speeds] => Array
