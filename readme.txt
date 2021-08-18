@@ -361,9 +361,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 7.5.4.727 - 2021/08/18 =
 
+* Bugfix - CSS - timeline dragging causing display issues on some websites with Gutenberg
 * Bugfix - Embedded post ID missing when editing player with FV Player Pay Per View enabled
 * Bugfix - Lightbox should not use left/right align
 * Bugfix - Video Stats - clear scheduled job hook if setting not active
+* Bugfix - Video Stats - do not track video recovery as another play
+* Bugfix - Video Stats - track video replay as another play
 
 = 7.5.3.727 - 2021/08/10 =
 
