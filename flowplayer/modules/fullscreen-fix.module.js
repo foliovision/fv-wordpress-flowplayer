@@ -18,13 +18,43 @@ flowplayer(function(player, root) {
     FS_SUPPORT = flowplayer.support.fullscreen,
     win = window,
     scrollX,
-    scrollY;
+    scrollY,
+    bean = flowplayer.bean;
 
   //  copy of original Flowplayer function with some subtle changes
   player.fullscreen = function(flag) {
-    var wrapper = jQuery(root).find('.fp-player')[0];
-    
     if (player.disabled) return;
+
+    var video = common.find('video.fp-engine', root)[0];
+    if( flowplayer.conf.native_fullscreen && video && flowplayer.support.iOS /* TODO: Also allow Android, it's missing controls on the video unfortunately */ ) {
+      // Taking from core Flowplayer /lib/ext/mobile.js
+      player.trigger( FS_ENTER, [player]);
+
+      bean.on(document, 'webkitfullscreenchange.nativefullscreen', function() {
+        if (document.webkitFullscreenElement !== video) return;
+        
+        bean.off(document, '.nativefullscreen');
+        bean.on(document, 'webkitfullscreenchange.nativefullscreen', function() {
+          if (document.webkitFullscreenElement) return;
+          
+          bean.off(document, '.nativefullscreen');
+          player.trigger( FS_EXIT, [player]);
+        });
+      });
+
+      video.webkitEnterFullScreen();
+
+      bean.one(video, 'webkitendfullscreen', function() {
+        bean.off(document, 'fullscreenchange.nativefullscreen');
+        player.trigger( FS_EXIT, [player]);
+        common.prop(video, 'controls', true);
+        common.prop(video, 'controls', false);
+      });
+
+      return;
+    }
+
+    var wrapper = jQuery(root).find('.fp-player')[0];
 
     if (flag === undefined) flag = !player.isFullscreen;
 
