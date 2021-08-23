@@ -773,25 +773,30 @@ CREATE TABLE " . self::$db_table_name . " (
     if (count($data)) {      
       foreach ($data as $meta_object) {
         // find the matching video meta row and if id is provided as well, match on that too
-        if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
-          $to_update = $meta_object->getId();
-          
+        if ( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
           // if there is no change, then do not run any update and instead return the row ID
-          if(
-            is_string($value) && strcmp($meta_object->getMetaValue(), $value) == 0 ||
-            !is_string($value) && $meta_object->getMetaValue() == $value
+          if (
+            is_string( $value ) && strcmp( $meta_object->getMetaValue(), $value ) == 0 ||
+           ! is_string( $value ) && $meta_object->getMetaValue() == $value
           ) {
-            return $to_update;
+            return $meta_object->getId();
+          } else {
+            $to_update = $meta_object->getId();
+            break;
           }
         }
       }
     }
 
     // if matching row has been found or if it was not found and no row id is provided (insert)
-    if( $to_update || !$to_update && !$id ) {
+    if ( $to_update || !$id ) {
       $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), self::$DB_Instance );
       if( $to_update ) $meta->link2db($to_update);
-      return $meta->save();        
+      $meta_id = $meta->save();
+      // update video meta data in this object
+      $this->meta_data = array( $meta );
+      $this->save();
+      return $meta_id;
     }
     
     return false;
