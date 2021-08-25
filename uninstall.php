@@ -5,9 +5,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 
 global $wpdb;
 
-$options = get_option('fvwpflowplayer');
+$options = get_option( 'fvwpflowplayer', array() );
 
-if( isset($options['remove_all_data']) && $options['remove_all_data'] == 'true' ) {
+if( isset($options['remove_all_data']) && filter_var($options['remove_all_data'], FILTER_VALIDATE_BOOLEAN) ) {
 
   // delete options
   delete_option( 'fvwpflowplayer' );
@@ -23,6 +23,7 @@ if( isset($options['remove_all_data']) && $options['remove_all_data'] == 'true' 
 
   // delete transients
   delete_transient( 'fv_flowplayer_license' );
+  delete_transient( 'fv_player_s3_browser_cf' );
 
   // delete tables
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_players" );
@@ -36,4 +37,10 @@ if( isset($options['remove_all_data']) && $options['remove_all_data'] == 'true' 
   wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
   wp_clear_scheduled_hook( 'fv_player_stats' );
 
+  // remove any transients and options we've left behind
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_fv\_%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_fv\_%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_timeout\_fv\_%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_timeout\_fv\_%'" );
+  $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'fv_player_%'");
 }
