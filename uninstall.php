@@ -20,6 +20,7 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   delete_option( 'fv_player_mailchimp_lists' );
   delete_option( 'fv_flowplayer_checker_queue' );
   delete_option( 'fv_player_popups' );
+  delete_option( 'fv_preview_hls' );
 
   // delete transients
   delete_transient( 'fv_flowplayer_license' );
@@ -32,17 +33,30 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_playermeta" );
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_stats" );
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_emails" );
+  $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_fp_hls_access_tokens" );
 
   // clear hooks
   wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
   wp_clear_scheduled_hook( 'fv_player_stats' );
+  wp_clear_scheduled_hook( 'fv_player_pro_update_cloudflare_ips' );
+  wp_clear_scheduled_hook( 'fv_player_pro_clear_cache' );
+  wp_clear_scheduled_hook( 'fv_player_pro_update_vimeo_cache' );
+  wp_clear_scheduled_hook( 'fv_player_pro_update_youtube_cache' );
+  wp_clear_scheduled_hook( 'fv_player_pro_update_transcript_cache' );
 
   // remove any transients and options we've left behind
-  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_fv\_%'" );
-  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_fv\_%'" );
-  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_timeout\_fv\_%'" );
-  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_timeout\_fv\_%'" );
-  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'fv_player_%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_fv\_player%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_fv\_player%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_timeout\_fv\_player%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_timeout\_fv\_player%'" );
+
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_fv-player%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_fv-player%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_timeout\_fv-player%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_timeout\_fv-player%'" );
+
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'fv\_player\_%'" );
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'fv-player-%'" );
 
   // delete plugin created folders
   if ( WP_Filesystem() ) {
