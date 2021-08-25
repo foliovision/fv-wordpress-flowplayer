@@ -42,5 +42,18 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_fv\_%'" );
   $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_timeout\_fv\_%'" );
   $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_site\_transient\_timeout\_fv\_%'" );
-  $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'fv_player_%'");
+  $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'fv_player_%'" );
+
+  // delete plugin created folders
+  if ( WP_Filesystem() ) {
+    global $wp_filesystem;
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/', true );
+    }
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-player-tracking/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-player-tracking/', true );
+    }
+  }
 }
