@@ -21,6 +21,7 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   delete_option( 'fv_flowplayer_checker_queue' );
   delete_option( 'fv_player_popups' );
   delete_option( 'fv_preview_hls' );
+  delete_option( 'fv_flowplayer_ppv' );
 
   // delete transients
   delete_transient( 'fv_flowplayer_license' );
