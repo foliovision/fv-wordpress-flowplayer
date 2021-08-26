@@ -1691,9 +1691,9 @@ function fv_flowplayer_admin_uninstall() {
   global $fv_fp;
 
   ?>
-    <p><?php _e('Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted:', 'fv-wordpress-flowplayer') ?></p>
+    <p><?php _e('Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-wordpress-flowplayer') ?></p>
     <table class="form-table2">
-      <?php   $fv_fp->_get_checkbox(__('Remove all data', 'fv-wordpress-flowplayer'), 'remove_all_data' , __('This action is irreversible', 'fv-wordpress-flowplayer')); ?>
+      <?php   $fv_fp->_get_checkbox(__('Remove all data', 'fv-wordpress-flowplayer'), 'remove_all_data' , __('This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-wordpress-flowplayer')); ?>
       <tr>
         <td colspan="4">
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />

@@ -34,7 +34,11 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_videometa" );
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_playermeta" );
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_stats" );
+  $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_drm_logs" );
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_emails" );
+  $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_encoding_jobs" );
+  $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_user_playlist" );
+  $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_player_user_playlist_video" );
   $wpdb->query( "DROP TABLE IF EXISTS " . $wpdb->prefix . "fv_fp_hls_access_tokens" );
 
   // clear hooks
