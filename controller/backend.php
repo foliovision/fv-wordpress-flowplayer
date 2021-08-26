@@ -704,7 +704,6 @@ function flowplayer_deactivate() {
 
 
 
-
 /*
  *  DB based player data saving
  */
