@@ -1632,8 +1632,9 @@ class FV_Player_Db {
     if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', $post->post_content, $matches1 ) ) {
       $matches = array_merge( $matches, $matches1[1] );
     }
-    
-    if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
+
+    // The [fvplayer] shortcode might be stored in plain form, or with the quotes escaped like fvplayer id=\"56\"]
+    if( preg_match_all('~\[fvplayer.*?id=\\\?[\'"]([0-9,]+)~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
       $matches = array_merge( $matches, $matches2[1] );
     }
     
@@ -1653,6 +1654,8 @@ class FV_Player_Db {
         if( $player->getIsValid() ) {
           
           $add = true;
+          // TODO: This seems to not work when saving with Elementor, it seems store_post_ids() runs 3 times
+          // but it's never aware of the player meta added using FV_Player_Db_Player_Meta in the previous run
           $metas = $player->getMetaData();
           if( count($metas) ) {
             foreach( $metas as $meta_object ) {
@@ -1662,6 +1665,13 @@ class FV_Player_Db {
                 }
               }
             }
+          }
+
+          // TODO: So here's the temporary work-around which should be removed once FV_Player_Db_Player_Meta()
+          // does properly register the player meta with getMetaData()
+          global $wpdb;
+          if( $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$wpdb->prefix}fv_player_playermeta WHERE id_player = %d AND meta_key = %s AND meta_value = %d", $player_id, 'post_id', $post_id ) ) ) {
+            $add = false;
           }
           
           if( $add ) {

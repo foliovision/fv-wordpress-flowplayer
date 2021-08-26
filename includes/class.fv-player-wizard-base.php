@@ -131,10 +131,10 @@ abstract class FV_Player_Wizard_Base_Class {
           $color = '#f88';
         }
         ?>
-        <tr style='background-color: <?php echo $color; ?>'>
-          <td><?php echo $log['date']; ?></td>
-          <td><?php echo $log['title']; ?></td>
-          <td><?php print_r($log['message']); ?></td>
+        <tr style='background-color: <?php echo htmlentities($color); ?>'>
+          <td><?php echo htmlentities( $log['date'] ); ?></td>
+          <td><?php echo htmlentities($log['title']); ?></td>
+          <td><?php echo htmlentities(print_r($log['message'], true)); ?></td>
         </tr>
       <?php endforeach; ?>
       </table>

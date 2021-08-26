@@ -249,7 +249,9 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
 
 function fv_wp_flowplayer_check_files() {
   global $wpdb;
-  define('VIDEO_DIR', '/videos/');
+  if( !defined('VIDEO_DIR') ) {
+    define('VIDEO_DIR', '/videos/');
+  }
   
   $bNotDone = false;
   $tStart = microtime(true);
@@ -702,7 +704,6 @@ function flowplayer_deactivate() {
 
 
 
-
 /*
  *  DB based player data saving
  */
@@ -811,7 +812,7 @@ function fv_player_pro_version_check() {
 add_action( 'admin_notices', 'fv_player_pay_per_view_version_check' );
 
 function fv_player_pay_per_view_version_check() {
-  $version = '7.5.2.727';
+  $version = '7.5.3.727';
   
   global $FV_Player_PayPerView;
   
@@ -827,7 +828,7 @@ function fv_player_pay_per_view_version_check() {
 add_action( 'admin_notices', 'fv_player_pay_per_view_woocommerce_version_check' );
 
 function fv_player_pay_per_view_woocommerce_version_check() {
-  $version = '7.5.2.727';
+  $version = '7.5.3.727';
   
   global $FV_Player_PayPerView_WooCommerce;
   

@@ -107,7 +107,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
        //  pointer boxes
       parent::__construct();
     }
-    
+
+    if( !defined('VIDEO_DIR') ) {
+      define('VIDEO_DIR', '/videos/');
+    }
 
     // define needed constants
     if (!defined('FV_FP_RELATIVE_PATH')) {
@@ -117,11 +120,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $vid = isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'] : $aURL['scheme'].'://'.$aURL['host'];
       if (dirname($_SERVER['PHP_SELF']) != '/') 
         $vid .= dirname($_SERVER['PHP_SELF']);
-      define('VIDEO_DIR', '/videos/');
-      define('VIDEO_PATH', $vid.VIDEO_DIR);  
+      define('VIDEO_PATH', $vid.VIDEO_DIR);
     }
-    
-    
+
     //add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
     add_filter( 'fv_flowplayer_inner_html', array( $this, 'get_duration_video' ), 10, 2 );
     
@@ -798,12 +799,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $aTest_media = array();
       foreach( $media as $h => $v ) {
         if( $v ) {
+          // allow checker skip using filter
+          if( apply_filters( 'fv_player_video_checker_skip', false, $v['src'] ) ) {
+            continue;
+          }
+
           $temp_media = $this->get_video_src( $v['src'], array( 'dynamic' => true ) );
           if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
             if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
             }
-          } 
+          }
           $aTest_media[] = $temp_media;
         }
       }

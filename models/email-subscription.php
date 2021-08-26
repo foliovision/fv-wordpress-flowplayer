@@ -555,7 +555,7 @@ class FV_Player_Email_Subscription {
   function csv_export(){
     if( !current_user_can('manage_options') ) return;
     
-    $list_id = $_GET['fv-email-export'];
+    $list_id = intval($_GET['fv-email-export']);
     $aLists = get_option('fv_player_email_lists');
     $list = $aLists[$list_id];
     $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . date('Y-m-d') . '.csv';
@@ -590,11 +590,10 @@ class FV_Player_Email_Subscription {
 
 
   public function admin_export_screen(){
-
-    $list_id = $_GET['fv-email-export-screen'];
+    $list_id = intval($_GET['fv-email-export-screen']);
 
     global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . intval($list_id) . '" LIMIT 10');
+    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . $list_id . '" LIMIT 10');
 
     ?>
     <style>

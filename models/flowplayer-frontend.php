@@ -363,7 +363,7 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
           } 
           
-          if( $autoplay ) {
+          if( $autoplay > -1 ) {
             $this->ret['html'] .= ' autoplay';  
           }
           
@@ -720,7 +720,7 @@ class flowplayer_frontend extends flowplayer
      */
     else if( $player_type == 'youtube' ) {
         
-      $sAutoplay = ($autoplay) ? 'autoplay=1&amp;' : '';
+      $sAutoplay = ($autoplay > -1) ? 'autoplay=1&amp;' : '';
       $this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
     src='//www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
       
@@ -732,7 +732,7 @@ class flowplayer_frontend extends flowplayer
      */
     else if( $player_type == 'vimeo' ) {
     
-      $sAutoplay = ($autoplay) ? " autoplay='1'" : "";
+      $sAutoplay = ($autoplay > -1) ? " autoplay='1'" : "";
       $this->ret['html'] .= "<iframe id='fv_vimeo_{$this->hash}' src='//player.vimeo.com/video/{$vimeo}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen{$sAutoplay}></iframe>\n";
       
     }
