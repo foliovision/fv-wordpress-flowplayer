@@ -28,7 +28,7 @@ flowplayer(function(api, root) {
     var too_narrow = width < 480 + buttons_count*35;
 
     // move timeline when timeline chapters are enabled
-    if( typeof fv_timeline_chapters_data != 'undefined' && typeof api.fv_timeline_chapters_data[video_index] != 'undefined' ) {
+    if( typeof api.fv_timeline_chapters_data != 'undefined' && typeof api.fv_timeline_chapters_data[video_index] != 'undefined' ) {
       too_narrow = true;
     }
     // we do so by adding .fp-full if it was not there, it needs to stay on for AB loop bar too!
