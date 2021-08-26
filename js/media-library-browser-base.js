@@ -526,6 +526,8 @@ jQuery( function($) {
             fSize = parseInt($filenameDiv.data('size')),
             fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
+            fExtraDisplayData = $filenameDiv.data('extra');
+            fExtraDisplayData = fExtraDisplayData.displayData;
             sizeSuffix = 'bytes';
 
           if (!fSizeTextual) {
@@ -602,6 +604,7 @@ jQuery( function($) {
             '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
             '\n' +
             '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
+            (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
             '\t\t\t</div>\n' +
             (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +

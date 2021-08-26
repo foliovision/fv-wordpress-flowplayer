@@ -898,7 +898,7 @@ jQuery(function() {
         // fire up a JS event for the FV Player Pro to catch,
         // so it can check the URL and make sure we don't show
         // a warning message for PRO-supported video types
-        $doc.trigger('fv-player-editor-src-change', [ url, result ]);
+        $doc.trigger('fv-player-editor-src-change', [ url, result, this ]);
         
         // Notice next to the input field
         var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
@@ -2317,7 +2317,7 @@ jQuery(function() {
             }
 
             $doc.trigger('fv_player_editor_finished');
-            
+            $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
           }).error(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
