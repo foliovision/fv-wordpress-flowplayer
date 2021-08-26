@@ -1680,13 +1680,28 @@ function fv_flowplayer_admin_usage() {
 function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
-  ?>  		
+  ?>
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
     <p>You can go back to the last 7.4 version - without editor autosaving and JavaScript loading changes:</p>
     <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.4.47.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.4.47.727</a></p>
-  <?php			
+  <?php
 }
 
+function fv_flowplayer_admin_uninstall() {
+  global $fv_fp;
+
+  ?>
+    <p><?php _e('Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-wordpress-flowplayer') ?></p>
+    <table class="form-table2">
+      <?php   $fv_fp->_get_checkbox(__('Remove all data', 'fv-wordpress-flowplayer'), 'remove_all_data' , __('This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-wordpress-flowplayer')); ?>
+      <tr>
+        <td colspan="4">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        </td>
+      </tr>
+    </table>
+  <?php
+}
 
 function fv_flowplayer_admin_checkbox( $name ) {
 	global $fv_fp;
@@ -1749,6 +1764,7 @@ if( !class_exists('FV_Player_Pro') ) {
 /* Tools tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
