@@ -1235,12 +1235,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       if( $sBuffer ) {
         $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
-        $css .= $sel. " .fp-bar span.chapter_buffered{ border-color: ".$sBuffer." !important; }\n";
+        $css .= $sel. " .fp-bar span.chapter_buffered{ background-color: ".$sBuffer." !important; }\n";
       }
 
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
-        $css .= $sel. " .fp-bar span.chapter_unbuffered{ border-color: ".$sTimeline." !important; }\n";
+        $css .= $sel. " .fp-bar span.chapter_unbuffered{ background-color: ".$sTimeline." !important; }\n";
       }
 
       $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
@@ -1255,7 +1255,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fv-ab-loop .noUi-connect { background-color: ".$sAccent." !important; }\n";
       }
 
-      $css .= $sel. " .fp-bar span.chapter_passed{ border-color: ".$sProgress." !important; }\n";
+      $css .= $sel. " .fp-bar span.chapter_passed{ background-color: ".$sProgress." !important; }\n";
       $css .= ".fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
       $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
       $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
