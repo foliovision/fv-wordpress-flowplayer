@@ -7,9 +7,12 @@
   flowplayer( function(api,root) {
     root = jQuery(root);
     var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
-    spinner =jQuery('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
-    message = jQuery('.fv-messages'),
-    title ='';
+      spinner =jQuery('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
+      message = jQuery('.fv-messages'),
+      title ='',
+      skip_patterns = [ // array of regex to skip screenshot button
+        /ok\.ru\/video\/\d+/ // ok.ru
+      ];
 
     // where to seek when trying to setup the crossOrigin attribute for video
     var seek_recovery = false;
@@ -97,12 +100,25 @@
     // Compatibility test
     api.bind('ready', function(e,api) {
     if(jQuery('#fv_player_boxLoadedContent').length == 1) {
-      button.appendTo('#fv-player-shortcode-editor-preview');
-      try{
-        takeScreenshot();
-        }catch(err){
-          button.prop("disabled",true);
+      var src = jQuery('[name="fv_wp_flowplayer_field_src"]:visible').val(), // check using visible src
+        should_show = true;
+
+      if ( typeof src != 'undefined' ) {
+        skip_patterns.forEach(function(item, index) {
+          if( item.exec(src) !== null ) {
+            should_show = false;
+          }
+        });
+
+        if( should_show ) {
+          button.appendTo('#fv-player-shortcode-editor-preview');
+          try {
+            takeScreenshot();
+          } catch(err) {
+            button.prop("disabled",true);
+          }
         }
+      }
     }
     });
     
