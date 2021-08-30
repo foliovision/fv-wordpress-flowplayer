@@ -170,7 +170,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 <div style="display: none" class="fv-player-modal">
 
   <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?>>
-  
+
+    <input type="hidden" id="fv_wp_flowplayer_field_post_id" name="fv_wp_flowplayer_field_post_id" value="<?php echo get_the_ID(); ?>" />
+
     <div id="fv-player-editor-loading-overlay" class="fv-player-editor-overlay">
     </div>
     
@@ -296,7 +298,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <a class="alignleft fv_wp_flowplayer_playlist_remove" href="#"><?php _e('(remove)', 'fv_flowplayer'); ?></a>
                   <label for="fv_wp_flowplayer_field_src" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?></label>
                 </th>
-                <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" />
+                <td colspan="2" class="field">
+                  <input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" />
                   <?php if ($allow_uploads == "true") { ?>      
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>

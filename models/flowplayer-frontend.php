@@ -363,7 +363,7 @@ class flowplayer_frontend extends flowplayer
             $this->ret['html'] .= ' poster="'.flowplayer::get_encoded_url($splash_img).'"';
           } 
           
-          if( $autoplay ) {
+          if( $autoplay > -1 ) {
             $this->ret['html'] .= ' autoplay';  
           }
           
@@ -573,15 +573,15 @@ class flowplayer_frontend extends flowplayer
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
           
-          if( count($aPlaylistItems) == 1 && !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
+          if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
             $attributes['class'] .= ' has-caption';
-            $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
+            $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->get_title()."</p>", $this );
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
           
-        } else if( !empty($this->aCurArgs['caption']) && empty($this->aCurArgs['lightbox']) ) {
+        } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
-          $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->aCurArgs['caption']."</p>", $this );
+          $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->get_title()."</p>", $this );
           
         }
         
@@ -656,7 +656,7 @@ class flowplayer_frontend extends flowplayer
         }
         
         if( !$bIsAudio && !empty($splash_img) ) {
-          $alt = !empty($this->aCurArgs['caption']) ? $this->aCurArgs['caption'] : 'video';
+          $alt = $this->get_title() ? $this->get_title() : 'video';
           
            // load the image from WP Media Library if you got a number
           if( is_numeric($splash_img) ) {
@@ -720,7 +720,7 @@ class flowplayer_frontend extends flowplayer
      */
     else if( $player_type == 'youtube' ) {
         
-      $sAutoplay = ($autoplay) ? 'autoplay=1&amp;' : '';
+      $sAutoplay = ($autoplay > -1) ? 'autoplay=1&amp;' : '';
       $this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
     src='//www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
       
@@ -732,7 +732,7 @@ class flowplayer_frontend extends flowplayer
      */
     else if( $player_type == 'vimeo' ) {
     
-      $sAutoplay = ($autoplay) ? " autoplay='1'" : "";
+      $sAutoplay = ($autoplay > -1) ? " autoplay='1'" : "";
       $this->ret['html'] .= "<iframe id='fv_vimeo_{$this->hash}' src='//player.vimeo.com/video/{$vimeo}' width='{$width}' height='{$height}' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen{$sAutoplay}></iframe>\n";
       
     }
@@ -1119,6 +1119,7 @@ class flowplayer_frontend extends flowplayer
       
       $this->aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:'';
       unset($this->aCurArgs['caption']);
+      unset($this->aCurArgs['title']);
       $this->aCurArgs['liststyle']='none';
       
       $aPlayer = $this->build_min_player( $this->aCurArgs['src'],$this->aCurArgs );
@@ -1203,6 +1204,19 @@ class flowplayer_frontend extends flowplayer
     $sHTML = apply_filters( 'fv_player_sharing_html', $sHTML );
 
     return $sHTML;
+  }
+  
+  
+  function get_title() {
+    if( !empty($this->aCurArgs['caption']) ) {
+      return trim($this->aCurArgs['caption']);
+    }
+    
+    if( !empty($this->aCurArgs['title']) ) {
+      return trim($this->aCurArgs['title']);
+    }
+    
+    return false;
   }
   
   

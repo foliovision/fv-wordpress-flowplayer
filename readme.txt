@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.7
+Tested up to: 5.8
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,35 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.4.727 - 2021/08/18 =
+
+* Bugfix - CSS - timeline dragging causing display issues on some websites with Gutenberg
+* Bugfix - Elementor FV Player widget not considered for the "Embedded on" column of wp-admin -> FV Player
+* Bugfix - Embedded post ID missing when editing player with FV Player Pay Per View enabled
+* Bugfix - Lightbox should not use left/right align
+* Bugfix - Video Stats - clear scheduled job hook if setting not active
+* Bugfix - Video Stats - do not track video recovery as another play
+* Bugfix - Video Stats - track video replay as another play
+
+= 7.5.3.727 - 2021/08/10 =
+
+* Security - fix for XSS vulnerability in stats screen
+* Bugfix - Force landscape orientation in fullscreen setting fix
+* Bugfix - bad scroll position after leaving fullscreen
+* Bugfix - Sticky player code should not run on mobile
+
+= 7.5.2.727 - 2021/07/28 =
+
+* Bugfix - editor auto-save for FV Player Pay Per View and FV Player Pay Per View for WooCommerce
+
+= 7.5.1.727 - 2021/07/21 =
+
+* Google Analytics - compatibility with Google Analytics 4
+* WordPress 5.8 - fix for the Widgets screen loading issues and FV Player widgets preview
+* Bugfix - Android landscape fullscreen lock not working with HLS
+* Bugfix - popup notice on 7.5 upgrade not going away when dismissed - possibly due to object cache issues, but we added a browser cookie to prevent it
+* Bugfix - some encrypted HLS streams failing to start properly in Safari
 
 = 7.5.0.727 - 2021/06/21 =
 

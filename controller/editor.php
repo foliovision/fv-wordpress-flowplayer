@@ -110,7 +110,7 @@ function fv_wp_flowplayer_gutenberg_editor_load() {
 add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
-  include dirname( __FILE__ ) . '/../view/wizard.php';
+  require_once dirname( __FILE__ ) . '/../view/wizard.php';
   
   // todo: will some of this break page builders?
   global $fv_fp_scripts, $fv_fp;

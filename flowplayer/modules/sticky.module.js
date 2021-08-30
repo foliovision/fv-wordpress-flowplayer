@@ -48,10 +48,24 @@
 
      $window
       .on("resize", function() {
+        if( !is_big_enough() ) {
+          if( is_sticky ) {
+            fv_player_sticky_class_remove();
+          }
+          return;
+        }
+
         top = $flowplayerDiv.offset().top;
         offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
       })
       .on("scroll", function() {
+        if( !is_big_enough() ) {
+          if( is_sticky ) {
+            fv_player_sticky_class_remove();
+          }
+          return;
+        }
+
         top = $flowplayerDiv.offset().top;
         offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2)); 
         if ($window.scrollTop() > offset && change) {
@@ -97,6 +111,10 @@
       is_sticky = false;
       api.trigger( 'sticky-exit', [ api ] );
     }
+  }
+
+  function is_big_enough() {
+    return jQuery(window).innerWidth() >= 1020;
   }
 });
 

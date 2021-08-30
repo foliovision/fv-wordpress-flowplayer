@@ -731,6 +731,9 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->$key = $value === null ? $value : stripslashes($value);
         }
 
+        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
+        $this->id = $this->id_player;
+
         // add meta data
         $this->meta_data = $cached_player->getMetaData();
 
