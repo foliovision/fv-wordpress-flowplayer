@@ -9,10 +9,7 @@
     var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
       message = jQuery('.fv-messages'),
-      title ='',
-      skip_patterns = [ // array of regex to skip screenshot button
-        /ok\.ru\/video\/\d+/ // ok.ru
-      ];
+      title ='';
 
     // where to seek when trying to setup the crossOrigin attribute for video
     var seek_recovery = false;
@@ -104,8 +101,8 @@
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
-        skip_patterns.forEach(function(item, index) {
-          if( item.exec(src) !== null ) {
+        fv_player.screenshot_disable_domains.forEach(function(item, index) {
+          if( src.indexOf(item) !== -1 ) {
             should_show = false;
           }
         });

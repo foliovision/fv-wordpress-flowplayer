@@ -492,6 +492,8 @@ function flowplayer_prepare_scripts() {
     
     $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
 
+    $aLocalize['screenshot_disable_domains'] = apply_filters( 'fv_player_editor_screenshot_disable_domains', array() );
+
     wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
 
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
