@@ -893,7 +893,11 @@ function fv_autoplay_exec(){
         autoplay = root.attr('data-fvautoplay');
 
       if( !fv_player_did_autoplay && autoplay ) {
-        if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
+        if( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) {
+          // don't let these mobile devices autoplay YouTube
+          console.log( 'FV Player: Autoplay for YouTube not supported on Android and iOS');
+          return;
+        } else {
           fv_player_did_autoplay = true;
 
           if( api.conf.playlist.length && jQuery.isNumeric(autoplay) ) {
