@@ -771,8 +771,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   if(index){
     if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
-        if( fTime > 0 ) api.seek(fTime);
-        fv_autoplay_exec_in_progress = false;
+        fv_player_video_link_seek( api, fTime );
         
       } else {
         api.play(parseInt(index));
@@ -796,8 +795,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
     }
   }else{
     if( api.ready ) {
-      if( fTime > 0 ) api.seek(fTime);
-      fv_autoplay_exec_in_progress = false;
+      fv_player_video_link_seek( api, fTime );
       
     } else {
       if( fv_player_video_link_autoplay_can(api) ) {
@@ -818,7 +816,16 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
 
   var do_seek = setInterval( function() {
     if ( api.loading ) return;
-    if ( fTime > 0 ) api.seek(fTime); // prevent seeking to 0s (causing glitch)
+    
+    // prevent seeking to 0s (causing glitch)
+    if ( fTime > 0 ) {
+      // use the FV Player Pro method if available which considers the custom start/end time
+      if( !!api.custom_seek ) {
+        api.custom_seek(fTime);
+      } else {
+        api.seek(fTime);
+      } 
+    }
     if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
     clearInterval(do_seek);
   }, 10 );
