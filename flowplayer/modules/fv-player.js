@@ -333,8 +333,14 @@ function fv_player_preload() {
       jQuery('.fp-playlist-external .now-playing').remove();
       jQuery('.fp-playlist-external a').removeClass('is-active');
 
-      fp_player.prepend(splash_text);
-      fp_player.prepend(splash_img);
+      var iframe = fp_player.find('iframe.fp-engine');
+      if( iframe.length ) {
+        iframe.after(splash_text);
+        iframe.after(splash_img);
+      } else {
+        fp_player.prepend(splash_text);
+        fp_player.prepend(splash_img);
+      }
 
       playlist_progress = false;
     });
