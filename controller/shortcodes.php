@@ -528,6 +528,28 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]</figure>' , $html);
     return $html;
   }
+  
+  wp_embed_register_handler(
+    'fv_player_wp_embed-vimeo',
+    '#vimeo.com/(?:video/|moogaloop\.swf\?clip_id=)?(\d+)#i',
+    'fv_player_wp_embed'
+  );
+  
+  wp_embed_register_handler(
+    'fv_player_wp_embed-youtube-1',
+    '#youtu.be/([a-zA-Z0-9_-]+)(?:\?|$|&)#i',
+    'fv_player_wp_embed'
+  );
+  
+  wp_embed_register_handler(
+    'fv_player_wp_embed-youtube-2',
+    '#(?:youtube\.com|youtube-nocookie\.com)/embed/([a-zA-Z0-9_-]+)(?:\?|$|&)#i',
+    'fv_player_wp_embed'
+  );
+  
+  function fv_player_wp_embed( $matches, $attr, $url, $rawattr ) {
+    return flowplayer_content_handle( array( 'src' => $url ) );
+  }
 }
 
 
