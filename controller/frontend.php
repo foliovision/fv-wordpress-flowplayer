@@ -486,13 +486,12 @@ function flowplayer_prepare_scripts() {
       $aLocalize['admin_input'] = true;
       $aLocalize['admin_js_test'] = true;
     }
+
     if( current_user_can('edit_posts') ) {
       $aLocalize['user_edit'] = true;
     }
     
     $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
-
-    $aLocalize['screenshot_disable_domains'] = apply_filters( 'fv_player_editor_screenshot_disable_domains', array() );
 
     wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
 
