@@ -61,7 +61,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   ) );
   
   wp_localize_script( 'fvwpflowplayer-editor-screenshots', 'fv_player_editor_conf_screenshots', array(
-    'fv_player_editor_screenshot_disable_domains' => apply_filters( 'fv_player_editor_screenshot_disable_domains', array() )
+    'disable_domains' => apply_filters( 'fv_player_editor_screenshot_disable_domains', array() )
   ) );
 
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');

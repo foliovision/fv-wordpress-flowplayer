@@ -101,7 +101,7 @@
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
-        fv_player_editor_conf_screenshots.fv_player_editor_screenshot_disable_domains.forEach(function(item, index) {
+        fv_player_editor_conf_screenshots.disable_domains.forEach(function(item, index) {
           if( src.indexOf(item) !== -1 ) {
             should_show = false;
           }
