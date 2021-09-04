@@ -824,7 +824,8 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
     if ( api.loading ) return;
     
     // prevent seeking to 0s (causing glitch)
-    if ( fTime > 0 ) {
+    // unless the video position is > 0
+    if ( fTime > 0 || api.video.time > 0 ) {
       // use the FV Player Pro method if available which considers the custom start/end time
       if( !!api.custom_seek ) {
         api.custom_seek(fTime);
