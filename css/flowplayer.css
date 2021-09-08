@@ -1012,7 +1012,7 @@
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
-    height: .2em; }
+    height: 3px; }
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
     content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
