@@ -1899,10 +1899,10 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   	});
   }
   
-	function fv_flowplayer_ajax_check( type ) {
-		jQuery('.'+type+'-spin').show();
-		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
-		jQuery.post( ajaxurl, { action: type }, function( response ) {
+  function fv_flowplayer_ajax_check( type ) {
+    jQuery('.'+type+'-spin').show();
+    var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+    jQuery.post( ajaxurl, { action: type }, function( response ) {
       response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
       response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
       try {
@@ -1914,20 +1914,23 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
         } else {
           css_class = ' green';
         }
-  
+
         if( obj.ok && obj.ok.length > 0 ) {
           jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
         }
-        
+
+        if(type == 'fv_wp_flowplayer_check_license') {
+          jQuery('.pro-notice-message').remove();
+        }
       } catch(err) {
         jQuery('#fv_flowplayer_admin_notices').append( jQuery('#wpbody', response ) );
         
       }
       
-			jQuery('.'+type+'-spin').hide();
-		} );              
+      jQuery('.'+type+'-spin').hide();
+    } );
   }
-  
+
   var fv_flowplayer_amazon_s3_count = 0;
   jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
