@@ -1032,6 +1032,7 @@
 .flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
+.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
