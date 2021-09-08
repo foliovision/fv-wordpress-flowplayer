@@ -7,7 +7,6 @@ flowplayer(function(api, root) {
     had_no_volume = root.hasClass('no-volume'),
     had_fp_mute = root.hasClass('fp-mute'),
     had_fp_full = root.hasClass('fp-full'),
-    had_fp_slim = root.hasClass('fp-slim'),
     buttons_count = 0;
 
   function check_size() {
@@ -34,10 +33,6 @@ flowplayer(function(api, root) {
     // we do so by adding .fp-full if it was not there, it needs to stay on for AB loop bar too!
     if( !had_fp_full ) {
       root.toggleClass('fp-full', root.hasClass('has-abloop') || too_narrow );
-    }
-    // ...and by removing .fp-slim if it was there, it needs to stay on for AB loop bar too!
-    if( had_fp_slim ) {
-      root.toggleClass('fp-slim', !too_narrow || root.hasClass('has-abloop') );
     }
 
     var size = '';
