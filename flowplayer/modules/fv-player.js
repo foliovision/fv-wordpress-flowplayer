@@ -333,8 +333,14 @@ function fv_player_preload() {
       jQuery('.fp-playlist-external .now-playing').remove();
       jQuery('.fp-playlist-external a').removeClass('is-active');
 
-      fp_player.prepend(splash_text);
-      fp_player.prepend(splash_img);
+      var iframe = fp_player.find('iframe.fp-engine');
+      if( iframe.length ) {
+        iframe.after(splash_text);
+        iframe.after(splash_img);
+      } else {
+        fp_player.prepend(splash_text);
+        fp_player.prepend(splash_img);
+      }
 
       playlist_progress = false;
     });
@@ -771,8 +777,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   if(index){
     if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
-        if( fTime > 0 ) api.seek(fTime);
-        fv_autoplay_exec_in_progress = false;
+        fv_player_video_link_seek( api, fTime );
         
       } else {
         api.play(parseInt(index));
@@ -796,8 +801,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
     }
   }else{
     if( api.ready ) {
-      if( fTime > 0 ) api.seek(fTime);
-      fv_autoplay_exec_in_progress = false;
+      fv_player_video_link_seek( api, fTime );
       
     } else {
       if( fv_player_video_link_autoplay_can(api) ) {
@@ -818,7 +822,17 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
 
   var do_seek = setInterval( function() {
     if ( api.loading ) return;
-    if ( fTime > 0 ) api.seek(fTime); // prevent seeking to 0s (causing glitch)
+    
+    // prevent seeking to 0s (causing glitch)
+    // unless the video position is > 0
+    if ( fTime > 0 || api.video.time > 0 ) {
+      // use the FV Player Pro method if available which considers the custom start/end time
+      if( !!api.custom_seek ) {
+        api.custom_seek(fTime);
+      } else {
+        api.seek(fTime);
+      } 
+    }
     if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
     clearInterval(do_seek);
   }, 10 );
@@ -886,7 +900,11 @@ function fv_autoplay_exec(){
         autoplay = root.attr('data-fvautoplay');
 
       if( !fv_player_did_autoplay && autoplay ) {
-        if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
+        if( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) {
+          // don't let these mobile devices autoplay YouTube
+          console.log( 'FV Player: Autoplay for YouTube not supported on Android and iOS');
+          return;
+        } else {
           fv_player_did_autoplay = true;
 
           if( api.conf.playlist.length && jQuery.isNumeric(autoplay) ) {

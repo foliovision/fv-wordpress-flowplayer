@@ -975,6 +975,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
       $sCaption = isset($aArgs['caption']) ? $aArgs['caption'] : false;
+      if( !$sCaption && isset($aArgs['title']) ) {
+        $sCaption = $aArgs['title'];
+      }
   
       $replace_from = array('&amp;','\;', '\,');        
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');        
