@@ -344,7 +344,7 @@
 
 .flowplayer {
   font-family: avenir, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   position: relative;
   max-height: 100%;
   overflow: visible;
@@ -1008,11 +1008,11 @@
     height: 2.4em; }
 .flowplayer.fp-slim.fp-full .fp-timeline {
   bottom: 2.4em;
-    height: .2em; }
+    height: 3px; }
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
-    height: .2em; }
+    height: 3px; }
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
     content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
@@ -1032,6 +1032,7 @@
 .flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
+.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
@@ -1104,7 +1105,7 @@
 .flowplayer .fp-header .fp-icon { text-shadow: 0 0 10px rgba(0, 0, 0, 0.3) }
 .flowplayer:not(.is-touch.is-fullscreen) .fp-header .fp-icon { margin: .5em .5em 0 0;line-height: 1 }
 
-.flowplayer.is-fullscreen{ max-height:100% !important; }
+.flowplayer.is-fullscreen{ font-size: 16px; max-height:100% !important; }
 .flowplayer .fp-controls .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-header .fp-fullscreen {display:none}
 .flowplayer.bottom-fs .fp-controls .fp-fullscreen {display:block}
@@ -2012,12 +2013,12 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 
 .flowplayer .fp-controls .fv-fp-prevbtn,
 .flowplayer .fp-controls .fv-fp-nextbtn {
-	margin: 0 .4em;
+	margin: 0 .4em .2em;
 	display: flex;
 	vertical-align: middle;
 }
 .flowplayer .fp-controls .fv-fp-nextbtn {
-	margin: 0 .4em 0 .2em;
+	margin: 0 .4em .2em .2em;
 }
 .flowplayer.is-audio .fp-controls .fp-playbtn {
 	margin: 0 .2em 0 .4em;
@@ -2047,7 +2048,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	border-right: 1px solid #fff;
 }
 
-.flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn, .flowplayer.is-tiny .fv-fp-rewind {
+.flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn {
   display: none;
 } 
 
