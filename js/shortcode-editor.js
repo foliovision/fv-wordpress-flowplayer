@@ -3811,8 +3811,23 @@ function fv_wp_flowplayer_dialog_resize() {
 }
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
-  // at least one option is value-less
-  if ($valueLessOptions.length) {
+  // multiselect element
+  if(dropdown_element.multiple) {
+    var selected = [],
+      options = dropdown_element && dropdown_element.options,
+      opt;
+  
+    for (var i=0, iLen=options.length; i<iLen; i++) {
+      opt = options[i];
+  
+      // take only selected with value
+      if (opt.selected && opt.value) {
+        selected.push(opt.value);
+      }
+    }
+
+    return selected.length ? selected.join(',') : '';
+  } else if ($valueLessOptions.length) { // at least one option is value-less
     if (optionsHaveNoValue) {
       // all options are value-less - the first one is always default and should be sent as ''
       return (dropdown_element.selectedIndex === 0 ? '' : dropdown_element.value);
