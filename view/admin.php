@@ -1920,7 +1920,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
         }
 
         if(type == 'fv_wp_flowplayer_check_license') {
-          jQuery('.pro-notice-message').remove();
+          jQuery('.fv-player-pro-admin_notice_license_error').remove();
         }
       } catch(err) {
         jQuery('#fv_flowplayer_admin_notices').append( jQuery('#wpbody', response ) );
