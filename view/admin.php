@@ -1919,6 +1919,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
           jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
         }
 
+        // Removed the FV Player Pro notice about expired license
         if(type == 'fv_wp_flowplayer_check_license') {
           jQuery('.fv-player-pro-admin_notice_license_error').remove();
         }
