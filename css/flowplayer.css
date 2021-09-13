@@ -27,7 +27,7 @@
 .flowplayer.is-loading .fp-engine { top: -9999em; }
 .flowplayer.is-poster .fp-engine,.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
 .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header {filter: alpha(opacity=1); opacity: 1; }
-.flowplayer.is-splash .fp-ui > *,.flowplayer.is-poster .fp-ui > * { display: none; }
+.flowplayer.is-splash .fp-ui > * { display: none; }
 .flowplayer.forced-fullscreen.is-loading .fp-ui, .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header { display: block; }
 .flowplayer.is-splash .fp-ui > .fp-play, 
 .flowplayer.is-poster .fp-ui > .fp-play,
@@ -1033,7 +1033,7 @@
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
-.flowplayer.fixed-controls.is-fullscreen .fp-controls {bottom: 0}
+.flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
 .flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
