@@ -324,6 +324,7 @@
     top: 30px;
     right: 5px;
     background-color: white;
+    z-index: 1;
 }
 
 #__assets_browser .browser-progress-bar {
