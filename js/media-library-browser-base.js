@@ -162,6 +162,11 @@ function fv_flowplayer_browser_browse(data, options) {
           }
         }
 
+        // prepend processing progress DIVs, if needed
+        if ( f.extra && f.extra.percentage ) {
+          icon = '<div class="fv-player-shortcode-editor-small-spinner" title="video is being processed"></div><div class="fv-player-shortcode-editor-small-spinner-text" title="video is being processed">' + f.extra.percentage + '</div>' + icon;
+        }
+
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon

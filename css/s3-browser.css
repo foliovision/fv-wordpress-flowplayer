@@ -313,6 +313,18 @@
     top: 0;
 }
 
+.thumbnail .fv-player-shortcode-editor-small-spinner {
+    position: absolute;
+    right: 7px;
+    top: 8px;
+}
+
+.thumbnail .fv-player-shortcode-editor-small-spinner-text {
+    position: absolute;
+    top: 30px;
+    right: 5px;
+}
+
 #__assets_browser .browser-progress-bar {
     width: 100%;
     min-width: 500px;
