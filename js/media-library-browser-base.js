@@ -395,8 +395,9 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href, strip_signature) {
+  function getSplashImageForMediaFileHref(href, strip_signature, get_large_splash) {
     var find = [ fileGetBase(href) ];
+
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
         var re = new RegExp(prefix+'$');
@@ -410,14 +411,30 @@ jQuery( function($) {
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
-        if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
-          splash = (f.splash ? f.splash : f.link);
+        if ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
+          if ( typeof(get_large_splash) != 'undefined' && f.splash_large ) {
+            splash = f.splash_large;
+          } else {
+            splash = (f.splash ? f.splash : f.link);
+          }
 
           // remove signature if we're updating the Editor field, otherwise leave it in,
           // so we can actually preview the splash
           if (strip_signature && splash.indexOf('?') > -1) {
             splash = splash.substring(0, splash.indexOf('?'));
           }
+        } else if( f && f.link && f.link.match(/\.(m3u8)$/) && fileGetBase(f.link) == find[i] && typeof(strip_signature) != 'undefined' && ( ( typeof(get_large_splash) != 'undefined' && f.splash_large ) || f.splash ) ) {
+          // we check for !strip_signature above, as we do not want to present a false info about thumbnail found as image
+          // in the Media Browser but we still want to use the actual splash image to insert it into the splash input
+          // when this HREF is inserted from the Media Browser window
+          if ( typeof(get_large_splash) != 'undefined' && f.splash_large ) {
+            splash = f.splash_large;
+          } else {
+            splash = f.splash;
+          }
+
+          // here, we always have strip_signature set to true
+          splash = splash.substring(0, splash.indexOf('?'));
         }
       }
     }
@@ -429,7 +446,7 @@ jQuery( function($) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href, true);
+      splash = getSplashImageForMediaFileHref(href, true, true);
 
     $url_input
       .val(href)
