@@ -62,31 +62,6 @@ class flowplayer_frontend extends flowplayer
   }
 
   /**
-   * Retrieves a video instance where the SRC field is set
-   * to the $src variable given.
-   *
-   * @param $src string The video SRC to search for in the database.
-   */
-  function get_video_by_src( $src ) {
-    global $wpdb;
-
-    $row = $wpdb->get_row( '
-          SELECT
-            id
-          FROM
-            ' . FV_Player_Db_Video::get_db_table_name() . '
-          WHERE
-            src = "' . esc_sql( $src ) . '"'
-    );
-
-    if ( $row ) {
-      return new FV_Player_Db_Video( $row->id );
-    } else {
-      return null;
-    }
-  }
-
-  /**
    * Retrieves list of player instances containing videos
    * given by the $ids_string variable.
    *

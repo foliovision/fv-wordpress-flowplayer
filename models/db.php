@@ -1702,7 +1702,32 @@ class FV_Player_Db {
       
     }
   }
-  
+
+  /**
+   * Retrieves a video instance where the SRC field is set
+   * to the $src variable given.
+   *
+   * @param $src string The video SRC to search for in the database.
+   */
+  public function get_video_by_src( $src ) {
+    global $wpdb;
+
+    $row = $wpdb->get_row( '
+          SELECT
+            id
+          FROM
+            ' . FV_Player_Db_Video::get_db_table_name() . '
+          WHERE
+            src = "' . esc_sql( $src ) . '"'
+    );
+
+    if ( $row ) {
+      return new FV_Player_Db_Video( $row->id );
+    } else {
+      return null;
+    }
+  }
+
   public static function get_player_duration( $id ) {
     global $wpdb;
     return $wpdb->get_var( "SELECT sum(vm.meta_value) FROM {$wpdb->prefix}fv_player_videometa AS vm JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) WHERE p.id = ".intval($id)." AND vm.meta_key = 'duration'" );
