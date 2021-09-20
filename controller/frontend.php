@@ -486,6 +486,7 @@ function flowplayer_prepare_scripts() {
       $aLocalize['admin_input'] = true;
       $aLocalize['admin_js_test'] = true;
     }
+
     if( current_user_can('edit_posts') ) {
       $aLocalize['user_edit'] = true;
     }

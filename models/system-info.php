@@ -100,7 +100,7 @@ PHP Max Input Vars:       <?php echo ini_get( 'max_input_vars' ) . "\n"; ?>
 PHP Arg Separator:        <?php echo ini_get( 'arg_separator.output' ) . "\n"; ?>
 PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? "Yes" : "No\n"; ?>
 
-WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
+WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? ( WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" ) : 'Not set' . "\n" ?>
 
 DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
 cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>

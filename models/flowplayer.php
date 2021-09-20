@@ -975,6 +975,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $sShortcode = isset($aArgs['playlist']) ? $aArgs['playlist'] : false;
       $sCaption = isset($aArgs['caption']) ? $aArgs['caption'] : false;
+      if( !$sCaption && isset($aArgs['title']) ) {
+        $sCaption = $aArgs['title'];
+      }
   
       $replace_from = array('&amp;','\;', '\,');        
       $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->');        
@@ -1232,26 +1235,33 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
       }
+
       if( $sBuffer ) {
         $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
+        $css .= $sel. " .fp-bar span.chapter_buffered{ background-color: ".$sBuffer." !important; }\n";
       }
+
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
+        $css .= $sel. " .fp-bar span.chapter_unbuffered{ background-color: ".$sTimeline." !important; }\n";
       }
-      
+
       $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
       $css .= $sel." .fv-player-video-checker { color: ".$sTime." !important; }\n";
-      
+
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
         $css .= $sel." .fv_player_popup, .fvfp_admin_error_content {  background: ".$sBackground."; }\n";
       }
+
       if( $sAccent ) {
         $css .= $sel." .fv-ab-loop .noUi-connect { background-color: ".$sAccent." !important; }\n";
       }
+
+      $css .= $sel. " .fp-bar span.chapter_passed{ background-color: ".$sProgress." !important; }\n";
       $css .= ".fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
       $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
-      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";      
+      $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
     }
     
     echo $css;

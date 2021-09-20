@@ -359,6 +359,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.5.727 - 2021/09/09 =
+
+* Appearance - player interface is now a bit smaller on desktop devices
+* CSS - fix gap between player and controlbar for fixed controls and full timeline
+* Mobile - keep rewind button even on narrow displays
+* Support for chapters on video timeline (Pro feature)
+* Uninstall - adding the missing feature
+* Bugfix - native fullscreen not working on iOS
+
 = 7.5.4.727 - 2021/08/18 =
 
 * Bugfix - CSS - timeline dragging causing display issues on some websites with Gutenberg
