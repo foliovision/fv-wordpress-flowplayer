@@ -748,7 +748,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $this->css_writeout();
     
-    fv_wp_flowplayer_delete_extensions_transients();
+    if( function_exists('fv_wp_flowplayer_delete_extensions_transients') ) {
+      fv_wp_flowplayer_delete_extensions_transients();
+    }
     
     if( empty($aOldOptions['key']) || $aOldOptions['key'] != $sKey ) {      
       global $FV_Player_Pro_loader;
