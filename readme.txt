@@ -359,6 +359,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+* HLS - live stream check - countdown fix
+
 = 7.5.5.727 - 2021/09/09 =
 
 * Appearance - player interface is now a bit smaller on desktop devices
