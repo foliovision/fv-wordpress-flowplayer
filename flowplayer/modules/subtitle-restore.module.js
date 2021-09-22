@@ -10,10 +10,8 @@ flowplayer( function(api,root) {
   api.on('ready', function(e,api,video) {
     if( root.find('strong.fp-cc').is(":visible") ) {
       if( ls.fv_player_subtitle && api.video.subtitles.length ) { // check if we have subtitles to restore
-        if ( ls.fv_player_subtitle === 'none' ) {
-          setTimeout(function() { // core flowplayer picks default subtitle, setTimeout is needed to prevent it
-            api.disableSubtitles();
-          },0);
+        if ( ls.fv_player_subtitle === 'none' ) { // none is saved, disable subtitles
+          api.disableSubtitles();
         } else {
           api.video.subtitles.forEach(function (item, index) {
             if( item.srclang === ls.fv_player_subtitle) {
@@ -21,6 +19,14 @@ flowplayer( function(api,root) {
             }
           });
         }
+      } else { // no subtitles saved, pick default
+        var defaultSubtitle = video.subtitles.filter(function(one) {
+          return one['fv_default'];
+        })[0];
+
+        if (defaultSubtitle) {
+          api.loadSubtitles(video.subtitles.indexOf(defaultSubtitle));
+        } 
       }
     }
 
