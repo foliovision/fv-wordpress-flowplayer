@@ -748,6 +748,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $this->css_writeout();
     
+    // We might be saving the settings in front-end too (plugin update hook)
+    // so in that case we need to not do this
     if( function_exists('fv_wp_flowplayer_delete_extensions_transients') ) {
       fv_wp_flowplayer_delete_extensions_transients();
     }
