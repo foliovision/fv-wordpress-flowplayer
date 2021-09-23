@@ -40,12 +40,16 @@ function fv_player_colorbox_title() {
   return '';
 }
 
+// Fancybox defaults
 jQuery.fancybox.defaults.smallBtn = false;
 jQuery.fancybox.defaults.toolbar = true;
 jQuery.fancybox.defaults.thumbs.hideOnClose = false;
 jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 jQuery.fancybox.defaults.afterLoad = fv_fancybox_check_size;
-jQuery.fancybox.defaults.onThumbsShow = function() {  
+jQuery.fancybox.defaults.hash = false;
+jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
+
+jQuery.fancybox.defaults.onThumbsShow = function() {
   jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
     if( v.src.match(/^#wpfp_/) ) {
       jQuery('.fancybox-thumbs li[data-index='+k+']').append('<span class="fv-player-fancybox-play-icon">&#9654;</span>');
@@ -55,8 +59,16 @@ jQuery.fancybox.defaults.onThumbsShow = function() {
     }
   })
 }
-jQuery.fancybox.defaults.hash = false;
-jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
+
+// click on image will toggle controls
+jQuery.fancybox.defaults.clickContent = function(current, event) {
+  return current.type === "image" ? "toggleControls" : false;
+};
+
+// double click will zoom image
+jQuery.fancybox.defaults.dblclickContent = function(current, event) {
+  return current.type === "image" ? "zoom" : false;
+};
 
 jQuery(document).ready(function() {
   jQuery(".colorbox[href^='#']:not([data-cbox-inline]), .lightbox[href^='#']").filter(function () {
