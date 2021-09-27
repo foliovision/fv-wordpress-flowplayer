@@ -16,6 +16,17 @@ var fv_player_fancybox_paused_players = {};
 
 function fv_player_colorbox_title() {
   var that = jQuery(this), title = that.attr('title');
+
+  var figcaption = that.parent().siblings('figcaption');
+  if( figcaption.length  ) {
+    return figcaption.text();
+  }
+
+  var figcaption = that.closest('figure').find('figcaption');
+  if( figcaption.length  ) {
+    return figcaption.text();
+  }
+
   if( title && title.length > 0 ) return title;
   
   var img = that.find('img[alt]:not(.fp-splash)');
@@ -25,11 +36,6 @@ function fv_player_colorbox_title() {
   }
   if( that.parent().is('h5') && that.parent().clone().children().remove().end().text() ) {
     return that.parent().clone().children().remove().end().text();
-  }
-  
-  var figcaption = that.parent().siblings('figcaption');
-  if( figcaption.length  ) {
-    return figcaption.text();
   }
   return '';
 }

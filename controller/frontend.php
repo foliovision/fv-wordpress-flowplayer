@@ -444,6 +444,9 @@ function flowplayer_prepare_scripts() {
       $parsed = parse_url($matomo_domain);
       if( $parsed && !empty($parsed['host']) ) { 
         $matomo_domain = $parsed['host'];
+        if( !empty($parsed['path']) ) { 
+          $matomo_domain .= '/'.$parsed['path'];
+        }
       }
       $aConf['matomo_domain'] = $matomo_domain;
       $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
@@ -486,6 +489,7 @@ function flowplayer_prepare_scripts() {
       $aLocalize['admin_input'] = true;
       $aLocalize['admin_js_test'] = true;
     }
+
     if( current_user_can('edit_posts') ) {
       $aLocalize['user_edit'] = true;
     }

@@ -68,7 +68,7 @@ class FV_Player_Subtitles {
       if( $key == 'sh' ) $key = 'sr';
       
       $objSubtitle = new stdClass;
-      if( $key == 'subtitles' ) {                   
+      if( $key == 'subtitles' ) {
         $aLang = explode('-', get_bloginfo('language'));
         if( !empty($aLang[0]) ) $objSubtitle->srclang = $aLang[0];
         $sCode = $aLang[0];
@@ -92,18 +92,19 @@ class FV_Player_Subtitles {
         
       } else {
         $objSubtitle->srclang = $key;
-        $objSubtitle->label = $aLangs[strtoupper($key)];        
+        $objSubtitle->label = $aLangs[strtoupper($key)];
       }
       
 
       $objSubtitle->src = $subtitles;
+      // default subtitle
       if( $countSubtitles == 0 && $fv_fp->_get_option('subtitleOn') ) {
-        $objSubtitle->default = true;
-      }      
+        $objSubtitle->fv_default = true;
+      }
       $aOutput[] = $objSubtitle;
       
       $countSubtitles++;
-    }    
+    }
     
     if( count($aSubtitles) ) {
       $aItem['subtitles'] = $aOutput;

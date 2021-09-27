@@ -7,33 +7,34 @@ flowplayer(function(api, root) {
     had_no_volume = root.hasClass('no-volume'),
     had_fp_mute = root.hasClass('fp-mute'),
     had_fp_full = root.hasClass('fp-full'),
-    had_fp_slim = root.hasClass('fp-slim'),
-    timeline = root.find('.fp-timeline'),
     buttons_count = 0;
 
   function check_size() {
-    var width = player.width() || root.width();
+    var width = player.width() || root.width(),
+      video_index = api.video.index ? api.video.index : 0;
+
     if(width > 900) {
       jQuery('.fp-subtitle',root).addClass('is-wide');
     } else {
       jQuery('.fp-subtitle',root).removeClass('is-wide');
     }
-    
+
     // core Flowplayer classes which are normally added in requestAnimationFrame, which increases CPU load too much
     root.toggleClass('is-tiny', width < 400);
     root.toggleClass('is-small', width < 600 && width >= 400 );
 
     // if the player is too narrow we put the timeline on top of the control bar
     var too_narrow = width < 480 + buttons_count*35;
+
+    // move timeline when timeline chapters are enabled
+    if( typeof api.fv_timeline_chapters_data != 'undefined' && typeof api.fv_timeline_chapters_data[video_index] != 'undefined' ) {
+      too_narrow = true;
+    }
     // we do so by adding .fp-full if it was not there, it needs to stay on for AB loop bar too!
-    if( !had_fp_full ) {      
+    if( !had_fp_full ) {
       root.toggleClass('fp-full', root.hasClass('has-abloop') || too_narrow );
     }
-    // ...and by removing .fp-slim if it was there, it needs to stay on for AB loop bar too!
-    if( had_fp_slim ) {
-      root.toggleClass('fp-slim', !too_narrow || root.hasClass('has-abloop') );
-    }
-    
+
     var size = '';
     if( width < 400 ) size = 'is-tiny';
     else if( width < 600 && width >= 400 ) size = 'is-small';
@@ -55,9 +56,9 @@ flowplayer(function(api, root) {
       if( !had_fp_mute ) root.removeClass('fp-mute');
     }
   }
-  
+
   check_size();
-  
+
   jQuery(window).on('resize',check_size);
 
   api.on('ready fullscreen fullscreen-exit sticky sticky-exit', function(e) {

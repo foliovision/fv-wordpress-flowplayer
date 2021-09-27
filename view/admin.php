@@ -1814,9 +1814,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       <?php endif; ?>
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php _e('Check template', 'fv-wordpress-flowplayer'); ?>" /> 
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php _e('Check videos', 'fv-wordpress-flowplayer'); ?>" />
-      
-      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv-wordpress-flowplayer'); ?>" value="<?php echo esc_attr( $fv_fp->_get_option('key') ); ?>" /> <a title="<?php _e('Click here for license info', 'fv-wordpress-flowplayer'); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
-      
+      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv-wordpress-flowplayer'); ?>" value="<?php echo esc_attr( $fv_fp->_get_option('key') ); ?>" /> 
+      <?php if( isset($aCheck->expired) && $aCheck->expired ) : ?>
+        <a href="#" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false"><span class="dashicons dashicons-update-alt"></span><?php _e('Check license', 'fv-wordpress-flowplayer'); ?></a>
+      <?php endif; ?>
+      <?php if( !$fv_fp->_get_option('key') ) : ?>
+        <a title="<?php _e('Click here for license info', 'fv-wordpress-flowplayer'); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
+      <?php endif; ?>
       <img class="fv_wp_flowplayer_check_license-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
       <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
       <img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
@@ -1895,10 +1899,10 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   	});
   }
   
-	function fv_flowplayer_ajax_check( type ) {
-		jQuery('.'+type+'-spin').show();
-		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
-		jQuery.post( ajaxurl, { action: type }, function( response ) {
+  function fv_flowplayer_ajax_check( type ) {
+    jQuery('.'+type+'-spin').show();
+    var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+    jQuery.post( ajaxurl, { action: type }, function( response ) {
       response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
       response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
       try {
@@ -1910,20 +1914,24 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
         } else {
           css_class = ' green';
         }
-  
+
         if( obj.ok && obj.ok.length > 0 ) {
           jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
         }
-        
+
+        // Removed the FV Player Pro notice about expired license
+        if(type == 'fv_wp_flowplayer_check_license') {
+          jQuery('.fv-player-pro-admin_notice_license_error').remove();
+        }
       } catch(err) {
         jQuery('#fv_flowplayer_admin_notices').append( jQuery('#wpbody', response ) );
         
       }
       
-			jQuery('.'+type+'-spin').hide();
-		} );              
+      jQuery('.'+type+'-spin').hide();
+    } );
   }
-  
+
   var fv_flowplayer_amazon_s3_count = 0;
   jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
