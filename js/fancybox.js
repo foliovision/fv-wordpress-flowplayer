@@ -173,7 +173,7 @@ function fv_lightbox_flowplayer_shutdown(e) {
     if( e.type == 'afterShow' && jQuery(this).parents('.fancybox-slide--current').length ) return;
 
     // if this player was previously paused on fancybox show, unpause it
-    if ( typeof( fv_player_fancybox_paused_players[ player_id ] ) != 'undefined' ) {
+    if ( typeof( fv_player_fancybox_paused_players[ player_id ] ) != 'undefined' && jQuery(this).parents('.fancybox-slide--current').length ) {
       was_paused = true;
       delete fv_player_fancybox_paused_players[ $e.attr('id') ];
       api.resume();
@@ -185,7 +185,7 @@ function fv_lightbox_flowplayer_shutdown(e) {
     }
 
     if( api.loading ) {
-      api.one('ready',function(){
+      api.one('ready',function() {
         if ( api.engine.engineName === 'fvyoutube' && api.playing && !was_paused ) {
           fv_player_fancybox_paused_players[ $e.attr('id') ] = 1;
           api.pause();
@@ -219,7 +219,11 @@ if( document.addEventListener ) {
 jQuery( function() {
   if( typeof(flowplayer) != "undefined" ) {
     flowplayer( function(api,root) {
-      var lightbox_wrap = jQuery(root).closest('.fv_player_lightbox_hidden');
+      root = jQuery(root);
+       
+      var lightbox_wrap = root.closest('.fv_player_lightbox_hidden'),
+        player = '#' + root.attr('id') + '_container';
+      // close lightbox
       if( lightbox_wrap.length ) {
         lightbox_wrap.on('click', function(e) {
           if( e.target == e.currentTarget) {
@@ -244,6 +248,13 @@ jQuery( function() {
           });
         }
       }
+
+      api.on('progress', function (e,api,time) {
+        if(!root.is(':visible')) {
+          jQuery.fancybox.open(jQuery(player))
+          fv_fancybox_check_size();
+        }
+      });
     });
   }
 });
@@ -300,7 +311,7 @@ jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-
   } else {
     api.play(index);
   }
-  fv_fancybox_check_size()
+  fv_fancybox_check_size();
   
   if( playlist.length && !jQuery(this).data('fancybox') ) {
     playlist.find('a[data-fancybox]').eq(0).click();
