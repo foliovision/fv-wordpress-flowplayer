@@ -3,6 +3,7 @@
 abstract class FV_Player_Media_Browser {
 
   public $ajax_action_name = 'wp_ajax_load_assets';
+  private $s3_assets_loaded = false;
 
   public function __construct($ajax_action_name) {
 
@@ -34,6 +35,20 @@ abstract class FV_Player_Media_Browser {
 
   function register() {
     add_action( $this->ajax_action_name, array($this, 'load_assets') );
+  }
+
+  function include_s3_upload_assets() {
+    if ( $this->s3_assets_loaded ) {
+      return;
+    }
+
+    global $fv_wp_flowplayer_ver;
+
+    wp_enqueue_script( 'fv-player-s3-uploader', flowplayer::get_plugin_url().'/js/s3upload.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
+    wp_enqueue_style( 'fv-player-s3-uploader-css', flowplayer::get_plugin_url() . '/css/s3-uploader.css', array(), filemtime( flowplayer::get_plugin_url() . '/css/s3-uploader.css' ) );
+    wp_enqueue_script( 'fv-player-s3-uploader-base', flowplayer::get_plugin_url().'/js/s3-upload-base.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
+
+    $this->s3_assets_loaded = true;
   }
 
   function get_formatted_assets_data() {
