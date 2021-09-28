@@ -83,7 +83,7 @@ flowplayer( function(api,root) {
             clearInterval(timer);
 
             // Does the video need help at all?
-            if( api.error ) {
+            if( !api.error ) {
               return;
             }
 
