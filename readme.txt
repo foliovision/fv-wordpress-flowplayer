@@ -359,7 +359,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-* HLS - live stream check - countdown fix
+= 7.5.7.727 - 2021/09/27 =
+
+* Bugfix - HLS - live stream check - countdown fix
+* Bugfix - Lightbox - image lightbox picks proper image caption for [caption] shortcodes
+* Bugfix - Matomo/Piwik support - fix when running in subfolder
+* Bugfix - Subtitles - remember disabled subtitles state even if subtitles on by default
 
 = 7.5.5.727 - 2021/09/09 =
 
