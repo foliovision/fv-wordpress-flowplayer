@@ -395,7 +395,7 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href, strip_signature, get_large_splash) {
+  function getSplashImageForMediaFileHref(href) {
     var find = [ fileGetBase(href) ];
 
     if( window.fv_player_shortcode_editor_qualities ) {
@@ -408,35 +408,48 @@ jQuery( function($) {
     }
 
     var splash = false;
+
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
-        if ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
-          if ( typeof(get_large_splash) != 'undefined' && f.splash_large ) {
-            splash = f.splash_large;
-          } else {
-            splash = (f.splash ? f.splash : f.link);
-          }
-
-          // remove signature if we're updating the Editor field, otherwise leave it in,
-          // so we can actually preview the splash
-          if (strip_signature && splash.indexOf('?') > -1) {
-            splash = splash.substring(0, splash.indexOf('?'));
-          }
-        } else if( f && f.link && f.link.match(/\.(m3u8)$/) && fileGetBase(f.link) == find[i] && typeof(strip_signature) != 'undefined' && ( ( typeof(get_large_splash) != 'undefined' && f.splash_large ) || f.splash ) ) {
-          // we check for !strip_signature above, as we do not want to present a false info about thumbnail found as image
-          // in the Media Browser but we still want to use the actual splash image to insert it into the splash input
-          // when this HREF is inserted from the Media Browser window
-          if ( typeof(get_large_splash) != 'undefined' && f.splash_large ) {
-            splash = f.splash_large;
-          } else {
-            splash = f.splash;
-          }
-
-          // here, we always have strip_signature set to true
-          splash = splash.substring(0, splash.indexOf('?'));
+        if (
+          // image splash files with the same base name that are not poining to the same actual file
+          // as the one we're checking them against (classic splash files)
+          ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href )
+          ||
+          // m3u8 splash files that actually point to the same file as the one we're checking them against
+          // but have a splash image under a specific object key (such as Coconut thumbnails with different sizes
+          // used as splash screens and small Media Library thumbnails)
+          ( f && f.link && f.link.match(/\.(m3u8)$/) && fileGetBase(f.link) == find[i] )
+        ) {
+          splash = f;
         }
       }
+    }
+
+    return splash;
+  }
+
+  function getFileSplashImage( file, strip_signature, splash_name ) {
+    if ( !file ) {
+      return false;
+    }
+
+    var splash = false;
+
+    // default name for splash in the file object is "splash"
+    // but we might want to set it to a different one, if we for example
+    // have a Coconut large splash image file, which is stored under "splash_large"
+    if ( typeof( splash_name ) == 'undefined' ) {
+      splash_name = 'splash';
+    }
+
+    splash = file[ splash_name ];
+
+    // we remove the signature when we're updating the Editor field, otherwise we leave it in,
+    // so we can actually preview the splash
+    if (typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
+      splash = splash.substring(0, splash.indexOf('?'));
     }
 
     return splash;
@@ -446,7 +459,11 @@ jQuery( function($) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href, true, true);
+      splash = getSplashImageForMediaFileHref(href);
+
+    if ( splash ) {
+      splash = getFileSplashImage( splash, true, 'splash_large' );
+    }
 
     $url_input
       .val(href)
@@ -603,7 +620,7 @@ jQuery( function($) {
           // load splash image
           var
             isPicture = $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/),
-            splashValue = getSplashImageForMediaFileHref($filenameDiv.data('link')),
+            splashValue = getFileSplashImage( getSplashImageForMediaFileHref( $filenameDiv.data('link') ) ),
             splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" />');
 
           // if we didn't find a splash image for a media file,
@@ -628,7 +645,7 @@ jQuery( function($) {
             '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
             (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
             '\t\t\t</div>\n' +
-            (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
+            ( ( splashValue && $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/) ) ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
             '\n' +
             '\t\t\n' +
