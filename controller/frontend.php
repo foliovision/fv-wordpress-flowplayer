@@ -105,6 +105,7 @@ function fv_flowplayer_get_js_translations() {
   'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
   'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
+  'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
 );
   
   return $aStrings;
