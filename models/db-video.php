@@ -29,6 +29,7 @@ class FV_Player_Db_Video {
     $rtmp_path, // if RTMP is set, this will have the path on the server to the RTMP stream
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
+    $splash_attachment_id, // splash attachment id
     $src, // the main video source
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
@@ -125,6 +126,13 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * @return int
+   */
+  public function getSplashAttachmentId() {
+    return $this->splash_attachment_id;
+  }
+
+  /**
    * @return string
    */
   public function getSrc() {
@@ -186,6 +194,7 @@ class FV_Player_Db_Video {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
+  splash_attachment_id bigint(20) unsigned,
   src varchar(1024) NOT NULL,
   src1 varchar(1024) NOT NULL,
   src2 varchar(1024) NOT NULL,
@@ -905,6 +914,13 @@ CREATE TABLE " . self::$db_table_name . " (
       $cache = self::$DB_Instance->getVideosCache();
       $cache[$this->id] = $this;
       self::$DB_Instance->setVideosCache($cache);
+
+      $splash_attachment_id = $this->getSplashAttachmentId();
+
+      // store video id for splash attachment
+      if( !empty( $splash_attachment_id ) ) {
+        update_post_meta($splash_attachment_id, 'fv_player_video_id', $this->getId() );
+      }
 
       return $this->id;
     } else {
