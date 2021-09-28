@@ -220,6 +220,8 @@ jQuery( function() {
   if( typeof(flowplayer) != "undefined" ) {
     flowplayer( function(api,root) {
       root = jQuery(root);
+
+      debugger;
        
       var lightbox_wrap = root.closest('.fv_player_lightbox_hidden'),
         player = '#' + root.attr('id') + '_container';
@@ -247,14 +249,16 @@ jQuery( function() {
             if( fancybox_thumbs ) jQuery('.fancybox-container').addClass('fancybox-show-thumbs');
           });
         }
-      }
 
-      api.on('progress', function (e,api,time) {
-        if(!root.is(':visible')) {
-          jQuery.fancybox.open(jQuery(player))
-          fv_fancybox_check_size();
-        }
-      });
+        // show lightbox when video loaded/resumed
+        api.on('load resume', function (e,api,time) {
+          if(!root.is(':visible')) {
+            console.log('Opening', player);
+            jQuery.fancybox.open(jQuery(player))
+            fv_fancybox_check_size();
+          }
+        });
+      }
     });
   }
 });
