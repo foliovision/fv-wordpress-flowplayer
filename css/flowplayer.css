@@ -2239,3 +2239,13 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   50% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+/* Click to unmute */
+.flowplayer .fp-message-muted { text-align: center }
+.flowplayer .fp-message-muted:hover, .flowplayer .fp-message-muted:active { text-shadow: 0px 0px 5px rgba( 255, 255, 255, 0.66 ) }
+.flowplayer.has-fp-message-muted .fp-header { display: none }
+.flowplayer .fp-volumebtn-notice { position: relative; top: 3px; }
+.flowplayer .fp-volumebtn-notice:before { content: "\e00d"; }
+.flowplayer.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-minimal .fp-volumebtn-notice:before { content: "\e20d"; }
+.flowplayer.fp-edgy .fp-volumebtn-notice:before { content: "\e10d"; }
+.flowplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
