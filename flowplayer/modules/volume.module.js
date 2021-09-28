@@ -49,6 +49,8 @@ flowplayer(function(api, root) {
 
   // If video starts muted, show a notice
   api.on('ready', function(e,api) {
+    if( root.hasClass('is-audio') ) return;
+
     // We wait for the first progress event as api.muted wouldn't be there on iOS
     api.one('progress', function(e,api) {
       if( api.muted || api.volumeLevel == 0 ) {
