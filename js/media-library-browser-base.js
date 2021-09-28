@@ -395,7 +395,16 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href) {
+  /**
+   * Iterates over all of the loaded files for the current browser
+   * and tries to find a file object that has the same base name as our given
+   * video HREF parameter and can therefore be used as its splash.
+   *
+   * @param href The video file we're trying to find a splash image for.
+   * @returns {boolean|Object} Returns either false, if splash image for the given HREF is not found,
+   *                           otherwise returns the splash image object itself.
+   */
+  function locateSplashFileObjectForMediaFileHref(href) {
     var find = [ fileGetBase(href) ];
 
     if( window.fv_player_shortcode_editor_qualities ) {
@@ -430,6 +439,17 @@ jQuery( function($) {
     return splash;
   }
 
+  /**
+   * Returns the actual splash image file to be used as a thumbnail or splash screen,
+   * with or without a valid signature (with = for preview purposes, without = for inserting it
+   * into the splash input field in the editor).
+   *
+   * @param file The actual file object, or false if a relevant splash file object was not previously found
+   *             by using the locateSplashFileObjectForMediaFileHref() function.
+   * @param strip_signature Whether to leave the image signature in or strip it out.
+   * @param splash_name The actual file object key to look up as a splash image. Defaults to "splash".
+   * @returns {boolean|Object} Returns the actual splash file image or false if none was found.
+   */
   function getFileSplashImage( file, strip_signature, splash_name ) {
     if ( !file ) {
       return false;
@@ -459,7 +479,7 @@ jQuery( function($) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href);
+      splash = locateSplashFileObjectForMediaFileHref(href);
 
     if ( splash ) {
       splash = getFileSplashImage( splash, true, 'splash_large' );
@@ -620,7 +640,7 @@ jQuery( function($) {
           // load splash image
           var
             isPicture = $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/),
-            splashValue = getFileSplashImage( getSplashImageForMediaFileHref( $filenameDiv.data('link') ) ),
+            splashValue = getFileSplashImage( locateSplashFileObjectForMediaFileHref( $filenameDiv.data('link') ) ),
             splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" />');
 
           // if we didn't find a splash image for a media file,
