@@ -221,8 +221,6 @@ jQuery( function() {
     flowplayer( function(api,root) {
       root = jQuery(root);
 
-      debugger;
-       
       var lightbox_wrap = root.closest('.fv_player_lightbox_hidden'),
         player = '#' + root.attr('id') + '_container';
       // close lightbox
@@ -253,7 +251,6 @@ jQuery( function() {
         // show lightbox when video loaded/resumed
         api.on('load resume', function (e,api,time) {
           if(!root.is(':visible')) {
-            console.log('Opening', player);
             jQuery.fancybox.open(jQuery(player))
             fv_fancybox_check_size();
           }
