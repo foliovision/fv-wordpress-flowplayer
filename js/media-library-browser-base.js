@@ -124,7 +124,7 @@ function fv_flowplayer_browser_browse(data, options) {
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
         fileList.append( jQuery(
-          '<li class="folders attachment save-ready">'
+          '<li class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '">'
           + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
           + '<div class="thumbnail">'
           + '<a href="' + f.path + '" title="' + name + '" class="folders">'
@@ -146,7 +146,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
         var
           name = escapeHTML(f.name),
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '"></li>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/),
           icon = '';
 
@@ -677,8 +677,13 @@ jQuery( function($) {
             '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
-          // enable Choose button
-          jQuery('.media-button-select').removeAttr('disabled');
+          // if this item is unselectable (i.e. a Coconut job that errored-out), disable the Choose button
+          if ( $e.hasClass('disabled') ) {
+            jQuery('.media-button-select').prop('disabled', 'disabled');
+          } else {
+            // enable Choose button
+            jQuery('.media-button-select').removeAttr('disabled');
+          }
         } else {
           // disable Choose button
           jQuery('.media-button-select').prop('disabled', 'disabled');
