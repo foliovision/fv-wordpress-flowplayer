@@ -3008,6 +3008,7 @@ jQuery(function() {
 
         get_field('caption',new_item).val(objVid.caption);
         get_field('splash',new_item).val(objVid.splash);
+        get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
         get_field('splash_text',new_item).val(objVid.splash_text);
 
         get_field('start',new_item).val(objVid.start);
