@@ -162,9 +162,12 @@ function fv_flowplayer_browser_browse(data, options) {
           }
         }
 
+        var progress = '';
         // prepend processing progress DIVs, if needed
         if ( f.extra && f.extra.percentage ) {
-          icon += '<div class="fv-player-media-browser-spinner" title="Video is being processed"><b></b><b></b><b></b><b></b></div><div class="fv-player-media-browser-spinner-text" title="Video is being processed">' + f.extra.percentage + '</div>';
+          var percentage = f.extra.percentage;
+          if( percentage < 5 ) percentage = 5;
+          progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
         }
 
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
@@ -173,6 +176,7 @@ function fv_flowplayer_browser_browse(data, options) {
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
           + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
           + '</div>'
+          + progress
           + '</div>'
           + '</div>' +
           '<button type="button" class="check" tabindex="0">' +
