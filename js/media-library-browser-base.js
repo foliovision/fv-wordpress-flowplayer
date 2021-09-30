@@ -166,7 +166,7 @@ function fv_flowplayer_browser_browse(data, options) {
         // prepend processing progress DIVs, if needed
         if ( f.extra && f.extra.percentage ) {
           var percentage = f.extra.percentage;
-          if( percentage < 5 ) percentage = 5;
+          if( parseInt(percentage) < 5 ) percentage = 5+'%';
           progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
         }
 
