@@ -831,12 +831,17 @@ CREATE TABLE " . self::$db_table_name . " (
 
     $splash_attachment_id = $this->getSplashAttachmentId();
 
+    // check if splash url changed
     if( !empty( $splash_attachment_id ) ) {
-      $saved_splash = $wpdb->get_var( $wpdb->prepare("SELECT splash FROM `{$wpdb->prefix}fv_player_videos` JOIN `$wpdb->postmeta` ON post_id = splash_attachment_id WHERE {$wpdb->prefix}fv_player_videos.id = %d AND {$wpdb->prefix}fv_player_videos.splash_attachment_id = %d LIMIT 1", $this->getId(), $splash_attachment_id) );
+      $saved_splash = wp_get_attachment_url( $splash_attachment_id );
+      if( !empty( $saved_splash ) ) {
+        $saved_parse = wp_parse_url( $saved_splash );
+        $current_parse = wp_parse_url( $this->getSplash() );
 
-      // splash changed, delete splash attachment
-      if( !empty( $saved_splash ) && strcmp( $this->getSplash(), $saved_splash ) != 0 ) {
-        delete_post_meta( $splash_attachment_id, 'fv_player_video_id' );
+        // splash changed, delete splash attachment
+        if( strcmp( $saved_parse['path'], $current_parse['path'] ) != 0 ) {
+          delete_post_meta( $splash_attachment_id, 'fv_player_video_id' );
+        }
       }
     }
 
@@ -930,9 +935,10 @@ CREATE TABLE " . self::$db_table_name . " (
         $wpdb->prepare( "SELECT post_id FROM `{$wpdb->postmeta}` WHERE meta_key = 'fv_player_video_id' AND meta_value = %d", $this->getId() )
       );
       
+      // check for unused attachments
       if( !empty( $saved_attachments ) ) {
         foreach( $saved_attachments as $post_id ) {
-          // remove if not used 
+          // remove if not used
           if( $splash_attachment_id != $post_id ) {
             delete_post_meta( $post_id, 'fv_player_video_id' );
           }
