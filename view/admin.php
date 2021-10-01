@@ -1125,13 +1125,13 @@ function fv_flowplayer_admin_skin() {
     <?php
     $fv_fp->admin_preview_player = flowplayer_content_handle( array(
       'src' => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
-      'splash' => 'https://i.vimeocdn.com/video/609485450_1280.jpg',
+      'splash' => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
       'autoplay' => 'false',
       'preroll' => 'no',
       'postroll' => 'no',
       'subtitles' => plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
       'caption' => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
-      'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843_295x166.jpg;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053_295x166.jpg',
+      'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130',
 			'liststyle' => 'horizontal'
       ) );
     $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
