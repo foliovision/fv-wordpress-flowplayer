@@ -1899,7 +1899,7 @@ jQuery(function() {
       // reset content of any input fields, except what has .extra-field
       $el_editor.find("input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
       $el_editor.find("textarea").each( function() { jQuery(this).val( '' ) } );
-      $el_editor.find('select').prop('selectedIndex',0);
+      $el_editor.find('select:not([multiple])').prop('selectedIndex',0); // select first index, ignore multiselect - let it be handled separately
       $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
