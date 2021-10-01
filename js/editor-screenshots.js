@@ -8,7 +8,6 @@
     root = jQuery(root);
     var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
-      message = jQuery('.fv-messages'),
       title ='';
 
     // where to seek when trying to setup the crossOrigin attribute for video
@@ -27,26 +26,20 @@
       return img.src ;
     }
 
-    button.on('click', function(){
+    button.on('click', function() {
       try {
         button.prop("disabled",true);
-        
+
         var screenshot = takeScreenshot();
         var item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
         spinner.insertAfter( item.find('#fv_wp_flowplayer_field_splash') );
         
         // Check title
-        if(item.find('#fv_wp_flowplayer_field_caption').val()){
-            title = item.find('#fv_wp_flowplayer_field_caption').val()
-        }else{
-            title = item.find('#fv_wp_flowplayer_field_src').val()
+        if (item.find('#fv_wp_flowplayer_field_caption').val()){
+          title = item.find('#fv_wp_flowplayer_field_caption').val();
+        } else {
+          title = item.find('#fv_wp_flowplayer_field_src').val();
         }
-        var data = {
-          'action': 'fv_player_splashcreen_action',
-          'img': screenshot,
-          'title': title,
-          'security': fv_player_editor_conf.splashscreen_nonce
-        };
       }
       catch(err) {
         var video_tag = root.find('video.fp-engine')[0];
@@ -70,28 +63,7 @@
         return;
       }
 
-      jQuery.post(fv_player.ajaxurl, data, function(response) {
-        if(response.src) {
-          var splashInput = item.find('#fv_wp_flowplayer_field_splash');
-          splashInput.val(response.src);
-          splashInput.css('background-color','#6ef442');
-          
-          // trigger autosave
-          splashInput.trigger('keyup');
-        }
-        if(response.error) {
-          message.html('<div class="error"><p>'+response.error+'</p></div>');
-          fv_player_editor.fv_wp_flowplayer_dialog_resize()
-        }
-        spinner.remove();
-        button.prop("disabled",false);
-
-        // trigger preview
-        fv_wp_flowplayer_submit('refresh-button');
-        setTimeout(function(){
-          splashInput.css('background-color','#ffffff');
-        }, 2000);
-      });
+      fv_player_editor.upload_splash( { 'img': screenshot, 'title': title }, index );
     });
 
     // Compatibility test

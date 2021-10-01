@@ -1033,6 +1033,8 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
+                              fv_player_editor.upload_splash( { 'src': json_data.thumbnail, 'title': title  }, jQuery('.fv-messages') );
+
                               $splash_element.val(json_data.thumbnail).trigger('change');
                               $splash_element.closest('tr').show();
                             }
@@ -3765,6 +3767,52 @@ jQuery(function() {
 
         return false;
       },
+
+      upload_splash: function( args, index ) {
+        var data = {
+          'action': 'fv_player_splashcreen_action',
+          'title': title,
+          'security': fv_player_editor_conf.splashscreen_nonce
+        };
+
+        var item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
+
+        if( args.img ) {
+          data.img = args.img;
+        } else if( args.url ) {
+          data.url = args.url;
+        }
+
+        jQuery.post(fv_player.ajaxurl, data, function(response) {
+          if(response.src) {
+            var splashInput = item.find('#fv_wp_flowplayer_field_splash');
+            splashInput.val(response.src);
+            splashInput.css('background-color','#6ef442');
+
+            
+            item.find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(response.attachment_id);
+
+            // trigger autosave
+            splashInput.trigger('keyup');
+
+          }
+
+          if(response.error) {
+            jQuery('.fv-messages').html('<div class="error"><p>'+response.error+'</p></div>');
+            fv_player_editor.fv_wp_flowplayer_dialog_resize()
+          }
+
+          item.find('.fv-player-shortcode-editor-small-spinner').remove(); // remove spinner
+          jQuery('#fv-splash-screen-button').prop( "disabled", false ); // unlock button 
+
+          // trigger preview
+          fv_wp_flowplayer_submit('refresh-button');
+          setTimeout(function(){
+            splashInput.css('background-color','#ffffff');
+          }, 2000);
+        });
+      }
+
     };
 
   })(jQuery);

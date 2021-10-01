@@ -101,7 +101,6 @@ function flowplayer_add_media_button() {
 
 add_action('media_upload_fvplayer_video', '__return_false'); // keep for compatibility!
 
-
 add_action( 'enqueue_block_editor_assets', 'fv_wp_flowplayer_gutenberg_editor_load' );
 
 function fv_wp_flowplayer_gutenberg_editor_load() {
@@ -161,7 +160,7 @@ function fv_flowplayer_filetypes( $aFile ) {
     if( isset($aArgs[2]) && preg_match( '~\.'.$item.'~', $aArgs[2] ) ) {
       $aFile['type'] = $item;
       $aFile['ext'] = $item;
-      $aFile['proper_filename'] = $aArgs[2];    
+      $aFile['proper_file_name'] = $aArgs[2];    
     }
   }
   return $aFile;
@@ -191,9 +190,6 @@ function flowplayer_print_styles() {
 
 add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
 
-
-
-
 add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
 
 function fv_wp_flowplayer_featured_image($post_id) {
@@ -220,7 +216,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   }
   
   if( !$url && preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
-    global $FV_Player_Db;    
+    global $FV_Player_Db;
     $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
     if( !empty($atts['splash']) ) {
       $url = $atts['splash'];
@@ -250,15 +246,15 @@ function fv_wp_flowplayer_featured_image($post_id) {
   
 }
 
-function fv_wp_flowplayer_construct_filename( $post_id ) {
-  $filename = get_the_title( $post_id );
-  $filename = sanitize_title( $filename, $post_id );
-  $filename = urldecode( $filename );
-  $filename = preg_replace( '/[^a-zA-Z0-9\-]/', '', $filename );
-  $filename = substr( $filename, 0, 32 );
-  $filename = trim( $filename, '-' );
-  if ( $filename == '' ) $filename = (string) $post_id;
-  return $filename;
+function fv_wp_flowplayer_construct_file_name( $post_id ) {
+  $file_name = get_the_title( $post_id );
+  $file_name = sanitize_title( $file_name, $post_id );
+  $file_name = urldecode( $file_name );
+  $file_name = preg_replace( '/[^a-zA-Z0-9\-]/', '', $file_name );
+  $file_name = substr( $file_name, 0, 32 );
+  $file_name = trim( $file_name, '-' );
+  if ( $file_name == '' ) $file_name = (string) $post_id;
+  return $file_name;
 }
 
 function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
@@ -288,10 +284,10 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
     }
 
     // Construct a file name with extension
-    $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+    $new_file_name = fv_wp_flowplayer_construct_file_name( $post_id ) . $image_extension;
 
-    // Save the image bits using the new filename    
-    $upload = wp_upload_bits( $new_filename, null, $image_contents );    
+    // Save the image bits using the new file_name
+    $upload = wp_upload_bits( $new_file_name, null, $image_contents );
 
     // Stop for any errors while saving the data or else continue adding the image to the media library
     if ( $upload['error'] ) {
@@ -334,11 +330,9 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
 add_action( 'wp_ajax_fv_player_splashcreen_action', 'fv_player_splashcreen_action' );
 
 function fv_player_splashcreen_action() {
-
-  global $wpdb; //access to the database
   $jsonReturn = '';
 
-   function getTitleFromUrl($url) {
+   function get_title_from_url($url) {
     $arr = explode('/', $url);
     $caption = end($arr);
 
@@ -349,7 +343,8 @@ function fv_player_splashcreen_action() {
 
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
-    );  
+    );
+
     $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
 
     if( is_numeric($caption) && intval($caption) == $caption && stripos($url,'vimeo.com/') !== false ) {
@@ -360,84 +355,128 @@ function fv_player_splashcreen_action() {
 
   if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {
     $title = $_POST['title'];
-    $img = $_POST['img'];
+
     $limit = 128 - 5; // .jpeg
 
-    $img = str_replace('data:image/jpeg;base64,', '', $img);
-    $img = str_replace(' ', '+', $img);
-    
-    $title = getTitleFromUrl($title);
+    // $allowed_mimes = array(
+    //   'jpg|jpeg|jpe'  => 'image/jpeg',
+    //   'gif'           => 'image/gif',
+    //   'png'           => 'image/png',
+    // );
+
+    $title = get_title_from_url($title);
     $title = sanitize_title($title);
     $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
 
-    $decoded = base64_decode($img) ;
-    
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
-    $filename = $title .'.jpg';
-    
-    // $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
+    $file_name = $title .'.jpg';
 
-    $image_upload = file_put_contents( $upload_path . $filename, $decoded );
+    $file_path = $upload_path . $file_name;
 
-    // Handle upload file
-    if( !function_exists( 'wp_handle_sideload' ) ) {
-      require_once( ABSPATH . 'wp-admin/includes/file.php' );
-    }
+    // $hashed_file_name = md5( $file_name . microtime() ) . '_' . $file_name;
 
-    // Debug error
-    if( !function_exists( 'wp_get_current_user' ) ) {
-      require_once( ABSPATH . 'wp-includes/pluggable.php' );
-    }
-    
-    // New file
-    $file             = array();
-    $file['error']    = '';
-    $file['tmp_name'] = $upload_path . $filename;
-    $file['name']     = $filename;
-    $file['type']     = 'image/jpeg';
-    $file['size']     = filesize( $upload_path . $filename );
+    if( isset( $_POST['img'] ) ) { // screenshot - decode and save
+      $img = $_POST['img'];
 
-    $file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
+      $img = str_replace('data:image/jpeg;base64,', '', $img);
+      $img = str_replace(' ', '+', $img);
 
-    if ( ! empty( $file_return['error'] ) ) {
-      $jsonReturn = array(
-        'src'     =>  '',
-        'error'   =>  $file_return['error']
-      ); 
-    } else {
-      $filename = $file_return['file'];
+      $image_data = base64_decode($img);
 
-      $attachment = array(
-        'post_mime_type' => $file_return['type'],
-        'post_title' => preg_replace('/\.[^.]+$/', '', basename($filename)),
-        'post_content' => '',
-        'post_status' => 'inherit',
-        'guid' => $upload_dir['url'] . '/' . basename($filename)
-      );
+      $image_upload = file_put_contents( $file_path, $image_data );
 
-      $attach_id = wp_insert_attachment( $attachment, $filename, 0, true );
-
-      if( is_wp_error( $attach_id ) ) {
+      if( !$image_upload ) {
         $jsonReturn = array(
           'src'     =>  '',
-          'error'   =>  $attach_id->get_error_message()
-        );
-      } else {
-        require_once(ABSPATH . 'wp-admin/includes/image.php');
-      
-        $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
-        wp_update_attachment_metadata( $attach_id, $attach_data );
-  
-        $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
-  
-        $jsonReturn = array(
-          'src'     =>  $src,
-          'error'   =>  ''
+          'error'   =>  'Failed to save splash image'
         );
       }
+    } else if( isset( $_POST['url'] ) ) { // splash - we must download it
+      // if the function its not available, require it
+      if ( ! function_exists( 'download_url' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+      }
+
+      $file_path = download_url( $_POST['url'] );
+
+      if ( is_wp_error( $file_path ) ) {
+        @unlink( $file_path );
+        $jsonReturn = array(
+          'src'     =>  '',
+          'error'   =>  'Cannot download splash - ' . $file_path->get_error_message()
+        );
+      }
+
+    } else {
+      $jsonReturn = array(
+        'src'     =>  '',
+        'error'   =>  'No image data'
+      );
     }
+
+    if( empty( $jsonReturn ) ) { // no error - continue
+      // Handle upload file
+      if( !function_exists( 'wp_handle_sideload' ) ) {
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+      }
+
+      // Debug error
+      if( !function_exists( 'wp_get_current_user' ) ) {
+        require_once( ABSPATH . 'wp-includes/pluggable.php' );
+      }
+
+      // New file
+      $file             = array();
+      $file['error']    = '';
+      $file['tmp_name'] = $file_path;
+      $file['name']     = $file_name;
+      $file['type']     = mime_content_type( $file_path );
+      $file['size']     = filesize( $file_path );
+
+      $file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
+
+      if ( ! empty( $file_return['error'] ) ) {
+        $jsonReturn = array(
+          'src'     =>  '',
+          'error'   =>  $file_return['error']
+        ); 
+      } else {
+        $file_name = $file_return['file'];
+
+        $attachment = array(
+          'post_mime_type' => $file_return['type'],
+          'post_title' => preg_replace('/\.[^.]+$/', '', basename($file_name)),
+          'post_content' => '',
+          'post_status' => 'inherit',
+          'guid' => $upload_dir['url'] . '/' . basename($file_name)
+        );
+
+        $attach_id = wp_insert_attachment( $attachment, $file_name, 0, true );
+
+        if( is_wp_error( $attach_id ) ) {
+          $jsonReturn = array(
+            'src'     =>  '',
+            'error'   =>  $attach_id->get_error_message()
+          );
+        } else {
+          require_once(ABSPATH . 'wp-admin/includes/image.php');
+        
+          $attach_data = wp_generate_attachment_metadata( $attach_id, $file_name );
+          wp_update_attachment_metadata( $attach_id, $attach_data );
+
+          $src = wp_get_attachment_image_url($attach_id, 'full', false);
+
+          $jsonReturn = array(
+            'src'     => $src,
+            'attachment_id' => $attach_id,
+            'error'   => ''
+          );
+        }
+      }
+    }
+
   } else {
     $jsonReturn = array(
       'src'     =>  '',
@@ -445,7 +484,7 @@ function fv_player_splashcreen_action() {
     );
   }
 
-  header('Content-Type: application/json');      
+  header('Content-Type: application/json');
   echo json_encode($jsonReturn);
 
   wp_die(); 

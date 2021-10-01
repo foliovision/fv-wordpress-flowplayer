@@ -833,7 +833,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // check if splash url changed
     if( !empty( $splash_attachment_id ) ) {
-      $saved_splash = wp_get_attachment_url( $splash_attachment_id );
+      $saved_splash = wp_get_attachment_image_url($splash_attachment_id, 'full', false);
       if( !empty( $saved_splash ) ) {
         $saved_parse = wp_parse_url( $saved_splash );
         $current_parse = wp_parse_url( $this->getSplash() );
