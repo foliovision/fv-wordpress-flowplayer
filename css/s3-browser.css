@@ -327,7 +327,7 @@
     height: 5px;
 }
 
-.thumbnail .thumbnail-status {
+.thumbnail .thumbnail-status, .thumbnail .thumbnail-status-error {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -336,6 +336,10 @@
     background: #00a0d2;
     border-radius: 1em;
     padding: .1em .4em;
+}
+
+.thumbnail .thumbnail-status-error {
+    background-color: #ed331c;
 }
 
 #__assets_browser .browser-progress-bar {

@@ -164,10 +164,14 @@ function fv_flowplayer_browser_browse(data, options) {
 
         var progress = '';
         // prepend processing progress DIVs, if needed
-        if ( f.extra && f.extra.percentage ) {
-          var percentage = f.extra.percentage;
-          if( parseInt(percentage) < 5 ) percentage = 5+'%';
-          progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
+        if ( f.extra && ( f.extra.percentage || f.extra.encoding_job_status == 'error' ) ) {
+          if ( f.extra.percentage ) {
+            var percentage = f.extra.percentage;
+            if( parseInt(percentage) < 5 ) percentage = 5+'%';
+            progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
+          } else {
+            progress += '<div class="thumbnail-status-error">Error</div>';
+          }
         }
 
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
