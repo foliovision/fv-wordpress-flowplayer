@@ -1033,7 +1033,8 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
-                              fv_player_editor.upload_splash( { 'src': json_data.thumbnail, 'title': title  }, jQuery('.fv-messages') );
+
+                              fv_player_editor.upload_splash( { 'src': json_data.thumbnail, 'title': title  }, $parent_table.attr('data-index') );
 
                               $splash_element.val(json_data.thumbnail).trigger('change');
                               $splash_element.closest('tr').show();
@@ -3778,9 +3779,9 @@ jQuery(function() {
         var item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
 
         if( args.img ) {
-          data.img = args.img;
+          data.img = args.img; // screenshot
         } else if( args.url ) {
-          data.url = args.url;
+          data.url = args.url; // splash url
         }
 
         jQuery.post(fv_player.ajaxurl, data, function(response) {
@@ -3789,7 +3790,6 @@ jQuery(function() {
             splashInput.val(response.src);
             splashInput.css('background-color','#6ef442');
 
-            
             item.find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(response.attachment_id);
 
             // trigger autosave
