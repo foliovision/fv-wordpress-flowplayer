@@ -170,10 +170,10 @@ function fv_lightbox_flowplayer_shutdown(e) {
       return;
     }
 
-    if( e.type == 'afterShow' && jQuery(this).parents('.fancybox-slide--current').length ) return;
+    if( e.type == 'afterShow' && api.lightbox_visible() ) return;
 
-    // if this player was previously paused on fancybox show, unpause it
-    if ( typeof( fv_player_fancybox_paused_players[ player_id ] ) != 'undefined' && jQuery(this).parents('.fancybox-slide--current').length ) {
+    // if this player was previously paused on fancybox show and it's the currently visible lightbox item, unpause it
+    if ( typeof( fv_player_fancybox_paused_players[ player_id ] ) != 'undefined' && api.lightbox_visible() ) {
       was_paused = true;
       delete fv_player_fancybox_paused_players[ $e.attr('id') ];
       api.resume();
