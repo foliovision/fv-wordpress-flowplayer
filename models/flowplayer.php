@@ -1058,6 +1058,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       if( $sItemCaption ) {
         $aPlayer['fv_title'] = $sItemCaption;
+        if( $this->_get_option('matomo_domain') && $this->_get_option('matomo_site_id') ) {
+          $aPlayer['matomoTitle'] = $sItemCaption;
+        }
       }
 
       if( $splash_img ) {
@@ -1144,6 +1147,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           
           if( $sItemCaption ) {
             $aPlayer['fv_title'] = $sItemCaption;
+            if( $this->_get_option('matomo_domain') && $this->_get_option('matomo_site_id') ) {
+              $aPlayer['matomoTitle'] = $sItemCaption;
+            }
           }
           
           if( $sSplashImage ) {

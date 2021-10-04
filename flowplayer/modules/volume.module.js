@@ -49,10 +49,18 @@ flowplayer(function(api, root) {
 
   // If video starts muted, show a notice
   api.on('ready', function(e,api) {
+    remove_volume_notice();
+
     if( root.hasClass('is-audio') ) return;
 
     // We wait for the first progress event as api.muted wouldn't be there on iOS
     api.one('progress', function(e,api) {
+      // Do not use for videos without audio track
+      var video = jQuery('root').find('video');
+      if( video.length && !hasAudio(video[0]) ) {
+        return;
+      }
+
       if( api.muted || api.volumeLevel == 0 ) {
         var mute_notice = jQuery('<div class="fp-message fp-message-muted fp-shown"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
 
@@ -70,9 +78,19 @@ flowplayer(function(api, root) {
 
   api.on('mute volume', function() {
     if( !api.muted || api.volumeLevel > 0 ) {
-      root.removeClass('has-fp-message-muted');
-      root.find('.fp-message-muted').remove();
+      remove_volume_notice();
     }
   });
+
+  function remove_volume_notice() {
+    root.removeClass('has-fp-message-muted');
+    root.find('.fp-message-muted').remove();
+  }
+
+  function hasAudio(video) {
+    return video.mozHasAudio ||
+    Boolean(video.webkitAudioDecodedByteCount) ||
+    Boolean(video.audioTracks && video.audioTracks.length);
+  }
 
 })
