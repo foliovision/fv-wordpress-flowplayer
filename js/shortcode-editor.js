@@ -1034,7 +1034,7 @@ jQuery(function() {
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
 
-                              fv_player_editor.upload_splash( { 'src': json_data.thumbnail, 'title': title  }, $parent_table.attr('data-index') );
+                              fv_player_editor.upload_splash( { 'url': json_data.thumbnail, 'title': title  }, $parent_table.attr('data-index') );
 
                               $splash_element.val(json_data.thumbnail).trigger('change');
                               $splash_element.closest('tr').show();
@@ -3772,11 +3772,10 @@ jQuery(function() {
       upload_splash: function( args, index ) {
         var data = {
           'action': 'fv_player_splashcreen_action',
-          'title': title,
-          'security': fv_player_editor_conf.splashscreen_nonce
-        };
-
-        var item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
+          'security': fv_player_editor_conf.splashscreen_nonce,
+        },
+          title = '',
+          item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
 
         if( args.img ) {
           data.img = args.img; // screenshot
@@ -3784,13 +3783,27 @@ jQuery(function() {
           data.url = args.url; // splash url
         }
 
+        // check title
+        if (item.find('#fv_wp_flowplayer_field_caption').val()){
+          title = item.find('#fv_wp_flowplayer_field_caption').val();
+        } else {
+          title = item.find('#fv_wp_flowplayer_field_src').val();
+        }
+
+        data.title = title;
+
         jQuery.post(fv_player.ajaxurl, data, function(response) {
           if(response.src) {
             var splashInput = item.find('#fv_wp_flowplayer_field_splash');
             splashInput.val(response.src);
             splashInput.css('background-color','#6ef442');
 
-            item.find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(response.attachment_id);
+            if( response.attachment_id ) {
+              item.find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(response.attachment_id); // update attachment id in hidden field
+            }
+            
+            // update splash src
+            item.find('[name="fv_wp_flowplayer_field_splash"]').val(response.src) 
 
             // trigger autosave
             splashInput.trigger('keyup');
