@@ -223,8 +223,26 @@ jQuery( function() {
 
       var lightbox_wrap = root.closest('.fv_player_lightbox_hidden'),
         player = '#' + root.attr('id') + '_container';
-      // close lightbox
-      if( lightbox_wrap.length ) {
+
+      /**
+       * Check if player is lightboxed
+       * 
+       * @returns int
+       */
+      api.is_in_lightbox = function() {
+        return lightbox_wrap.length;
+      };
+
+      /**
+       * Check if lightbox is visible
+       * 
+       * @returns int
+       */
+      api.lightbox_visible = function() {
+        return root.closest('.fancybox-slide--current').length;
+      };
+
+      if( api.is_in_lightbox() ) {
         lightbox_wrap.on('click', function(e) {
           if( e.target == e.currentTarget) {
             jQuery.fancybox.close();
@@ -248,9 +266,9 @@ jQuery( function() {
           });
         }
 
-        // show lightbox when video loaded/resumed
+        // show lightbox if the player is started by some other way than clicking on the lightbox button - like chapter name
         api.on('load resume', function (e,api,time) {
-          if(!root.is(':visible')) {
+          if( !api.lightbox_visible() ) {
             jQuery.fancybox.open(jQuery(player))
             fv_fancybox_check_size();
           }
