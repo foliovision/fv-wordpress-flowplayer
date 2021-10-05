@@ -49,6 +49,7 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   wp_clear_scheduled_hook( 'fv_player_pro_update_vimeo_cache' );
   wp_clear_scheduled_hook( 'fv_player_pro_update_youtube_cache' );
   wp_clear_scheduled_hook( 'fv_player_pro_update_transcript_cache' );
+  wp_clear_scheduled_hook( 'fv_player_pro_stream_loader_clear_log' );
 
   // remove any transients and options we've left behind
   $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE '\_transient\_fv\_player%'" );
