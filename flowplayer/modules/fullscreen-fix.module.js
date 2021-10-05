@@ -19,7 +19,8 @@ flowplayer(function(player, root) {
     win = window,
     scrollX,
     scrollY,
-    bean = flowplayer.bean;
+    bean = flowplayer.bean,
+    orientation_event_added = false;
 
   //  copy of original Flowplayer function with some subtle changes
   player.fullscreen = function(flag) {
@@ -65,28 +66,28 @@ flowplayer(function(player, root) {
 
     if (FS_SUPPORT) {
 
-       if (flag) {
-          ['requestFullScreen', 'webkitRequestFullScreen', 'mozRequestFullScreen', 'msRequestFullscreen'].forEach(function(fName) {
-             if (typeof wrapper[fName] === 'function') {
-                wrapper[fName]({
-                  navigationUI: "hide"  // hides the white bar on Google Pixel 4 etc.
-                });
-                if (fName === 'webkitRequestFullScreen' && !document.webkitFullscreenElement)  {
-                   wrapper[fName]();
-                }
-             }
-          });
-
-       } else {
-          ['exitFullscreen', 'webkitCancelFullScreen', 'mozCancelFullScreen', 'msExitFullscreen'].forEach(function(fName) {
-            if (typeof document[fName] === 'function') {
-              document[fName]();
+      if (flag) {
+        ['requestFullScreen', 'webkitRequestFullScreen', 'mozRequestFullScreen', 'msRequestFullscreen'].forEach(function(fName) {
+          if (typeof wrapper[fName] === 'function') {
+            wrapper[fName]({
+              navigationUI: "hide"  // hides the white bar on Google Pixel 4 etc.
+            });
+            if (fName === 'webkitRequestFullScreen' && !document.webkitFullscreenElement)  {
+              wrapper[fName]();
             }
-          });
-       }
+          }
+        });
+
+      } else {
+        ['exitFullscreen', 'webkitCancelFullScreen', 'mozCancelFullScreen', 'msExitFullscreen'].forEach(function(fName) {
+          if (typeof document[fName] === 'function') {
+            document[fName]();
+          }
+        });
+      }
 
     } else {
-       player.trigger(flag ? FS_ENTER : FS_EXIT, [player]);
+      player.trigger(flag ? FS_ENTER : FS_EXIT, [player]);
     }
 
     return player;
@@ -102,36 +103,44 @@ flowplayer(function(player, root) {
   });
 
   player.on(FS_ENTER, function() {
-      common.addClass(root, 'is-fullscreen');
-      common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
-      common.removeClass(root, 'fp-minimal');
+    common.addClass(root, 'is-fullscreen');
+    common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
+    common.removeClass(root, 'fp-minimal');
 
-      if (!FS_SUPPORT) common.css(root, 'position', 'fixed');
-      player.isFullscreen = true;
+    if (!FS_SUPPORT) common.css(root, 'position', 'fixed');
+    player.isFullscreen = true;
 
-   }).on(FS_EXIT, function() {
-      var oldOpacity;
-      common.toggleClass(root, 'fp-minimal', common.hasClass(root, 'fp-minimal-fullscreen'));
-      common.removeClass(root, 'fp-minimal-fullscreen');
-      if (!FS_SUPPORT && player.engine === "html5") {
-        oldOpacity = root.css('opacity') || '';
-        common.css(root, 'opacity', 0);
+  }).on(FS_EXIT, function() {
+    var oldOpacity;
+    common.toggleClass(root, 'fp-minimal', common.hasClass(root, 'fp-minimal-fullscreen'));
+    common.removeClass(root, 'fp-minimal-fullscreen');
+    if (!FS_SUPPORT && player.engine === "html5") {
+      oldOpacity = root.css('opacity') || '';
+      common.css(root, 'opacity', 0);
+    }
+    if (!FS_SUPPORT) common.css(root, 'position', '');
+
+    common.removeClass(root, 'is-fullscreen');
+    if (!FS_SUPPORT && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
+    player.isFullscreen = false;
+
+    if( player.engine.engineName != 'fvyoutube' ){ // youtube scroll ignore
+      win.scrollTo(scrollX, scrollY);
+
+      if( !orientation_event_added ) {
+        orientation_event_added = true;
+        screen.orientation.onchange = function(e) {
+          win.scrollTo(scrollX, scrollY);
+        }
       }
-      if (!FS_SUPPORT) common.css(root, 'position', '');
+      
+    }
+  }).on('unload', function() {
+    if (player.isFullscreen) player.fullscreen();
+  });
 
-      common.removeClass(root, 'is-fullscreen');
-      if (!FS_SUPPORT && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
-      player.isFullscreen = false;
-
-      if( player.engine.engineName != 'fvyoutube' ){ // youtube scroll ignore
-        win.scrollTo(scrollX, scrollY);
-      } 
-   }).on('unload', function() {
-     if (player.isFullscreen) player.fullscreen();
-   });
-
-   player.on('shutdown', function() {
-     FULL_PLAYER = null;
-     common.removeNode(wrapper);
-   });
+  player.on('shutdown', function() {
+    FULL_PLAYER = null;
+    common.removeNode(wrapper);
+  });
 });
