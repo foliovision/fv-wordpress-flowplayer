@@ -1033,10 +1033,7 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
-
                               fv_player_editor.upload_splash( { 'url': json_data.thumbnail, 'title': title  }, $parent_table.attr('data-index') );
-
-                              $splash_element.val(json_data.thumbnail).trigger('change');
                               $splash_element.closest('tr').show();
                             }
                           }
@@ -3811,8 +3808,10 @@ jQuery(function() {
           }
 
           if(response.error) {
+            splashInput.val(response.original_src).trigger('change'); // use original splash src if failed to download
+            
             jQuery('.fv-messages').html('<div class="error"><p>'+response.error+'</p></div>');
-            fv_player_editor.fv_wp_flowplayer_dialog_resize()
+            fv_player_editor.fv_wp_flowplayer_dialog_resize();
           }
 
           item.find('.fv-player-shortcode-editor-small-spinner').remove(); // remove spinner

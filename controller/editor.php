@@ -389,11 +389,13 @@ function fv_player_splashcreen_action() {
 
       if( !$image_upload ) {
         $jsonReturn = array(
-          'src'     =>  '',
-          'error'   =>  'Failed to save splash image'
+          'src'     => '',
+          'error'   => 'Failed to save splash image'
         );
       }
     } else if( isset( $_POST['url'] ) ) { // splash - we must download it
+      $_POST['url'] = esc_url( $_POST['url'] );
+
       // if the function its not available, require it
       if ( ! function_exists( 'download_url' ) ) {
         require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -403,16 +405,18 @@ function fv_player_splashcreen_action() {
 
       if ( is_wp_error( $file_path ) ) {
         @unlink( $file_path );
+
         $jsonReturn = array(
-          'src'     =>  '',
-          'error'   =>  'Cannot download splash - ' . $file_path->get_error_message()
+          'src'           => '',
+          'error'         => 'Cannot download splash - ' . $file_path->get_error_message(),
+          'original_src'  => $_POST['url']
         );
       }
 
     } else {
       $jsonReturn = array(
-        'src'     =>  '',
-        'error'   =>  'No image data'
+        'src'     => '',
+        'error'   => 'No image data'
       );
     }
 
@@ -454,6 +458,8 @@ function fv_player_splashcreen_action() {
         );
 
         $attach_id = wp_insert_attachment( $attachment, $file_name, 0, true );
+
+        update_post_meta( $attach_id, 'fv_player_original_splash_url', $_POST['url'] ); // store original splash url in attachment meta
 
         if( is_wp_error( $attach_id ) ) {
           $jsonReturn = array(
