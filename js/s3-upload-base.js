@@ -122,6 +122,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
       // check if we have the correct player version
       if ( !fv_player_coconut_dos_upload_settings.can_use_get_space ) {
         $('.media-toolbar-secondary > .upload_buttons').append('<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>');
+
         $('.' + upload_button_class).click(function() {
           alert('This functionality requires the latest version of FV Flowplayer. Please update your WordPress plugins.');
         });
@@ -130,7 +131,20 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
       var $uploadDiv = $('.media-toolbar-secondary > .upload_buttons');
 
-      $('.media-toolbar-secondary > .upload_buttons').append('<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button><button type="button" class="button media-button button-primary button-large fv-player-s3-upload-cancel-btn ' + cancel_button_class + '">Cancel Upload</button><div class="fv-player-s3-upload-progress ' + upload_progress_class +'"></div><div class="fv-player-s3-upload-progress-enclosure ' + upload_progress_bar_enclosure_class + '"><div class="fv-player-s3-upload-progress-bar ' + upload_progress_bar_class + '"></div><div class="fv-player-s3-upload-progress-number ' + upload_progress_bar_number_class + '"></div></div>');
+      var upload_interface = '<div class="fv-player-s3-upload-buttons">'
+      upload_interface += '<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>';
+      upload_interface += '<button type="button" class="button media-button button-primary button-large fv-player-s3-upload-cancel-btn ' + cancel_button_class + '">Cancel Upload</button>';
+      if( options.upload_button_extra_html ) {
+        upload_interface += options.upload_button_extra_html;
+      }
+      upload_interface += '</div>';
+
+      upload_interface += '<div class="fv-player-s3-upload-wrap">';
+      upload_interface += '<div class="fv-player-s3-upload-progress ' + upload_progress_class +'"></div>';
+      upload_interface += '<div class="fv-player-s3-upload-progress-enclosure ' + upload_progress_bar_enclosure_class + '"><div class="fv-player-s3-upload-progress-bar ' + upload_progress_bar_class + '"></div><div class="fv-player-s3-upload-progress-number ' + upload_progress_bar_number_class + '"></div></div>';
+      upload_interface += '</div>';
+
+      $('.media-toolbar-secondary > .upload_buttons').append( upload_interface);
 
       $uploadButton = $uploadDiv.find('.' + upload_button_class);
       $uploadInput = $uploadDiv.find('.' + file_select_input_class);

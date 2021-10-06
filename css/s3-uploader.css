@@ -1,17 +1,24 @@
 .upload_buttons {
-    padding-top: 10px;
+    padding-top: 20px;
 }
 
 .upload_buttons .fv-player-s3-upload-cancel-btn, .upload_buttons .fv-player-s3-upload-file-input {
     display: none;
 }
 
-.fv-player-s3-upload-progress {
+.fv-player-s3-upload-buttons {
+    float: left;
+}
+.fv-player-s3-upload-progress,
+.fv-player-s3-upload-wrap {
     float: right;
-    margin-top: 7px;
 }
 
-.upload_buttons .fv-player-coconut-browser-upload, .upload_buttons .fv-player-s3-upload-cancel-btn {
+.fv-player-s3-upload-buttons .button {
+    margin-top: -5px;
+}
+
+.fv-player-s3-upload-buttons input, .fv-player-s3-upload-buttons .button, .fv-player-s3-upload-progress-enclosure {
     margin-right: 10px;
 }
 
@@ -20,7 +27,7 @@
     position:relative;
     height: 23px;
     width: 350px;
-    margin: 5px 10px 0 0;
+    margin-top: -2px;
     float: right;
     overflow: hidden;
     background-color: #f5f5f5;
