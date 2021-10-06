@@ -2031,7 +2031,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
-  function get_mime_type($media, $default = 'flash', $no_video = false) {
+  function get_mime_type($media, $default = 'mp4', $no_video = false) {
     $media = trim($media);
     $aURL = explode( '?', $media ); //  throwing away query argument here
     $pathinfo = pathinfo( $aURL[0] );
