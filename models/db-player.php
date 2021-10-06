@@ -395,6 +395,19 @@ class FV_Player_Db_Player {
   }
 
   /**
+   * Returns name of the video DB table.
+   *
+   * @return mixed The name of the video DB table.
+   */
+  public static function get_db_table_name() {
+    if ( !self::$db_table_name ) {
+      self::init_db_name();
+    }
+
+    return self::$db_table_name;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.
@@ -610,7 +623,7 @@ CREATE TABLE " . self::$db_table_name . " (
             }
 
             $where = ' WHERE '.implode(' OR ', $where_like_part);
-          } else if( array_key_exists( 'author_id', $options['db_options'] ) ) {
+          } else if( !empty( $options['db_options'] ) && array_key_exists( 'author_id', $options['db_options'] ) ) {
             $where = ' WHERE author ='.$options['db_options']['author_id'];
           }
 

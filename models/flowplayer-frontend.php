@@ -62,6 +62,35 @@ class flowplayer_frontend extends flowplayer
   }
 
   /**
+   * Retrieves list of player instances containing videos
+   * given by the $ids_string variable.
+   *
+   * @param $ids_string string ID or IDs (comma-separated) of videos to search players for.
+   *
+   * @return array Returns array of player objects found.
+   */
+  function get_players_by_video_ids( $ids_string ) {
+    global $wpdb;
+    $ret = array();
+    $ids_string = esc_sql( $ids_string );
+
+    $results = $wpdb->get_results( '
+          SELECT
+            id
+          FROM
+            ' . FV_Player_Db_Player::get_db_table_name() . '
+          WHERE
+            (videos = "' . $ids_string . '" OR videos LIKE "%,' . $ids_string . '" OR videos LIKE "' . $ids_string . ',%")'
+    );
+
+    foreach ( $results as $row ) {
+      $ret[] = new FV_Player_Db_Player( $row->id );
+    }
+
+    return $ret;
+  }
+
+  /**
    * Builds the HTML and JS code of single flowplayer instance on a page/post.
    *
    * @param string $media URL or filename (in case it is in the /videos/ directory) of video file to be played.
