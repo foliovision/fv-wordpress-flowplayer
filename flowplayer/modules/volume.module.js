@@ -48,13 +48,22 @@ flowplayer(function(api, root) {
   });
 
   // If video starts muted, show a notice
-  api.on('ready', function(e,api) {
-    remove_volume_notice();
+  var deal_with_muted_start = false;
 
+  api.on('ready', function(e,api) {
     if( root.hasClass('is-audio') ) return;
 
-    // We wait for the first progress event as api.muted wouldn't be there on iOS
-    api.one('progress', function(e,api) {
+    // Remember to check this for each video that starts playing
+    deal_with_muted_start = true;
+  });
+
+  // We wait for the first second of the video to not show this of video with the custom start time
+  // as we mute the video in that case too to avoid sound glitch
+  api.on('progress', function(e,api,time) {
+    // And we remember that we already did the check, so the part below only runs once for each video    
+    if( deal_with_muted_start && time > 1 ) {
+      deal_with_muted_start = false;
+
       // Do not use for videos without audio track
       var video = jQuery('root').find('video');
       if( video.length && !hasAudio(video[0]) ) {
@@ -62,6 +71,11 @@ flowplayer(function(api, root) {
       }
 
       if( api.muted || api.volumeLevel == 0 ) {
+        // Did user mute the video on purpose?
+        if( localStorage.muted == 'true' || localStorage.volume == '0' ) {
+          return;
+        }
+
         var mute_notice = jQuery('<div class="fp-message fp-message-muted fp-shown"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
 
         // We need touchstart for mobile, otherwise click would only show te UI
@@ -73,8 +87,8 @@ flowplayer(function(api, root) {
         root.find('.fp-ui').append( mute_notice );
         root.addClass('has-fp-message-muted');
       }
-    } );
-  });
+    }
+  } );
 
   api.on('mute volume', function() {
     if( !api.muted || api.volumeLevel > 0 ) {
