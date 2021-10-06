@@ -359,7 +359,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.8.727 - 2021/10/06 =
+= 7.5.10.727 - 2021/10/06 =
 
 * Airplay - removing the button if the video type is not supported
 * Click to unmute - shows when a video playback starts muted
