@@ -45,7 +45,7 @@ abstract class FV_Player_Media_Browser {
     global $fv_wp_flowplayer_ver;
 
     wp_enqueue_script( 'fv-player-s3-uploader', flowplayer::get_plugin_url().'/js/s3upload.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
-    wp_enqueue_style( 'fv-player-s3-uploader-css', flowplayer::get_plugin_url() . '/css/s3-uploader.css', array(), filemtime( flowplayer::get_plugin_url() . '/css/s3-uploader.css' ) );
+    wp_enqueue_style( 'fv-player-s3-uploader-css', flowplayer::get_plugin_url() . '/css/s3-uploader.css', array(), filemtime( dirname(__FILE__).'/../css/s3-uploader.css' ) );
     wp_enqueue_script( 'fv-player-s3-uploader-base', flowplayer::get_plugin_url().'/js/s3-upload-base.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
 
     $this->s3_assets_loaded = true;
