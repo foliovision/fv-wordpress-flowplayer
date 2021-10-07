@@ -866,16 +866,12 @@ function fv_player_submitbox_misc_actions( $attachment ) {
 
     // Iterate players and get posts for each
     foreach( $players as $player ) {
-      if( $posts = $player->getMetaValue('post_id') ) {
-        foreach( $posts as $post ) {
-          $post = get_post($post);
-          ?>
-            <div class="misc-pub-section misc-pub-attachment">
-              Attached to: <strong><a href="<?php echo get_edit_post_link( $post->ID ); ?>"><?php echo $post->post_title; ?></a></strong>
-            </div>
-          <?php
-        }
-      }
+      $player_name = $player->getPlayerName();
+      ?>
+        <div class="misc-pub-section misc-pub-attachment">
+          Attached to: <strong><a href="<?php echo admin_url( 'admin.php?page=fv_player&id='. $player->getId() ); ?>"><?php echo (!empty($player_name) ? $player_name : "Player ID " . $player->getId() ); ?></a></strong>
+        </div>
+      <?php
     }
   }
 }
