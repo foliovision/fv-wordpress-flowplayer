@@ -266,6 +266,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       if (!$e.hasClass('clickbaited')) {
         $e.addClass('clickbaited');
         $e.on('click', function() {
+          fv_flowplayer_media_browser_disable_drag_drop(false);
+
           if (!switchClicking) {
             switchClicking = true;
             // find a tab that is native and is not our clicked tab and click on it
@@ -288,6 +290,9 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       .text(tabText)
       .addClass('artificial')
       .on('click', function() {
+
+        fv_flowplayer_media_browser_disable_drag_drop(true);
+
         // disable Choose button
         jQuery('.media-button-select').prop('disabled', 'disabled');
         $router.find('.media-menu-item.active').removeClass('active');
@@ -329,6 +334,35 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
     }
   } catch(e) {}
 };
+
+/*
+ * Disable/enable core WordPress drag&drop uploader
+ */
+function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
+  var overlay = jQuery('.media-frame-uploader')
+    overlay_content = jQuery('.uploader-window'),
+    drop_targets = jQuery('[id^=__wp-uploader-id-');
+
+  if( disable ) {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+    drop_targets.on('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    overlay.css('opacity', 0 );
+
+  } else {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    overlay.css('opacity', '' );
+    
+    // We need to hide this now as WordPress did make it visible at some point
+    overlay_content.css('display', 'none' );
+    overlay_content.css('opacity', '0' );
+  }
+}
+
+function fv_flowplayer_media_browser_disable_drag_drop_worker() {
+  return false;
+}
 
 function renderBrowserPlaceholderHTML(options) {
   var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
