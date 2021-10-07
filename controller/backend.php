@@ -840,3 +840,42 @@ function fv_player_pay_per_view_woocommerce_version_check() {
   <?php
   endif;
 }
+
+
+
+
+/**
+ * Attachment edit - show attached posts
+ */
+add_action( 'attachment_submitbox_misc_actions', 'fv_player_submitbox_misc_actions' );
+
+function fv_player_submitbox_misc_actions( $attachment ) {
+  global $pagenow, $typenow;
+
+  // We only want to run the code on a specific page
+  if( $pagenow != 'post.php' || $typenow != 'attachment' ) {
+    return;
+  }
+
+  global $fv_fp;
+
+  $video_id = get_post_meta( $attachment->ID, 'fv_player_video_id', true );
+
+  if( !empty($video_id) ) {
+    $players = $fv_fp->get_players_by_video_ids( $video_id );
+
+    // Iterate players and get posts for each
+    foreach( $players as $player ) {
+      if( $posts = $player->getMetaValue('post_id') ) {
+        foreach( $posts as $post ) {
+          $post = get_post($post);
+          ?>
+            <div class="misc-pub-section misc-pub-attachment">
+              Attached to: <strong><a href="<?php echo get_edit_post_link( $post->ID ); ?>"><?php echo $post->post_title; ?></a></strong>
+            </div>
+          <?php
+        }
+      }
+    }
+  }
+}
