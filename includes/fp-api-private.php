@@ -477,8 +477,8 @@ $this->strPrivateAPI - also
 
     $cookie[$_POST['key']] = !empty($_POST['value']) ? $_POST['value'] : true;
 
-  	$secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
-	  setcookie( $this->class_name.'_store_answer', json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
+    $secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
+    setcookie( $this->class_name.'_store_answer', json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
   }
 
 
@@ -699,19 +699,36 @@ $this->strPrivateAPI - also
       } else {
         $html .= '<p>'.$content.'</p>';
       }
-      
+
+      $cookie_value = $this->pointers_get_cookie();
+
       ?>
       <script type="text/javascript">
         //<![CDATA[
         (function ($) {
+          store_cookie_js = function(value) {
+            var name = "<?php echo $this->class_name.'_store_answer'; ?>";
+            var expires = <?php echo time() + YEAR_IN_SECONDS; ?>;
+            var path = "<?php echo COOKIEPATH; ?>";
+            var domain = "<?php echo ( !empty(COOKIE_DOMAIN) ? '; domain=' . COOKIE_DOMAIN : ''); ?>";
+            var cookie = <?php echo json_encode($cookie_value, JSON_FORCE_OBJECT); ?>;
+            var secure = location.protocol !== 'https:' ? '; secure': '';
+
+            cookie['fv_flowplayer_video_checker_service'] = value;
+
+            document.cookie = name +'=' + JSON.stringify(cookie) + '; path= ' + path +'; expires=' + expires + domain + secure;
+
+            jQuery('#wp-pointer-0').remove();
+          }
+
           var pointer_options = <?php echo json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
           setup = function () {
             $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
-            var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');       
-            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function1; ?>; t.element.pointer('close'); }) );        
+            var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
+            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true') }));
             <?php if ( $button2 ) { ?>
-              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function2; ?> }) );                          
-            <?php } ?>             
+              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('true'); }) );
+            <?php } ?>
           };
 
           if(pointer_options.position && pointer_options.position.defer_loading)
