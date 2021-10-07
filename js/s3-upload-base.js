@@ -116,7 +116,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     // add Upload to Coconut button to the media library modal
     if ( !$('.' + upload_button_class).length ) {
       if ( !$('.media-toolbar-secondary > .upload_buttons').length ) {
-        $('.media-toolbar-secondary').append('<div class="upload_buttons"></div>');
+        $('.media-toolbar-secondary').append('<div id="'+upload_button_text+'-wrap" class="upload_buttons" style="display: none" data-tab-id="'+options.tab_id+'"></div>');
       }
 
       // check if we have the correct player version

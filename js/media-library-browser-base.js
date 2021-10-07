@@ -268,6 +268,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
         $e.on('click', function() {
           fv_flowplayer_media_browser_disable_drag_drop(false);
 
+          fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
           if (!switchClicking) {
             switchClicking = true;
             // find a tab that is native and is not our clicked tab and click on it
@@ -292,6 +294,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       .on('click', function() {
 
         fv_flowplayer_media_browser_disable_drag_drop(true);
+
+        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
 
         // disable Choose button
         jQuery('.media-button-select').prop('disabled', 'disabled');
@@ -362,6 +366,11 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
 
 function fv_flowplayer_media_browser_disable_drag_drop_worker() {
   return false;
+}
+
+function fv_flowplayer_media_browser_show_upload( id ) {
+  jQuery('.media-toolbar-secondary > .upload_buttons').hide();
+  jQuery('.media-toolbar-secondary > .upload_buttons[data-tab-id='+id+']').show();
 }
 
 function renderBrowserPlaceholderHTML(options) {
