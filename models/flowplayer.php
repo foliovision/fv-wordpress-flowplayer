@@ -506,8 +506,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   public function _get_conf() {
     $conf = get_option( 'fvwpflowplayer' );
-    
-    if( !$conf ) { // new install
+    if( !is_array($conf) ) {
+      $conf = array();
+    }
+
+    if( empty($conf) ) { // new install
       // hide some of the notices
       $conf['nag_fv_player_7'] = true;
       $conf['notice_7_5'] = true;
@@ -517,7 +520,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $conf['js-optimize'] = true;
     }
-    
+
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
     if( !isset( $conf['chromecast'] ) ) $conf['chromecast'] = 'false';
@@ -2031,7 +2034,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
-  function get_mime_type($media, $default = 'flash', $no_video = false) {
+  function get_mime_type($media, $default = 'mp4', $no_video = false) {
     $media = trim($media);
     $aURL = explode( '?', $media ); //  throwing away query argument here
     $pathinfo = pathinfo( $aURL[0] );
