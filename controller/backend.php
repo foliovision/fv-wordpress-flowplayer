@@ -557,7 +557,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
     return $data;
   
   } else if( is_wp_error($resp) ) {
-    $args = array( 'sslverify' => false );
+    $args['sslverify'] = false;
     $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
   
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
