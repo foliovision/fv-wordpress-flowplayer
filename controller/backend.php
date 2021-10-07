@@ -864,7 +864,7 @@ function fv_player_submitbox_misc_actions( $attachment ) {
   if( !empty($video_id) ) {
     $players = $fv_fp->get_players_by_video_ids( $video_id );
 
-    // Iterate players and get posts for each
+    // Iterate players and create html with name and link to player
     foreach( $players as $player ) {
       $player_name = $player->getPlayerName();
       ?>
