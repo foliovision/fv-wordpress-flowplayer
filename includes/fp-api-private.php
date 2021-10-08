@@ -706,33 +706,36 @@ $this->strPrivateAPI - also
       <script type="text/javascript">
         //<![CDATA[
         (function ($) {
-          store_cookie_js = function(value) {
-            // prepare cookie metadata
+          store_cookie_js = function(value , key) {
+            // prepare cookie attributes
             var cookie_name = '<?php echo $this->class_name.'_store_answer'; ?>';
-            var path = "<?php echo COOKIEPATH; ?>";
-            var domain = "<?php echo ( !empty(COOKIE_DOMAIN) ? '; domain=' . COOKIE_DOMAIN : ''); ?>";
+
             var expires = new Date();
             expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
 
             // get cookies
-            pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
-            pointer_cookies['<?php echo $key; ?>'] = value;
+            var pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
+
+            // store value
+            pointer_cookies[key] = value;
 
             // save cookies
-            Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', path: path, domain: domain, expires: expires.toUTCString() } )
+            Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', expires: expires.toUTCString() } )
 
             jQuery('#wp-pointer-0').remove();
           }
 
           var pointer_options = <?php echo json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
-          setup = function () {
-            $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
-            var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
-            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true') }));
-            <?php if ( $button2 ) { ?>
-              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false'); }) );
-            <?php } ?>
-          };
+            key = '<?php echo $key; ?>',
+
+            setup = function () {
+              $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
+              var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
+              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true' , key }));
+              <?php if ( $button2 ) { ?>
+                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false', key); }) );
+              <?php } ?>
+            };
 
           if(pointer_options.position && pointer_options.position.defer_loading)
             $(window).bind('load.wp-pointers', setup);
