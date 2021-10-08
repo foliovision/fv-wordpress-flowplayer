@@ -329,7 +329,7 @@ class FV_Player_Db {
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
-            $result_row->player_name = array();
+            $result_row->player_name = $player->getCheckedPlayerName();
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
@@ -342,11 +342,6 @@ class FV_Player_Db {
             $caption = $video->getCaption();
             if( !$caption ) {
               $caption = $video->getCaptionFromSrc();
-            }            
-            
-            // assemble video name, if there's no player name
-            if (is_array($result_row->player_name)) {
-              $result_row->player_name[] = $caption;
             }
 
             // assemble video splash
@@ -357,7 +352,7 @@ class FV_Player_Db {
               } else {
                 $txt = esc_attr($caption_src);
               }
-              
+
               $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
 
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($txt).'" title="'.esc_attr($txt).'" loading="lazy" /><span>' . $txt . '</span></div>';
@@ -370,16 +365,6 @@ class FV_Player_Db {
               if( !isset($result_row->stats_play) ) $result_row->stats_play = 0;
               $result_row->stats_play += intval($video->getMetaValue('stats_play',true)); // todo: lower SQL count
             }
-          }
-
-          // join name items, if present
-          if (is_array($result_row->player_name)) {
-            $result_row->player_name = join(', ', $result_row->player_name);
-          }
-
-          // add "Draft" at the end of player, if in draft status
-          if ( $player->getStatus() == 'draft' ) {
-            $result_row->player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
           }
 
           // join thumbnails

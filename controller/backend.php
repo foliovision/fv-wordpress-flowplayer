@@ -866,10 +866,9 @@ function fv_player_submitbox_misc_actions( $attachment ) {
 
     // Iterate players and create html with name and link to player
     foreach( $players as $player ) {
-      $player_name = $player->getPlayerName();
       ?>
         <div class="misc-pub-section misc-pub-attachment">
-          Attached to: <strong><a href="<?php echo admin_url( 'admin.php?page=fv_player&id='. $player->getId() ); ?>"><?php echo (!empty($player_name) ? $player_name : "Player ID " . $player->getId() ); ?></a></strong>
+          FV Player splash screen: <strong><a href="<?php echo esc_url( admin_url( 'admin.php?page=fv_player&id='. $player->getId() ) ); ?>"><?php echo esc_html( $player->getCheckedPlayerName() ); ?></a></strong>
         </div>
       <?php
     }
