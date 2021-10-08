@@ -70,6 +70,8 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_filter( 'transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_enable' ) );
         add_action( 'deleted_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
         
+        add_action( 'admin_footer', array( $this, 'cookie_js' ) );
+
         //add_action('admin_init', array($this, 'welcome_screen_do_activation_redirect'));
         //add_action('admin_menu', array($this, 'welcome_screen_pages'));
         //add_action('admin_head', array($this, 'welcome_screen_remove_menus'));
@@ -700,23 +702,24 @@ $this->strPrivateAPI - also
         $html .= '<p>'.$content.'</p>';
       }
 
-      $cookie_value = $this->pointers_get_cookie();
-
       ?>
       <script type="text/javascript">
         //<![CDATA[
         (function ($) {
           store_cookie_js = function(value) {
-            var name = "<?php echo $this->class_name.'_store_answer'; ?>";
-            var expires = <?php echo time() + YEAR_IN_SECONDS; ?>;
+            // prepare cookie metadata
+            var cookie_name = '<?php echo $this->class_name.'_store_answer'; ?>';
             var path = "<?php echo COOKIEPATH; ?>";
             var domain = "<?php echo ( !empty(COOKIE_DOMAIN) ? '; domain=' . COOKIE_DOMAIN : ''); ?>";
-            var cookie = <?php echo json_encode($cookie_value, JSON_FORCE_OBJECT); ?>;
-            var secure = location.protocol !== 'https:' ? '; secure': '';
+            var expires = new Date();
+            expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
 
-            cookie['fv_flowplayer_video_checker_service'] = value;
+            // get cookies
+            pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
+            pointer_cookies['<?php echo $key; ?>'] = value;
 
-            document.cookie = name +'=' + JSON.stringify(cookie) + '; path= ' + path +'; expires=' + expires + domain + secure;
+            // save cookies
+            Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', path: path, domain: domain, expires: expires.toUTCString() } )
 
             jQuery('#wp-pointer-0').remove();
           }
@@ -725,9 +728,9 @@ $this->strPrivateAPI - also
           setup = function () {
             $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
             var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
-            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true') }));
+            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true') }));
             <?php if ( $button2 ) { ?>
-              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('true'); }) );
+              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false'); }) );
             <?php } ?>
           };
 
@@ -741,7 +744,19 @@ $this->strPrivateAPI - also
       <?php
     }
   }
-  
+
+
+  function cookie_js() {
+    ?>
+      <script type="text/javascript">
+        //<![CDATA[
+        /*! js-cookie v3.0.1 | MIT */
+        !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self,function(){var n=e.Cookies,o=e.Cookies=t();o.noConflict=function(){return e.Cookies=n,o}}())}(this,(function(){"use strict";function e(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var o in n)e[o]=n[o]}return e}return function t(n,o){function r(t,r,i){if("undefined"!=typeof document){"number"==typeof(i=e({},o,i)).expires&&(i.expires=new Date(Date.now()+864e5*i.expires)),i.expires&&(i.expires=i.expires.toUTCString()),t=encodeURIComponent(t).replace(/%(2[346B]|5E|60|7C)/g,decodeURIComponent).replace(/[()]/g,escape);var c="";for(var u in i)i[u]&&(c+="; "+u,!0!==i[u]&&(c+="="+i[u].split(";")[0]));return document.cookie=t+"="+n.write(r,t)+c}}return Object.create({set:r,get:function(e){if("undefined"!=typeof document&&(!arguments.length||e)){for(var t=document.cookie?document.cookie.split("; "):[],o={},r=0;r<t.length;r++){var i=t[r].split("="),c=i.slice(1).join("=");try{var u=decodeURIComponent(i[0]);if(o[u]=n.read(c,u),e===u)break}catch(e){}}return e?o[e]:o}},remove:function(t,n){r(t,"",e({},n,{expires:-1}))},withAttributes:function(n){return t(this.converter,e({},this.attributes,n))},withConverter:function(n){return t(e({},this.converter,n),this.attributes)}},{attributes:{value:Object.freeze(o)},converter:{value:Object.freeze(n)}})}({read:function(e){return'"'===e[0]&&(e=e.slice(1,-1)),e.replace(/(%[\dA-F]{2})+/gi,decodeURIComponent)},write:function(e){return encodeURIComponent(e).replace(/%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,decodeURIComponent)}},{path:"/"})}));
+        //]]>
+      </script>
+    <?php
+  }
+
 
   function check_domain_license() {
     if( $_POST['slug'] != $this->strPluginSlug ) {
