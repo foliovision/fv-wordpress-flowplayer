@@ -175,6 +175,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
         $uploadButton.add( $cancelButton ).toggle();
         recreate_file_input( file_select_input_name, file_select_input_class );
         $progressDiv.html('Upload cancelled.');
+        upload_error_callback();
         $progressBarDiv.hide();
       });
     }

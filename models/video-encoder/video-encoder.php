@@ -922,7 +922,7 @@ abstract class FV_Player_Video_Encoder {
    *
    * @return int Returns the duration in seconds for which this job is valid.
    */
-  abstract protected function job_create_expiration( $ttl );
+  abstract public function job_create_expiration( $ttl );
 
   /**
    * Update job status
