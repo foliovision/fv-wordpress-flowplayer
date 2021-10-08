@@ -69,6 +69,8 @@ include_once(dirname( __FILE__ ) . '/models/db.php');
 include_once(dirname( __FILE__ ).'/models/cdn.class.php');
 include_once(dirname( __FILE__ ).'/models/digitalocean-spaces.class.php');
 
+include_once(dirname( __FILE__ ).'/models/video-encoder/video-encoder.php');
+
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();
 

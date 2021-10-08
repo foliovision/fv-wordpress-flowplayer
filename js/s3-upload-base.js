@@ -11,8 +11,10 @@ function fv_flowplayer_init_s3_uploader( options ) {
     s3upload = null,
     file_select_input_name = options.file_select_input_name,
     file_select_input_class = options.file_select_input_class,
+    upload_start_callback = ( typeof( options.upload_start_callback ) == 'function' ? options.upload_start_callback : function() {} ),
     upload_success_message = options.upload_success_message,
-    upload_success_callback = options.upload_success_callback;
+    upload_success_callback = options.upload_success_callback,
+    upload_error_callback = ( typeof( options.upload_error_callback ) == 'function' ? options.upload_error_callback : function() {} );
 
   function recreate_file_input( input_name, input_class_name ) {
     if ( $uploadInput.length ) {
@@ -49,12 +51,14 @@ function fv_flowplayer_init_s3_uploader( options ) {
     s3upload.onServerError = function(command, jqXHR, textStatus, errorThrown) {
       $progressDiv.text("Upload failed with server error.");
       $progressBarDiv.hide();
+      upload_error_callback();
       console.log( command, jqXHR, textStatus, errorThrown );
     };
 
     s3upload.onS3UploadError = function(xhr) {
       $progressDiv.text("Upload failed.");
       $progressBarDiv.hide();
+      upload_error_callback();
       console.log( xhr );
     };
 
@@ -89,6 +93,8 @@ function fv_flowplayer_init_s3_uploader( options ) {
     };
 
     $progressDiv.text("Preparing upload...");
+
+    upload_start_callback();
     s3upload.start();
   }
 
@@ -176,7 +182,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
   return {
     update_progress_bar_text: function( txt ) {
-      $progressDiv.text( txt );
+      $progressDiv.html( txt );
     },
     hide_progress_bar: function() {
       $progressBarDiv.hide();

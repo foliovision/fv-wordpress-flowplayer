@@ -9,20 +9,31 @@ abstract class FV_Player_Video_Encoder {
                                // examples: fv_player_coconut, fv_player_bunny_stream ...
     $encoder_name = '',        // used to display name of the service where appropriate (mostly information DIVs in a HTML output)
                                // examples: Coconut, Bunny.net Stream ...
-    $table_name = 'fv_player_encoding_jobs', // table in which encoding jobs are stored
     $instance = null,          // self-explanatory
+    $admin_page = false,       // will be set to a real admin submenu page object once created
     $browser_inc_file = '';    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
 
-  // variables to override
+  // variables to override or access from outside of the base class
   protected
     $version = 'latest',
-    $admin_page = false;
+    $license_key = false,
+    $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
   public function _get_instance() {
     return $this->instance;
   }
 
+  public function get_version() {
+    return $this->version;
+  }
+
+  public function get_table_name() {
+    return $this->table_name;
+  }
+
   function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $table_name, $browser_inc_file ) {
+    global $wpdb;
+
     if ( !$encoder_id ) {
       throw new Exception('Extending encoder class did not provide an encoder ID!');
     }
@@ -46,7 +57,9 @@ abstract class FV_Player_Video_Encoder {
     $this->encoder_id = $encoder_id;
     $this->encoder_name = $encoder_name;
     $this->encoder_wp_url_slug = $encoder_wp_url_slug;
-    $this->table_name = $table_name;
+
+    // table names always start on WP prefix, so add that here for our table name here
+    $this->table_name = $wpdb->prefix . $table_name;
     $this->browser_inc_file = $browser_inc_file;
 
     add_action('init', array( $this, 'email_notification' ), 7 );
@@ -66,7 +79,9 @@ abstract class FV_Player_Video_Encoder {
 
       add_action( 'wp_ajax_fv_player_' . $this->encoder_id .'_delete_job', array( $this, 'ajax_fv_player_delete_job') );
 
-      add_action( 'plugins_loaded', array( $this, 'init_browser') );
+      //add_action( 'plugins_loaded', array( $this, 'init_browser') );
+      // this file is actually only included after the 'plugins_loaded' action was fired, so let's run this method manually
+      $this->init_browser();
 
       // we use a custom taxonomy to categorize the jobs
       add_action( 'admin_init', array( $this, 'create_encoding_categories' ) );
@@ -91,9 +106,18 @@ abstract class FV_Player_Video_Encoder {
       }
 
       add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+      add_action( 'fv_player_video_encoder_include_listing_lib', array( $this, 'include_listing_lib' ), 10, 0 );
     }
 
     add_action( 'fv_player_item', array( $this, 'check_playlist_video_is_processing' ) );
+  }
+
+  /**
+   * Includes a generic jobs listing library, so it can be used outside of this class,
+   * i.e. by extending Encoder classes, when needed.
+   */
+  public function include_listing_lib() {
+    require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
   }
 
   /**
@@ -166,15 +190,6 @@ abstract class FV_Player_Video_Encoder {
   }
 
   /**
-   * Returns an updated $conf variable with settings for the extending Encoder class.
-   *
-   * @param $conf Pre-populated configuration array into which the extending Encoder's class configuration should go.
-   *
-   * @return array Returns an updated $conf variable with settings for the extending Encoder class.
-   */
-  abstract function default_settings( $conf );
-
-  /**
    * Returns augmented arguments array for the category picker with the option for "checked_ontop" set to FALSE.
    *
    * @param $args The original arguments array for the category picker.
@@ -222,11 +237,6 @@ abstract class FV_Player_Video_Encoder {
   }
 
   /**
-   * Displays general notices on top in Admin pages.
-   */
-  abstract function admin_notices();
-
-  /**
    * Adds Settings or Finish Set-Up tab links on top of the Encoder's jobs listing page.
    *
    * @param $links array  An array of existing tab links.
@@ -265,7 +275,7 @@ abstract class FV_Player_Video_Encoder {
       wp_send_json( array('error' => 'Bad nonce') );
     }
 
-    if( $wpdb->query( $wpdb->prepare("DELETE FROM " .$this->table_name . " WHERE id = %d  ", $id) ) ) {
+    if ( $wpdb->query( $wpdb->prepare("DELETE FROM " . $this->table_name . " WHERE id = %d  ", $id) ) ) {
       wp_send_json( array('success' => 'Job deleted successfully') );
     } else {
       wp_send_json( array('error' => 'Error deleting row') );
@@ -282,7 +292,7 @@ abstract class FV_Player_Video_Encoder {
    * @return JSON                        New job table row HTML in html property and also error property if there is any error
    */
   function ajax_fv_player_job_submit() {
-    global $fv_fp, $wpdb;
+    global $wpdb;
 
     // TODO: update JS to generate correct nonce ID (it was coconut_expert_nonce before)
     if(
@@ -346,7 +356,7 @@ abstract class FV_Player_Video_Encoder {
 
     // verify the currently used endpoint supported by the extending Encoder,
     // such as (S)FTP or S3 credentials
-    $endpoint_verify = $this->verify_active_endpoint();
+    $endpoint_verify = $this->verify_active_endpoint( $target );
     if ( $endpoint_verify !== true ) {
       return $endpoint_verify;
     }
@@ -396,7 +406,7 @@ abstract class FV_Player_Video_Encoder {
   function init_browser() {
     // it should not show when picking the media file in dashboard
     if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
-      include( $this->browser_inc_file );
+      include_once( $this->browser_inc_file );
     }
   }
 
@@ -558,7 +568,7 @@ abstract class FV_Player_Video_Encoder {
    *
    * @return ID                 Job ID
    */
-  private function job_create( $args ) {
+  protected function job_create( $args ) {
     global $wpdb;
     global $fv_fp;
 
@@ -867,6 +877,20 @@ abstract class FV_Player_Video_Encoder {
   }
 
   /**
+   * Displays general notices on top in Admin pages.
+   */
+  abstract function admin_notices();
+
+  /**
+   * Returns an updated $conf variable with settings for the extending Encoder class.
+   *
+   * @param $conf Pre-populated configuration array into which the extending Encoder's class configuration should go.
+   *
+   * @return array Returns an updated $conf variable with settings for the extending Encoder class.
+   */
+  abstract function default_settings( $conf );
+
+  /**
    * Verifies the currently used endpoint supported by the extending Encoder, such as (S)FTP or S3 credentials
    * and either directly outputs a JSON-formatted error (for AJAX purposes) or returns the error to be processed further.
    *
@@ -874,7 +898,7 @@ abstract class FV_Player_Video_Encoder {
    *               If we're running an AJAX request, this method must return a valid JSON-formatted error for that request
    *               by utilizing the wp_send_json() method in this format: wp_send_json( array('error' => $error) );
    */
-  abstract function verify_active_endpoint();
+  protected abstract function verify_active_endpoint( $target );
 
   /*
   * Creates default Encoder's configuration.
@@ -889,7 +913,7 @@ abstract class FV_Player_Video_Encoder {
   /**
    * Prepares and returns data to be inserted into the "output" column of this encoder's DB table.
    */
-  abstract function prepare_job_output_column_value();
+  abstract protected function prepare_job_output_column_value();
 
   /**
    * Retrieves new encoding job expiration time, used in URL signatures / tokens.
@@ -898,7 +922,7 @@ abstract class FV_Player_Video_Encoder {
    *
    * @return int Returns the duration in seconds for which this job is valid.
    */
-  abstract function job_create_expiration( $ttl );
+  abstract protected function job_create_expiration( $ttl );
 
   /**
    * Update job status
@@ -915,7 +939,7 @@ abstract class FV_Player_Video_Encoder {
    *  'output' object URLs for all processed resources (such as video qualities, thumbnails etc.)
    * )
    */
-  abstract function job_check( $pending_job );
+  abstract protected function job_check( $pending_job );
 
   /**
    * Submits the job to the Encoder service and stores the result in a table.
