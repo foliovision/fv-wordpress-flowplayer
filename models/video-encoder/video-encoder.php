@@ -142,7 +142,7 @@ abstract class FV_Player_Video_Encoder {
             $job_id = $job_id[1];
 
             $check = $this->update_temporary_job_src( false, $job_id );
-            if( !empty($check['progress'])  ) {
+            if( !empty($check['progress']) && ( $check['status'] != 'error' )  ) {
               $item['pending_encoding_progress'] = $check['progress'];
             } else {
               $item['pending_encoding_error'] = true;
