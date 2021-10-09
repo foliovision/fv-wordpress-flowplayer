@@ -69,8 +69,6 @@ include_once(dirname( __FILE__ ) . '/models/db.php');
 include_once(dirname( __FILE__ ).'/models/cdn.class.php');
 include_once(dirname( __FILE__ ).'/models/digitalocean-spaces.class.php');
 
-include_once(dirname( __FILE__ ).'/models/video-encoder/video-encoder.php');
-
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();
 
@@ -103,3 +101,11 @@ include_once(dirname( __FILE__ ).'/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ).'/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+
+// lazy-load of video encoder libraries
+add_action( 'fv_flowplayer_load_video_encoder_libs', 'fv_flowplayer_load_video_encoder_libs' );
+function fv_flowplayer_load_video_encoder_libs() {
+  include_once( dirname( __FILE__ ).'/models/video-encoder/video-encoder.php');
+  require_once( dirname(__FILE__).'/models/video-encoder/class.fv-player-wizard-base.php' );
+  require_once( dirname(__FILE__).'/models/video-encoder/class.fv-player-wizard-step-base.php' );
+}

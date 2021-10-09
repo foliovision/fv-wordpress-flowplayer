@@ -1,5 +1,4 @@
 <?php
-//require_once( dirname(__FILE__).'/class.wizard.php' );
 
 abstract class FV_Player_Video_Encoder {
   private
