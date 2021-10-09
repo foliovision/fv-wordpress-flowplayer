@@ -1,0 +1,25 @@
+.fv-player-encoder-video-processing-modal {
+  text-align: center;
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  color: white;
+  top: 0;
+}
+
+.fv-player-encoder-video-processing-modal.hidden {
+  display: none;
+}
+
+.fv-player-encoder-video-processing-modal h2 {
+  font-weight: bold;
+  color: white;
+  padding-top: 35px;
+}
+
+.flowplayer .fv-player-encoder-video-processing-modal p {
+  width: 100%;
+  max-width: 100%;
+}
