@@ -30,7 +30,7 @@ abstract class FV_Player_Video_Encoder {
     return $this->table_name;
   }
 
-  function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $table_name, $browser_inc_file ) {
+  function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
     global $wpdb;
 
     if ( !$encoder_id ) {
@@ -45,10 +45,6 @@ abstract class FV_Player_Video_Encoder {
       throw new Exception('Extending encoder class did not provide an encoder URL slug!');
     }
 
-    if ( !$table_name ) {
-      throw new Exception('Extending encoder class did not provide an encoder table name!');
-    }
-
     if ( !$browser_inc_file ) {
       throw new Exception('Extending encoder class did not provide a browser backend PHP file name!');
     }
@@ -58,7 +54,7 @@ abstract class FV_Player_Video_Encoder {
     $this->encoder_wp_url_slug = $encoder_wp_url_slug;
 
     // table names always start on WP prefix, so add that here for our table name here
-    $this->table_name = $wpdb->prefix . $table_name;
+    $this->table_name = $wpdb->prefix . $this->table_name;
     $this->browser_inc_file = $browser_inc_file;
 
     add_action('init', array( $this, 'email_notification' ), 7 );
@@ -888,6 +884,42 @@ abstract class FV_Player_Video_Encoder {
   }
 
   /**
+   * Updates DB table definition for the extending plugin.
+   * Used when a version change of the extending plugin is detected,
+   * as well as displaying jobs listing page.
+   */
+  public function plugin_update_database() {
+    global $wpdb;
+
+    $sql = "CREATE TABLE ". $this->table_name ." (
+      id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      id_video bigint(20) unsigned NOT NULL,
+      job_id bigint(20) unsigned NOT NULL,
+      date_created datetime NOT NULL,
+      date_checked datetime NOT NULL,
+      source varchar(1024) NOT NULL,
+      target varchar(1024) NOT NULL,
+      type varchar(64) NOT NULL,
+      status varchar(64) NOT NULL,
+      progress varchar(64),
+      error varchar(1024),
+      mime varchar(64),
+      args TEXT,
+      result TEXT,
+      output TEXT,
+      video_data TEXT,
+      author bigint(20) unsigned NOT NULL default '0',
+      PRIMARY KEY (id),
+      KEY source (source(191)),
+      KEY type (type),
+      KEY status (status)
+    )" . $wpdb->get_charset_collate() . ";";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+  }
+
+  /**
    * Displays general notices on top in Admin pages.
    */
   abstract function admin_notices();
@@ -963,13 +995,6 @@ abstract class FV_Player_Video_Encoder {
    * @return bool           Result
    */
   abstract function job_submit( $id );
-
-  /**
-   * Updates DB table definition for the extending plugin.
-   * Used when a version change of the extending plugin is detected,
-   * as well as displaying jobs listing page.
-   */
-  abstract function plugin_update_database();
 
   /**
    * Displays the jobs listing page contents.
