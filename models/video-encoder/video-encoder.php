@@ -215,7 +215,7 @@ abstract class FV_Player_Video_Encoder {
    */
   function create_encoding_categories() {
     register_taxonomy(
-      'fv_player_' . $this->encoder_id . '_encoding_category',
+      'fv_player_encoding_category',
       'fv_player_encoding_job',
       array(
         'hierarchical' => true,
