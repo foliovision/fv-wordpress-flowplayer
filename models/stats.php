@@ -5,14 +5,19 @@ class FV_Player_Stats {
   var $cache_directory = false;
 
   public function __construct() {
+    global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
     add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'options_html' ) );
     add_filter( 'fv_flowplayer_conf', array( $this, 'option' ) );
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
 
-    if ( function_exists('wp_next_scheduled') && !wp_next_scheduled( 'fv_player_stats' ) ) {
-      wp_schedule_event( time(), '5minutes', 'fv_player_stats' );
+    if ( function_exists('wp_next_scheduled') ) {
+      if( !wp_next_scheduled( 'fv_player_stats' ) && $fv_fp->_get_option('video_stats_enable')) {
+        wp_schedule_event( time(), '5minutes', 'fv_player_stats' );
+      } else if( wp_next_scheduled( 'fv_player_stats' ) && !$fv_fp->_get_option('video_stats_enable') ) {
+        wp_clear_scheduled_hook( 'fv_player_stats' );
+      }
     }
 
     add_action( 'fv_player_stats', array ( $this, 'parse_cached_files' ) );
