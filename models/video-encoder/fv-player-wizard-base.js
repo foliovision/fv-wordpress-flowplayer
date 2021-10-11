@@ -15,7 +15,7 @@ jQuery( function($) {
       var has_required_fields = true
       get_step_fields().each( function() {
         var input = $(this);
-        if( !input.val() ) {
+        if( !input.val() && !input.data('optional') ) {
           add_field_error('This field is required',input);
           has_required_fields = false;
         }

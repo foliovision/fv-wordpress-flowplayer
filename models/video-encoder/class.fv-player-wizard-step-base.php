@@ -9,11 +9,17 @@ abstract class FV_Player_Wizard_Step_Base {
     )
   );
 
+  protected $buttons_across_2_columns = false;
+
   function buttons() {
     ?>
       <tr>
-        <td></td>
-        <td>
+        <?php
+            if ( !$this->buttons_across_2_columns ) {
+        ?><td></td>
+        <?php
+            }
+        ?><td<?php echo ( $this->buttons_across_2_columns ? ' colspan="2"' : '' ); ?>>
           <?php $this->get_buttons( $this->buttons ); ?>
         </td>
       </tr>
