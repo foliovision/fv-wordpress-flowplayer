@@ -60,6 +60,10 @@ function fv_player_shortcode_editor_scripts_enqueue() {
     'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
   ) );
   
+  wp_localize_script( 'fvwpflowplayer-editor-screenshots', 'fv_player_editor_conf_screenshots', array(
+    'disable_domains' => apply_filters( 'fv_player_editor_screenshot_disable_domains', array() )
+  ) );
+
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');
   wp_enqueue_script('fvwpflowplayer-editor-screenshots');
   
@@ -110,7 +114,7 @@ function fv_wp_flowplayer_gutenberg_editor_load() {
 add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
-  include dirname( __FILE__ ) . '/../view/wizard.php';
+  require_once dirname( __FILE__ ) . '/../view/wizard.php';
   
   // todo: will some of this break page builders?
   global $fv_fp_scripts, $fv_fp;
@@ -364,9 +368,14 @@ function fv_player_splashcreen_action() {
     
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-    $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+    
+    if( function_exists('mb_strinwidth') ) {
+      $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+    } else if( strlen( $title ) > $limit ) {
+      $title = substr($title, 0, $limit);
+    }
 
-    $decoded = base64_decode($img) ;
+    $decoded = base64_decode($img);
     
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;

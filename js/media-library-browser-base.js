@@ -124,7 +124,7 @@ function fv_flowplayer_browser_browse(data, options) {
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
         fileList.append( jQuery(
-          '<li class="folders attachment save-ready">'
+          '<li class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '">'
           + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
           + '<div class="thumbnail">'
           + '<a href="' + f.path + '" title="' + name + '" class="folders">'
@@ -146,7 +146,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
         var
           name = escapeHTML(f.name),
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '"></li>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/),
           icon = '';
 
@@ -162,12 +162,25 @@ function fv_flowplayer_browser_browse(data, options) {
           }
         }
 
+        var progress = '';
+        // prepend processing progress DIVs, if needed
+        if ( f.extra && ( f.extra.percentage || f.extra.encoding_job_status == 'error' ) ) {
+          if ( f.extra.percentage ) {
+            var percentage = f.extra.percentage;
+            if( parseInt(percentage) < 5 ) percentage = 5+'%';
+            progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
+          } else {
+            progress += '<div class="thumbnail-status-error">Error</div>';
+          }
+        }
+
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
           + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
           + '</div>'
+          + progress
           + '</div>'
           + '</div>' +
           '<button type="button" class="check" tabindex="0">' +
@@ -253,6 +266,10 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       if (!$e.hasClass('clickbaited')) {
         $e.addClass('clickbaited');
         $e.on('click', function() {
+          fv_flowplayer_media_browser_disable_drag_drop(false);
+
+          fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
           if (!switchClicking) {
             switchClicking = true;
             // find a tab that is native and is not our clicked tab and click on it
@@ -275,6 +292,11 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       .text(tabText)
       .addClass('artificial')
       .on('click', function() {
+
+        fv_flowplayer_media_browser_disable_drag_drop(true);
+
+        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
         // disable Choose button
         jQuery('.media-button-select').prop('disabled', 'disabled');
         $router.find('.media-menu-item.active').removeClass('active');
@@ -316,6 +338,40 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
     }
   } catch(e) {}
 };
+
+/*
+ * Disable/enable core WordPress drag&drop uploader
+ */
+function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
+  var overlay = jQuery('.media-frame-uploader')
+    overlay_content = jQuery('.uploader-window'),
+    drop_targets = jQuery('[id^=__wp-uploader-id-');
+
+  if( disable ) {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+    drop_targets.on('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    overlay.css('opacity', 0 );
+
+  } else {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    overlay.css('opacity', '' );
+    
+    // We need to hide this now as WordPress did make it visible at some point
+    overlay_content.css('display', 'none' );
+    overlay_content.css('opacity', '0' );
+  }
+}
+
+function fv_flowplayer_media_browser_disable_drag_drop_worker() {
+  return false;
+}
+
+function fv_flowplayer_media_browser_show_upload( id ) {
+  jQuery('.media-toolbar-secondary > .upload_buttons').hide();
+  jQuery('.media-toolbar-secondary > .upload_buttons[data-tab-id='+id+']').show();
+}
 
 function renderBrowserPlaceholderHTML(options) {
   var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
@@ -390,8 +446,18 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href, strip_signature) {
+  /**
+   * Iterates over all of the loaded files for the current browser
+   * and tries to find a file object that has the same base name as our given
+   * video HREF parameter and can therefore be used as its splash.
+   *
+   * @param href The video file we're trying to find a splash image for.
+   * @returns {boolean|Object} Returns either false, if splash image for the given HREF is not found,
+   *                           otherwise returns the splash image object itself.
+   */
+  function locateSplashFileObjectForMediaFileHref(href) {
     var find = [ fileGetBase(href) ];
+
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
         var re = new RegExp(prefix+'$');
@@ -402,19 +468,59 @@ jQuery( function($) {
     }
 
     var splash = false;
+
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
         var f = fv_flowplayer_scannedFiles[j];
-        if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
-          splash = (f.splash ? f.splash : f.link);
-
-          // remove signature if we're updating the Editor field, otherwise leave it in,
-          // so we can actually preview the splash
-          if (strip_signature && splash.indexOf('?') > -1) {
-            splash = splash.substring(0, splash.indexOf('?'));
-          }
+        if (
+          // image splash files with the same base name that are not poining to the same actual file
+          // as the one we're checking them against (classic splash files)
+          ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href )
+          ||
+          // m3u8 splash files that actually point to the same file as the one we're checking them against
+          // but have a splash image under a specific object key (such as Coconut thumbnails with different sizes
+          // used as splash screens and small Media Library thumbnails)
+          ( f && f.link && f.link.match(/\.(m3u8)$/) && fileGetBase(f.link) == find[i] )
+        ) {
+          splash = f;
         }
       }
+    }
+
+    return splash;
+  }
+
+  /**
+   * Returns the actual splash image file to be used as a thumbnail or splash screen,
+   * with or without a valid signature (with = for preview purposes, without = for inserting it
+   * into the splash input field in the editor).
+   *
+   * @param file The actual file object, or false if a relevant splash file object was not previously found
+   *             by using the locateSplashFileObjectForMediaFileHref() function.
+   * @param strip_signature Whether to leave the image signature in or strip it out.
+   * @param splash_name The actual file object key to look up as a splash image. Defaults to "splash".
+   * @returns {boolean|Object} Returns the actual splash file image or false if none was found.
+   */
+  function getFileSplashImage( file, strip_signature, splash_name ) {
+    if ( !file ) {
+      return false;
+    }
+
+    var splash = false;
+
+    // default name for splash in the file object is "splash"
+    // but we might want to set it to a different one, if we for example
+    // have a Coconut large splash image file, which is stored under "splash_large"
+    if ( typeof( splash_name ) == 'undefined' ) {
+      splash_name = 'splash';
+    }
+
+    splash = file[ splash_name ];
+
+    // we remove the signature when we're updating the Editor field, otherwise we leave it in,
+    // so we can actually preview the splash
+    if (typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
+      splash = splash.substring(0, splash.indexOf('?'));
     }
 
     return splash;
@@ -424,7 +530,11 @@ jQuery( function($) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href, true);
+      splash = locateSplashFileObjectForMediaFileHref(href);
+
+    if ( splash ) {
+      splash = getFileSplashImage( splash, true, 'splash_large' );
+    }
 
     $url_input
       .val(href)
@@ -526,6 +636,8 @@ jQuery( function($) {
             fSize = parseInt($filenameDiv.data('size')),
             fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
+            fExtraDisplayData = $filenameDiv.data('extra');
+            fExtraDisplayData = fExtraDisplayData.displayData;
             sizeSuffix = 'bytes';
 
           if (!fSizeTextual) {
@@ -579,7 +691,7 @@ jQuery( function($) {
           // load splash image
           var
             isPicture = $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/),
-            splashValue = getSplashImageForMediaFileHref($filenameDiv.data('link')),
+            splashValue = getFileSplashImage( locateSplashFileObjectForMediaFileHref( $filenameDiv.data('link') ) ),
             splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" />');
 
           // if we didn't find a splash image for a media file,
@@ -602,8 +714,9 @@ jQuery( function($) {
             '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
             '\n' +
             '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
+            (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
             '\t\t\t</div>\n' +
-            (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
+            ( ( splashValue && $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/) ) ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
             '\n' +
             '\t\t\n' +
@@ -615,8 +728,13 @@ jQuery( function($) {
             '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
-          // enable Choose button
-          jQuery('.media-button-select').removeAttr('disabled');
+          // if this item is unselectable (i.e. a Coconut job that errored-out), disable the Choose button
+          if ( $e.hasClass('disabled') ) {
+            jQuery('.media-button-select').prop('disabled', 'disabled');
+          } else {
+            // enable Choose button
+            jQuery('.media-button-select').removeAttr('disabled');
+          }
         } else {
           // disable Choose button
           jQuery('.media-button-select').prop('disabled', 'disabled');

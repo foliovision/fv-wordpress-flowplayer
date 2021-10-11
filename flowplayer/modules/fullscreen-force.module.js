@@ -114,10 +114,12 @@ flowplayer(function(api, root) {
   
   if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
-      if( api.video.width > api.video.height ) {
-        screen.orientation.lock("landscape-primary");
-      } else {
+      // If the video dimensions are not known assume it's wide and landscape mode should be used
+      // TODO: Instead fix HLS.js engine to report video width and height properly
+      if( (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height) ) { 
         screen.orientation.lock("portrait-primary");
+      } else { // if no height or width then force landscape
+        screen.orientation.lock("landscape-primary");
       }
     })
   }

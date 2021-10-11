@@ -4,6 +4,8 @@
  *  Dragging the volume down to zero mutes the video and shows the un-mute icon.
  *  What this code does is it remembers the last volume before you finished dragging
  *  the volume control and then clicking the un-mute icon restores back to that volume
+ * 
+ *  Also show overlay notice when the sound is muted at video start - mostly by autoplay
  */
 flowplayer(function(api, root) {
   root = jQuery(root);
@@ -44,5 +46,65 @@ flowplayer(function(api, root) {
       }
     }
   });
+
+  // If video starts muted, show a notice
+  var deal_with_muted_start = false;
+
+  api.on('ready', function(e,api) {
+    if( root.hasClass('is-audio') ) return;
+
+    // Remember to check this for each video that starts playing
+    deal_with_muted_start = true;
+  });
+
+  // We wait for the first second of the video to not show this of video with the custom start time
+  // as we mute the video in that case too to avoid sound glitch
+  api.on('progress', function(e,api,time) {
+    // And we remember that we already did the check, so the part below only runs once for each video    
+    if( deal_with_muted_start && time > 1 ) {
+      deal_with_muted_start = false;
+
+      // Do not use for videos without audio track
+      var video = jQuery('root').find('video');
+      if( video.length && !hasAudio(video[0]) ) {
+        return;
+      }
+
+      if( api.muted || api.volumeLevel == 0 ) {
+        // Did user mute the video on purpose?
+        if( localStorage.muted == 'true' || localStorage.volume == '0' ) {
+          return;
+        }
+
+        var mute_notice = jQuery('<div class="fp-message fp-message-muted fp-shown"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
+
+        // We need touchstart for mobile, otherwise click would only show te UI
+        mute_notice.on( 'click touchstart', function() {
+          api.mute(false);
+          api.volume(1);
+        });
+
+        root.find('.fp-ui').append( mute_notice );
+        root.addClass('has-fp-message-muted');
+      }
+    }
+  } );
+
+  api.on('mute volume', function() {
+    if( !api.muted || api.volumeLevel > 0 ) {
+      remove_volume_notice();
+    }
+  });
+
+  function remove_volume_notice() {
+    root.removeClass('has-fp-message-muted');
+    root.find('.fp-message-muted').remove();
+  }
+
+  function hasAudio(video) {
+    return video.mozHasAudio ||
+    Boolean(video.webkitAudioDecodedByteCount) ||
+    Boolean(video.audioTracks && video.audioTracks.length);
+  }
 
 })

@@ -162,7 +162,7 @@ function fv_player_admin_pointer_boxes() {
       </ul>
       <p>You can read more about it in our <a href='https://foliovision.com/?p=137472' target='_blank'>blog announcement</a>.</p>", 'fv-wordpress-flowplayer'),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer')
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
     );
   }
   
@@ -173,7 +173,7 @@ function fv_player_admin_pointer_boxes() {
       'heading' => __('FV Player Video Lightbox', 'fv-wordpress-flowplayer'),
       'content' => __("<p>The lightbox technology has been changed from <a href='http://www.jacklmoore.com/colorbox/' target='_blank'>Colorbox</a> to <a href='https://fancyapps.com/fancybox/3/' target='_blank'>fancyBox</a></p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. You can check <a href='https://foliovision.com/player/demos/fv-flowplayer-lightbox' target='_blank'>our FV Player demo page</a> of it too.</p>", 'fv-wordpress-flowplayer'),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer')
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
     );
   }
   
@@ -184,7 +184,7 @@ function fv_player_admin_pointer_boxes() {
       'heading' => __('FV Player database storage is here!', 'fv-wordpress-flowplayer'),
       'content' => __("<p>Any new or updated FV Player instances will be stored in database. This simplifies the shortcodes and increases FV Player reliability. You can read the full announcement <a href='https://foliovision.com/2018/11/video-database/' target='_blank'>here</a></p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Advanced users can keep using the old shortcodes, but from now on the FV Player editor works with database only.</p>", 'fv-wordpress-flowplayer'),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer')
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
     );
   }
   
@@ -195,7 +195,7 @@ function fv_player_admin_pointer_boxes() {
       'heading' => __('FV Player Video Sitemap coverage', 'fv-wordpress-flowplayer'),
       'content' => __("<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>", 'fv-wordpress-flowplayer').'<script>jQuery(".fv_flowplayer_notice_xml_sitemap_iframes .button2").click()</script>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer'),
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
       'button2' => __('Go to setting', 'fv-wordpress-flowplayer'),
       'function2' => 'location.href = "'.admin_url('options-general.php?page=fvplayer').'#fv_flowplayer_seo"',
     );
@@ -215,7 +215,7 @@ function fv_player_admin_pointer_boxes() {
 <li>Improved video buffering</li></ul>'.
         '<p>More information in our <a href="https://foliovision.com/2018/09/fv-player-7" target="_blank">blog announcement</a>.</p>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer'),
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
     );
   }
   

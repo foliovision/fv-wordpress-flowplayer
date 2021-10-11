@@ -325,6 +325,7 @@ class FV_Player_Db {
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
           $result_row->status = __($player->getStatus(), 'fv-wordpress-flowplayer');
+          $result_row->video_objects = $videos;
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
@@ -1632,8 +1633,9 @@ class FV_Player_Db {
     if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', $post->post_content, $matches1 ) ) {
       $matches = array_merge( $matches, $matches1[1] );
     }
-    
-    if( preg_match_all('~\[fvplayer.*?id=[\'"]([0-9,]+)[\'"].*?\]~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
+
+    // The [fvplayer] shortcode might be stored in plain form, or with the quotes escaped like fvplayer id=\"56\"]
+    if( preg_match_all('~\[fvplayer.*?id=\\\?[\'"]([0-9,]+)~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
       $matches = array_merge( $matches, $matches2[1] );
     }
     
@@ -1653,6 +1655,8 @@ class FV_Player_Db {
         if( $player->getIsValid() ) {
           
           $add = true;
+          // TODO: This seems to not work when saving with Elementor, it seems store_post_ids() runs 3 times
+          // but it's never aware of the player meta added using FV_Player_Db_Player_Meta in the previous run
           $metas = $player->getMetaData();
           if( count($metas) ) {
             foreach( $metas as $meta_object ) {
@@ -1662,6 +1666,13 @@ class FV_Player_Db {
                 }
               }
             }
+          }
+
+          // TODO: So here's the temporary work-around which should be removed once FV_Player_Db_Player_Meta()
+          // does properly register the player meta with getMetaData()
+          global $wpdb;
+          if( $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$wpdb->prefix}fv_player_playermeta WHERE id_player = %d AND meta_key = %s AND meta_value = %d", $player_id, 'post_id', $post_id ) ) ) {
+            $add = false;
           }
           
           if( $add ) {
@@ -1691,7 +1702,32 @@ class FV_Player_Db {
       
     }
   }
-  
+
+  /**
+   * Retrieves a video instance where the SRC field is set
+   * to the $src variable given.
+   *
+   * @param $src string The video SRC to search for in the database.
+   */
+  public function get_video_by_src( $src ) {
+    global $wpdb;
+
+    $row = $wpdb->get_row( '
+          SELECT
+            id
+          FROM
+            ' . FV_Player_Db_Video::get_db_table_name() . '
+          WHERE
+            src = "' . esc_sql( $src ) . '"'
+    );
+
+    if ( $row ) {
+      return new FV_Player_Db_Video( $row->id );
+    } else {
+      return null;
+    }
+  }
+
   public static function get_player_duration( $id ) {
     global $wpdb;
     return $wpdb->get_var( "SELECT sum(vm.meta_value) FROM {$wpdb->prefix}fv_player_videometa AS vm JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) WHERE p.id = ".intval($id)." AND vm.meta_key = 'duration'" );
