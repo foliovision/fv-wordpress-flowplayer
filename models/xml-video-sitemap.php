@@ -235,11 +235,11 @@ class FV_Xml_Video_Sitemap {
             }
             
             if( $aCategories = get_the_category($objPost->ID) ) {
-              $aCategories = implode(', ', wp_list_pluck( $aCategories, 'name'));
+              $categories = implode(', ',wp_list_pluck($aCategories,'name'));
               if( function_exists('mb_substr') ) {
-                $xml_video['category'] = mb_substr( $aCategories, 0, 250 );
+                $xml_video['category'] = mb_substr( $categories, 0, 250 );
               } else {
-                $xml_video['category'] = substr( $aCategories, 0, 250 );
+                $xml_video['category'] = substr( $categories, 0, 250 );
               }
             }
             $xml_video['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);

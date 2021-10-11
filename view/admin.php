@@ -1125,13 +1125,13 @@ function fv_flowplayer_admin_skin() {
     <?php
     $fv_fp->admin_preview_player = flowplayer_content_handle( array(
       'src' => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
-      'splash' => 'https://i.vimeocdn.com/video/609485450_1280.jpg',
+      'splash' => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
       'autoplay' => 'false',
       'preroll' => 'no',
       'postroll' => 'no',
       'subtitles' => plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
       'caption' => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
-      'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843_295x166.jpg;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053_295x166.jpg',
+      'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130',
 			'liststyle' => 'horizontal'
       ) );
     $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
@@ -1680,13 +1680,28 @@ function fv_flowplayer_admin_usage() {
 function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
-  ?>  		
+  ?>
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
     <p>You can go back to the last 7.4 version - without editor autosaving and JavaScript loading changes:</p>
     <p><a href="<?php echo wp_nonce_url( admin_url($base.'7.4.47.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.4.47.727</a></p>
-  <?php			
+  <?php
 }
 
+function fv_flowplayer_admin_uninstall() {
+  global $fv_fp;
+
+  ?>
+    <p><?php _e('Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-wordpress-flowplayer') ?></p>
+    <table class="form-table2">
+      <?php   $fv_fp->_get_checkbox(__('Remove all data', 'fv-wordpress-flowplayer'), 'remove_all_data' , __('This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-wordpress-flowplayer')); ?>
+      <tr>
+        <td colspan="4">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        </td>
+      </tr>
+    </table>
+  <?php
+}
 
 function fv_flowplayer_admin_checkbox( $name ) {
 	global $fv_fp;
@@ -1749,6 +1764,7 @@ if( !class_exists('FV_Player_Pro') ) {
 /* Tools tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
@@ -1798,9 +1814,13 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       <?php endif; ?>
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php _e('Check template', 'fv-wordpress-flowplayer'); ?>" /> 
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php _e('Check videos', 'fv-wordpress-flowplayer'); ?>" />
-      
-      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv-wordpress-flowplayer'); ?>" value="<?php echo esc_attr( $fv_fp->_get_option('key') ); ?>" /> <a title="<?php _e('Click here for license info', 'fv-wordpress-flowplayer'); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
-      
+      <input type="text" name="key" id="key" placeholder="<?php _e('Commercial License Key', 'fv-wordpress-flowplayer'); ?>" value="<?php echo esc_attr( $fv_fp->_get_option('key') ); ?>" /> 
+      <?php if( isset($aCheck->expired) && $aCheck->expired ) : ?>
+        <a href="#" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false"><span class="dashicons dashicons-update-alt"></span><?php _e('Check license', 'fv-wordpress-flowplayer'); ?></a>
+      <?php endif; ?>
+      <?php if( !$fv_fp->_get_option('key') ) : ?>
+        <a title="<?php _e('Click here for license info', 'fv-wordpress-flowplayer'); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
+      <?php endif; ?>
       <img class="fv_wp_flowplayer_check_license-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
       <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" /> 
       <img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
@@ -1879,10 +1899,10 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   	});
   }
   
-	function fv_flowplayer_ajax_check( type ) {
-		jQuery('.'+type+'-spin').show();
-		var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
-		jQuery.post( ajaxurl, { action: type }, function( response ) {
+  function fv_flowplayer_ajax_check( type ) {
+    jQuery('.'+type+'-spin').show();
+    var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+    jQuery.post( ajaxurl, { action: type }, function( response ) {
       response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
       response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
       try {
@@ -1894,20 +1914,24 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
         } else {
           css_class = ' green';
         }
-  
+
         if( obj.ok && obj.ok.length > 0 ) {
           jQuery('#fv_flowplayer_admin_notices').append( '<div class="updated'+css_class+'"><p>'+obj.ok.join('</p><p>')+'</p></div>' );
         }
-        
+
+        // Removed the FV Player Pro notice about expired license
+        if(type == 'fv_wp_flowplayer_check_license') {
+          jQuery('.fv-player-pro-admin_notice_license_error').remove();
+        }
       } catch(err) {
         jQuery('#fv_flowplayer_admin_notices').append( jQuery('#wpbody', response ) );
         
       }
       
-			jQuery('.'+type+'-spin').hide();
-		} );              
+      jQuery('.'+type+'-spin').hide();
+    } );
   }
-  
+
   var fv_flowplayer_amazon_s3_count = 0;
   jQuery('#amazon-s3-add').on('click', function() {
   	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	

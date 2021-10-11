@@ -20,16 +20,31 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     }
   }
 
-  function get_formatted_assets_data() {
-    $this->fv_wp_flowplayer_include_aws_sdk();
-    global $fv_fp, $s3Client, $FV_Player_DigitalOcean_Spaces;
+  function get_s3_client() {
+    global $fv_fp, $FV_Player_DigitalOcean_Spaces;
 
+    // instantiate the S3 client with AWS credentials
     $endpoint = 'https://' . $FV_Player_DigitalOcean_Spaces->get_endpoint();
 
     $region = $FV_Player_DigitalOcean_Spaces->get_region();
-    
+
     $secret = $fv_fp->_get_option(array('digitalocean_spaces','secret'));
     $key    = $fv_fp->_get_option(array('digitalocean_spaces','key'));
+
+    $credentials = new Aws\Credentials\Credentials( $key, $secret );
+
+    return Aws\S3\S3Client::factory( array(
+      'credentials' => $credentials,
+      'region'      => $region,
+      'version'     => 'latest',
+      'endpoint' => $endpoint
+    ) );
+  }
+
+  function get_formatted_assets_data() {
+    $this->fv_wp_flowplayer_include_aws_sdk();
+    global $fv_fp, $s3Client;
+
     $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
     //$domain = $fv_fp->_get_option(array('digitalocean_spaces','space'));
 
@@ -40,15 +55,8 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
       'items' => array()
     );
 
-    $credentials = new Aws\Credentials\Credentials( $key, $secret );
-
     // instantiate the S3 client with AWS credentials
-    $s3Client = Aws\S3\S3Client::factory( array(
-      'credentials' => $credentials,
-      'region'      => $region,
-      'version'     => 'latest',
-      'endpoint' => $endpoint
-    ) );
+    $s3Client = $this->get_s3_client();
 
     try {
       $args = array(
@@ -186,6 +194,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
 
 }
 
-new FV_Player_DigitalOcean_Spaces_Browser( 'wp_ajax_load_dos_assets' );
+global $FV_Player_DigitalOcean_Spaces_Browser;
+$FV_Player_DigitalOcean_Spaces_Browser = new FV_Player_DigitalOcean_Spaces_Browser( 'wp_ajax_load_dos_assets' );
 
 endif;

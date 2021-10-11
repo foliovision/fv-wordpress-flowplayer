@@ -54,6 +54,10 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         }
 
         add_action( 'admin_enqueue_scripts', array( $this, 'pointers_enqueue' ) );
+
+        // store cookie for each dimissed notice first
+        add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax_cookie' ), 0 );
+        // TODO: What about the actual processing of the Ajax? Does it have to be in the plugin for real?
         add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax' ), 999 );
         add_action( 'wp_ajax_check_domain_license', array( $this, 'check_domain_license' ) );
 
@@ -269,8 +273,8 @@ class FV_Wordpress_Flowplayer_Plugin_Private
       return $data;
     
     } else if( is_wp_error($resp) ) {
-      $args = array( 'sslverify' => false );
-      $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
+      $post['sslverify'] = false;
+      $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $post );
     
       if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
         return $data;
@@ -466,8 +470,18 @@ $this->strPrivateAPI - also
       }
     }
   }
-   
-   
+
+
+  function pointers_ajax_cookie() {
+    $cookie = $this->pointers_get_cookie();
+
+    $cookie[$_POST['key']] = !empty($_POST['value']) ? $_POST['value'] : true;
+
+  	$secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
+	  setcookie( $this->class_name.'_store_answer', json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
+  }
+
+
   function pointers_enqueue() {
     global $wp_version;
     if( ! current_user_can( 'manage_options' ) || ( isset($this->pointer_boxes) && count( $this->pointer_boxes ) == 0 ) || version_compare( $wp_version, '3.4', '<' ) ) {
@@ -481,8 +495,33 @@ $this->strPrivateAPI - also
 
     add_action( 'admin_print_footer_scripts', array( $this, 'pointers_init_scripts' ) );    
   }
-  
-  
+
+
+  /**
+   * Get a cookie storing which pointers were already dimissed
+   * The cookie uses JSON so we decode it too
+   *
+   * @return array
+   */
+  function pointers_get_cookie() {
+    $cookie_name = $this->class_name.'_store_answer';
+
+    $cookie = false;
+    if( !empty($_COOKIE[$cookie_name]) ) {
+      $cookie = $_COOKIE[$cookie_name];
+    }
+
+    $cookie = (array) json_decode( stripslashes($cookie) );
+
+    $json_error = json_last_error();
+    if( $json_error !== JSON_ERROR_NONE ) {
+      $cookie = array();
+    }
+
+    return $cookie;
+  }
+
+
   private function get_readme_url_remote( $url = false ) { // todo: caching
     $output = false;
     
@@ -506,7 +545,7 @@ $this->strPrivateAPI - also
         $output = $resp['body'];
       
       } else if( is_wp_error($resp) ) {
-        $args = array( 'sslverify' => false );
+        $args['sslverify'] = false;
         $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
       
         if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {    
@@ -629,9 +668,16 @@ $this->strPrivateAPI - also
   }
 //]]>
 </script>
-    <?php    
+    <?php
+    $cookie = $this->pointers_get_cookie();
     
     foreach( $this->pointer_boxes AS $key => $args ) {
+      // Some users are experiencing issues when dismissing the notices
+      // So we use cookies as a backup to not show the same notice twice
+      if( !empty($cookie[$key]) ) {
+        continue;
+      }
+
       $nonce = wp_create_nonce( $key );
       
       $args = wp_parse_args( $args, array(

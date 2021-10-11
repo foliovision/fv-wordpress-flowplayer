@@ -115,9 +115,9 @@ class FV_Player_Checker {
     if( !empty($meta) ) {
       extract( $meta, EXTR_SKIP );
     }
-    
-    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-      $URLs = json_decode( stripslashes( trim($_POST['media']) ));
+
+    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) { 
+      $URLs = json_decode( stripslashes( trim( wp_strip_all_tags( $_POST['media'] ) ) ) );
     }
 
     if( isset($URLs) ) {
@@ -129,10 +129,10 @@ class FV_Player_Checker {
         } else if( !isset($media) && !preg_match( '!\.(m3u8ALLOW|m3uALLOW|avi)$!', $source) ) {
           $media = $source;
         }
-      }    
-              
+      }
+
       //$random = rand( 0, 10000 );
-      $random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
+      $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( $_POST['hash'] ) ) : false;
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
