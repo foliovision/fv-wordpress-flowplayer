@@ -173,6 +173,19 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * Returns name of the video DB table.
+   *
+   * @return mixed The name of the video DB table.
+   */
+  public static function get_db_table_name() {
+    if ( !self::$db_table_name ) {
+      self::init_db_name();
+    }
+
+    return self::$db_table_name;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary. It can add new table fields but remove them, which can result in the 'Unknown property for new DB video:' error
    *
    * @param $wpdb The global WordPress database object.

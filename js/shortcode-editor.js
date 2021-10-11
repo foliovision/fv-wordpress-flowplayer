@@ -696,13 +696,6 @@ jQuery(function() {
 
         loading = false;
         is_unsaved = false;
-        
-        // not a good solution!
-        setTimeout( function() {
-          loading = false;
-          is_unsaved = false;
-          //is_draft_changed = false;
-        },100);
       });
 
       $doc.on('fv_flowplayer_player_editor_reset', function() {
@@ -905,7 +898,7 @@ jQuery(function() {
         // fire up a JS event for the FV Player Pro to catch,
         // so it can check the URL and make sure we don't show
         // a warning message for PRO-supported video types
-        $doc.trigger('fv-player-editor-src-change', [ url, result ]);
+        $doc.trigger('fv-player-editor-src-change', [ url, result, this ]);
         
         // Notice next to the input field
         var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
@@ -1553,6 +1546,15 @@ jQuery(function() {
       // add playlist name
       data['fv_wp_flowplayer_field_player_name'] = jQuery('#fv_wp_flowplayer_field_player_name').val();
 
+      // add post ID manually here, as it's a special meta key
+      fv_flowplayer_insertUpdateOrDeletePlayerMeta({
+        data: data,
+        meta_section: 'player',
+        meta_key: 'post_id',
+        element: jQuery('#fv_wp_flowplayer_field_post_id')[0],
+        handle_delete: false
+      });
+
       // trigger meta data save events, so we get meta data from different
       // plugins included as we post
       jQuery(document).trigger('fv_flowplayer_player_meta_save', [data, $tabs]);
@@ -1897,7 +1899,7 @@ jQuery(function() {
       // reset content of any input fields, except what has .extra-field
       $el_editor.find("input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
       $el_editor.find("textarea").each( function() { jQuery(this).val( '' ) } );
-      $el_editor.find('select').prop('selectedIndex',0);
+      $el_editor.find('select:not([multiple])').prop('selectedIndex',0); // select first index, ignore multiselect - let it be handled separately
       $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
@@ -2315,7 +2317,7 @@ jQuery(function() {
             }
 
             $doc.trigger('fv_player_editor_finished');
-            
+            $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
           }).error(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
@@ -3754,7 +3756,7 @@ jQuery(function() {
         }
 
         return false;
-      }
+      },
     };
 
   })(jQuery);
@@ -3809,8 +3811,23 @@ function fv_wp_flowplayer_dialog_resize() {
 }
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
-  // at least one option is value-less
-  if ($valueLessOptions.length) {
+  // multiselect element
+  if(dropdown_element.multiple) {
+    var selected = [],
+      options = dropdown_element && dropdown_element.options,
+      opt;
+  
+    for (var i=0, iLen=options.length; i<iLen; i++) {
+      opt = options[i];
+  
+      // take only selected with value
+      if (opt.selected && opt.value) {
+        selected.push(opt.value);
+      }
+    }
+
+    return selected.length ? selected.join(',') : '';
+  } else if ($valueLessOptions.length) { // at least one option is value-less
     if (optionsHaveNoValue) {
       // all options are value-less - the first one is always default and should be sent as ''
       return (dropdown_element.selectedIndex === 0 ? '' : dropdown_element.value);
