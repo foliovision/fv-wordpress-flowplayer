@@ -966,7 +966,7 @@
 
 .flowplayer .fp-bar > *.fp-buffer, .flowplayer .fp-bar-slider > *.fp-buffer {
   max-width: 100%; }
-.flowplayer.is-live .fp-timeline {
+.flowplayer.is-live .fp-buffer {
   display: none; }
 
 .flowplayer.is-splash .fp-ui noscript{display:block;z-index: 1000;position: absolute;left:0;right:0;padding:2em;background:black;margin-top:20%}
