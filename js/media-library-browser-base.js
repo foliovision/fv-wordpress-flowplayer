@@ -480,7 +480,7 @@ jQuery( function($) {
           // m3u8 splash files that actually point to the same file as the one we're checking them against
           // but have a splash image under a specific object key (such as Coconut thumbnails with different sizes
           // used as splash screens and small Media Library thumbnails)
-          ( f && f.link && f.link.match(/\.(m3u8)$/) && fileGetBase(f.link) == find[i] )
+          ( f && f.link && f.link.match(/\.(m3u8)$/) && !f.link.match(/playlist\.(m3u8)$/) && fileGetBase(f.link) == find[i] )
         ) {
           splash = f;
         }
