@@ -106,6 +106,6 @@ include_once(dirname( __FILE__ ) . '/models/stats.php');
 add_action( 'fv_flowplayer_load_video_encoder_libs', 'fv_flowplayer_load_video_encoder_libs' );
 function fv_flowplayer_load_video_encoder_libs() {
   include_once( dirname( __FILE__ ).'/models/video-encoder/video-encoder.php');
-  require_once( dirname(__FILE__).'/models/video-encoder/class.fv-player-wizard-base.php' );
-  require_once( dirname(__FILE__).'/models/video-encoder/class.fv-player-wizard-step-base.php' );
+  require_once( dirname(__FILE__).'/includes/class.fv-player-wizard-base.php' );
+  require_once( dirname(__FILE__).'/includes/class.fv-player-wizard-step-base.php' );
 }
