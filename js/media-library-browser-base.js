@@ -636,9 +636,9 @@ jQuery( function($) {
             fSize = parseInt($filenameDiv.data('size')),
             fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
+            sizeSuffix = 'bytes',
             fExtraDisplayData = $filenameDiv.data('extra');
             fExtraDisplayData = fExtraDisplayData.displayData;
-            sizeSuffix = 'bytes';
 
           if (!fSizeTextual) {
             // if filesize is too small, show it in KBytes
@@ -728,8 +728,8 @@ jQuery( function($) {
             '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
-          // if this item is unselectable (i.e. a Coconut job that errored-out), disable the Choose button
-          if ( $e.hasClass('disabled') ) {
+          // if this item is unselectable (i.e. a Coconut job that errored-out or encoding job that's still being processed externally), disable the Choose button
+          if ( $e.hasClass('disabled') || ( $filenameDiv.data('extra') && $filenameDiv.data('extra').disabled ) ) {
             jQuery('.media-button-select').prop('disabled', 'disabled');
           } else {
             // enable Choose button
