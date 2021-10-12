@@ -2,14 +2,15 @@
 
 abstract class FV_Player_Wizard_Step_Base_Class {
 
-  var $buttons = array(
+  protected
+    $buttons_across_2_columns = false,
+
+    $buttons = array(
     'next' => array(
       'primary' => false,
       'value' => 'Next',
     )
   );
-
-  protected $buttons_across_2_columns = false;
 
   function buttons() {
     ?>
