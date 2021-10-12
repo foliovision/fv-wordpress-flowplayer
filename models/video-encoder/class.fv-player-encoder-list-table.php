@@ -170,7 +170,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         if( $job->status == 'processing' ) {
           $value .= ' <img data-fv-player-wizard-indicator width="16" height="16" src="'.site_url('wp-includes/images/wpspin-2x.gif').'" />';
         }
-        $value .= "<div class='hover-details'>".$error."<pre>" . $this->json_prettyPrint( $job->result ) . "</pre></div></div>";
+        $value .= "<div class='hover-details'>".$error."<h4>Response:</h4><pre>".self::json_prettyPrint($job->result)."</pre><h4>Output:</h4><pre>".self::json_prettyPrint($job->output)."</pre></div></div>";
         break;
       case 'target':
         $value = "<div class='hover-wrap'><a href='#'>".$job->target."</a><div class='hover-details'><pre>" . $this->json_prettyPrint( $job->args ) . "</pre></div></div>";
