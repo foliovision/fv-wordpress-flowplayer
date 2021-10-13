@@ -2363,3 +2363,6 @@ msgstr ""
 
 msgid "Item %d."
 msgstr ""
+
+msgid "Click to unmute"
+msgstr ""
