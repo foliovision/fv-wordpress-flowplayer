@@ -358,12 +358,6 @@ function fv_player_splashcreen_action() {
 
     $limit = 128 - 5; // .jpeg
 
-    // $allowed_mimes = array(
-    //   'jpg|jpeg|jpe'  => 'image/jpeg',
-    //   'gif'           => 'image/gif',
-    //   'png'           => 'image/png',
-    // );
-
     $title = get_title_from_url($title);
     $title = sanitize_title($title);
     $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
@@ -374,8 +368,6 @@ function fv_player_splashcreen_action() {
     $file_name = $title .'.jpg';
 
     $file_path = $upload_path . $file_name;
-
-    // $hashed_file_name = md5( $file_name . microtime() ) . '_' . $file_name;
 
     if( isset( $_POST['img'] ) ) { // screenshot - decode and save
       $img = $_POST['img'];
