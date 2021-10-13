@@ -1,0 +1,61 @@
+.upload_buttons {
+    padding-top: 20px;
+}
+
+.upload_buttons .fv-player-s3-upload-cancel-btn, .upload_buttons .fv-player-s3-upload-file-input {
+    display: none;
+}
+
+.fv-player-s3-upload-buttons {
+    float: left;
+}
+.fv-player-s3-upload-progress,
+.fv-player-s3-upload-wrap {
+    float: right;
+}
+
+.fv-player-s3-upload-buttons .button {
+    margin-top: -5px;
+}
+
+.fv-player-s3-upload-buttons input, .fv-player-s3-upload-buttons .button, .fv-player-s3-upload-progress-enclosure {
+    margin-right: 10px;
+}
+
+.fv-player-s3-upload-progress-enclosure {
+    display: none;
+    position:relative;
+    height: 23px;
+    width: 350px;
+    margin-top: -2px;
+    float: right;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+}
+
+.fv-player-s3-upload-progress-number {
+    position: absolute;
+    left: 50%;
+    top: 2px;
+    z-index: 5;
+    color: black;
+}
+
+.fv-player-s3-upload-progress-bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    background-color: #337ab7;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+    -webkit-transition: width .6s ease;
+    -o-transition: width .6s ease;
+    transition: width .6s ease;
+}

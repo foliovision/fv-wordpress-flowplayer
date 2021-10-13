@@ -506,8 +506,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   public function _get_conf() {
     $conf = get_option( 'fvwpflowplayer' );
-    
-    if( !$conf ) { // new install
+    if( !is_array($conf) ) {
+      $conf = array();
+    }
+
+    if( empty($conf) ) { // new install
       // hide some of the notices
       $conf['nag_fv_player_7'] = true;
       $conf['notice_7_5'] = true;
@@ -517,7 +520,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $conf['js-optimize'] = true;
     }
-    
+
     if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
     if( !isset( $conf['chromecast'] ) ) $conf['chromecast'] = 'false';
@@ -2021,8 +2024,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // Uppercase first letter
     foreach( $aLangs as $code => $native ) {
-      // $aLangs[$code] = ucfirst($native);
-      $aLangs[$code] = mb_convert_case($native, MB_CASE_TITLE, "UTF-8");
+      if( function_exists('mb_convert_case') ) {
+        $aLangs[$code] = mb_convert_case($native, MB_CASE_TITLE, "UTF-8");
+      } else {
+        $aLangs[$code] = $native;
+      }
     }
 
     ksort($aLangs);
@@ -2031,7 +2037,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
-  function get_mime_type($media, $default = 'flash', $no_video = false) {
+  function get_mime_type($media, $default = 'mp4', $no_video = false) {
     $media = trim($media);
     $aURL = explode( '?', $media ); //  throwing away query argument here
     $pathinfo = pathinfo( $aURL[0] );
@@ -2328,16 +2334,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         // 1st rule
         $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only
         $new_v = preg_replace('/fv_player_embed=\$matches\[\d]/', 'fv_player_embed=1', $v); // fv_player_embed=1
-        
-        $aRulesNew[$new_k] = $new_v; 
-        
+
+        $aRulesNew[$new_k] = $new_v;
+
         // 2nd rule
-        $new_k = str_replace( '/fvp(/(', '/fvp((-?', $k ); // fvp{number} or fvp-{number}
+        $new_k = str_replace( '/fvp(/(.*))', '/fvp((-?\d+))', $k ); // fvp{number} or fvp-{number}
+
         $aRulesNew[$new_k]= $v;
       } else {
         $aRulesNew[$k] = $v;
       }
     }
+
     return $aRulesNew;
   }
 

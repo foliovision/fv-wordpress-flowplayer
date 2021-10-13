@@ -964,6 +964,11 @@
 .fp-preload b:nth-child(3) { animation-delay: .15s }
 .fp-preload b:nth-child(4) { animation-delay: .25s }
 
+.flowplayer .fp-bar > *.fp-buffer, .flowplayer .fp-bar-slider > *.fp-buffer {
+  max-width: 100%; }
+.flowplayer.is-live .fp-buffer {
+  display: none; }
+
 .flowplayer.is-splash .fp-ui noscript{display:block;z-index: 1000;position: absolute;left:0;right:0;padding:2em;background:black;margin-top:20%}
 
 .flowplayer .fp-splash,
@@ -2197,10 +2202,19 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   color: #000;
 }
 
-.flowplayer.is-small .fv-fp-list {display: none}
-.flowplayer.is-tiny .fv-fp-list {display: none}
+.flowplayer.is-small .fv-fp-list, .flowplayer.is-tiny .fv-fp-list {display: none}
 .flowplayer .fv-fp-list-menu {width: auto; top:auto}
 .flowplayer .fv-fp-list-menu a {text-align:left}
+.flowplayer .fv-fp-list-name {display: none}
+
+.flowplayer .fv-fp-list-name {
+  display: none;
+  width: 8em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.flowplayer.is-small .fv-fp-list-name, .flowplayer.is-tiny .fv-fp-list-name {display: none}
 
 .flowplayer .fp-ui .invisible {
   visibility: hidden;

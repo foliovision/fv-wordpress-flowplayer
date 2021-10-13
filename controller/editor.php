@@ -368,9 +368,14 @@ function fv_player_splashcreen_action() {
     
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-    $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+    
+    if( function_exists('mb_strinwidth') ) {
+      $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+    } else if( strlen( $title ) > $limit ) {
+      $title = substr($title, 0, $limit);
+    }
 
-    $decoded = base64_decode($img) ;
+    $decoded = base64_decode($img);
     
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;

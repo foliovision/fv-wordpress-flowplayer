@@ -359,6 +359,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.10.727 - 2021/10/06 =
+
+* Airplay - removing the button if the video type is not supported
+* Click to unmute - shows when a video playback starts muted
+* Flash is no longer the default video type
+* Support for FV Player Coconut video uploads
+
 = 7.5.7.727 - 2021/09/27 =
 
 * Bugfix - HLS - live stream check - countdown fix

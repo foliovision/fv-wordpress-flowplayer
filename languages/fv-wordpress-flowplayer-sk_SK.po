@@ -2233,3 +2233,6 @@ msgstr "Náhodný výber"
 
 msgid "Item %d."
 msgstr "Video %d."
+
+msgid "Click to unmute"
+msgstr "Zapnúť zvuk"
