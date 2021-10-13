@@ -733,9 +733,9 @@ $this->strPrivateAPI - also
             setup = function () {
               $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
               var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
-              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true' , key }));
+              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true' , key); }));
               <?php if ( $button2 ) { ?>
-                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false', key); }) );
+                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false', key); }));
               <?php } ?>
             };
 
