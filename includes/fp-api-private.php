@@ -709,21 +709,10 @@ $this->strPrivateAPI - also
         //<![CDATA[
         (function ($) {
           store_cookie_js = function(value , key) {
-            // prepare cookie attributes
             var cookie_name = '<?php echo $this->class_name.'_store_answer'; ?>';
-
-            var expires = new Date();
-            expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1 year
-
-            // get cookies
             var pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
-
-            // store value
             pointer_cookies[key] = value;
-
-            // save cookies
-            Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', expires: expires.toUTCString() } )
-
+            Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', expires: 365 } )
             jQuery('#wp-pointer-0').remove();
           }
 
