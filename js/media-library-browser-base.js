@@ -515,11 +515,12 @@ jQuery( function($) {
       splash_name = 'splash';
     }
 
-    splash = file[ splash_name ];
+    // Perhaps it's a older encoding job without splash_large, so check carfully
+    splash = file[splash_name] ? file[splash_name] : file['splash']
 
     // we remove the signature when we're updating the Editor field, otherwise we leave it in,
     // so we can actually preview the splash
-    if (typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
+    if ( splash && typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
       splash = splash.substring(0, splash.indexOf('?'));
     }
 
