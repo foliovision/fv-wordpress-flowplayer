@@ -507,7 +507,6 @@ if (!Date.now) {
     api.bind('unload', function() {
       item_changed = false;
       api.one('ready', restorePlaylistItem);
-      api.video.index = 0;
     });
   
     api.one('ready', restorePlaylistItem);
