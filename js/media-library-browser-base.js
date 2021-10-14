@@ -168,7 +168,7 @@ function fv_flowplayer_browser_browse(data, options) {
           if ( f.extra.percentage ) {
             var percentage = f.extra.percentage;
             if( parseInt(percentage) < 5 ) percentage = 5+'%';
-            progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
+            progress += '<div class="thumbnail-status">' + ( f.extra.encoding_job_status == 'playable' ? 'Playable' : 'Processing' ) + '</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
           } else {
             progress += '<div class="thumbnail-status-error">Error</div>';
           }
