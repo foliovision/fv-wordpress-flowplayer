@@ -2422,3 +2422,6 @@ msgstr ""
 
 msgid "Item %d."
 msgstr "Liste %d."
+
+msgid "Click to unmute"
+msgstr "Ton aktivieren"
