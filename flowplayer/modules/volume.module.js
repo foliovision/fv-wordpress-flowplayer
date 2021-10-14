@@ -76,7 +76,7 @@ flowplayer(function(api, root) {
           return;
         }
 
-        var mute_notice = jQuery('<div class="fp-message fp-message-muted fp-shown"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
+        var mute_notice = jQuery('<div class="fp-message fp-message-muted"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
 
         // We need touchstart for mobile, otherwise click would only show te UI
         mute_notice.on( 'click touchstart', function() {

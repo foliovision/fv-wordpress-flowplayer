@@ -2256,7 +2256,8 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 
 /* Click to unmute */
-.flowplayer .fp-message-muted { text-align: center }
+.flowplayer .fp-message-muted { opacity: 0; text-align: center }
+.flowplayer.is-mouse-over .fp-message-muted { opacity: 1 }
 .flowplayer .fp-message-muted:hover, .flowplayer .fp-message-muted:active { text-shadow: 0px 0px 5px rgba( 255, 255, 255, 0.66 ) }
 .flowplayer.has-fp-message-muted .fp-header { display: none }
 .flowplayer .fp-volumebtn-notice { position: relative; top: 3px; }
