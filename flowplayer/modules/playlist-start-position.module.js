@@ -18,7 +18,6 @@ flowplayer( function(api,root) {
     start_index = $root.data('playlist_start');
     $root.removeData('position_changed');
     api.one('ready', start_position_changer);
-    api.video.index = 0;
   });
 
   api.one('ready', start_position_changer);
