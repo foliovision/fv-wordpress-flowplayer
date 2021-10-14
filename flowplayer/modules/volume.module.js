@@ -50,10 +50,10 @@ flowplayer(function(api, root) {
   // If video starts muted, show a notice
   var deal_with_muted_start = false;
 
-  api.on('ready', function(e,api) {
+  // We only set this on the first ready event - meaning it only show for first item in playlist
+  api.one('ready', function(e,api) {
     if( root.hasClass('is-audio') ) return;
 
-    // Remember to check this for each video that starts playing
     deal_with_muted_start = true;
   });
 
@@ -86,6 +86,9 @@ flowplayer(function(api, root) {
 
         root.find('.fp-ui').append( mute_notice );
         root.addClass('has-fp-message-muted');
+
+        // Remove the notice after a while
+        setTimeout( remove_volume_notice, 5000 );
       }
     }
   } );
