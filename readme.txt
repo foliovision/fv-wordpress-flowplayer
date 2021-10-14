@@ -359,6 +359,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.11.727 - 2021/10/14 =
+
+* Click to unmute - adding translations
+* Click to unmute - only show on hover
+* Click to unmute - only show once in playlist
+* Live streams - fix buffer indicator bug for long streams
+* Media Library - fix for picking of old FV Player Coconut jobs
+* PHP warnings - fix multibyte functions used without check
+* Store dismissed wp-admin popup notices also in cookies
+* Support for FV Player Coconut video uploads - fixes
+
 = 7.5.10.727 - 2021/10/06 =
 
 * Airplay - removing the button if the video type is not supported
