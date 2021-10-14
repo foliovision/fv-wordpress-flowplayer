@@ -912,7 +912,7 @@ function fv_autoplay_exec(){
         } else {
           fv_player_did_autoplay = true;
 
-          if( api.conf.playlist.length && jQuery.isNumeric(autoplay) ) {
+          if( api.conf.playlist.length && !isNaN(parseFloat(autoplay)) && isFinite(autoplay) ) {
             api.play( parseInt(autoplay) );
           } else {
             api.load();
