@@ -38,7 +38,7 @@ abstract class FV_Player_CDN {
             
             if( stripos($aVideo['src'],$sDomain) !== false ) {
               $bFound = true;            
-              $aVideo['src'] = $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]);       
+              $aVideo['src'] = $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]);
               $_POST['sources'][$key] = $aVideo;
             }          
           }
@@ -47,7 +47,7 @@ abstract class FV_Player_CDN {
       
       if( $bFound ) {
         echo '<FVFLOWPLAYER>';
-        echo json_encode($_POST['sources']);            
+        echo json_encode($_POST['sources']);
         echo '</FVFLOWPLAYER>';
         die();
       }
