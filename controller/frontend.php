@@ -776,3 +776,23 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
   
   return version_compare($version,$min ) != -1;
 }
+
+
+/*
+ * WP Rocket Used CSS exclusion
+ * Since many FV Player features are only visible once the video starts this optimization doesn't work
+*/
+add_filter( 'pre_get_rocket_option_remove_unused_css_safelist', 'fv_player_wp_rocket_used_css' );
+
+function fv_player_wp_rocket_used_css( $safelist ) {
+  // Without this our additions would show on WP Rocket settings page
+  global $pagenow;
+  if ( 'options-general.php' === $pagenow && 'wprocket' === $_GET['page'] ) {
+    return $safelist;
+  }
+
+  $safelist[] = '/wp-content/fv-flowplayer-custom/style-*';
+  $safelist[] = '/wp-content/plugins/fv-wordpress-flowplayer*';
+  $safelist[] = '/wp-content/plugins/fv-player-*';
+  return $safelist;
+}
