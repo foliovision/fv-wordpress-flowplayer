@@ -652,11 +652,11 @@ function fv_player_time_hms(seconds) {
   }
 
   // leading zero for minutes
-  if ( hours && minutes < 10) { // ecample: 1h05m
+  if ( hours && minutes < 10) { // example: 1h05m
     minutes = "0" + minutes + "m";
-  } else if( !hours && minutes ) { 
-    minutes += "m"; 
-  } else {
+  } else if( minutes ) { // example: 1h15m, 15m20s
+    minutes += "m";
+  } else { // example: 15s
     minutes = "";
   }
 
