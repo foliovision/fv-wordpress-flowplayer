@@ -255,17 +255,15 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   public function column_default( $player, $column_name ) {
-    global $FV_Player_Coconut;
-
     $id = $player->id;
 
     // if any of the videos for this player contain a coconut_processing_ placeholder,
     // try to run Coconut's job check, so we can update that SRC if it was already
     // processed
-    if ( isset( $FV_Player_Coconut ) ) {
+    if ( function_exists( 'FV_Player_Coconut' ) ) {
       foreach ( $player->video_objects as $video_object ) {
         if ( strpos( $video_object->getSrc(), 'coconut_processing_' ) !== false ) {
-          $FV_Player_Coconut->jobs_check();
+          FV_Player_Coconut()->jobs_check();
           break;
         }
       }
