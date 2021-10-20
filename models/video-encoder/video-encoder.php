@@ -332,7 +332,7 @@ abstract class FV_Player_Video_Encoder {
     $target = $this->util__sanitize_target($target);
 
     // check for a valid source URL
-    if ( !preg_match('~^(https?|s?ftp)://~', $source) ) {
+    if ( empty( $_POST['no_source_verify'] ) && !preg_match('~^(https?|s?ftp)://~', $source) ) {
       $error = 'Your source location is not a proper URL!';
       if ( defined('DOING_AJAX') ) {
         wp_send_json( array('error' => $error) );
@@ -343,7 +343,7 @@ abstract class FV_Player_Video_Encoder {
 
     // if the same target name already exists and we've not asked to rename it automatically,
     // return an error
-    if ( empty($_POST['rename_if_exists'] ) ) {
+    if ( empty( $_POST['rename_if_exists'] ) && empty( $_POST['ignore_duplicates'] ) ) {
       if ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " . $this->table_name . " WHERE target = %s AND status != 'error' ", $target ) ) ) {
         $error = 'Target stream already exists, please try with different target name.';
         if ( defined( 'DOING_AJAX' ) ) {
@@ -352,7 +352,7 @@ abstract class FV_Player_Video_Encoder {
           return $error;
         }
       }
-    } else {
+    } else if ( empty( $_POST['ignore_duplicates'] ) ) {
       $original_target = $target;
       $rename_suffix_counter = 1;
       while ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " .  $this->table_name . " WHERE target = %s AND status != 'error' ", $target ) ) ) {
@@ -389,7 +389,7 @@ abstract class FV_Player_Video_Encoder {
     $show = array( $id );
 
     // submit the job to the Encoder service
-    $this->job_submit($id);
+    $result = $this->job_submit($id);
 
     if( defined('DOING_AJAX') ) {
       require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
@@ -400,7 +400,7 @@ abstract class FV_Player_Video_Encoder {
       $jobs_table->display();
       $html = ob_get_clean();
 
-      wp_send_json( array('html' => $html, 'id' => $id) );
+      wp_send_json( array( 'html' => $html, 'id' => $id, 'result' => $result ) );
 
     } else {
       return $id;
@@ -459,7 +459,7 @@ abstract class FV_Player_Video_Encoder {
     global $wpdb;
 
     $ids = array();
-    $pending_jobs = $wpdb->get_results( "SELECT * FROM ".  $this->table_name . " WHERE status = 'processing'" . ( $all ? '' : ' AND date_checked < DATE_SUB( UTC_TIMESTAMP(), INTERVAL 30 SECOND )' ) );
+    $pending_jobs = $wpdb->get_results( "SELECT * FROM ".  $this->table_name . " WHERE type = '{$this->encoder_id}' AND status = 'processing'" . ( $all ? '' : ' AND date_checked < DATE_SUB( UTC_TIMESTAMP(), INTERVAL 30 SECOND )' ) );
 
     foreach( $pending_jobs AS $pending_job ) {
       $ids[] = $pending_job->id;
@@ -894,7 +894,7 @@ abstract class FV_Player_Video_Encoder {
     $sql = "CREATE TABLE ". $this->table_name ." (
       id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
       id_video bigint(20) unsigned NOT NULL,
-      job_id bigint(20) unsigned NOT NULL,
+      job_id varchar(45) NOT NULL,
       date_created datetime NOT NULL,
       date_checked datetime NOT NULL,
       source varchar(1024) NOT NULL,
