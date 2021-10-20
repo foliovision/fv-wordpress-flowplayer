@@ -9,14 +9,27 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     }
   }
 
-  function fv_wp_flowplayer_include_aws_sdk() {
-    if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
-      require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
-    }
+  function decode_link_components( $link ) {
+    $link = str_replace( '%20', '+', $link );
+
+    return $link;
+  }
+
+  function get_custom_domain_url( $link, $bucket, $custom_domain ) {
+    // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3-us-west-2.amazonaws.com/video.mp4
+    $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($custom_domain, '/').'/$1', $link);
+
+    // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3.us-west-2.amazonaws.com/video.mp4
+    $link = preg_replace('/https?:\/\/' . $bucket . '\.s3\.[^.]*\.amazonaws\.com\/(.*)/i', rtrim($custom_domain, '/').'/$1', $link);
+
+    // replace S3 URLs with bucket name as a subfolder
+    $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($custom_domain, '/').'/$1', $link);
+
+    return $link;
   }
 
   function get_formatted_assets_data() {
-    $this->fv_wp_flowplayer_include_aws_sdk();
+    $this->include_aws_sdk();
     global $fv_fp, $s3Client;
 
     $regions = $fv_fp->_get_option('amazon_region');
@@ -79,12 +92,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
     if ($regioned_bucket_found) {
       
-      $output = array(
-        'name' => 'Home',
-        'type' => 'folder',
-        'path' => !empty($_POST['path']) ? $_POST['path'] : 'Home/',
-        'items' => array()
-      );
+      $output = $this->get_output();
       
       $region = $regions[ $array_id ];
       $secret = $secrets[ $array_id ];
@@ -142,101 +150,18 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
       ) );
 
       try {
-        $args = array(
-          'Bucket' => $bucket,
-          'Delimiter' => '/',
-        );
-        
-        $request_path = !empty($_POST['path']) ? str_replace( 'Home/', '', stripslashes($_POST['path']) ) : false;
-        
-        if( $request_path ) {
-          $args['Prefix'] = $request_path;
-        }
-        
-        $paged = $s3Client->getPaginator('ListObjects',$args);
 
-        $sum_up = array();
+        list( $request_path, $paged, $date_format ) = $this->get_metadata( $s3Client, $bucket );
 
-        $date_format = get_option( 'date_format' );
-        foreach( $paged AS $res ) {
-          
-          $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
-          $files = $res->get('Contents');
-          if( !$files ) $files = array();
-          
-          $objects = array_merge( $folders, $files );
-          
-          foreach ( $objects as $object ) {
-            if ( ! isset( $objectarray ) ) {
-              $objectarray = array();
-            }
-            
-            $item = array();
-            
-            $path = $object['Prefix'] ? $object['Prefix'] : $object['Key'];
-            
-            if( !empty($object['Key']) && preg_match( '~\.ts$~', $object['Key'] ) ) {
-              if( empty($sum_up['ts']) ) $sum_up['ts'] = 0;
-              $sum_up['ts']++;
-              continue;
-            }
-            
-            $item['path'] = 'Home/' . $path;
-            
-            if( $request_path ) {
-              if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
-              
-              $item['name'] = str_replace( $request_path, '', $path );
-            } else {
-              $item['name'] = $path;
-            }
-            
-            if( !empty($object['Size']) ) {
-              $item['type'] = 'file';
-              $item['size'] = $object['Size'];
-              $item['modified'] = date($date_format, strtotime($object['LastModified']));
+        list( $output, $sum_up ) = $this->get_output_items( $s3Client, $request_path, $paged, $date_format, $bucket, array(), $domains[$array_id] );
 
-              $link = (string) $s3Client->getObjectUrl( $bucket, $path );
-              $link = str_replace( '%20', '+', $link );
-              
-              // replace link with CloudFront URL, if we have one
-              if( !empty($domains[$array_id]) ) {
-                // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3-us-west-2.amazonaws.com/video.mp4
-                $link = preg_replace('/https?:\/\/' . $bucket . '\.s3[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
-
-                // replace S3 URLs with buckets in the S3 subdomain, like https://fv-flowplayer-cloudfront.s3.us-west-2.amazonaws.com/video.mp4
-                $link = preg_replace('/https?:\/\/' . $bucket . '\.s3\.[^.]*\.amazonaws\.com\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
-                
-                // replace S3 URLs with bucket name as a subfolder
-                $link = preg_replace('/https?:\/\/[^\/]+\/' . $bucket . '\/(.*)/i', rtrim($domains[$array_id], '/').'/$1', $link);
-              }
-
-              $item['link'] = $link;
-
-              if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item['name'])) {
-                $item['splash'] = apply_filters('fv_flowplayer_splash', $link );
-              }
-            } else {
-              $item['type'] = 'folder';
-              $item['items'] = array();
-            }
-
-            $output['items'][] = $item;
-  
-            if (strtolower(substr($item['name'], strrpos($item['name'], '.') + 1)) === 'ts') {
-              continue;
-            }
-  
-          }
-        }
-        
         foreach( $sum_up AS $ext => $count ) {
           $output['items'][] = array(
             'name' => '*.ts',
             'link' => '',
             'size' => $count.' .'.$ext.' files hidden',
             'type' => 'placeholder'
-            );
+          );
         }
 
       } catch ( Aws\S3\Exception\S3Exception $e ) {
