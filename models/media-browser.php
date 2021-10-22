@@ -21,9 +21,11 @@ abstract class FV_Player_Media_Browser {
 
   abstract function init();
 
-  abstract function decode_link_components( $link );
+  // TOTO: should be abstract
+  function decode_link_components( $link ) {}
 
-  abstract function get_custom_domain_url( $link, $bucket, $custom_domain );
+  // TOTO: should be abstract
+  function get_custom_domain_url( $link, $bucket, $custom_domain ) {}
 
   function init_base() {
     global $fv_wp_flowplayer_ver;
