@@ -6,9 +6,17 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
   
   function __construct() {
     // TODO: What if FV Player is not yet loaded?
+    add_action( 'plugins_loaded', array( $this, 'include_linode_media_browser' ), 9 );
     parent::__construct( array( 'key' => 'linode_object_storage', 'title' => 'Linode Object Storage') );
   }
   
+  // includes the Digital Ocean Spaces handling class itself
+  public function include_linode_media_browser() {
+    if ( is_admin() && version_compare(phpversion(),'5.5.0') != -1 ) {
+      include( dirname( __FILE__ ) . '/linode-object-storage-browser.class.php' );
+    }
+  }
+
   function get_endpoint() {
     global $fv_fp;
     $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
@@ -102,11 +110,11 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
     $sSignedHeaders = "host";
     $sXAMZCredential = urlencode( $key.'/'.$sCredentialScope);
     
-    //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
+    //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
     $sCanonicalRequest = "GET\n";
     $sCanonicalRequest .= $url_components['path']."\n";
     $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
-    $sCanonicalRequest .= "host:".$url_components['host']."\n";        
+    $sCanonicalRequest .= "host:".$url_components['host']."\n";
     $sCanonicalRequest .= "\n$sSignedHeaders\n";
     $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
     
@@ -135,6 +143,7 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
   }
 
 }
+
 global $FV_Player_Linode_Object_Storage;
 $FV_Player_Linode_Object_Storage = new FV_Player_Linode_Object_Storage;
 

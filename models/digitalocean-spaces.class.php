@@ -192,6 +192,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   }
 
 }
+
 global $FV_Player_DigitalOcean_Spaces;
 $FV_Player_DigitalOcean_Spaces = new FV_Player_DigitalOcean_Spaces;
 
