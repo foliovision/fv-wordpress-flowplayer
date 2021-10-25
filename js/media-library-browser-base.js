@@ -133,7 +133,7 @@ function fv_flowplayer_browser_browse(data, options) {
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
         fileList.append( jQuery(
-          '<li class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '">'
+          '<li class="folders attachment save-ready">'
           + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
           + '<div class="thumbnail">'
           + '<a href="' + f.path + '" title="' + name + '" class="folders">'
@@ -155,7 +155,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
         var
           name = escapeHTML(f.name),
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '"></li>'),
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/),
           icon = '';
 
@@ -765,7 +765,7 @@ jQuery( function($) {
             '\t</div>');
 
           // if this item is unselectable (i.e. a Coconut job that errored-out or encoding job that's still being processed externally), disable the Choose button
-          if ( $e.hasClass('disabled') || ( $filenameDiv.data('extra') && $filenameDiv.data('extra').disabled ) ) {
+          if ( $filenameDiv.data('extra') && $filenameDiv.data('extra').disabled ) {
             jQuery('.media-button-select').prop('disabled', 'disabled');
           } else {
             // enable Choose button
