@@ -1,10 +1,19 @@
 var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
+
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
-  fv_flowplayer_browser_assets_loaders = {};
+  fv_flowplayer_browser_assets_loaders = {},
+
+  // the following will contain file patterns which will be checked when determining whether we can automatically find
+  // a splash screen for a video file in any given browser
+  //
+  // ... for example, Coconut uses m3u8 files with the same file name as its encoded file names for thumbnails,
+  //     so it will need to create an inclusion rule like so:
+  //        fv_flowplayer_browser_splash_file_lookup_rules['fv_player_coconut_browser_media_tab']['include'] = ['\.(m3u8)$']
+  fv_flowplayer_browser_splash_file_lookup_rules = {};
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
@@ -467,21 +476,48 @@ jQuery( function($) {
       });
     }
 
-    var splash = false;
+    var
+      splash = false,
+      activeTabId = jQuery( '.media-router:visible .media-menu-item.active' ).attr('id');
 
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
-        var f = fv_flowplayer_scannedFiles[j];
-        if (
-          // image splash files with the same base name that are not poining to the same actual file
+        var
+          f = fv_flowplayer_scannedFiles[j],
+          // check for image splash files with the same base name that are not poining to the same actual file
           // as the one we're checking them against (classic splash files)
-          ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href )
-          ||
-          // m3u8 splash files that actually point to the same file as the one we're checking them against
-          // but have a splash image under a specific object key (such as Coconut thumbnails with different sizes
-          // used as splash screens and small Media Library thumbnails)
-          ( f && f.link && f.link.match(/\.(m3u8)$/) && !f.link.match(/playlist\.(m3u8)$/) && fileGetBase(f.link) == find[i] )
-        ) {
+          splashCheck = ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href );
+
+        // check for any additional inclusions and exclusions in splash checks
+        if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ] ) {
+          // see if we have additional files to include as splash images
+          if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['include'] ) {
+            // check for each of these file names against current file name
+            for ( var value of fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['include'] ) {
+              var regexCheck = new RegExp( value );
+              if ( f && f.link && f.link.match( regexCheck ) && fileGetBase(f.link) == find[i] ) {
+                // file pattern found, simply set splashCheck to true and bail out to continue with exclusion checks
+                splashCheck = true;
+                break;
+              }
+            }
+          }
+
+          // see if we have additional files to exclude as splash images
+          if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['exclude'] ) {
+            // check for each of these file names against current file name
+            for ( var value of fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['exclude'] ) {
+              var regexCheck = new RegExp( value );
+              if ( f && f.link && !f.link.match( regexCheck ) && fileGetBase(f.link) == find[i] ) {
+                // file pattern found, simply set splashCheck to false and bail out, as we must exclude this file as splash
+                splashCheck = false;
+                break;
+              }
+            }
+          }
+        }
+
+        if ( splashCheck ) {
           splash = f;
         }
       }
