@@ -20,13 +20,13 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
   function get_endpoint() {
     global $fv_fp;
     $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
-    
-    if( count($parsed) == 1 && !empty($parsed['path']) ) { // for input like "region.digitaloceanspaces.com" it returns it as path, not realizing it's the hostname
+
+    if( count($parsed) == 1 && !empty($parsed['path']) ) {
       return $parsed['path'];
       
     } else if( !empty($parsed['host']) ) {
       return $parsed['host'];
-      
+
     }
     return false;
   }

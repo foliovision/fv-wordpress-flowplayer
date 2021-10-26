@@ -7,7 +7,7 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
   function init() {
     if( $this->isSetUpCorrectly() ) {
       global $fv_wp_flowplayer_ver;
-      wp_enqueue_script( 'fv-player-linode-browser', flowplayer::get_plugin_url().'/js/digitalocean-spaces-browser.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
+      wp_enqueue_script( 'fv-player-linode-browser', flowplayer::get_plugin_url().'/js/linode-object-storage.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
     }
   }
 
