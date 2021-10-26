@@ -1,6 +1,6 @@
 jQuery( function($) {
 
-  function fv_flowplayer_linode_browser_load_assets(bucket, path) {
+  function fv_flowplayer_linode_object_storage_browser_load_assets(bucket, path) {
     var
       $this = jQuery(this),
       $media_frame_content = jQuery('.media-frame-content:visible'),
@@ -8,7 +8,7 @@ jQuery( function($) {
         'height': '100%'
       }),
       ajax_data = {
-        action: "load_linod_assets",
+        action: "load_linode_object_storage_assets",
       };
 
     $this.addClass('active').siblings().removeClass('active');
@@ -41,6 +41,6 @@ jQuery( function($) {
   };
 
   $(document).on("mediaBrowserOpen", function (event) {
-    fv_flowplayer_media_browser_add_tab('fv_flowplayer_linode_browser_media_tab', 'Linode Object Storage', fv_flowplayer_linode_browser_load_assets);
+    fv_flowplayer_media_browser_add_tab('fv_flowplayer_linode_object_storage_browser_media_tab', 'Linode Object Storage', fv_flowplayer_linode_object_storage_browser_load_assets);
   });
 });

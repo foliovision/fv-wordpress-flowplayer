@@ -119,6 +119,6 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
 }
 
 global $FV_Player_Linode_Object_Storage_Browser;
-$FV_Player_Linode_Object_Storage_Browser = new FV_Player_Linode_Object_Storage_Browser( 'wp_ajax_load_linode_assets' );
+$FV_Player_Linode_Object_Storage_Browser = new FV_Player_Linode_Object_Storage_Browser( 'wp_ajax_load_linode_object_storage_assets' );
 
 endif;
