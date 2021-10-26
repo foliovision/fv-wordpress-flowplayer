@@ -144,8 +144,6 @@ abstract class FV_Player_Media_Browser {
 
           $link = $this->decode_link_components( $link );
 
-          $link = str_replace( '%20', '+', $link );
-
           // replace link with CloudFront URL, if we have one
           if( !empty($custom_domain) ) {
             $link = $this->get_custom_domain_url($link ,$bucket, $custom_domain);
