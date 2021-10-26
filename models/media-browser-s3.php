@@ -153,7 +153,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
         list( $request_path, $paged, $date_format ) = $this->get_metadata( $s3Client, $bucket );
 
-        list( $output, $sum_up ) = $this->get_output_items( $s3Client, $request_path, $paged, $date_format, $bucket, array(), $domains[$array_id] );
+        list( $output, $sum_up ) = $this->get_output_items( $output, $s3Client, $request_path, $paged, $date_format, $bucket, array(), $domains[$array_id] );
 
         foreach( $sum_up AS $ext => $count ) {
           $output['items'][] = array(

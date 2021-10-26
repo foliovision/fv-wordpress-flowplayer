@@ -97,7 +97,7 @@ abstract class FV_Player_Media_Browser {
     return array( $request_path, $paged, $date_format );
   }
 
-  function get_output_items( $s3Client, $request_path, $paged, $date_format, $bucket, $sum_up = NULL, $custom_domain = NULL ) {
+  function get_output_items( $output, $s3Client, $request_path, $paged, $date_format, $bucket, $sum_up = NULL, $custom_domain = NULL ) {
     foreach( $paged AS $res ) {
 
       $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();

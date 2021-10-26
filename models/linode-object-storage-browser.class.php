@@ -63,7 +63,7 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
     
       list( $request_path, $paged, $date_format ) = $this->get_metadata( $s3Client, $bucket );
 
-      list($output, $sum_up ) = $this->get_output_items( $s3Client, $request_path, $paged, $date_format, $bucket );
+      list($output, $sum_up ) = $this->get_output_items( $output, $s3Client, $request_path, $paged, $date_format, $bucket );
 
     } catch ( Aws\S3\Exception\S3Exception $e ) {
       //echo $e->getMessage() . "\n";
