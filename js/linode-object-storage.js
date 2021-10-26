@@ -1,6 +1,6 @@
 jQuery( function($) {
 
-  function fv_flowplayer_dos_browser_load_assets(bucket, path) {
+  function fv_flowplayer_linode_browser_load_assets(bucket, path) {
     var
       $this = jQuery(this),
       $media_frame_content = jQuery('.media-frame-content:visible'),
@@ -8,12 +8,11 @@ jQuery( function($) {
         'height': '100%'
       }),
       ajax_data = {
-        action: "load_dos_assets",
+        action: "load_linod_assets",
       };
 
     $this.addClass('active').siblings().removeClass('active');
 
-    // replace content by the new DOS content
     $media_frame_content.html($overlay_div);
 
     if (typeof bucket === 'string' && bucket) {
@@ -33,7 +32,6 @@ jQuery( function($) {
 
       $media_frame_content.html(renderBrowserPlaceholderHTML(renderOptions));
 
-      // hide search, as it's not supported for DOS
       jQuery('#media-search-input').parent().hide();
 
       fv_flowplayer_browser_browse(ret.items, { 'breadcrumbs' : 1 });
@@ -43,6 +41,6 @@ jQuery( function($) {
   };
 
   $(document).on("mediaBrowserOpen", function (event) {
-    fv_flowplayer_media_browser_add_tab('fv_flowplayer_dos_browser_media_tab', 'Linode Object Storage', fv_flowplayer_dos_browser_load_assets);
+    fv_flowplayer_media_browser_add_tab('fv_flowplayer_linode_browser_media_tab', 'Linode Object Storage', fv_flowplayer_linode_browser_load_assets);
   });
 });
