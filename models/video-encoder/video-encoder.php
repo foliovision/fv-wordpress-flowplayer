@@ -909,7 +909,7 @@ abstract class FV_Player_Video_Encoder {
       output TEXT,
       video_data TEXT,
       author bigint(20) unsigned NOT NULL default '0',
-      PRIMARY KEY (id),
+      PRIMARY KEY  (id),
       KEY source (source(191)),
       KEY type (type),
       KEY status (status),
