@@ -141,11 +141,13 @@ flowplayer(function(api, root) {
  *  Tabbed playlist
  */
 jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(event, ui){
+  debugger;
   var oldRoot = jQuery('.flowplayer.is-playing');
   var oldPlayer = oldRoot.data('flowplayer');
   if( typeof(oldPlayer) != "undefined" ) {
     oldPlayer.pause();
     oldRoot.removeClass('is-mouseover');
+    oldRoot.addClass('is-mouseout');
   }
 
   var objPlayer = jQuery('.flowplayer',ui.newPanel);
