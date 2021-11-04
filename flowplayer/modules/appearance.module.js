@@ -141,12 +141,14 @@ flowplayer(function(api, root) {
  *  Tabbed playlist
  */
 jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(event, ui){
-  var oldPlayer = jQuery('.flowplayer.is-playing').data('flowplayer');
+  var oldRoot = jQuery('.flowplayer.is-playing');
+  var oldPlayer = oldRoot.data('flowplayer');
   if( typeof(oldPlayer) != "undefined" ) {
     oldPlayer.pause();
+    oldRoot.removeClass('is-mouseover');
   }
-  
+
   var objPlayer = jQuery('.flowplayer',ui.newPanel);
   var api = objPlayer.data('flowplayer');
-  api.load();  
+  api.load();
 });
