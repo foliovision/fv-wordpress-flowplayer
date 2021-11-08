@@ -10,15 +10,21 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
   var bean = flowplayer.bean;
-  var restore = -1;
+  var restore = flowplayer.conf.default_volume;
   
-  // Restore volume on click
-  root.on('click','.fp-volumebtn', function(e) {
-    if(api.volumeLevel == 0 && restore != -1) {
-      api.volume(restore);
-      return false;
+  // Restore volume on click on the speaker icon
+  root.on('mousedown touchstart','.fp-volumebtn', function(e) {
+    var volumebtn = jQuery(this);
+
+    // Only restore if it's muted, we use mousedown event to be able to check this
+    if( api.volumeLevel == 0 ) {
+      // The click event which follows after mousedown will be affected
+      volumebtn.one( 'click', function() {
+        api.volume( restore );
+        return false;
+      });
     }
-  })
+  });
 
   // Click into volume bar and start dragging it down and drag it to very 0, it would remember the initial volume - the one which was there on mousedown
   // Other case is click into the volume bar and drag it from 1 to about 0.5. So 0.5 is remembered on mouseup, then drag it to 0. So clicking the mute icon would restore to 0.5
@@ -29,13 +35,6 @@ flowplayer(function(api, root) {
     }
   })
 
-  // When muting with the button forget about the volume to restore
-  // As otherwise the root.on('click','.fp-volumebtn', ... ) handler above would restore the volume
-  root.on('mousedown touchstart','.fp-volumebtn', function(e) {
-    if( api.volumeLevel > 0 ) {
-      restore = -1;
-    }
-  });
 
   // Mute
   api.on('volume', function(e,api) {

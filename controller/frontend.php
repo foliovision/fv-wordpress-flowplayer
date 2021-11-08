@@ -398,10 +398,14 @@ function flowplayer_prepare_scripts() {
       $aConf['video_checker_site'] = home_url();
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;
+
+    // Used to restore volume, removed in JS if volume stored in browser localStorage    
     $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
+    
+    $aConf['default_volume'] = $aConf['volume'];
     
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
