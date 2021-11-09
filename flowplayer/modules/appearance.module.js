@@ -141,17 +141,11 @@ flowplayer(function(api, root) {
  *  Tabbed playlist
  */
 jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(event, ui){
-  var oldPanel = jQuery( ui.oldPanel ),
-    oldRoot = oldPanel.find('.flowplayer'),
-    oldPlayer = oldRoot.data('flowplayer');
+  var oldPlayer = jQuery( ui.oldPanel ).find('.flowplayer').data('flowplayer');
 
-  // pause old player
+  // pause old player to make sure it does not keep playing while the new video is loading
   if( typeof(oldPlayer) != "undefined" ) {
     oldPlayer.pause();
-    // set the mouse over classes as these would just remain there even if the player is no longer visible
-    // perhaps it just does not process mouse over events when the element is hidden
-    oldRoot.removeClass('is-mouseover');
-    oldRoot.addClass('is-mouseout');
   }
 
   // load new player
