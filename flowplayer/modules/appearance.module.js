@@ -148,6 +148,8 @@ jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(even
   // pause old player
   if( typeof(oldPlayer) != "undefined" ) {
     oldPlayer.pause();
+    // set the mouse over classes as these would just remain there even if the player is no longer visible
+    // perhaps it just does not process mouse over events when the element is hidden
     oldRoot.removeClass('is-mouseover');
     oldRoot.addClass('is-mouseout');
   }
