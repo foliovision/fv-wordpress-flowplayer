@@ -10,7 +10,17 @@ class FV_Player_Position_Save {
   }
 
   public static function get_extensionless_file_name($path) {
-    return pathinfo($path, PATHINFO_FILENAME);
+    $arr = explode('/', $path);
+    $video_name = end($arr);
+
+    // Do not accept HLS playlist file names as these are often index.m3u8 or stream.m3u8
+    // Use folder name instead
+    if( strpos($video_name, ".m3u8") !== false ) {
+      unset($arr[count($arr)-1]);
+      $video_name = end($arr);
+    }
+
+    return pathinfo($video_name, PATHINFO_FILENAME);
   }
 
   public function set_last_position( $aItem, $index, $aArgs ) {
@@ -33,7 +43,7 @@ class FV_Player_Position_Save {
         }
       }
       $try[] = $this->get_extensionless_file_name($aItem['sources'][0]['src']);
-      
+
       foreach( $try AS $name ) {
         if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
           $aItem['sources'][0]['position'] = intval($metaPosition);
