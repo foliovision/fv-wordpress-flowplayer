@@ -187,6 +187,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     },
     hide_progress_bar: function() {
       $progressBarDiv.hide();
-    }
+    },
+    upload: upload,
   }
 }
