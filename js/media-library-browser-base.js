@@ -376,7 +376,7 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
 function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
   // forward this event via a custom trigger which gets intercepted by our browsers that support file uploads
   // ... if we just returned false here without the custom trigger, we're basically prevent any drop event anywhere on the Media Browser dialog
-  jQuery( document ).trigger('media_browser_drop_event', [ e.originalEvent.dataTransfer.files ] );
+  jQuery( document ).trigger('media_browser_drop_event', [ jQuery( '.media-menu-item.active:visible' ).attr( 'id' ), e.originalEvent.dataTransfer.files ] );
   return false;
 }
 
