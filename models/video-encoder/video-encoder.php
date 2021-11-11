@@ -30,7 +30,7 @@ abstract class FV_Player_Video_Encoder {
     return $this->table_name;
   }
 
-  function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
+  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
     global $wpdb;
 
     if ( !$encoder_id ) {
