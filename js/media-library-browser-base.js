@@ -29,6 +29,10 @@ function fv_flowplayer_media_browser_setColumns() {
   }
 }
 
+function fv_player_get_active_tab() {
+  return jQuery( '.media-menu-item.active:visible' );
+}
+
 function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
   $fileListUl.append('<li tabindex="0" class="attachment" id="overlay-loader-li"></li>');
   var $moreDiv = jQuery('<div class="attachment-preview"><div class="loadmore"></div></div>');
@@ -246,7 +250,9 @@ function fv_flowplayer_browser_browse(data, options) {
 
 // adds new tab on top of the Media Library popup
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
-  if (!jQuery('#' + tabId).length) {
+  var $tab = jQuery('#' + tabId);
+
+  if (!$tab.length) {
     var
       $router = jQuery('.media-router:visible'),
       $nativeTabs = $router.find('.media-menu-item:not(.artificial)'),
@@ -301,15 +307,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       .text(tabText)
       .addClass('artificial')
       .on('click', function() {
-
-        fv_flowplayer_media_browser_disable_drag_drop(true);
-
-        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
-
         // disable Choose button
         jQuery('.media-button-select').prop('disabled', 'disabled');
         $router.find('.media-menu-item.active').removeClass('active');
         jQuery(this).addClass('active');
+
+        fv_flowplayer_media_browser_disable_drag_drop(true);
+        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
 
         // execute tab click function
         if (typeof(tabClickEventCallback) == 'function' && !switchClicking) {
@@ -323,6 +327,12 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
           }
         } catch(e) {}
 
+        // hide the Drop files to upload modal initially
+        jQuery('.media-modal .uploader-window').css({
+          'display' : 'none',
+          'opacity' : 0,
+        });
+
         return tabOnClickCallback();
       });
 
@@ -334,6 +344,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       tabAddedCallback($item);
     }
 
+    $tab = $item;
   }
   
   // if this tab was the last active, make it active again
@@ -346,37 +357,55 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       }, 500);
     }
   } catch(e) {}
+
+  return $tab;
 };
 
 /*
  * Disable/enable core WordPress drag&drop uploader
  */
 function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
-  var overlay = jQuery('.media-frame-uploader')
-    overlay_content = jQuery('.uploader-window'),
-    drop_targets = jQuery('[id^=__wp-uploader-id-');
+  var
+    overlay = jQuery('.media-frame-uploader')
+    overlay_content = jQuery('.media-modal .uploader-window'),
+    drop_targets = jQuery('[id^=__wp-uploader-id-'),
+    upload_supported = fv_player_get_active_tab().hasClass( 'upload_supported' );
 
   if( disable ) {
     drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
     drop_targets.on('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
 
-    overlay.css('opacity', 0 );
+    if ( !upload_supported ) {
+      overlay.css('opacity', 0 );
+    } else {
+      overlay.css('opacity', 1 );
+    }
 
   } else {
     drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
 
-    overlay.css('opacity', '' );
-    
-    // We need to hide this now as WordPress did make it visible at some point
-    overlay_content.css('display', 'none' );
-    overlay_content.css('opacity', '0' );
+    if ( !upload_supported ) {
+      overlay.css('opacity', '' );
+
+      // We need to hide this now as WordPress did make it visible at some point
+      overlay_content.css({
+        'display' : 'none',
+        'opacity' : 0,
+      });
+    } else {
+      overlay.css('opacity', 1 );
+      overlay_content.css({
+        'display' : 'block',
+        'opacity' : 1,
+      });
+    }
   }
 }
 
 function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
   // forward this event via a custom trigger which gets intercepted by our browsers that support file uploads
   // ... if we just returned false here without the custom trigger, we're basically prevent any drop event anywhere on the Media Browser dialog
-  jQuery( document ).trigger('media_browser_drop_event', [ jQuery( '.media-menu-item.active:visible' ).attr( 'id' ), e.originalEvent.dataTransfer.files ] );
+  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
   return false;
 }
 
@@ -821,6 +850,17 @@ jQuery( function($) {
     }
 
     return false;
+  });
+
+  // listen to a drop event on one of our browser tabs and hide the drop overlay
+  // since WP does not do this for us apart from in its own upload tab
+  $( document ).on( "media_browser_drop_event", function() {
+    if ( fv_player_get_active_tab().hasClass('upload_supported') ) {
+      $( '.media-modal .uploader-window' ).css({
+        'display' : 'none',
+        'opacity' : 0,
+      });
+    }
   });
 
 });
