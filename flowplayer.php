@@ -34,6 +34,8 @@ if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
 }
 
+include_once( dirname( __FILE__ ) . '/includes/class.bunnycdn.rewrite.php' );
+
 include_once( dirname( __FILE__ ) . '/models/checker.php' );
 
 global $FV_Player_Checker;
