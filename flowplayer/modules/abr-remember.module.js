@@ -4,6 +4,10 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
+  if( typeof api.disable_localstorage !='undefined' ) {
+    return;
+  }
+
   var hlsjs;
 
   // this is the proper place to pick the initial HLS video quality 

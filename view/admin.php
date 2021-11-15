@@ -686,35 +686,50 @@ function fv_flowplayer_admin_integrations() {
 
 
 function fv_flowplayer_admin_mobile() {
-	global $fv_fp;
-?>        
-				<table class="form-table2">
+  global $fv_fp;
+?>
+        <table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Use native fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_native_fullscreen', __('Stops popups, ads or subtitles from working, but provides faster interface. We set this for Android < 4.4 and iOS < 7 automatically.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Force fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_force_fullscreen', __('Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback.', 'fv-wordpress-flowplayer')  ); ?>
           <?php $fv_fp->_get_checkbox(__('Alternative iOS fullscreen mode', 'fv-wordpress-flowplayer'), 'mobile_alternative_fullscreen', __("Works for iOS < 12 which doesn't support HTML5 fullscreen. Only use if you see site elements such as header bar ovelaying the player in fullscreen on iOS.", 'fv-wordpress-flowplayer')  ); ?>
           <?php $fv_fp->_get_checkbox(__('Force landscape orientation in fullscreen', 'fv-wordpress-flowplayer'), 'mobile_landscape_fullscreen', __("Works on the Android mobile, not supported on iOS unfortunately.", 'fv-wordpress-flowplayer')  ); ?>
-					<tr>
-						<td colspan="4">
-							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-						</td>
-					</tr>
-				</table>
+          <tr>
+            <td colspan="4">
+              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+            </td>
+          </tr>
+        </table>
+<?php
+}
+
+
+function fv_flowplayer_admin_privacy() {
+  global $fv_fp;
+?>
+        <table class="form-table2">
+          <?php $fv_fp->_get_checkbox(__('Disable local storage', 'fv-wordpress-flowplayer'), 'disable_localstorage', __('Position restore, subtitle remembering will not work for non logged users.', 'fv-wordpress-flowplayer') ); ?>
+          <tr>
+            <td colspan="4">
+              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+            </td>
+          </tr>
+        </table>
 <?php
 }
 
 
 function fv_flowplayer_admin_seo() {
-	global $fv_fp;
-?>        
-				<table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__('Use Schema.org markup', 'fv-wordpress-flowplayer'), array( 'integrations', 'schema_org' ), __(' Adds the video meta data information for search engines.', 'fv-wordpress-flowplayer') ); ?>          
+  global $fv_fp;
+?>
+        <table class="form-table2">
+          <?php $fv_fp->_get_checkbox(__('Use Schema.org markup', 'fv-wordpress-flowplayer'), array( 'integrations', 'schema_org' ), __(' Adds the video meta data information for search engines.', 'fv-wordpress-flowplayer') ); ?>
           <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
-					<tr>
-						<td colspan="4">
-							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-						</td>
-					</tr>
-				</table>
+          <tr>
+            <td colspan="4">
+              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+            </td>
+          </tr>
+        </table>
 <?php
 }
 
@@ -1733,6 +1748,8 @@ add_meta_box( 'fv_flowplayer_default_options', __('Sitewide FV Player Defaults',
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_mobile', __('Mobile Settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_mobile', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_seo', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_privacy', __('Privacy Settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_privacy', 'fv_flowplayer_settings', 'normal' );
+
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }

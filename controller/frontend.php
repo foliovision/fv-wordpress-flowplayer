@@ -461,13 +461,17 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
-    
+
     if( $fv_fp->_get_option('hd_streaming') ) {
       $aConf['hd_streaming'] = true;
     }
 
     if( $fv_fp->_get_option('multiple_playback') ) {
       $aConf['multiple_playback'] = true;
+    }
+
+    if( $fv_fp->_get_option('disable_localstorage') ) {
+      $aConf['disable_localstorage'] = true;
     }
 
     $aConf['hlsjs'] = array(

@@ -500,6 +500,11 @@ if (!Date.now) {
     }
   });
 
+  // localstorage disabled by admin
+  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
+    localStorageEnabled = false;
+  }
+
   // check whether local storage is enabled
   if (localStorageEnabled !== null) {
     return localStorageEnabled;
