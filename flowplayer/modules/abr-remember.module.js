@@ -4,7 +4,7 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
-  if( typeof api.disable_localstorage !='undefined' ) {
+  if( typeof api.conf.disable_localstorage !='undefined' ) {
     return;
   }
 

@@ -237,6 +237,11 @@ if (!Date.now) {
     };
 
   flowplayer( function(api,root) {
+    // localstorage disabled by admin
+    if( typeof(api.conf.disable_localstorage) != 'undefined' ) {
+      return;
+    }
+
     var
       $root = jQuery(root),
       enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position'),
