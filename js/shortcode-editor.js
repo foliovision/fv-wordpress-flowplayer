@@ -1936,8 +1936,29 @@ jQuery(function() {
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length;
 
       if (!db_id) {
+        // Edit button on wp-admin -> FV Player screen
+        if (is_fv_player_screen_edit(editor_button_clicked)) {
+          current_player_db_id = $(editor_button_clicked).data('player_id');
+
+          debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+
+          // create an artificial shortcode from which we can extract the actual player ID later below
+          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
+          shortcode = [editor_content];
+        }
+        
+        // Add new button on wp-admin -> FV Player screen
+        else if (is_fv_player_screen_add_new(editor_button_clicked)) {
+          debug_log('Loading for FV Player screen, new player' );
+
+          // create empty shortcode for Add New button on the list page
+          editor_content = '';
+          shortcode = '';
+
+        }
+
         // custom Field or Widget
-        if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
+        else if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
           debug_log('Loading for custom field or a widget...');
 
           // this is a horrible hack as it adds the hidden marker to the otherwise clean text field value
@@ -1949,8 +1970,9 @@ jQuery(function() {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
 
-          // TinyMCE in Text Mode
-        } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+        }
+        // TinyMCE in Text Mode
+        else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
           debug_log('Loading for TinyMCE in Text Mode...');
 
           var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
@@ -1973,26 +1995,11 @@ jQuery(function() {
           // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
           editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
 
-          // Edit button on wp-admin -> FV Player screen
-        } else if (is_fv_player_screen_edit(editor_button_clicked)) {
-          current_player_db_id = $(editor_button_clicked).data('player_id');
 
-          debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+        }
 
-          // create an artificial shortcode from which we can extract the actual player ID later below
-          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-          shortcode = [editor_content];
-
-          // Add new button on wp-admin -> FV Player screen
-        } else if (is_fv_player_screen_add_new(editor_button_clicked)) {
-          debug_log('Loading for FV Player screen, new player' );
-
-          // create empty shortcode for Add New button on the list page
-          editor_content = '';
-          shortcode = '';
-
-          // Foliopress WYSIWYG
-        } else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
+        // Foliopress WYSIWYG
+        else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
           debug_log('Loading for Foliopress WYSIWYG...' );
 
           editor_content = instance_fp_wysiwyg.GetHTML();
