@@ -9,18 +9,18 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
     }
   } catch(e) {}
 
-  // localstorage disabled by admin
-  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
-    flowplayer.conf.storage = {} // set empty to disable
-  }
-
   flowplayer.conf = fv_flowplayer_conf;
   flowplayer.conf.fullscreen = false; // replaced by fv_fullscreen
   flowplayer.conf.chromecast = false; // we have our own Chromecast code to use instead
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
   flowplayer.conf.analytics = false;
-  
+
+   // localstorage disabled by admin
+  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
+    flowplayer.conf.storage = {} // set empty to disable
+  }
+
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
     flowplayer.conf.key = atob(flowplayer.conf.key);
