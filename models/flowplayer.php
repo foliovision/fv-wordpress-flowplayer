@@ -1548,7 +1548,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $item['sources'][$k]['src'] = CDN_Enabler_Engine::rewriter($source['src']);
       }
 
-      if( class_exists('BunnyCDN') && class_exists('FV_Player_BunnyCDN_Rewrite') ) {
+      if( class_exists('BunnyCDN') && class_exists('BunnyCDNFilter')  && method_exists( 'BunnyCDN', 'getOptions' ) && is_callable( BunnyCDNFilter::class, 'rewriteUrl' ) ) {
+        require_once dirname(__FILE__) . '/../includes/class.bunnycdn.rewrite.php';
+
         $options = BunnyCDN::getOptions();
 
         $fv_bunnycdn = new FV_Player_BunnyCDN_Rewrite($options["site_url"], (is_ssl() ? 'https://' : 'http://') . $options["cdn_domain_name"], $options["directories"], $options["excluded"], $options["disable_admin"]);
