@@ -707,7 +707,7 @@ function fv_flowplayer_admin_privacy() {
   global $fv_fp;
 ?>
         <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__('Disable local storage', 'fv-wordpress-flowplayer'), 'disable_localstorage', __('Position restore, subtitle remembering will not work for non logged users.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Disable local storage', 'fv-wordpress-flowplayer'), 'disable_localstorage', __('Remember video position will not work for non logged users. Video volume, mute status and subtitles selection will also not be stored.', 'fv-wordpress-flowplayer') ); ?>
           <tr>
             <td colspan="4">
               <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
