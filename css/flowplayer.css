@@ -943,6 +943,9 @@
   display: block;
 	height: 0
 }
+.flowplayer .fp-ui .fp-preload {
+	margin: auto;
+}
 .flowplayer.is-splash .fp-preload, .flowplayer.is-poster .fp-preload, .fp-waiting .fp-preload {
 	position: absolute;
   display: block;
