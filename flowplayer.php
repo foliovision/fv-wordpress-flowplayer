@@ -55,7 +55,6 @@ include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
-include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
@@ -66,8 +65,8 @@ include_once(dirname( __FILE__ ) . '/models/db-video-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db-player-meta.php');
 include_once(dirname( __FILE__ ) . '/models/db.php');
 
-include_once(dirname( __FILE__ ).'/models/cdn.class.php');
-include_once(dirname( __FILE__ ).'/models/digitalocean-spaces.class.php');
+include_once(dirname( __FILE__ ). '/models/cdn.class.php');
+include_once(dirname( __FILE__ ). '/models/digitalocean-spaces.class.php');
 
 global $FV_Player_Db;
 $FV_Player_Db = new FV_Player_Db();
@@ -97,7 +96,11 @@ include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
 include_once( dirname( __FILE__ ) . '/models/avada-builder-bridge.php' );
 include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
 
-include_once(dirname( __FILE__ ).'/models/migration-wizard.class.php');
-include_once(dirname( __FILE__ ).'/models/migration-wizard.php');
+include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
+include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+
+include_once(dirname( __FILE__ ). '/models/shortcode-conversion/conversion-base.class.php');
+include_once(dirname( __FILE__ ). '/models/shortcode-conversion/shortcode2DB.class.php');
+include_once(dirname( __FILE__ ) . '/models/conversion.php');

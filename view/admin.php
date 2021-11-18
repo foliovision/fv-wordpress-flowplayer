@@ -990,8 +990,19 @@ function fv_flowplayer_admin_pro() {
           <?php _e('Monetize the video content on your membership site.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
-    </tr>  
-  </table>  
+    </tr>
+  </table>
+  <?php
+}
+
+function fv_flowplayer_settings_box_conversion() {
+  ?>
+    <p><?php _e('This section allows you to convert videos posted using other plugins to FV Player shortcodes.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2" style="margin: 5px; ">
+      <tr>
+        <?php do_action('fv_player_conversion_buttons'); ?>
+      </tr>
+    </table>
   <?php
 }
 
@@ -1736,6 +1747,7 @@ add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), '
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
+add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings', 'normal', 'low');
 
 /* Skin Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
