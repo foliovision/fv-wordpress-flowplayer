@@ -13,10 +13,15 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     ) );
   }
 
+  /**
+   * Count posts with old shortcode
+   *
+   * @return int $count
+   */
   function get_count() {
     global $wpdb;
 
-    $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE " . implode(' OR post_content LIKE ',$this->matchers) );
+    $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ',$this->matchers) . ")" );
 
     return intval($count);
   }
@@ -29,7 +34,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_posts_with_shortcode($offset, $limit) {
     global $wpdb;
 
-    $results = $wpdb->get_results( "SELECT ID, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . " ORDER BY ID DESC LIMIT {$offset},{$limit}");
+    $results = $wpdb->get_results( "SELECT ID, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") ORDER BY ID DESC LIMIT {$offset},{$limit}");
 
     return $results;
   }
@@ -50,9 +55,31 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
       preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $post->post_content, $matched_shortcodes );
 
+      $supported_atts = array(
+        'src',
+        'src1',
+        'src2',
+        'splash',
+        'caption'
+      );
+
       if( !empty( $matched_shortcodes) ) {
         foreach( $matched_shortcodes as $shortcode ) {
           $atts = shortcode_parse_atts( $shortcode[0] );
+
+          $unsupported_atts_found = array();
+          foreach( $atts as $k => $v ) {
+            if( !in_array( $k, $supported_atts ) ) {
+              $unsupported_atts_found[] = $k;
+            }
+          }
+
+          // check if unsupported args found
+          if( !empty( $unsupported_atts_found) ) {
+            $status_msg[] = "Unsupported argument(s) " . implode(',', $unsupported_atts_found) . " in shortcode " . $shortcode[0];
+            $all_passed = false;
+            continue;
+          }
 
           // only splash, caption and src, src1, src2
           $import = array(

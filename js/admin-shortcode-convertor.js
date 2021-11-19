@@ -40,7 +40,7 @@ $.fn.Progressor = function(args) {
         });
       }
     }
-  
+
     // Load values from args and merge with defaults
     var opts = $.extend({
       action: 'Action',

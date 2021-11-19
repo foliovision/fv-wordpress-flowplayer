@@ -33,7 +33,7 @@ abstract class FV_Player_Conversion_Base {
 
   function ajax_convert() {
     if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->screen ) ) {
-      $html = [];
+      $html = []; // output html for conversion screen
 
       $offset = intval($_POST['offset']);
       $offset = 0 + intval($_POST['offset2']) + $offset;
@@ -46,11 +46,17 @@ abstract class FV_Player_Conversion_Base {
       foreach( $posts AS $post ) {
         $result = $this->convert_one($post);
         $html = array_merge( $html, $result['status'] );
+
+        // mark post if conversion failed
         if( !$result['all_passed'] ) {
           update_post_meta( $post->ID, '_fv_player_conversion_failed', implode(',', $result['status']) );
         }
 
-        $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
+        // update post only if all shortcodes were converted in post
+        if( !empty($result['new_content']) && $result['all_passed'] ) {
+          $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
+        }
+
       }
 
       $percent_done = round ( (($offset + $limit) / $total) * 100 );
