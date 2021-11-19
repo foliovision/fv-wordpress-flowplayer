@@ -55,10 +55,10 @@ flowplayer( function(api,root) {
       return;
     }
 
-    hls_audio_button = jQuery('<strong class="fv-fp-hls">AUD</strong>');
+    hls_audio_button = jQuery('<strong class="fv-fp-hls">' + fv_flowplayer_translations.audio_button + '</strong>');
     hls_audio_menu = jQuery('<div class="fp-menu fv-fp-hls-menu"></div>').insertAfter( root.find('.fp-controls') );
 
-    hls_audio_menu.append('<strong>Audio</strong>');
+    hls_audio_menu.append('<strong>' + fv_flowplayer_translations.audio_menu + '</strong>');
 
     // audio options
     audioUXGroup.forEach(function (audioTrack) {
