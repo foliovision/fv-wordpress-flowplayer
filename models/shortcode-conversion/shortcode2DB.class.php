@@ -16,7 +16,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_count() {
     global $wpdb;
 
-    $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE %s", implode(' OR post_content LIKE ',$this->matchers) );
+    $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE " . implode(' OR post_content LIKE ',$this->matchers) );
 
     return intval($count);
   }

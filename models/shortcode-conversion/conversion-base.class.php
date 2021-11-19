@@ -22,7 +22,7 @@ abstract class FV_Player_Conversion_Base {
     $this->screen = 'fv_player_conversion_' . $this->slug;
 
     add_action('admin_menu', array( $this, 'admin_page' ) );
-    add_action( 'wp_ajax_fv_player_conversion_'.$this->slug, array( $this, 'ajax_convert') );
+    add_action( 'wp_ajax_'. $this->screen, array( $this, 'ajax_convert') );
     add_action( 'fv_player_conversion_buttons', array( $this, 'conversion_button') );
   }
 
@@ -32,7 +32,7 @@ abstract class FV_Player_Conversion_Base {
   }
 
   function ajax_convert() {
-    if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->slug ) ) {
+    if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->screen ) ) {
       $html = [];
 
       $offset = intval($_POST['offset']);
@@ -87,10 +87,11 @@ abstract class FV_Player_Conversion_Base {
       <script type="text/javascript" charset="utf-8">
         jQuery(function() {
           jQuery('#wrapper').Progressor( {
+            action:   '<?php echo $this->screen ?>',
             start:    jQuery('input[name=convert]'),
             cancel:   '<?php echo 'Cancel'; ?>',
             url:      '<?php echo admin_url('admin-ajax.php') ?>',
-            nonce:    '<?php echo wp_create_nonce($this->slug)?>',
+            nonce:    '<?php echo wp_create_nonce($this->screen)?>',
             finished: '<?php echo 'Finished'; ?>'
           });
         });
