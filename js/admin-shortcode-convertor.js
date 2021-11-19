@@ -11,9 +11,12 @@ $.fn.Progressor = function(args) {
           data: ({ action: 'shortcode2db', what: $('[name=action]').val(), offset: offset, limit: opts.limit, _ajax_nonce: opts.nonce, offset2: $('[name=offset]').val(), verbose: $('[name=verbose]').is(':checked')
           }),
           type: 'POST',
-          error:  alert('There is an error'),
+          error: showAlert ,
           success: function(data) {
-            var response = JSON.parse(data);
+            var response = JSON.parse(data),
+              percent = data.percent_done,
+              msgs = data.status,
+              left = data.left;
 
             console.log('response', response);
 
@@ -93,4 +96,8 @@ $.fn.Progressor = function(args) {
 
 function clearmessages() {
   jQuery("#messages").empty();
+}
+
+function showAlert() {
+  alert('There is an error')
 }

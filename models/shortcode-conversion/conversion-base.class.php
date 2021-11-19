@@ -22,22 +22,21 @@ abstract class FV_Player_Conversion_Base {
     $this->screen = 'fv_player_conversion_' . $this->slug;
 
     add_action('admin_menu', array( $this, 'admin_page' ) );
-    add_action( 'admin_notices', array( $this, 'screen') );
     add_action( 'wp_ajax_fv_player_conversion_'.$this->slug, array( $this, 'ajax_convert') );
     add_action( 'fv_player_conversion_buttons', array( $this, 'conversion_button') );
   }
 
   function admin_page() {
-    add_submenu_page( 'fv_player', 'FV Player Migration', 'FV Player Migration', 'edit_posts', $this->screen, array($this, 'tools_panel') );
+    add_submenu_page( 'fv_player', 'FV Player Migration', 'FV Player Migration', 'install_plugins', $this->screen, array($this, 'conversion_screen') );
     remove_submenu_page( 'fv_player', $this->screen );
   }
 
   function ajax_convert() {
-    if ( current_user_can( 'administrator' ) && check_ajax_referer( $this->slug ) ) {
-      $html = '';
+    if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->slug ) ) {
+      $html = [];
+
       $offset = intval($_POST['offset']);
       $offset = 0 + intval($_POST['offset2']) + $offset;
-
       $limit = intval($_POST['limit']);
 
       $total = $this->get_count();
@@ -46,16 +45,22 @@ abstract class FV_Player_Conversion_Base {
 
       foreach( $posts AS $post ) {
         $result = $this->convert_one($post);
-        $html = $result['status'];
+        $html = array_merge( $html, $result['status'] );
+        if( !$result['all_passed'] ) {
+          update_post_meta( $post->ID, '_fv_player_conversion_failed', implode(',', $result['status']) );
+        }
+
         $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
       }
 
       $percent_done = round ( (($offset + $limit) / $total) * 100 );
+      $left = $total - ($offset + $limit);
 
-      echo json_encode( 
+      echo json_encode(
         array(
-          'display' => $html,
-          'percent_done' => $percent_done
+          'status' =>wpautop( implode( "\n\n", $html ) ),
+          'percent_done' => $percent_done,
+          'left' => $left
         )
       );
     }
@@ -63,37 +68,34 @@ abstract class FV_Player_Conversion_Base {
     die();
   }
 
-  function screen() {
-    if( current_user_can('manage_options') && isset($_GET['fv_player_conversion_' . $this->slug]) && wp_verify_nonce($_GET['fv_player_conversion_' . $this->slug] ,'fv_player_conversion_' . $this->slug) ) {
-      global $fv_wp_flowplayer_ver;
-      wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-shortcode-convertor.js', array('jquery'), $fv_wp_flowplayer_ver );
+  function conversion_screen() {
+    global $fv_wp_flowplayer_ver;
+    wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-shortcode-convertor.js', array('jquery'), $fv_wp_flowplayer_ver );
 
-      ?>
-        <div class="wrap">
-          <p>
-            <input type="hidden" name="action" value="rebuild" />
-            <input class="button-primary" type="submit" name="convert" value="Convert shortcodes" />
-          </p>
-          <div id="wrapper"></div>
-          <p><a href="#" onclick='clearmessages(); return false'>Clear messages</a></p>
-          <div id="messages">
-          </div>
+    ?>
+      <div class="wrap">
+        <p>
+          <input type="hidden" name="action" value="rebuild" />
+          <input class="button-primary" type="submit" name="convert" value="Convert shortcodes" />
+        </p>
+        <div id="wrapper"></div>
+        <p><a href="#" onclick='clearmessages(); return false'>Clear messages</a></p>
+        <div id="messages">
         </div>
+      </div>
 
-        <script type="text/javascript" charset="utf-8">
-          jQuery(function() {
-            jQuery('#wrapper').Progressor( {
-              start:    jQuery('input[name=convert]'),
-              cancel:   '<?php echo 'Cancel'; ?>',
-              url:      '<?php echo admin_url('admin-ajax.php') ?>',
-              nonce:    '<?php echo wp_create_nonce($this->slug)?>',
-              finished: '<?php echo 'Finished'; ?>'
-            });
+      <script type="text/javascript" charset="utf-8">
+        jQuery(function() {
+          jQuery('#wrapper').Progressor( {
+            start:    jQuery('input[name=convert]'),
+            cancel:   '<?php echo 'Cancel'; ?>',
+            url:      '<?php echo admin_url('admin-ajax.php') ?>',
+            nonce:    '<?php echo wp_create_nonce($this->slug)?>',
+            finished: '<?php echo 'Finished'; ?>'
           });
-        </script>
-      <?php
-
-    }
+        });
+      </script>
+    <?php
   }
 
 }
