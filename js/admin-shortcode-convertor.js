@@ -14,9 +14,9 @@ $.fn.Progressor = function(args) {
           error: showAlert ,
           success: function(data) {
             var response = JSON.parse(data),
-              percent = data.percent_done,
-              msgs = data.status,
-              left = data.left;
+              percent = response.percent_done,
+              msgs = response.status,
+              left = response.left;
 
             console.log('response', response);
 
