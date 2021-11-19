@@ -43,7 +43,7 @@ $.fn.Progressor = function(args) {
       action: 'Action',
       cancel: 'Cancel',
       inside: 'inner',
-      limit: 1,
+      limit: 20, // limit jobs count
       nonce: '',
       loading: '#loading'
     }, args);
