@@ -18,9 +18,6 @@ $.fn.Progressor = function(args) {
               msgs = response.status,
               left = response.left;
 
-            console.log('response', response);
-
-            $(wrapper).find('p').html(message);
             $('#' + opts.inside).css('width', percent);
             
             $("#messages").append('<p>'+msgs+'<p>');
@@ -50,8 +47,6 @@ $.fn.Progressor = function(args) {
       nonce: '',
       loading: '#loading'
     }, args);
-
-    console.log('ops', opts);
 
     var offset  = 0;
     var running = false;
