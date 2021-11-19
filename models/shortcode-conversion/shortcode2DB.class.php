@@ -64,9 +64,12 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       );
 
       if( !empty( $matched_shortcodes) ) {
-        foreach( $matched_shortcodes as $shortcode ) {
-          $atts = shortcode_parse_atts( $shortcode[0] );
+        foreach( $matched_shortcodes[0] as $shortcode ) {
+          $atts = shortcode_parse_atts( rtrim($shortcode,']') );
 
+          unset( $atts[0] ); // remove [fvplayer or [flowplayer
+
+          // check for unsupported args
           $unsupported_atts_found = array();
           foreach( $atts as $k => $v ) {
             if( !in_array( $k, $supported_atts ) ) {
@@ -76,7 +79,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           // check if unsupported args found
           if( !empty( $unsupported_atts_found) ) {
-            $status_msg[] = "Unsupported argument(s) " . implode(',', $unsupported_atts_found) . " in shortcode " . $shortcode[0];
+            $status_msg[] = "Unsupported argument(s) " . implode(',', $unsupported_atts_found) . " in shortcode " . $shortcode;
             $all_passed = false;
             continue;
           }
@@ -107,10 +110,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           if( $player_id > 0 ) {
             // echo "Inserted player #".$player_id."\n";
-            $new_content = str_replace( $shortcode[0] , '[fvplayer id="'.$player_id.'"]', $new_content );
-            $status_msg[] = "Converted shortcode " . $shortcode[0] . " to player id " . $player_id ;
+            $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
+            $status_msg[] = "Converted shortcode " . $shortcode . " to player id " . $player_id ;
           } else {
-            $status_msg[] = "Failed to convert shortcode " . $shortcode[0];
+            $status_msg[] = "Failed to convert shortcode " . $shortcode;
             $all_passed = false;
           }
         }
@@ -123,7 +126,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'all_passed' => $all_passed
     );
   }
-  
+
   function conversion_button() {
     ?>
       <td>

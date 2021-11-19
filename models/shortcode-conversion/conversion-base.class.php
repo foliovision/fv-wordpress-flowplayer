@@ -52,11 +52,7 @@ abstract class FV_Player_Conversion_Base {
           update_post_meta( $post->ID, '_fv_player_conversion_failed', implode(',', $result['status']) );
         }
 
-        // update post only if all shortcodes were converted in post
-        if( !empty($result['new_content']) && $result['all_passed'] ) {
-          $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
-        }
-
+        $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
       }
 
       $percent_done = round ( (($offset + $limit) / $total) * 100 );
