@@ -77,7 +77,7 @@ abstract class FV_Player_Conversion_Base {
 
   function conversion_screen() {
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-shortcode-convertor.js', array('jquery'), $fv_wp_flowplayer_ver );
+    wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-convertor.js', array('jquery'), $fv_wp_flowplayer_ver );
 
     ?>
       <style>
@@ -97,6 +97,7 @@ abstract class FV_Player_Conversion_Base {
         }
       </style>
       <div class="wrap">
+        <h1><?php echo $this->title; ?></h1>
         <p>
           <input type="hidden" name="action" value="rebuild" />
           <input class="button-primary" type="submit" name="convert" value="Convert shortcodes" />

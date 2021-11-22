@@ -101,6 +101,6 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
 
-include_once(dirname( __FILE__ ). '/models/shortcode-conversion/conversion-base.class.php');
-include_once(dirname( __FILE__ ). '/models/shortcode-conversion/shortcode2DB.class.php');
+include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
+include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
 include_once(dirname( __FILE__ ) . '/models/conversion.php');

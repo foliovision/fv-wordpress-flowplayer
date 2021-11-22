@@ -62,7 +62,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         'src1',
         'src2',
         'splash',
-        'caption'
+        'caption',
+        'width',
+        'height',
+        'autoplay',
       );
 
       if( !empty( $matched_shortcodes) ) {
@@ -124,8 +127,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           // TODO: Only create array
           $status_msg[] = "<tr data-timing='".number_format(microtime(true) - $start)."'><td>#".$post->ID."</td><td>".$post->post_title."</td><td>".$post->post_type."</td><td>".$shortcode."</td><td>".$output."</td></tr>";
-          continue;
-
         }
       }
     }
