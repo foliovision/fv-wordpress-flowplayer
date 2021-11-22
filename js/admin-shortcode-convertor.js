@@ -15,12 +15,12 @@ $.fn.Progressor = function(args) {
           success: function(data) {
             var response = JSON.parse(data),
               percent = response.percent_done,
-              msgs = response.status,
+              table_rows = response.table_rows,
               left = response.left;
 
-            $('#' + opts.inside).css('width', percent);
+            $('#progress').css('width', percent+'%');
             
-            $("#messages").append('<p>'+msgs+'<p>');
+            $("#output").append(table_rows);
 
             if (left > 0) {
               // More to come
@@ -30,7 +30,7 @@ $.fn.Progressor = function(args) {
             else {
               // Finished
               $(opts.start).val(original);
-              $(opts.loading).hide();
+              $('#loading').hide();
               running = false;
             }
           }
@@ -42,10 +42,8 @@ $.fn.Progressor = function(args) {
     var opts = $.extend({
       action: 'Action',
       cancel: 'Cancel',
-      inside: 'inner',
       limit: 20, // limit jobs count
       nonce: '',
-      loading: '#loading'
     }, args);
 
     var offset  = 0;
@@ -61,25 +59,18 @@ $.fn.Progressor = function(args) {
         // Cancel
         running = false;
         $(button).val(original);
-        $(opts.loading).hide();
+        $('#loading').hide();
       }
       else {
         offset = 0;
         running = true;
 
-        // Hide the button
         $(button).val(opts.cancel);
-        $(opts.loading).show();
 
-        // Setup the progress bar
-        $(wrapper).empty();
-        $(wrapper).append('<div id="' + opts.inside + '"></div><p></p>');
+        $('#loading').show();
         $(wrapper).fadeIn();
-        $('#' + opts.inside).css('width', '0px');
+        $('#progress').css('width', '0px');
       
-        /*$(messages).append('<p>asdf<p>');
-        $(messages).fadeIn();*/
-
         // Now kick-start a timer to perform the progressor
         setTimeout(timer, 0);
       }
@@ -89,10 +80,6 @@ $.fn.Progressor = function(args) {
     });
   };
 })(jQuery);
-
-function clearmessages() {
-  jQuery("#messages").empty();
-}
 
 function showAlert() {
   alert('There is an error')

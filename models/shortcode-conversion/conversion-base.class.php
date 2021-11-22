@@ -43,14 +43,18 @@ abstract class FV_Player_Conversion_Base {
 
       $posts = $this->get_posts_with_shortcode( $offset, $limit );
 
+      $start = microtime(true);
+
       foreach( $posts AS $post ) {
         $result = $this->convert_one($post);
-        $html = array_merge( $html, $result['status'] );
-
         // mark post if conversion failed
         if( !$result['all_passed'] ) {
-          update_post_meta( $post->ID, '_fv_player_conversion_failed', implode(',', $result['status']) );
+          // TODO: Use some new key which will only have the failed conversions in the post in it
+          update_post_meta( $post->ID, '_fv_player_conversion_failed', implode(',', $result['table_rows']) );
         }
+
+        // TODO: Convert array to table
+        $html = array_merge( $html, $result['table_rows'] );
 
         $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
       }
@@ -60,7 +64,8 @@ abstract class FV_Player_Conversion_Base {
 
       echo json_encode(
         array(
-          'status' =>wpautop( implode( "\n\n", $html ) ),
+          'timing' => microtime(true) - $start,
+          'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
           'left' => $left
         )
@@ -75,15 +80,43 @@ abstract class FV_Player_Conversion_Base {
     wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-shortcode-convertor.js', array('jquery'), $fv_wp_flowplayer_ver );
 
     ?>
+      <style>
+        #wrapper {
+          border: 1px solid gray;
+          position: relative;
+          height: 1em;
+          margin-bottom: 1em;
+        }
+        #progress {
+          border-right: 1px solid gray;
+          background-color: #800;
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+        }
+      </style>
       <div class="wrap">
         <p>
           <input type="hidden" name="action" value="rebuild" />
           <input class="button-primary" type="submit" name="convert" value="Convert shortcodes" />
         </p>
-        <div id="wrapper"></div>
-        <p><a href="#" onclick='clearmessages(); return false'>Clear messages</a></p>
-        <div id="messages">
-        </div>
+        <div id="wrapper" style="display: none"><div id="progress"></div></div>
+        <div id="loading" style="display: none"></div>
+        <table class="wp-list-table widefat fixed striped table-view-list posts">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Post Type</th>
+              <th>Shortcode</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="output">
+
+          </tbody>
+        </table>
       </div>
 
       <script type="text/javascript" charset="utf-8">

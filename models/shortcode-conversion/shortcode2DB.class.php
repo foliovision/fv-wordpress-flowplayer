@@ -34,7 +34,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_posts_with_shortcode($offset, $limit) {
     global $wpdb;
 
-    $results = $wpdb->get_results( "SELECT ID, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") ORDER BY ID DESC LIMIT {$offset},{$limit}");
+    $results = $wpdb->get_results( "SELECT ID, post_title, post_type, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") ORDER BY ID DESC LIMIT {$offset},{$limit}");
 
     return $results;
   }
@@ -47,6 +47,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
    * @return arrray
    */
   function convert_one( $post ) {
+    $start = microtime(true);
+
     $new_content = $post->post_content;
     $status_msg = [];
     $all_passed = true;
@@ -77,52 +79,60 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             }
           }
 
+          $output = "Conversion failed.";
+
           // check if unsupported args found
           if( !empty( $unsupported_atts_found) ) {
-            $status_msg[] = "Unsupported argument(s) " . implode(',', $unsupported_atts_found) . " in shortcode " . $shortcode;
+            $output = "Unsupported argument(s) " . implode(',', $unsupported_atts_found);
             $all_passed = false;
-            continue;
-          }
 
-          // only splash, caption and src, src1, src2
-          $import = array(
-            // 'player_name' => $post->post_title,
-            'date_created' => $post->post_date_gmt,
-            'videos' => array(
-              array(
-                'src' => isset($atts['src']) ? $atts['src'] : '',
-                'src1' => isset($atts['src1']) ? $atts['src1'] : '',
-                'src2' => isset($atts['src2']) ? $atts['src2'] : '',
-                'splash' => isset($atts['splash']) ? $atts['splash'] : '',
-                'caption' => isset($atts['caption']) ? $atts['caption'] : ''
-              )
-            ),
-            'meta' => array(
-              array(
-                'meta_key' => 'post_id',
-                'meta_value' => $post->ID
-              ),
-            )
-          );
-
-          global $FV_Player_Db;
-          $player_id =  $FV_Player_Db->import_player_data(false, false, $import);
-
-          if( $player_id > 0 ) {
-            // echo "Inserted player #".$player_id."\n";
-            $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
-            $status_msg[] = "Converted shortcode " . $shortcode . " to player id " . $player_id ;
           } else {
-            $status_msg[] = "Failed to convert shortcode " . $shortcode;
-            $all_passed = false;
+
+            // only splash, caption and src, src1, src2
+            $import = array(
+              // 'player_name' => $post->post_title,
+              'date_created' => $post->post_date_gmt,
+              'videos' => array(
+                array(
+                  'src' => isset($atts['src']) ? $atts['src'] : '',
+                  'src1' => isset($atts['src1']) ? $atts['src1'] : '',
+                  'src2' => isset($atts['src2']) ? $atts['src2'] : '',
+                  'splash' => isset($atts['splash']) ? $atts['splash'] : '',
+                  'caption' => isset($atts['caption']) ? $atts['caption'] : ''
+                )
+              ),
+              'meta' => array(
+                array(
+                  'meta_key' => 'post_id',
+                  'meta_value' => $post->ID
+                ),
+              )
+            );
+
+            global $FV_Player_Db;
+            $player_id =  $FV_Player_Db->import_player_data(false, false, $import);
+
+            if( $player_id > 0 ) {
+              // echo "Inserted player #".$player_id."\n";
+              $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
+              $output = "New FV Player #" . $player_id ;
+            } else {
+              $output = "Error saving FV Player instance";
+              $all_passed = false;
+            }
           }
+
+          // TODO: Only create array
+          $status_msg[] = "<tr data-timing='".number_format(microtime(true) - $start)."'><td>#".$post->ID."</td><td>".$post->post_title."</td><td>".$post->post_type."</td><td>".$shortcode."</td><td>".$output."</td></tr>";
+          continue;
+
         }
       }
     }
 
     return  array(
       'new_content' => $new_content,
-      'status' => $status_msg,
+      'table_rows' => $status_msg,
       'all_passed' => $all_passed
     );
   }
