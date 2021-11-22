@@ -130,7 +130,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function conversion_button() {
     ?>
       <td>
-        <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('This converts the [fvplayer ...] and [flowplayer] shortcodes into database [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-player-pro'); ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
+        <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('This converts the [fvplayer src=...] and [flowplayer src=...] shortcodes into database [fvplayer id=...] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-player-pro'); ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
       </td>
     <?php
   }

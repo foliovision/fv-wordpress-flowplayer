@@ -1747,7 +1747,6 @@ add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), '
 if( !class_exists('FV_Player_Pro') ) {
   add_meta_box( 'fv_player_pro', __('Pro Features', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_pro', 'fv_flowplayer_settings', 'normal', 'low' );
 }
-add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings', 'normal', 'low');
 
 /* Skin Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
@@ -1775,8 +1774,9 @@ if( !class_exists('FV_Player_Pro') ) {
 
 /* Tools tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal' );
-add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal', 'low' );
+add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
