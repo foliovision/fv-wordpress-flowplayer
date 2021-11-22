@@ -34,7 +34,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_posts_with_shortcode($offset, $limit) {
     global $wpdb;
 
-    $results = $wpdb->get_results( "SELECT ID, post_title, post_type, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") ORDER BY ID DESC LIMIT {$offset},{$limit}");
+    $results = $wpdb->get_results( "SELECT ID, post_date_gmt ,post_title, post_type, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") ORDER BY ID DESC LIMIT {$offset},{$limit}");
 
     return $results;
   }
@@ -50,8 +50,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     $start = microtime(true);
 
     $new_content = $post->post_content;
-    $status_msg = [];
-    $all_passed = true;
+    $output_data = array();
+    $errors = array();
 
     if( !empty( $post->post_content) ) {
 
@@ -74,6 +74,11 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           unset( $atts[0] ); // remove [fvplayer or [flowplayer
 
+          // ignore db players
+          if ( isset( $atts['id'] )) {
+            continue;
+          }
+
           // check for unsupported args
           $unsupported_atts_found = array();
           foreach( $atts as $k => $v ) {
@@ -87,10 +92,13 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
           // check if unsupported args found
           if( !empty( $unsupported_atts_found) ) {
             $output = "Unsupported argument(s) " . implode(',', $unsupported_atts_found);
-            $all_passed = false;
-
+            
+            $errors[] = array( 
+              'message' => $output,
+              'post_edit' => get_edit_post_link( $post->ID ),
+              'post_link' => get_permalink( $post->ID )
+            );
           } else {
-
             // only splash, caption and src, src1, src2
             $import = array(
               // 'player_name' => $post->post_title,
@@ -101,7 +109,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                   'src1' => isset($atts['src1']) ? $atts['src1'] : '',
                   'src2' => isset($atts['src2']) ? $atts['src2'] : '',
                   'splash' => isset($atts['splash']) ? $atts['splash'] : '',
-                  'caption' => isset($atts['caption']) ? $atts['caption'] : ''
+                  'caption' => isset($atts['caption']) ? $atts['caption'] : '',
+                  'width' => isset($atts['width']) ? $atts['width'] : '',
+                  'height' => isset($atts['height']) ? $atts['height'] : '',
+                  'autoplay' => isset($atts['autoplay']) ? $atts['autoplay'] : ''
                 )
               ),
               'meta' => array(
@@ -121,28 +132,46 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               $output = "New FV Player #" . $player_id ;
             } else {
               $output = "Error saving FV Player instance";
-              $all_passed = false;
+              
+              $errors[] = array(
+                'message' => $output,
+                'post_edit' => get_edit_post_link( $post->ID ),
+                'post_link' => get_permalink( $post->ID )
+              );
             }
           }
 
-          // TODO: Only create array
-          $status_msg[] = "<tr data-timing='".number_format(microtime(true) - $start)."'><td>#".$post->ID."</td><td>".$post->post_title."</td><td>".$post->post_type."</td><td>".$shortcode."</td><td>".$output."</td></tr>";
+          $output_data[] = array(
+            'timing' => number_format(microtime(true) - $start),
+            'ID' => $post->ID,
+            'title' => $post->post_title,
+            'type' => $post->post_type,
+            'shortcode' => $shortcode,
+            'output' => $output,
+          );
         }
       }
     }
 
     return  array(
       'new_content' => $new_content,
-      'table_rows' => $status_msg,
-      'all_passed' => $all_passed
+      'output_data' => $output_data,
+      'errors' => $errors
     );
   }
 
   function conversion_button() {
     ?>
-      <td>
-        <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('This converts the [fvplayer src=...] and [flowplayer src=...] shortcodes into database [fvplayer id=...] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-player-pro'); ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
-      </td>
+      <tr>
+        <td>
+          <td class="first"><label>Convert fvplayer to DB:</label></td>
+        </td>
+        <td>
+          <p class="description">
+            <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('This converts the [fvplayer src=...] and [flowplayer src=...] shortcodes into database [fvplayer id=...] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-player-pro'); ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
+          </p>
+        </td>
+      </tr>
     <?php
   }
 

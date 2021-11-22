@@ -24,6 +24,10 @@ abstract class FV_Player_Conversion_Base {
     add_action('admin_menu', array( $this, 'admin_page' ) );
     add_action( 'wp_ajax_'. $this->screen, array( $this, 'ajax_convert') );
     add_action( 'fv_player_conversion_buttons', array( $this, 'conversion_button') );
+
+    if( isset($_GET['fv-conversion-export']) && !empty($_GET['page']) && $_GET['page'] === $this->screen ) {
+      add_action('admin_init', array( $this, 'csv_export' ) );
+    }
   }
 
   function admin_page() {
@@ -33,7 +37,9 @@ abstract class FV_Player_Conversion_Base {
 
   function ajax_convert() {
     if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->screen ) ) {
-      $html = []; // output html for conversion screen
+      $conversions_output = array();
+      $convert_error = false;
+      $html = array();
 
       $offset = intval($_POST['offset']);
       $offset = 0 + intval($_POST['offset2']) + $offset;
@@ -48,28 +54,64 @@ abstract class FV_Player_Conversion_Base {
       foreach( $posts AS $post ) {
         $result = $this->convert_one($post);
         // mark post if conversion failed
-        if( !$result['all_passed'] ) {
-          // TODO: Use some new key which will only have the failed conversions in the post in it
-          update_post_meta( $post->ID, '_fv_player_conversion_failed', implode(',', $result['table_rows']) );
+        if( !empty( $result['errors'] ) ) {
+          update_post_meta( $post->ID, '_fv_player_' . $this->slug . '_failed', $result['errors'] );
+          $convert_error = true;
         }
 
-        // TODO: Convert array to table
-        $html = array_merge( $html, $result['table_rows'] );
+        $conversions_output = array_merge( $conversions_output, $result['output_data'] );
 
-        $post_id = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
+        wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
       }
 
       $percent_done = round ( (($offset + $limit) / $total) * 100 );
       $left = $total - ($offset + $limit);
 
+      foreach( $conversions_output as $output_data ) {
+        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td>#". $output_data['ID'] . "</td><td>". $output_data['title'] . "</td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td></tr>";
+      }
+
+      // response
       echo json_encode(
         array(
           'timing' => microtime(true) - $start,
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
-          'left' => $left
+          'left' => $left,
+          'convert_error' => $convert_error
         )
       );
+    }
+
+    die();
+  }
+
+  function csv_export() {
+    if( !current_user_can('install_plugins') ) return;
+    
+    global $wpdb;
+
+    $filename = $this->slug . '-export-' . date('Y-m-d') . '.csv';
+
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename=$filename");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    $meta_key = '_fv_player_' . $this->slug . '_failed';
+
+    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s'", $meta_key );
+
+    $results = $wpdb->get_col( $sql );
+
+    if( !empty( $results ) ) {
+      foreach( $results as $result ) {
+        $unserialized = unserialize( $result );
+  
+        foreach( $unserialized as $row ) {
+          echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
+        }
+      }
     }
 
     die();
@@ -102,8 +144,14 @@ abstract class FV_Player_Conversion_Base {
           <input type="hidden" name="action" value="rebuild" />
           <input class="button-primary" type="submit" name="convert" value="Convert shortcodes" />
         </p>
+
+        <p>
+        <a id="export" href="<?php echo admin_url('admin.php?page=' . $this->screen .'&fv-conversion-export=1');?>" style="display: none" >Export errors to csv file</a>
+        </p>
+
         <div id="wrapper" style="display: none"><div id="progress"></div></div>
         <div id="loading" style="display: none"></div>
+
         <table class="wp-list-table widefat fixed striped table-view-list posts">
           <thead>
             <tr>
@@ -114,9 +162,7 @@ abstract class FV_Player_Conversion_Base {
               <th>Result</th>
             </tr>
           </thead>
-          <tbody id="output">
-
-          </tbody>
+          <tbody id="output"></tbody>
         </table>
       </div>
 

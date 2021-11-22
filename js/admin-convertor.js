@@ -18,6 +18,10 @@ $.fn.Progressor = function(args) {
               table_rows = response.table_rows,
               left = response.left;
 
+            if( response.convert_error ) {
+              convert_error = true;
+            }
+
             $('#progress').css('width', percent+'%');
             
             $("#output").append(table_rows);
@@ -29,6 +33,12 @@ $.fn.Progressor = function(args) {
             }
             else {
               // Finished
+              if( convert_error ) {
+                $('#export').show();
+              }
+
+              $('#progress').css('width', '100%');
+
               $(opts.start).val(original);
               $('#loading').hide();
               running = false;
@@ -48,6 +58,7 @@ $.fn.Progressor = function(args) {
 
     var offset  = 0;
     var running = false;
+    var convert_error = false; // track if some job failed
     var wrapper = this;
     var messages = $('#messages');
     var original = $(opts.start).val();

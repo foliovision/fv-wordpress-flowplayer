@@ -999,9 +999,7 @@ function fv_flowplayer_settings_box_conversion() {
   ?>
     <p><?php _e('This section allows you to convert videos posted using other plugins to FV Player shortcodes.', 'fv-wordpress-flowplayer'); ?></p>
     <table class="form-table2" style="margin: 5px; ">
-      <tr>
-        <?php do_action('fv_player_conversion_buttons'); ?>
-      </tr>
+      <?php do_action('fv_player_conversion_buttons'); ?>
     </table>
   <?php
 }
