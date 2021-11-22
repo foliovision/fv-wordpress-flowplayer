@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2021 THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-21 10:20+0200\n"
+"POT-Creation-Date: 2021-11-22 10:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -378,7 +378,15 @@ msgstr ""
 msgid "Click to unmute"
 msgstr ""
 
-#: controller/frontend.php:592
+#: controller/frontend.php:109
+msgid "AUD"
+msgstr ""
+
+#: controller/frontend.php:110
+msgid "Audio"
+msgstr ""
+
+#: controller/frontend.php:598
 #, php-format
 msgid "Posts by %s"
 msgstr ""
@@ -800,7 +808,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/flowplayer.php:2518 models/flowplayer.php:2528
+#: models/flowplayer.php:2529 models/flowplayer.php:2539
 msgid ""
 "The preview is too narrow, vertical playlist will shift below the player as "
 "it would on mobile."
@@ -897,17 +905,17 @@ msgstr ""
 msgid "no region"
 msgstr ""
 
-#: models/player-position-save.php:92
+#: models/player-position-save.php:102
 msgid "Remember video position"
 msgstr ""
 
-#: models/player-position-save.php:92
+#: models/player-position-save.php:102
 msgid ""
 "Stores the last video play position for users, so they can continue watching "
 "from where they left."
 msgstr ""
 
-#: models/player-position-save.php:92
+#: models/player-position-save.php:102
 msgid ""
 "It stores in <code>wp_usermeta</code> database table for logged in users and "
 "in a localStorage or cookie for guest users."
