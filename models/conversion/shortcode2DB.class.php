@@ -90,7 +90,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
           $output = "Conversion failed.";
 
           // check if unsupported args found
-          if( !empty( $unsupported_atts_found) ) {
+          if( !empty($unsupported_atts_found) ) {
             $output = "Unsupported argument(s) " . implode(',', $unsupported_atts_found);
             
             $errors[] = array( 
@@ -102,6 +102,12 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             // only splash, caption and src, src1, src2
             $import = array(
               // 'player_name' => $post->post_title,
+              'meta' => array(
+                array(
+                  'meta_key' => 'post_id',
+                  'meta_value' => $post->ID
+                )
+              ),
               'date_created' => $post->post_date_gmt,
               'width' => isset($atts['width']) ? $atts['width'] : '',
               'height' => isset($atts['height']) ? $atts['height'] : '',
@@ -113,12 +119,12 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                   'src2' => isset($atts['src2']) ? $atts['src2'] : '',
                   'splash' => isset($atts['splash']) ? $atts['splash'] : '',
                   'caption' => isset($atts['caption']) ? $atts['caption'] : '',
-                  'meta' => array(
-                    array(
-                      'meta_key' => 'post_id',
-                      'meta_value' => $post->ID
-                    )
-                  )
+                  // 'meta' => array(
+                  //   array(
+                  //     'meta_key' => '',
+                  //     'meta_value' => ''
+                  //   )
+                  // )
                 )
               )
             );
