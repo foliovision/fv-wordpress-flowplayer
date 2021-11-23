@@ -67,6 +67,7 @@ abstract class FV_Player_Conversion_Base {
       $percent_done = round ( (($offset + $limit) / $total) * 100 );
       $left = $total - ($offset + $limit);
 
+      // build html output
       foreach( $conversions_output as $output_data ) {
         $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td>#". $output_data['ID'] . "</td><td>". $output_data['title'] . "</td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td></tr>";
       }
@@ -104,6 +105,7 @@ abstract class FV_Player_Conversion_Base {
 
     $results = $wpdb->get_col( $sql );
 
+    echo 'message,post_edit,post_link'."\n";
     if( !empty( $results ) ) {
       foreach( $results as $result ) {
         $unserialized = unserialize( $result );

@@ -103,24 +103,24 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             $import = array(
               // 'player_name' => $post->post_title,
               'date_created' => $post->post_date_gmt,
+              'width' => isset($atts['width']) ? $atts['width'] : '',
+              'height' => isset($atts['height']) ? $atts['height'] : '',
+              'autoplay' => isset($atts['autoplay']) ? $atts['autoplay'] : '',
               'videos' => array(
                 array(
                   'src' => isset($atts['src']) ? $atts['src'] : '',
                   'src1' => isset($atts['src1']) ? $atts['src1'] : '',
                   'src2' => isset($atts['src2']) ? $atts['src2'] : '',
                   'splash' => isset($atts['splash']) ? $atts['splash'] : '',
-                  'caption' => isset($atts['caption']) ? $atts['caption'] : '',
-                  'width' => isset($atts['width']) ? $atts['width'] : '',
-                  'height' => isset($atts['height']) ? $atts['height'] : '',
-                  'autoplay' => isset($atts['autoplay']) ? $atts['autoplay'] : ''
+                  'caption' => isset($atts['caption']) ? $atts['caption'] : ''
+                ),
+                'meta' => array(
+                  array(
+                    'meta_key' => 'post_id',
+                    'meta_value' => $post->ID
+                  ),
                 )
               ),
-              'meta' => array(
-                array(
-                  'meta_key' => 'post_id',
-                  'meta_value' => $post->ID
-                ),
-              )
             );
 
             global $FV_Player_Db;
