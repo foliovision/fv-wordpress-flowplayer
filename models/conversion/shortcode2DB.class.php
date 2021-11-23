@@ -112,15 +112,15 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                   'src1' => isset($atts['src1']) ? $atts['src1'] : '',
                   'src2' => isset($atts['src2']) ? $atts['src2'] : '',
                   'splash' => isset($atts['splash']) ? $atts['splash'] : '',
-                  'caption' => isset($atts['caption']) ? $atts['caption'] : ''
-                ),
-                'meta' => array(
-                  array(
-                    'meta_key' => 'post_id',
-                    'meta_value' => $post->ID
-                  ),
+                  'caption' => isset($atts['caption']) ? $atts['caption'] : '',
+                  'meta' => array(
+                    array(
+                      'meta_key' => 'post_id',
+                      'meta_value' => $post->ID
+                    )
+                  )
                 )
-              ),
+              )
             );
 
             global $FV_Player_Db;
