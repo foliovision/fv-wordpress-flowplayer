@@ -105,7 +105,7 @@ abstract class FV_Player_Conversion_Base {
 
     $results = $wpdb->get_col( $sql );
 
-    echo 'message,post_edit,post_link'."\n";
+    echo 'ID,Title,Post Link,Edit Link,Message'."\n";
     if( !empty( $results ) ) {
       foreach( $results as $result ) {
         $unserialized = unserialize( $result );

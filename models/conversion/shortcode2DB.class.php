@@ -93,10 +93,12 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
           if( !empty($unsupported_atts_found) ) {
             $output = "Unsupported argument(s) " . implode(',', $unsupported_atts_found);
             
-            $errors[] = array( 
-              'message' => $output,
+            $errors[] = array(
+              'ID' => $post->ID,
+              'post_title' => $post->post_title,
               'post_edit' => get_edit_post_link( $post->ID ),
-              'post_link' => get_permalink( $post->ID )
+              'post_link' => get_permalink( $post->ID ),
+              'message' => $output
             );
           } else {
             // only splash, caption and src, src1, src2
@@ -140,9 +142,11 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               $output = "Error saving FV Player instance";
               
               $errors[] = array(
-                'message' => $output,
+                'ID' => $post->ID,
+                'post_title' => $post->post_title,
                 'post_edit' => get_edit_post_link( $post->ID ),
-                'post_link' => get_permalink( $post->ID )
+                'post_link' => get_permalink( $post->ID ),
+                'message' => $output
               );
             }
           }
