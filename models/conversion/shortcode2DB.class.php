@@ -96,8 +96,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             $errors[] = array(
               'ID' => $post->ID,
               'post_title' => $post->post_title,
-              'post_edit' => get_edit_post_link( $post->ID ),
               'post_link' => get_permalink( $post->ID ),
+              'post_edit' => get_edit_post_link( $post->ID ),
               'message' => $output
             );
           } else {
@@ -144,8 +144,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               $errors[] = array(
                 'ID' => $post->ID,
                 'post_title' => $post->post_title,
-                'post_edit' => get_edit_post_link( $post->ID ),
                 'post_link' => get_permalink( $post->ID ),
+                'post_edit' => get_edit_post_link( $post->ID ),
                 'message' => $output
               );
             }
