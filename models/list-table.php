@@ -257,6 +257,7 @@ class FV_Player_List_Table extends WP_List_Table {
   public function column_default( $player, $column_name ) {
     $id = $player->id;
 
+    // TODO: This should be done in a sensible way
     // if any of the videos for this player contain a coconut_processing_ placeholder,
     // try to run Coconut's job check, so we can update that SRC if it was already
     // processed

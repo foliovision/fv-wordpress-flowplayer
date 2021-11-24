@@ -103,8 +103,6 @@ abstract class FV_Player_Video_Encoder {
       add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
       add_action( 'fv_player_video_encoder_include_listing_lib', array( $this, 'include_listing_lib' ), 10, 0 );
-
-      add_action( 'fv_player_video_encoder_enqueue_css', array( $this, 'enqueue_base_encoder_css' ), 10, 0 );
     }
 
     add_action( 'fv_player_item', array( $this, 'check_playlist_video_is_processing' ) );
@@ -116,13 +114,6 @@ abstract class FV_Player_Video_Encoder {
    */
   public function include_listing_lib() {
     require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
-  }
-
-  /**
-   * Used in this class as well as the browser class to load CSS for processing / error overlays.
-   */
-  public function enqueue_base_encoder_css() {
-    wp_enqueue_style( 'fv-player-encoder-frontend', plugins_url( 'fv-player-encoder-base.css', __FILE__ ), array(), filemtime( dirname( __FILE__ ).'/fv-player-encoder-base.css' ) );
   }
 
   /**
@@ -139,11 +130,6 @@ abstract class FV_Player_Video_Encoder {
       foreach( $item['sources'] as $source ) {
         if ( strpos($source['src'], $this->encoder_id . '_processing_' ) !== false ) {
           $item['pending_encoding'] = true;
-
-          $this->enqueue_base_encoder_css();
-          wp_enqueue_script('fv-player-' . $this->encoder_id . '-frontend', plugins_url('js/' . $this->encoder_id . '-frontend.js', $this->getFILE() ), array('flowplayer'), filemtime( dirname( $this->getFILE() ) . '/js/' . $this->encoder_id . '-frontend.js' ) );
-          // include the plugin's own CSS, if it exists, so additional formatting can be applied to progress / error overlays, if desired
-          wp_enqueue_style( 'fv-player-' . $this->encoder_id . '-frontend', plugins_url( 'css/style.css', $this->getFILE() ), array(), filemtime( dirname($this->getFILE()).'/css/style.css' ) );
 
           $job_id = explode( $this->encoder_id. '_processing_', $source['src'] );
           if( !empty($job_id[1]) ) {
