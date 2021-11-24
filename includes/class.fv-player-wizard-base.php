@@ -43,8 +43,6 @@ abstract class FV_Player_Wizard_Base_Class {
     add_action( 'wp_ajax_'.$this->get_id().'_step', array( $this, 'ajax' ) );
 
     add_action( 'admin_init', array( $this, 'styles' ) );
-
-    add_action( 'admin_init', array( $this, 'start_session' ) );
   }
 
   /*
@@ -236,12 +234,6 @@ abstract class FV_Player_Wizard_Base_Class {
 
   function set_title($title) {
     $this->title = $title;
-  }
-  
-  public function start_session() {
-    if( !session_id() && !headers_sent() ) {
-      session_start();
-    }
   }
 
 }
