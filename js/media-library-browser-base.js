@@ -2,11 +2,13 @@ var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
 
+  // TODO: Use some public method instead
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
   fv_flowplayer_browser_assets_loaders = {},
 
+  // TODO: Use some public method instead
   // the following will contain file patterns which will be checked when determining whether we can automatically find
   // a splash screen for a video file in any given browser
   //
